@@ -1,0 +1,25 @@
+{
+    "name": "eloquent/phony",
+    "description": "A better mocking framework for PHP.",
+    "keywords": ["mock", "mocking", "stub", "stubbing", "spy", "dummy", "double", "test"],
+    "homepage": "https://github.com/eloquent/phony",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Erin Millard",
+            "email": "ezzatron@gmail.com",
+            "homepage": "http://ezzatron.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {
+        "hamcrest/hamcrest-php": "~1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eloquent\\Phony\\": "src"
+        }
+    }
+}
