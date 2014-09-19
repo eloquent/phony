@@ -19,8 +19,6 @@ class CallTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        parent::setUp();
-
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->returnValue = 'returnValue';
         $this->thisValue = new stdClass;
@@ -37,14 +35,6 @@ class CallTest extends PHPUnit_Framework_TestCase
             $this->endTime,
             $this->exception
         );
-        $this->callWithoutException = new Call(
-            $this->arguments,
-            $this->returnValue,
-            $this->thisValue,
-            $this->sequenceNumber,
-            $this->startTime,
-            $this->endTime
-        );
     }
 
     public function testConstructor()
@@ -60,11 +50,20 @@ class CallTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->assertSame($this->arguments, $this->callWithoutException->arguments());
-        $this->assertSame($this->returnValue, $this->callWithoutException->returnValue());
-        $this->assertSame($this->thisValue, $this->callWithoutException->thisValue());
-        $this->assertSame($this->sequenceNumber, $this->callWithoutException->sequenceNumber());
-        $this->assertSame($this->startTime, $this->callWithoutException->startTime());
-        $this->assertSame($this->endTime, $this->callWithoutException->endTime());
+        $this->subject = new Call(
+            $this->arguments,
+            $this->returnValue,
+            $this->thisValue,
+            $this->sequenceNumber,
+            $this->startTime,
+            $this->endTime
+        );
+
+        $this->assertSame($this->arguments, $this->subject->arguments());
+        $this->assertSame($this->returnValue, $this->subject->returnValue());
+        $this->assertSame($this->thisValue, $this->subject->thisValue());
+        $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
+        $this->assertSame($this->startTime, $this->subject->startTime());
+        $this->assertSame($this->endTime, $this->subject->endTime());
     }
 }

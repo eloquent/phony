@@ -21,8 +21,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        parent::setUp();
-
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->returnValue = 'returnValue';
         $this->thisValue = new stdClass;
@@ -41,15 +39,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->matcherFactory = new MatcherFactory;
         $this->subject = new CallVerifier($this->call, $this->matcherFactory);
-
-        $this->callWithoutException = new Call(
-            $this->arguments,
-            $this->returnValue,
-            $this->thisValue,
-            $this->sequenceNumber,
-            $this->startTime,
-            $this->endTime
-        );
     }
 
     public function testConstructor()

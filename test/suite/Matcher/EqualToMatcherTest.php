@@ -17,8 +17,6 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        parent::setUp();
-
         $this->value = 'value';
         $this->subject = new EqualToMatcher($this->value);
     }
