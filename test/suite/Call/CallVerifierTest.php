@@ -28,7 +28,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->endTime = 2.22;
         $this->duration = $this->endTime - $this->startTime;
         $this->exception = new RuntimeException('You done goofed.');
-        $this->thisValue = (object) [];
+        $this->thisValue = (object) array();
         $this->call = new Call(
             $this->arguments,
             $this->returnValue,
@@ -170,7 +170,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledOn()
     {
         $this->assertTrue($this->subject->calledOn($this->thisValue));
-        $this->assertFalse($this->subject->calledOn((object) []));
+        $this->assertFalse($this->subject->calledOn((object) array()));
     }
 
     public function testReturned()

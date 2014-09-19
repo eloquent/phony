@@ -24,7 +24,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->startTime = 1.11;
         $this->endTime = 2.22;
         $this->exception = new RuntimeException;
-        $this->thisValue = (object) [];
+        $this->thisValue = (object) array();
         $this->subject = new Call(
             $this->arguments,
             $this->returnValue,
