@@ -8,4 +8,4 @@ php:
     - "hhvm"
     - "hhvm-nightly"
 install: composer install
-script: phpunit --configuration phpunit.coverage.xml
+script: vendor/bin/phpunit --configuration phpunit.coverage.xml

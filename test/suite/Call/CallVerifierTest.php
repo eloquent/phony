@@ -15,7 +15,6 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
-use stdClass;
 
 class CallVerifierTest extends PHPUnit_Framework_TestCase
 {
@@ -24,19 +23,20 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->argumentCount = count($this->arguments);
         $this->returnValue = 'returnValue';
-        $this->thisValue = new stdClass;
         $this->sequenceNumber = 111;
         $this->startTime = 1.11;
         $this->endTime = 2.22;
+        $this->duration = $this->endTime - $this->startTime;
         $this->exception = new RuntimeException('You done goofed.');
+        $this->thisValue = (object) [];
         $this->call = new Call(
             $this->arguments,
             $this->returnValue,
-            $this->thisValue,
             $this->sequenceNumber,
             $this->startTime,
             $this->endTime,
-            $this->exception
+            $this->exception,
+            $this->thisValue
         );
         $this->matcherFactory = new MatcherFactory;
         $this->subject = new CallVerifier($this->call, $this->matcherFactory);
@@ -44,7 +44,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->earlyCall = new Call(
             $this->arguments,
             $this->returnValue,
-            $this->thisValue,
             $this->sequenceNumber - 1,
             $this->startTime,
             $this->endTime
@@ -52,7 +51,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->lateCall = new Call(
             $this->arguments,
             $this->returnValue,
-            $this->thisValue,
             $this->sequenceNumber + 1,
             $this->startTime,
             $this->endTime
@@ -62,6 +60,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $this->assertSame($this->call, $this->subject->call());
+        $this->assertSame($this->duration, $this->subject->duration());
         $this->assertSame($this->argumentCount, $this->subject->argumentCount());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
     }
@@ -77,11 +76,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->startTime, $this->subject->startTime());
         $this->assertSame($this->endTime, $this->subject->endTime());
         $this->assertSame($this->exception, $this->subject->exception());
+        $this->assertSame($this->thisValue, $this->subject->thisValue());
     }
 
     public function calledWithData()
@@ -171,7 +170,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledOn()
     {
         $this->assertTrue($this->subject->calledOn($this->thisValue));
-        $this->assertFalse($this->subject->calledOn(new stdClass));
+        $this->assertFalse($this->subject->calledOn((object) []));
     }
 
     public function testReturned()

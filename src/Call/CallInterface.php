@@ -33,20 +33,6 @@ interface CallInterface
     public function returnValue();
 
     /**
-     * Get the thrown exception.
-     *
-     * @return Exception|null The thrown exception, or null if no exception was thrown.
-     */
-    public function exception();
-
-    /**
-     * Get the $this value.
-     *
-     * @return object The $this value.
-     */
-    public function thisValue();
-
-    /**
      * Get the sequence number.
      *
      * @return integer The sequence number.
@@ -66,4 +52,18 @@ interface CallInterface
      * @return float The time at which the call completed, in seconds since the Unix epoch.
      */
     public function endTime();
+
+    /**
+     * Get the thrown exception.
+     *
+     * @return Exception|null The thrown exception, or null if no exception was thrown.
+     */
+    public function exception();
+
+    /**
+     * Get the $this value.
+     *
+     * @return object|null The $this value, or null if unbound.
+     */
+    public function thisValue();
 }

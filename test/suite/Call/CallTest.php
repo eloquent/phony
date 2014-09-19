@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Call;
 
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
-use stdClass;
 
 class CallTest extends PHPUnit_Framework_TestCase
 {
@@ -21,19 +20,19 @@ class CallTest extends PHPUnit_Framework_TestCase
     {
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->returnValue = 'returnValue';
-        $this->thisValue = new stdClass;
         $this->sequenceNumber = 111;
         $this->startTime = 1.11;
         $this->endTime = 2.22;
         $this->exception = new RuntimeException;
+        $this->thisValue = (object) [];
         $this->subject = new Call(
             $this->arguments,
             $this->returnValue,
-            $this->thisValue,
             $this->sequenceNumber,
             $this->startTime,
             $this->endTime,
-            $this->exception
+            $this->exception,
+            $this->thisValue
         );
     }
 
@@ -41,11 +40,11 @@ class CallTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->startTime, $this->subject->startTime());
         $this->assertSame($this->endTime, $this->subject->endTime());
         $this->assertSame($this->exception, $this->subject->exception());
+        $this->assertSame($this->thisValue, $this->subject->thisValue());
     }
 
     public function testConstructorDefaults()
@@ -53,12 +52,12 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->subject = new Call(
             $this->arguments,
             $this->returnValue,
-            $this->thisValue,
             $this->sequenceNumber,
             $this->startTime,
             $this->endTime
         );
 
         $this->assertNull($this->subject->exception());
+        $this->assertNull($this->subject->thisValue());
     }
 }

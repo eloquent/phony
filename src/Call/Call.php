@@ -23,28 +23,28 @@ class Call implements CallInterface
      *
      * @param array<integer,mixed> $arguments      The arguments.
      * @param mixed                $returnValue    The return value.
-     * @param object               $thisValue      The $this value.
      * @param integer              $sequenceNumber The sequence number.
      * @param float                $startTime      The time at which the call was made, in seconds since the Unix epoch.
      * @param float                $endTime        The time at which the call completed, in seconds since the Unix epoch.
      * @param Exception|null       $exception      The thrown exception, or null if no exception was thrown.
+     * @param object|null          $thisValue      The $this value, or null if unbound.
      */
     public function __construct(
         array $arguments,
         $returnValue,
-        $thisValue,
         $sequenceNumber,
         $startTime,
         $endTime,
-        Exception $exception = null
+        Exception $exception = null,
+        $thisValue = null
     ) {
         $this->arguments = $arguments;
         $this->returnValue = $returnValue;
-        $this->thisValue = $thisValue;
         $this->sequenceNumber = $sequenceNumber;
         $this->startTime = $startTime;
         $this->endTime = $endTime;
         $this->exception = $exception;
+        $this->thisValue = $thisValue;
     }
 
     /**
@@ -65,26 +65,6 @@ class Call implements CallInterface
     public function returnValue()
     {
         return $this->returnValue;
-    }
-
-    /**
-     * Get the thrown exception.
-     *
-     * @return Exception|null The thrown exception, or null if no exception was thrown.
-     */
-    public function exception()
-    {
-        return $this->exception;
-    }
-
-    /**
-     * Get the $this value.
-     *
-     * @return object The $this value.
-     */
-    public function thisValue()
-    {
-        return $this->thisValue;
     }
 
     /**
@@ -117,11 +97,31 @@ class Call implements CallInterface
         return $this->endTime;
     }
 
+    /**
+     * Get the thrown exception.
+     *
+     * @return Exception|null The thrown exception, or null if no exception was thrown.
+     */
+    public function exception()
+    {
+        return $this->exception;
+    }
+
+    /**
+     * Get the $this value.
+     *
+     * @return object|null The $this value, or null if unbound.
+     */
+    public function thisValue()
+    {
+        return $this->thisValue;
+    }
+
     private $arguments;
     private $returnValue;
-    private $thisValue;
     private $sequenceNumber;
     private $startTime;
     private $endTime;
+    private $thisValue;
     private $exception;
 }

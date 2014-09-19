@@ -35,6 +35,7 @@ class CallVerifier implements CallVerifierInterface
         }
 
         $this->call = $call;
+        $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
         $this->matcherFactory = $matcherFactory;
     }
@@ -66,7 +67,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function arguments()
     {
-        return $this->call()->arguments();
+        return $this->call->arguments();
     }
 
     /**
@@ -76,27 +77,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function returnValue()
     {
-        return $this->call()->returnValue();
-    }
-
-    /**
-     * Get the thrown exception.
-     *
-     * @return Exception|null The thrown exception, or null if no exception was thrown.
-     */
-    public function exception()
-    {
-        return $this->call()->exception();
-    }
-
-    /**
-     * Get the $this value.
-     *
-     * @return object The $this value.
-     */
-    public function thisValue()
-    {
-        return $this->call()->thisValue();
+        return $this->call->returnValue();
     }
 
     /**
@@ -106,7 +87,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function sequenceNumber()
     {
-        return $this->call()->sequenceNumber();
+        return $this->call->sequenceNumber();
     }
 
     /**
@@ -116,7 +97,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function startTime()
     {
-        return $this->call()->startTime();
+        return $this->call->startTime();
     }
 
     /**
@@ -126,7 +107,37 @@ class CallVerifier implements CallVerifierInterface
      */
     public function endTime()
     {
-        return $this->call()->endTime();
+        return $this->call->endTime();
+    }
+
+    /**
+     * Get the thrown exception.
+     *
+     * @return Exception|null The thrown exception, or null if no exception was thrown.
+     */
+    public function exception()
+    {
+        return $this->call->exception();
+    }
+
+    /**
+     * Get the $this value.
+     *
+     * @return object The $this value.
+     */
+    public function thisValue()
+    {
+        return $this->call->thisValue();
+    }
+
+    /**
+     * Get the call duration.
+     *
+     * @return float The call duration, in seconds.
+     */
+    public function duration()
+    {
+        return $this->duration;
     }
 
     /**
@@ -148,8 +159,8 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledWith()
     {
-        $matchers = $this->matcherFactory()->adaptAll(func_get_args());
-        $arguments = $this->call()->arguments();
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $arguments = $this->call->arguments();
 
         foreach ($matchers as $index => $matcher) {
             if (
@@ -173,7 +184,7 @@ class CallVerifier implements CallVerifierInterface
     public function calledWithExactly()
     {
         $matchers = func_get_args();
-        $arguments = $this->call()->arguments();
+        $arguments = $this->call->arguments();
 
         if (array_keys($arguments) !== array_keys($matchers)) {
             return false;
@@ -222,7 +233,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledBefore(CallInterface $call)
     {
-        return $call->sequenceNumber() > $this->call()->sequenceNumber();
+        return $call->sequenceNumber() > $this->call->sequenceNumber();
     }
 
     /**
@@ -234,19 +245,19 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledAfter(CallInterface $call)
     {
-        return $call->sequenceNumber() < $this->call()->sequenceNumber();
+        return $call->sequenceNumber() < $this->call->sequenceNumber();
     }
 
     /**
-     * Returns true if the $this value is the same as the supplied object.
+     * Returns true if the $this value is the same as the supplied value.
      *
-     * @param object $object The possible $this value.
+     * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is the same as the supplied object.
+     * @return boolean True if the $this value is the same as the supplied value.
      */
-    public function calledOn($object)
+    public function calledOn($value)
     {
-        return $this->call()->thisValue() === $object;
+        return $this->call->thisValue() === $value;
     }
 
     /**
@@ -258,8 +269,8 @@ class CallVerifier implements CallVerifierInterface
      */
     public function returned($value)
     {
-        return $this->matcherFactory()->adapt($value)
-            ->matches($this->call()->returnValue());
+        return $this->matcherFactory->adapt($value)
+            ->matches($this->call->returnValue());
     }
 
     /**
@@ -272,17 +283,18 @@ class CallVerifier implements CallVerifierInterface
     public function threw($type = null)
     {
         if (null === $type) {
-            return null !== $this->call()->exception();
+            return null !== $this->call->exception();
         }
         if ($type instanceof Exception) {
-            return $this->matcherFactory()->equalTo($type)
-                ->matches($this->call()->exception());
+            return $this->matcherFactory->equalTo($type)
+                ->matches($this->call->exception());
         }
 
-        return $this->call()->exception() instanceof $type;
+        return $this->call->exception() instanceof $type;
     }
 
     private $call;
+    private $duration;
     private $argumentCount;
     private $matcherFactory;
 }

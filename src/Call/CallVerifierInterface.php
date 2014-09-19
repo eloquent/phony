@@ -19,6 +19,13 @@ use Exception;
 interface CallVerifierInterface extends CallInterface
 {
     /**
+     * Get the call duration.
+     *
+     * @return float The call duration, in seconds.
+     */
+    public function duration();
+
+    /**
      * Get the number of arguments.
      *
      * @return integer The number of arguments.
@@ -81,13 +88,13 @@ interface CallVerifierInterface extends CallInterface
     public function calledAfter(CallInterface $call);
 
     /**
-     * Returns true if the $this value is the same as the supplied object.
+     * Returns true if the $this value is the same as the supplied value.
      *
-     * @param object $object The possible $this value.
+     * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is the same as the supplied object.
+     * @return boolean True if the $this value is the same as the supplied value.
      */
-    public function calledOn($object);
+    public function calledOn($value);
 
     /**
      * Returns true if this call returned the supplied value.
