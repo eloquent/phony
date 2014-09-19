@@ -59,11 +59,6 @@ class CallTest extends PHPUnit_Framework_TestCase
             $this->endTime
         );
 
-        $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertSame($this->returnValue, $this->subject->returnValue());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
-        $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
-        $this->assertSame($this->startTime, $this->subject->startTime());
-        $this->assertSame($this->endTime, $this->subject->endTime());
+        $this->assertNull($this->subject->exception());
     }
 }

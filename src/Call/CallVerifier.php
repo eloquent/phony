@@ -35,6 +35,7 @@ class CallVerifier implements CallVerifierInterface
         }
 
         $this->call = $call;
+        $this->argumentCount = count($call->arguments());
         $this->matcherFactory = $matcherFactory;
     }
 
@@ -129,6 +130,16 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
+     * Get the number of arguments.
+     *
+     * @return integer The number of arguments.
+     */
+    public function argumentCount()
+    {
+        return $this->argumentCount;
+    }
+
+    /**
      * Returns true if called with the supplied arguments (and possibly others).
      *
      * @param mixed $argument,... The arguments.
@@ -203,6 +214,55 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
+     * Returns true if this call occurred before the supplied call.
+     *
+     * @param CallInterface $call Another call.
+     *
+     * @return boolean True if this call occurred before the supplied call.
+     */
+    public function calledBefore(CallInterface $call)
+    {
+        return $call->sequenceNumber() > $this->call()->sequenceNumber();
+    }
+
+    /**
+     * Returns true if this call occurred after the supplied call.
+     *
+     * @param CallInterface $call Another call.
+     *
+     * @return boolean True if this call occurred after the supplied call.
+     */
+    public function calledAfter(CallInterface $call)
+    {
+        return $call->sequenceNumber() < $this->call()->sequenceNumber();
+    }
+
+    /**
+     * Returns true if the $this value is the same as the supplied object.
+     *
+     * @param object $object The possible $this value.
+     *
+     * @return boolean True if the $this value is the same as the supplied object.
+     */
+    public function calledOn($object)
+    {
+        return $this->call()->thisValue() === $object;
+    }
+
+    /**
+     * Returns true if this call returned the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return boolean True if this call returned the supplied value.
+     */
+    public function returned($value)
+    {
+        return $this->matcherFactory()->adapt($value)
+            ->matches($this->call()->returnValue());
+    }
+
+    /**
      * Returns true if an exception of the supplied type was thrown.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
@@ -222,18 +282,7 @@ class CallVerifier implements CallVerifierInterface
         return $this->call()->exception() instanceof $type;
     }
 
-    /**
-     * Returns true if the $this value is the same as the supplied object.
-     *
-     * @param object $object The possible $this value.
-     *
-     * @return boolean True if the $this value is the same as the supplied object.
-     */
-    public function calledOn($object)
-    {
-        return $this->call()->thisValue() === $object;
-    }
-
     private $call;
+    private $argumentCount;
     private $matcherFactory;
 }

@@ -19,11 +19,11 @@ use Exception;
 interface CallVerifierInterface extends CallInterface
 {
     /**
-     * Get the call.
+     * Get the number of arguments.
      *
-     * @return CallInterface The call.
+     * @return integer The number of arguments.
      */
-    public function call();
+    public function argumentCount();
 
     /**
      * Returns true if called with the supplied arguments (and possibly others).
@@ -63,13 +63,22 @@ interface CallVerifierInterface extends CallInterface
     public function notCalledWithExactly();
 
     /**
-     * Returns true if an exception of the supplied type was thrown.
+     * Returns true if this call occurred before the supplied call.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param CallInterface $call Another call.
      *
-     * @return boolean True if a matching exception was thrown.
+     * @return boolean True if this call occurred before the supplied call.
      */
-    public function threw($type = null);
+    public function calledBefore(CallInterface $call);
+
+    /**
+     * Returns true if this call occurred after the supplied call.
+     *
+     * @param CallInterface $call Another call.
+     *
+     * @return boolean True if this call occurred after the supplied call.
+     */
+    public function calledAfter(CallInterface $call);
 
     /**
      * Returns true if the $this value is the same as the supplied object.
@@ -79,4 +88,22 @@ interface CallVerifierInterface extends CallInterface
      * @return boolean True if the $this value is the same as the supplied object.
      */
     public function calledOn($object);
+
+    /**
+     * Returns true if this call returned the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return boolean True if this call returned the supplied value.
+     */
+    public function returned($value);
+
+    /**
+     * Returns true if an exception of the supplied type was thrown.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return boolean True if a matching exception was thrown.
+     */
+    public function threw($type = null);
 }

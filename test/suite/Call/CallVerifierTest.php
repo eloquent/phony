@@ -22,6 +22,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
+        $this->argumentCount = count($this->arguments);
         $this->returnValue = 'returnValue';
         $this->thisValue = new stdClass;
         $this->sequenceNumber = 111;
@@ -39,11 +40,29 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->matcherFactory = new MatcherFactory;
         $this->subject = new CallVerifier($this->call, $this->matcherFactory);
+
+        $this->earlyCall = new Call(
+            $this->arguments,
+            $this->returnValue,
+            $this->thisValue,
+            $this->sequenceNumber - 1,
+            $this->startTime,
+            $this->endTime
+        );
+        $this->lateCall = new Call(
+            $this->arguments,
+            $this->returnValue,
+            $this->thisValue,
+            $this->sequenceNumber + 1,
+            $this->startTime,
+            $this->endTime
+        );
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->call, $this->subject->call());
+        $this->assertSame($this->argumentCount, $this->subject->argumentCount());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
     }
 
@@ -86,7 +105,10 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
      */
     public function testCalledWith(array $arguments, $calledWith, $calledWithExactly)
     {
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+
         $this->assertSame($calledWith, call_user_func_array(array($this->subject, 'calledWith'), $arguments));
+        $this->assertSame($calledWith, call_user_func_array(array($this->subject, 'calledWith'), $matchers));
     }
 
     /**
@@ -94,9 +116,15 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
      */
     public function testCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
     {
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+
         $this->assertSame(
             $calledWithExactly,
             call_user_func_array(array($this->subject, 'calledWithExactly'), $arguments)
+        );
+        $this->assertSame(
+            $calledWithExactly,
+            call_user_func_array(array($this->subject, 'calledWithExactly'), $matchers)
         );
     }
 
@@ -105,7 +133,10 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
      */
     public function testNotCalledWith(array $arguments, $calledWith, $calledWithExactly)
     {
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+
         $this->assertSame(!$calledWith, call_user_func_array(array($this->subject, 'notCalledWith'), $arguments));
+        $this->assertSame(!$calledWith, call_user_func_array(array($this->subject, 'notCalledWith'), $matchers));
     }
 
     /**
@@ -113,10 +144,42 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
      */
     public function testNotCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
     {
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+
         $this->assertSame(
             !$calledWithExactly,
             call_user_func_array(array($this->subject, 'notCalledWithExactly'), $arguments)
         );
+        $this->assertSame(
+            !$calledWithExactly,
+            call_user_func_array(array($this->subject, 'notCalledWithExactly'), $matchers)
+        );
+    }
+
+    public function testCalledBefore()
+    {
+        $this->assertTrue($this->subject->calledBefore($this->lateCall));
+        $this->assertFalse($this->subject->calledBefore($this->earlyCall));
+    }
+
+    public function testCalledAfter()
+    {
+        $this->assertTrue($this->subject->calledAfter($this->earlyCall));
+        $this->assertFalse($this->subject->calledAfter($this->lateCall));
+    }
+
+    public function testCalledOn()
+    {
+        $this->assertTrue($this->subject->calledOn($this->thisValue));
+        $this->assertFalse($this->subject->calledOn(new stdClass));
+    }
+
+    public function testReturned()
+    {
+        $this->assertTrue($this->subject->returned($this->returnValue));
+        $this->assertTrue($this->subject->returned($this->matcherFactory->adapt($this->returnValue)));
+        $this->assertFalse($this->subject->returned('anotherValue'));
+        $this->assertFalse($this->subject->returned($this->matcherFactory->adapt('anotherValue')));
     }
 
     public function testThrew()
@@ -128,11 +191,5 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception));
         $this->assertFalse($this->subject->threw(new RuntimeException));
-    }
-
-    public function testCalledOn()
-    {
-        $this->assertTrue($this->subject->calledOn($this->thisValue));
-        $this->assertFalse($this->subject->calledOn(new stdClass));
     }
 }
