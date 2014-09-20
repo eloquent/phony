@@ -12,6 +12,8 @@
 namespace Eloquent\Phony\Matcher\Factory;
 
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\WrappedMatcher;
+use Hamcrest\Core\IsEqual;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -31,6 +33,15 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($matcher, $this->subject->adapt($matcher));
         $this->assertNotSame($matcher, $adaptedValue);
         $this->assertEquals($matcher, $adaptedValue);
+    }
+
+    public function testAdaptHamcrestMatcher()
+    {
+        $matcher = new IsEqual('value');
+        $expected = new WrappedMatcher($matcher);
+        $actual = $this->subject->adapt($matcher);
+
+        $this->assertEquals($expected, $actual);
     }
 
     public function testAdaptAll()

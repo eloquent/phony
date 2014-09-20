@@ -15,6 +15,7 @@
         "php": ">=5.3"
     },
     "require-dev": {
+        "hamcrest/hamcrest-php": "~1",
         "phpunit/phpunit": "~4"
     },
     "autoload": {

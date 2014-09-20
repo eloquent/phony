@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Matcher\Factory;
 
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * Creates matchers.
@@ -44,6 +45,9 @@ class MatcherFactory implements MatcherFactoryInterface
     {
         if ($value instanceof MatcherInterface) {
             return $value;
+        }
+        if (is_object($value) && is_a($value, 'Hamcrest\Matcher')) {
+            return new WrappedMatcher($value);
         }
 
         return $this->equalTo($value);
