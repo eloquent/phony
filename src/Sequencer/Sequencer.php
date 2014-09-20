@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Sequence;
+namespace Eloquent\Phony\Sequencer;
 
 /**
  * Provides a sequential series of numbers.

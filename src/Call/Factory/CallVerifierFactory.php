@@ -63,11 +63,7 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     {
         $verifiers = array();
         foreach ($calls as $call) {
-            if ($call instanceof CallVerifierInterface) {
-                $verifiers[] = $call;
-            } else {
-                $verifiers[] = new CallVerifier($call);
-            }
+            $verifiers[] = $this->adapt($call);
         }
 
         return $verifiers;

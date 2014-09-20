@@ -13,10 +13,12 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Factory\CallFactory;
+use Eloquent\Phony\Call\Factory\CallFactoryInterface;
 use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
-use Eloquent\Phony\Sequence\Sequencer;
-use Eloquent\Phony\Sequence\SequencerInterface;
+use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Spy\Exception\UndefinedSubjectException;
 use Exception;
 use ReflectionClass;
@@ -30,15 +32,20 @@ class Spy implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null           $subject   The subject.
-     * @param SequencerInterface|null $sequencer The sequencer to use.
-     * @param ClockInterface|null     $clock     The clock to use.
+     * @param callable|null             $subject     The subject.
+     * @param CallFactoryInterface|null $callFactory The call factory to use.
+     * @param SequencerInterface|null   $sequencer   The sequencer to use.
+     * @param ClockInterface|null       $clock       The clock to use.
      */
     public function __construct(
         $subject = null,
+        CallFactoryInterface $callFactory = null,
         SequencerInterface $sequencer = null,
         ClockInterface $clock = null
     ) {
+        if (null === $callFactory) {
+            $callFactory = CallFactory::instance();
+        }
         if (null === $sequencer) {
             $sequencer = Sequencer::instance();
         }
@@ -47,9 +54,20 @@ class Spy implements SpyInterface
         }
 
         $this->subject = $subject;
+        $this->callFactory = $callFactory;
         $this->sequencer = $sequencer;
         $this->clock = $clock;
         $this->calls = array();
+    }
+
+    /**
+     * Get the call factory.
+     *
+     * @return CallFactoryInterface The call factory.
+     */
+    public function callFactory()
+    {
+        return $this->callFactory;
     }
 
     /**
@@ -167,7 +185,7 @@ class Spy implements SpyInterface
             $endTime = $this->clock->time();
         }
 
-        $this->calls[] = new Call(
+        $this->calls[] = $this->callFactory->create(
             $arguments,
             $returnValue,
             $this->sequencer->next(),
@@ -185,6 +203,8 @@ class Spy implements SpyInterface
     }
 
     private $subject;
+    private $callFactory;
     private $sequencer;
+    private $clock;
     private $calls;
 }

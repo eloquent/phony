@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Sequence;
+namespace Eloquent\Phony\Sequencer;
 
 /**
  * The interface implemented by sequencers.

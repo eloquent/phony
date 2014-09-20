@@ -46,7 +46,7 @@ class MatcherFactory implements MatcherFactoryInterface
             return $value;
         }
 
-        return new EqualToMatcher($value);
+        return $this->equalTo($value);
     }
 
     /**
@@ -60,11 +60,7 @@ class MatcherFactory implements MatcherFactoryInterface
     {
         $matchers = array();
         foreach ($values as $value) {
-            if ($value instanceof MatcherInterface) {
-                $matchers[] = $value;
-            } else {
-                $matchers[] = new EqualToMatcher($value);
-            }
+            $matchers[] = $this->adapt($value);
         }
 
         return $matchers;

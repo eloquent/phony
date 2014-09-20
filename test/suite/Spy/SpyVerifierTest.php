@@ -29,7 +29,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             return '= ' .implode(', ', func_get_args());
         };
         $this->clock = new TestClock();
-        $this->spy = new Spy($this->spySubject, null, $this->clock);
+        $this->spy = new Spy($this->spySubject, null, null, $this->clock);
         $this->matcherFactory = new MatcherFactory();
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->subject = new SpyVerifier($this->spy, $this->matcherFactory, $this->callVerifierFactory);

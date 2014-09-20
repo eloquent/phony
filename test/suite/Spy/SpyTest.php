@@ -12,9 +12,10 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Clock\TestClock;
-use Eloquent\Phony\Sequence\Sequencer;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -27,9 +28,10 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->spySubject = function () {
             return '= ' .implode(', ', func_get_args());
         };
+        $this->callFactory = new CallFactory();
         $this->sequencer = new Sequencer();
         $this->clock = new TestClock();
-        $this->subject = new Spy($this->spySubject, $this->sequencer, $this->clock);
+        $this->subject = new Spy($this->spySubject, $this->callFactory, $this->sequencer, $this->clock);
 
         $this->callA = new Call(array(), null, 0, 1.11, 2.22);
         $this->callB = new Call(array(), null, 1, 3.33, 4.44);
@@ -40,6 +42,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->subject->hasSubject());
         $this->assertSame($this->spySubject, $this->subject->subject());
+        $this->assertSame($this->callFactory, $this->subject->callFactory());
         $this->assertSame($this->sequencer, $this->subject->sequencer());
         $this->assertSame($this->clock, $this->subject->clock());
         $this->assertSame(array(), $this->subject->calls());
@@ -50,6 +53,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->subject = new Spy();
 
         $this->assertFalse($this->subject->hasSubject());
+        $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
         $this->assertSame(Sequencer::instance(), $this->subject->sequencer());
         $this->assertSame(SystemClock::instance(), $this->subject->clock());
     }
@@ -96,7 +100,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeWithoutSubject()
     {
-        $spy = new Spy(null, $this->sequencer, $this->clock);
+        $spy = new Spy(null, null, $this->sequencer, $this->clock);
         $spy('argumentA');
         $spy('argumentB', 'argumentC');
         $thisValue = null;
@@ -115,7 +119,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($subject, $this->sequencer, $this->clock);
+        $spy = new Spy($subject, null, $this->sequencer, $this->clock);
         $caughtExceptions = array();
         try {
             $spy('argumentA');
