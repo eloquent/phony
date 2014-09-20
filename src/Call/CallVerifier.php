@@ -35,9 +35,10 @@ class CallVerifier implements CallVerifierInterface
         }
 
         $this->call = $call;
+        $this->matcherFactory = $matcherFactory;
+
         $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
-        $this->matcherFactory = $matcherFactory;
     }
 
     /**
@@ -159,6 +160,10 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledWith()
     {
+        if (0 == func_num_args()) {
+            return true;
+        }
+
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $arguments = $this->call->arguments();
 
@@ -186,11 +191,22 @@ class CallVerifier implements CallVerifierInterface
         $matchers = func_get_args();
         $arguments = $this->call->arguments();
 
-        if (array_keys($arguments) !== array_keys($matchers)) {
+        if (count($arguments) !== count($matchers)) {
             return false;
         }
 
-        return call_user_func_array(array($this, 'calledWith'), $matchers);
+        $matchers = $this->matcherFactory->adaptAll($matchers);
+
+        foreach ($matchers as $index => $matcher) {
+            if (
+                !array_key_exists($index, $arguments) ||
+                !$matcher->matches($arguments[$index])
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -203,10 +219,23 @@ class CallVerifier implements CallVerifierInterface
      */
     public function notCalledWith()
     {
-        return !call_user_func_array(
-            array($this, 'calledWith'),
-            func_get_args()
-        );
+        if (0 == func_num_args()) {
+            return false;
+        }
+
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $arguments = $this->call->arguments();
+
+        foreach ($matchers as $index => $matcher) {
+            if (
+                !array_key_exists($index, $arguments) ||
+                !$matcher->matches($arguments[$index])
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -218,10 +247,25 @@ class CallVerifier implements CallVerifierInterface
      */
     public function notCalledWithExactly()
     {
-        return !call_user_func_array(
-            array($this, 'calledWithExactly'),
-            func_get_args()
-        );
+        $matchers = func_get_args();
+        $arguments = $this->call->arguments();
+
+        if (count($arguments) !== count($matchers)) {
+            return true;
+        }
+
+        $matchers = $this->matcherFactory->adaptAll($matchers);
+
+        foreach ($matchers as $index => $matcher) {
+            if (
+                !array_key_exists($index, $arguments) ||
+                !$matcher->matches($arguments[$index])
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -282,19 +326,24 @@ class CallVerifier implements CallVerifierInterface
      */
     public function threw($type = null)
     {
-        if (null === $type) {
-            return null !== $this->call->exception();
-        }
-        if ($type instanceof Exception) {
-            return $this->matcherFactory->equalTo($type)
-                ->matches($this->call->exception());
+        $exception = $this->call->exception();
+        if (null === $exception) {
+            return false;
         }
 
-        return $this->call->exception() instanceof $type;
+        if (null === $type) {
+            return true;
+        }
+
+        if ($type instanceof Exception) {
+            return $this->matcherFactory->equalTo($type)->matches($exception);
+        }
+
+        return $exception instanceof $type;
     }
 
     private $call;
+    private $matcherFactory;
     private $duration;
     private $argumentCount;
-    private $matcherFactory;
 }

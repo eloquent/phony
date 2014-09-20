@@ -19,7 +19,7 @@ class UndefinedCallExceptionTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $index = 111;
-        $cause = new Exception;
+        $cause = new Exception();
         $exception = new UndefinedCallException($index, $cause);
 
         $this->assertSame($index, $exception->index());

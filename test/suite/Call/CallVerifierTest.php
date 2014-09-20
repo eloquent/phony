@@ -38,7 +38,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->exception,
             $this->thisValue
         );
-        $this->matcherFactory = new MatcherFactory;
+        $this->matcherFactory = new MatcherFactory();
         $this->subject = new CallVerifier($this->call, $this->matcherFactory);
 
         $this->earlyCall = new Call(
@@ -110,6 +110,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($calledWith, call_user_func_array(array($this->subject, 'calledWith'), $matchers));
     }
 
+    public function testCalledWithWithEmptyArguments()
+    {
+        $this->assertTrue($this->subject->calledWith());
+    }
+
     /**
      * @dataProvider calledWithData
      */
@@ -127,6 +132,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testCalledWithWithExactlyEmptyArguments()
+    {
+        $this->assertFalse($this->subject->calledWithExactly());
+    }
+
     /**
      * @dataProvider calledWithData
      */
@@ -136,6 +146,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(!$calledWith, call_user_func_array(array($this->subject, 'notCalledWith'), $arguments));
         $this->assertSame(!$calledWith, call_user_func_array(array($this->subject, 'notCalledWith'), $matchers));
+    }
+
+    public function testNotCalledWithWithEmptyArguments()
+    {
+        $this->assertFalse($this->subject->notCalledWith());
     }
 
     /**
@@ -153,6 +168,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             !$calledWithExactly,
             call_user_func_array(array($this->subject, 'notCalledWithExactly'), $matchers)
         );
+    }
+
+    public function testNotCalledWithExactlyWithEmptyArguments()
+    {
+        $this->assertTrue($this->subject->notCalledWithExactly());
     }
 
     public function testCalledBefore()
@@ -188,7 +208,24 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->threw('RuntimeException'));
         $this->assertTrue($this->subject->threw($this->exception));
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
-        $this->assertFalse($this->subject->threw(new Exception));
-        $this->assertFalse($this->subject->threw(new RuntimeException));
+        $this->assertFalse($this->subject->threw(new Exception()));
+        $this->assertFalse($this->subject->threw(new RuntimeException()));
+
+        $this->call = new Call(
+            $this->arguments,
+            $this->returnValue,
+            $this->sequenceNumber,
+            $this->startTime,
+            $this->endTime
+        );
+        $this->subject = new CallVerifier($this->call);
+
+        $this->assertFalse($this->subject->threw());
+        $this->assertFalse($this->subject->threw('Exception'));
+        $this->assertFalse($this->subject->threw('RuntimeException'));
+        $this->assertFalse($this->subject->threw($this->exception));
+        $this->assertFalse($this->subject->threw('InvalidArgumentException'));
+        $this->assertFalse($this->subject->threw(new Exception()));
+        $this->assertFalse($this->subject->threw(new RuntimeException()));
     }
 }

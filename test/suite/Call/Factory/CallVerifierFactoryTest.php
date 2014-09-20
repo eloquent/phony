@@ -9,37 +9,39 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Factory;
+namespace Eloquent\Phony\Call\Factory;
 
-use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallVerifier;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
-class MatcherFactoryTest extends PHPUnit_Framework_TestCase
+class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new MatcherFactory();
+        $this->subject = new CallVerifierFactory();
+
+        $this->callA = new Call(array(), null, 0, 1.11, 2.22);
+        $this->callB = new Call(array(), null, 1, 3.33, 4.44);
     }
 
     public function testAdapt()
     {
-        $value = 'value';
-        $matcher = new EqualToMatcher($value);
-        $adaptedValue = $this->subject->adapt($value);
+        $verifier = new CallVerifier($this->callA);
+        $adaptedCall = $this->subject->adapt($this->callA);
 
-        $this->assertSame($matcher, $this->subject->adapt($matcher));
-        $this->assertNotSame($matcher, $adaptedValue);
-        $this->assertEquals($matcher, $adaptedValue);
+        $this->assertSame($verifier, $this->subject->adapt($verifier));
+        $this->assertNotSame($verifier, $adaptedCall);
+        $this->assertEquals($verifier, $adaptedCall);
     }
 
     public function testAdaptAll()
     {
-        $valueA = 'valueA';
-        $valueB = new EqualToMatcher('valueB');
-        $values = array($valueA, $valueB);
-        $actual = $this->subject->adaptAll($values);
-        $expected = array(new EqualToMatcher($valueA), $valueB);
+        $callBVerifier = new CallVerifier($this->callB);
+        $calls = array($this->callA, $callBVerifier);
+        $actual = $this->subject->adaptAll($calls);
+        $expected = array(new CallVerifier($this->callA), $callBVerifier);
 
         $this->assertEquals($expected, $actual);
     }

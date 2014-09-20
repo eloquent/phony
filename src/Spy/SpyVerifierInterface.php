@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Exception;
 
@@ -20,6 +20,13 @@ use Exception;
  */
 interface SpyVerifierInterface extends SpyInterface
 {
+    /**
+     * Get the calls.
+     *
+     * @return array<CallVerifierInterface> The calls.
+     */
+    public function calls();
+
     /**
      * Get the number of calls.
      *
@@ -32,7 +39,7 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param integer $index The call index.
      *
-     * @return CallInterface          The call.
+     * @return CallVerifierInterface  The call.
      * @throws UndefinedCallException If there is no call at the index.
      */
     public function callAt($index);
@@ -40,7 +47,7 @@ interface SpyVerifierInterface extends SpyInterface
     /**
      * Get the first call.
      *
-     * @return CallInterface          The call.
+     * @return CallVerifierInterface  The call.
      * @throws UndefinedCallException If there is no first call.
      */
     public function firstCall();
@@ -48,7 +55,7 @@ interface SpyVerifierInterface extends SpyInterface
     /**
      * Get the last call.
      *
-     * @return CallInterface          The call.
+     * @return CallVerifierInterface  The call.
      * @throws UndefinedCallException If there is no last call.
      */
     public function lastCall();
@@ -77,20 +84,20 @@ interface SpyVerifierInterface extends SpyInterface
     /**
      * Returns true if this spy was called before the supplied spy.
      *
-     * @param FunctionSpyInterface $spy Another spy.
+     * @param SpyInterface $spy Another spy.
      *
      * @return boolean True if this spy was called before the supplied spy.
      */
-    public function calledBefore(FunctionSpyInterface $spy);
+    public function calledBefore(SpyInterface $spy);
 
     /**
      * Returns true if this spy was called after the supplied spy.
      *
-     * @param FunctionSpyInterface $spy Another spy.
+     * @param SpyInterface $spy Another spy.
      *
      * @return boolean True if this spy was called after the supplied spy.
      */
-    public function calledAfter(FunctionSpyInterface $spy);
+    public function calledAfter(SpyInterface $spy);
 
     /**
      * Returns true if called with the supplied arguments (and possibly others)
@@ -171,6 +178,24 @@ interface SpyVerifierInterface extends SpyInterface
     public function alwaysCalledOn($value);
 
     /**
+     * Returns true if this spy returned the supplied value at least once.
+     *
+     * @param mixed $value The value.
+     *
+     * @return boolean True if this spy returned the supplied value at least once.
+     */
+    public function returned($value);
+
+    /**
+     * Returns true if this spy always returned the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return boolean True if this spy always returned the supplied value.
+     */
+    public function alwaysReturned($value);
+
+    /**
      * Returns true if an exception of the supplied type was thrown at least
      * once.
      *
@@ -190,22 +215,4 @@ interface SpyVerifierInterface extends SpyInterface
      * @throws UndefinedSubjectException If there is no subject.
      */
     public function alwaysThrew($type = null);
-
-    /**
-     * Returns true if this spy returned the supplied value at least once.
-     *
-     * @param mixed $value The value.
-     *
-     * @return boolean True if this spy returned the supplied value at least once.
-     */
-    public function returned($value);
-
-    /**
-     * Returns true if this spy always returned the supplied value.
-     *
-     * @param mixed $value The value.
-     *
-     * @return boolean True if this spy always returned the supplied value.
-     */
-    public function alwaysReturned($value);
 }

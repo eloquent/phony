@@ -41,7 +41,7 @@ class SystemClockTest extends PHPUnit_Framework_TestCase
 
     public function testTimeReal()
     {
-        $this->subject = new SystemClock;
+        $this->subject = new SystemClock();
 
         $this->assertInternalType('float', $this->subject->time());
     }

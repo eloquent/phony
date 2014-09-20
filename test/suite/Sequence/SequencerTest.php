@@ -18,7 +18,7 @@ class SequencerTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new Sequencer;
+        $this->subject = new Sequencer();
     }
 
     public function testConstructor()

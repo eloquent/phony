@@ -27,25 +27,13 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->spySubject = function () {
             return '= ' .implode(', ', func_get_args());
         };
-        $this->sequencer = new Sequencer;
-        $this->clock = new TestClock;
+        $this->sequencer = new Sequencer();
+        $this->clock = new TestClock();
         $this->subject = new Spy($this->spySubject, $this->sequencer, $this->clock);
 
         $this->callA = new Call(array(), null, 0, 1.11, 2.22);
         $this->callB = new Call(array(), null, 1, 3.33, 4.44);
         $this->calls = array($this->callA, $this->callB);
-    }
-
-    protected function thisValue($closure)
-    {
-        $reflectorReflector = new ReflectionClass('ReflectionFunction');
-        if (!$reflectorReflector->hasMethod('getClosureThis')) {
-            return null;
-        }
-
-        $reflector = new ReflectionFunction($closure);
-
-        return $reflector->getClosureThis();
     }
 
     public function testConstructor()
@@ -59,7 +47,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new Spy;
+        $this->subject = new Spy();
 
         $this->assertFalse($this->subject->hasSubject());
         $this->assertSame(Sequencer::instance(), $this->subject->sequencer());
@@ -68,7 +56,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testSubjectFailureUndefined()
     {
-        $this->subject = new Spy;
+        $this->subject = new Spy();
 
         $this->setExpectedException('Eloquent\Phony\Spy\Exception\UndefinedSubjectException');
         $this->subject->subject();
@@ -122,7 +110,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeWithExceptionThrown()
     {
-        $exceptions = array(new Exception, new Exception);
+        $exceptions = array(new Exception(), new Exception());
         $subject = function () use (&$exceptions) {
             list(, $exception) = each($exceptions);
             throw $exception;
@@ -146,5 +134,17 @@ class SpyTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($expected, $spy->calls());
+    }
+
+    protected function thisValue($closure)
+    {
+        $reflectorReflector = new ReflectionClass('ReflectionFunction');
+        if (!$reflectorReflector->hasMethod('getClosureThis')) {
+            return null;
+        }
+
+        $reflector = new ReflectionFunction($closure);
+
+        return $reflector->getClosureThis();
     }
 }

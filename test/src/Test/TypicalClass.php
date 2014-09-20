@@ -21,7 +21,7 @@ class TypicalClass
     {
     }
 
-    public function methodB($parameterA, $parameterB = NULL)
+    public function methodB($parameterA, $parameterB = null)
     {
     }
 

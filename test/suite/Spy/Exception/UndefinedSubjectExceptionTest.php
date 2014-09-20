@@ -19,8 +19,8 @@ class UndefinedSubjectExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testConstructor()
     {
-        $spy = new Spy;
-        $cause = new Exception;
+        $spy = new Spy();
+        $cause = new Exception();
         $exception = new UndefinedSubjectException($spy, $cause);
 
         $this->assertSame($spy, $exception->spy());

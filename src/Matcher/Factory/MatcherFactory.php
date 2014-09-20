@@ -27,7 +27,7 @@ class MatcherFactory implements MatcherFactoryInterface
     public static function instance()
     {
         if (null === self::$instance) {
-            self::$instance = new self;
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -46,7 +46,7 @@ class MatcherFactory implements MatcherFactoryInterface
             return $value;
         }
 
-        return $this->equalTo($value);
+        return new EqualToMatcher($value);
     }
 
     /**
@@ -58,7 +58,16 @@ class MatcherFactory implements MatcherFactoryInterface
      */
     public function adaptAll(array $values)
     {
-        return array_map(array($this, 'adapt'), $values);
+        $matchers = array();
+        foreach ($values as $value) {
+            if ($value instanceof MatcherInterface) {
+                $matchers[] = $value;
+            } else {
+                $matchers[] = new EqualToMatcher($value);
+            }
+        }
+
+        return $matchers;
     }
 
     /**
