@@ -21,13 +21,6 @@ use Exception;
 interface SpyVerifierInterface extends SpyInterface
 {
     /**
-     * Get the calls.
-     *
-     * @return array<CallVerifierInterface> The calls.
-     */
-    public function calls();
-
-    /**
      * Get the number of calls.
      *
      * @return integer The number of calls.
