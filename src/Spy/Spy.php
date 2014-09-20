@@ -32,7 +32,7 @@ class Spy implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null             $subject     The subject.
+     * @param callable|null             $subject     The subject, or null to create an unbound spy.
      * @param CallFactoryInterface|null $callFactory The call factory to use.
      * @param SequencerInterface|null   $sequencer   The sequencer to use.
      * @param ClockInterface|null       $clock       The clock to use.
