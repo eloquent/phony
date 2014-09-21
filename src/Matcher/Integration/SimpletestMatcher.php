@@ -9,12 +9,14 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher;
+namespace Eloquent\Phony\Matcher\Integration;
+
+use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
- * The interface implemented by matchers.
+ * A matcher that wraps a Simpletest expectation.
  */
-interface MatcherInterface
+class SimpletestMatcher extends AbstractWrappedMatcher
 {
     /**
      * Returns true if the supplied value matches.
@@ -23,5 +25,8 @@ interface MatcherInterface
      *
      * @return boolean True if the value matches.
      */
-    public function matches($value);
+    public function matches($value)
+    {
+        return $this->matcher->test($value) && true;
+    }
 }

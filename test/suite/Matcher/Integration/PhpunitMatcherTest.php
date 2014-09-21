@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher;
+namespace Eloquent\Phony\Matcher\Integration;
 
-use Hamcrest\Core\IsEqual;
+use PHPUnit_Framework_Constraint_IsEqual;
 use PHPUnit_Framework_TestCase;
 
-class WrappedMatcherTest extends PHPUnit_Framework_TestCase
+class PhpunitMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new IsEqual('value');
-        $this->subject = new WrappedMatcher($this->matcher);
+        $this->matcher = new PHPUnit_Framework_Constraint_IsEqual('value');
+        $this->subject = new PhpunitMatcher($this->matcher);
     }
 
     public function testConstructor()

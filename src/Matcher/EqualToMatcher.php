@@ -41,7 +41,7 @@ class EqualToMatcher implements MatcherInterface
      *
      * @param mixed $value The value to check.
      *
-     * @return boolen True if the value matches.
+     * @return boolean True if the value matches.
      */
     public function matches($value)
     {

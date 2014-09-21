@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Matcher;
 
 /**
- * A matcher that wraps a typical matcher from another library.
+ * An abstract base class for implementing wrapped matchers.
  */
-class WrappedMatcher implements MatcherInterface
+abstract class AbstractWrappedMatcher implements WrappedMatcherInterface
 {
     /**
      * Construct a new wrapped matcher.
@@ -41,12 +41,12 @@ class WrappedMatcher implements MatcherInterface
      *
      * @param mixed $value The value to check.
      *
-     * @return boolen True if the value matches.
+     * @return boolean True if the value matches.
      */
     public function matches($value)
     {
-        return $this->matcher->matches($value);
+        return $this->matcher->matches($value) && true;
     }
 
-    private $matcher;
+    protected $matcher;
 }

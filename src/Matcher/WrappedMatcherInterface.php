@@ -12,16 +12,14 @@
 namespace Eloquent\Phony\Matcher;
 
 /**
- * The interface implemented by matchers.
+ * The interface implemented by wrapped matchers.
  */
-interface MatcherInterface
+interface WrappedMatcherInterface extends MatcherInterface
 {
     /**
-     * Returns true if the supplied value matches.
+     * Get the wrapped matcher.
      *
-     * @param mixed $value The value to check.
-     *
-     * @return boolean True if the value matches.
+     * @return object The matcher.
      */
-    public function matches($value);
+    public function matcher();
 }

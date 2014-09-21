@@ -12,8 +12,11 @@
 namespace Eloquent\Phony\Matcher\Factory;
 
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\Integration\HamcrestMatcher;
+use Eloquent\Phony\Matcher\Integration\PhpunitMatcher;
+use Eloquent\Phony\Matcher\Integration\ProphecyMatcher;
+use Eloquent\Phony\Matcher\Integration\SimpletestMatcher;
 use Eloquent\Phony\Matcher\MatcherInterface;
-use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * Creates matchers.
@@ -35,6 +38,56 @@ class MatcherFactory implements MatcherFactoryInterface
     }
 
     /**
+     * Get the default integration map.
+     *
+     * This is used to map matcher classes from other libraries to the
+     * appropriate wrapper class.
+     *
+     * @return array<string,string> The default integration map.
+     */
+    public static function defaultIntegrationMap()
+    {
+        return array(
+            'Hamcrest\Matcher' =>
+                'Eloquent\Phony\Matcher\Integration\HamcrestMatcher',
+            'PHPUnit_Framework_Constraint' =>
+                'Eloquent\Phony\Matcher\Integration\PhpunitMatcher',
+            'Phake_Matchers_IArgumentMatcher' =>
+                'Eloquent\Phony\Matcher\Integration\PhakeMatcher',
+            'Prophecy\Argument\Token\TokenInterface' =>
+                'Eloquent\Phony\Matcher\Integration\ProphecyMatcher',
+            'Mockery\Matcher\MatcherAbstract' =>
+                'Eloquent\Phony\Matcher\Integration\MockeryMatcher',
+            'SimpleExpectation' =>
+                'Eloquent\Phony\Matcher\Integration\SimpletestMatcher',
+        );
+    }
+
+    /**
+     * Construct a new matcher factory.
+     *
+     * @param array<string,string>|null $integrationMap The integration map to use.
+     */
+    public function __construct(array $integrationMap = null)
+    {
+        if (null === $integrationMap) {
+            $integrationMap = static::defaultIntegrationMap();
+        }
+
+        $this->integrationMap = $integrationMap;
+    }
+
+    /**
+     * Get the integration map.
+     *
+     * @return array<string,string> The integration map.
+     */
+    public function integrationMap()
+    {
+        return $this->integrationMap;
+    }
+
+    /**
      * Create a new matcher for the supplied value.
      *
      * @param mixed $value The value to create a matcher for.
@@ -46,8 +99,13 @@ class MatcherFactory implements MatcherFactoryInterface
         if ($value instanceof MatcherInterface) {
             return $value;
         }
-        if (is_object($value) && is_a($value, 'Hamcrest\Matcher')) {
-            return new WrappedMatcher($value);
+
+        if (is_object($value)) {
+            foreach ($this->integrationMap as $className => $wrapperClassName) {
+                if (is_a($value, $className)) {
+                    return new $wrapperClassName($value);
+                }
+            }
         }
 
         return $this->equalTo($value);
@@ -83,4 +141,5 @@ class MatcherFactory implements MatcherFactoryInterface
     }
 
     private static $instance;
+    private $integrationMap;
 }
