@@ -87,9 +87,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptPhpunitConstraint()
     {
-        $constraint = new PHPUnit_Framework_Constraint_IsEqual('value');
-        $expected = new PhpunitMatcher($constraint);
-        $actual = $this->subject->adapt($constraint);
+        $matcher = new PHPUnit_Framework_Constraint_IsEqual('value');
+        $expected = new PhpunitMatcher($matcher);
+        $actual = $this->subject->adapt($matcher);
 
         $this->assertEquals($expected, $actual);
     }
@@ -105,9 +105,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptProphecyToken()
     {
-        $token = new IdenticalValueToken('value');
-        $expected = new ProphecyMatcher($token);
-        $actual = $this->subject->adapt($token);
+        $matcher = new IdenticalValueToken('value');
+        $expected = new ProphecyMatcher($matcher);
+        $actual = $this->subject->adapt($matcher);
 
         $this->assertEquals($expected, $actual);
     }
@@ -123,9 +123,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptSimpletestExpectation()
     {
-        $expectation = new EqualExpectation('value');
-        $expected = new SimpletestMatcher($expectation);
-        $actual = $this->subject->adapt($expectation);
+        $matcher = new EqualExpectation('value');
+        $expected = new SimpletestMatcher($matcher);
+        $actual = $this->subject->adapt($matcher);
 
         $this->assertEquals($expected, $actual);
     }
