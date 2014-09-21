@@ -78,6 +78,27 @@ class MatcherFactory implements MatcherFactoryInterface
     }
 
     /**
+     * Set the integration map.
+     *
+     * @param array<string,string> $integrationMap The integration map.
+     */
+    public function setIntegrationMap(array $integrationMap)
+    {
+        $this->integrationMap = $integrationMap;
+    }
+
+    /**
+     * Add an entry to the integration map.
+     *
+     * @param string $className        The class name of the foreign matcher.
+     * @param string $wrapperClassName The class name of the wrapper class to use.
+     */
+    public function addIntegrationMapEntry($className, $wrapperClassName)
+    {
+        $this->integrationMap[$className] = $wrapperClassName;
+    }
+
+    /**
      * Get the integration map.
      *
      * @return array<string,string> The integration map.

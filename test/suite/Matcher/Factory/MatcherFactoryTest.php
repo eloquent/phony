@@ -47,6 +47,24 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherFactory::defaultIntegrationMap(), $this->subject->integrationMap());
     }
 
+    public function testSetIntegrationMap()
+    {
+        $integrationMap = array('className' => 'wrapperClassName');
+        $this->subject->setIntegrationMap($integrationMap);
+
+        $this->assertSame($integrationMap, $this->subject->integrationMap());
+    }
+
+    public function testAddIntegrationMapEntry()
+    {
+        $integrationMap = array('classNameA' => 'wrapperClassNameA');
+        $this->subject->setIntegrationMap($integrationMap);
+        $this->subject->addIntegrationMapEntry('classNameB', 'wrapperClassNameB');
+        $expected = array('classNameA' => 'wrapperClassNameA', 'classNameB' => 'wrapperClassNameB');
+
+        $this->assertSame($expected, $this->subject->integrationMap());
+    }
+
     public function testAdapt()
     {
         $value = (object) array('key' => 'value');
