@@ -24,5 +24,5 @@ interface MatcherVerifierInterface
      *
      * @return boolean True if the arguments match.
      */
-    public function verifyArguments(array $matchers, array $arguments);
+    public function matches(array $matchers, array $arguments);
 }

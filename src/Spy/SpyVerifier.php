@@ -339,11 +339,8 @@ class SpyVerifier implements SpyVerifierInterface
         $matchers[] = WildcardMatcher::instance();
 
         foreach ($calls as $call) {
-            $arguments = $call->arguments();
-
             if (
-                $this->matcherVerifier
-                    ->verifyArguments($matchers, $call->arguments())
+                $this->matcherVerifier->matches($matchers, $call->arguments())
             ) {
                 return true;
             }
@@ -371,11 +368,8 @@ class SpyVerifier implements SpyVerifierInterface
         $matchers[] = WildcardMatcher::instance();
 
         foreach ($calls as $call) {
-            $arguments = $call->arguments();
-
             if (
-                !$this->matcherVerifier
-                    ->verifyArguments($matchers, $call->arguments())
+                !$this->matcherVerifier->matches($matchers, $call->arguments())
             ) {
                 return false;
             }
@@ -402,11 +396,8 @@ class SpyVerifier implements SpyVerifierInterface
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         foreach ($calls as $call) {
-            $arguments = $call->arguments();
-
             if (
-                $this->matcherVerifier
-                    ->verifyArguments($matchers, $call->arguments())
+                $this->matcherVerifier->matches($matchers, $call->arguments())
             ) {
                 return true;
             }
@@ -432,11 +423,8 @@ class SpyVerifier implements SpyVerifierInterface
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         foreach ($calls as $call) {
-            $arguments = $call->arguments();
-
             if (
-                !$this->matcherVerifier
-                    ->verifyArguments($matchers, $call->arguments())
+                !$this->matcherVerifier->matches($matchers, $call->arguments())
             ) {
                 return false;
             }
@@ -464,11 +452,8 @@ class SpyVerifier implements SpyVerifierInterface
         $matchers[] = WildcardMatcher::instance();
 
         foreach ($calls as $call) {
-            $arguments = $call->arguments();
-
             if (
-                $this->matcherVerifier
-                    ->verifyArguments($matchers, $call->arguments())
+                $this->matcherVerifier->matches($matchers, $call->arguments())
             ) {
                 return false;
             }
@@ -494,11 +479,8 @@ class SpyVerifier implements SpyVerifierInterface
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         foreach ($calls as $call) {
-            $arguments = $call->arguments();
-
             if (
-                $this->matcherVerifier
-                    ->verifyArguments($matchers, $call->arguments())
+                $this->matcherVerifier->matches($matchers, $call->arguments())
             ) {
                 return false;
             }

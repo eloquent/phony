@@ -107,9 +107,9 @@ class SpyFactory implements SpyFactoryInterface
     {
         return new Spy(
             $subject,
-            $this->callFactory,
             $this->sequencer,
-            $this->clock
+            $this->clock,
+            $this->callFactory
         );
     }
 

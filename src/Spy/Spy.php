@@ -33,41 +33,31 @@ class Spy implements SpyInterface
      * Construct a new spy.
      *
      * @param callable|null             $subject     The subject, or null to create an unbound spy.
-     * @param CallFactoryInterface|null $callFactory The call factory to use.
      * @param SequencerInterface|null   $sequencer   The sequencer to use.
      * @param ClockInterface|null       $clock       The clock to use.
+     * @param CallFactoryInterface|null $callFactory The call factory to use.
      */
     public function __construct(
         $subject = null,
-        CallFactoryInterface $callFactory = null,
         SequencerInterface $sequencer = null,
-        ClockInterface $clock = null
+        ClockInterface $clock = null,
+        CallFactoryInterface $callFactory = null
     ) {
-        if (null === $callFactory) {
-            $callFactory = CallFactory::instance();
-        }
         if (null === $sequencer) {
             $sequencer = new Sequencer();
         }
         if (null === $clock) {
             $clock = SystemClock::instance();
         }
+        if (null === $callFactory) {
+            $callFactory = CallFactory::instance();
+        }
 
         $this->subject = $subject;
-        $this->callFactory = $callFactory;
         $this->sequencer = $sequencer;
         $this->clock = $clock;
+        $this->callFactory = $callFactory;
         $this->calls = array();
-    }
-
-    /**
-     * Get the call factory.
-     *
-     * @return CallFactoryInterface The call factory.
-     */
-    public function callFactory()
-    {
-        return $this->callFactory;
     }
 
     /**
@@ -88,6 +78,16 @@ class Spy implements SpyInterface
     public function clock()
     {
         return $this->clock;
+    }
+
+    /**
+     * Get the call factory.
+     *
+     * @return CallFactoryInterface The call factory.
+     */
+    public function callFactory()
+    {
+        return $this->callFactory;
     }
 
     /**
@@ -203,8 +203,8 @@ class Spy implements SpyInterface
     }
 
     private $subject;
-    private $callFactory;
     private $sequencer;
     private $clock;
+    private $callFactory;
     private $calls;
 }

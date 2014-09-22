@@ -47,13 +47,14 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $subject = function () {};
-        $expected = new Spy($subject, $this->callFactory, $this->sequencer, $this->clock);
+        $expected = new Spy($subject, $this->sequencer, $this->clock, $this->callFactory);
         $actual = $this->subject->create($subject);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($this->callFactory, $actual->callFactory());
+        $this->assertSame($subject, $actual->subject());
         $this->assertSame($this->sequencer, $actual->sequencer());
         $this->assertSame($this->clock, $actual->clock());
+        $this->assertSame($this->callFactory, $actual->callFactory());
     }
 
     public function testInstance()

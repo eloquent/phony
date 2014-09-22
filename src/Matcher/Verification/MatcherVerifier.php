@@ -40,7 +40,7 @@ class MatcherVerifier implements MatcherVerifierInterface
      *
      * @return boolean True if the arguments match.
      */
-    public function verifyArguments(array $matchers, array $arguments)
+    public function matches(array $matchers, array $arguments)
     {
         $pair = each($arguments);
 

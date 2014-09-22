@@ -183,7 +183,7 @@ class CallVerifier implements CallVerifierInterface
         $matchers[] = WildcardMatcher::instance();
 
         return $this->matcherVerifier
-            ->verifyArguments($matchers, $this->call->arguments());
+            ->matches($matchers, $this->call->arguments());
     }
 
     /**
@@ -195,7 +195,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledWithExactly()
     {
-        return $this->matcherVerifier->verifyArguments(
+        return $this->matcherVerifier->matches(
             $this->matcherFactory->adaptAll(func_get_args()),
             $this->call->arguments()
         );
@@ -215,7 +215,7 @@ class CallVerifier implements CallVerifierInterface
         $matchers[] = WildcardMatcher::instance();
 
         return !$this->matcherVerifier
-            ->verifyArguments($matchers, $this->call->arguments());
+            ->matches($matchers, $this->call->arguments());
     }
 
     /**
@@ -227,7 +227,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function notCalledWithExactly()
     {
-        return !$this->matcherVerifier->verifyArguments(
+        return !$this->matcherVerifier->matches(
             $this->matcherFactory->adaptAll(func_get_args()),
             $this->call->arguments()
         );
