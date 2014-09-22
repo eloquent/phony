@@ -19,6 +19,9 @@ use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Exception;
 
 /**
@@ -31,11 +34,13 @@ class SpyVerifier implements SpyVerifierInterface
      *
      * @param SpyInterface|null                 $spy                 The spy.
      * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
+     * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
      */
     public function __construct(
         SpyInterface $spy = null,
         MatcherFactoryInterface $matcherFactory = null,
+        MatcherVerifierInterface $matcherVerifier = null,
         CallVerifierFactoryInterface $callVerifierFactory = null
     ) {
         if (null === $spy) {
@@ -44,12 +49,16 @@ class SpyVerifier implements SpyVerifierInterface
         if (null === $matcherFactory) {
             $matcherFactory = new MatcherFactory();
         }
+        if (null === $matcherVerifier) {
+            $matcherVerifier = MatcherVerifier::instance();
+        }
         if (null === $callVerifierFactory) {
             $callVerifierFactory = CallVerifierFactory::instance();
         }
 
         $this->spy = $spy;
         $this->matcherFactory = $matcherFactory;
+        $this->matcherVerifier = $matcherVerifier;
         $this->callVerifierFactory = $callVerifierFactory;
     }
 
@@ -71,6 +80,16 @@ class SpyVerifier implements SpyVerifierInterface
     public function matcherFactory()
     {
         return $this->matcherFactory;
+    }
+
+    /**
+     * Get the matcher verifier.
+     *
+     * @return MatcherVerifierInterface The matcher verifier.
+     */
+    public function matcherVerifier()
+    {
+        return $this->matcherVerifier;
     }
 
     /**
@@ -316,25 +335,18 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
-        if (0 == func_num_args()) {
-            return true;
-        }
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = WildcardMatcher::instance();
 
         foreach ($calls as $call) {
             $arguments = $call->arguments();
 
-            foreach ($matchers as $index => $matcher) {
-                if (
-                    !array_key_exists($index, $arguments) ||
-                    !$matcher->matches($arguments[$index])
-                ) {
-                    continue 2;
-                }
+            if (
+                $this->matcherVerifier
+                    ->verifyArguments($matchers, $call->arguments())
+            ) {
+                return true;
             }
-
-            return true;
         }
 
         return false;
@@ -355,22 +367,17 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
-        if (0 == func_num_args()) {
-            return true;
-        }
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = WildcardMatcher::instance();
 
         foreach ($calls as $call) {
             $arguments = $call->arguments();
 
-            foreach ($matchers as $index => $matcher) {
-                if (
-                    !array_key_exists($index, $arguments) ||
-                    !$matcher->matches($arguments[$index])
-                ) {
-                    return false;
-                }
+            if (
+                !$this->matcherVerifier
+                    ->verifyArguments($matchers, $call->arguments())
+            ) {
+                return false;
             }
         }
 
@@ -397,20 +404,12 @@ class SpyVerifier implements SpyVerifierInterface
         foreach ($calls as $call) {
             $arguments = $call->arguments();
 
-            if (count($arguments) !== count($matchers)) {
-                continue;
+            if (
+                $this->matcherVerifier
+                    ->verifyArguments($matchers, $call->arguments())
+            ) {
+                return true;
             }
-
-            foreach ($matchers as $index => $matcher) {
-                if (
-                    !array_key_exists($index, $arguments) ||
-                    !$matcher->matches($arguments[$index])
-                ) {
-                    continue 2;
-                }
-            }
-
-            return true;
         }
 
         return false;
@@ -435,17 +434,11 @@ class SpyVerifier implements SpyVerifierInterface
         foreach ($calls as $call) {
             $arguments = $call->arguments();
 
-            if (count($arguments) !== count($matchers)) {
+            if (
+                !$this->matcherVerifier
+                    ->verifyArguments($matchers, $call->arguments())
+            ) {
                 return false;
-            }
-
-            foreach ($matchers as $index => $matcher) {
-                if (
-                    !array_key_exists($index, $arguments) ||
-                    !$matcher->matches($arguments[$index])
-                ) {
-                    return false;
-                }
             }
         }
 
@@ -467,25 +460,18 @@ class SpyVerifier implements SpyVerifierInterface
             return true;
         }
 
-        if (0 == func_num_args()) {
-            return false;
-        }
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = WildcardMatcher::instance();
 
         foreach ($calls as $call) {
             $arguments = $call->arguments();
 
-            foreach ($matchers as $index => $matcher) {
-                if (
-                    !array_key_exists($index, $arguments) ||
-                    !$matcher->matches($arguments[$index])
-                ) {
-                    continue 2;
-                }
+            if (
+                $this->matcherVerifier
+                    ->verifyArguments($matchers, $call->arguments())
+            ) {
+                return false;
             }
-
-            return false;
         }
 
         return true;
@@ -505,29 +491,17 @@ class SpyVerifier implements SpyVerifierInterface
             return true;
         }
 
-        if (0 == func_num_args()) {
-            return false;
-        }
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         foreach ($calls as $call) {
             $arguments = $call->arguments();
 
-            if (count($arguments) !== count($matchers)) {
-                continue;
+            if (
+                $this->matcherVerifier
+                    ->verifyArguments($matchers, $call->arguments())
+            ) {
+                return false;
             }
-
-            foreach ($matchers as $index => $matcher) {
-                if (
-                    !array_key_exists($index, $arguments) ||
-                    !$matcher->matches($arguments[$index])
-                ) {
-                    continue 2;
-                }
-            }
-
-            return false;
         }
 
         return true;
@@ -718,5 +692,6 @@ class SpyVerifier implements SpyVerifierInterface
 
     private $spy;
     private $matcherFactory;
+    private $matcherVerifier;
     private $callVerifierFactory;
 }

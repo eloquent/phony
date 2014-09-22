@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -39,7 +40,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->thisValue
         );
         $this->matcherFactory = new MatcherFactory();
-        $this->subject = new CallVerifier($this->call, $this->matcherFactory);
+        $this->matcherVerifier = new MatcherVerifier();
+        $this->subject = new CallVerifier($this->call, $this->matcherFactory, $this->matcherVerifier);
 
         $this->earlyCall = new Call(
             $this->arguments,
@@ -63,6 +65,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->duration, $this->subject->duration());
         $this->assertSame($this->argumentCount, $this->subject->argumentCount());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
+        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
     }
 
     public function testConstructorDefaults()
@@ -70,6 +73,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject = new CallVerifier($this->call);
 
         $this->assertEquals($this->matcherFactory, $this->subject->matcherFactory());
+        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
     }
 
     public function testProxyMethods()

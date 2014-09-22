@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Clock\TestClock;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -31,8 +32,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->clock = new TestClock();
         $this->spy = new Spy($this->spySubject, null, null, $this->clock);
         $this->matcherFactory = new MatcherFactory();
+        $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
-        $this->subject = new SpyVerifier($this->spy, $this->matcherFactory, $this->callVerifierFactory);
+        $this->subject = new SpyVerifier(
+            $this->spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory
+        );
 
         $this->returnValueA = 'returnValueA';
         $this->returnValueB = 'returnValueB';
@@ -51,6 +58,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->spy, $this->subject->spy());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
+        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
     }
 
@@ -60,6 +68,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(new Spy(), $this->subject->spy());
         $this->assertEquals($this->matcherFactory, $this->subject->matcherFactory());
+        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
     }
 

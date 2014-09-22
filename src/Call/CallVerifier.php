@@ -13,6 +13,9 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Exception;
 
 /**
@@ -23,19 +26,25 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Construct a new call verifier.
      *
-     * @param CallInterface                $call           The call.
-     * @param MatcherFactoryInterface|null $matcherFactory The matcher factory to use.
+     * @param CallInterface                 $call            The call.
+     * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
+     * @param MatcherVerifierInterface|null $matcherVerifier The macther verifier to use.
      */
     public function __construct(
         CallInterface $call,
-        MatcherFactoryInterface $matcherFactory = null
+        MatcherFactoryInterface $matcherFactory = null,
+        MatcherVerifierInterface $matcherVerifier = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = new MatcherFactory;
         }
+        if (null === $matcherVerifier) {
+            $matcherVerifier = MatcherVerifier::instance();
+        }
 
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
+        $this->matcherVerifier = $matcherVerifier;
 
         $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
@@ -59,6 +68,16 @@ class CallVerifier implements CallVerifierInterface
     public function matcherFactory()
     {
         return $this->matcherFactory;
+    }
+
+    /**
+     * Get the matcher verifier.
+     *
+     * @return MatcherVerifierInterface The matcher verifier.
+     */
+    public function matcherVerifier()
+    {
+        return $this->matcherVerifier;
     }
 
     /**
@@ -160,23 +179,11 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledWith()
     {
-        if (0 == func_num_args()) {
-            return true;
-        }
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $arguments = $this->call->arguments();
+        $matchers[] = WildcardMatcher::instance();
 
-        foreach ($matchers as $index => $matcher) {
-            if (
-                !array_key_exists($index, $arguments) ||
-                !$matcher->matches($arguments[$index])
-            ) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->matcherVerifier
+            ->verifyArguments($matchers, $this->call->arguments());
     }
 
     /**
@@ -188,25 +195,10 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledWithExactly()
     {
-        $matchers = func_get_args();
-        $arguments = $this->call->arguments();
-
-        if (count($arguments) !== count($matchers)) {
-            return false;
-        }
-
-        $matchers = $this->matcherFactory->adaptAll($matchers);
-
-        foreach ($matchers as $index => $matcher) {
-            if (
-                !array_key_exists($index, $arguments) ||
-                !$matcher->matches($arguments[$index])
-            ) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->matcherVerifier->verifyArguments(
+            $this->matcherFactory->adaptAll(func_get_args()),
+            $this->call->arguments()
+        );
     }
 
     /**
@@ -219,23 +211,11 @@ class CallVerifier implements CallVerifierInterface
      */
     public function notCalledWith()
     {
-        if (0 == func_num_args()) {
-            return false;
-        }
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $arguments = $this->call->arguments();
+        $matchers[] = WildcardMatcher::instance();
 
-        foreach ($matchers as $index => $matcher) {
-            if (
-                !array_key_exists($index, $arguments) ||
-                !$matcher->matches($arguments[$index])
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return !$this->matcherVerifier
+            ->verifyArguments($matchers, $this->call->arguments());
     }
 
     /**
@@ -247,25 +227,10 @@ class CallVerifier implements CallVerifierInterface
      */
     public function notCalledWithExactly()
     {
-        $matchers = func_get_args();
-        $arguments = $this->call->arguments();
-
-        if (count($arguments) !== count($matchers)) {
-            return true;
-        }
-
-        $matchers = $this->matcherFactory->adaptAll($matchers);
-
-        foreach ($matchers as $index => $matcher) {
-            if (
-                !array_key_exists($index, $arguments) ||
-                !$matcher->matches($arguments[$index])
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return !$this->matcherVerifier->verifyArguments(
+            $this->matcherFactory->adaptAll(func_get_args()),
+            $this->call->arguments()
+        );
     }
 
     /**
@@ -344,6 +309,7 @@ class CallVerifier implements CallVerifierInterface
 
     private $call;
     private $matcherFactory;
+    private $matcherVerifier;
     private $duration;
     private $argumentCount;
 }

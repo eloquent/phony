@@ -42,38 +42,28 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param CallFactoryInterface|null $callFactory The call factory to use.
      * @param SequencerInterface|null   $sequencer   The sequencer to use.
      * @param ClockInterface|null       $clock       The clock to use.
+     * @param CallFactoryInterface|null $callFactory The call factory to use.
      */
     public function __construct(
-        CallFactoryInterface $callFactory = null,
         SequencerInterface $sequencer = null,
-        ClockInterface $clock = null
+        ClockInterface $clock = null,
+        CallFactoryInterface $callFactory = null
     ) {
-        if (null === $callFactory) {
-            $callFactory = CallFactory::instance();
-        }
         if (null === $sequencer) {
             $sequencer = new Sequencer();
         }
         if (null === $clock) {
             $clock = SystemClock::instance();
         }
+        if (null === $callFactory) {
+            $callFactory = CallFactory::instance();
+        }
 
-        $this->callFactory = $callFactory;
         $this->sequencer = $sequencer;
         $this->clock = $clock;
-    }
-
-    /**
-     * Get the call factory.
-     *
-     * @return CallFactoryInterface The call factory.
-     */
-    public function callFactory()
-    {
-        return $this->callFactory;
+        $this->callFactory = $callFactory;
     }
 
     /**
@@ -97,6 +87,16 @@ class SpyFactory implements SpyFactoryInterface
     }
 
     /**
+     * Get the call factory.
+     *
+     * @return CallFactoryInterface The call factory.
+     */
+    public function callFactory()
+    {
+        return $this->callFactory;
+    }
+
+    /**
      * Create a new spy.
      *
      * @param callable|null $subject The subject, or null to create an unbound spy.
@@ -114,7 +114,7 @@ class SpyFactory implements SpyFactoryInterface
     }
 
     private static $instance;
-    private $callFactory;
     private $sequencer;
     private $clock;
+    private $callFactory;
 }

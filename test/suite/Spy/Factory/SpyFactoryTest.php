@@ -22,26 +22,26 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->callFactory = new CallFactory();
         $this->sequencer = new Sequencer();
         $this->clock = new SystemClock();
-        $this->subject = new SpyFactory($this->callFactory, $this->sequencer, $this->clock);
+        $this->callFactory = new CallFactory();
+        $this->subject = new SpyFactory($this->sequencer, $this->clock, $this->callFactory);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->callFactory, $this->subject->callFactory());
         $this->assertSame($this->sequencer, $this->subject->sequencer());
         $this->assertSame($this->clock, $this->subject->clock());
+        $this->assertSame($this->callFactory, $this->subject->callFactory());
     }
 
     public function testConstructorDefaults()
     {
         $this->subject = new SpyFactory();
 
-        $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
         $this->assertEquals($this->sequencer, $this->subject->sequencer());
         $this->assertSame(SystemClock::instance(), $this->subject->clock());
+        $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
     }
 
     public function testCreate()
