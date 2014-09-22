@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Phpunit;
 
-use Mockery\Matcher\MustBe;
+use PHPUnit_Framework_Constraint_IsEqual;
 use PHPUnit_Framework_TestCase;
 
-class MockeryMatcherTest extends PHPUnit_Framework_TestCase
+class PhpunitMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new MustBe('value');
-        $this->subject = new MockeryMatcher($this->matcher);
+        $this->matcher = new PHPUnit_Framework_Constraint_IsEqual('value');
+        $this->subject = new PhpunitMatcher($this->matcher);
     }
 
     public function testConstructor()

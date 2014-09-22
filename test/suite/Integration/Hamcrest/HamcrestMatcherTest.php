@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Hamcrest;
 
-use EqualExpectation;
+use Hamcrest\Core\IsEqual;
 use PHPUnit_Framework_TestCase;
 
-class SimpletestMatcherTest extends PHPUnit_Framework_TestCase
+class HamcrestMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new EqualExpectation('value');
-        $this->subject = new SimpletestMatcher($this->matcher);
+        $this->matcher = new IsEqual('value');
+        $this->subject = new HamcrestMatcher($this->matcher);
     }
 
     public function testConstructor()

@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Prophecy;
 
-use Phake_Matchers_EqualsMatcher;
 use PHPUnit_Framework_TestCase;
+use Prophecy\Argument\Token\IdenticalValueToken;
 
-class PhakeMatcherTest extends PHPUnit_Framework_TestCase
+class ProphecyMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new Phake_Matchers_EqualsMatcher('value');
-        $this->subject = new PhakeMatcher($this->matcher);
+        $this->matcher = new IdenticalValueToken('value');
+        $this->subject = new ProphecyMatcher($this->matcher);
     }
 
     public function testConstructor()

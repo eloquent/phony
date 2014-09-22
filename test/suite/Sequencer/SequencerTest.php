@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Sequencer;
 
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
 
 class SequencerTest extends PHPUnit_Framework_TestCase
 {
@@ -38,18 +37,5 @@ class SequencerTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $this->subject->next());
         $this->assertSame(1, $this->subject->next());
         $this->assertSame(2, $this->subject->next());
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

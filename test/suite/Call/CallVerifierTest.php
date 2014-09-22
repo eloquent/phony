@@ -69,7 +69,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new CallVerifier($this->call);
 
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
+        $this->assertEquals($this->matcherFactory, $this->subject->matcherFactory());
     }
 
     public function testProxyMethods()

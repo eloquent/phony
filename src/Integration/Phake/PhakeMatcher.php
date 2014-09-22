@@ -9,12 +9,12 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Phake;
 
 use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
- * A matcher that wraps a Phake argument matcher.
+ * A matcher that wraps a Phake matcher.
  */
 class PhakeMatcher extends AbstractWrappedMatcher
 {

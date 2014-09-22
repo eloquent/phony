@@ -11,58 +11,58 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
+use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcher;
+use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcherDriver;
+use Eloquent\Phony\Integration\Phpunit\PhpunitMatcher;
+use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Integration\HamcrestMatcher;
-use Eloquent\Phony\Matcher\Integration\MockeryMatcher;
-use Eloquent\Phony\Matcher\Integration\PhakeMatcher;
-use Eloquent\Phony\Matcher\Integration\PhpunitMatcher;
-use Eloquent\Phony\Matcher\Integration\ProphecyMatcher;
-use Eloquent\Phony\Matcher\Integration\SimpletestMatcher;
-use EqualExpectation;
 use Hamcrest\Core\IsEqual;
-use Mockery\Matcher\MustBe;
 use PHPUnit_Framework_Constraint_IsEqual;
 use PHPUnit_Framework_TestCase;
-use Phake_Matchers_EqualsMatcher;
-use Prophecy\Argument\Token\IdenticalValueToken;
-use ReflectionClass;
 
 class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new MatcherFactory();
+        $this->driverA = new PhpunitMatcherDriver;
+        $this->driverB = new HamcrestMatcherDriver;
+        $this->drivers = array($this->driverA, $this->driverB);
+        $this->subject = new MatcherFactory($this->drivers);
     }
 
     public function testConstructor()
     {
-        $integrationMap = array('className' => 'wrapperClassName');
-        $this->subject = new MatcherFactory($integrationMap);
-
-        $this->assertSame($integrationMap, $this->subject->integrationMap());
+        $this->assertSame($this->drivers, $this->subject->drivers());
     }
 
     public function testConstructorDefaults()
     {
-        $this->assertSame(MatcherFactory::defaultIntegrationMap(), $this->subject->integrationMap());
+        $this->subject = new MatcherFactory;
+
+        $this->assertSame(array(), $this->subject->drivers());
     }
 
-    public function testSetIntegrationMap()
+    public function testSetMatcherDrivers()
     {
-        $integrationMap = array('className' => 'wrapperClassName');
-        $this->subject->setIntegrationMap($integrationMap);
+        $this->subject->setMatcherDrivers(array());
 
-        $this->assertSame($integrationMap, $this->subject->integrationMap());
+        $this->assertSame(array(), $this->subject->drivers());
+
+        $this->subject->setMatcherDrivers($this->drivers);
+
+        $this->assertSame($this->drivers, $this->subject->drivers());
     }
 
-    public function testAddIntegrationMapEntry()
+    public function testAddMatcherDriver()
     {
-        $integrationMap = array('classNameA' => 'wrapperClassNameA');
-        $this->subject->setIntegrationMap($integrationMap);
-        $this->subject->addIntegrationMapEntry('classNameB', 'wrapperClassNameB');
-        $expected = array('classNameA' => 'wrapperClassNameA', 'classNameB' => 'wrapperClassNameB');
+        $this->subject->setMatcherDrivers(array());
+        $this->subject->addMatcherDriver($this->driverA);
 
-        $this->assertSame($expected, $this->subject->integrationMap());
+        $this->assertSame(array($this->driverA), $this->subject->drivers());
+
+        $this->subject->addMatcherDriver($this->driverB);
+
+        $this->assertSame($this->drivers, $this->subject->drivers());
     }
 
     public function testAdapt()
@@ -76,58 +76,13 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($matcher, $adaptedValue);
     }
 
-    public function testAdaptHamcrestMatcher()
+    public function testAdaptViaDriver()
     {
-        $matcher = new IsEqual('value');
-        $expected = new HamcrestMatcher($matcher);
-        $actual = $this->subject->adapt($matcher);
+        $phpunitConstraint = new PHPUnit_Framework_Constraint_IsEqual('value');
+        $hamcrestMatcher = new IsEqual('value');
 
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testAdaptPhpunitConstraint()
-    {
-        $matcher = new PHPUnit_Framework_Constraint_IsEqual('value');
-        $expected = new PhpunitMatcher($matcher);
-        $actual = $this->subject->adapt($matcher);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testAdaptPhakeMatcher()
-    {
-        $matcher = new Phake_Matchers_EqualsMatcher('value');
-        $expected = new PhakeMatcher($matcher);
-        $actual = $this->subject->adapt($matcher);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testAdaptProphecyToken()
-    {
-        $matcher = new IdenticalValueToken('value');
-        $expected = new ProphecyMatcher($matcher);
-        $actual = $this->subject->adapt($matcher);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testAdaptMockeryMatcher()
-    {
-        $matcher = new MustBe('value');
-        $expected = new MockeryMatcher($matcher);
-        $actual = $this->subject->adapt($matcher);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testAdaptSimpletestExpectation()
-    {
-        $matcher = new EqualExpectation('value');
-        $expected = new SimpletestMatcher($matcher);
-        $actual = $this->subject->adapt($matcher);
-
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals(new PhpunitMatcher($phpunitConstraint), $this->subject->adapt($phpunitConstraint));
+        $this->assertEquals(new HamcrestMatcher($hamcrestMatcher), $this->subject->adapt($hamcrestMatcher));
     }
 
     public function testAdaptAll()
@@ -139,38 +94,5 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $expected = array(new EqualToMatcher($valueA), $valueB);
 
         $this->assertEquals($expected, $actual);
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
-    }
-
-    public function testDefaultIntegrationMap()
-    {
-        $expected = array(
-            'Hamcrest\Matcher' =>
-                'Eloquent\Phony\Matcher\Integration\HamcrestMatcher',
-            'PHPUnit_Framework_Constraint' =>
-                'Eloquent\Phony\Matcher\Integration\PhpunitMatcher',
-            'Phake_Matchers_IArgumentMatcher' =>
-                'Eloquent\Phony\Matcher\Integration\PhakeMatcher',
-            'Prophecy\Argument\Token\TokenInterface' =>
-                'Eloquent\Phony\Matcher\Integration\ProphecyMatcher',
-            'Mockery\Matcher\MatcherAbstract' =>
-                'Eloquent\Phony\Matcher\Integration\MockeryMatcher',
-            'SimpleExpectation' =>
-                'Eloquent\Phony\Matcher\Integration\SimpletestMatcher',
-        );
-
-        $this->assertSame($expected, MatcherFactory::defaultIntegrationMap());
     }
 }

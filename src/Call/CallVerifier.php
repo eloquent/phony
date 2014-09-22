@@ -31,7 +31,7 @@ class CallVerifier implements CallVerifierInterface
         MatcherFactoryInterface $matcherFactory = null
     ) {
         if (null === $matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
+            $matcherFactory = new MatcherFactory;
         }
 
         $this->call = $call;

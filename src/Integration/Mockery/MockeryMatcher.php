@@ -9,14 +9,14 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Mockery;
 
 use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
- * A matcher that wraps a PHPUnit constraint.
+ * A matcher that wraps a Mockery matcher.
  */
-class PhpunitMatcher extends AbstractWrappedMatcher
+class MockeryMatcher extends AbstractWrappedMatcher
 {
     /**
      * Returns true if the supplied value matches.
@@ -27,6 +27,6 @@ class PhpunitMatcher extends AbstractWrappedMatcher
      */
     public function matches($value)
     {
-        return $this->matcher->evaluate($value, null, true) && true;
+        return $this->matcher->match($value) && true;
     }
 }

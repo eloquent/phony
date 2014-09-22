@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Simpletest;
 
+use EqualExpectation;
 use PHPUnit_Framework_TestCase;
-use Prophecy\Argument\Token\IdenticalValueToken;
 
-class ProphecyMatcherTest extends PHPUnit_Framework_TestCase
+class SimpletestMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new IdenticalValueToken('value');
-        $this->subject = new ProphecyMatcher($this->matcher);
+        $this->matcher = new EqualExpectation('value');
+        $this->subject = new SimpletestMatcher($this->matcher);
     }
 
     public function testConstructor()

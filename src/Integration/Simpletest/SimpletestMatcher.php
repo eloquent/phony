@@ -9,12 +9,12 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Simpletest;
 
 use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
- * A matcher that wraps a Simpletest expectation.
+ * A matcher that wraps a SimpleTest expectation.
  */
 class SimpletestMatcher extends AbstractWrappedMatcher
 {

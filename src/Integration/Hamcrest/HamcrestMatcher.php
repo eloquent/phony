@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Hamcrest;
 
 use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 

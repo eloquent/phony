@@ -12,10 +12,7 @@
 namespace Eloquent\Phony\Matcher\Factory;
 
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Integration\HamcrestMatcher;
-use Eloquent\Phony\Matcher\Integration\PhpunitMatcher;
-use Eloquent\Phony\Matcher\Integration\ProphecyMatcher;
-use Eloquent\Phony\Matcher\Integration\SimpletestMatcher;
+use Eloquent\Phony\Matcher\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 
 /**
@@ -24,88 +21,49 @@ use Eloquent\Phony\Matcher\MatcherInterface;
 class MatcherFactory implements MatcherFactoryInterface
 {
     /**
-     * Get the static instance of this factory.
-     *
-     * @return MatcherFactoryInterface The static factory.
-     */
-    public static function instance()
-    {
-        if (null === self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * Get the default integration map.
-     *
-     * This is used to map matcher classes from other libraries to the
-     * appropriate wrapper class.
-     *
-     * @return array<string,string> The default integration map.
-     */
-    public static function defaultIntegrationMap()
-    {
-        return array(
-            'Hamcrest\Matcher' =>
-                'Eloquent\Phony\Matcher\Integration\HamcrestMatcher',
-            'PHPUnit_Framework_Constraint' =>
-                'Eloquent\Phony\Matcher\Integration\PhpunitMatcher',
-            'Phake_Matchers_IArgumentMatcher' =>
-                'Eloquent\Phony\Matcher\Integration\PhakeMatcher',
-            'Prophecy\Argument\Token\TokenInterface' =>
-                'Eloquent\Phony\Matcher\Integration\ProphecyMatcher',
-            'Mockery\Matcher\MatcherAbstract' =>
-                'Eloquent\Phony\Matcher\Integration\MockeryMatcher',
-            'SimpleExpectation' =>
-                'Eloquent\Phony\Matcher\Integration\SimpletestMatcher',
-        );
-    }
-
-    /**
      * Construct a new matcher factory.
      *
-     * @param array<string,string>|null $integrationMap The integration map to use.
+     * @param array<MatcherDriverInterface>|null $drivers The matcher drivers to use.
      */
-    public function __construct(array $integrationMap = null)
+    public function __construct(array $drivers = null)
     {
-        if (null === $integrationMap) {
-            $integrationMap = static::defaultIntegrationMap();
+        if (null === $drivers) {
+            $drivers = array();
         }
 
-        $this->integrationMap = $integrationMap;
+        $this->drivers = $drivers;
     }
 
     /**
-     * Set the integration map.
+     * Set the matcher drivers.
      *
-     * @param array<string,string> $integrationMap The integration map.
+     * @param array<MatcherDriverInterface> $drivers The matcher drivers.
      */
-    public function setIntegrationMap(array $integrationMap)
+    public function setMatcherDrivers(array $drivers)
     {
-        $this->integrationMap = $integrationMap;
+        $this->drivers = $drivers;
     }
 
     /**
-     * Add an entry to the integration map.
+     * Add a matcher driver.
      *
-     * @param string $className        The class name of the foreign matcher.
-     * @param string $wrapperClassName The class name of the wrapper class to use.
+     * @param MatcherDriverInterface $driver The matcher driver.
      */
-    public function addIntegrationMapEntry($className, $wrapperClassName)
+    public function addMatcherDriver(MatcherDriverInterface $driver)
     {
-        $this->integrationMap[$className] = $wrapperClassName;
+        if (!in_array($driver, $this->drivers, true)) {
+            $this->drivers[] = $driver;
+        }
     }
 
     /**
-     * Get the integration map.
+     * Get the matcher drivers.
      *
-     * @return array<string,string> The integration map.
+     * @return array<MatcherDriverInterface> The matcher drivers.
      */
-    public function integrationMap()
+    public function drivers()
     {
-        return $this->integrationMap;
+        return $this->drivers;
     }
 
     /**
@@ -122,9 +80,9 @@ class MatcherFactory implements MatcherFactoryInterface
         }
 
         if (is_object($value)) {
-            foreach ($this->integrationMap as $className => $wrapperClassName) {
-                if (is_a($value, $className)) {
-                    return new $wrapperClassName($value);
+            foreach ($this->drivers as $driver) {
+                if ($driver->adapt($value)) {
+                    return $value;
                 }
             }
         }
@@ -161,6 +119,5 @@ class MatcherFactory implements MatcherFactoryInterface
         return new EqualToMatcher($value);
     }
 
-    private static $instance;
-    private $integrationMap;
+    private $drivers;
 }

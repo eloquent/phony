@@ -59,7 +59,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject = new SpyVerifier();
 
         $this->assertEquals(new Spy(), $this->subject->spy());
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
+        $this->assertEquals($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
     }
 

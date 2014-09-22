@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Mockery;
 
-use Hamcrest\Core\IsEqual;
+use Mockery\Matcher\MustBe;
 use PHPUnit_Framework_TestCase;
 
-class HamcrestMatcherTest extends PHPUnit_Framework_TestCase
+class MockeryMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new IsEqual('value');
-        $this->subject = new HamcrestMatcher($this->matcher);
+        $this->matcher = new MustBe('value');
+        $this->subject = new MockeryMatcher($this->matcher);
     }
 
     public function testConstructor()

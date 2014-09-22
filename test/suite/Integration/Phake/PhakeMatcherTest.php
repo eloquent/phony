@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Phake;
 
-use PHPUnit_Framework_Constraint_IsEqual;
+use Phake_Matchers_EqualsMatcher;
 use PHPUnit_Framework_TestCase;
 
-class PhpunitMatcherTest extends PHPUnit_Framework_TestCase
+class PhakeMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new PHPUnit_Framework_Constraint_IsEqual('value');
-        $this->subject = new PhpunitMatcher($this->matcher);
+        $this->matcher = new Phake_Matchers_EqualsMatcher('value');
+        $this->subject = new PhakeMatcher($this->matcher);
     }
 
     public function testConstructor()

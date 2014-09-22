@@ -9,14 +9,14 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher\Integration;
+namespace Eloquent\Phony\Integration\Phpunit;
 
 use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
- * A matcher that wraps a Prophecy token.
+ * A matcher that wraps a PHPUnit constraint.
  */
-class ProphecyMatcher extends AbstractWrappedMatcher
+class PhpunitMatcher extends AbstractWrappedMatcher
 {
     /**
      * Returns true if the supplied value matches.
@@ -27,6 +27,6 @@ class ProphecyMatcher extends AbstractWrappedMatcher
      */
     public function matches($value)
     {
-        return $this->matcher->scoreArgument($value) && true;
+        return $this->matcher->evaluate($value, null, true) && true;
     }
 }
