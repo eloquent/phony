@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Integration\Phake;
 
 use Eloquent\Phony\Matcher\MatcherDriverInterface;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 
 /**
  * A matcher driver for Phake matchers.
@@ -28,6 +29,12 @@ class PhakeMatcherDriver implements MatcherDriverInterface
      */
     public function adapt(&$matcher)
     {
+        if (is_a($matcher, 'Phake_Matchers_AnyParameters')) {
+            $matcher = WildcardMatcher::instance();
+
+            return true;
+        }
+
         if (is_a($matcher, 'Phake_Matchers_IArgumentMatcher')) {
             $matcher = new PhakeMatcher($matcher);
 

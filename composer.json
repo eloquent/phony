@@ -26,5 +26,10 @@
         "psr-4": {
             "Eloquent\\Phony\\": "src"
         }
+    },
+    "autoload-dev": {
+        "files": [
+            "vendor/hamcrest/hamcrest-php/hamcrest/Hamcrest.php"
+        ]
     }
 }

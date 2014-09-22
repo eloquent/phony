@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Integration\Hamcrest;
 
-use Hamcrest\Core\IsEqual;
 use PHPUnit_Framework_TestCase;
 
 class HamcrestMatcherDriverTest extends PHPUnit_Framework_TestCase
@@ -24,7 +23,7 @@ class HamcrestMatcherDriverTest extends PHPUnit_Framework_TestCase
     public function testAdapt()
     {
         $object = (object) array();
-        $matcher = new IsEqual('value');
+        $matcher = equalTo('value');
         $expected = new HamcrestMatcher($matcher);
 
         $this->assertTrue($this->subject->adapt($matcher));

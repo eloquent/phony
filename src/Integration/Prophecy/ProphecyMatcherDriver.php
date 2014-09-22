@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Integration\Prophecy;
 
 use Eloquent\Phony\Matcher\MatcherDriverInterface;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 
 /**
  * A matcher driver for Prophecy tokens.
@@ -28,6 +29,12 @@ class ProphecyMatcherDriver implements MatcherDriverInterface
      */
     public function adapt(&$matcher)
     {
+        if (is_a($matcher, 'Prophecy\Argument\Token\AnyValuesToken')) {
+            $matcher = WildcardMatcher::instance();
+
+            return true;
+        }
+
         if (is_a($matcher, 'Prophecy\Argument\Token\TokenInterface')) {
             $matcher = new ProphecyMatcher($matcher);
 

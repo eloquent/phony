@@ -11,7 +11,8 @@
 
 namespace Eloquent\Phony\Integration\Phake;
 
-use Phake_Matchers_EqualsMatcher;
+use Eloquent\Phony\Matcher\WildcardMatcher;
+use Phake;
 use PHPUnit_Framework_TestCase;
 
 class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
@@ -24,11 +25,19 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
     public function testAdapt()
     {
         $object = (object) array();
-        $matcher = new Phake_Matchers_EqualsMatcher('value');
+        $matcher = Phake::equalTo('value');
         $expected = new PhakeMatcher($matcher);
 
         $this->assertTrue($this->subject->adapt($matcher));
         $this->assertEquals($expected, $matcher);
         $this->assertFalse($this->subject->adapt($object));
+    }
+
+    public function testAdaptWildcard()
+    {
+        $matcher = Phake::anyParameters();
+
+        $this->assertTrue($this->subject->adapt($matcher));
+        $this->assertSame(WildcardMatcher::instance(), $matcher);
     }
 }

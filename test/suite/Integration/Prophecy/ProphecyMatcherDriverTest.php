@@ -11,8 +11,9 @@
 
 namespace Eloquent\Phony\Integration\Prophecy;
 
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use PHPUnit_Framework_TestCase;
-use Prophecy\Argument\Token\IdenticalValueToken;
+use Prophecy\Argument;
 
 class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
@@ -24,11 +25,19 @@ class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
     public function testAdapt()
     {
         $object = (object) array();
-        $matcher = new IdenticalValueToken('value');
+        $matcher = Argument::is('value');
         $expected = new ProphecyMatcher($matcher);
 
         $this->assertTrue($this->subject->adapt($matcher));
         $this->assertEquals($expected, $matcher);
         $this->assertFalse($this->subject->adapt($object));
+    }
+
+    public function testAdaptWildcard()
+    {
+        $matcher = Argument::cetera();
+
+        $this->assertTrue($this->subject->adapt($matcher));
+        $this->assertSame(WildcardMatcher::instance(), $matcher);
     }
 }

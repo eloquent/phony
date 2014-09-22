@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use PHPUnit_Framework_Constraint_IsEqual;
 use PHPUnit_Framework_TestCase;
 
 class PhpunitMatcherDriverTest extends PHPUnit_Framework_TestCase
@@ -24,7 +23,7 @@ class PhpunitMatcherDriverTest extends PHPUnit_Framework_TestCase
     public function testAdapt()
     {
         $object = (object) array();
-        $matcher = new PHPUnit_Framework_Constraint_IsEqual('value');
+        $matcher = $this->equalTo('value');
         $expected = new PhpunitMatcher($matcher);
 
         $this->assertTrue($this->subject->adapt($matcher));

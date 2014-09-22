@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Integration\Mockery;
 
-use Mockery\Matcher\MustBe;
+use Mockery;
 use PHPUnit_Framework_TestCase;
 
 class MockeryMatcherDriverTest extends PHPUnit_Framework_TestCase
@@ -24,7 +24,7 @@ class MockeryMatcherDriverTest extends PHPUnit_Framework_TestCase
     public function testAdapt()
     {
         $object = (object) array();
-        $matcher = new MustBe('value');
+        $matcher = Mockery::mustBe('value');
         $expected = new MockeryMatcher($matcher);
 
         $this->assertTrue($this->subject->adapt($matcher));
