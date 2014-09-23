@@ -18,7 +18,7 @@ class AnyMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new AnyMatcher;
+        $this->subject = new AnyMatcher();
     }
 
     public function testMatches()

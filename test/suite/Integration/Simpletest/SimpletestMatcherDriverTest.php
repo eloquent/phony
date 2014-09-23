@@ -18,7 +18,7 @@ class SimpletestMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new SimpletestMatcherDriver;
+        $this->subject = new SimpletestMatcherDriver();
     }
 
     public function testAdapt()

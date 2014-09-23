@@ -17,7 +17,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver));
+        $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
     }
 
     public function testTypicalCalledWith()

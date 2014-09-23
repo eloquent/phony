@@ -49,7 +49,7 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
         MatcherVerifierInterface $matcherVerifier = null
     ) {
         if (null === $matcherFactory) {
-            $matcherFactory = new MatcherFactory;
+            $matcherFactory = new MatcherFactory();
         }
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();

@@ -17,7 +17,7 @@ class PhpunitMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new PhpunitMatcherDriver;
+        $this->subject = new PhpunitMatcherDriver();
     }
 
     public function testAdapt()

@@ -24,8 +24,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->driverA = new PhpunitMatcherDriver;
-        $this->driverB = new HamcrestMatcherDriver;
+        $this->driverA = new PhpunitMatcherDriver();
+        $this->driverB = new HamcrestMatcherDriver();
         $this->drivers = array($this->driverA, $this->driverB);
         $this->subject = new MatcherFactory($this->drivers);
     }
@@ -37,7 +37,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new MatcherFactory;
+        $this->subject = new MatcherFactory();
 
         $this->assertSame(array(), $this->subject->drivers());
     }

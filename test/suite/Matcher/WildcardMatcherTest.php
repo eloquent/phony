@@ -18,7 +18,7 @@ class WildcardMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new AnyMatcher;
+        $this->matcher = new AnyMatcher();
         $this->minimumArguments = 1;
         $this->maximumArguments = 2;
         $this->subject = new WildcardMatcher($this->matcher, $this->minimumArguments, $this->maximumArguments);
@@ -33,7 +33,7 @@ class WildcardMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new WildcardMatcher;
+        $this->subject = new WildcardMatcher();
 
         $this->assertSame(AnyMatcher::instance(), $this->subject->matcher());
         $this->assertSame(0, $this->subject->minimumArguments());

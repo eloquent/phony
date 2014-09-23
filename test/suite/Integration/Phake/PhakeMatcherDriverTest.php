@@ -19,7 +19,7 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new PhakeMatcherDriver;
+        $this->subject = new PhakeMatcherDriver();
     }
 
     public function testAdapt()

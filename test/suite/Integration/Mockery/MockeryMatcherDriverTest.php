@@ -18,7 +18,7 @@ class MockeryMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new MockeryMatcherDriver;
+        $this->subject = new MockeryMatcherDriver();
     }
 
     public function testAdapt()

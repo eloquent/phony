@@ -21,9 +21,9 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new MatcherVerifier;
+        $this->subject = new MatcherVerifier();
 
-        $this->matcherFactory = new MatcherFactory;
+        $this->matcherFactory = new MatcherFactory();
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
     }
 

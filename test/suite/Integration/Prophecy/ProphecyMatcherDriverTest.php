@@ -19,7 +19,7 @@ class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new ProphecyMatcherDriver;
+        $this->subject = new ProphecyMatcherDriver();
     }
 
     public function testAdapt()
