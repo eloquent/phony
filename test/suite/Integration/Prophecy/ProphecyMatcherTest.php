@@ -12,19 +12,23 @@
 namespace Eloquent\Phony\Integration\Prophecy;
 
 use PHPUnit_Framework_TestCase;
-use Prophecy\Argument\Token\IdenticalValueToken;
+use Prophecy\Argument;
 
 class ProphecyMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new IdenticalValueToken('value');
+        $this->matcher = Argument::is('value');
         $this->subject = new ProphecyMatcher($this->matcher);
+
+        $this->description = 'identical("value")';
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->matcher, $this->subject->matcher());
+        $this->assertSame($this->description, $this->subject->describe());
+        $this->assertSame($this->description, strval($this->subject));
     }
 
     public function testMatches()

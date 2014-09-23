@@ -11,20 +11,23 @@
 
 namespace Eloquent\Phony\Integration\Hamcrest;
 
-use Hamcrest\Core\IsEqual;
 use PHPUnit_Framework_TestCase;
 
 class HamcrestMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new IsEqual('value');
+        $this->matcher = equalTo('value');
         $this->subject = new HamcrestMatcher($this->matcher);
+
+        $this->description = '"value"';
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->matcher, $this->subject->matcher());
+        $this->assertSame($this->description, $this->subject->describe());
+        $this->assertSame($this->description, strval($this->subject));
     }
 
     public function testMatches()

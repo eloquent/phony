@@ -20,11 +20,15 @@ class SimpletestMatcherTest extends PHPUnit_Framework_TestCase
     {
         $this->matcher = new EqualExpectation('value');
         $this->subject = new SimpletestMatcher($this->matcher);
+
+        $this->description = 'EqualExpectation';
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->matcher, $this->subject->matcher());
+        $this->assertSame($this->description, $this->subject->describe());
+        $this->assertSame($this->description, strval($this->subject));
     }
 
     public function testMatches()

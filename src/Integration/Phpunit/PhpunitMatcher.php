@@ -29,4 +29,14 @@ class PhpunitMatcher extends AbstractWrappedMatcher
     {
         return $this->matcher->evaluate($value, null, true) && true;
     }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe()
+    {
+        return $this->matcher->toString();
+    }
 }

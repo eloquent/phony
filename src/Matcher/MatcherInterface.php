@@ -24,4 +24,18 @@ interface MatcherInterface
      * @return boolean True if the value matches.
      */
     public function matches($value);
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe();
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString();
 }

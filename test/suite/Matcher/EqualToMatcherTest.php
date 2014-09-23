@@ -24,6 +24,8 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $this->assertSame($this->value, $this->subject->value());
+        $this->assertSame("'value'", $this->subject->describe());
+        $this->assertSame("'value'", strval($this->subject));
     }
 
     public function testMatches()

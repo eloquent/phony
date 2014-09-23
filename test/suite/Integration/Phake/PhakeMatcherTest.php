@@ -11,20 +11,24 @@
 
 namespace Eloquent\Phony\Integration\Phake;
 
-use Phake_Matchers_EqualsMatcher;
+use Phake;
 use PHPUnit_Framework_TestCase;
 
 class PhakeMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new Phake_Matchers_EqualsMatcher('value');
+        $this->matcher = Phake::equalTo('value');
         $this->subject = new PhakeMatcher($this->matcher);
+
+        $this->description = 'equal to <string:value>';
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->matcher, $this->subject->matcher());
+        $this->assertSame($this->description, $this->subject->describe());
+        $this->assertSame($this->description, strval($this->subject));
     }
 
     public function testMatches()

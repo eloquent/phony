@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Matcher;
 /**
  * A matcher that always returns true.
  */
-class AnyMatcher implements MatcherInterface
+class AnyMatcher extends AbstractMatcher
 {
     /**
      * Get the static instance of this matcher.
@@ -40,6 +40,16 @@ class AnyMatcher implements MatcherInterface
     public function matches($value)
     {
         return true;
+    }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe()
+    {
+        return 'any()';
     }
 
     private static $instance;

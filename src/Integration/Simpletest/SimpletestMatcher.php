@@ -29,4 +29,14 @@ class SimpletestMatcher extends AbstractWrappedMatcher
     {
         return $this->matcher->test($value) && true;
     }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe()
+    {
+        return get_class($this->matcher);
+    }
 }

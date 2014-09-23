@@ -11,20 +11,24 @@
 
 namespace Eloquent\Phony\Integration\Mockery;
 
-use Mockery\Matcher\MustBe;
+use Mockery;
 use PHPUnit_Framework_TestCase;
 
 class MockeryMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new MustBe('value');
+        $this->matcher = Mockery::mustBe('value');
         $this->subject = new MockeryMatcher($this->matcher);
+
+        $this->description = '<MustBe>';
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->matcher, $this->subject->matcher());
+        $this->assertSame($this->description, $this->subject->describe());
+        $this->assertSame($this->description, strval($this->subject));
     }
 
     public function testMatches()

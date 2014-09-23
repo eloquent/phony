@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Matcher;
 /**
  * A matcher that tests if the value is equal to (==) another value.
  */
-class EqualToMatcher implements MatcherInterface
+class EqualToMatcher extends AbstractMatcher
 {
     /**
      * Construct a new equal to matcher.
@@ -46,6 +46,16 @@ class EqualToMatcher implements MatcherInterface
     public function matches($value)
     {
         return $value == $this->value;
+    }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe()
+    {
+        return var_export($this->value, true);
     }
 
     private $value;

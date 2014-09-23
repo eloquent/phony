@@ -14,7 +14,8 @@ namespace Eloquent\Phony\Matcher;
 /**
  * An abstract base class for implementing wrapped matchers.
  */
-abstract class AbstractWrappedMatcher implements WrappedMatcherInterface
+abstract class AbstractWrappedMatcher extends AbstractMatcher implements
+    WrappedMatcherInterface
 {
     /**
      * Construct a new wrapped matcher.
@@ -46,6 +47,16 @@ abstract class AbstractWrappedMatcher implements WrappedMatcherInterface
     public function matches($value)
     {
         return $this->matcher->matches($value) && true;
+    }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe()
+    {
+        return strval($this->matcher);
     }
 
     protected $matcher;

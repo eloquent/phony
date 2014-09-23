@@ -11,20 +11,23 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use PHPUnit_Framework_Constraint_IsEqual;
 use PHPUnit_Framework_TestCase;
 
 class PhpunitMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new PHPUnit_Framework_Constraint_IsEqual('value');
+        $this->matcher = $this->equalTo('value');
         $this->subject = new PhpunitMatcher($this->matcher);
+
+        $this->description = 'is equal to <string:value>';
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->matcher, $this->subject->matcher());
+        $this->assertSame($this->description, $this->subject->describe());
+        $this->assertSame($this->description, strval($this->subject));
     }
 
     public function testMatches()
