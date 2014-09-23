@@ -71,23 +71,23 @@ class DifferenceEngine implements DifferenceEngineInterface
      *
      * @link http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
      *
-     * @param array<integer,mixed> $from The first sequence.
-     * @param array<integer,mixed> $to   The second sequence.
+     * @param array<integer,mixed> $first The first sequence.
+     * @param array<integer,mixed> $second The second sequence.
      *
      * @return array<integer,mixed> The longest common subsequence.
      */
-    protected function lcs(array $from, array $to)
+    protected function lcs(array $first, array $second)
     {
-        $m = count($from);
-        $n = count($to);
+        $m = count($first);
+        $n = count($second);
 
-        // $a[$i][$j] = length of LCS of $from[$i..$m] and $to[$j..$n]
+        // $a[$i][$j] = length of lcs of $first[$i..$m] and $second[$j..$n]
         $a = array();
 
-        // compute length of LCS and all subproblems via dynamic programming
+        // compute length of lcs and all subproblems
         for ($i = $m - 1; $i >= 0; $i--) {
             for ($j = $n - 1; $j >= 0; $j--) {
-                if ($from[$i] === $to[$j]) {
+                if ($first[$i] === $second[$j]) {
                     $a[$i][$j] =
                         (isset($a[$i + 1][$j + 1]) ? $a[$i + 1][$j + 1] : 0) +
                         1;
@@ -100,14 +100,14 @@ class DifferenceEngine implements DifferenceEngineInterface
             }
         }
 
-        // recover LCS itself
+        // recover lcs itself
         $i = 0;
         $j = 0;
         $lcs = array();
 
         while ($i < $m && $j < $n) {
-            if ($from[$i] === $to[$j]) {
-                $lcs[] = $from[$i];
+            if ($first[$i] === $second[$j]) {
+                $lcs[] = $first[$i];
 
                 $i++;
                 $j++;
