@@ -7,5 +7,8 @@ php:
     - "5.6"
     - "hhvm"
     - "hhvm-nightly"
+matrix:
+    allow_failures:
+        - php: "hhvm-nightly"
 install: composer install
 script: vendor/bin/phpunit --configuration phpunit.coverage.xml
