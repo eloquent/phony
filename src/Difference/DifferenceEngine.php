@@ -112,21 +112,17 @@ class DifferenceEngine implements DifferenceEngineInterface
             if ($isDifferent) {
                 $difference[] = array('-', $fromCombined[$fromPair[0]]);
                 $difference[] = array('+', $toCombined[$toPair[0]]);
-            } elseif ('' !== $fromCombined[$fromPair[0]]) {
+            } else {
                 $difference[] = array(' ', $fromCombined[$fromPair[0]]);
             }
         }
 
         while (($fromPair = each($fromAtoms))) {
-            if ('' !== $fromCombined[$fromPair[0]]) {
-                $difference[] = array('-', $fromCombined[$fromPair[0]]);
-            }
+            $difference[] = array('-', $fromCombined[$fromPair[0]]);
         }
 
         while (($toPair = each($toAtoms))) {
-            if ('' !== $toCombined[$toPair[0]]) {
-                $difference[] = array('+', $toCombined[$toPair[0]]);
-            }
+            $difference[] = array('+', $toCombined[$toPair[0]]);
         }
 
         return $difference;
