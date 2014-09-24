@@ -221,6 +221,7 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
      */
     public function testDifference($from, $to, $expected)
     {
+        $this->assertEquals($expected, $this->subject->difference($from, $to));
         $this->assertSame($expected, $this->subject->difference($from, $to));
     }
 
@@ -378,7 +379,86 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
      */
     public function testLineDifference($from, $to, $expected)
     {
+        $this->assertEquals($expected, $this->subject->lineDifference($from, $to));
         $this->assertSame($expected, $this->subject->lineDifference($from, $to));
+    }
+
+    public function wordDifferenceData()
+    {
+        return array(
+            'Banana to atana' => array(
+                'b a n a n a',
+                'a t a n a',
+                array(
+                    array('-', 'b '),
+                    array(' ', 'a '),
+                    array('-', 'n '),
+                    array('+', 't '),
+                    array(' ', 'a '),
+                    array(' ', 'n '),
+                    array(' ', 'a'),
+                ),
+            ),
+
+            'Lao to tzu' => array(
+                "The Way that can be told of is not the eternal Way;\n" .
+                    "The name that can be named is not the eternal name.\r\n" .
+                    "The Nameless is the origin of Heaven and Earth;\n" .
+                    "The Named is the mother of all things.\r\n" .
+                    "Therefore let there always be non-being,\n" .
+                    "  so we may see their subtlety,\r\n" .
+                    "And let there always be being,\n" .
+                    "  so we may see their outcome.\r\n" .
+                    "The two are the same,\n" .
+                    "But after they are produced,\r\n" .
+                    "  they have different names.",
+                "The Nameless is the origin of Heaven and Earth;\n" .
+                    "The named is the mother of all things.\r" .
+                    "\r" .
+                    "Therefore let there always be non-being,\r" .
+                    "  so we may see their subtlety,\n" .
+                    "And let there always be being,\r" .
+                    "  so we may see their outcome.\n" .
+                    "The two are the same,\r" .
+                    "But after they are produced,\n" .
+                    "  they have different names.\r" .
+                    "They both may be called deep and profound.\n" .
+                    "Deeper and more profound,\r" .
+                    "The door of all subtleties!\n",
+                array(
+                    array(' ', "The "),
+                    array('-', "Way "), array('-', "that "), array('-', "can "), array('-', "be "), array('-', "told "), array('-', "of "), array('-', "is "), array('-', "not "), array('-', "the "), array('-', "eternal "), array('-', "Way;\n"),
+                    array('-', "The "), array('-', "name "), array('-', "that "), array('-', "can "), array('-', "be "), array('-', "named "), array('-', "is "), array('-', "not "), array('-', "the "), array('-', "eternal "), array('-', "name.\r\n"),
+                    array('-', "The "),
+                    array(' ', "Nameless "), array(' ', "is "), array(' ', "the "), array(' ', "origin "), array(' ', "of "), array(' ', "Heaven "), array(' ', "and "), array(' ', "Earth;\n"),
+                    array(' ', "The "),
+                    array('-', "Named "),
+                    array('+', "named "),
+                    array(' ', "is "), array(' ', "the "), array(' ', "mother "), array(' ', "of "), array(' ', "all "), array(' ', "things.\r\n"),
+                    array(' ', "Therefore "), array(' ', "let "), array(' ', "there "), array(' ', "always "), array(' ', "be "), array(' ', "non-"), array(' ', "being,\n  "),
+                    array(' ', "so "), array(' ', "we "), array(' ', "may "), array(' ', "see "), array(' ', "their "), array(' ', "subtlety,\r\n"),
+                    array(' ', "And "), array(' ', "let "), array(' ', "there "), array(' ', "always "), array(' ', "be "), array(' ', "being,\n  "),
+                    array(' ', "so "), array(' ', "we "), array(' ', "may "), array(' ', "see "), array(' ', "their "), array(' ', "outcome.\r\n"),
+                    array(' ', "The "), array(' ', "two "), array(' ', "are "), array(' ', "the "), array(' ', "same,\n"),
+                    array(' ', "But "), array(' ', "after "), array(' ', "they "), array(' ', "are "), array(' ', "produced,\r\n  "),
+                    array(' ', "they "), array(' ', "have "), array(' ', "different "),
+                    array('-', "names."),
+                    array('+', "names.\r"),
+                    array('+', "They "), array('+', "both "), array('+', "may "), array('+', "be "), array('+', "called "), array('+', "deep "), array('+', "and "), array('+', "profound.\n"),
+                    array('+', "Deeper "), array('+', "and "), array('+', "more "), array('+', "profound,\r"),
+                    array('+', "The "), array('+', "door "), array('+', "of "), array('+', "all "), array('+', "subtleties!\n"),
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider wordDifferenceData
+     */
+    public function testWordDifference($from, $to, $expected)
+    {
+        $this->assertEquals($expected, $this->subject->wordDifference($from, $to));
+        $this->assertSame($expected, $this->subject->wordDifference($from, $to));
     }
 
     public function testInstance()

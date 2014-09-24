@@ -27,13 +27,33 @@ interface DifferenceEngineInterface
     public function difference(array $from, array $to);
 
     /**
-     * Calculate the line difference between two strings.
+     * Calculate the difference between two strings, split by a pattern.
      *
-     * @param string      $from       The 'from' side.
-     * @param string      $to         The 'to' side.
-     * @param string|null $eolPattern The pattern to use for splitting lines.
+     * @param string $pattern The pattern to use for splitting.
+     * @param string $from    The 'from' side.
+     * @param string $to      The 'to' side.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
-    public function lineDifference($from, $to, $eolPattern = null);
+    public function stringDifference($pattern, $from, $to);
+
+    /**
+     * Calculate the line difference between two strings.
+     *
+     * @param string $from The 'from' side.
+     * @param string $to   The 'to' side.
+     *
+     * @return array<DifferenceItemInterface> The difference.
+     */
+    public function lineDifference($from, $to);
+
+    /**
+     * Calculate the word difference between two strings.
+     *
+     * @param string $from The 'from' side.
+     * @param string $to   The 'to' side.
+     *
+     * @return array<DifferenceItemInterface> The difference.
+     */
+    public function wordDifference($from, $to);
 }

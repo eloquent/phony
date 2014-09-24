@@ -67,31 +67,26 @@ class DifferenceEngine implements DifferenceEngineInterface
     }
 
     /**
-     * Calculate the line difference between two strings.
+     * Calculate the difference between two strings, split by a pattern.
      *
-     * @param string      $from       The 'from' side.
-     * @param string      $to         The 'to' side.
-     * @param string|null $eolPattern The pattern to use for splitting lines.
+     * @param string $pattern The pattern to use for splitting.
+     * @param string $from    The 'from' side.
+     * @param string $to      The 'to' side.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
-    public function lineDifference($from, $to, $eolPattern = null)
+    public function stringDifference($pattern, $from, $to)
     {
-        if (null === $eolPattern) {
-            $eolPattern = '\R';
-        }
-
-        $splitPattern = '/(' . $eolPattern . ')/';
-
         list($fromCombined, $fromAtoms, $fromDelimiters) =
-            $this->splitByPattern($from, $splitPattern);
+            $this->splitByPattern($from, $pattern);
         list($toCombined, $toAtoms, $toDelimiters) =
-            $this->splitByPattern($to, $splitPattern);
+            $this->splitByPattern($to, $pattern);
 
         $common = $this->lcs($fromAtoms, $toAtoms);
+        $commonCount = count($common);
         $difference = array();
 
-        foreach ($common as $item) {
+        foreach ($common as $index => $item) {
             while (($fromPair = each($fromAtoms)) && $fromPair[1] !== $item) {
                 $difference[] = array('-', $fromCombined[$fromPair[0]]);
             }
@@ -100,10 +95,21 @@ class DifferenceEngine implements DifferenceEngineInterface
                 $difference[] = array('+', $toCombined[$toPair[0]]);
             }
 
-            if (
-                array_key_exists($fromPair[0], $fromDelimiters) !==
-                array_key_exists($toPair[0], $toDelimiters)
-            ) {
+            if (array_key_exists($fromPair[0], $fromDelimiters)) {
+                if (!array_key_exists($toPair[0], $toDelimiters)) {
+                    $isDifferent = true;
+                } else {
+                    $isDifferent = $commonCount - 1 === $index &&
+                        $fromDelimiters[$fromPair[0]] !==
+                        $toDelimiters[$toPair[0]];
+                }
+            } elseif (array_key_exists($toPair[0], $toDelimiters)) {
+                $isDifferent = true;
+            } else {
+                $isDifferent = false;
+            }
+
+            if ($isDifferent) {
                 $difference[] = array('-', $fromCombined[$fromPair[0]]);
                 $difference[] = array('+', $toCombined[$toPair[0]]);
             } elseif ('' !== $fromCombined[$fromPair[0]]) {
@@ -127,31 +133,29 @@ class DifferenceEngine implements DifferenceEngineInterface
     }
 
     /**
-     * Split the supplied string by a pattern delimiter.
+     * Calculate the line difference between two strings.
      *
-     * @param string $string  The string.
-     * @param string $pattern The pattern.
+     * @param string $from The 'from' side.
+     * @param string $to   The 'to' side.
      *
-     * @return tuple<array<string>,array<string>,array<string>> A 3-tuple of combined atoms and delimiters, atoms, and delimiters.
+     * @return array<DifferenceItemInterface> The difference.
      */
-    protected function splitByPattern($string, $pattern)
+    public function lineDifference($from, $to)
     {
-        $parts = preg_split($pattern, $string, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $combined = array();
-        $atoms = array();
-        $delimiters = array();
+        return $this->stringDifference('/(\R)/', $from, $to);
+    }
 
-        foreach ($parts as $index => $part) {
-            if (0 === $index % 2) {
-                $combined[] = $part;
-                $atoms[] = $part;
-            } else {
-                $combined[intval($index / 2)] .= $part;
-                $delimiters[] = $part;
-            }
-        }
-
-        return array($combined, $atoms, $delimiters);
+    /**
+     * Calculate the word difference between two strings.
+     *
+     * @param string $from The 'from' side.
+     * @param string $to   The 'to' side.
+     *
+     * @return array<DifferenceItemInterface> The difference.
+     */
+    public function wordDifference($from, $to)
+    {
+        return $this->stringDifference('/([^\w]+)/', $from, $to);
     }
 
     /**
@@ -210,6 +214,37 @@ class DifferenceEngine implements DifferenceEngineInterface
         }
 
         return $lcs;
+    }
+
+    /**
+     * Split the supplied string by a pattern delimiter.
+     *
+     * @param string $string  The string.
+     * @param string $pattern The pattern.
+     *
+     * @return tuple<array<string>,array<string>,array<string>> A 3-tuple of combined atoms and delimiters, atoms, and delimiters.
+     */
+    protected function splitByPattern($string, $pattern)
+    {
+        $parts = preg_split($pattern, $string, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $partCount = count($parts);
+        $combined = array();
+        $atoms = array();
+        $delimiters = array();
+
+        foreach ($parts as $index => $part) {
+            if (0 === $index % 2) {
+                if ('' !== $part || $index < $partCount - 1) {
+                    $combined[] = $part;
+                    $atoms[] = $part;
+                }
+            } else {
+                $combined[intval($index / 2)] .= $part;
+                $delimiters[] = $part;
+            }
+        }
+
+        return array($combined, $atoms, $delimiters);
     }
 
     private static $instance;
