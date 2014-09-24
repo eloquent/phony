@@ -221,7 +221,164 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
      */
     public function testDifference($from, $to, $expected)
     {
-        $this->assertEquals($expected, $this->subject->difference($from, $to));
+        $this->assertSame($expected, $this->subject->difference($from, $to));
+    }
+
+    public function lineDifferenceData()
+    {
+        return array(
+            'Added final lines with EOL no EOL change' => array(
+                "a\nb\n",
+                "a\nb\nc\n",
+                array(
+                    array(' ', "a\n"),
+                    array(' ', "b\n"),
+                    array('+', "c\n"),
+                ),
+            ),
+
+            'Added final lines without EOL no EOL change' => array(
+                "a\nb",
+                "a\nb\nc",
+                array(
+                    array(' ', "a\n"),
+                    array('-', "b"),
+                    array('+', "b\n"),
+                    array('+', "c"),
+                ),
+            ),
+
+            'Added trailing EOL' => array(
+                "a\nb",
+                "a\nb\n",
+                array(
+                    array(' ', "a\n"),
+                    array('-', "b"),
+                    array('+', "b\n"),
+                ),
+            ),
+
+            'Added trailing EOL and additional lines' => array(
+                "a\nb",
+                "a\nb\nc\n",
+                array(
+                    array(' ', "a\n"),
+                    array('-', "b"),
+                    array('+', "b\n"),
+                    array('+', "c\n"),
+                ),
+            ),
+
+            'Removed final lines with EOL no EOL change' => array(
+                "a\nb\nc\n",
+                "a\nb\n",
+                array(
+                    array(' ', "a\n"),
+                    array(' ', "b\n"),
+                    array('-', "c\n"),
+                ),
+            ),
+
+            'Removed final lines with no EOL no EOL change' => array(
+                "a\nb\nc",
+                "a\nb",
+                array(
+                    array(' ', "a\n"),
+                    array('-', "b\n"),
+                    array('+', "b"),
+                    array('-', "c"),
+                ),
+            ),
+
+            'Removed trailing EOL' => array(
+                "a\nb\n",
+                "a\nb",
+                array(
+                    array(' ', "a\n"),
+                    array('-', "b\n"),
+                    array('+', "b"),
+                ),
+            ),
+
+            'Removed trailing EOL and additional lines' => array(
+                "a\nb\nc\n",
+                "a\nb",
+                array(
+                    array(' ', "a\n"),
+                    array('-', "b\n"),
+                    array('+', "b"),
+                    array('-', "c\n"),
+                ),
+            ),
+
+            'Banana to atana' => array(
+                "b\na\nn\na\nn\na\n",
+                "a\nt\na\nn\na\n",
+                array(
+                    array('-', "b\n"),
+                    array(' ', "a\n"),
+                    array('-', "n\n"),
+                    array('+', "t\n"),
+                    array(' ', "a\n"),
+                    array(' ', "n\n"),
+                    array(' ', "a\n"),
+                ),
+            ),
+
+            'Lao to tzu' => array(
+                "The Way that can be told of is not the eternal Way;\n" .
+                    "The name that can be named is not the eternal name.\r\n" .
+                    "The Nameless is the origin of Heaven and Earth;\n" .
+                    "The Named is the mother of all things.\r\n" .
+                    "Therefore let there always be non-being,\n" .
+                    "  so we may see their subtlety,\r\n" .
+                    "And let there always be being,\n" .
+                    "  so we may see their outcome.\r\n" .
+                    "The two are the same,\n" .
+                    "But after they are produced,\r\n" .
+                    "  they have different names.",
+                "The Nameless is the origin of Heaven and Earth;\n" .
+                    "The named is the mother of all things.\r" .
+                    "\r" .
+                    "Therefore let there always be non-being,\r" .
+                    "  so we may see their subtlety,\n" .
+                    "And let there always be being,\r" .
+                    "  so we may see their outcome.\n" .
+                    "The two are the same,\r" .
+                    "But after they are produced,\n" .
+                    "  they have different names.\r" .
+                    "They both may be called deep and profound.\n" .
+                    "Deeper and more profound,\r" .
+                    "The door of all subtleties!\n",
+                array(
+                    array('-', "The Way that can be told of is not the eternal Way;\n"),
+                    array('-', "The name that can be named is not the eternal name.\r\n"),
+                    array(' ', "The Nameless is the origin of Heaven and Earth;\n"),
+                    array('-', "The Named is the mother of all things.\r\n"),
+                    array('+', "The named is the mother of all things.\r"),
+                    array('+', "\r"),
+                    array(' ', "Therefore let there always be non-being,\n"),
+                    array(' ', "  so we may see their subtlety,\r\n"),
+                    array(' ', "And let there always be being,\n"),
+                    array(' ', "  so we may see their outcome.\r\n"),
+                    array(' ', "The two are the same,\n"),
+                    array(' ', "But after they are produced,\r\n"),
+                    array('-', "  they have different names."),
+                    array('+', "  they have different names.\r"),
+                    array('+', "They both may be called deep and profound.\n"),
+                    array('+', "Deeper and more profound,\r"),
+                    array('+', "The door of all subtleties!\n"),
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider lineDifferenceData
+     */
+    public function testLineDifference($from, $to, $expected)
+    {
+        $this->assertSame($expected, $this->subject->lineDifference($from, $to));
     }
 
     public function testInstance()

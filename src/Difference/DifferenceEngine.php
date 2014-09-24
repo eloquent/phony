@@ -55,11 +55,11 @@ class DifferenceEngine implements DifferenceEngineInterface
             $difference[] = array(' ', $item);
         }
 
-        while (($fromPair = each($from)) && $fromPair[1] !== $item) {
+        while (($fromPair = each($from))) {
             $difference[] = array('-', $fromPair[1]);
         }
 
-        while (($toPair = each($to)) && $toPair[1] !== $item) {
+        while (($toPair = each($to))) {
             $difference[] = array('+', $toPair[1]);
         }
 
@@ -67,11 +67,99 @@ class DifferenceEngine implements DifferenceEngineInterface
     }
 
     /**
+     * Calculate the line difference between two strings.
+     *
+     * @param string      $from       The 'from' side.
+     * @param string      $to         The 'to' side.
+     * @param string|null $eolPattern The pattern to use for splitting lines.
+     *
+     * @return array<DifferenceItemInterface> The difference.
+     */
+    public function lineDifference($from, $to, $eolPattern = null)
+    {
+        if (null === $eolPattern) {
+            $eolPattern = '\R';
+        }
+
+        $splitPattern = '/(' . $eolPattern . ')/';
+
+        list($fromCombined, $fromAtoms, $fromDelimiters) =
+            $this->splitByPattern($from, $splitPattern);
+        list($toCombined, $toAtoms, $toDelimiters) =
+            $this->splitByPattern($to, $splitPattern);
+
+        $common = $this->lcs($fromAtoms, $toAtoms);
+        $difference = array();
+
+        foreach ($common as $item) {
+            while (($fromPair = each($fromAtoms)) && $fromPair[1] !== $item) {
+                $difference[] = array('-', $fromCombined[$fromPair[0]]);
+            }
+
+            while (($toPair = each($toAtoms)) && $toPair[1] !== $item) {
+                $difference[] = array('+', $toCombined[$toPair[0]]);
+            }
+
+            if (
+                array_key_exists($fromPair[0], $fromDelimiters) !==
+                array_key_exists($toPair[0], $toDelimiters)
+            ) {
+                $difference[] = array('-', $fromCombined[$fromPair[0]]);
+                $difference[] = array('+', $toCombined[$toPair[0]]);
+            } elseif ('' !== $fromCombined[$fromPair[0]]) {
+                $difference[] = array(' ', $fromCombined[$fromPair[0]]);
+            }
+        }
+
+        while (($fromPair = each($fromAtoms))) {
+            if ('' !== $fromCombined[$fromPair[0]]) {
+                $difference[] = array('-', $fromCombined[$fromPair[0]]);
+            }
+        }
+
+        while (($toPair = each($toAtoms))) {
+            if ('' !== $toCombined[$toPair[0]]) {
+                $difference[] = array('+', $toCombined[$toPair[0]]);
+            }
+        }
+
+        return $difference;
+    }
+
+    /**
+     * Split the supplied string by a pattern delimiter.
+     *
+     * @param string $string  The string.
+     * @param string $pattern The pattern.
+     *
+     * @return tuple<array<string>,array<string>,array<string>> A 3-tuple of combined atoms and delimiters, atoms, and delimiters.
+     */
+    protected function splitByPattern($string, $pattern)
+    {
+        $parts = preg_split($pattern, $string, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $combined = array();
+        $atoms = array();
+        $delimiters = array();
+
+        foreach ($parts as $index => $part) {
+            if (0 === $index % 2) {
+                $combined[] = $part;
+                $atoms[] = $part;
+            } else {
+                $combined[intval($index / 2)] .= $part;
+                $delimiters[] = $part;
+            }
+        }
+
+        return array($combined, $atoms, $delimiters);
+    }
+
+    /**
      * Returns the longest common subsequence of the given sequences.
      *
      * @link http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
      *
-     * @param array<integer,mixed> $first The first sequence.
+     * @param array<integer,mixed> $first  The first sequence.
      * @param array<integer,mixed> $second The second sequence.
      *
      * @return array<integer,mixed> The longest common subsequence.
