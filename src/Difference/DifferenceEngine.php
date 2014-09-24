@@ -151,7 +151,7 @@ class DifferenceEngine implements DifferenceEngineInterface
      */
     public function wordDifference($from, $to)
     {
-        return $this->stringDifference('/([^\w]+)/', $from, $to);
+        return $this->stringDifference('/([ \t\r\n\f]+)/', $from, $to);
     }
 
     /**

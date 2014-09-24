@@ -435,7 +435,7 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
                     array('-', "Named "),
                     array('+', "named "),
                     array(' ', "is "), array(' ', "the "), array(' ', "mother "), array(' ', "of "), array(' ', "all "), array(' ', "things.\r\n"),
-                    array(' ', "Therefore "), array(' ', "let "), array(' ', "there "), array(' ', "always "), array(' ', "be "), array(' ', "non-"), array(' ', "being,\n  "),
+                    array(' ', "Therefore "), array(' ', "let "), array(' ', "there "), array(' ', "always "), array(' ', "be "), array(' ', "non-being,\n  "),
                     array(' ', "so "), array(' ', "we "), array(' ', "may "), array(' ', "see "), array(' ', "their "), array(' ', "subtlety,\r\n"),
                     array(' ', "And "), array(' ', "let "), array(' ', "there "), array(' ', "always "), array(' ', "be "), array(' ', "being,\n  "),
                     array(' ', "so "), array(' ', "we "), array(' ', "may "), array(' ', "see "), array(' ', "their "), array(' ', "outcome.\r\n"),
