@@ -113,7 +113,7 @@ class DifferenceEngine implements DifferenceEngineInterface
                 $difference[] = array('-', $fromCombined[$fromPair[0]]);
                 $difference[] = array('+', $toCombined[$toPair[0]]);
             } else {
-                $difference[] = array(' ', $fromCombined[$fromPair[0]]);
+                $difference[] = array(' ', $toCombined[$toPair[0]]);
             }
         }
 
