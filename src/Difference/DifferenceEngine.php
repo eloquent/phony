@@ -31,24 +31,67 @@ class DifferenceEngine implements DifferenceEngineInterface
     }
 
     /**
+     * Construct a new difference engine.
+     *
+     * @param callable|null $defaultComparator The default comparator to use when determining equality.
+     */
+    public function __construct($defaultComparator = null)
+    {
+        if (null === $defaultComparator) {
+            $defaultComparator = function ($left, $right) {
+                if ($left < $right) {
+                    return -1;
+                } elseif ($right < $left) {
+                    return 1;
+                }
+
+                return 0;
+            };
+        }
+
+        $this->defaultComparator = $defaultComparator;
+    }
+
+    /**
+     * Get the default comparator.
+     *
+     * @return callable The default comparator.
+     */
+    public function defaultComparator()
+    {
+        return $this->defaultComparator;
+    }
+
+    /**
      * Calculate the difference between two sequences.
      *
-     * @param array<integer,mixed> $from The 'from' side.
-     * @param array<integer,mixed> $to   The 'to' side.
+     * @param array<integer,mixed> $from       The 'from' side.
+     * @param array<integer,mixed> $to         The 'to' side.
+     * @param callable|null        $comparator The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
-    public function difference(array $from, array $to)
+    public function difference(array $from, array $to, $comparator = null)
     {
-        $common = $this->lcs($from, $to);
+        if (null === $comparator) {
+            $comparator = $this->defaultComparator;
+        }
+
+        $common = $this->lcs($from, $to, $comparator);
         $difference = array();
 
         foreach ($common as $item) {
-            while (($fromPair = each($from)) && $fromPair[1] !== $item) {
+            while (
+                ($fromPair = each($from)) &&
+                0 !== $comparator($fromPair[1], $item)
+            ) {
                 $difference[] = array('-', $fromPair[1]);
             }
 
-            while (($toPair = each($to)) && $toPair[1] !== $item) {
+            while (
+                ($toPair = each($to)) &&
+                0 !== $comparator($toPair[1], $item)
+            ) {
                 $difference[] = array('+', $toPair[1]);
             }
 
@@ -69,29 +112,57 @@ class DifferenceEngine implements DifferenceEngineInterface
     /**
      * Calculate the difference between two strings, split by a pattern.
      *
-     * @param string $pattern The pattern to use for splitting.
-     * @param string $from    The 'from' side.
-     * @param string $to      The 'to' side.
+     * @param string        $pattern           The pattern to use for splitting.
+     * @param string        $from              The 'from' side.
+     * @param string        $to                The 'to' side.
+     * @param boolean|null  $compareDelimiters True if delimiters should also be compared.
+     * @param callable|null $comparator        The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
-    public function stringDifference($pattern, $from, $to)
-    {
+    public function stringDifference(
+        $pattern,
+        $from,
+        $to,
+        $compareDelimiters = null,
+        $comparator = null
+    ) {
+        if (null === $compareDelimiters) {
+            $compareDelimiters = false;
+        }
+        if (null === $comparator) {
+            $comparator = $this->defaultComparator;
+        }
+
         list($fromCombined, $fromAtoms, $fromDelimiters) =
             $this->splitByPattern($from, $pattern);
         list($toCombined, $toAtoms, $toDelimiters) =
             $this->splitByPattern($to, $pattern);
 
-        $common = $this->lcs($fromAtoms, $toAtoms);
+        if ($compareDelimiters) {
+            $fromSubject = &$fromCombined;
+            $toSubject = &$toCombined;
+        } else {
+            $fromSubject = &$fromAtoms;
+            $toSubject = &$toAtoms;
+        }
+
+        $common = $this->lcs($fromSubject, $toSubject, $comparator);
         $commonCount = count($common);
         $difference = array();
 
         foreach ($common as $index => $item) {
-            while (($fromPair = each($fromAtoms)) && $fromPair[1] !== $item) {
+            while (
+                ($fromPair = each($fromSubject)) &&
+                0 !== $comparator($fromPair[1], $item)
+            ) {
                 $difference[] = array('-', $fromCombined[$fromPair[0]]);
             }
 
-            while (($toPair = each($toAtoms)) && $toPair[1] !== $item) {
+            while (
+                ($toPair = each($toSubject)) &&
+                0 !== $comparator($toPair[1], $item)
+            ) {
                 $difference[] = array('+', $toCombined[$toPair[0]]);
             }
 
@@ -100,8 +171,10 @@ class DifferenceEngine implements DifferenceEngineInterface
                     $isDifferent = true;
                 } else {
                     $isDifferent = $commonCount - 1 === $index &&
-                        $fromDelimiters[$fromPair[0]] !==
-                        $toDelimiters[$toPair[0]];
+                        0 !== $comparator(
+                            $fromDelimiters[$fromPair[0]],
+                            $toDelimiters[$toPair[0]]
+                        );
                 }
             } elseif (array_key_exists($toPair[0], $toDelimiters)) {
                 $isDifferent = true;
@@ -117,11 +190,11 @@ class DifferenceEngine implements DifferenceEngineInterface
             }
         }
 
-        while (($fromPair = each($fromAtoms))) {
+        while (($fromPair = each($fromSubject))) {
             $difference[] = array('-', $fromCombined[$fromPair[0]]);
         }
 
-        while (($toPair = each($toAtoms))) {
+        while (($toPair = each($toSubject))) {
             $difference[] = array('+', $toCombined[$toPair[0]]);
         }
 
@@ -131,27 +204,51 @@ class DifferenceEngine implements DifferenceEngineInterface
     /**
      * Calculate the line difference between two strings.
      *
-     * @param string $from The 'from' side.
-     * @param string $to   The 'to' side.
+     * @param string        $from              The 'from' side.
+     * @param string        $to                The 'to' side.
+     * @param boolean|null  $compareDelimiters True if delimiters should also be compared.
+     * @param callable|null $comparator        The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
-    public function lineDifference($from, $to)
-    {
-        return $this->stringDifference('/(\R)/', $from, $to);
+    public function lineDifference(
+        $from,
+        $to,
+        $compareDelimiters = null,
+        $comparator = null
+    ) {
+        return $this->stringDifference(
+            '/(\R)/',
+            $from,
+            $to,
+            $compareDelimiters,
+            $comparator
+        );
     }
 
     /**
      * Calculate the word difference between two strings.
      *
-     * @param string $from The 'from' side.
-     * @param string $to   The 'to' side.
+     * @param string        $from              The 'from' side.
+     * @param string        $to                The 'to' side.
+     * @param boolean|null  $compareDelimiters True if delimiters should also be compared.
+     * @param callable|null $comparator        The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
-    public function wordDifference($from, $to)
-    {
-        return $this->stringDifference('/([ \t\r\n\f]+)/', $from, $to);
+    public function wordDifference(
+        $from,
+        $to,
+        $compareDelimiters = null,
+        $comparator = null
+    ) {
+        return $this->stringDifference(
+            '/([ \t\r\n\f]+)/',
+            $from,
+            $to,
+            $compareDelimiters,
+            $comparator
+        );
     }
 
     /**
@@ -159,12 +256,13 @@ class DifferenceEngine implements DifferenceEngineInterface
      *
      * @link http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
      *
-     * @param array<integer,mixed> $first  The first sequence.
-     * @param array<integer,mixed> $second The second sequence.
+     * @param array<integer,mixed> $first      The first sequence.
+     * @param array<integer,mixed> $second     The second sequence.
+     * @param callable             $comparator The comparator to use when determining equality.
      *
      * @return array<integer,mixed> The longest common subsequence.
      */
-    protected function lcs(array $first, array $second)
+    protected function lcs(array $first, array $second, $comparator)
     {
         $m = count($first);
         $n = count($second);
@@ -175,7 +273,7 @@ class DifferenceEngine implements DifferenceEngineInterface
         // compute length of lcs and all subproblems
         for ($i = $m - 1; $i >= 0; $i--) {
             for ($j = $n - 1; $j >= 0; $j--) {
-                if ($first[$i] === $second[$j]) {
+                if (0 === $comparator($first[$i], $second[$j])) {
                     $a[$i][$j] =
                         (isset($a[$i + 1][$j + 1]) ? $a[$i + 1][$j + 1] : 0) +
                         1;
@@ -194,8 +292,8 @@ class DifferenceEngine implements DifferenceEngineInterface
         $lcs = array();
 
         while ($i < $m && $j < $n) {
-            if ($first[$i] === $second[$j]) {
-                $lcs[] = $first[$i];
+            if (0 === $comparator($first[$i], $second[$j])) {
+                $lcs[] = $second[$j];
 
                 $i++;
                 $j++;
@@ -244,4 +342,5 @@ class DifferenceEngine implements DifferenceEngineInterface
     }
 
     private static $instance;
+    private $defaultComparator;
 }

@@ -21,6 +21,23 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
         $this->subject = new DifferenceEngine();
     }
 
+    public function testConstructor()
+    {
+        $defaultComparator = function () {};
+        $this->subject = new DifferenceEngine($defaultComparator);
+
+        $this->assertSame($defaultComparator, $this->subject->defaultComparator());
+    }
+
+    public function testConstructorDefaults()
+    {
+        $defaultComparator = $this->subject->defaultComparator();
+
+        $this->assertSame(0, $defaultComparator('a', 'a'));
+        $this->assertSame(1, $defaultComparator('b', 'a'));
+        $this->assertSame(-1, $defaultComparator('a', 'b'));
+    }
+
     public function differenceData()
     {
         return array(
@@ -221,8 +238,83 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
      */
     public function testDifference($from, $to, $expected)
     {
-        $this->assertEquals($expected, $this->subject->difference($from, $to));
-        $this->assertSame($expected, $this->subject->difference($from, $to));
+        $actual = $this->subject->difference($from, $to);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testDifferenceWithCustomComparator()
+    {
+        $comparator = function ($left, $right) {
+            return strcmp(substr($left, 0, 1), substr($right, 0, 1));
+        };
+        $from = array('apple', 'orange', 'banana');
+        $to = array('anteater', 'elephant', 'orangutan', 'snake');
+        $expected = array(
+            array(' ', 'anteater'),
+            array('+', 'elephant'),
+            array(' ', 'orangutan'),
+            array('-', 'banana'),
+            array('+', 'snake'),
+        );
+        $actual = $this->subject->difference($from, $to, $comparator);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testStringDifference()
+    {
+        $from = "a\nb\nc\n";
+        $to = "a\r\nd\rc\n";
+        $expected = array(
+            array(' ', "a\r\n"),
+            array('-', "b\n"),
+            array('+', "d\r"),
+            array(' ', "c\n"),
+        );
+        $actual = $this->subject->stringDifference('/(\R)/', $from, $to);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testStringDifferenceWithCompareDelimiters()
+    {
+        $from = "a\nb\nc\n";
+        $to = "a\r\nd\rc\n";
+        $expected = array(
+            array('-', "a\n"),
+            array('-', "b\n"),
+            array('+', "a\r\n"),
+            array('+', "d\r"),
+            array(' ', "c\n"),
+        );
+        $actual = $this->subject->stringDifference('/(\R)/', $from, $to, true);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testStringDifferenceWithCustomComparator()
+    {
+        $comparator = function ($left, $right) {
+            return strcmp(substr($left, 0, 1), substr($right, 0, 1));
+        };
+        $from = "apple\norange\nbanana\n";
+        $to = "anteater\r\nelephant\rorangutan\nsnake\r\n";
+        $expected = array(
+            array(' ', "anteater\r\n"),
+            array('+', "elephant\r"),
+            array(' ', "orangutan\n"),
+            array('-', "banana\n"),
+            array('+', "snake\r\n"),
+        );
+        $actual = $this->subject->stringDifference('/(\R)/', $from, $to, null, $comparator);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function lineDifferenceData()
@@ -379,8 +471,10 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
      */
     public function testLineDifference($from, $to, $expected)
     {
-        $this->assertEquals($expected, $this->subject->lineDifference($from, $to));
-        $this->assertSame($expected, $this->subject->lineDifference($from, $to));
+        $actual = $this->subject->lineDifference($from, $to);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function wordDifferenceData()
@@ -457,8 +551,10 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
      */
     public function testWordDifference($from, $to, $expected)
     {
-        $this->assertEquals($expected, $this->subject->wordDifference($from, $to));
-        $this->assertSame($expected, $this->subject->wordDifference($from, $to));
+        $actual = $this->subject->wordDifference($from, $to);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testInstance()
