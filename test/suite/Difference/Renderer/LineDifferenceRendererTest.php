@@ -69,16 +69,16 @@ class LineDifferenceRendererTest extends PHPUnit_Framework_TestCase
         $from = file_get_contents($fixturePath . '/' . $testName . '/from');
         $to = file_get_contents($fixturePath . '/' . $testName . '/to');
         $expected = file_get_contents($fixturePath . '/' . $testName . '/diff');
-
-        $this->assertSame(
-            $expected,
-            $this->subject->renderLineDifference(
-                $this->engine->lineDifference($from, $to),
-                $fromLabel,
-                $toLabel,
-                $contextSize
-            )
+        $actual = $this->subject->renderLineDifference(
+            $this->engine->lineDifference($from, $to),
+            $fromLabel,
+            $toLabel,
+            $contextSize
         );
+
+        // echo "\n" .$expected, "\n" .$actual;
+
+        $this->assertSame($expected, $actual);
     }
 
     public function testInstance()
