@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Difference\Renderer;
 
 /**
- * The interface implemented by difference renderers.
+ * The interface implemented by line difference renderers.
  */
-interface DifferenceRendererInterface
+interface LineDifferenceRendererInterface
 {
     /**
      * Render a line difference.
