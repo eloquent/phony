@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Difference;
 
+use Eloquent\Phony\Comparator\ComparatorInterface;
+use Eloquent\Phony\Comparator\DeepComparator;
+
 /**
  * Calculates the difference between two sequences.
  */
@@ -33,48 +36,43 @@ class DifferenceEngine implements DifferenceEngineInterface
     /**
      * Construct a new difference engine.
      *
-     * @param callable|null $defaultComparator The default comparator to use when determining equality.
+     * @param ComparatorInterface|null $comparator The default comparator to use when determining equality.
      */
-    public function __construct($defaultComparator = null)
+    public function __construct($comparator = null)
     {
-        if (null === $defaultComparator) {
-            $defaultComparator = function ($left, $right) {
-                if ($left < $right) {
-                    return -1;
-                } elseif ($right < $left) {
-                    return 1;
-                }
-
-                return 0;
-            };
+        if (null === $comparator) {
+            $comparator = DeepComparator::instance();
         }
 
-        $this->defaultComparator = $defaultComparator;
+        $this->comparator = $comparator;
     }
 
     /**
      * Get the default comparator.
      *
-     * @return callable The default comparator.
+     * @return ComparatorInterface The default comparator.
      */
-    public function defaultComparator()
+    public function comparator()
     {
-        return $this->defaultComparator;
+        return $this->comparator;
     }
 
     /**
      * Calculate the difference between two sequences.
      *
-     * @param array<integer,mixed> $from       The 'from' side.
-     * @param array<integer,mixed> $to         The 'to' side.
-     * @param callable|null        $comparator The comparator to use when determining equality.
+     * @param array<integer,mixed>     $from       The 'from' side.
+     * @param array<integer,mixed>     $to         The 'to' side.
+     * @param ComparatorInterface|null $comparator The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
-    public function difference(array $from, array $to, $comparator = null)
-    {
+    public function difference(
+        array $from,
+        array $to,
+        ComparatorInterface $comparator = null
+    ) {
         if (null === $comparator) {
-            $comparator = $this->defaultComparator;
+            $comparator = $this->comparator;
         }
 
         $common = $this->lcs($from, $to, $comparator);
@@ -83,14 +81,14 @@ class DifferenceEngine implements DifferenceEngineInterface
         foreach ($common as $item) {
             while (
                 ($fromPair = each($from)) &&
-                0 !== $comparator($fromPair[1], $item)
+                0 !== $comparator->compare($fromPair[1], $item)
             ) {
                 $difference[] = array('-', $fromPair[1]);
             }
 
             while (
                 ($toPair = each($to)) &&
-                0 !== $comparator($toPair[1], $item)
+                0 !== $comparator->compare($toPair[1], $item)
             ) {
                 $difference[] = array('+', $toPair[1]);
             }
@@ -112,11 +110,11 @@ class DifferenceEngine implements DifferenceEngineInterface
     /**
      * Calculate the difference between two strings, split by a pattern.
      *
-     * @param string        $pattern           The pattern to use for splitting.
-     * @param string        $from              The 'from' side.
-     * @param string        $to                The 'to' side.
-     * @param boolean|null  $compareDelimiters True if delimiters should also be compared.
-     * @param callable|null $comparator        The comparator to use when determining equality.
+     * @param string                   $pattern           The pattern to use for splitting.
+     * @param string                   $from              The 'from' side.
+     * @param string                   $to                The 'to' side.
+     * @param boolean|null             $compareDelimiters True if delimiters should also be compared.
+     * @param ComparatorInterface|null $comparator        The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
@@ -125,13 +123,13 @@ class DifferenceEngine implements DifferenceEngineInterface
         $from,
         $to,
         $compareDelimiters = null,
-        $comparator = null
+        ComparatorInterface $comparator = null
     ) {
         if (null === $compareDelimiters) {
             $compareDelimiters = false;
         }
         if (null === $comparator) {
-            $comparator = $this->defaultComparator;
+            $comparator = $this->comparator;
         }
 
         list($fromCombined, $fromAtoms, $fromDelimiters) =
@@ -154,14 +152,14 @@ class DifferenceEngine implements DifferenceEngineInterface
         foreach ($common as $index => $item) {
             while (
                 ($fromPair = each($fromSubject)) &&
-                0 !== $comparator($fromPair[1], $item)
+                0 !== $comparator->compare($fromPair[1], $item)
             ) {
                 $difference[] = array('-', $fromCombined[$fromPair[0]]);
             }
 
             while (
                 ($toPair = each($toSubject)) &&
-                0 !== $comparator($toPair[1], $item)
+                0 !== $comparator->compare($toPair[1], $item)
             ) {
                 $difference[] = array('+', $toCombined[$toPair[0]]);
             }
@@ -171,7 +169,7 @@ class DifferenceEngine implements DifferenceEngineInterface
                     $isDifferent = true;
                 } else {
                     $isDifferent = $commonCount - 1 === $index &&
-                        0 !== $comparator(
+                        0 !== $comparator->compare(
                             $fromDelimiters[$fromPair[0]],
                             $toDelimiters[$toPair[0]]
                         );
@@ -204,10 +202,10 @@ class DifferenceEngine implements DifferenceEngineInterface
     /**
      * Calculate the line difference between two strings.
      *
-     * @param string        $from              The 'from' side.
-     * @param string        $to                The 'to' side.
-     * @param boolean|null  $compareDelimiters True if delimiters should also be compared.
-     * @param callable|null $comparator        The comparator to use when determining equality.
+     * @param string                   $from              The 'from' side.
+     * @param string                   $to                The 'to' side.
+     * @param boolean|null             $compareDelimiters True if delimiters should also be compared.
+     * @param ComparatorInterface|null $comparator        The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
@@ -215,7 +213,7 @@ class DifferenceEngine implements DifferenceEngineInterface
         $from,
         $to,
         $compareDelimiters = null,
-        $comparator = null
+        ComparatorInterface $comparator = null
     ) {
         return $this->stringDifference(
             '/(\R)/',
@@ -229,10 +227,10 @@ class DifferenceEngine implements DifferenceEngineInterface
     /**
      * Calculate the word difference between two strings.
      *
-     * @param string        $from              The 'from' side.
-     * @param string        $to                The 'to' side.
-     * @param boolean|null  $compareDelimiters True if delimiters should also be compared.
-     * @param callable|null $comparator        The comparator to use when determining equality.
+     * @param string                   $from              The 'from' side.
+     * @param string                   $to                The 'to' side.
+     * @param boolean|null             $compareDelimiters True if delimiters should also be compared.
+     * @param ComparatorInterface|null $comparator        The comparator to use when determining equality.
      *
      * @return array<DifferenceItemInterface> The difference.
      */
@@ -240,7 +238,7 @@ class DifferenceEngine implements DifferenceEngineInterface
         $from,
         $to,
         $compareDelimiters = null,
-        $comparator = null
+        ComparatorInterface $comparator = null
     ) {
         return $this->stringDifference(
             '/([ \t\r\n\f]+)/',
@@ -258,12 +256,15 @@ class DifferenceEngine implements DifferenceEngineInterface
      *
      * @param array<integer,mixed> $first      The first sequence.
      * @param array<integer,mixed> $second     The second sequence.
-     * @param callable             $comparator The comparator to use when determining equality.
+     * @param ComparatorInterface  $comparator The comparator to use when determining equality.
      *
      * @return array<integer,mixed> The longest common subsequence.
      */
-    protected function lcs(array $first, array $second, $comparator)
-    {
+    protected function lcs(
+        array $first,
+        array $second,
+        ComparatorInterface $comparator
+    ) {
         $m = count($first);
         $n = count($second);
 
@@ -273,7 +274,7 @@ class DifferenceEngine implements DifferenceEngineInterface
         // compute length of lcs and all subproblems
         for ($i = $m - 1; $i >= 0; $i--) {
             for ($j = $n - 1; $j >= 0; $j--) {
-                if (0 === $comparator($first[$i], $second[$j])) {
+                if (0 === $comparator->compare($first[$i], $second[$j])) {
                     $a[$i][$j] =
                         (isset($a[$i + 1][$j + 1]) ? $a[$i + 1][$j + 1] : 0) +
                         1;
@@ -292,7 +293,7 @@ class DifferenceEngine implements DifferenceEngineInterface
         $lcs = array();
 
         while ($i < $m && $j < $n) {
-            if (0 === $comparator($first[$i], $second[$j])) {
+            if (0 === $comparator->compare($first[$i], $second[$j])) {
                 $lcs[] = $second[$j];
 
                 $i++;
@@ -342,5 +343,5 @@ class DifferenceEngine implements DifferenceEngineInterface
     }
 
     private static $instance;
-    private $defaultComparator;
+    private $comparator;
 }

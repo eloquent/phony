@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Comparator\ComparatorInterface;
+use Eloquent\Phony\Comparator\DeepComparator;
+
 /**
  * A matcher that tests if the value is equal to (==) another value.
  */
@@ -21,9 +24,14 @@ class EqualToMatcher extends AbstractMatcher
      *
      * @param mixed $value The value to check against.
      */
-    public function __construct($value)
+    public function __construct($value, ComparatorInterface $comparator = null)
     {
+        if (null === $comparator) {
+            $comparator = DeepComparator::instance();
+        }
+
         $this->value = $value;
+        $this->comparator = $comparator;
     }
 
     /**
@@ -37,6 +45,16 @@ class EqualToMatcher extends AbstractMatcher
     }
 
     /**
+     * Get the comparator.
+     *
+     * @return ComparatorInterface The comparator.
+     */
+    public function comparator()
+    {
+        return $this->comparator;
+    }
+
+    /**
      * Returns true if the supplied value matches.
      *
      * @param mixed $value The value to check.
@@ -45,7 +63,7 @@ class EqualToMatcher extends AbstractMatcher
      */
     public function matches($value)
     {
-        return $value == $this->value;
+        return 0 === $this->comparator->compare($value, $this->value);
     }
 
     /**

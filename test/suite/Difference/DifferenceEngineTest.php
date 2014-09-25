@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Difference;
 
+use Eloquent\Phony\Comparator\DeepComparator;
+use Eloquent\Phony\Test\TestComparator;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -18,24 +20,20 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new DifferenceEngine();
+        $this->comparator = new DeepComparator();
+        $this->subject = new DifferenceEngine($this->comparator);
     }
 
     public function testConstructor()
     {
-        $defaultComparator = function () {};
-        $this->subject = new DifferenceEngine($defaultComparator);
-
-        $this->assertSame($defaultComparator, $this->subject->defaultComparator());
+        $this->assertSame($this->comparator, $this->subject->comparator());
     }
 
     public function testConstructorDefaults()
     {
-        $defaultComparator = $this->subject->defaultComparator();
+        $this->subject = new DifferenceEngine();
 
-        $this->assertSame(0, $defaultComparator('a', 'a'));
-        $this->assertSame(1, $defaultComparator('b', 'a'));
-        $this->assertSame(-1, $defaultComparator('a', 'b'));
+        $this->assertSame(DeepComparator::instance(), $this->subject->comparator());
     }
 
     public function differenceData()
@@ -246,9 +244,11 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
 
     public function testDifferenceWithCustomComparator()
     {
-        $comparator = function ($left, $right) {
-            return strcmp(substr($left, 0, 1), substr($right, 0, 1));
-        };
+        $comparator = new TestComparator(
+            function ($left, $right) {
+                return strcmp(substr($left, 0, 1), substr($right, 0, 1));
+            }
+        );
         $from = array('apple', 'orange', 'banana');
         $to = array('anteater', 'elephant', 'orangutan', 'snake');
         $expected = array(
@@ -299,9 +299,11 @@ class DifferenceEngineTest extends PHPUnit_Framework_TestCase
 
     public function testStringDifferenceWithCustomComparator()
     {
-        $comparator = function ($left, $right) {
-            return strcmp(substr($left, 0, 1), substr($right, 0, 1));
-        };
+        $comparator = new TestComparator(
+            function ($left, $right) {
+                return strcmp(substr($left, 0, 1), substr($right, 0, 1));
+            }
+        );
         $from = "apple\norange\nbanana\n";
         $to = "anteater\r\nelephant\rorangutan\nsnake\r\n";
         $expected = array(

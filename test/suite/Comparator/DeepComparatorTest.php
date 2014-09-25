@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Comparator;
 use DateTime;
 use Eloquent\Phony\Test\ChildClass;
 use Eloquent\Phony\Test\ParentClass;
+use Eloquent\Phony\Test\TestComparator;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use stdClass;
@@ -22,13 +23,17 @@ class DeepComparatorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->fallbackComparator = $this->getMock('Eloquent\Phony\Comparator\PhpComparator', null);
+        $comparator = new StrictPhpComparator();
+        $this->fallbackComparator = new TestComparator(
+            function ($left, $right) use ($comparator) {
+                return $comparator->compare($left, $right);
+            }
+        );
         $this->subject = new DeepComparator($this->fallbackComparator);
     }
 
     public function testConstructor()
     {
-        $this->fallbackComparator = $this->getMock('Eloquent\Phony\Comparator\PhpComparator', null);
         $this->subject = new DeepComparator($this->fallbackComparator, true);
 
         $this->assertSame($this->fallbackComparator, $this->subject->fallbackComparator());
@@ -50,17 +55,16 @@ class DeepComparatorTest extends PHPUnit_Framework_TestCase
 
     public function testCompareWithObjectReferences()
     {
-        $this->fallbackComparator->expects($this->never())->method('compare');
         $value = (object) array('foo' => 'bar');
 
         $this->assertSame(0, $this->subject->compare($value, $value));
+        $this->assertSame(array(), $this->fallbackComparator->calls());
     }
 
     public function testCompareWithEmptyArrays()
     {
-        $this->fallbackComparator->expects($this->never())->method('compare');
-
         $this->assertSame(0, $this->subject->compare(array(), array()));
+        $this->assertSame(array(), $this->fallbackComparator->calls());
     }
 
     public function testCompareWithArrays()
