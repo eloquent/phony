@@ -64,7 +64,7 @@ class DifferenceEngine implements DifferenceEngineInterface
      * @param array<integer,mixed>     $to         The 'to' side.
      * @param ComparatorInterface|null $comparator The comparator to use when determining equality.
      *
-     * @return array<DifferenceItemInterface> The difference.
+     * @return array<tuple<string,string>> The difference as an array of 2-tuples of change type and content.
      */
     public function difference(
         array $from,
@@ -116,7 +116,7 @@ class DifferenceEngine implements DifferenceEngineInterface
      * @param boolean|null             $compareDelimiters True if delimiters should also be compared.
      * @param ComparatorInterface|null $comparator        The comparator to use when determining equality.
      *
-     * @return array<DifferenceItemInterface> The difference.
+     * @return array<tuple<string,string>> The difference as an array of 2-tuples of change type and content.
      */
     public function stringDifference(
         $pattern,
@@ -207,7 +207,7 @@ class DifferenceEngine implements DifferenceEngineInterface
      * @param boolean|null             $compareDelimiters True if delimiters should also be compared.
      * @param ComparatorInterface|null $comparator        The comparator to use when determining equality.
      *
-     * @return array<DifferenceItemInterface> The difference.
+     * @return array<tuple<string,string>> The difference as an array of 2-tuples of change type and content.
      */
     public function lineDifference(
         $from,
@@ -232,7 +232,7 @@ class DifferenceEngine implements DifferenceEngineInterface
      * @param boolean|null             $compareDelimiters True if delimiters should also be compared.
      * @param ComparatorInterface|null $comparator        The comparator to use when determining equality.
      *
-     * @return array<DifferenceItemInterface> The difference.
+     * @return array<tuple<string,string>> The difference as an array of 2-tuples of change type and content.
      */
     public function wordDifference(
         $from,

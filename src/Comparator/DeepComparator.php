@@ -133,7 +133,7 @@ class DeepComparator implements ComparatorInterface
             return $this->compareObject($left, $right, $visitationContext);
         }
 
-        return $this->fallbackComparator()->compare($left, $right);
+        return $this->fallbackComparator->compare($left, $right);
     }
 
     private function compareArray(
