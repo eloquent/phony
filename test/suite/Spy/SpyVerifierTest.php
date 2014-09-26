@@ -151,7 +151,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertSame($this->callA, $this->subject->firstCall());
+        $this->assertEquals($this->wrappedCallA, $this->subject->firstCall());
     }
 
     public function testFirstCallFailureUndefined()
@@ -164,7 +164,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertSame($this->callD, $this->subject->lastCall());
+        $this->assertEquals($this->wrappedCallD, $this->subject->lastCall());
     }
 
     public function testLastCallFailureUndefined()

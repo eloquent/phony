@@ -206,7 +206,7 @@ class SpyVerifier implements SpyVerifierInterface
             throw new UndefinedCallException(0);
         }
 
-        return $calls[0];
+        return $this->callVerifierFactory->adapt($calls[0]);
     }
 
     /**
@@ -229,7 +229,7 @@ class SpyVerifier implements SpyVerifierInterface
             throw new UndefinedCallException($index);
         }
 
-        return $calls[$index];
+        return $this->callVerifierFactory->adapt($calls[$index]);
     }
 
     /**
