@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Matcher;
 
 use PHPUnit_Framework_TestCase;
 use SebastianBergmann\Comparator\Factory;
+use SebastianBergmann\Exporter\Exporter;
 
 class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 {
@@ -20,15 +21,15 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     {
         $this->value = 'value';
         $this->comparatorFactory = new Factory();
-        $this->subject = new EqualToMatcher($this->value, $this->comparatorFactory);
+        $this->exporter = new Exporter();
+        $this->subject = new EqualToMatcher($this->value, $this->comparatorFactory, $this->exporter);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->value, $this->subject->value());
         $this->assertSame($this->comparatorFactory, $this->subject->comparatorFactory());
-        $this->assertSame("'value'", $this->subject->describe());
-        $this->assertSame("'value'", strval($this->subject));
+        $this->assertSame($this->exporter, $this->subject->exporter());
     }
 
     public function testConstructorDefaults()
@@ -36,11 +37,31 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $this->subject = new EqualToMatcher($this->value);
 
         $this->assertEquals($this->comparatorFactory, $this->subject->comparatorFactory());
+        $this->assertEquals($this->exporter, $this->subject->exporter());
     }
 
     public function testMatches()
     {
         $this->assertTrue($this->subject->matches($this->value));
         $this->assertFalse($this->subject->matches('anotherValue'));
+    }
+
+    public function testDescribe()
+    {
+        $this->assertSame('is equal to <string:value>', $this->subject->describe());
+    }
+
+    public function testDescribeWithMultilineString()
+    {
+        $this->subject = new EqualToMatcher("line\nline");
+
+        $this->assertSame('is equal to <text>', $this->subject->describe());
+    }
+
+    public function testDescribeWithNonString()
+    {
+        $this->subject = new EqualToMatcher(111);
+
+        $this->assertSame('is equal to 111', $this->subject->describe());
     }
 }

@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Matcher;
 
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\Factory;
+use SebastianBergmann\Exporter\Exporter;
 
 /**
  * A matcher that tests if the value is equal to (==) another value.
@@ -24,15 +25,23 @@ class EqualToMatcher extends AbstractMatcher
      *
      * @param mixed $value The value to check against.
      * @param Factory|null The comparator factory to use.
+     * @param Exporter|null The exporter to use.
      */
-    public function __construct($value, Factory $comparatorFactory = null)
-    {
+    public function __construct(
+        $value,
+        Factory $comparatorFactory = null,
+        Exporter $exporter = null
+    ) {
         if (null === $comparatorFactory) {
             $comparatorFactory = new Factory();
+        }
+        if (null === $exporter) {
+            $exporter = new Exporter();
         }
 
         $this->value = $value;
         $this->comparatorFactory = $comparatorFactory;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -53,6 +62,16 @@ class EqualToMatcher extends AbstractMatcher
     public function comparatorFactory()
     {
         return $this->comparatorFactory;
+    }
+
+    /**
+     * Get the exporter.
+     *
+     * @return Exporter The exporter.
+     */
+    public function exporter()
+    {
+        return $this->exporter;
     }
 
     /**
@@ -83,9 +102,18 @@ class EqualToMatcher extends AbstractMatcher
      */
     public function describe()
     {
-        return var_export($this->value, true);
+        if (is_string($this->value)) {
+            if (false !== strpos($this->value, "\n")) {
+                return 'is equal to <text>';
+            }
+
+            return sprintf('is equal to <string:%s>', $this->value);
+        }
+
+        return sprintf('is equal to %s', $this->exporter->export($this->value));
     }
 
     private $value;
     private $comparatorFactory;
+    private $exporter;
 }
