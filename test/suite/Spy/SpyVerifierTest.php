@@ -515,6 +515,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
+        $this->assertFalse($this->subject->threw(111));
 
         $this->subject->setCalls($this->calls);
 
@@ -526,6 +527,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
+        $this->assertFalse($this->subject->threw(111));
     }
 
     public function testAlwaysThrew()
@@ -538,6 +540,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->alwaysThrew('InvalidArgumentException'));
         $this->assertFalse($this->subject->alwaysThrew(new Exception()));
         $this->assertFalse($this->subject->alwaysThrew(new RuntimeException()));
+        $this->assertFalse($this->subject->alwaysThrew(111));
 
         $this->subject->setCalls($this->calls);
 
@@ -549,6 +552,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->alwaysThrew('InvalidArgumentException'));
         $this->assertFalse($this->subject->alwaysThrew(new Exception()));
         $this->assertFalse($this->subject->alwaysThrew(new RuntimeException()));
+        $this->assertFalse($this->subject->alwaysThrew(111));
 
         $this->subject->setCalls(array($this->callC, $this->callC));
 
@@ -560,6 +564,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->alwaysThrew('InvalidArgumentException'));
         $this->assertFalse($this->subject->alwaysThrew(new Exception()));
         $this->assertFalse($this->subject->alwaysThrew(new RuntimeException()));
+        $this->assertFalse($this->subject->alwaysThrew(111));
     }
 
     protected function thisValue($closure)

@@ -300,11 +300,15 @@ class CallVerifier implements CallVerifierInterface
             return true;
         }
 
-        if ($type instanceof Exception) {
-            return $this->matcherFactory->equalTo($type)->matches($exception);
+        if (is_string($type)) {
+            return is_a($exception, $type);
         }
 
-        return $exception instanceof $type;
+        if ($type instanceof Exception) {
+            return $exception == $type;
+        }
+
+        return false;
     }
 
     private $call;

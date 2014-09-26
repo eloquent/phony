@@ -18,7 +18,6 @@ use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
-use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -599,8 +598,14 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
-        if ($type instanceof Exception) {
-            $type = $this->matcherFactory->equalTo($type);
+        if (null === $type) {
+            $typeType = 'null';
+        } elseif (is_string($type)) {
+            $typeType = 'string';
+        } elseif ($type instanceof Exception) {
+            $typeType = 'exception';
+        } else {
+            $typeType = 'unknown';
         }
 
         foreach ($calls as $call) {
@@ -609,18 +614,21 @@ class SpyVerifier implements SpyVerifierInterface
                 continue;
             }
 
-            if (null === $type) {
-                return true;
-            }
+            switch ($typeType) {
+                case 'null':
+                    return true;
 
-            if (
-                $type instanceof MatcherInterface && $type->matches($exception)
-            ) {
-                return true;
-            }
+                case 'string':
+                    if (is_a($exception, $type)) {
+                        return true;
+                    } else {
+                        continue 2;
+                    }
 
-            if ($exception instanceof $type) {
-                return true;
+                case 'exception':
+                    if ($exception == $type) {
+                        return true;
+                    }
             }
         }
 
@@ -642,8 +650,14 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
-        if ($type instanceof Exception) {
-            $type = $this->matcherFactory->equalTo($type);
+        if (null === $type) {
+            $typeType = 'null';
+        } elseif (is_string($type)) {
+            $typeType = 'string';
+        } elseif ($type instanceof Exception) {
+            $typeType = 'exception';
+        } else {
+            $typeType = 'unknown';
         }
 
         foreach ($calls as $call) {
@@ -652,18 +666,19 @@ class SpyVerifier implements SpyVerifierInterface
                 return false;
             }
 
-            if (null === $type) {
-                continue;
-            }
+            switch ($typeType) {
+                case 'null':
+                    continue 2;
 
-            if (
-                $type instanceof MatcherInterface && $type->matches($exception)
-            ) {
-                continue;
-            }
+                case 'string':
+                    if (is_a($exception, $type)) {
+                        continue 2;
+                    }
 
-            if ($exception instanceof $type) {
-                continue;
+                case 'exception':
+                    if ($exception == $type) {
+                        continue 2;
+                    }
             }
 
             return false;

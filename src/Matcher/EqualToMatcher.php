@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Matcher;
 
-use Eloquent\Phony\Comparator\ComparatorInterface;
-use Eloquent\Phony\Comparator\DeepComparator;
+use SebastianBergmann\Comparator\ComparisonFailure;
+use SebastianBergmann\Comparator\Factory;
 
 /**
  * A matcher that tests if the value is equal to (==) another value.
@@ -23,15 +23,16 @@ class EqualToMatcher extends AbstractMatcher
      * Construct a new equal to matcher.
      *
      * @param mixed $value The value to check against.
+     * @param Factory|null The comparator factory to use.
      */
-    public function __construct($value, ComparatorInterface $comparator = null)
+    public function __construct($value, Factory $comparatorFactory = null)
     {
-        if (null === $comparator) {
-            $comparator = DeepComparator::instance();
+        if (null === $comparatorFactory) {
+            $comparatorFactory = new Factory();
         }
 
         $this->value = $value;
-        $this->comparator = $comparator;
+        $this->comparatorFactory = $comparatorFactory;
     }
 
     /**
@@ -45,13 +46,13 @@ class EqualToMatcher extends AbstractMatcher
     }
 
     /**
-     * Get the comparator.
+     * Get the comparator factory.
      *
-     * @return ComparatorInterface The comparator.
+     * @return Factory The comparator factory.
      */
-    public function comparator()
+    public function comparatorFactory()
     {
-        return $this->comparator;
+        return $this->comparatorFactory;
     }
 
     /**
@@ -63,7 +64,16 @@ class EqualToMatcher extends AbstractMatcher
      */
     public function matches($value)
     {
-        return 0 === $this->comparator->compare($value, $this->value);
+        $comparator = $this->comparatorFactory
+            ->getComparatorFor($this->value, $value);
+
+        try {
+            $comparator->assertEquals($this->value, $value);
+        } catch (ComparisonFailure $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -77,4 +87,5 @@ class EqualToMatcher extends AbstractMatcher
     }
 
     private $value;
+    private $comparatorFactory;
 }

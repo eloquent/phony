@@ -214,6 +214,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
+        $this->assertFalse($this->subject->threw(111));
 
         $this->call = new Call(
             $this->arguments,
@@ -231,5 +232,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
+        $this->assertFalse($this->subject->threw(111));
     }
 }

@@ -11,22 +11,22 @@
 
 namespace Eloquent\Phony\Matcher;
 
-use Eloquent\Phony\Comparator\DeepComparator;
 use PHPUnit_Framework_TestCase;
+use SebastianBergmann\Comparator\Factory;
 
 class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         $this->value = 'value';
-        $this->comparator = new DeepComparator();
-        $this->subject = new EqualToMatcher($this->value, $this->comparator);
+        $this->comparatorFactory = new Factory();
+        $this->subject = new EqualToMatcher($this->value, $this->comparatorFactory);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->value, $this->subject->value());
-        $this->assertSame($this->comparator, $this->subject->comparator());
+        $this->assertSame($this->comparatorFactory, $this->subject->comparatorFactory());
         $this->assertSame("'value'", $this->subject->describe());
         $this->assertSame("'value'", strval($this->subject));
     }
@@ -35,7 +35,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new EqualToMatcher($this->value);
 
-        $this->assertSame(DeepComparator::instance(), $this->subject->comparator());
+        $this->assertEquals($this->comparatorFactory, $this->subject->comparatorFactory());
     }
 
     public function testMatches()
