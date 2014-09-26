@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Call;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Call\Exception\CallReturnAssertionException;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -26,14 +29,16 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Construct a new call verifier.
      *
-     * @param CallInterface                 $call            The call.
-     * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
-     * @param MatcherVerifierInterface|null $matcherVerifier The macther verifier to use.
+     * @param CallInterface                   $call              The call.
+     * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
+     * @param MatcherVerifierInterface|null   $matcherVerifier   The matcher verifier to use.
+     * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
      */
     public function __construct(
         CallInterface $call,
         MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null
+        MatcherVerifierInterface $matcherVerifier = null,
+        AssertionRecorderInterface $assertionRecorder = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = new MatcherFactory();
@@ -41,10 +46,14 @@ class CallVerifier implements CallVerifierInterface
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
+        if (null === $assertionRecorder) {
+            $assertionRecorder = AssertionRecorder::instance();
+        }
 
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->assertionRecorder = $assertionRecorder;
 
         $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
@@ -78,6 +87,16 @@ class CallVerifier implements CallVerifierInterface
     public function matcherVerifier()
     {
         return $this->matcherVerifier;
+    }
+
+    /**
+     * Get the assertion recorder.
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
+     */
+    public function assertionRecorder()
+    {
+        return $this->assertionRecorder;
     }
 
     /**
@@ -266,7 +285,8 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledOn($value)
     {
-        return $this->call->thisValue() === $value;
+        return $this->matcherFactory->adapt($value)
+            ->matches($this->call->thisValue());
     }
 
     /**
@@ -280,6 +300,26 @@ class CallVerifier implements CallVerifierInterface
     {
         return $this->matcherFactory->adapt($value)
             ->matches($this->call->returnValue());
+    }
+
+    /**
+     * Throws an exception unless this call returned the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertReturned($value)
+    {
+        $value = $this->matcherFactory->adapt($value);
+
+        if ($value->matches($this->call->returnValue())) {
+            $this->assertionRecorder->recordSuccess();
+        } else {
+            $this->assertionRecorder->recordFailure(
+                new CallReturnAssertionException($this->call, $value)
+            );
+        }
     }
 
     /**
@@ -314,6 +354,7 @@ class CallVerifier implements CallVerifierInterface
     private $call;
     private $matcherFactory;
     private $matcherVerifier;
+    private $assertionRecorder;
     private $duration;
     private $argumentCount;
 }

@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
-use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -21,6 +20,7 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Spy\Exception\UndefinedCallException;
 use Exception;
 
 /**
@@ -190,7 +190,7 @@ class SpyVerifier implements SpyVerifierInterface
             throw new UndefinedCallException($index);
         }
 
-        return $calls[$index];
+        return $this->callVerifierFactory->adapt($calls[$index]);
     }
 
     /**

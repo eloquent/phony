@@ -11,8 +11,10 @@
 
 namespace Eloquent\Phony\Call;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Test\TestAssertionRecorder;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -41,7 +43,9 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->subject = new CallVerifier($this->call, $this->matcherFactory, $this->matcherVerifier);
+        $this->assertionRecorder = new TestAssertionRecorder();
+        $this->subject =
+            new CallVerifier($this->call, $this->matcherFactory, $this->matcherVerifier, $this->assertionRecorder);
 
         $this->earlyCall = new Call(
             $this->arguments,
@@ -66,6 +70,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->argumentCount, $this->subject->argumentCount());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
     }
 
     public function testConstructorDefaults()
@@ -74,6 +79,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
     }
 
     public function testProxyMethods()
@@ -194,7 +200,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledOn()
     {
         $this->assertTrue($this->subject->calledOn($this->thisValue));
-        $this->assertFalse($this->subject->calledOn((object) array()));
+        $this->assertFalse($this->subject->calledOn((object) array('property' => 'value')));
     }
 
     public function testReturned()
@@ -203,6 +209,28 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->returned($this->matcherFactory->adapt($this->returnValue)));
         $this->assertFalse($this->subject->returned('anotherValue'));
         $this->assertFalse($this->subject->returned($this->matcherFactory->adapt('anotherValue')));
+    }
+
+    public function testAssertReturned()
+    {
+        $this->assertNull($this->subject->assertReturned($this->returnValue));
+        $this->assertNull($this->subject->assertReturned($this->matcherFactory->adapt($this->returnValue)));
+        $this->assertEquals(array(array('recordSuccess'), array('recordSuccess')), $this->assertionRecorder->calls());
+    }
+
+    public function testAssertReturnedFailure()
+    {
+        $exception = null;
+        try {
+            $this->subject->assertReturned('anotherValue');
+        } catch (Exception $exception) {}
+
+        $this->assertInstanceOf('Eloquent\Phony\Call\Exception\CallReturnAssertionException', $exception);
+        $this->assertSame(
+            'The return value did not match <is equal to <string:anotherValue>>.',
+            $exception->getMessage()
+        );
+        $this->assertEquals(array(array('recordFailure', $exception)), $this->assertionRecorder->calls());
     }
 
     public function testThrew()

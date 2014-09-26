@@ -52,6 +52,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callC = new Call(array(), $this->returnValueA, 2, 5.55, 6.66, $this->exceptionA, $this->thisValueA);
         $this->callD = new Call(array(), $this->returnValueB, 3, 7.77, 8.88, $this->exceptionB, $this->thisValueB);
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
+        $this->wrappedCallA = $this->callVerifierFactory->adapt($this->callA);
+        $this->wrappedCallB = $this->callVerifierFactory->adapt($this->callB);
+        $this->wrappedCallC = $this->callVerifierFactory->adapt($this->callC);
+        $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
+        $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
     }
 
     public function testConstructor()
@@ -76,7 +81,6 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->subject->hasSubject());
         $this->assertSame($this->spySubject, $this->subject->subject());
-        $this->assertSame(array(), $this->subject->calls());
     }
 
     public function testSetCalls()
@@ -95,6 +99,15 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->addCall($this->callB);
 
         $this->assertSame(array($this->callA, $this->callB), $this->subject->spy()->calls());
+    }
+
+    public function testCalls()
+    {
+        $this->assertSame(array(), $this->subject->calls());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals($this->wrappedCalls, $this->subject->calls());
     }
 
     public function testInvoke()
@@ -124,13 +137,13 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertSame($this->callA, $this->subject->callAt(0));
-        $this->assertSame($this->callB, $this->subject->callAt(1));
+        $this->assertEquals($this->wrappedCallA, $this->subject->callAt(0));
+        $this->assertEquals($this->wrappedCallB, $this->subject->callAt(1));
     }
 
     public function testCallAtFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->setExpectedException('Eloquent\Phony\Spy\Exception\UndefinedCallException');
         $this->subject->callAt(0);
     }
 
@@ -143,7 +156,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testFirstCallFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->setExpectedException('Eloquent\Phony\Spy\Exception\UndefinedCallException');
         $this->subject->firstCall();
     }
 
@@ -156,7 +169,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testLastCallFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->setExpectedException('Eloquent\Phony\Spy\Exception\UndefinedCallException');
         $this->subject->lastCall();
     }
 
