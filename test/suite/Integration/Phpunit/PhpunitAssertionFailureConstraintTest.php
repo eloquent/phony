@@ -11,22 +11,20 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Test\TestAssertionException;
-use Exception;
 use PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_ExpectationFailedException;
 
 class PhpunitAssertionFailureConstraintTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->failure = new TestAssertionException('message');
-        $this->subject = new PhpunitAssertionFailureConstraint($this->failure);
+        $this->description = 'description';
+        $this->subject = new PhpunitAssertionFailureConstraint($this->description);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->failure, $this->subject->failure());
-        $this->assertSame($this->failure->getMessage(), $this->subject->toString());
+        $this->assertSame($this->description, $this->subject->toString());
     }
 
     public function testEvaluate()
@@ -34,8 +32,8 @@ class PhpunitAssertionFailureConstraintTest extends PHPUnit_Framework_TestCase
         $exception = null;
         try {
             $this->subject->evaluate(null);
-        } catch (Exception $exception) {}
+        } catch (PHPUnit_Framework_ExpectationFailedException $exception) {}
 
-        $this->assertEquals(new PhpunitAssertionException($this->failure), $exception);
+        $this->assertEquals(new PHPUnit_Framework_ExpectationFailedException($this->description), $exception);
     }
 }

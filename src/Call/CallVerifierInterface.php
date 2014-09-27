@@ -106,6 +106,15 @@ interface CallVerifierInterface extends CallInterface
     public function returned($value);
 
     /**
+     * Throws an exception unless this call returned the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertReturned($value);
+
+    /**
      * Returns true if an exception of the supplied type was thrown.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
@@ -113,4 +122,14 @@ interface CallVerifierInterface extends CallInterface
      * @return boolean True if a matching exception was thrown.
      */
     public function threw($type = null);
+
+    /**
+     * Throws an exception unless this call threw an exception of the supplied
+     * type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertThrew($type = null);
 }

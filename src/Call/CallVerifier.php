@@ -13,13 +13,13 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Exception;
+use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Provides convenience methods for verifying the details of a call.
@@ -33,12 +33,14 @@ class CallVerifier implements CallVerifierInterface
      * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
      * @param MatcherVerifierInterface|null   $matcherVerifier   The matcher verifier to use.
      * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
+     * @param Exporter|null                   $exporter          The exporter to use.
      */
     public function __construct(
         CallInterface $call,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
-        AssertionRecorderInterface $assertionRecorder = null
+        AssertionRecorderInterface $assertionRecorder = null,
+        Exporter $exporter = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -49,11 +51,15 @@ class CallVerifier implements CallVerifierInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
+        if (null === $exporter) {
+            $exporter = new Exporter();
+        }
 
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->assertionRecorder = $assertionRecorder;
+        $this->exporter = $exporter;
 
         $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
@@ -97,6 +103,16 @@ class CallVerifier implements CallVerifierInterface
     public function assertionRecorder()
     {
         return $this->assertionRecorder;
+    }
+
+    /**
+     * Get the exporter.
+     *
+     * @return Exporter The exporter.
+     */
+    public function exporter()
+    {
+        return $this->exporter;
     }
 
     /**
@@ -312,16 +328,17 @@ class CallVerifier implements CallVerifierInterface
     public function assertReturned($value)
     {
         $value = $this->matcherFactory->adapt($value);
+        $returnValue = $this->call->returnValue();
 
-        if ($value->matches($this->call->returnValue())) {
+        if ($value->matches($returnValue)) {
             $this->assertionRecorder->recordSuccess();
         } else {
             $this->assertionRecorder->recordFailure(
-                new AssertionException(
-                    sprintf(
-                        'The return value did not match <%s>.',
-                        $value->describe()
-                    )
+                sprintf(
+                    'The return value did not match <%s>. ' .
+                        'Actual return value was %s.',
+                    $value->describe(),
+                    $this->exporter->export($returnValue)
                 )
             );
         }
@@ -349,17 +366,90 @@ class CallVerifier implements CallVerifierInterface
             return is_a($exception, $type);
         }
 
-        if ($type instanceof Exception) {
-            return $exception == $type;
-        }
+        return $type instanceof Exception && $exception == $type;
+    }
 
-        return false;
+    /**
+     * Throws an exception unless this call threw an exception of the supplied
+     * type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertThrew($type = null)
+    {
+        $exception = $this->call->exception();
+
+        if (null === $type) {
+            if (null === $exception) {
+                $this->assertionRecorder->recordFailure(
+                    'Expected an exception, but no exception was thrown.'
+                );
+            } else { // @codeCoverageIgnore
+                $this->assertionRecorder->recordSuccess();
+            }
+        } elseif (is_string($type)) {
+            if (is_a($exception, $type)) {
+                $this->assertionRecorder->recordSuccess();
+            } elseif (null === $exception) {
+                $this->assertionRecorder->recordFailure(
+                    sprintf(
+                        'Expected an exception of type %s, but no exception ' .
+                            'was thrown.',
+                        $this->exporter->export($type)
+                    )
+                );
+            } else { // @codeCoverageIgnore
+                $this->assertionRecorder->recordFailure(
+                    sprintf(
+                        'Expected an exception of type %s. Actual exception ' .
+                            'was %s(%s).',
+                        $this->exporter->export($type),
+                        get_class($exception),
+                        $this->exporter->export($exception->getMessage())
+                    )
+                );
+            }
+        } elseif ($type instanceof Exception) {
+            if ($exception == $type) {
+                $this->assertionRecorder->recordSuccess();
+            } elseif (null === $exception) {
+                $this->assertionRecorder->recordFailure(
+                    sprintf(
+                        'Expected an exception equal to %s(%s), but no ' .
+                            'exception was thrown.',
+                        get_class($type),
+                        $this->exporter->export($type->getMessage())
+                    )
+                );
+            } else { // @codeCoverageIgnore
+                $this->assertionRecorder->recordFailure(
+                    sprintf(
+                        'Expected an exception equal to %s(%s). Actual ' .
+                            'exception was %s(%s).',
+                        get_class($type),
+                        $this->exporter->export($type->getMessage()),
+                        get_class($exception),
+                        $this->exporter->export($exception->getMessage())
+                    )
+                );
+            }
+        } else {
+            $this->assertionRecorder->recordFailure(
+                sprintf(
+                    'Unable to match exceptions against %s.',
+                    $this->exporter->export($type)
+                )
+            );
+        }
     }
 
     private $call;
     private $matcherFactory;
     private $matcherVerifier;
     private $assertionRecorder;
+    private $exporter;
     private $duration;
     private $argumentCount;
 }

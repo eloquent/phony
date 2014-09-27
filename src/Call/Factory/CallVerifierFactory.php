@@ -20,6 +20,7 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Creates call verifiers.
@@ -46,11 +47,13 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
      * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
      * @param MatcherVerifierInterface|null   $matcherVerifier   The macther verifier to use.
      * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
+     * @param Exporter|null                   $exporter          The exporter to use.
      */
     public function __construct(
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
-        AssertionRecorderInterface $assertionRecorder = null
+        AssertionRecorderInterface $assertionRecorder = null,
+        Exporter $exporter = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -61,10 +64,14 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
+        if (null === $exporter) {
+            $exporter = new Exporter();
+        }
 
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->assertionRecorder = $assertionRecorder;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -98,6 +105,16 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     }
 
     /**
+     * Get the exporter.
+     *
+     * @return Exporter The exporter.
+     */
+    public function exporter()
+    {
+        return $this->exporter;
+    }
+
+    /**
      * Wrap the supplied call in a verifier, or return unchanged if already
      * wrapped.
      *
@@ -115,7 +132,8 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
             $call,
             $this->matcherFactory,
             $this->matcherVerifier,
-            $this->assertionRecorder
+            $this->assertionRecorder,
+            $this->exporter
         );
     }
 
@@ -141,4 +159,5 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     private $matcherFactory;
     private $matcherVerifier;
     private $assertionRecorder;
+    private $exporter;
 }

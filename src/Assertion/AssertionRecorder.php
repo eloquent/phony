@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Assertion;
 
-use Eloquent\Phony\Assertion\Exception\AssertionExceptionInterface;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Exception;
 
 /**
@@ -44,13 +44,13 @@ class AssertionRecorder implements AssertionRecorderInterface
     /**
      * Record that an assertion failure occurred.
      *
-     * @param AssertionExceptionInterface $failure The failure.
+     * @param string $description The failure description.
      *
      * @throws Exception The appropriate assertion exception.
      */
-    public function recordFailure(AssertionExceptionInterface $failure)
+    public function recordFailure($description)
     {
-        throw $failure;
+        throw new AssertionException($description);
     }
 
     private static $instance;

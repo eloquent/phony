@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
-use Eloquent\Phony\Assertion\Exception\AssertionExceptionInterface;
 
 class TestAssertionRecorder extends AssertionRecorder
 {
@@ -21,26 +20,16 @@ class TestAssertionRecorder extends AssertionRecorder
         return $this->calls;
     }
 
-    /**
-     * Record that a successful assertion occurred.
-     */
     public function recordSuccess()
     {
         $this->calls[] = array('recordSuccess');
     }
 
-    /**
-     * Record that an assertion failure occurred.
-     *
-     * @param AssertionExceptionInterface $failure The failure.
-     *
-     * @throws Exception The appropriate assertion exception.
-     */
-    public function recordFailure(AssertionExceptionInterface $failure)
+    public function recordFailure($description)
     {
-        $this->calls[] = array('recordFailure', $failure);
+        $this->calls[] = array('recordFailure', $description);
 
-        parent::recordFailure($failure);
+        parent::recordFailure($description);
     }
 
     private $calls = array();

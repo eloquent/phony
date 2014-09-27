@@ -22,11 +22,11 @@ final class AssertionException extends Exception implements
     /**
      * Construct a assertion exception.
      *
-     * @param string         $message The message.
-     * @param Exception|null $cause   The cause, if available.
+     * @param string         $description The failure description.
+     * @param Exception|null $cause       The cause, if available.
      */
-    public function __construct($message, Exception $cause = null)
+    public function __construct($description, Exception $cause = null)
     {
-        parent::__construct($message, 0, $cause);
+        parent::__construct($description, 0, $cause);
     }
 }

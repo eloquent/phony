@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Assertion\Exception\AssertionExceptionInterface;
 use PHPUnit_Framework_Constraint;
+use PHPUnit_Framework_ExpectationFailedException;
 
 /**
  * A PHPUnit constraint that wraps a Phony assertion failure.
@@ -22,42 +22,34 @@ class PhpunitAssertionFailureConstraint extends PHPUnit_Framework_Constraint
     /**
      * Construct a new PHPUnit assertion failure constraint.
      *
-     * @param AssertionExceptionInterface $failure The failure.
+     * @param string $description The failure description.
      */
-    public function __construct(AssertionExceptionInterface $failure)
+    public function __construct($description)
     {
-        $this->failure = $failure;
+        $this->description = $description;
     }
 
     /**
-     * Get the failure.
+     * Get the failure description.
      *
-     * @return AssertionExceptionInterface The failure.
-     */
-    public function failure()
-    {
-        return $this->failure;
-    }
-
-    /**
-     * Throws the wrapped assertion failure exception.
-     *
-     * @throws PhpunitAssertionException When called.
-     */
-    public function evaluate($other, $description = null, $returnResult = null)
-    {
-        throw new PhpunitAssertionException($this->failure);
-    }
-
-    /**
-     * Get a string representation of this constraint.
-     *
-     * @return string A string representation of this constraint.
+     * @return string The failure description.
      */
     public function toString()
     {
-        return $this->failure->getMessage();
+        return $this->description;
     }
 
-    private $failure;
+    /**
+     * Throws the assertion failure exception.
+     *
+     * @throws PHPUnit_Framework_ExpectationFailedException When called.
+     */
+    public function evaluate($other, $description = null, $returnResult = null)
+    {
+        throw new PHPUnit_Framework_ExpectationFailedException(
+            $this->description
+        );
+    }
+
+    private $description;
 }

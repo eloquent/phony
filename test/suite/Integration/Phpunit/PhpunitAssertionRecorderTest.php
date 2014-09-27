@@ -11,9 +11,8 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Test\TestAssertionException;
-use Exception;
 use PHPUnit_Framework_Assert;
+use PHPUnit_Framework_ExpectationFailedException;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -35,14 +34,13 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testRecordFailure()
     {
-        $failure = new TestAssertionException();
+        $description = 'description';
         $exception = null;
         try {
-            $this->subject->recordFailure($failure);
-        } catch (Exception $exception) {}
+            $this->subject->recordFailure($description);
+        } catch (PHPUnit_Framework_ExpectationFailedException $exception) {}
 
-        $this->assertInstanceOf('Eloquent\Phony\Integration\Phpunit\PhpunitAssertionException', $exception);
-        $this->assertSame($failure, $exception->failure());
+        $this->assertEquals(new PHPUnit_Framework_ExpectationFailedException($description), $exception);
     }
 
     public function testInstance()
