@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -24,7 +25,9 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->subject = new CallVerifierFactory($this->matcherFactory, $this->matcherVerifier);
+        $this->assertionRecorder = new AssertionRecorder();
+        $this->subject =
+            new CallVerifierFactory($this->matcherFactory, $this->matcherVerifier, $this->assertionRecorder);
 
         $this->callA = new Call(array(), null, 0, 1.11, 2.22);
         $this->callB = new Call(array(), null, 1, 3.33, 4.44);
@@ -34,6 +37,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
     }
 
     public function testConstructorDefaults()
@@ -42,6 +46,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
     }
 
     public function testAdapt()

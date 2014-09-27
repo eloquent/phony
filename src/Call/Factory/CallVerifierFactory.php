@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRecorderInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Call\CallVerifierInterface;
@@ -41,12 +43,14 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     /**
      * Construct a new call verifier factory.
      *
-     * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
-     * @param MatcherVerifierInterface|null $matcherVerifier The macther verifier to use.
+     * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
+     * @param MatcherVerifierInterface|null   $matcherVerifier   The macther verifier to use.
+     * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
      */
     public function __construct(
         MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null
+        MatcherVerifierInterface $matcherVerifier = null,
+        AssertionRecorderInterface $assertionRecorder = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -54,9 +58,13 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
+        if (null === $assertionRecorder) {
+            $assertionRecorder = AssertionRecorder::instance();
+        }
 
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->assertionRecorder = $assertionRecorder;
     }
 
     /**
@@ -80,6 +88,16 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     }
 
     /**
+     * Get the assertion recorder.
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
+     */
+    public function assertionRecorder()
+    {
+        return $this->assertionRecorder;
+    }
+
+    /**
      * Wrap the supplied call in a verifier, or return unchanged if already
      * wrapped.
      *
@@ -96,7 +114,8 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
         return new CallVerifier(
             $call,
             $this->matcherFactory,
-            $this->matcherVerifier
+            $this->matcherVerifier,
+            $this->assertionRecorder
         );
     }
 
@@ -121,4 +140,5 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     private static $instance;
     private $matcherFactory;
     private $matcherVerifier;
+    private $assertionRecorder;
 }
