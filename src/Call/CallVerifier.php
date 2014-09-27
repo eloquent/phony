@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
-use Eloquent\Phony\Call\Exception\CallReturnAssertionException;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -317,7 +317,12 @@ class CallVerifier implements CallVerifierInterface
             $this->assertionRecorder->recordSuccess();
         } else {
             $this->assertionRecorder->recordFailure(
-                new CallReturnAssertionException($this->call, $value)
+                new AssertionException(
+                    sprintf(
+                        'The return value did not match <%s>.',
+                        $value->describe()
+                    )
+                )
             );
         }
     }

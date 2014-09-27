@@ -225,7 +225,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->subject->assertReturned('anotherValue');
         } catch (Exception $exception) {}
 
-        $this->assertInstanceOf('Eloquent\Phony\Call\Exception\CallReturnAssertionException', $exception);
+        $this->assertInstanceOf('Eloquent\Phony\Assertion\Exception\AssertionException', $exception);
         $this->assertSame(
             'The return value did not match <is equal to <string:anotherValue>>.',
             $exception->getMessage()
