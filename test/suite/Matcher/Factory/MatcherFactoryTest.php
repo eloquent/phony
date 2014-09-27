@@ -15,7 +15,9 @@ use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcher;
 use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Integration\Phpunit\PhpunitMatcher;
 use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
+use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Hamcrest\Core\IsEqual;
 use PHPUnit_Framework_Constraint_IsEqual;
 use PHPUnit_Framework_TestCase;
@@ -28,12 +30,16 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->driverA = new PhpunitMatcherDriver();
         $this->driverB = new HamcrestMatcherDriver();
         $this->drivers = array($this->driverA, $this->driverB);
-        $this->subject = new MatcherFactory($this->drivers);
+        $this->anyMatcher = new AnyMatcher();
+        $this->wildcardAnyMatcher = new WildcardMatcher();
+        $this->subject = new MatcherFactory($this->drivers, $this->anyMatcher, $this->wildcardAnyMatcher);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->drivers, $this->subject->drivers());
+        $this->assertSame($this->anyMatcher, $this->subject->any());
+        $this->assertSame($this->wildcardAnyMatcher, $this->subject->wildcard());
     }
 
     public function testConstructorDefaults()
@@ -41,6 +47,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject = new MatcherFactory();
 
         $this->assertSame(array(), $this->subject->drivers());
+        $this->assertSame(AnyMatcher::instance(), $this->subject->any());
+        $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcard());
     }
 
     public function testSetMatcherDrivers()
@@ -95,6 +103,20 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $expected = array(new EqualToMatcher($valueA), $valueB);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testWildcard()
+    {
+        $expected = new WildcardMatcher(new EqualToMatcher('value'), 111, 222);
+
+        $this->assertEquals($expected, $this->subject->wildcard('value', 111, 222));
+    }
+
+    public function testWildcardWithNullValue()
+    {
+        $expected = new WildcardMatcher($this->anyMatcher, 111, 222);
+
+        $this->assertEquals($expected, $this->subject->wildcard(null, 111, 222));
     }
 
     public function testInstance()

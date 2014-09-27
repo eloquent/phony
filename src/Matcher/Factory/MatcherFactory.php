@@ -11,9 +11,12 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
+use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
  * Creates matchers.
@@ -37,15 +40,28 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Construct a new matcher factory.
      *
-     * @param array<MatcherDriverInterface>|null $drivers The matcher drivers to use.
+     * @param array<MatcherDriverInterface>|null $drivers            The matcher drivers to use.
+     * @param MatcherInterface|null              $anyMatcher         A matcher that matches any value.
+     * @param WildcardMatcherInterface|null      $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
      */
-    public function __construct(array $drivers = null)
-    {
+    public function __construct(
+        array $drivers = null,
+        MatcherInterface $anyMatcher = null,
+        WildcardMatcherInterface $wildcardAnyMatcher = null
+    ) {
         if (null === $drivers) {
             $drivers = array();
         }
+        if (null === $anyMatcher) {
+            $anyMatcher = AnyMatcher::instance();
+        }
+        if (null === $wildcardAnyMatcher) {
+            $wildcardAnyMatcher = WildcardMatcher::instance();
+        }
 
         $this->drivers = $drivers;
+        $this->anyMatcher = $anyMatcher;
+        $this->wildcardAnyMatcher = $wildcardAnyMatcher;
     }
 
     /**
@@ -122,6 +138,16 @@ class MatcherFactory implements MatcherFactoryInterface
     }
 
     /**
+     * Create a new matcher that matches anything.
+     *
+     * @return MatcherInterface The newly created matcher.
+     */
+    public function any()
+    {
+        return $this->anyMatcher;
+    }
+
+    /**
      * Create a new equal to matcher.
      *
      * @param mixed $value The value to check.
@@ -133,6 +159,36 @@ class MatcherFactory implements MatcherFactoryInterface
         return new EqualToMatcher($value);
     }
 
+    /**
+     * Create a new matcher that matches multiple arguments.
+     *
+     * @param mixed        $value            The value to check for each argument.
+     * @param integer|null $minimumArguments The minimum number of arguments.
+     * @param integer|null $maximumArguments The maximum number of arguments.
+     *
+     * @return WildcardMatcherInterface The newly created wildcard matcher.
+     */
+    public function wildcard(
+        $value = null,
+        $minimumArguments = null,
+        $maximumArguments = null
+    ) {
+        if (0 === func_num_args()) {
+            return $this->wildcardAnyMatcher;
+        }
+
+        if (null === $value) {
+            $value = $this->any();
+        } else {
+            $value = $this->adapt($value);
+        }
+
+        return
+            new WildcardMatcher($value, $minimumArguments, $maximumArguments);
+    }
+
     private static $instance;
     private $drivers;
+    private $anyMatcher;
+    private $wildcardAnyMatcher;
 }

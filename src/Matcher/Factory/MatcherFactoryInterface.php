@@ -37,6 +37,13 @@ interface MatcherFactoryInterface
     public function adaptAll(array $values);
 
     /**
+     * Create a new matcher that matches anything.
+     *
+     * @return MatcherInterface The newly created matcher.
+     */
+    public function any();
+
+    /**
      * Create a new equal to matcher.
      *
      * @param mixed $value The value to check.
@@ -44,4 +51,19 @@ interface MatcherFactoryInterface
      * @return MatcherInterface The newly created matcher.
      */
     public function equalTo($value);
+
+    /**
+     * Create a new matcher that matches multiple arguments.
+     *
+     * @param mixed        $value            The value to check for each argument.
+     * @param integer|null $minimumArguments The minimum number of arguments.
+     * @param integer|null $maximumArguments The maximum number of arguments.
+     *
+     * @return WildcardMatcherInterface The newly created wildcard matcher.
+     */
+    public function wildcard(
+        $value = null,
+        $minimumArguments = null,
+        $maximumArguments = null
+    );
 }

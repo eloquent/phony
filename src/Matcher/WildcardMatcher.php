@@ -38,7 +38,7 @@ class WildcardMatcher implements WildcardMatcherInterface
      * @param integer|null          $maximumArguments The maximum number of arguments.
      */
     public function __construct(
-        $matcher = null,
+        MatcherInterface $matcher = null,
         $minimumArguments = null,
         $maximumArguments = null
     ) {
