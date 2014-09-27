@@ -40,7 +40,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new CallVerifierFactory();
 
-        $this->assertEquals($this->matcherFactory, $this->subject->matcherFactory());
+        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
     }
 

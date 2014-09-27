@@ -46,7 +46,7 @@ class SpyVerifier implements SpyVerifierInterface
             $spy = new Spy();
         }
         if (null === $matcherFactory) {
-            $matcherFactory = new MatcherFactory();
+            $matcherFactory = MatcherFactory::instance();
         }
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();

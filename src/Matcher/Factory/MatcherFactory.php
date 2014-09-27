@@ -21,6 +21,20 @@ use Eloquent\Phony\Matcher\MatcherInterface;
 class MatcherFactory implements MatcherFactoryInterface
 {
     /**
+     * Get the static instance of this factory.
+     *
+     * @return MatcherFactoryInterface The static factory.
+     */
+    public static function instance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * Construct a new matcher factory.
      *
      * @param array<MatcherDriverInterface>|null $drivers The matcher drivers to use.
@@ -119,5 +133,6 @@ class MatcherFactory implements MatcherFactoryInterface
         return new EqualToMatcher($value);
     }
 
+    private static $instance;
     private $drivers;
 }

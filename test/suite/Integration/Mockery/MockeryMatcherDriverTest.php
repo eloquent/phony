@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Integration\Mockery;
 
 use Mockery;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 
 class MockeryMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
@@ -30,5 +31,18 @@ class MockeryMatcherDriverTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->adapt($matcher));
         $this->assertEquals($expected, $matcher);
         $this->assertFalse($this->subject->adapt($object));
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
     }
 }

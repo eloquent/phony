@@ -44,7 +44,7 @@ class Spy implements SpyInterface
         CallFactoryInterface $callFactory = null
     ) {
         if (null === $sequencer) {
-            $sequencer = new Sequencer();
+            $sequencer = Sequencer::instance();
         }
         if (null === $clock) {
             $clock = SystemClock::instance();

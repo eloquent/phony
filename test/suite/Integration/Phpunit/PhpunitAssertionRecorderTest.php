@@ -15,6 +15,7 @@ use Eloquent\Phony\Test\TestAssertionException;
 use Exception;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 
 class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 {
@@ -42,5 +43,18 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Integration\Phpunit\PhpunitAssertionException', $exception);
         $this->assertSame($failure, $exception->failure());
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
     }
 }

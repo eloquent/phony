@@ -19,6 +19,7 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Hamcrest\Core\IsEqual;
 use PHPUnit_Framework_Constraint_IsEqual;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 
 class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 {
@@ -94,5 +95,18 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $expected = array(new EqualToMatcher($valueA), $valueB);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
     }
 }

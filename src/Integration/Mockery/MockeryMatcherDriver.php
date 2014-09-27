@@ -19,6 +19,20 @@ use Eloquent\Phony\Matcher\MatcherDriverInterface;
 class MockeryMatcherDriver implements MatcherDriverInterface
 {
     /**
+     * Get the static instance of this driver.
+     *
+     * @return MatcherDriverInterface The static driver.
+     */
+    public static function instance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * If the supplied matcher is supported, replace it with an equivalent Phony
      * matcher.
      *
@@ -36,4 +50,6 @@ class MockeryMatcherDriver implements MatcherDriverInterface
 
         return false;
     }
+
+    private static $instance;
 }

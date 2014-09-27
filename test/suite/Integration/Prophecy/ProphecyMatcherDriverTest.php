@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Integration\Prophecy;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use PHPUnit_Framework_TestCase;
 use Prophecy\Argument;
+use ReflectionClass;
 
 class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
@@ -39,5 +40,18 @@ class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->subject->adapt($matcher));
         $this->assertSame(WildcardMatcher::instance(), $matcher);
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
     }
 }

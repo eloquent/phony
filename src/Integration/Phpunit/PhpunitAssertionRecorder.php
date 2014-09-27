@@ -24,6 +24,20 @@ use PHPUnit_Framework_Assert;
 class PhpunitAssertionRecorder implements AssertionRecorderInterface
 {
     /**
+     * Get the static instance of this recorder.
+     *
+     * @return AssertionRecorderInterface The static recorder.
+     */
+    public static function instance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * Record that a successful assertion occurred.
      */
     public function recordSuccess()
@@ -48,4 +62,6 @@ class PhpunitAssertionRecorder implements AssertionRecorderInterface
             new PhpunitAssertionFailureConstraint($failure)
         );
     } // @codeCoverageIgnore
+
+    private static $instance;
 }

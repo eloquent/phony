@@ -20,6 +20,20 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 class ProphecyMatcherDriver implements MatcherDriverInterface
 {
     /**
+     * Get the static instance of this driver.
+     *
+     * @return MatcherDriverInterface The static driver.
+     */
+    public static function instance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * If the supplied matcher is supported, replace it with an equivalent Phony
      * matcher.
      *
@@ -43,4 +57,6 @@ class ProphecyMatcherDriver implements MatcherDriverInterface
 
         return false;
     }
+
+    private static $instance;
 }

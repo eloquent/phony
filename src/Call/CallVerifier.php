@@ -41,7 +41,7 @@ class CallVerifier implements CallVerifierInterface
         AssertionRecorderInterface $assertionRecorder = null
     ) {
         if (null === $matcherFactory) {
-            $matcherFactory = new MatcherFactory();
+            $matcherFactory = MatcherFactory::instance();
         }
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
