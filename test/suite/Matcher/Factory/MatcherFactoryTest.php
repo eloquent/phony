@@ -74,6 +74,13 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->drivers, $this->subject->drivers());
     }
 
+    public function testIsMatcher()
+    {
+        $this->assertTrue($this->subject->isMatcher(new EqualToMatcher('value')));
+        $this->assertTrue($this->subject->isMatcher(new PHPUnit_Framework_Constraint_IsEqual('value')));
+        $this->assertFalse($this->subject->isMatcher((object) array()));
+    }
+
     public function testAdapt()
     {
         $value = (object) array('key' => 'value');

@@ -21,25 +21,32 @@ class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new ProphecyMatcherDriver();
+
+        $this->matcher = Argument::is('value');
+    }
+
+    public function testIsSupported()
+    {
+        $this->assertTrue($this->subject->isSupported($this->matcher));
+        $this->assertFalse($this->subject->isSupported((object) array()));
     }
 
     public function testAdapt()
     {
         $object = (object) array();
-        $matcher = Argument::is('value');
-        $expected = new ProphecyMatcher($matcher);
+        $expected = new ProphecyMatcher($this->matcher);
 
-        $this->assertTrue($this->subject->adapt($matcher));
-        $this->assertEquals($expected, $matcher);
+        $this->assertTrue($this->subject->adapt($this->matcher));
+        $this->assertEquals($expected, $this->matcher);
         $this->assertFalse($this->subject->adapt($object));
     }
 
     public function testAdaptWildcard()
     {
-        $matcher = Argument::cetera();
+        $this->matcher = Argument::cetera();
 
-        $this->assertTrue($this->subject->adapt($matcher));
-        $this->assertSame(WildcardMatcher::instance(), $matcher);
+        $this->assertTrue($this->subject->adapt($this->matcher));
+        $this->assertSame(WildcardMatcher::instance(), $this->matcher);
     }
 
     public function testInstance()

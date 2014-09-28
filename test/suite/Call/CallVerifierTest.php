@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestAssertionRecorder;
@@ -42,7 +43,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->exception,
             $this->thisValue
         );
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new TestAssertionRecorder();
         $this->exporter = new Exporter();
@@ -61,6 +62,14 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->startTime,
             $this->endTime
         );
+        $this->subjectNoException = new CallVerifier(
+            $this->callNoException,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->exporter
+        );
+
         $this->earlyCall = new Call(
             $this->arguments,
             $this->returnValue,
@@ -264,21 +273,25 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->threw('Exception'));
         $this->assertTrue($this->subject->threw('RuntimeException'));
         $this->assertTrue($this->subject->threw($this->exception));
+        $this->assertTrue($this->subject->threw($this->identicalTo($this->exception)));
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
+        $this->assertFalse($this->subject->threw($this->identicalTo(new RuntimeException('You done goofed.'))));
+        $this->assertFalse($this->subject->threw($this->isNull()));
         $this->assertFalse($this->subject->threw(111));
 
-        $this->subject = new CallVerifier($this->callNoException);
-
-        $this->assertFalse($this->subject->threw());
-        $this->assertFalse($this->subject->threw('Exception'));
-        $this->assertFalse($this->subject->threw('RuntimeException'));
-        $this->assertFalse($this->subject->threw($this->exception));
-        $this->assertFalse($this->subject->threw('InvalidArgumentException'));
-        $this->assertFalse($this->subject->threw(new Exception()));
-        $this->assertFalse($this->subject->threw(new RuntimeException()));
-        $this->assertFalse($this->subject->threw(111));
+        $this->assertFalse($this->subjectNoException->threw());
+        $this->assertFalse($this->subjectNoException->threw('Exception'));
+        $this->assertFalse($this->subjectNoException->threw('RuntimeException'));
+        $this->assertFalse($this->subjectNoException->threw($this->exception));
+        $this->assertFalse($this->subjectNoException->threw($this->identicalTo($this->exception)));
+        $this->assertFalse($this->subjectNoException->threw('InvalidArgumentException'));
+        $this->assertFalse($this->subjectNoException->threw(new Exception()));
+        $this->assertFalse($this->subjectNoException->threw(new RuntimeException()));
+        $this->assertFalse($this->subjectNoException->threw($this->identicalTo(new RuntimeException('You done goofed.'))));
+        $this->assertTrue($this->subjectNoException->threw($this->isNull()));
+        $this->assertFalse($this->subjectNoException->threw(111));
     }
 
     public function testAssertThrew()
@@ -287,58 +300,65 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->assertThrew('Exception'));
         $this->assertNull($this->subject->assertThrew('RuntimeException'));
         $this->assertNull($this->subject->assertThrew($this->exception));
-        $this->assertSame(4, $this->assertionRecorder->successCount());
+        $this->assertNull($this->subject->assertThrew($this->identicalTo($this->exception)));
+        $this->assertSame(5, $this->assertionRecorder->successCount());
     }
 
     public function testAssertThrewFailureExpectingAnyNoneThrown()
     {
-        $this->subject = new CallVerifier($this->callNoException);
-
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected an exception, but no exception was thrown."
         );
-        $this->subject->assertThrew();
+        $this->subjectNoException->assertThrew();
     }
 
     public function testAssertThrewFailureTypeMismatch()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception of type 'InvalidArgumentException'. Actual exception was RuntimeException('You done goofed.')."
+            "Expected an exception of type 'InvalidArgumentException'. " .
+                "Actual exception was RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew('InvalidArgumentException');
     }
 
     public function testAssertThrewFailureExpectingTypeNoneThrown()
     {
-        $this->subject = new CallVerifier($this->callNoException);
-
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected an exception of type 'InvalidArgumentException', but no exception was thrown."
         );
-        $this->subject->assertThrew('InvalidArgumentException');
+        $this->subjectNoException->assertThrew('InvalidArgumentException');
     }
 
     public function testAssertThrewFailureExceptionMismatch()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception equal to RuntimeException(''). Actual exception was RuntimeException('You done goofed.')."
+            "Expected an exception equal to RuntimeException(''). " .
+                "Actual exception was RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew(new RuntimeException());
     }
 
     public function testAssertThrewFailureExpectingExceptionNoneThrown()
     {
-        $this->subject = new CallVerifier($this->callNoException);
-
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected an exception equal to RuntimeException(''), but no exception was thrown."
         );
-        $this->subject->assertThrew(new RuntimeException());
+        $this->subjectNoException->assertThrew(new RuntimeException());
+    }
+
+    public function testAssertThrewFailureMatcherMismatch()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected an exception matching <is identical to an object of class \"RuntimeException\">. " .
+                "Actual exception was RuntimeException('You done goofed.')."
+        );
+        $this->subject->assertThrew($this->identicalTo(new RuntimeException('You done goofed.')));
     }
 
     public function testAssertThrewFailureInvalidInput()

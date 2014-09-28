@@ -33,6 +33,18 @@ class PhpunitMatcherDriver implements MatcherDriverInterface
     }
 
     /**
+     * Returns true if the supplied matcher is supported by this driver.
+     *
+     * @param object $matcher The matcher to test.
+     *
+     * @return boolean True if supported.
+     */
+    public function isSupported($matcher)
+    {
+        return is_a($matcher, 'PHPUnit_Framework_Constraint');
+    }
+
+    /**
      * If the supplied matcher is supported, replace it with an equivalent Phony
      * matcher.
      *

@@ -19,6 +19,15 @@ use Eloquent\Phony\Matcher\MatcherInterface;
 interface MatcherFactoryInterface
 {
     /**
+     * Returns true if the supplied value is a matcher.
+     *
+     * @param mixed $value The value to test.
+     *
+     * @return boolean True if the value is a matcher.
+     */
+    public function isMatcher($value);
+
+    /**
      * Create a new matcher for the supplied value.
      *
      * @param mixed $value The value to create a matcher for.

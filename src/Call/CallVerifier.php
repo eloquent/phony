@@ -372,6 +372,11 @@ class CallVerifier implements CallVerifierInterface
     public function threw($type = null)
     {
         $exception = $this->call->exception();
+
+        if (is_object($type) && $this->matcherFactory->isMatcher($type)) {
+            return $this->matcherFactory->adapt($type)->matches($exception);
+        }
+
         if (null === $exception) {
             return false;
         }
@@ -429,29 +434,47 @@ class CallVerifier implements CallVerifierInterface
                     )
                 );
             }
-        } elseif ($type instanceof Exception) {
-            if ($exception == $type) {
-                $this->assertionRecorder->recordSuccess();
-            } elseif (null === $exception) {
-                $this->assertionRecorder->recordFailure(
-                    sprintf(
-                        'Expected an exception equal to %s(%s), but no ' .
-                            'exception was thrown.',
-                        get_class($type),
-                        $this->exporter->export($type->getMessage())
-                    )
-                );
-            } else { // @codeCoverageIgnore
-                $this->assertionRecorder->recordFailure(
-                    sprintf(
-                        'Expected an exception equal to %s(%s). Actual ' .
-                            'exception was %s(%s).',
-                        get_class($type),
-                        $this->exporter->export($type->getMessage()),
-                        get_class($exception),
-                        $this->exporter->export($exception->getMessage())
-                    )
-                );
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                if ($exception == $type) {
+                    $this->assertionRecorder->recordSuccess();
+                } elseif (null === $exception) {
+                    $this->assertionRecorder->recordFailure(
+                        sprintf(
+                            'Expected an exception equal to %s(%s), but no ' .
+                                'exception was thrown.',
+                            get_class($type),
+                            $this->exporter->export($type->getMessage())
+                        )
+                    );
+                } else { // @codeCoverageIgnore
+                    $this->assertionRecorder->recordFailure(
+                        sprintf(
+                            'Expected an exception equal to %s(%s). Actual ' .
+                                'exception was %s(%s).',
+                            get_class($type),
+                            $this->exporter->export($type->getMessage()),
+                            get_class($exception),
+                            $this->exporter->export($exception->getMessage())
+                        )
+                    );
+                }
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $type = $this->matcherFactory->adapt($type);
+
+                if ($type->matches($exception)) {
+                    $this->assertionRecorder->recordSuccess();
+                } else {
+                    $this->assertionRecorder->recordFailure(
+                        sprintf(
+                            'Expected an exception matching <%s>. Actual ' .
+                                'exception was %s(%s).',
+                            $type->describe(),
+                            get_class($exception),
+                            $this->exporter->export($exception->getMessage())
+                        )
+                    );
+                }
             }
         } else {
             $this->assertionRecorder->recordFailure(

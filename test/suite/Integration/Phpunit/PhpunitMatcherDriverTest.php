@@ -19,16 +19,23 @@ class PhpunitMatcherDriverTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new PhpunitMatcherDriver();
+
+        $this->matcher = $this->equalTo('value');
+    }
+
+    public function testIsSupported()
+    {
+        $this->assertTrue($this->subject->isSupported($this->matcher));
+        $this->assertFalse($this->subject->isSupported((object) array()));
     }
 
     public function testAdapt()
     {
         $object = (object) array();
-        $matcher = $this->equalTo('value');
-        $expected = new PhpunitMatcher($matcher);
+        $expected = new PhpunitMatcher($this->matcher);
 
-        $this->assertTrue($this->subject->adapt($matcher));
-        $this->assertEquals($expected, $matcher);
+        $this->assertTrue($this->subject->adapt($this->matcher));
+        $this->assertEquals($expected, $this->matcher);
         $this->assertFalse($this->subject->adapt($object));
     }
 

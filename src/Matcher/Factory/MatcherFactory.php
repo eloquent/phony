@@ -97,6 +97,30 @@ class MatcherFactory implements MatcherFactoryInterface
     }
 
     /**
+     * Returns true if the supplied value is a matcher.
+     *
+     * @param mixed $value The value to test.
+     *
+     * @return boolean True if the value is a matcher.
+     */
+    public function isMatcher($value)
+    {
+        if ($value instanceof MatcherInterface) {
+            return true;
+        }
+
+        if (is_object($value)) {
+            foreach ($this->drivers as $driver) {
+                if ($driver->isSupported($value)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Create a new matcher for the supplied value.
      *
      * @param mixed $value The value to create a matcher for.
