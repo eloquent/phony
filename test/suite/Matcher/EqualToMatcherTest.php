@@ -48,20 +48,20 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testDescribe()
     {
-        $this->assertSame('is equal to <string:value>', $this->subject->describe());
+        $this->assertSame("<'value'>", $this->subject->describe());
     }
 
     public function testDescribeWithMultilineString()
     {
         $this->subject = new EqualToMatcher("line\nline");
 
-        $this->assertSame('is equal to <text>', $this->subject->describe());
+        $this->assertSame("<'line\\nline'>", $this->subject->describe());
     }
 
     public function testDescribeWithNonString()
     {
         $this->subject = new EqualToMatcher(111);
 
-        $this->assertSame('is equal to 111', $this->subject->describe());
+        $this->assertSame("<111>", $this->subject->describe());
     }
 }

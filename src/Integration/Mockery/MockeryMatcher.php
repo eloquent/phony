@@ -29,4 +29,14 @@ class MockeryMatcher extends AbstractWrappedMatcher
     {
         return $this->matcher->match($value) && true;
     }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe()
+    {
+        return strval($this->matcher);
+    }
 }

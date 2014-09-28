@@ -56,7 +56,7 @@ abstract class AbstractWrappedMatcher extends AbstractMatcher implements
      */
     public function describe()
     {
-        return strval($this->matcher);
+        return '<' . strval($this->matcher) . '>';
     }
 
     protected $matcher;

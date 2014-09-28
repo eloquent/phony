@@ -20,7 +20,7 @@ class HamcrestMatcherTest extends PHPUnit_Framework_TestCase
         $this->matcher = equalTo('value');
         $this->subject = new HamcrestMatcher($this->matcher);
 
-        $this->description = '"value"';
+        $this->description = '<"value">';
     }
 
     public function testConstructor()

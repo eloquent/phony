@@ -21,7 +21,7 @@ class PhakeMatcherTest extends PHPUnit_Framework_TestCase
         $this->matcher = Phake::equalTo('value');
         $this->subject = new PhakeMatcher($this->matcher);
 
-        $this->description = 'equal to <string:value>';
+        $this->description = '<equal to <string:value>>';
     }
 
     public function testConstructor()

@@ -20,7 +20,7 @@ class PhpunitMatcherTest extends PHPUnit_Framework_TestCase
         $this->matcher = $this->equalTo('value');
         $this->subject = new PhpunitMatcher($this->matcher);
 
-        $this->description = 'is equal to <string:value>';
+        $this->description = '<is equal to <string:value>>';
     }
 
     public function testConstructor()

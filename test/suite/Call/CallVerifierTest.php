@@ -84,6 +84,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->startTime,
             $this->endTime
         );
+
+        $this->argumentMatchers = $this->matcherFactory->adaptAll($this->arguments);
     }
 
     public function testConstructor()
@@ -148,6 +150,32 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledWithWithEmptyArguments()
     {
         $this->assertTrue($this->subject->calledWith());
+    }
+
+    public function testAssertCalledWith()
+    {
+        $this->assertNull($this->subject->assertCalledWith('argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject
+                ->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
+        );
+        $this->assertNull($this->subject->assertCalledWith('argumentA', 'argumentB'));
+        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1]));
+        $this->assertNull($this->subject->assertCalledWith('argumentA'));
+        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0]));
+        $this->assertSame(6, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledWithFailure()
+    {
+        $expected = <<<'EOD'
+Expected arguments matching:
+    <'argumentB'>, <'argumentC'>, <any>*
+The actual arguments were:
+    'argumentA', 'argumentB', 'argumentC'
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledWith('argumentB', 'argumentC');
     }
 
     /**
@@ -292,7 +320,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The return value did not match <is equal to <string:value>>. Actual return value was 'returnValue'."
+            "The return value did not match <'value'>. The actual return value was 'returnValue'."
         );
         $this->subject->assertReturned('value');
     }
@@ -348,7 +376,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected an exception of type 'InvalidArgumentException'. " .
-                "Actual exception was RuntimeException('You done goofed.')."
+                "The actual exception was RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew('InvalidArgumentException');
     }
@@ -367,7 +395,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected an exception equal to RuntimeException(''). " .
-                "Actual exception was RuntimeException('You done goofed.')."
+                "The actual exception was RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew(new RuntimeException());
     }
@@ -386,7 +414,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected an exception matching <is identical to an object of class \"RuntimeException\">. " .
-                "Actual exception was RuntimeException('You done goofed.')."
+                "The actual exception was RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew($this->identicalTo(new RuntimeException('You done goofed.')));
     }

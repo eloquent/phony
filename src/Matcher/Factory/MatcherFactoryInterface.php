@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Matcher\Factory;
 
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
  * The interface implemented by matcher factories.

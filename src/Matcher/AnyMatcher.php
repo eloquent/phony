@@ -49,7 +49,7 @@ class AnyMatcher extends AbstractMatcher
      */
     public function describe()
     {
-        return 'any()';
+        return '<any>';
     }
 
     private static $instance;

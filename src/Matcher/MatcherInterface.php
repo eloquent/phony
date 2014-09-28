@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Matcher;
 /**
  * The interface implemented by matchers.
  */
-interface MatcherInterface
+interface MatcherInterface extends SelfDescribingMatcherInterface
 {
     /**
      * Returns true if the supplied value matches.
@@ -24,18 +24,4 @@ interface MatcherInterface
      * @return boolean True if the value matches.
      */
     public function matches($value);
-
-    /**
-     * Describe this matcher.
-     *
-     * @return string The description.
-     */
-    public function describe();
-
-    /**
-     * Describe this matcher.
-     *
-     * @return string The description.
-     */
-    public function __toString();
 }

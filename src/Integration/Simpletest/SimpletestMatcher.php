@@ -37,6 +37,6 @@ class SimpletestMatcher extends AbstractWrappedMatcher
      */
     public function describe()
     {
-        return get_class($this->matcher);
+        return '<' . get_class($this->matcher) . '>';
     }
 }

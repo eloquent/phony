@@ -102,15 +102,7 @@ class EqualToMatcher extends AbstractMatcher
      */
     public function describe()
     {
-        if (is_string($this->value)) {
-            if (false !== strpos($this->value, "\n")) {
-                return 'is equal to <text>';
-            }
-
-            return sprintf('is equal to <string:%s>', $this->value);
-        }
-
-        return sprintf('is equal to %s', $this->exporter->export($this->value));
+        return '<' . $this->exporter->shortenedExport($this->value) . '>';
     }
 
     private $value;

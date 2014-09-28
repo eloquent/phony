@@ -84,6 +84,57 @@ class WildcardMatcher implements WildcardMatcherInterface
         return $this->maximumArguments;
     }
 
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function describe()
+    {
+        $matcherDescription = $this->matcher->describe();
+
+        if (0 === $this->minimumArguments) {
+            if (null === $this->maximumArguments) {
+                return sprintf('%s*', $matcherDescription);
+            } else {
+                return sprintf(
+                    '%s{,%d}',
+                    $matcherDescription,
+                    $this->maximumArguments
+                );
+            }
+        } elseif (null === $this->maximumArguments) {
+            return sprintf(
+                '%s{%d,}',
+                $matcherDescription,
+                $this->minimumArguments
+            );
+        } elseif ($this->minimumArguments === $this->maximumArguments) {
+            return sprintf(
+                '%s{%d}',
+                $matcherDescription,
+                $this->minimumArguments
+            );
+        }
+
+        return sprintf(
+            '%s{%d,%d}',
+            $matcherDescription,
+            $this->minimumArguments,
+            $this->maximumArguments
+        );
+    }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString()
+    {
+        return $this->describe();
+    }
+
     private static $instance;
     private $matcher;
     private $minimumArguments;

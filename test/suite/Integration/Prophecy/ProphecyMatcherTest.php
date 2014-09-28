@@ -21,7 +21,7 @@ class ProphecyMatcherTest extends PHPUnit_Framework_TestCase
         $this->matcher = Argument::is('value');
         $this->subject = new ProphecyMatcher($this->matcher);
 
-        $this->description = 'identical("value")';
+        $this->description = '<identical("value")>';
     }
 
     public function testConstructor()

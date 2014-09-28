@@ -37,6 +37,6 @@ class PhpunitMatcher extends AbstractWrappedMatcher
      */
     public function describe()
     {
-        return $this->matcher->toString();
+        return '<' . $this->matcher->toString() . '>';
     }
 }

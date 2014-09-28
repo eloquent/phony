@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Matcher;
 /**
  * The interface implemented by wildcard matchers.
  */
-interface WildcardMatcherInterface
+interface WildcardMatcherInterface extends SelfDescribingMatcherInterface
 {
     /**
      * Get the matcher to use for each argument.
