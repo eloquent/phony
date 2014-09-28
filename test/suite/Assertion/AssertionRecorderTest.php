@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Assertion;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\Exception\AssertionExceptionInterface;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -28,15 +27,11 @@ class AssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->recordSuccess());
     }
 
-    public function testRecordFailure()
+    public function testCreateFailure()
     {
         $description = 'description';
-        $exception = null;
-        try {
-            $this->subject->recordFailure($description);
-        } catch (AssertionExceptionInterface $exception) {}
 
-        $this->assertEquals(new AssertionException($description), $exception);
+        $this->assertEquals(new AssertionException($description), $this->subject->createFailure($description));
     }
 
     public function testInstance()

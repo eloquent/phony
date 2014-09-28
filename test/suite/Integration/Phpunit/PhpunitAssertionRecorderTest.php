@@ -32,15 +32,14 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($beforeCount + 1, $afterCount);
     }
 
-    public function testRecordFailure()
+    public function testCreateFailure()
     {
         $description = 'description';
-        $exception = null;
-        try {
-            $this->subject->recordFailure($description);
-        } catch (PHPUnit_Framework_ExpectationFailedException $exception) {}
 
-        $this->assertEquals(new PHPUnit_Framework_ExpectationFailedException($description), $exception);
+        $this->assertEquals(
+            new PHPUnit_Framework_ExpectationFailedException($description),
+            $this->subject->createFailure($description)
+        );
     }
 
     public function testInstance()

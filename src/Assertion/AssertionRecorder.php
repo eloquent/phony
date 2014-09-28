@@ -42,15 +42,15 @@ class AssertionRecorder implements AssertionRecorderInterface
     }
 
     /**
-     * Record that an assertion failure occurred.
+     * Create a new assertion failure exception.
      *
      * @param string $description The failure description.
      *
-     * @throws Exception The appropriate assertion exception.
+     * @return Exception The appropriate assertion failure exception.
      */
-    public function recordFailure($description)
+    public function createFailure($description)
     {
-        throw new AssertionException($description);
+        return new AssertionException($description);
     }
 
     private static $instance;

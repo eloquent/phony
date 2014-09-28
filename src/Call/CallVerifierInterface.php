@@ -79,6 +79,15 @@ interface CallVerifierInterface extends CallInterface
     public function calledBefore(CallInterface $call);
 
     /**
+     * Throws an exception unless this call occurred before the supplied call.
+     *
+     * @param CallInterface $call Another call.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledBefore(CallInterface $call);
+
+    /**
      * Returns true if this call occurred after the supplied call.
      *
      * @param CallInterface $call Another call.
@@ -86,6 +95,15 @@ interface CallVerifierInterface extends CallInterface
      * @return boolean True if this call occurred after the supplied call.
      */
     public function calledAfter(CallInterface $call);
+
+    /**
+     * Throws an exception unless this call occurred after the supplied call.
+     *
+     * @param CallInterface $call Another call.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledAfter(CallInterface $call);
 
     /**
      * Returns true if the $this value is equal to the supplied value.

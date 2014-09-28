@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Integration\Phpunit;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
 use Exception;
 use PHPUnit_Framework_Assert;
+use PHPUnit_Framework_ExpectationFailedException;
 
 /**
  * An assertion recorder that uses PHPUnit_Framework_Assert::assertThat().
@@ -42,24 +43,21 @@ class PhpunitAssertionRecorder implements AssertionRecorderInterface
     public function recordSuccess()
     {
         PHPUnit_Framework_Assert::assertThat(
-            null,
-            PHPUnit_Framework_Assert::isNull()
+            true,
+            PHPUnit_Framework_Assert::isTrue()
         );
     }
 
     /**
-     * Record that an assertion failure occurred.
+     * Create a new assertion failure exception.
      *
      * @param string $description The failure description.
      *
-     * @throws Exception The appropriate assertion exception.
+     * @return Exception The appropriate assertion failure exception.
      */
-    public function recordFailure($description)
+    public function createFailure($description)
     {
-        PHPUnit_Framework_Assert::assertThat(
-            null,
-            new PhpunitAssertionFailureConstraint($description)
-        );
+        return new PHPUnit_Framework_ExpectationFailedException($description);
     } // @codeCoverageIgnore
 
     private static $instance;

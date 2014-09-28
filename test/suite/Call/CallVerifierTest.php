@@ -216,10 +216,40 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->calledBefore($this->earlyCall));
     }
 
+    public function testAssertCalledBefore()
+    {
+        $this->assertNull($this->subject->assertCalledBefore($this->lateCall));
+        $this->assertSame(1, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledBeforeFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "The call was not made before the supplied call."
+        );
+        $this->subject->assertCalledBefore($this->earlyCall);
+    }
+
     public function testCalledAfter()
     {
         $this->assertTrue($this->subject->calledAfter($this->earlyCall));
         $this->assertFalse($this->subject->calledAfter($this->lateCall));
+    }
+
+    public function testAssertCalledAfter()
+    {
+        $this->assertNull($this->subject->assertCalledAfter($this->earlyCall));
+        $this->assertSame(1, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledAfterFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "The call was not made after the supplied call."
+        );
+        $this->subject->assertCalledAfter($this->lateCall);
     }
 
     public function testCalledOn()
