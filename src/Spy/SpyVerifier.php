@@ -378,8 +378,8 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Returns true if called with the supplied arguments and no others at least
-     * once.
+     * Returns true if called with the supplied arguments (and no others) at
+     * least once.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -406,7 +406,8 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Returns true if always called with the supplied arguments and no others.
+     * Returns true if always called with the supplied arguments (and no
+     * others).
      *
      * @param mixed $argument,... The arguments.
      *
@@ -462,7 +463,7 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Returns true if never called with the supplied arguments and no others.
+     * Returns true if never called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *

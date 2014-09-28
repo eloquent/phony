@@ -113,8 +113,8 @@ interface SpyVerifierInterface extends SpyInterface
     public function alwaysCalledWith();
 
     /**
-     * Returns true if called with the supplied arguments and no others at least
-     * once.
+     * Returns true if called with the supplied arguments (and no others) at
+     * least once.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -123,7 +123,8 @@ interface SpyVerifierInterface extends SpyInterface
     public function calledWithExactly();
 
     /**
-     * Returns true if always called with the supplied arguments and no others.
+     * Returns true if always called with the supplied arguments (and no
+     * others).
      *
      * @param mixed $argument,... The arguments.
      *
@@ -142,7 +143,7 @@ interface SpyVerifierInterface extends SpyInterface
     public function neverCalledWith();
 
     /**
-     * Returns true if never called with the supplied arguments and no others.
+     * Returns true if never called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *

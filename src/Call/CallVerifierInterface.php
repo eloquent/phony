@@ -52,7 +52,7 @@ interface CallVerifierInterface extends CallInterface
     public function assertCalledWith();
 
     /**
-     * Returns true if called with the supplied arguments and no others.
+     * Returns true if called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
@@ -71,7 +71,7 @@ interface CallVerifierInterface extends CallInterface
     public function notCalledWith();
 
     /**
-     * Returns true if not called with the supplied arguments and no others.
+     * Returns true if not called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *

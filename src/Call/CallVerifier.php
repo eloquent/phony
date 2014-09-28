@@ -251,7 +251,7 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Returns true if called with the supplied arguments and no others.
+     * Returns true if called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
@@ -283,7 +283,7 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Returns true if not called with the supplied arguments and no others.
+     * Returns true if not called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
