@@ -31,8 +31,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         $spy = Phony::spy();
         $spy('argumentA', 'argumentB', 'argumentC');
-        $call = $spy->callAt(0);
 
-        $call->assertCalledWith('argumentA', 'argumentB', 'argumentC');
+        $spy->callAt(0)->assertCalledWith('argumentA', 'argumentB', 'argumentC');
     }
 }
