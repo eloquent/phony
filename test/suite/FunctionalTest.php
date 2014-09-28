@@ -9,20 +9,13 @@
  * that was distributed with this source code.
  */
 
-use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Spy\SpyVerifier;
+use Eloquent\Phony\Integration\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
-    protected function setUp()
-    {
-        $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
-    }
-
     public function testTypicalCalledWith()
     {
-        $spy = new SpyVerifier(null, $this->matcherFactory);
+        $spy = Phony::spy();
         $spy('argumentA', 'argumentB', 'argumentC');
         $spy(111);
 
@@ -32,5 +25,14 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($spy->calledWith());
         $this->assertTrue($spy->calledWith(111));
         $this->assertTrue($spy->calledWith($this->identicalTo('argumentA'), $this->anything()));
+    }
+
+    public function testCallAssertCalledWith()
+    {
+        $spy = Phony::spy();
+        $spy('argumentA', 'argumentB', 'argumentC');
+        $call = $spy->callAt(0);
+
+        $call->assertCalledWith('argumentA', 'argumentB', 'argumentC');
     }
 }
