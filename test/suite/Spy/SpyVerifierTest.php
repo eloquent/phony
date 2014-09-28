@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Clock\TestClock;
+use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Exception;
@@ -31,7 +32,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         };
         $this->clock = new TestClock();
         $this->spy = new Spy($this->spySubject, null, $this->clock);
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->subject = new SpyVerifier(
@@ -525,9 +526,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->threw('RuntimeException'));
         $this->assertFalse($this->subject->threw($this->exceptionA));
         $this->assertFalse($this->subject->threw($this->exceptionB));
+        $this->assertFalse($this->subject->threw($this->identicalTo($this->exceptionA)));
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
+        $this->assertFalse($this->subject->threw($this->isNull()));
         $this->assertFalse($this->subject->threw(111));
 
         $this->subject->setCalls($this->calls);
@@ -537,9 +540,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->threw('RuntimeException'));
         $this->assertTrue($this->subject->threw($this->exceptionA));
         $this->assertTrue($this->subject->threw($this->exceptionB));
+        $this->assertTrue($this->subject->threw($this->identicalTo($this->exceptionA)));
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
+        $this->assertTrue($this->subject->threw($this->isNull()));
         $this->assertFalse($this->subject->threw(111));
     }
 
@@ -550,9 +555,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->alwaysThrew('RuntimeException'));
         $this->assertFalse($this->subject->alwaysThrew($this->exceptionA));
         $this->assertFalse($this->subject->alwaysThrew($this->exceptionB));
+        $this->assertFalse($this->subject->alwaysThrew($this->identicalTo($this->exceptionA)));
         $this->assertFalse($this->subject->alwaysThrew('InvalidArgumentException'));
         $this->assertFalse($this->subject->alwaysThrew(new Exception()));
         $this->assertFalse($this->subject->alwaysThrew(new RuntimeException()));
+        $this->assertFalse($this->subject->alwaysThrew($this->isNull()));
         $this->assertFalse($this->subject->alwaysThrew(111));
 
         $this->subject->setCalls($this->calls);
@@ -562,9 +569,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->alwaysThrew('RuntimeException'));
         $this->assertFalse($this->subject->alwaysThrew($this->exceptionA));
         $this->assertFalse($this->subject->alwaysThrew($this->exceptionB));
+        $this->assertFalse($this->subject->alwaysThrew($this->identicalTo($this->exceptionA)));
         $this->assertFalse($this->subject->alwaysThrew('InvalidArgumentException'));
         $this->assertFalse($this->subject->alwaysThrew(new Exception()));
         $this->assertFalse($this->subject->alwaysThrew(new RuntimeException()));
+        $this->assertFalse($this->subject->alwaysThrew($this->isNull()));
         $this->assertFalse($this->subject->alwaysThrew(111));
 
         $this->subject->setCalls(array($this->callC, $this->callC));
@@ -574,10 +583,16 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->alwaysThrew('RuntimeException'));
         $this->assertTrue($this->subject->alwaysThrew($this->exceptionA));
         $this->assertFalse($this->subject->alwaysThrew($this->exceptionB));
+        $this->assertTrue($this->subject->alwaysThrew($this->identicalTo($this->exceptionA)));
         $this->assertFalse($this->subject->alwaysThrew('InvalidArgumentException'));
         $this->assertFalse($this->subject->alwaysThrew(new Exception()));
         $this->assertFalse($this->subject->alwaysThrew(new RuntimeException()));
+        $this->assertFalse($this->subject->alwaysThrew($this->isNull()));
         $this->assertFalse($this->subject->alwaysThrew(111));
+
+        $this->subject->setCalls(array($this->callA, $this->callA));
+
+        $this->assertTrue($this->subject->alwaysThrew($this->isNull()));
     }
 
     protected function thisValue($closure)

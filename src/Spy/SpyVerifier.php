@@ -603,6 +603,9 @@ class SpyVerifier implements SpyVerifierInterface
             $typeType = 'null';
         } elseif (is_string($type)) {
             $typeType = 'string';
+        } elseif (is_object($type) && $this->matcherFactory->isMatcher($type)) {
+            $typeType = 'matcher';
+            $type = $this->matcherFactory->adapt($type);
         } elseif ($type instanceof Exception) {
             $typeType = 'exception';
         } else {
@@ -611,20 +614,28 @@ class SpyVerifier implements SpyVerifierInterface
 
         foreach ($calls as $call) {
             $exception = $call->exception();
-            if (null === $exception) {
-                continue;
-            }
 
             switch ($typeType) {
                 case 'null':
-                    return true;
+                    if (null !== $exception) {
+                        return true;
+                    }
+
+                    continue 2;
 
                 case 'string':
                     if (is_a($exception, $type)) {
                         return true;
-                    } else {
-                        continue 2;
                     }
+
+                    continue 2;
+
+                case 'matcher':
+                    if ($type->matches($exception)) {
+                        return true;
+                    }
+
+                    continue 2;
 
                 case 'exception':
                     if ($exception == $type) {
@@ -655,6 +666,9 @@ class SpyVerifier implements SpyVerifierInterface
             $typeType = 'null';
         } elseif (is_string($type)) {
             $typeType = 'string';
+        } elseif (is_object($type) && $this->matcherFactory->isMatcher($type)) {
+            $typeType = 'matcher';
+            $type = $this->matcherFactory->adapt($type);
         } elseif ($type instanceof Exception) {
             $typeType = 'exception';
         } else {
@@ -663,18 +677,28 @@ class SpyVerifier implements SpyVerifierInterface
 
         foreach ($calls as $call) {
             $exception = $call->exception();
-            if (null === $exception) {
-                return false;
-            }
 
             switch ($typeType) {
                 case 'null':
-                    continue 2;
+                    if (null !== $exception) {
+                        continue 2;
+                    }
+
+                    break;
 
                 case 'string':
                     if (is_a($exception, $type)) {
                         continue 2;
                     }
+
+                    break;
+
+                case 'matcher':
+                    if ($type->matches($exception)) {
+                        continue 2;
+                    }
+
+                    break;
 
                 case 'exception':
                     if ($exception == $type) {
