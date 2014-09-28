@@ -163,7 +163,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1]));
         $this->assertNull($this->subject->assertCalledWith('argumentA'));
         $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0]));
-        $this->assertSame(6, $this->assertionRecorder->successCount());
+        $this->assertNull($this->subject->assertCalledWith());
+        $this->assertSame(7, $this->assertionRecorder->successCount());
     }
 
     public function testAssertCalledWithFailure()
@@ -198,6 +199,28 @@ EOD;
     public function testCalledWithWithExactlyEmptyArguments()
     {
         $this->assertFalse($this->subject->calledWithExactly());
+    }
+
+    public function testAssertCalledWithExactly()
+    {
+        $this->assertNull($this->subject->assertCalledWithExactly('argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject
+                ->assertCalledWithExactly($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
+        );
+        $this->assertSame(2, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledWithExactlyFailure()
+    {
+        $expected = <<<'EOD'
+Expected arguments matching:
+    <'argumentA'>, <'argumentB'>
+The actual arguments were:
+    'argumentA', 'argumentB', 'argumentC'
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledWithExactly('argumentA', 'argumentB');
     }
 
     /**

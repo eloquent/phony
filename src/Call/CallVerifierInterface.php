@@ -61,6 +61,16 @@ interface CallVerifierInterface extends CallInterface
     public function calledWithExactly();
 
     /**
+     * Throws an exception unless called with the supplied arguments (and no
+     * others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledWithExactly();
+
+    /**
      * Returns true if not called with the supplied arguments (and possibly
      * others).
      *
