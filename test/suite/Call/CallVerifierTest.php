@@ -219,6 +219,21 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->calledOn((object) array('property' => 'value')));
     }
 
+    public function testAssertCalledOn()
+    {
+        $this->assertNull($this->subject->assertCalledOn($this->thisValue));
+        $this->assertSame(1, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledOnFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "The call was not made on the expected object."
+        );
+        $this->subject->assertCalledOn((object) array());
+    }
+
     public function testReturned()
     {
         $this->assertTrue($this->subject->returned($this->returnValue));
@@ -231,7 +246,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertNull($this->subject->assertReturned($this->returnValue));
         $this->assertNull($this->subject->assertReturned($this->matcherFactory->adapt($this->returnValue)));
-        $this->assertEquals(array(array('recordSuccess'), array('recordSuccess')), $this->assertionRecorder->calls());
+        $this->assertSame(2, $this->assertionRecorder->successCount());
     }
 
     public function testAssertReturnedFailure()
@@ -272,10 +287,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->assertThrew('Exception'));
         $this->assertNull($this->subject->assertThrew('RuntimeException'));
         $this->assertNull($this->subject->assertThrew($this->exception));
-        $this->assertEquals(
-            array(array('recordSuccess'), array('recordSuccess'), array('recordSuccess'), array('recordSuccess')),
-            $this->assertionRecorder->calls()
-        );
+        $this->assertSame(4, $this->assertionRecorder->successCount());
     }
 
     public function testAssertThrewFailureExpectingAnyNoneThrown()

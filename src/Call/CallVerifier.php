@@ -293,16 +293,34 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Returns true if the $this value is the same as the supplied value.
+     * Returns true if the $this value is equal to the supplied value.
      *
      * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is the same as the supplied value.
+     * @return boolean True if the $this value is equal to the supplied value.
      */
     public function calledOn($value)
     {
-        return $this->matcherFactory->adapt($value)
-            ->matches($this->call->thisValue());
+        return $this->call->thisValue() === $value;
+    }
+
+    /**
+     * Throws an exception unless the $this value is equal to the supplied
+     * value.
+     *
+     * @param object|null $value The possible $this value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledOn($value)
+    {
+        if ($this->call->thisValue() === $value) {
+            $this->assertionRecorder->recordSuccess();
+        } else {
+            $this->assertionRecorder->recordFailure(
+                'The call was not made on the expected object.'
+            );
+        }
     }
 
     /**

@@ -15,22 +15,15 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 
 class TestAssertionRecorder extends AssertionRecorder
 {
-    public function calls()
-    {
-        return $this->calls;
-    }
-
     public function recordSuccess()
     {
-        $this->calls[] = array('recordSuccess');
+        $this->successCount++;
     }
 
-    public function recordFailure($description)
+    public function successCount()
     {
-        $this->calls[] = array('recordFailure', $description);
-
-        parent::recordFailure($description);
+        return $this->successCount;
     }
 
-    private $calls = array();
+    private $successCount = 0;
 }

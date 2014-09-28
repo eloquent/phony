@@ -88,13 +88,23 @@ interface CallVerifierInterface extends CallInterface
     public function calledAfter(CallInterface $call);
 
     /**
-     * Returns true if the $this value is the same as the supplied value.
+     * Returns true if the $this value is equal to the supplied value.
      *
      * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is the same as the supplied value.
+     * @return boolean True if the $this value is equal to the supplied value.
      */
     public function calledOn($value);
+
+    /**
+     * Throws an exception unless the $this value is equal to the supplied
+     * value.
+     *
+     * @param object|null $value The possible $this value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledOn($value);
 
     /**
      * Returns true if this call returned the supplied value.
