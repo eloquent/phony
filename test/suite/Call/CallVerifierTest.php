@@ -60,7 +60,9 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->returnValue,
             $this->sequenceNumber,
             $this->startTime,
-            $this->endTime
+            $this->endTime,
+            null,
+            $this->thisValue
         );
         $this->subjectNoException = new CallVerifier(
             $this->callNoException,
@@ -170,7 +172,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testAssertCalledWithFailure()
     {
         $expected = <<<'EOD'
-Expected arguments matching:
+Expected arguments to match:
     <'argumentB'>, <'argumentC'>, <any>*
 The actual arguments were:
     'argumentA', 'argumentB', 'argumentC'
@@ -214,7 +216,7 @@ EOD;
     public function testAssertCalledWithExactlyFailure()
     {
         $expected = <<<'EOD'
-Expected arguments matching:
+Expected arguments to match:
     <'argumentA'>, <'argumentB'>
 The actual arguments were:
     'argumentA', 'argumentB', 'argumentC'
@@ -237,6 +239,54 @@ EOD;
     public function testNotCalledWithWithEmptyArguments()
     {
         $this->assertFalse($this->subject->notCalledWith());
+    }
+
+    public function testAssertNotCalledWith()
+    {
+        $this->assertNull($this->subject->assertNotCalledWith('argumentB', 'argumentC'));
+        $this->assertNull($this->subject->assertNotCalledWith($this->argumentMatchers[1], $this->argumentMatchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWith('argumentC'));
+        $this->assertNull($this->subject->assertNotCalledWith($this->argumentMatchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWith('argumentA', 'argumentB', 'argumentC', 'argumentD'));
+        $this->assertNull(
+            $this->subject->assertNotCalledWith(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNotCalledWith('argumentD', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertNotCalledWith(
+                $this->matcherFactory->adapt('argumentD'),
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2]
+            )
+        );
+        $this->assertNull($this->subject->assertNotCalledWith('argumentA', 'argumentB', 'argumentD'));
+        $this->assertNull(
+            $this->subject->assertNotCalledWith(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNotCalledWith('argumentD'));
+        $this->assertNull($this->subject->assertNotCalledWith($this->matcherFactory->adapt('argumentD')));
+        $this->assertSame(12, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertNotCalledWithFailure()
+    {
+        $expected = <<<'EOD'
+Expected arguments not to match:
+    <'argumentA'>, <'argumentB'>, <any>*
+The actual arguments were:
+    'argumentA', 'argumentB', 'argumentC'
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertNotCalledWith('argumentA', 'argumentB');
     }
 
     /**
@@ -306,22 +356,34 @@ EOD;
     public function testCalledOn()
     {
         $this->assertTrue($this->subject->calledOn($this->thisValue));
+        $this->assertTrue($this->subject->calledOn($this->identicalTo($this->thisValue)));
         $this->assertFalse($this->subject->calledOn((object) array('property' => 'value')));
     }
 
     public function testAssertCalledOn()
     {
         $this->assertNull($this->subject->assertCalledOn($this->thisValue));
-        $this->assertSame(1, $this->assertionRecorder->successCount());
+        $this->assertNull($this->subject->assertCalledOn($this->identicalTo($this->thisValue)));
+        $this->assertSame(2, $this->assertionRecorder->successCount());
     }
 
     public function testAssertCalledOnFailure()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The call was not made on the expected object."
+            "The call was not made on the expected object. The actual object was stdClass Object ()."
         );
         $this->subject->assertCalledOn((object) array());
+    }
+
+    public function testAssertCalledOnFailureWithMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "The call was not made on an object that matches <is identical to an object of class \"stdClass\">. " .
+                "The actual object was stdClass Object ()."
+        );
+        $this->subject->assertCalledOn($this->identicalTo((object) array()));
     }
 
     public function testReturned()

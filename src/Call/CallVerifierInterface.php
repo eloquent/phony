@@ -81,6 +81,16 @@ interface CallVerifierInterface extends CallInterface
     public function notCalledWith();
 
     /**
+     * Throws an exception unless not called with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertNotCalledWith();
+
+    /**
      * Returns true if not called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.

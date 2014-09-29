@@ -236,18 +236,18 @@ class CallVerifier implements CallVerifierInterface
         $matchers[] = WildcardMatcher::instance();
         $arguments = $this->call->arguments();
 
-        if ($this->matcherVerifier->matches($matchers, $arguments)) {
-            $this->assertionRecorder->recordSuccess();
-        } else {
+        if (!$this->matcherVerifier->matches($matchers, $arguments)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected arguments matching:\n    %s\nThe actual " .
+                    "Expected arguments to match:\n    %s\nThe actual " .
                         "arguments were:\n    %s",
                     $this->renderMatchers($matchers),
                     $this->renderArguments($arguments)
                 )
             );
         }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -278,18 +278,18 @@ class CallVerifier implements CallVerifierInterface
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $arguments = $this->call->arguments();
 
-        if ($this->matcherVerifier->matches($matchers, $arguments)) {
-            $this->assertionRecorder->recordSuccess();
-        } else {
+        if (!$this->matcherVerifier->matches($matchers, $arguments)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected arguments matching:\n    %s\nThe actual " .
+                    "Expected arguments to match:\n    %s\nThe actual " .
                         "arguments were:\n    %s",
                     $this->renderMatchers($matchers),
                     $this->renderArguments($arguments)
                 )
             );
         }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -307,6 +307,34 @@ class CallVerifier implements CallVerifierInterface
 
         return !$this->matcherVerifier
             ->matches($matchers, $this->call->arguments());
+    }
+
+    /**
+     * Throws an exception unless not called with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertNotCalledWith()
+    {
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = WildcardMatcher::instance();
+        $arguments = $this->call->arguments();
+
+        if ($this->matcherVerifier->matches($matchers, $arguments)) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected arguments not to match:\n    %s\nThe actual " .
+                        "arguments were:\n    %s",
+                    $this->renderMatchers($matchers),
+                    $this->renderArguments($arguments)
+                )
+            );
+        }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -345,13 +373,13 @@ class CallVerifier implements CallVerifierInterface
      */
     public function assertCalledBefore(CallInterface $call)
     {
-        if ($call->sequenceNumber() > $this->call->sequenceNumber()) {
-            $this->assertionRecorder->recordSuccess();
-        } else {
+        if ($call->sequenceNumber() <= $this->call->sequenceNumber()) {
             throw $this->assertionRecorder->createFailure(
                 'The call was not made before the supplied call.'
             );
         }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -375,13 +403,13 @@ class CallVerifier implements CallVerifierInterface
      */
     public function assertCalledAfter(CallInterface $call)
     {
-        if ($call->sequenceNumber() < $this->call->sequenceNumber()) {
-            $this->assertionRecorder->recordSuccess();
-        } else {
+        if ($call->sequenceNumber() >= $this->call->sequenceNumber()) {
             throw $this->assertionRecorder->createFailure(
                 'The call was not made after the supplied call.'
             );
         }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -393,6 +421,11 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledOn($value)
     {
+        if ($this->matcherFactory->isMatcher($value)) {
+            return $this->matcherFactory->adapt($value)
+                ->matches($this->call->thisValue());
+        }
+
         return $this->call->thisValue() === $value;
     }
 
@@ -406,13 +439,32 @@ class CallVerifier implements CallVerifierInterface
      */
     public function assertCalledOn($value)
     {
-        if ($this->call->thisValue() === $value) {
-            $this->assertionRecorder->recordSuccess();
-        } else {
+        $thisValue = $this->call->thisValue();
+
+        if ($this->matcherFactory->isMatcher($value)) {
+            $value = $this->matcherFactory->adapt($value);
+
+            if (!$value->matches($thisValue)) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'The call was not made on an object that matches %s. ' .
+                            'The actual object was %s.',
+                        $value->describe(),
+                        $this->exporter->shortenedExport($thisValue)
+                    )
+                );
+            }
+        } elseif ($thisValue !== $value) {
             throw $this->assertionRecorder->createFailure(
-                'The call was not made on the expected object.'
+                sprintf(
+                    'The call was not made on the expected object. The ' .
+                        'actual object was %s.',
+                    $this->exporter->shortenedExport($thisValue)
+                )
             );
         }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -440,9 +492,7 @@ class CallVerifier implements CallVerifierInterface
         $value = $this->matcherFactory->adapt($value);
         $returnValue = $this->call->returnValue();
 
-        if ($value->matches($returnValue)) {
-            $this->assertionRecorder->recordSuccess();
-        } else {
+        if (!$value->matches($returnValue)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
                     'The return value did not match %s. The actual return ' .
@@ -452,6 +502,8 @@ class CallVerifier implements CallVerifierInterface
                 )
             );
         }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
