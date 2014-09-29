@@ -124,9 +124,9 @@ class CallVerifier implements CallVerifierInterface
      *
      * @return ReflectionFunctionAbstract The function or method called.
      */
-    public function subject()
+    public function reflector()
     {
-        return $this->call->subject();
+        return $this->call->reflector();
     }
 
     /**

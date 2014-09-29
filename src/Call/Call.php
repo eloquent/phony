@@ -24,7 +24,7 @@ class Call implements CallInterface
     /**
      * Construct a new call.
      *
-     * @param ReflectionFunctionAbstract $subject        The function or method called.
+     * @param ReflectionFunctionAbstract $reflector      The function or method called.
      * @param array<integer,mixed>       $arguments      The arguments.
      * @param mixed                      $returnValue    The return value.
      * @param integer                    $sequenceNumber The sequence number.
@@ -34,7 +34,7 @@ class Call implements CallInterface
      * @param object|null                $thisValue      The $this value, or null if unbound.
      */
     public function __construct(
-        ReflectionFunctionAbstract $subject,
+        ReflectionFunctionAbstract $reflector,
         array $arguments,
         $returnValue,
         $sequenceNumber,
@@ -43,7 +43,7 @@ class Call implements CallInterface
         Exception $exception = null,
         $thisValue = null
     ) {
-        $this->subject = $subject;
+        $this->reflector = $reflector;
         $this->arguments = $arguments;
         $this->returnValue = $returnValue;
         $this->sequenceNumber = $sequenceNumber;
@@ -58,9 +58,9 @@ class Call implements CallInterface
      *
      * @return ReflectionFunctionAbstract The function or method called.
      */
-    public function subject()
+    public function reflector()
     {
-        return $this->subject;
+        return $this->reflector;
     }
 
     /**
@@ -133,7 +133,7 @@ class Call implements CallInterface
         return $this->thisValue;
     }
 
-    private $subject;
+    private $reflector;
     private $arguments;
     private $returnValue;
     private $sequenceNumber;

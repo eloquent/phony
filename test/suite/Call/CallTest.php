@@ -19,7 +19,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->callSubject = new ReflectionMethod(__METHOD__);
+        $this->reflector = new ReflectionMethod(__METHOD__);
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->returnValue = 'returnValue';
         $this->sequenceNumber = 111;
@@ -28,7 +28,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->exception = new RuntimeException();
         $this->thisValue = $this;
         $this->subject = new Call(
-            $this->callSubject,
+            $this->reflector,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber,
@@ -41,7 +41,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame($this->callSubject, $this->subject->subject());
+        $this->assertSame($this->reflector, $this->subject->reflector());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
@@ -54,7 +54,7 @@ class CallTest extends PHPUnit_Framework_TestCase
     public function testConstructorDefaults()
     {
         $this->subject = new Call(
-            $this->callSubject,
+            $this->reflector,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber,

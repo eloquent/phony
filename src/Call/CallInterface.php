@@ -24,7 +24,7 @@ interface CallInterface
      *
      * @return ReflectionFunctionAbstract The function or method called.
      */
-    public function subject();
+    public function reflector();
 
     /**
      * Get the received arguments.

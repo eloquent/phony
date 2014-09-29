@@ -69,20 +69,20 @@ class CallRenderer implements CallRendererInterface
      */
     public function render(CallInterface $call)
     {
-        $subject = $call->subject();
+        $reflector = $call->reflector();
 
-        if ($subject instanceof ReflectionMethod) {
-            if ($subject->isStatic()) {
+        if ($reflector instanceof ReflectionMethod) {
+            if ($reflector->isStatic()) {
                 $callOperator = '::';
             } else {
                 $callOperator = '->';
             }
 
-            $renderedSubject = $subject->getDeclaringClass()->getName() .
+            $renderedSubject = $reflector->getDeclaringClass()->getName() .
                 $callOperator .
-                $subject->getName();
+                $reflector->getName();
         } else {
-            $renderedSubject = $subject->getName();
+            $renderedSubject = $reflector->getName();
         }
 
         $arguments = $call->arguments();
