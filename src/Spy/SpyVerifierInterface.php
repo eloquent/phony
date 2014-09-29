@@ -61,6 +61,13 @@ interface SpyVerifierInterface extends SpyInterface
     public function called();
 
     /**
+     * Throws an exception unless called at least once.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalled();
+
+    /**
      * Returns true if called only once.
      *
      * @return boolean True if called only once.

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Spy\Factory;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -18,39 +19,48 @@ use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
+use SebastianBergmann\Exporter\Exporter;
 
 class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->spyFactory = new SpyFactory();
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
-        $this->spyFactory = new SpyFactory();
+        $this->assertionRecorder = new AssertionRecorder();
+        $this->exporter = new Exporter();
         $this->subject = new SpyVerifierFactory(
+            $this->spyFactory,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->callVerifierFactory,
-            $this->spyFactory
+            $this->assertionRecorder,
+            $this->exporter
         );
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->spyFactory, $this->subject->spyFactory());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
-        $this->assertSame($this->spyFactory, $this->subject->spyFactory());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
+        $this->assertSame($this->exporter, $this->subject->exporter());
     }
 
     public function testConstructorDefaults()
     {
         $this->subject = new SpyVerifierFactory();
 
+        $this->assertSame(SpyFactory::instance(), $this->subject->spyFactory());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
-        $this->assertSame(SpyFactory::instance(), $this->subject->spyFactory());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
+        $this->assertEquals($this->exporter, $this->subject->exporter());
     }
 
     public function testCreate()

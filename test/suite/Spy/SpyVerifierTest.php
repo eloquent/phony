@@ -11,17 +11,20 @@
 
 namespace Eloquent\Phony\Spy;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Clock\TestClock;
 use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Test\TestAssertionRecorder;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use RuntimeException;
+use SebastianBergmann\Exporter\Exporter;
 
 class SpyVerifierTest extends PHPUnit_Framework_TestCase
 {
@@ -35,11 +38,15 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
+        $this->assertionRecorder = new TestAssertionRecorder();
+        $this->exporter = new Exporter();
         $this->subject = new SpyVerifier(
             $this->spy,
             $this->matcherFactory,
             $this->matcherVerifier,
-            $this->callVerifierFactory
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->exporter
         );
 
         $this->returnValueA = 'returnValueA';
@@ -66,6 +73,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
+        $this->assertSame($this->exporter, $this->subject->exporter());
     }
 
     public function testConstructorDefaults()
@@ -76,6 +85,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
+        $this->assertEquals($this->exporter, $this->subject->exporter());
     }
 
     public function testProxyMethods()
@@ -181,6 +192,22 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertTrue($this->subject->called());
+    }
+
+    public function testAssertCalled()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertCalled());
+    }
+
+    public function testAssertCalledFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'The spy was never called.'
+        );
+        $this->subject->assertCalled();
     }
 
     public function testCalledOnce()

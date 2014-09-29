@@ -44,6 +44,7 @@ class Phony
     {
         if (null === self::$spyVerifierFactory) {
             self::$spyVerifierFactory = new SpyVerifierFactory(
+                null,
                 static::matcherFactory(),
                 null,
                 static::callVerifierFactory()

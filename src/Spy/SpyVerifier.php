@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Spy;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRecorderInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
@@ -22,6 +24,7 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Spy\Exception\UndefinedCallException;
 use Exception;
+use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Provides convenience methods for verifying interactions with a spy.
@@ -35,12 +38,16 @@ class SpyVerifier implements SpyVerifierInterface
      * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
      * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
+     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
+     * @param Exporter|null                     $exporter            The exporter to use.
      */
     public function __construct(
         SpyInterface $spy = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
-        CallVerifierFactoryInterface $callVerifierFactory = null
+        CallVerifierFactoryInterface $callVerifierFactory = null,
+        AssertionRecorderInterface $assertionRecorder = null,
+        Exporter $exporter = null
     ) {
         if (null === $spy) {
             $spy = new Spy();
@@ -54,11 +61,19 @@ class SpyVerifier implements SpyVerifierInterface
         if (null === $callVerifierFactory) {
             $callVerifierFactory = CallVerifierFactory::instance();
         }
+        if (null === $assertionRecorder) {
+            $assertionRecorder = AssertionRecorder::instance();
+        }
+        if (null === $exporter) {
+            $exporter = new Exporter();
+        }
 
         $this->spy = $spy;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->callVerifierFactory = $callVerifierFactory;
+        $this->assertionRecorder = $assertionRecorder;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -99,6 +114,26 @@ class SpyVerifier implements SpyVerifierInterface
     public function callVerifierFactory()
     {
         return $this->callVerifierFactory;
+    }
+
+    /**
+     * Get the assertion recorder.
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
+     */
+    public function assertionRecorder()
+    {
+        return $this->assertionRecorder;
+    }
+
+    /**
+     * Get the exporter.
+     *
+     * @return Exporter The exporter.
+     */
+    public function exporter()
+    {
+        return $this->exporter;
     }
 
     /**
@@ -240,6 +275,21 @@ class SpyVerifier implements SpyVerifierInterface
     public function called()
     {
         return count($this->spy->calls()) > 0;
+    }
+
+    /**
+     * Throws an exception unless called at least once.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalled()
+    {
+        if (count($this->spy->calls()) < 1) {
+            throw $this->assertionRecorder
+                ->createFailure('The spy was never called.');
+        }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -716,4 +766,6 @@ class SpyVerifier implements SpyVerifierInterface
     private $matcherFactory;
     private $matcherVerifier;
     private $callVerifierFactory;
+    private $assertionRecorder;
+    private $exporter;
 }
