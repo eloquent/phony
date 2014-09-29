@@ -205,7 +205,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'The spy was never called.'
+            'Expected the spy to be called at least once. The spy was never called.'
         );
         $this->subject->assertCalled();
     }
@@ -223,6 +223,33 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->calledOnce());
     }
 
+    public function testAssertCalledOnce()
+    {
+        $this->subject->addCall($this->callA);
+
+        $this->assertNull($this->subject->assertCalledOnce());
+    }
+
+    public function testAssertCalledOnceFailureWithNoCalls()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected the spy to be called once. The spy was actually called 0 time(s).'
+        );
+        $this->subject->assertCalledOnce();
+    }
+
+    public function testAssertCalledOnceFailureWithMultipleCalls()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected the spy to be called once. The spy was actually called 4 time(s).'
+        );
+        $this->subject->assertCalledOnce();
+    }
+
     public function testCalledTimes()
     {
         $this->assertTrue($this->subject->calledTimes(0));
@@ -232,6 +259,24 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->subject->calledTimes(0));
         $this->assertTrue($this->subject->calledTimes(4));
+    }
+
+    public function testAssertCalledTimes()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertCalledTimes(4));
+    }
+
+    public function testAssertCalledTimesFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected the spy to be called 2 time(s). The spy was actually called 4 time(s).'
+        );
+        $this->subject->assertCalledTimes(2);
     }
 
     public function testCalledBefore()

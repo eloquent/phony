@@ -75,11 +75,29 @@ interface SpyVerifierInterface extends SpyInterface
     public function calledOnce();
 
     /**
+     * Throws an exception unless called only once.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledOnce();
+
+    /**
      * Returns true if called an exact amount of times.
+     *
+     * @param integer $times The expected number of calls.
      *
      * @return boolean True if called an exact amount of times.
      */
     public function calledTimes($times);
+
+    /**
+     * Throws an exception unless called an exact amount of times.
+     *
+     * @param integer $times The expected number of calls.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledTimes($times);
 
     /**
      * Returns true if this spy was called before the supplied spy.

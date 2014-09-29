@@ -285,8 +285,10 @@ class SpyVerifier implements SpyVerifierInterface
     public function assertCalled()
     {
         if (count($this->spy->calls()) < 1) {
-            throw $this->assertionRecorder
-                ->createFailure('The spy was never called.');
+            throw $this->assertionRecorder->createFailure(
+                'Expected the spy to be called at least once. The spy was ' .
+                    'never called.'
+            );
         }
 
         $this->assertionRecorder->recordSuccess();
@@ -303,13 +305,62 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Throws an exception unless called only once.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledOnce()
+    {
+        $callCount = count($this->spy->calls());
+
+        if (1 !== $callCount) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    'Expected the spy to be called once. The spy was ' .
+                        'actually called %d time(s).',
+                    $callCount
+                )
+            );
+        }
+
+        $this->assertionRecorder->recordSuccess();
+    }
+
+    /**
      * Returns true if called an exact amount of times.
+     *
+     * @param integer $times The expected number of calls.
      *
      * @return boolean True if called an exact amount of times.
      */
     public function calledTimes($times)
     {
         return $times === count($this->spy->calls());
+    }
+
+    /**
+     * Throws an exception unless called an exact amount of times.
+     *
+     * @param integer $times The expected number of calls.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledTimes($times)
+    {
+        $callCount = count($this->spy->calls());
+
+        if ($times !== $callCount) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    'Expected the spy to be called %d time(s). The spy was ' .
+                        'actually called %d time(s).',
+                    $times,
+                    $callCount
+                )
+            );
+        }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
