@@ -72,7 +72,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Spy(function () {});
 
-        $this->assertEquals(new ReflectionFunction(function () {}), $this->subject->reflector());
+        $this->assertInstanceOf('Closure', $this->subject->subject());
         $this->assertTrue($this->subject->reflector()->isClosure());
     }
 
