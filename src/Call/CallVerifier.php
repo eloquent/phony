@@ -13,15 +13,15 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
-use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Exception;
 use ReflectionFunctionAbstract;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Provides convenience methods for verifying the details of a call.
@@ -37,14 +37,14 @@ class CallVerifier implements CallVerifierInterface
      * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
      * @param MatcherVerifierInterface|null   $matcherVerifier   The matcher verifier to use.
      * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
-     * @param Exporter|null                   $exporter          The exporter to use.
+     * @param AssertionRendererInterface|null $assertionRenderer The assertion renderer to use.
      */
     public function __construct(
         CallInterface $call,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        Exporter $exporter = null
+        AssertionRendererInterface $assertionRenderer = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -55,15 +55,15 @@ class CallVerifier implements CallVerifierInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $exporter) {
-            $exporter = new Exporter();
+        if (null === $assertionRenderer) {
+            $assertionRenderer = AssertionRenderer::instance();
         }
 
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->assertionRecorder = $assertionRecorder;
-        $this->exporter = $exporter;
+        $this->assertionRenderer = $assertionRenderer;
 
         $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
@@ -110,13 +110,13 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Get the exporter.
+     * Get the assertion renderer.
      *
-     * @return Exporter The exporter.
+     * @return AssertionRendererInterface The assertion renderer.
      */
-    public function exporter()
+    public function assertionRenderer()
     {
-        return $this->exporter;
+        return $this->assertionRenderer;
     }
 
     /**
@@ -254,8 +254,8 @@ class CallVerifier implements CallVerifierInterface
                 sprintf(
                     "Expected arguments to match:\n    %s\nThe actual " .
                         "arguments were:\n    %s",
-                    $this->renderMatchers($matchers),
-                    $this->renderArguments($arguments)
+                    $this->assertionRenderer->renderMatchers($matchers),
+                    $this->assertionRenderer->renderArguments($arguments)
                 )
             );
         }
@@ -296,8 +296,8 @@ class CallVerifier implements CallVerifierInterface
                 sprintf(
                     "Expected arguments to match:\n    %s\nThe actual " .
                         "arguments were:\n    %s",
-                    $this->renderMatchers($matchers),
-                    $this->renderArguments($arguments)
+                    $this->assertionRenderer->renderMatchers($matchers),
+                    $this->assertionRenderer->renderArguments($arguments)
                 )
             );
         }
@@ -341,8 +341,8 @@ class CallVerifier implements CallVerifierInterface
                 sprintf(
                     "Expected arguments not to match:\n    %s\nThe actual " .
                         "arguments were:\n    %s",
-                    $this->renderMatchers($matchers),
-                    $this->renderArguments($arguments)
+                    $this->assertionRenderer->renderMatchers($matchers),
+                    $this->assertionRenderer->renderArguments($arguments)
                 )
             );
         }
@@ -383,8 +383,8 @@ class CallVerifier implements CallVerifierInterface
                 sprintf(
                     "Expected arguments not to match:\n    %s\nThe actual " .
                         "arguments were:\n    %s",
-                    $this->renderMatchers($matchers),
-                    $this->renderArguments($arguments)
+                    $this->assertionRenderer->renderMatchers($matchers),
+                    $this->assertionRenderer->renderArguments($arguments)
                 )
             );
         }
@@ -490,7 +490,7 @@ class CallVerifier implements CallVerifierInterface
                         'The call was not made on an object that matches %s. ' .
                             'The actual object was %s.',
                         $value->describe(),
-                        $this->exporter->shortenedExport($thisValue)
+                        $this->assertionRenderer->renderValue($thisValue)
                     )
                 );
             }
@@ -499,7 +499,7 @@ class CallVerifier implements CallVerifierInterface
                 sprintf(
                     'The call was not made on the expected object. The ' .
                         'actual object was %s.',
-                    $this->exporter->shortenedExport($thisValue)
+                    $this->assertionRenderer->renderValue($thisValue)
                 )
             );
         }
@@ -538,7 +538,7 @@ class CallVerifier implements CallVerifierInterface
                     'The return value did not match %s. The actual return ' .
                         'value was %s.',
                     $value->describe(),
-                    $this->exporter->shortenedExport($returnValue)
+                    $this->assertionRenderer->renderValue($returnValue)
                 )
             );
         }
@@ -604,7 +604,7 @@ class CallVerifier implements CallVerifierInterface
                     sprintf(
                         'Expected an exception of type %s, but no exception ' .
                             'was thrown.',
-                        $this->exporter->shortenedExport($type)
+                        $this->assertionRenderer->renderValue($type)
                     )
                 );
             } else {
@@ -612,10 +612,10 @@ class CallVerifier implements CallVerifierInterface
                     sprintf(
                         'Expected an exception of type %s. The actual ' .
                             'exception was %s(%s).',
-                        $this->exporter->shortenedExport($type),
+                        $this->assertionRenderer->renderValue($type),
                         get_class($exception),
-                        $this->exporter
-                            ->shortenedExport($exception->getMessage())
+                        $this->assertionRenderer
+                            ->renderValue($exception->getMessage())
                     )
                 );
             }
@@ -629,8 +629,8 @@ class CallVerifier implements CallVerifierInterface
                             'Expected an exception equal to %s(%s), but no ' .
                                 'exception was thrown.',
                             get_class($type),
-                            $this->exporter
-                                ->shortenedExport($type->getMessage())
+                            $this->assertionRenderer
+                                ->renderValue($type->getMessage())
                         )
                     );
                 } else {
@@ -639,11 +639,11 @@ class CallVerifier implements CallVerifierInterface
                             'Expected an exception equal to %s(%s). The ' .
                                 'actual exception was %s(%s).',
                             get_class($type),
-                            $this->exporter
-                                ->shortenedExport($type->getMessage()),
+                            $this->assertionRenderer
+                                ->renderValue($type->getMessage()),
                             get_class($exception),
-                            $this->exporter
-                                ->shortenedExport($exception->getMessage())
+                            $this->assertionRenderer
+                                ->renderValue($exception->getMessage())
                         )
                     );
                 }
@@ -659,8 +659,8 @@ class CallVerifier implements CallVerifierInterface
                                 'exception was %s(%s).',
                             $type->describe(),
                             get_class($exception),
-                            $this->exporter
-                                ->shortenedExport($exception->getMessage())
+                            $this->assertionRenderer
+                                ->renderValue($exception->getMessage())
                         )
                     );
                 }
@@ -669,59 +669,17 @@ class CallVerifier implements CallVerifierInterface
             throw $this->assertionRecorder->createFailure(
                 sprintf(
                     'Unable to match exceptions against %s.',
-                    $this->exporter->shortenedExport($type)
+                    $this->assertionRenderer->renderValue($type)
                 )
             );
         }
-    }
-
-    /**
-     * Render a sequence of matchers.
-     *
-     * @param array<integer,MatcherInterface> $matchers The matchers.
-     *
-     * @return string The rendered matchers.
-     */
-    protected function renderMatchers(array $matchers)
-    {
-        if (count($matchers) < 1) {
-            return '<no arguments>';
-        }
-
-        $rendered = array();
-        foreach ($matchers as $matcher) {
-            $rendered[] = $matcher->describe();
-        }
-
-        return implode(', ', $rendered);
-    }
-
-    /**
-     * Render a sequence of arguments.
-     *
-     * @param array<integer,mixed> $arguments The arguments.
-     *
-     * @return string The rendered arguments.
-     */
-    protected function renderArguments(array $arguments)
-    {
-        if (count($arguments) < 1) {
-            return '<no arguments>';
-        }
-
-        $rendered = array();
-        foreach ($arguments as $argument) {
-            $rendered[] = $this->exporter->shortenedExport($argument);
-        }
-
-        return implode(', ', $rendered);
     }
 
     private $call;
     private $matcherFactory;
     private $matcherVerifier;
     private $assertionRecorder;
-    private $exporter;
+    private $assertionRenderer;
     private $duration;
     private $argumentCount;
 }

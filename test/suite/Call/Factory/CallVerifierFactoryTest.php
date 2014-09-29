@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -19,7 +20,6 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionMethod;
-use SebastianBergmann\Exporter\Exporter;
 
 class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
 {
@@ -28,12 +28,12 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new AssertionRecorder();
-        $this->exporter = new Exporter();
+        $this->assertionRenderer = new AssertionRenderer();
         $this->subject = new CallVerifierFactory(
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->exporter
+            $this->assertionRenderer
         );
 
         $this->callSubject = new ReflectionMethod(__METHOD__);
@@ -46,7 +46,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->exporter, $this->subject->exporter());
+        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
     }
 
     public function testConstructorDefaults()
@@ -56,7 +56,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertEquals($this->exporter, $this->subject->exporter());
+        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
     }
 
     public function testAdapt()
@@ -70,7 +70,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherFactory, $adaptedCall->matcherFactory());
         $this->assertSame($this->matcherVerifier, $adaptedCall->matcherVerifier());
         $this->assertSame($this->assertionRecorder, $adaptedCall->assertionRecorder());
-        $this->assertSame($this->exporter, $adaptedCall->exporter());
+        $this->assertSame($this->assertionRenderer, $adaptedCall->assertionRenderer());
     }
 
     public function testAdaptAll()

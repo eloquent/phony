@@ -13,22 +13,20 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
-use Eloquent\Phony\Call\Renderer\CallRenderer;
-use Eloquent\Phony\Call\Renderer\CallRendererInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
-use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Spy\Exception\UndefinedCallException;
 use Exception;
 use ReflectionFunctionAbstract;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Provides convenience methods for verifying interactions with a spy.
@@ -64,8 +62,7 @@ class SpyVerifier implements SpyVerifierInterface
      * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param CallRendererInterface|null        $callRenderer        The call renderer to use.
-     * @param Exporter|null                     $exporter            The exporter to use.
+     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
      */
     public function __construct(
         SpyInterface $spy = null,
@@ -73,8 +70,7 @@ class SpyVerifier implements SpyVerifierInterface
         MatcherVerifierInterface $matcherVerifier = null,
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        CallRendererInterface $callRenderer = null,
-        Exporter $exporter = null
+        AssertionRendererInterface $assertionRenderer = null
     ) {
         if (null === $spy) {
             $spy = new Spy();
@@ -91,11 +87,8 @@ class SpyVerifier implements SpyVerifierInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $callRenderer) {
-            $callRenderer = CallRenderer::instance();
-        }
-        if (null === $exporter) {
-            $exporter = new Exporter();
+        if (null === $assertionRenderer) {
+            $assertionRenderer = AssertionRenderer::instance();
         }
 
         $this->spy = $spy;
@@ -103,8 +96,7 @@ class SpyVerifier implements SpyVerifierInterface
         $this->matcherVerifier = $matcherVerifier;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
-        $this->callRenderer = $callRenderer;
-        $this->exporter = $exporter;
+        $this->assertionRenderer = $assertionRenderer;
     }
 
     /**
@@ -158,23 +150,13 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Get the call renderer.
+     * Get the assertion renderer.
      *
-     * @return CallRendererInterface The call renderer.
+     * @return AssertionRendererInterface The assertion renderer.
      */
-    public function callRenderer()
+    public function assertionRenderer()
     {
-        return $this->callRenderer;
-    }
-
-    /**
-     * Get the exporter.
-     *
-     * @return Exporter The exporter.
-     */
-    public function exporter()
-    {
-        return $this->exporter;
+        return $this->assertionRenderer;
     }
 
     /**
@@ -427,8 +409,7 @@ class SpyVerifier implements SpyVerifierInterface
         $firstCall = $calls[0];
         $otherLastCall = $otherCalls[$otherCallCount - 1];
 
-        return $firstCall->sequenceNumber() <
-            $otherLastCall->sequenceNumber();
+        return $firstCall->sequenceNumber() < $otherLastCall->sequenceNumber();
     }
 
     /**
@@ -445,7 +426,8 @@ class SpyVerifier implements SpyVerifierInterface
                 sprintf(
                     "The spy was not called before the supplied spy. The " .
                         "following calls were recorded:\n%s",
-                    $this->renderCalls($this->callsBySequence($this->spy, $spy))
+                    $this->assertionRenderer
+                        ->renderCalls($this->callsBySequence($this->spy, $spy))
                 )
             );
         }
@@ -477,8 +459,7 @@ class SpyVerifier implements SpyVerifierInterface
         $lastCall = $calls[$callCount - 1];
         $otherFirstCall = $otherCalls[0];
 
-        return $lastCall->sequenceNumber() >
-            $otherFirstCall->sequenceNumber();
+        return $lastCall->sequenceNumber() > $otherFirstCall->sequenceNumber();
 
     }
 
@@ -496,7 +477,8 @@ class SpyVerifier implements SpyVerifierInterface
                 sprintf(
                     "The spy was not called after the supplied spy. The " .
                         "following calls were recorded:\n%s",
-                    $this->renderCalls($this->callsBySequence($this->spy, $spy))
+                    $this->assertionRenderer
+                        ->renderCalls($this->callsBySequence($this->spy, $spy))
                 )
             );
         }
@@ -552,7 +534,7 @@ class SpyVerifier implements SpyVerifierInterface
                 sprintf(
                     "Expected the spy to be called with arguments to " .
                         "match:\n    %s\nThe spy was never called.",
-                    $this->renderMatchers($matchers)
+                    $this->assertionRenderer->renderMatchers($matchers)
                 )
             );
         }
@@ -569,8 +551,8 @@ class SpyVerifier implements SpyVerifierInterface
             sprintf(
                 "Expected the spy to be called with arguments to " .
                     "match:\n    %s\nThe following calls were recorded:\n%s",
-                $this->renderMatchers($matchers),
-                $this->renderCallArguments($calls)
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderCallsArguments($calls)
             )
         );
     }
@@ -944,7 +926,7 @@ class SpyVerifier implements SpyVerifierInterface
      *
      * @return array<integer,CallInterface> The calls, sorted by call order.
      */
-    public function callsBySequence()
+    protected function callsBySequence()
     {
         $calls = array();
 
@@ -965,85 +947,10 @@ class SpyVerifier implements SpyVerifierInterface
         return $calls;
     }
 
-    /**
-     * Render a sequence of calls.
-     *
-     * @param array<integer,CallInterface> $calls The calls.
-     *
-     * @return string The rendered calls.
-     */
-    protected function renderCalls(array $calls)
-    {
-        $rendered = array();
-        foreach ($calls as $call) {
-            $rendered[] =
-                sprintf('    - %s', $this->callRenderer->render($call));
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render a only the arguments of a sequence of calls.
-     *
-     * @param array<integer,CallInterface> $calls The calls.
-     *
-     * @return string The rendered call arguments.
-     */
-    protected function renderCallArguments(array $calls)
-    {
-        $rendered = array();
-        foreach ($calls as $call) {
-            $rendered[] =
-                sprintf('    - %s', $this->renderArguments($call->arguments()));
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render a sequence of arguments.
-     *
-     * @param array<integer,mixed> $arguments The arguments.
-     *
-     * @return string The rendered arguments.
-     */
-    protected function renderArguments(array $arguments)
-    {
-        if (count($arguments) < 1) {
-            return '<no arguments>';
-        }
-
-        $rendered = array();
-        foreach ($arguments as $argument) {
-            $rendered[] = $this->exporter->shortenedExport($argument);
-        }
-
-        return implode(', ', $rendered);
-    }
-
-    /**
-     * Render a sequence of matchers.
-     *
-     * @param array<integer,MatcherInterface> $matchers The matchers.
-     *
-     * @return string The rendered matchers.
-     */
-    protected function renderMatchers(array $matchers)
-    {
-        $rendered = array();
-        foreach ($matchers as $matcher) {
-            $rendered[] = $matcher->describe();
-        }
-
-        return implode(', ', $rendered);
-    }
-
     private $spy;
     private $matcherFactory;
     private $matcherVerifier;
     private $callVerifierFactory;
     private $assertionRecorder;
-    private $callRenderer;
-    private $exporter;
+    private $assertionRenderer;
 }

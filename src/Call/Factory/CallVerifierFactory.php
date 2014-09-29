@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Call\CallVerifierInterface;
@@ -20,7 +22,6 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Creates call verifiers.
@@ -49,13 +50,13 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
      * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
      * @param MatcherVerifierInterface|null   $matcherVerifier   The macther verifier to use.
      * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
-     * @param Exporter|null                   $exporter          The exporter to use.
+     * @param AssertionRendererInterface|null $assertionRenderer The assertion renderer to use.
      */
     public function __construct(
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        Exporter $exporter = null
+        AssertionRendererInterface $assertionRenderer = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -66,14 +67,14 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $exporter) {
-            $exporter = new Exporter();
+        if (null === $assertionRenderer) {
+            $assertionRenderer = AssertionRenderer::instance();
         }
 
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->assertionRecorder = $assertionRecorder;
-        $this->exporter = $exporter;
+        $this->assertionRenderer = $assertionRenderer;
     }
 
     /**
@@ -107,13 +108,13 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     }
 
     /**
-     * Get the exporter.
+     * Get the assertion renderer.
      *
-     * @return Exporter The exporter.
+     * @return AssertionRendererInterface The assertion renderer.
      */
-    public function exporter()
+    public function assertionRenderer()
     {
-        return $this->exporter;
+        return $this->assertionRenderer;
     }
 
     /**
@@ -135,7 +136,7 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->exporter
+            $this->assertionRenderer
         );
     }
 
@@ -161,5 +162,5 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     private $matcherFactory;
     private $matcherVerifier;
     private $assertionRecorder;
-    private $exporter;
+    private $assertionRenderer;
 }

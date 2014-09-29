@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -20,7 +21,6 @@ use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
 use RuntimeException;
-use SebastianBergmann\Exporter\Exporter;
 
 class CallVerifierTest extends PHPUnit_Framework_TestCase
 {
@@ -49,13 +49,13 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new TestAssertionRecorder();
-        $this->exporter = new Exporter();
+        $this->assertionRenderer = new AssertionRenderer();
         $this->subject = new CallVerifier(
             $this->call,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->exporter
+            $this->assertionRenderer
         );
 
         $this->callNoException = new Call(
@@ -73,7 +73,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->exporter
+            $this->assertionRenderer
         );
 
         $this->callNoArguments = new Call(
@@ -91,7 +91,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->exporter
+            $this->assertionRenderer
         );
 
         $this->earlyCall = new Call(
@@ -122,7 +122,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->exporter, $this->subject->exporter());
+        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
     }
 
     public function testConstructorDefaults()
@@ -132,7 +132,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertEquals($this->exporter, $this->subject->exporter());
+        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
     }
 
     public function testProxyMethods()
@@ -212,7 +212,7 @@ EOD;
 Expected arguments to match:
     <'argumentB'>, <'argumentC'>, <any>*
 The actual arguments were:
-    <no arguments>
+    <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subjectNoArguments->assertCalledWith('argumentB', 'argumentC');
@@ -268,7 +268,7 @@ EOD;
 Expected arguments to match:
     <'argumentA'>, <'argumentB'>
 The actual arguments were:
-    <no arguments>
+    <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subjectNoArguments->assertCalledWithExactly('argumentA', 'argumentB');
@@ -344,7 +344,7 @@ EOD;
 Expected arguments not to match:
     <any>*
 The actual arguments were:
-    <no arguments>
+    <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subjectNoArguments->assertNotCalledWith();
@@ -428,9 +428,9 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected arguments not to match:
-    <no arguments>
+    <none>
 The actual arguments were:
-    <no arguments>
+    <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subjectNoArguments->assertNotCalledWithExactly();
