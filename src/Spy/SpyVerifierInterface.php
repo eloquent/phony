@@ -146,6 +146,16 @@ interface SpyVerifierInterface extends SpyInterface
     public function calledWith();
 
     /**
+     * Throws an exception unless called with the supplied arguments (and
+     * possibly others) at least once.
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledWith();
+
+    /**
      * Returns true if always called with the supplied arguments (and possibly
      * others).
      *

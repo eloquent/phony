@@ -21,6 +21,7 @@ use Eloquent\Phony\Call\Renderer\CallRenderer;
 use Eloquent\Phony\Call\Renderer\CallRendererInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
+use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -443,7 +444,7 @@ class SpyVerifier implements SpyVerifierInterface
             throw $this->assertionRecorder->createFailure(
                 sprintf(
                     "The spy was not called before the supplied spy. The " .
-                        "actual call order was:\n%s",
+                        "following calls were recorded:\n%s",
                     $this->renderCalls($this->callsBySequence($this->spy, $spy))
                 )
             );
@@ -494,7 +495,7 @@ class SpyVerifier implements SpyVerifierInterface
             throw $this->assertionRecorder->createFailure(
                 sprintf(
                     "The spy was not called after the supplied spy. The " .
-                        "actual call order was:\n%s",
+                        "following calls were recorded:\n%s",
                     $this->renderCalls($this->callsBySequence($this->spy, $spy))
                 )
             );
@@ -530,6 +531,48 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         return false;
+    }
+
+    /**
+     * Throws an exception unless called with the supplied arguments (and
+     * possibly others) at least once.
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledWith()
+    {
+        $calls = $this->spy->calls();
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = WildcardMatcher::instance();
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected the spy to be called with arguments to " .
+                        "match:\n    %s\nThe spy was never called.",
+                    $this->renderMatchers($matchers)
+                )
+            );
+        }
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                return $this->assertionRecorder->recordSuccess();
+            }
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected the spy to be called with arguments to " .
+                    "match:\n    %s\nThe following calls were recorded:\n%s",
+                $this->renderMatchers($matchers),
+                $this->renderCallArguments($calls)
+            )
+        );
     }
 
     /**
@@ -938,6 +981,62 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         return implode("\n", $rendered);
+    }
+
+    /**
+     * Render a only the arguments of a sequence of calls.
+     *
+     * @param array<integer,CallInterface> $calls The calls.
+     *
+     * @return string The rendered call arguments.
+     */
+    protected function renderCallArguments(array $calls)
+    {
+        $rendered = array();
+        foreach ($calls as $call) {
+            $rendered[] =
+                sprintf('    - %s', $this->renderArguments($call->arguments()));
+        }
+
+        return implode("\n", $rendered);
+    }
+
+    /**
+     * Render a sequence of arguments.
+     *
+     * @param array<integer,mixed> $arguments The arguments.
+     *
+     * @return string The rendered arguments.
+     */
+    protected function renderArguments(array $arguments)
+    {
+        if (count($arguments) < 1) {
+            return '<no arguments>';
+        }
+
+        $rendered = array();
+        foreach ($arguments as $argument) {
+            $rendered[] = $this->exporter->shortenedExport($argument);
+        }
+
+        return implode(', ', $rendered);
+    }
+
+    /**
+     * Render a sequence of matchers.
+     *
+     * @param array<integer,MatcherInterface> $matchers The matchers.
+     *
+     * @return string The rendered matchers.
+     */
+    protected function renderMatchers(array $matchers)
+    {
+        $rendered = array();
+        foreach ($matchers as $matcher) {
+            $rendered[] = $matcher->describe();
+        }
+
+        return implode(', ', $rendered);
     }
 
     private $spy;

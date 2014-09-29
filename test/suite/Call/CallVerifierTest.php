@@ -76,6 +76,24 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->exporter
         );
 
+        $this->callNoArguments = new Call(
+            $this->reflector,
+            array(),
+            $this->returnValue,
+            $this->sequenceNumber,
+            $this->startTime,
+            $this->endTime,
+            null,
+            $this->thisValue
+        );
+        $this->subjectNoArguments = new CallVerifier(
+            $this->callNoArguments,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->exporter
+        );
+
         $this->earlyCall = new Call(
             $this->reflector,
             $this->arguments,
@@ -188,6 +206,18 @@ EOD;
         $this->subject->assertCalledWith('argumentB', 'argumentC');
     }
 
+    public function testAssertCalledWithFailureWithNoArguments()
+    {
+        $expected = <<<'EOD'
+Expected arguments to match:
+    <'argumentB'>, <'argumentC'>, <any>*
+The actual arguments were:
+    <no arguments>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subjectNoArguments->assertCalledWith('argumentB', 'argumentC');
+    }
+
     /**
      * @dataProvider calledWithData
      */
@@ -230,6 +260,18 @@ The actual arguments were:
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertCalledWithExactly('argumentA', 'argumentB');
+    }
+
+    public function testAssertCalledWithExactlyFailureWithNoArguments()
+    {
+        $expected = <<<'EOD'
+Expected arguments to match:
+    <'argumentA'>, <'argumentB'>
+The actual arguments were:
+    <no arguments>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subjectNoArguments->assertCalledWithExactly('argumentA', 'argumentB');
     }
 
     /**
@@ -294,6 +336,18 @@ The actual arguments were:
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertNotCalledWith('argumentA', 'argumentB');
+    }
+
+    public function testAssertNotCalledWithFailureWithNoArguments()
+    {
+        $expected = <<<'EOD'
+Expected arguments not to match:
+    <any>*
+The actual arguments were:
+    <no arguments>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subjectNoArguments->assertNotCalledWith();
     }
 
     /**
@@ -368,6 +422,18 @@ The actual arguments were:
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertNotCalledWithExactly('argumentA', 'argumentB', 'argumentC');
+    }
+
+    public function testAssertNotCalledWithExactlyFailureWithNoArguments()
+    {
+        $expected = <<<'EOD'
+Expected arguments not to match:
+    <no arguments>
+The actual arguments were:
+    <no arguments>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subjectNoArguments->assertNotCalledWithExactly();
     }
 
     public function testCalledBefore()

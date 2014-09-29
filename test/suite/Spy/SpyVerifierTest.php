@@ -59,7 +59,9 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->exceptionB = new RuntimeException('Consequences will never be the same.');
         $this->thisValueA = (object) array();
         $this->thisValueB = (object) array();
-        $this->callA = new Call($this->reflector, array('argumentA', 'argumentB', 'argumentC'), null, 0, 1.11, 2.22);
+        $this->arguments = array('argumentA', 'argumentB', 'argumentC');
+        $this->argumentMatchers = $this->matcherFactory->adaptAll($this->arguments);
+        $this->callA = new Call($this->reflector, $this->arguments, null, 0, 1.11, 2.22);
         $this->callB = new Call($this->reflector, array(), null, 1, 3.33, 4.44);
         $this->callC = new Call($this->reflector, array(), $this->returnValueA, 2, 5.55, 6.66, $this->exceptionA, $this->thisValueA);
         $this->callD = new Call($this->reflector, array(), $this->returnValueB, 3, 7.77, 8.88, $this->exceptionB, $this->thisValueB);
@@ -330,7 +332,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $spy->setCalls(array($this->callA, $this->callB));
         $spyVerifier = new SpyVerifier($spy);
         $expected = <<<'EOD'
-The spy was not called before the supplied spy. The actual call order was:
+The spy was not called before the supplied spy. The following calls were recorded:
     - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
     - Eloquent\Phony\Spy\{closure}()
@@ -376,7 +378,7 @@ EOD;
         $spy->setCalls(array($this->callC, $this->callD));
         $spyVerifier = new SpyVerifier($spy);
         $expected = <<<'EOD'
-The spy was not called after the supplied spy. The actual call order was:
+The spy was not called after the supplied spy. The following calls were recorded:
     - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
     - Eloquent\Phony\Spy\{closure}()
@@ -425,6 +427,51 @@ EOD;
     public function testCalledWithWithNoCalls()
     {
         $this->assertFalse($this->subject->calledWith());
+    }
+
+    public function testAssertCalledWith()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertCalledWith('argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject
+                ->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
+        );
+        $this->assertNull($this->subject->assertCalledWith('argumentA', 'argumentB'));
+        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1]));
+        $this->assertNull($this->subject->assertCalledWith('argumentA'));
+        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertCalledWith());
+        $this->assertSame(7, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledWithFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected the spy to be called with arguments to match:
+    <'argumentB'>, <'argumentC'>, <any>*
+The following calls were recorded:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <no arguments>
+    - <no arguments>
+    - <no arguments>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledWith('argumentB', 'argumentC');
+    }
+
+    public function testAssertCalledWithFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+Expected the spy to be called with arguments to match:
+    <'argumentB'>, <'argumentC'>, <any>*
+The spy was never called.
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledWith('argumentB', 'argumentC');
     }
 
     /**

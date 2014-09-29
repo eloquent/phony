@@ -684,6 +684,10 @@ class CallVerifier implements CallVerifierInterface
      */
     protected function renderMatchers(array $matchers)
     {
+        if (count($matchers) < 1) {
+            return '<no arguments>';
+        }
+
         $rendered = array();
         foreach ($matchers as $matcher) {
             $rendered[] = $matcher->describe();
@@ -695,12 +699,16 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param array<integer,mixed $arguments The arguments.
+     * @param array<integer,mixed> $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
     protected function renderArguments(array $arguments)
     {
+        if (count($arguments) < 1) {
+            return '<no arguments>';
+        }
+
         $rendered = array();
         foreach ($arguments as $argument) {
             $rendered[] = $this->exporter->shortenedExport($argument);
