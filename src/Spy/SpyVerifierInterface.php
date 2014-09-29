@@ -109,6 +109,15 @@ interface SpyVerifierInterface extends SpyInterface
     public function calledBefore(SpyInterface $spy);
 
     /**
+     * Throws an exception unless this spy was called before the supplied spy.
+     *
+     * @param SpyInterface $spy Another spy.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledBefore(SpyInterface $spy);
+
+    /**
      * Returns true if this spy was called after the supplied spy.
      *
      * @param SpyInterface $spy Another spy.
@@ -116,6 +125,15 @@ interface SpyVerifierInterface extends SpyInterface
      * @return boolean True if this spy was called after the supplied spy.
      */
     public function calledAfter(SpyInterface $spy);
+
+    /**
+     * Throws an exception unless this spy was called after the supplied spy.
+     *
+     * @param SpyInterface $spy Another spy.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledAfter(SpyInterface $spy);
 
     /**
      * Returns true if called with the supplied arguments (and possibly others)

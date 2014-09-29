@@ -298,6 +298,32 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->calledBefore($spyC));
     }
 
+    public function testAssertCalledBefore()
+    {
+        $this->subject->setCalls(array($this->callB, $this->callD));
+        $spy = new Spy();
+        $spy->setCalls(array($this->callA, $this->callC));
+
+        $this->assertNull($this->subject->assertCalledBefore($spy));
+    }
+
+    public function testAssertCalledBeforeFailure()
+    {
+        $this->subject->setCalls(array($this->callC, $this->callD));
+        $spy = new Spy();
+        $spy->setCalls(array($this->callA, $this->callB));
+        $expected = <<<'EOD'
+The spy was not called before the supplied spy. The actual call order was:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <no arguments>
+    - <no arguments>
+    - <no arguments>
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledBefore($spy);
+    }
+
     public function testCalledAfter()
     {
         $spyA = new Spy();
@@ -315,6 +341,32 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->calledAfter($spyA));
         $this->assertFalse($this->subject->calledAfter($spyB));
         $this->assertFalse($this->subject->calledAfter($spyC));
+    }
+
+    public function testAssertCalledAfter()
+    {
+        $this->subject->setCalls(array($this->callB, $this->callD));
+        $spy = new Spy();
+        $spy->setCalls(array($this->callA, $this->callC));
+
+        $this->assertNull($this->subject->assertCalledAfter($spy));
+    }
+
+    public function testAssertCalledAfterFailure()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+        $spy = new Spy();
+        $spy->setCalls(array($this->callC, $this->callD));
+        $expected = <<<'EOD'
+The spy was not called after the supplied spy. The actual call order was:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <no arguments>
+    - <no arguments>
+    - <no arguments>
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledAfter($spy);
     }
 
     public function calledWithData()

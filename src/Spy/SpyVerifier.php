@@ -32,6 +32,25 @@ use SebastianBergmann\Exporter\Exporter;
 class SpyVerifier implements SpyVerifierInterface
 {
     /**
+     * Compare the supplied calls by call order.
+     *
+     * Returns typical comparator values, similar to strcmp().
+     *
+     * @see strcmp()
+     *
+     * @param CallInterface $left  The left call.
+     * @param CallInterface $right The right call.
+     *
+     * @return integer The comparison result.
+     */
+    public static function compareCallOrder(
+        CallInterface $left,
+        CallInterface $right
+    ) {
+        return $left->sequenceNumber() - $right->sequenceNumber();
+    }
+
+    /**
      * Construct a new spy verifier.
      *
      * @param SpyInterface|null                 $spy                 The spy.
@@ -392,6 +411,28 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Throws an exception unless this spy was called before the supplied spy.
+     *
+     * @param SpyInterface $spy Another spy.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledBefore(SpyInterface $spy)
+    {
+        if (!$this->calledBefore($spy)) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "The spy was not called before the supplied spy. The " .
+                        "actual call order was:\n%s",
+                    $this->renderCalls($this->callsBySequence($this->spy, $spy))
+                )
+            );
+        }
+
+        $this->assertionRecorder->recordSuccess();
+    }
+
+    /**
      * Returns true if this spy was called after the supplied spy.
      *
      * @param SpyInterface $spy Another spy.
@@ -418,6 +459,28 @@ class SpyVerifier implements SpyVerifierInterface
         return $lastCall->sequenceNumber() >
             $otherFirstCall->sequenceNumber();
 
+    }
+
+    /**
+     * Throws an exception unless this spy was called after the supplied spy.
+     *
+     * @param SpyInterface $spy Another spy.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledAfter(SpyInterface $spy)
+    {
+        if (!$this->calledAfter($spy)) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "The spy was not called after the supplied spy. The " .
+                        "actual call order was:\n%s",
+                    $this->renderCalls($this->callsBySequence($this->spy, $spy))
+                )
+            );
+        }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -811,6 +874,74 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         return true;
+    }
+
+    /**
+     * Get a sorted sequence of calls for one or more spies.
+     *
+     * @param SpyInterface $spies,... The spies.
+     *
+     * @return array<integer,CallInterface> The calls, sorted by call order.
+     */
+    public function callsBySequence()
+    {
+        $calls = array();
+
+        foreach (func_get_args() as $spy) {
+            if ($spy instanceof SpyVerifierInterface) {
+                $spy = $spy->spy();
+            }
+
+            foreach ($spy->calls() as $call) {
+                if (!in_array($call, $calls, true)) {
+                    $calls[] = $call;
+                }
+            }
+        }
+
+        usort($calls, get_class() . '::compareCallOrder');
+
+        return $calls;
+    }
+
+    /**
+     * Render a sequence of calls.
+     *
+     * @param array<integer,CallInterface> $calls The calls.
+     *
+     * @return string The rendered calls.
+     */
+    protected function renderCalls(array $calls)
+    {
+        $rendered = array();
+        foreach ($calls as $call) {
+            $rendered[] = sprintf('    - %s', $this->renderCall($call));
+        }
+
+        return implode("\n", $rendered);
+    }
+
+    /**
+     * Render a call.
+     *
+     * @param CallInterface $call The call.
+     *
+     * @return string The rendered call.
+     */
+    protected function renderCall(CallInterface $call)
+    {
+        $arguments = $call->arguments();
+
+        if (count($arguments) < 1) {
+            return '<no arguments>';
+        }
+
+        $rendered = array();
+        foreach ($arguments as $argument) {
+            $rendered[] = $this->exporter->export($argument);
+        }
+
+        return implode(', ', $rendered);
     }
 
     private $spy;
