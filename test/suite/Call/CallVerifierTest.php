@@ -18,6 +18,7 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestAssertionRecorder;
 use Exception;
 use PHPUnit_Framework_TestCase;
+use ReflectionMethod;
 use RuntimeException;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -25,6 +26,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->callSubject = new ReflectionMethod(__METHOD__);
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->argumentCount = count($this->arguments);
         $this->returnValue = 'returnValue';
@@ -35,6 +37,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->exception = new RuntimeException('You done goofed.');
         $this->thisValue = (object) array();
         $this->call = new Call(
+            $this->callSubject,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber,
@@ -56,6 +59,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->callNoException = new Call(
+            $this->callSubject,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber,
@@ -73,6 +77,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->earlyCall = new Call(
+            $this->callSubject,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber - 1,
@@ -80,6 +85,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->endTime
         );
         $this->lateCall = new Call(
+            $this->callSubject,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber + 1,
@@ -113,6 +119,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testProxyMethods()
     {
+        $this->assertSame($this->callSubject, $this->subject->subject());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());

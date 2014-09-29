@@ -19,10 +19,12 @@ use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
-use Eloquent\Phony\Spy\Exception\UndefinedSubjectException;
 use Exception;
+use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
 
 /**
  * Spies on a function or method.
@@ -34,17 +36,27 @@ class Spy implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null             $subject     The subject, or null to create an unbound spy.
-     * @param SequencerInterface|null   $sequencer   The sequencer to use.
-     * @param ClockInterface|null       $clock       The clock to use.
-     * @param CallFactoryInterface|null $callFactory The call factory to use.
+     * @param callable|null                   $subject     The subject, or null to create an unbound spy.
+     * @param ReflectionFunctionAbstract|null $reflector   The reflector to use.
+     * @param SequencerInterface|null         $sequencer   The sequencer to use.
+     * @param ClockInterface|null             $clock       The clock to use.
+     * @param CallFactoryInterface|null       $callFactory The call factory to use.
+     *
+     * @throws InvalidArgumentException If the supplied subject is not supported.
      */
     public function __construct(
         $subject = null,
+        ReflectionFunctionAbstract $reflector = null,
         SequencerInterface $sequencer = null,
         ClockInterface $clock = null,
         CallFactoryInterface $callFactory = null
     ) {
+        if (null === $subject) {
+            $subject = function () {};
+        }
+        if (null === $reflector) {
+            $reflector = $this->reflectorBySubject($subject);
+        }
         if (null === $sequencer) {
             $sequencer = Sequencer::instance();
         }
@@ -56,6 +68,7 @@ class Spy implements SpyInterface
         }
 
         $this->subject = $subject;
+        $this->reflector = $reflector;
         $this->sequencer = $sequencer;
         $this->clock = $clock;
         $this->callFactory = $callFactory;
@@ -93,28 +106,23 @@ class Spy implements SpyInterface
     }
 
     /**
-     * Returns true if this spy has a subject.
-     *
-     * @return boolean True if this spy has a subject.
-     */
-    public function hasSubject()
-    {
-        return null !== $this->subject;
-    }
-
-    /**
      * Get the subject.
      *
-     * @return callable                  The subject.
-     * @throws UndefinedSubjectException If there is no subject.
+     * @return callable The subject.
      */
     public function subject()
     {
-        if (null === $this->subject) {
-            throw new UndefinedSubjectException($this);
-        }
-
         return $this->subject;
+    }
+
+    /**
+     * Get the reflector.
+     *
+     * @return ReflectionFunctionAbstract The reflector.
+     */
+    public function reflector()
+    {
+        return $this->reflector;
     }
 
     /**
@@ -158,36 +166,26 @@ class Spy implements SpyInterface
     public function __invoke()
     {
         $arguments = func_get_args();
+        $returnValue = null;
+        $exception = null;
+        $startTime = $this->clock->time();
 
-        if (null === $this->subject) {
-            $thisValue = null;
-            $returnValue = null;
-            $exception = null;
-            $startTime = $this->clock->time();
-            $endTime = $startTime;
-        } else {
-            $reflectorReflector = new ReflectionClass('ReflectionFunction');
-            $reflector = new ReflectionFunction($this->subject);
-
-            if ($reflectorReflector->hasMethod('getClosureThis')) {
-                $thisValue = $reflector->getClosureThis();
-            } else { // @codeCoverageIgnoreStart
-                $thisValue = null;
-            } // @codeCoverageIgnoreEnd
-
-            $returnValue = null;
-            $exception = null;
-            $startTime = $this->clock->time();
-            try {
-                $returnValue = call_user_func_array($this->subject, $arguments);
-            } catch (Exception $exception) {
-                // returned in tuple
-            }
-
-            $endTime = $this->clock->time();
+        try {
+            $returnValue = call_user_func_array($this->subject, $arguments);
+        } catch (Exception $exception) {
+            // returned in tuple
         }
 
+        $endTime = $this->clock->time();
+
+        if (static::isBoundClosureSupported()) {
+            $thisValue = $this->reflector->getClosureThis();
+        } else { // @codeCoverageIgnoreStart
+            $thisValue = null;
+        } // @codeCoverageIgnoreEnd
+
         $this->calls[] = $this->callFactory->create(
+            $this->reflector,
             $arguments,
             $returnValue,
             $this->sequencer->next(),
@@ -204,7 +202,53 @@ class Spy implements SpyInterface
         return $returnValue;
     }
 
+    /**
+     * Get the appropriate reflector for the supplied subject.
+     *
+     * @param callable $subject The subject.
+     *
+     * @return ReflectionFunctionAbstract The reflector.
+     * @throws InvalidArgumentException   If the supplied subject is invalid.
+     */
+    protected function reflectorBySubject($subject)
+    {
+        if (!is_callable($subject)) {
+            throw new InvalidArgumentException('Unsupported spy subject.');
+        }
+
+        if (is_array($subject)) {
+            return new ReflectionMethod($subject[0], $subject[1]);
+        }
+
+        if (is_string($subject) && false !== strpos($subject, '::')) {
+            list($className, $methodName) = explode('::', $subject);
+
+            return new ReflectionMethod($className, $methodName);
+        }
+
+        return new ReflectionFunction($subject);
+    }
+
+    /**
+     * Returns true if bound closures are supported.
+     *
+     * @return boolean True if bound closures are supported.
+     */
+    protected static function isBoundClosureSupported()
+    {
+        if (null === self::$isBoundClosureSupported) {
+            $reflectorReflector = new ReflectionClass('ReflectionFunction');
+
+            self::$isBoundClosureSupported = $reflectorReflector
+                ->hasMethod('getClosureThis');
+        }
+
+        return self::$isBoundClosureSupported;
+    }
+
+    private static $isBoundClosureSupported;
     private $subject;
+    private $reflector;
     private $sequencer;
     private $clock;
     private $callFactory;

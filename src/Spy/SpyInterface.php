@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Spy\Exception\UndefinedSubjectException;
 use Exception;
+use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by spies.
@@ -21,19 +21,18 @@ use Exception;
 interface SpyInterface
 {
     /**
-     * Returns true if this spy has a subject.
-     *
-     * @return boolean True if this spy has a subject.
-     */
-    public function hasSubject();
-
-    /**
      * Get the subject.
      *
-     * @return callable                  The subject.
-     * @throws UndefinedSubjectException If there is no subject.
+     * @return callable The subject.
      */
     public function subject();
+
+    /**
+     * Get the reflector.
+     *
+     * @return ReflectionFunctionAbstract The reflector.
+     */
+    public function reflector();
 
     /**
      * Set the calls.

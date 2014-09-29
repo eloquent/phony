@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Call\Renderer\CallRenderer;
 use Eloquent\Phony\Clock\TestClock;
 use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -33,12 +34,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->spySubject = function () {
             return '= ' .implode(', ', func_get_args());
         };
+        $this->reflector = new ReflectionFunction($this->spySubject);
         $this->clock = new TestClock();
-        $this->spy = new Spy($this->spySubject, null, $this->clock);
+        $this->spy = new Spy($this->spySubject, $this->reflector, null, $this->clock);
         $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->assertionRecorder = new TestAssertionRecorder();
+        $this->callRenderer = new CallRenderer();
         $this->exporter = new Exporter();
         $this->subject = new SpyVerifier(
             $this->spy,
@@ -46,6 +49,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
+            $this->callRenderer,
             $this->exporter
         );
 
@@ -55,10 +59,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->exceptionB = new RuntimeException('Consequences will never be the same.');
         $this->thisValueA = (object) array();
         $this->thisValueB = (object) array();
-        $this->callA = new Call(array('argumentA', 'argumentB', 'argumentC'), null, 0, 1.11, 2.22);
-        $this->callB = new Call(array(), null, 1, 3.33, 4.44);
-        $this->callC = new Call(array(), $this->returnValueA, 2, 5.55, 6.66, $this->exceptionA, $this->thisValueA);
-        $this->callD = new Call(array(), $this->returnValueB, 3, 7.77, 8.88, $this->exceptionB, $this->thisValueB);
+        $this->callA = new Call($this->reflector, array('argumentA', 'argumentB', 'argumentC'), null, 0, 1.11, 2.22);
+        $this->callB = new Call($this->reflector, array(), null, 1, 3.33, 4.44);
+        $this->callC = new Call($this->reflector, array(), $this->returnValueA, 2, 5.55, 6.66, $this->exceptionA, $this->thisValueA);
+        $this->callD = new Call($this->reflector, array(), $this->returnValueB, 3, 7.77, 8.88, $this->exceptionB, $this->thisValueB);
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
         $this->wrappedCallA = $this->callVerifierFactory->adapt($this->callA);
         $this->wrappedCallB = $this->callVerifierFactory->adapt($this->callB);
@@ -74,6 +78,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
+        $this->assertSame($this->callRenderer, $this->subject->callRenderer());
         $this->assertSame($this->exporter, $this->subject->exporter());
     }
 
@@ -86,13 +91,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
+        $this->assertSame(CallRenderer::instance(), $this->subject->callRenderer());
         $this->assertEquals($this->exporter, $this->subject->exporter());
     }
 
     public function testProxyMethods()
     {
-        $this->assertTrue($this->subject->hasSubject());
         $this->assertSame($this->spySubject, $this->subject->subject());
+        $this->assertSame($this->reflector, $this->subject->reflector());
     }
 
     public function testSetCalls()
@@ -127,10 +133,20 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $spy = $this->subject;
         $spy('argumentA');
         $spy('argumentB', 'argumentC');
+        $reflector = $spy->reflector();
         $thisValue = $this->thisValue($this->spySubject);
         $expected = array(
-            new Call(array('argumentA'), '= argumentA', 0, 0.123, 1.123, null, $thisValue),
-            new Call(array('argumentB', 'argumentC'), '= argumentB, argumentC', 1, 2.123, 3.123, null, $thisValue),
+            new Call($reflector, array('argumentA'), '= argumentA', 0, 0.123, 1.123, null, $thisValue),
+            new Call(
+                $reflector,
+                array('argumentB', 'argumentC'),
+                '= argumentB, argumentC',
+                1,
+                2.123,
+                3.123,
+                null,
+                $thisValue
+            ),
         );
 
         $this->assertEquals($expected, $spy->spy()->calls());
@@ -312,16 +328,17 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls(array($this->callC, $this->callD));
         $spy = new Spy();
         $spy->setCalls(array($this->callA, $this->callB));
+        $spyVerifier = new SpyVerifier($spy);
         $expected = <<<'EOD'
 The spy was not called before the supplied spy. The actual call order was:
-    - 'argumentA', 'argumentB', 'argumentC'
-    - <no arguments>
-    - <no arguments>
-    - <no arguments>
+    - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
+    - Eloquent\Phony\Spy\{closure}()
+    - Eloquent\Phony\Spy\{closure}()
+    - Eloquent\Phony\Spy\{closure}()
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledBefore($spy);
+        $this->subject->assertCalledBefore($spyVerifier);
     }
 
     public function testCalledAfter()
@@ -357,16 +374,17 @@ EOD;
         $this->subject->setCalls(array($this->callA, $this->callB));
         $spy = new Spy();
         $spy->setCalls(array($this->callC, $this->callD));
+        $spyVerifier = new SpyVerifier($spy);
         $expected = <<<'EOD'
 The spy was not called after the supplied spy. The actual call order was:
-    - 'argumentA', 'argumentB', 'argumentC'
-    - <no arguments>
-    - <no arguments>
-    - <no arguments>
+    - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
+    - Eloquent\Phony\Spy\{closure}()
+    - Eloquent\Phony\Spy\{closure}()
+    - Eloquent\Phony\Spy\{closure}()
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledAfter($spy);
+        $this->subject->assertCalledAfter($spyVerifier);
     }
 
     public function calledWithData()

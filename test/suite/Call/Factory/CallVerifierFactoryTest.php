@@ -18,6 +18,7 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
+use ReflectionMethod;
 use SebastianBergmann\Exporter\Exporter;
 
 class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
@@ -35,8 +36,9 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->exporter
         );
 
-        $this->callA = new Call(array(), null, 0, 1.11, 2.22);
-        $this->callB = new Call(array(), null, 1, 3.33, 4.44);
+        $this->callSubject = new ReflectionMethod(__METHOD__);
+        $this->callA = new Call($this->callSubject, array(), null, 0, 1.11, 2.22);
+        $this->callB = new Call($this->callSubject, array(), null, 1, 3.33, 4.44);
     }
 
     public function testConstructor()

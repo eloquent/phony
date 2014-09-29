@@ -238,8 +238,7 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean                   True if a matching exception was thrown at least once.
-     * @throws UndefinedSubjectException If there is no subject.
+     * @return boolean True if a matching exception was thrown at least once.
      */
     public function threw($type = null);
 
@@ -248,8 +247,7 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean                   True if a matching exception was always thrown.
-     * @throws UndefinedSubjectException If there is no subject.
+     * @return boolean True if a matching exception was always thrown.
      */
     public function alwaysThrew($type = null);
 }

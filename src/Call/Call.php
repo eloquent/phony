@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use Exception;
+use ReflectionFunctionAbstract;
 
 /**
  * Represents a single call.
@@ -23,15 +24,17 @@ class Call implements CallInterface
     /**
      * Construct a new call.
      *
-     * @param array<integer,mixed> $arguments      The arguments.
-     * @param mixed                $returnValue    The return value.
-     * @param integer              $sequenceNumber The sequence number.
-     * @param float                $startTime      The time at which the call was made, in seconds since the Unix epoch.
-     * @param float                $endTime        The time at which the call completed, in seconds since the Unix epoch.
-     * @param Exception|null       $exception      The thrown exception, or null if no exception was thrown.
-     * @param object|null          $thisValue      The $this value, or null if unbound.
+     * @param ReflectionFunctionAbstract $subject        The function or method called.
+     * @param array<integer,mixed>       $arguments      The arguments.
+     * @param mixed                      $returnValue    The return value.
+     * @param integer                    $sequenceNumber The sequence number.
+     * @param float                      $startTime      The time at which the call was made, in seconds since the Unix epoch.
+     * @param float                      $endTime        The time at which the call completed, in seconds since the Unix epoch.
+     * @param Exception|null             $exception      The thrown exception, or null if no exception was thrown.
+     * @param object|null                $thisValue      The $this value, or null if unbound.
      */
     public function __construct(
+        ReflectionFunctionAbstract $subject,
         array $arguments,
         $returnValue,
         $sequenceNumber,
@@ -40,6 +43,7 @@ class Call implements CallInterface
         Exception $exception = null,
         $thisValue = null
     ) {
+        $this->subject = $subject;
         $this->arguments = $arguments;
         $this->returnValue = $returnValue;
         $this->sequenceNumber = $sequenceNumber;
@@ -47,6 +51,16 @@ class Call implements CallInterface
         $this->endTime = $endTime;
         $this->exception = $exception;
         $this->thisValue = $thisValue;
+    }
+
+    /**
+     * Get the function or method called.
+     *
+     * @return ReflectionFunctionAbstract The function or method called.
+     */
+    public function subject()
+    {
+        return $this->subject;
     }
 
     /**
@@ -119,6 +133,7 @@ class Call implements CallInterface
         return $this->thisValue;
     }
 
+    private $subject;
     private $arguments;
     private $returnValue;
     private $sequenceNumber;

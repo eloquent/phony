@@ -15,6 +15,8 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Call\Renderer\CallRenderer;
+use Eloquent\Phony\Call\Renderer\CallRendererInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -53,6 +55,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
      * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
+     * @param CallRendererInterface|null        $callRenderer        The call renderer to use.
      * @param Exporter|null                     $exporter            The exporter to use.
      */
     public function __construct(
@@ -61,6 +64,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         MatcherVerifierInterface $matcherVerifier = null,
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
+        CallRendererInterface $callRenderer = null,
         Exporter $exporter = null
     ) {
         if (null === $spyFactory) {
@@ -78,6 +82,9 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
+        if (null === $callRenderer) {
+            $callRenderer = CallRenderer::instance();
+        }
         if (null === $exporter) {
             $exporter = new Exporter();
         }
@@ -87,6 +94,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         $this->matcherVerifier = $matcherVerifier;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
+        $this->callRenderer = $callRenderer;
         $this->exporter = $exporter;
     }
 
@@ -141,6 +149,16 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     }
 
     /**
+     * Get the call renderer.
+     *
+     * @return CallRendererInterface The call renderer.
+     */
+    public function callRenderer()
+    {
+        return $this->callRenderer;
+    }
+
+    /**
      * Get the exporter.
      *
      * @return Exporter The exporter.
@@ -169,6 +187,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
+            $this->callRenderer,
             $this->exporter
         );
     }
@@ -191,5 +210,6 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     private $matcherVerifier;
     private $callVerifierFactory;
     private $assertionRecorder;
+    private $callRenderer;
     private $exporter;
 }

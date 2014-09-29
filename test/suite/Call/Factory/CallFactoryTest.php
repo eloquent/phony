@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Call;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
+use ReflectionMethod;
 
 class CallFactoryTest extends PHPUnit_Framework_TestCase
 {
@@ -25,11 +26,13 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
+        $subject = new ReflectionMethod(__METHOD__);
         $exception = new Exception();
         $thisValue = (object) array();
-        $expected = new Call(array('argumentA', 'argumentB'), 'returnValue', 0, 1.11, 2.22, $exception, $thisValue);
+        $expected =
+            new Call($subject, array('argumentA', 'argumentB'), 'returnValue', 0, 1.11, 2.22, $exception, $thisValue);
         $actual = $this->subject
-            ->create(array('argumentA', 'argumentB'), 'returnValue', 0, 1.11, 2.22, $exception, $thisValue);
+            ->create($subject, array('argumentA', 'argumentB'), 'returnValue', 0, 1.11, 2.22, $exception, $thisValue);
 
         $this->assertEquals($expected, $actual);
     }

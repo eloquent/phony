@@ -20,6 +20,7 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Exception;
+use ReflectionFunctionAbstract;
 use SebastianBergmann\Exporter\Exporter;
 
 /**
@@ -116,6 +117,16 @@ class CallVerifier implements CallVerifierInterface
     public function exporter()
     {
         return $this->exporter;
+    }
+
+    /**
+     * Get the function or method called.
+     *
+     * @return ReflectionFunctionAbstract The function or method called.
+     */
+    public function subject()
+    {
+        return $this->call->subject();
     }
 
     /**

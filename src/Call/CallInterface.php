@@ -12,12 +12,20 @@
 namespace Eloquent\Phony\Call;
 
 use Exception;
+use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by calls.
  */
 interface CallInterface
 {
+    /**
+     * Get the called function or method called.
+     *
+     * @return ReflectionFunctionAbstract The function or method called.
+     */
+    public function subject();
+
     /**
      * Get the received arguments.
      *

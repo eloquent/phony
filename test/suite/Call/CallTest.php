@@ -12,20 +12,23 @@
 namespace Eloquent\Phony\Call;
 
 use PHPUnit_Framework_TestCase;
+use ReflectionMethod;
 use RuntimeException;
 
 class CallTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->callSubject = new ReflectionMethod(__METHOD__);
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->returnValue = 'returnValue';
         $this->sequenceNumber = 111;
         $this->startTime = 1.11;
         $this->endTime = 2.22;
         $this->exception = new RuntimeException();
-        $this->thisValue = (object) array();
+        $this->thisValue = $this;
         $this->subject = new Call(
+            $this->callSubject,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber,
@@ -38,6 +41,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertSame($this->callSubject, $this->subject->subject());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
@@ -50,6 +54,7 @@ class CallTest extends PHPUnit_Framework_TestCase
     public function testConstructorDefaults()
     {
         $this->subject = new Call(
+            $this->callSubject,
             $this->arguments,
             $this->returnValue,
             $this->sequenceNumber,

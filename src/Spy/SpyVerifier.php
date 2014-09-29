@@ -17,6 +17,8 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Call\Renderer\CallRenderer;
+use Eloquent\Phony\Call\Renderer\CallRendererInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -24,6 +26,7 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Spy\Exception\UndefinedCallException;
 use Exception;
+use ReflectionFunctionAbstract;
 use SebastianBergmann\Exporter\Exporter;
 
 /**
@@ -60,6 +63,7 @@ class SpyVerifier implements SpyVerifierInterface
      * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
+     * @param CallRendererInterface|null        $callRenderer        The call renderer to use.
      * @param Exporter|null                     $exporter            The exporter to use.
      */
     public function __construct(
@@ -68,6 +72,7 @@ class SpyVerifier implements SpyVerifierInterface
         MatcherVerifierInterface $matcherVerifier = null,
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
+        CallRendererInterface $callRenderer = null,
         Exporter $exporter = null
     ) {
         if (null === $spy) {
@@ -85,6 +90,9 @@ class SpyVerifier implements SpyVerifierInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
+        if (null === $callRenderer) {
+            $callRenderer = CallRenderer::instance();
+        }
         if (null === $exporter) {
             $exporter = new Exporter();
         }
@@ -94,6 +102,7 @@ class SpyVerifier implements SpyVerifierInterface
         $this->matcherVerifier = $matcherVerifier;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
+        $this->callRenderer = $callRenderer;
         $this->exporter = $exporter;
     }
 
@@ -148,6 +157,16 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Get the call renderer.
+     *
+     * @return CallRendererInterface The call renderer.
+     */
+    public function callRenderer()
+    {
+        return $this->callRenderer;
+    }
+
+    /**
      * Get the exporter.
      *
      * @return Exporter The exporter.
@@ -158,24 +177,23 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Returns true if this spy has a subject.
-     *
-     * @return boolean True if this spy has a subject.
-     */
-    public function hasSubject()
-    {
-        return $this->spy->hasSubject();
-    }
-
-    /**
      * Get the subject.
      *
-     * @return callable                  The subject.
-     * @throws UndefinedSubjectException If there is no subject.
+     * @return callable The subject.
      */
     public function subject()
     {
         return $this->spy->subject();
+    }
+
+    /**
+     * Get the reflector.
+     *
+     * @return ReflectionFunctionAbstract The reflector.
+     */
+    public function reflector()
+    {
+        return $this->spy->reflector();
     }
 
     /**
@@ -755,8 +773,7 @@ class SpyVerifier implements SpyVerifierInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean                   True if a matching exception was thrown at least once.
-     * @throws UndefinedSubjectException If there is no subject.
+     * @return boolean True if a matching exception was thrown at least once.
      */
     public function threw($type = null)
     {
@@ -818,8 +835,7 @@ class SpyVerifier implements SpyVerifierInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean                   True if a matching exception was always thrown.
-     * @throws UndefinedSubjectException If there is no subject.
+     * @return boolean True if a matching exception was always thrown.
      */
     public function alwaysThrew($type = null)
     {
@@ -917,33 +933,11 @@ class SpyVerifier implements SpyVerifierInterface
     {
         $rendered = array();
         foreach ($calls as $call) {
-            $rendered[] = sprintf('    - %s', $this->renderCall($call));
+            $rendered[] =
+                sprintf('    - %s', $this->callRenderer->render($call));
         }
 
         return implode("\n", $rendered);
-    }
-
-    /**
-     * Render a call.
-     *
-     * @param CallInterface $call The call.
-     *
-     * @return string The rendered call.
-     */
-    protected function renderCall(CallInterface $call)
-    {
-        $arguments = $call->arguments();
-
-        if (count($arguments) < 1) {
-            return '<no arguments>';
-        }
-
-        $rendered = array();
-        foreach ($arguments as $argument) {
-            $rendered[] = $this->exporter->export($argument);
-        }
-
-        return implode(', ', $rendered);
     }
 
     private $spy;
@@ -951,5 +945,6 @@ class SpyVerifier implements SpyVerifierInterface
     private $matcherVerifier;
     private $callVerifierFactory;
     private $assertionRecorder;
+    private $callRenderer;
     private $exporter;
 }
