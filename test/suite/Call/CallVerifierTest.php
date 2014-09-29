@@ -311,6 +311,58 @@ EOD;
         $this->assertTrue($this->subject->notCalledWithExactly());
     }
 
+    public function testAssertNotCalledWithExactly()
+    {
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA', 'argumentB'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[0], $this->argumentMatchers[1]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentB', 'argumentC'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[1], $this->argumentMatchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentC'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA', 'argumentB', 'argumentC', 'argumentD'));
+        $this->assertNull(
+            $this->subject->assertNotCalledWithExactly(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentD', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertNotCalledWithExactly(
+                $this->matcherFactory->adapt('argumentD'),
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2]
+            )
+        );
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA', 'argumentB', 'argumentD'));
+        $this->assertNull(
+            $this->subject->assertNotCalledWithExactly(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentD'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->matcherFactory->adapt('argumentD')));
+        $this->assertSame(16, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertNotCalledWithExactlyFailure()
+    {
+        $expected = <<<'EOD'
+Expected arguments not to match:
+    <'argumentA'>, <'argumentB'>, <'argumentC'>
+The actual arguments were:
+    'argumentA', 'argumentB', 'argumentC'
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertNotCalledWithExactly('argumentA', 'argumentB', 'argumentC');
+    }
+
     public function testCalledBefore()
     {
         $this->assertTrue($this->subject->calledBefore($this->lateCall));

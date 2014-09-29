@@ -353,6 +353,33 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
+     * Throws an exception unless not called with the supplied arguments (and no
+     * others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertNotCalledWithExactly()
+    {
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $arguments = $this->call->arguments();
+
+        if ($this->matcherVerifier->matches($matchers, $arguments)) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected arguments not to match:\n    %s\nThe actual " .
+                        "arguments were:\n    %s",
+                    $this->renderMatchers($matchers),
+                    $this->renderArguments($arguments)
+                )
+            );
+        }
+
+        $this->assertionRecorder->recordSuccess();
+    }
+
+    /**
      * Returns true if this call occurred before the supplied call.
      *
      * @param CallInterface $call Another call.
