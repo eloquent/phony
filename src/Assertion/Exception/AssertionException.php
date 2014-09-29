@@ -15,6 +15,8 @@ use Exception;
 
 /**
  * Represents a failed assertion.
+ *
+ * @internal
  */
 final class AssertionException extends Exception implements
     AssertionExceptionInterface

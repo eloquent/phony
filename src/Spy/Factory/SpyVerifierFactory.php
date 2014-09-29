@@ -26,6 +26,8 @@ use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Creates spy verifiers.
+ *
+ * @internal
  */
 class SpyVerifierFactory implements SpyVerifierFactoryInterface
 {

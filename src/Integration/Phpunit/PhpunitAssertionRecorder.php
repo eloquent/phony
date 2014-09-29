@@ -20,6 +20,7 @@ use PHPUnit_Framework_ExpectationFailedException;
  * An assertion recorder that uses PHPUnit_Framework_Assert::assertThat().
  *
  * @see PHPUnit_Framework_Assert::assertThat()
+ * @internal
  */
 class PhpunitAssertionRecorder implements AssertionRecorderInterface
 {

@@ -34,6 +34,8 @@ class Phony
     /**
      * Get the static spy verifier factory.
      *
+     * @internal
+     *
      * @return SpyVerifierFactoryInterface The spy verifier factory.
      */
     protected static function spyVerifierFactory()

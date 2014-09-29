@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
  * A matcher that wraps a Mockery matcher.
+ *
+ * @internal
  */
 class MockeryMatcher extends AbstractWrappedMatcher
 {

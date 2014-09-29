@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\MatcherDriverInterface;
 
 /**
  * A matcher driver for PHPUnit constraints.
+ *
+ * @internal
  */
 class PhpunitMatcherDriver implements MatcherDriverInterface
 {

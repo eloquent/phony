@@ -20,6 +20,8 @@ use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
  * Creates matchers.
+ *
+ * @internal
  */
 class MatcherFactory implements MatcherFactoryInterface
 {

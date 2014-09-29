@@ -28,6 +28,8 @@ use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Provides convenience methods for verifying interactions with a spy.
+ *
+ * @internal
  */
 class SpyVerifier implements SpyVerifierInterface
 {

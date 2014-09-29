@@ -38,6 +38,8 @@ class Phony
     /**
      * Get the static spy verifier factory.
      *
+     * @internal
+     *
      * @return SpyVerifierFactoryInterface The spy verifier factory.
      */
     protected static function spyVerifierFactory()
@@ -57,6 +59,8 @@ class Phony
     /**
      * Get the static call verifier factory.
      *
+     * @internal
+     *
      * @return CallVerifierFactoryInterface The call verifier factory.
      */
     protected static function callVerifierFactory()
@@ -74,6 +78,8 @@ class Phony
 
     /**
      * Get the static matcher factory.
+     *
+     * @internal
      *
      * @return MatcherFactoryInterface The matcher factory.
      */

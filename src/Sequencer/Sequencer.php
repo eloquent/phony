@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Sequencer;
 
 /**
  * Provides a sequential series of numbers.
+ *
+ * @internal
  */
 class Sequencer implements SequencerInterface
 {

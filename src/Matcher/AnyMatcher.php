@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * A matcher that always returns true.
+ *
+ * @internal
  */
 class AnyMatcher extends AbstractMatcher
 {

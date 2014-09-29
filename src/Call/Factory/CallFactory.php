@@ -17,6 +17,8 @@ use Exception;
 
 /**
  * Creates calls.
+ *
+ * @internal
  */
 class CallFactory implements CallFactoryInterface
 {

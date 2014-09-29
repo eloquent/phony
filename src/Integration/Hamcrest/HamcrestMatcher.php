@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
  * A matcher that wraps a Hamcrest matcher.
+ *
+ * @internal
  */
 class HamcrestMatcher extends AbstractWrappedMatcher
 {

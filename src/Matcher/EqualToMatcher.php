@@ -17,6 +17,8 @@ use SebastianBergmann\Exporter\Exporter;
 
 /**
  * A matcher that tests if the value is equal to (==) another value.
+ *
+ * @internal
  */
 class EqualToMatcher extends AbstractMatcher
 {

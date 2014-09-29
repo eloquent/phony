@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
  * Verifies argument lists against matcher lists.
+ *
+ * @internal
  */
 class MatcherVerifier implements MatcherVerifierInterface
 {

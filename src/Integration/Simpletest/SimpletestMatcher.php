@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
  * A matcher that wraps a SimpleTest expectation.
+ *
+ * @internal
  */
 class SimpletestMatcher extends AbstractWrappedMatcher
 {

@@ -26,6 +26,8 @@ use ReflectionFunction;
 
 /**
  * Spies on a function or method.
+ *
+ * @internal
  */
 class Spy implements SpyInterface
 {

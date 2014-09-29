@@ -24,6 +24,8 @@ use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Provides convenience methods for verifying the details of a call.
+ *
+ * @internal
  */
 class CallVerifier implements CallVerifierInterface
 {

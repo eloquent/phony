@@ -24,6 +24,8 @@ use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Creates call verifiers.
+ *
+ * @internal
  */
 class CallVerifierFactory implements CallVerifierFactoryInterface
 {

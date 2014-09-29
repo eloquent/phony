@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * An abstract base class for implementing matchers.
+ *
+ * @internal
  */
 abstract class AbstractMatcher implements MatcherInterface
 {

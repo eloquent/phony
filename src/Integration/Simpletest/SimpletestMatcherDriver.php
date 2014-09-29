@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\MatcherDriverInterface;
 
 /**
  * A matcher driver for SimpleTest expectations.
+ *
+ * @internal
  */
 class SimpletestMatcherDriver implements MatcherDriverInterface
 {

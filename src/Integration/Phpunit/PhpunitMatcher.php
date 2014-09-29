@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
  * A matcher that wraps a PHPUnit constraint.
+ *
+ * @internal
  */
 class PhpunitMatcher extends AbstractWrappedMatcher
 {

@@ -16,6 +16,8 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 
 /**
  * A matcher driver for Phake matchers.
+ *
+ * @internal
  */
 class PhakeMatcherDriver implements MatcherDriverInterface
 {

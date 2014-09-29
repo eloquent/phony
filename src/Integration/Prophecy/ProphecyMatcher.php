@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
  * A matcher that wraps a Prophecy token.
+ *
+ * @internal
  */
 class ProphecyMatcher extends AbstractWrappedMatcher
 {

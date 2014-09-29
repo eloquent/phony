@@ -15,6 +15,8 @@ use Exception;
 
 /**
  * Represents a single call.
+ *
+ * @internal
  */
 class Call implements CallInterface
 {

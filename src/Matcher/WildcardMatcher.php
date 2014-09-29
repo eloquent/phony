@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * A matcher that tests any number of arguments against another matcher.
+ *
+ * @internal
  */
 class WildcardMatcher implements WildcardMatcherInterface
 {

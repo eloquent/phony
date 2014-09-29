@@ -15,6 +15,8 @@ use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
 
 /**
  * A matcher that wraps a Phake matcher.
+ *
+ * @internal
  */
 class PhakeMatcher extends AbstractWrappedMatcher
 {

@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Clock;
 
 /**
  * Provides access to the system clock.
+ *
+ * @internal
  */
 class SystemClock implements ClockInterface
 {
