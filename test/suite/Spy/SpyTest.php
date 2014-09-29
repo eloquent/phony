@@ -138,7 +138,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $spy('argumentA');
         $spy('argumentB', 'argumentC');
         $reflector = $spy->reflector();
-        $thisValue = $spy;
+        $thisValue = $this->thisValue($spy->subject());
         $expected = array(
             new Call($reflector, array('argumentA'), null, 0, 0.123, 1.123, null, $thisValue),
             new Call(
