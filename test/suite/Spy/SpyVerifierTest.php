@@ -505,6 +505,51 @@ EOD;
         $this->assertFalse($this->subject->alwaysCalledWith());
     }
 
+    public function testAssertAlwaysCalledWith()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callA));
+
+        $this->assertNull($this->subject->assertAlwaysCalledWith('argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject
+                ->assertAlwaysCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
+        );
+        $this->assertNull($this->subject->assertAlwaysCalledWith('argumentA', 'argumentB'));
+        $this->assertNull($this->subject->assertAlwaysCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1]));
+        $this->assertNull($this->subject->assertAlwaysCalledWith('argumentA'));
+        $this->assertNull($this->subject->assertAlwaysCalledWith($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertAlwaysCalledWith());
+        $this->assertSame(7, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertAlwaysCalledWithFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected the spy to always be called with arguments to match:
+    <'argumentA'>, <'argumentB'>, <'argumentC'>, <any>*
+The following calls were recorded:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <none>
+    - <none>
+    - <none>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledWith('argumentA', 'argumentB', 'argumentC');
+    }
+
+    public function testAssertAlwaysCalledWithFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+Expected the spy to always be called with arguments to match:
+    <'argumentA'>, <'argumentB'>, <'argumentC'>, <any>*
+The spy was never called.
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledWith('argumentA', 'argumentB', 'argumentC');
+    }
+
     /**
      * @dataProvider calledWithData
      */

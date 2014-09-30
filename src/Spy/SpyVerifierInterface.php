@@ -166,6 +166,16 @@ interface SpyVerifierInterface extends SpyInterface
     public function alwaysCalledWith();
 
     /**
+     * Throws an exception unless always called with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysCalledWith();
+
+    /**
      * Returns true if called with the supplied arguments (and no others) at
      * least once.
      *

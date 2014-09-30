@@ -497,6 +497,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function calledWith()
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -568,6 +569,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function alwaysCalledWith()
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -587,6 +589,48 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Throws an exception unless always called with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysCalledWith()
+    {
+        $calls = $this->spy->calls();
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = WildcardMatcher::instance();
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected the spy to always be called with arguments to " .
+                        "match:\n    %s\nThe spy was never called.",
+                    $this->assertionRenderer->renderMatchers($matchers)
+                )
+            );
+        }
+
+        foreach ($calls as $call) {
+            if (
+                !$this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected the spy to always be called with arguments to " .
+                            "match:\n    %s\nThe following calls were recorded:\n%s",
+                        $this->assertionRenderer->renderMatchers($matchers),
+                        $this->assertionRenderer->renderCallsArguments($calls)
+                    )
+                );
+            }
+        }
+
+        return $this->assertionRecorder->recordSuccess();
+    }
+
+    /**
      * Returns true if called with the supplied arguments (and no others) at
      * least once.
      *
@@ -597,6 +641,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function calledWithExactly()
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -625,6 +670,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function alwaysCalledWithExactly()
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -653,6 +699,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function neverCalledWith()
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return true;
         }
@@ -681,6 +728,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function neverCalledWithExactly()
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return true;
         }
@@ -709,6 +757,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function calledOn($value)
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -733,6 +782,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function alwaysCalledOn($value)
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -756,6 +806,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function returned($value)
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -779,6 +830,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function alwaysReturned($value)
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -803,6 +855,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function threw($type = null)
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
@@ -865,6 +918,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function alwaysThrew($type = null)
     {
         $calls = $this->spy->calls();
+
         if (count($calls) < 1) {
             return false;
         }
