@@ -618,8 +618,9 @@ class SpyVerifier implements SpyVerifierInterface
             ) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "Expected the spy to always be called with arguments to " .
-                            "match:\n    %s\nThe following calls were recorded:\n%s",
+                        "Expected the spy to always be called with arguments " .
+                            "to match:\n    %s\nThe following calls were " .
+                            "recorded:\n%s",
                         $this->assertionRenderer->renderMatchers($matchers),
                         $this->assertionRenderer->renderCallsArguments($calls)
                     )
@@ -660,6 +661,47 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Throws an exception unless called with the supplied arguments (and no
+     * others) at least once.
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledWithExactly()
+    {
+        $calls = $this->spy->calls();
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected the spy to be called with arguments to " .
+                        "match:\n    %s\nThe spy was never called.",
+                    $this->assertionRenderer->renderMatchers($matchers)
+                )
+            );
+        }
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                return $this->assertionRecorder->recordSuccess();
+            }
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected the spy to be called with arguments to " .
+                    "match:\n    %s\nThe following calls were recorded:\n%s",
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderCallsArguments($calls)
+            )
+        );
+    }
+
+    /**
      * Returns true if always called with the supplied arguments (and no
      * others).
      *
@@ -686,6 +728,48 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         return true;
+    }
+
+    /**
+     * Throws an exception unless always called with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysCalledWithExactly()
+    {
+        $calls = $this->spy->calls();
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected the spy to always be called with arguments to " .
+                        "match:\n    %s\nThe spy was never called.",
+                    $this->assertionRenderer->renderMatchers($matchers)
+                )
+            );
+        }
+
+        foreach ($calls as $call) {
+            if (
+                !$this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected the spy to always be called with arguments " .
+                            "to match:\n    %s\nThe following calls were " .
+                            "recorded:\n%s",
+                        $this->assertionRenderer->renderMatchers($matchers),
+                        $this->assertionRenderer->renderCallsArguments($calls)
+                    )
+                );
+            }
+        }
+
+        return $this->assertionRecorder->recordSuccess();
     }
 
     /**

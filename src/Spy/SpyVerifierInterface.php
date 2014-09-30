@@ -186,6 +186,16 @@ interface SpyVerifierInterface extends SpyInterface
     public function calledWithExactly();
 
     /**
+     * Throws an exception unless called with the supplied arguments (and no
+     * others) at least once.
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledWithExactly();
+
+    /**
      * Returns true if always called with the supplied arguments (and no
      * others).
      *
@@ -194,6 +204,16 @@ interface SpyVerifierInterface extends SpyInterface
      * @return boolean True if always called with the supplied arguments.
      */
     public function alwaysCalledWithExactly();
+
+    /**
+     * Throws an exception unless always called with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysCalledWithExactly();
 
     /**
      * Returns true if never called with the supplied arguments (and possibly

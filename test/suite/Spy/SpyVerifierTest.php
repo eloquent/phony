@@ -511,11 +511,16 @@ EOD;
 
         $this->assertNull($this->subject->assertAlwaysCalledWith('argumentA', 'argumentB', 'argumentC'));
         $this->assertNull(
-            $this->subject
-                ->assertAlwaysCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
+            $this->subject->assertAlwaysCalledWith(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2]
+            )
         );
         $this->assertNull($this->subject->assertAlwaysCalledWith('argumentA', 'argumentB'));
-        $this->assertNull($this->subject->assertAlwaysCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1]));
+        $this->assertNull(
+            $this->subject->assertAlwaysCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1])
+        );
         $this->assertNull($this->subject->assertAlwaysCalledWith('argumentA'));
         $this->assertNull($this->subject->assertAlwaysCalledWith($this->argumentMatchers[0]));
         $this->assertNull($this->subject->assertAlwaysCalledWith());
@@ -580,6 +585,49 @@ EOD;
         $this->assertFalse($this->subject->calledWithExactly());
     }
 
+    public function testAssertCalledWithExactly()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertCalledWithExactly('argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertCalledWithExactly(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2]
+            )
+        );
+        $this->assertSame(2, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledWithExactlyFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected the spy to be called with arguments to match:
+    <'argumentB'>, <'argumentC'>
+The following calls were recorded:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <none>
+    - <none>
+    - <none>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledWithExactly('argumentB', 'argumentC');
+    }
+
+    public function testAssertCalledWithExactlyFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+Expected the spy to be called with arguments to match:
+    <'argumentB'>, <'argumentC'>
+The spy was never called.
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledWithExactly('argumentB', 'argumentC');
+    }
+
     /**
      * @dataProvider calledWithData
      */
@@ -620,6 +668,49 @@ EOD;
     public function testAlwaysCalledWithExactlyWithNoCalls()
     {
         $this->assertFalse($this->subject->alwaysCalledWithExactly());
+    }
+
+    public function testAssertAlwaysCalledWithExactly()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callA));
+
+        $this->assertNull($this->subject->assertAlwaysCalledWithExactly('argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertAlwaysCalledWithExactly(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2]
+            )
+        );
+        $this->assertSame(2, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertAlwaysCalledWithExactlyFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected the spy to always be called with arguments to match:
+    <'argumentA'>, <'argumentB'>, <'argumentC'>
+The following calls were recorded:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <none>
+    - <none>
+    - <none>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledWithExactly('argumentA', 'argumentB', 'argumentC');
+    }
+
+    public function testAssertAlwaysCalledWithExactlyFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+Expected the spy to always be called with arguments to match:
+    <'argumentA'>, <'argumentB'>, <'argumentC'>
+The spy was never called.
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledWithExactly('argumentA', 'argumentB', 'argumentC');
     }
 
     /**
