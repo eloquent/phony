@@ -47,10 +47,6 @@ class SpyVerifier implements SpyVerifierInterface
         $calls = array();
 
         foreach ($spies as $spy) {
-            if ($spy instanceof SpyVerifierInterface) {
-                $spy = $spy->spy();
-            }
-
             foreach ($spy->calls() as $call) {
                 if (!in_array($call, $calls, true)) {
                     $calls[] = $call;
