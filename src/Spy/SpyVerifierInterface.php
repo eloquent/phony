@@ -226,6 +226,16 @@ interface SpyVerifierInterface extends SpyInterface
     public function neverCalledWith();
 
     /**
+     * Throws an exception unless never called with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertNeverCalledWith();
+
+    /**
      * Returns true if never called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
@@ -233,6 +243,16 @@ interface SpyVerifierInterface extends SpyInterface
      * @return boolean True if never called with the supplied arguments.
      */
     public function neverCalledWithExactly();
+
+    /**
+     * Throws an exception unless never called with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertNeverCalledWithExactly();
 
     /**
      * Returns true if the $this value is the same as the supplied value for at

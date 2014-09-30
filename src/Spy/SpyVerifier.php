@@ -628,7 +628,7 @@ class SpyVerifier implements SpyVerifierInterface
             }
         }
 
-        return $this->assertionRecorder->recordSuccess();
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -769,7 +769,7 @@ class SpyVerifier implements SpyVerifierInterface
             }
         }
 
-        return $this->assertionRecorder->recordSuccess();
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**
@@ -803,6 +803,45 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Throws an exception unless never called with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertNeverCalledWith()
+    {
+        $calls = $this->spy->calls();
+
+        if (count($calls) < 1) {
+            return $this->assertionRecorder->recordSuccess();
+        }
+
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = WildcardMatcher::instance();
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected the spy to never be called with arguments " .
+                            "to match:\n    %s\nThe following calls were " .
+                            "recorded:\n%s",
+                        $this->assertionRenderer->renderMatchers($matchers),
+                        $this->assertionRenderer->renderCallsArguments($calls)
+                    )
+                );
+
+            }
+        }
+
+        $this->assertionRecorder->recordSuccess();
+    }
+
+    /**
      * Returns true if never called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
@@ -828,6 +867,44 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         return true;
+    }
+
+    /**
+     * Throws an exception unless never called with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertNeverCalledWithExactly()
+    {
+        $calls = $this->spy->calls();
+
+        if (count($calls) < 1) {
+            return $this->assertionRecorder->recordSuccess();
+        }
+
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected the spy to never be called with arguments " .
+                            "to match:\n    %s\nThe following calls were " .
+                            "recorded:\n%s",
+                        $this->assertionRenderer->renderMatchers($matchers),
+                        $this->assertionRenderer->renderCallsArguments($calls)
+                    )
+                );
+
+            }
+        }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**

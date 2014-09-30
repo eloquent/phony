@@ -737,6 +737,65 @@ EOD;
         $this->assertTrue($this->subject->neverCalledWith());
     }
 
+    public function testAssertNeverCalledWith()
+    {
+        $this->assertNull($this->subject->assertNeverCalledWith());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertNeverCalledWith('argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWith($this->argumentMatchers[1], $this->argumentMatchers[2])
+        );
+        $this->assertNull($this->subject->assertNeverCalledWith('argumentC'));
+        $this->assertNull($this->subject->assertNeverCalledWith($this->argumentMatchers[2]));
+        $this->assertNull($this->subject->assertNeverCalledWith('argumentA', 'argumentB', 'argumentC', 'argumentD'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWith(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNeverCalledWith('argumentD', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWith(
+                $this->matcherFactory->adapt('argumentD'),
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2]
+            )
+        );
+        $this->assertNull($this->subject->assertNeverCalledWith('argumentA', 'argumentB', 'argumentD'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWith(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNeverCalledWith('argumentD'));
+        $this->assertNull($this->subject->assertNeverCalledWith($this->matcherFactory->adapt('argumentD')));
+        $this->assertSame(13, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertNeverCalledWithFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected the spy to never be called with arguments to match:
+    <'argumentA'>, <'argumentB'>, <'argumentC'>, <any>*
+The following calls were recorded:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <none>
+    - <none>
+    - <none>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertNeverCalledWith('argumentA', 'argumentB', 'argumentC');
+    }
+
     /**
      * @dataProvider calledWithData
      */
@@ -765,6 +824,73 @@ EOD;
     public function testNeverCalledWithExactlyWithNoCalls()
     {
         $this->assertTrue($this->subject->neverCalledWithExactly());
+    }
+
+    public function testAssertNeverCalledWithExactly()
+    {
+        $this->assertNull($this->subject->assertNeverCalledWithExactly());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('argumentA', 'argumentB'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWithExactly($this->argumentMatchers[0], $this->argumentMatchers[1])
+        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('argumentA'));
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWithExactly($this->argumentMatchers[1], $this->argumentMatchers[2])
+        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('argumentC'));
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->argumentMatchers[2]));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWithExactly('argumentA', 'argumentB', 'argumentC', 'argumentD')
+        );
+        $this->assertNull(
+            $this->subject->assertNeverCalledWithExactly(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('argumentD', 'argumentB', 'argumentC'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWithExactly(
+                $this->matcherFactory->adapt('argumentD'),
+                $this->argumentMatchers[1],
+                $this->argumentMatchers[2]
+            )
+        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('argumentA', 'argumentB', 'argumentD'));
+        $this->assertNull(
+            $this->subject->assertNeverCalledWithExactly(
+                $this->argumentMatchers[0],
+                $this->argumentMatchers[1],
+                $this->matcherFactory->adapt('argumentD')
+            )
+        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('argumentD'));
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->matcherFactory->adapt('argumentD')));
+        $this->assertSame(17, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertNeverCalledWithExactlyFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected the spy to never be called with arguments to match:
+    <'argumentA'>, <'argumentB'>, <'argumentC'>
+The following calls were recorded:
+    - 'argumentA', 'argumentB', 'argumentC'
+    - <none>
+    - <none>
+    - <none>
+EOD;
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertNeverCalledWithExactly('argumentA', 'argumentB', 'argumentC');
     }
 
     public function testCalledOn()
