@@ -36,6 +36,34 @@ use ReflectionFunctionAbstract;
 class SpyVerifier implements SpyVerifierInterface
 {
     /**
+     * Merge all calls made on the supplied spies, and sort them by sequence.
+     *
+     * @param array<SpyInterface> $spies The spies.
+     *
+     * @return array<integer,CallInterface> The calls.
+     */
+    public static function mergeCalls(array $spies)
+    {
+        $calls = array();
+
+        foreach ($spies as $spy) {
+            if ($spy instanceof SpyVerifierInterface) {
+                $spy = $spy->spy();
+            }
+
+            foreach ($spy->calls() as $call) {
+                if (!in_array($call, $calls, true)) {
+                    $calls[] = $call;
+                }
+            }
+        }
+
+        usort($calls, get_class() . '::compareCallOrder');
+
+        return $calls;
+    }
+
+    /**
      * Compare the supplied calls by call order.
      *
      * Returns typical comparator values, similar to strcmp().
@@ -417,8 +445,9 @@ class SpyVerifier implements SpyVerifierInterface
             throw $this->assertionRecorder->createFailure(
                 sprintf(
                     "Not called before supplied spy. Actual calls:\n%s",
-                    $this->assertionRenderer
-                        ->renderCalls($this->callsBySequence($this->spy, $spy))
+                    $this->assertionRenderer->renderCalls(
+                        static::mergeCalls(array($this->spy, $spy))
+                    )
                 )
             );
         }
@@ -467,8 +496,9 @@ class SpyVerifier implements SpyVerifierInterface
             throw $this->assertionRecorder->createFailure(
                 sprintf(
                     "Not called after supplied spy. Actual calls:\n%s",
-                    $this->assertionRenderer
-                        ->renderCalls($this->callsBySequence($this->spy, $spy))
+                    $this->assertionRenderer->renderCalls(
+                        static::mergeCalls(array($this->spy, $spy))
+                    )
                 )
             );
         }
@@ -1685,34 +1715,6 @@ class SpyVerifier implements SpyVerifierInterface
                 $this->assertionRenderer->renderValue($type)
             )
         );
-    }
-
-    /**
-     * Get a sorted sequence of calls for one or more spies.
-     *
-     * @param SpyInterface $spies,... The spies.
-     *
-     * @return array<integer,CallInterface> The calls, sorted by call order.
-     */
-    protected function callsBySequence()
-    {
-        $calls = array();
-
-        foreach (func_get_args() as $spy) {
-            if ($spy instanceof SpyVerifierInterface) {
-                $spy = $spy->spy();
-            }
-
-            foreach ($spy->calls() as $call) {
-                if (!in_array($call, $calls, true)) {
-                    $calls[] = $call;
-                }
-            }
-        }
-
-        usort($calls, get_class() . '::compareCallOrder');
-
-        return $calls;
     }
 
     private $spy;

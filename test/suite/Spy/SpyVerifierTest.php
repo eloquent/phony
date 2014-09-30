@@ -1524,6 +1524,25 @@ EOD;
         $this->subject->assertAlwaysThrew((object) array());
     }
 
+    public function testMergeCalls()
+    {
+        $spyA = new Spy();
+        $spyA->setCalls(array($this->callC));
+        $spyB = new Spy();
+        $spyB->setCalls(array($this->callB, $this->callD));
+        $spyC = new Spy();
+        $spyC->setCalls(array($this->callA, $this->callB));
+
+        $this->assertSame($this->calls, SpyVerifier::mergeCalls(array($spyA, $spyB, $spyC)));
+    }
+
+    public function testCompareCallOrder()
+    {
+        $this->assertSame(0, SpyVerifier::compareCallOrder($this->callA, $this->callA));
+        $this->assertSame(-1, SpyVerifier::compareCallOrder($this->callA, $this->callB));
+        $this->assertSame(1, SpyVerifier::compareCallOrder($this->callB, $this->callA));
+    }
+
     protected function thisValue($closure)
     {
         $reflectorReflector = new ReflectionClass('ReflectionFunction');
