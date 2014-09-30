@@ -979,7 +979,7 @@ class SpyVerifier implements SpyVerifierInterface
                     "The spy was not called on an object that matches %s. " .
                         "Calls were made on the following objects:\n%s",
                     $value->describe(),
-                    $this->assertionRenderer->renderCallsThisValues($calls)
+                    $this->assertionRenderer->renderThisValues($calls)
                 )
             );
         }
@@ -1001,7 +1001,7 @@ class SpyVerifier implements SpyVerifierInterface
             sprintf(
                 "The spy was not called on the expected object. Calls were " .
                     "made on the following objects:\n%s",
-                $this->assertionRenderer->renderCallsThisValues($calls)
+                $this->assertionRenderer->renderThisValues($calls)
             )
         );
     }
@@ -1075,8 +1075,7 @@ class SpyVerifier implements SpyVerifierInterface
                                 "matches %s. Calls were made on the " .
                                 "following objects:\n%s",
                             $value->describe(),
-                            $this->assertionRenderer
-                                ->renderCallsThisValues($calls)
+                            $this->assertionRenderer->renderThisValues($calls)
                         )
                     );
                 }
@@ -1099,7 +1098,7 @@ class SpyVerifier implements SpyVerifierInterface
                         "The spy was not always called on the expected " .
                             "object. Calls were made on the following " .
                             "objects:\n%s",
-                        $this->assertionRenderer->renderCallsThisValues($calls)
+                        $this->assertionRenderer->renderThisValues($calls)
                     )
                 );
 
@@ -1124,13 +1123,54 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
+        $value = $this->matcherFactory->adapt($value);
+
         foreach ($calls as $call) {
-            if ($call->returnValue() === $value) {
+            if ($value->matches($call->returnValue())) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Throws an exception unless this spy returned the supplied value at least
+     * once.
+     *
+     * @param mixed $value The value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertReturned($value)
+    {
+        $calls = $this->spy->calls();
+        $value = $this->matcherFactory->adapt($value);
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    'The spy did not return a value that matches %s. The spy ' .
+                        'was never called.',
+                    $value->describe()
+                )
+            );
+        }
+
+        foreach ($calls as $call) {
+            if ($value->matches($call->returnValue())) {
+                return $this->assertionRecorder->recordSuccess();
+            }
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "The spy did not return a value that matches %s. The " .
+                    "recorded calls returned the following values:\n%s",
+                $value->describe(),
+                $this->assertionRenderer->renderReturnValues($calls)
+            )
+        );
     }
 
     /**
@@ -1148,13 +1188,54 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
+        $value = $this->matcherFactory->adapt($value);
+
         foreach ($calls as $call) {
-            if ($call->returnValue() !== $value) {
+            if (!$value->matches($call->returnValue())) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Throws an exception unless this spy always returned the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysReturned($value)
+    {
+        $calls = $this->spy->calls();
+        $value = $this->matcherFactory->adapt($value);
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    'The spy did not always return a value that matches %s. ' .
+                        'The spy was never called.',
+                    $value->describe()
+                )
+            );
+        }
+
+        foreach ($calls as $call) {
+            if (!$value->matches($call->returnValue())) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "The spy did not always return a value that matches " .
+                            "%s. The recorded calls returned the following " .
+                            "values:\n%s",
+                        $value->describe(),
+                        $this->assertionRenderer->renderReturnValues($calls)
+                    )
+                );
+            }
+        }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**

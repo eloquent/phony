@@ -1060,13 +1060,53 @@ EOD;
         $this->assertFalse($this->subject->returned(null));
         $this->assertFalse($this->subject->returned($this->returnValueA));
         $this->assertFalse($this->subject->returned($this->returnValueB));
+        $this->assertFalse($this->subject->returned($this->identicalTo($this->returnValueA)));
+        $this->assertFalse($this->subject->returned('anotherValue'));
 
         $this->subject->setCalls($this->calls);
 
         $this->assertTrue($this->subject->returned(null));
         $this->assertTrue($this->subject->returned($this->returnValueA));
         $this->assertTrue($this->subject->returned($this->returnValueB));
+        $this->assertTrue($this->subject->returned($this->identicalTo($this->returnValueA)));
         $this->assertFalse($this->subject->returned('anotherValue'));
+    }
+
+    public function testAssertReturned()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertReturned(null));
+        $this->assertNull($this->subject->assertReturned($this->returnValueA));
+        $this->assertNull($this->subject->assertReturned($this->returnValueB));
+        $this->assertNull($this->subject->assertReturned($this->identicalTo($this->returnValueA)));
+        $this->assertSame(4, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertReturnedFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+The spy did not return a value that matches <'anotherValue'>. The recorded calls returned the following values:
+    - null
+    - null
+    - 'returnValueA'
+    - 'returnValueB'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertReturned('anotherValue');
+    }
+
+    public function testAssertReturnedFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+The spy did not return a value that matches <'returnValueA'>. The spy was never called.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertReturned($this->returnValueA);
     }
 
     public function testAlwaysReturned()
@@ -1074,6 +1114,7 @@ EOD;
         $this->assertFalse($this->subject->alwaysReturned(null));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueA));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueB));
+        $this->assertFalse($this->subject->alwaysReturned($this->identicalTo($this->returnValueA)));
         $this->assertFalse($this->subject->alwaysReturned('anotherValue'));
 
         $this->subject->setCalls($this->calls);
@@ -1081,14 +1122,51 @@ EOD;
         $this->assertFalse($this->subject->alwaysReturned(null));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueA));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueB));
+        $this->assertFalse($this->subject->alwaysReturned($this->identicalTo($this->returnValueA)));
         $this->assertFalse($this->subject->alwaysReturned('anotherValue'));
 
         $this->subject->setCalls(array($this->callC, $this->callC));
 
         $this->assertTrue($this->subject->alwaysReturned($this->returnValueA));
+        $this->assertTrue($this->subject->alwaysReturned($this->identicalTo($this->returnValueA)));
         $this->assertFalse($this->subject->alwaysReturned(null));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueB));
         $this->assertFalse($this->subject->alwaysReturned('anotherValue'));
+    }
+
+    public function testAssertAlwaysReturned()
+    {
+        $this->subject->setCalls(array($this->callC, $this->callC));
+
+        $this->assertNull($this->subject->assertAlwaysReturned($this->returnValueA));
+        $this->assertNull($this->subject->assertAlwaysReturned($this->identicalTo($this->returnValueA)));
+        $this->assertSame(2, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertAlwaysReturnedFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+The spy did not always return a value that matches <'returnValueA'>. The recorded calls returned the following values:
+    - null
+    - null
+    - 'returnValueA'
+    - 'returnValueB'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysReturned($this->returnValueA);
+    }
+
+    public function testAssertAlwaysReturnedFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+The spy did not always return a value that matches <'returnValueA'>. The spy was never called.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysReturned($this->returnValueA);
     }
 
     public function testThrew()

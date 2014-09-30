@@ -304,6 +304,16 @@ interface SpyVerifierInterface extends SpyInterface
     public function returned($value);
 
     /**
+     * Throws an exception unless this spy returned the supplied value at least
+     * once.
+     *
+     * @param mixed $value The value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertReturned($value);
+
+    /**
      * Returns true if this spy always returned the supplied value.
      *
      * @param mixed $value The value.
@@ -311,6 +321,15 @@ interface SpyVerifierInterface extends SpyInterface
      * @return boolean True if this spy always returned the supplied value.
      */
     public function alwaysReturned($value);
+
+    /**
+     * Throws an exception unless this spy always returned the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysReturned($value);
 
     /**
      * Returns true if an exception of the supplied type was thrown at least
