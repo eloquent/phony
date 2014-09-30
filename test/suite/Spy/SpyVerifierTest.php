@@ -216,10 +216,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testAssertCalledFailure()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected the spy to be called at least once. The spy was never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', 'Never called.');
         $this->subject->assertCalled();
     }
 
@@ -247,7 +244,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected the spy to be called once. The spy was actually called 0 time(s).'
+            'Expected 1 call. Called 0 time(s).'
         );
         $this->subject->assertCalledOnce();
     }
@@ -258,7 +255,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected the spy to be called once. The spy was actually called 4 time(s).'
+            'Expected 1 call. Called 4 time(s).'
         );
         $this->subject->assertCalledOnce();
     }
@@ -287,7 +284,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected the spy to be called 2 time(s). The spy was actually called 4 time(s).'
+            'Expected 2 call(s). Called 4 time(s).'
         );
         $this->subject->assertCalledTimes(2);
     }
@@ -327,7 +324,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $spy->setCalls(array($this->callA, $this->callB));
         $spyVerifier = new SpyVerifier($spy);
         $expected = <<<'EOD'
-The spy was not called before the supplied spy. The following calls were recorded:
+Not called before supplied spy. Actual calls:
     - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
     - Eloquent\Phony\Spy\{closure}()
@@ -373,7 +370,7 @@ EOD;
         $spy->setCalls(array($this->callC, $this->callD));
         $spyVerifier = new SpyVerifier($spy);
         $expected = <<<'EOD'
-The spy was not called after the supplied spy. The following calls were recorded:
+Not called after supplied spy. Actual calls:
     - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
     - Eloquent\Phony\Spy\{closure}()
@@ -446,9 +443,9 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected the spy to be called with arguments to match:
+Expected arguments like:
     <'argumentB'>, <'argumentC'>, <any>*
-The following calls were recorded:
+Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
     - <none>
@@ -461,9 +458,9 @@ EOD;
     public function testAssertCalledWithFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected the spy to be called with arguments to match:
+Expected arguments like:
     <'argumentB'>, <'argumentC'>, <any>*
-The spy was never called.
+Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertCalledWith('argumentB', 'argumentC');
@@ -532,9 +529,9 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected the spy to always be called with arguments to match:
+Expected every call with arguments like:
     <'argumentA'>, <'argumentB'>, <'argumentC'>, <any>*
-The following calls were recorded:
+Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
     - <none>
@@ -547,9 +544,9 @@ EOD;
     public function testAssertAlwaysCalledWithFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected the spy to always be called with arguments to match:
+Expected every call with arguments like:
     <'argumentA'>, <'argumentB'>, <'argumentC'>, <any>*
-The spy was never called.
+Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertAlwaysCalledWith('argumentA', 'argumentB', 'argumentC');
@@ -605,9 +602,9 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected the spy to be called with arguments to match:
+Expected arguments like:
     <'argumentB'>, <'argumentC'>
-The following calls were recorded:
+Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
     - <none>
@@ -620,9 +617,9 @@ EOD;
     public function testAssertCalledWithExactlyFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected the spy to be called with arguments to match:
+Expected arguments like:
     <'argumentB'>, <'argumentC'>
-The spy was never called.
+Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertCalledWithExactly('argumentB', 'argumentC');
@@ -690,9 +687,9 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected the spy to always be called with arguments to match:
+Expected every call with arguments like:
     <'argumentA'>, <'argumentB'>, <'argumentC'>
-The following calls were recorded:
+Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
     - <none>
@@ -705,9 +702,9 @@ EOD;
     public function testAssertAlwaysCalledWithExactlyFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected the spy to always be called with arguments to match:
+Expected every call with arguments like:
     <'argumentA'>, <'argumentB'>, <'argumentC'>
-The spy was never called.
+Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertAlwaysCalledWithExactly('argumentA', 'argumentB', 'argumentC');
@@ -784,9 +781,9 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected the spy to never be called with arguments to match:
+Expected no call with arguments like:
     <'argumentA'>, <'argumentB'>, <'argumentC'>, <any>*
-The following calls were recorded:
+Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
     - <none>
@@ -881,9 +878,9 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected the spy to never be called with arguments to match:
+Expected no call with arguments like:
     <'argumentA'>, <'argumentB'>, <'argumentC'>
-The following calls were recorded:
+Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
     - <none>
@@ -925,7 +922,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-The spy was not called on the expected object. Calls were made on the following objects:
+Not called on expected object. Actual objects:
     - null
     - null
     - stdClass Object ()
@@ -940,7 +937,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'The spy was not called on the expected object. The spy was never called.'
+            'Not called on expected object. Never called.'
         );
         $this->subject->assertCalledOn((object) array());
     }
@@ -949,7 +946,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-The spy was not called on an object that matches <is identical to an object of class "stdClass">. Calls were made on the following objects:
+Not called on object like <is identical to an object of class "stdClass">. Actual objects:
     - null
     - null
     - stdClass Object ()
@@ -964,8 +961,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'The spy was not called on an object that matches <is identical to an object of class "stdClass">. ' .
-                'The spy was never called.'
+            'Not called on object like <is identical to an object of class "stdClass">. Never called.'
         );
         $this->subject->assertCalledOn($this->identicalTo((object) array()));
     }
@@ -1008,7 +1004,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-The spy was not always called on the expected object. Calls were made on the following objects:
+Not always called on expected object. Actual objects:
     - null
     - null
     - stdClass Object ()
@@ -1023,7 +1019,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'The spy was not always called on the expected object. The spy was never called.'
+            'Not called on expected object. Never called.'
         );
         $this->subject->assertAlwaysCalledOn($this->thisValueA);
     }
@@ -1032,7 +1028,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-The spy was not always called on an object that matches <is identical to an object of class "stdClass">. Calls were made on the following objects:
+Not always called on object like <is identical to an object of class "stdClass">. Actual objects:
     - null
     - null
     - stdClass Object ()
@@ -1047,8 +1043,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'The spy was not always called on an object that matches ' .
-                '<is identical to an object of class "stdClass">. The spy was never called.'
+            'Not called on object like <is identical to an object of class "stdClass">. Never called.'
         );
         $this->subject->assertAlwaysCalledOn($this->identicalTo($this->thisValueA));
     }
@@ -1086,7 +1081,7 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-The spy did not return a value that matches <'anotherValue'>. The recorded calls returned the following values:
+Expected return value like <'anotherValue'>. Actually returned:
     - null
     - null
     - 'returnValueA'
@@ -1101,7 +1096,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The spy did not return a value that matches <'returnValueA'>. The spy was never called."
+            "Expected return value like <'returnValueA'>. Never called."
         );
         $this->subject->assertReturned($this->returnValueA);
     }
@@ -1145,7 +1140,7 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-The spy did not always return a value that matches <'returnValueA'>. The recorded calls returned the following values:
+Expected every call with return value like <'returnValueA'>. Actually returned:
     - null
     - null
     - 'returnValueA'
@@ -1160,7 +1155,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The spy did not always return a value that matches <'returnValueA'>. The spy was never called."
+            "Expected return value like <'returnValueA'>. Never called."
         );
         $this->subject->assertAlwaysReturned($this->returnValueA);
     }
@@ -1214,7 +1209,7 @@ EOD;
 
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected an exception. In 2 call(s), the spy never threw an exception.'
+            'Nothing thrown in 2 call(s).'
         );
         $this->subject->assertThrew();
     }
@@ -1223,7 +1218,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected an exception. The spy was never called.'
+            'Nothing thrown. Never called.'
         );
         $this->subject->assertThrew();
     }
@@ -1232,7 +1227,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected an exception of type 'Eloquent\Phony\Spy\Exception\UndefinedCallException'. Actual exceptions thrown:
+Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually threw:
     - RuntimeException('You done goofed.')
     - RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1245,8 +1240,18 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception of type 'Eloquent\Phony\Spy\Exception\UndefinedCallException'. " .
-                "The spy was never called."
+            "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Never called."
+        );
+        $this->subject->assertThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+    }
+
+    public function testAssertThrewFailureExpectingTypeWithNoExceptions()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Nothing thrown in 2 call(s)."
         );
         $this->subject->assertThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
     }
@@ -1255,7 +1260,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected an exception equal to RuntimeException(). Actual exceptions thrown:
+Expected exception equal to RuntimeException(). Actually threw:
     - RuntimeException('You done goofed.')
     - RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1268,7 +1273,18 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected an exception equal to RuntimeException(). The spy was never called.'
+            'Expected exception equal to RuntimeException(). Never called.'
+        );
+        $this->subject->assertThrew(new RuntimeException());
+    }
+
+    public function testAssertThrewFailureExpectingExceptionWithNoExceptions()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected exception equal to RuntimeException(). Nothing thrown in 2 call(s)."
         );
         $this->subject->assertThrew(new RuntimeException());
     }
@@ -1277,7 +1293,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected an exception matching <is identical to an object of class "RuntimeException">. Actual exceptions thrown:
+Expected exception like <is identical to an object of class "RuntimeException">. Actually threw:
     - RuntimeException('You done goofed.')
     - RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1290,8 +1306,19 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected an exception matching <is identical to an object of class "RuntimeException">. ' .
-                'The spy was never called.'
+            'Expected exception like <is identical to an object of class "RuntimeException">. Never called.'
+        );
+        $this->subject->assertThrew($this->identicalTo(new RuntimeException('You done goofed.')));
+    }
+
+    public function testAssertThrewFailureExpectingMatcherWithNoExceptions()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected exception like <is identical to an object of class "RuntimeException">. ' .
+                'Nothing thrown in 2 call(s).'
         );
         $this->subject->assertThrew($this->identicalTo(new RuntimeException('You done goofed.')));
     }
@@ -1371,13 +1398,11 @@ EOD;
     public function testAssertAlwaysThrewFailureExpectingAny()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected all calls to throw exceptions. Actual exceptions thrown:
-    - <none>
-    - <none>
-EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Nothing thrown in 2 call(s).'
+        );
         $this->subject->assertAlwaysThrew();
     }
 
@@ -1385,7 +1410,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected an exception. The spy was never called.'
+            'Nothing thrown. Never called.'
         );
         $this->subject->assertAlwaysThrew();
     }
@@ -1394,7 +1419,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected all calls to throw exceptions of type 'Eloquent\Phony\Spy\Exception\UndefinedCallException'. Actual exceptions thrown:
+Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually threw:
     - RuntimeException('You done goofed.')
     - RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1407,8 +1432,18 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception of type 'Eloquent\Phony\Spy\Exception\UndefinedCallException'. " .
-                "The spy was never called."
+            "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Never called."
+        );
+        $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+    }
+
+    public function testAssertAlwaysThrewFailureExpectingTypeWithNoExceptions()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Nothing thrown in 2 call(s)."
         );
         $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
     }
@@ -1417,7 +1452,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected all calls to throw exceptions equal to RuntimeException('You done goofed.'). Actual exceptions thrown:
+Expected every call to throw exception equal to RuntimeException('You done goofed.'). Actually threw:
     - RuntimeException('You done goofed.')
     - RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1430,7 +1465,18 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected an exception equal to RuntimeException(). The spy was never called.'
+            'Expected exception equal to RuntimeException(). Never called.'
+        );
+        $this->subject->assertAlwaysThrew(new RuntimeException());
+    }
+
+    public function testAssertAlwaysThrewFailureExpectingExceptionWithNoExceptions()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected exception equal to RuntimeException(). Nothing thrown in 2 call(s)."
         );
         $this->subject->assertAlwaysThrew(new RuntimeException());
     }
@@ -1439,7 +1485,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected all calls to throw exceptions matching <is identical to an object of class "RuntimeException">. Actual exceptions thrown:
+Expected every call to throw exception like <is identical to an object of class "RuntimeException">. Actually threw:
     - RuntimeException('You done goofed.')
     - RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1452,8 +1498,19 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected an exception matching <is identical to an object of class "RuntimeException">. ' .
-                'The spy was never called.'
+            'Expected exception like <is identical to an object of class "RuntimeException">. Never called.'
+        );
+        $this->subject->assertAlwaysThrew($this->identicalTo(new RuntimeException('You done goofed.')));
+    }
+
+    public function testAssertAlwaysThrewFailureExpectingMatcherWithNoExceptions()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected exception like <is identical to an object of class "RuntimeException">. ' .
+                'Nothing thrown in 2 call(s).'
         );
         $this->subject->assertAlwaysThrew($this->identicalTo(new RuntimeException('You done goofed.')));
     }

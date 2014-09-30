@@ -307,10 +307,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function assertCalled()
     {
         if (count($this->spy->calls()) < 1) {
-            throw $this->assertionRecorder->createFailure(
-                'Expected the spy to be called at least once. The spy was ' .
-                    'never called.'
-            );
+            throw $this->assertionRecorder->createFailure('Never called.');
         }
 
         $this->assertionRecorder->recordSuccess();
@@ -337,11 +334,7 @@ class SpyVerifier implements SpyVerifierInterface
 
         if (1 !== $callCount) {
             throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    'Expected the spy to be called once. The spy was ' .
-                        'actually called %d time(s).',
-                    $callCount
-                )
+                sprintf('Expected 1 call. Called %d time(s).', $callCount)
             );
         }
 
@@ -374,8 +367,7 @@ class SpyVerifier implements SpyVerifierInterface
         if ($times !== $callCount) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'Expected the spy to be called %d time(s). The spy was ' .
-                        'actually called %d time(s).',
+                    'Expected %d call(s). Called %d time(s).',
                     $times,
                     $callCount
                 )
@@ -424,8 +416,7 @@ class SpyVerifier implements SpyVerifierInterface
         if (!$this->calledBefore($spy)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "The spy was not called before the supplied spy. The " .
-                        "following calls were recorded:\n%s",
+                    "Not called before supplied spy. Actual calls:\n%s",
                     $this->assertionRenderer
                         ->renderCalls($this->callsBySequence($this->spy, $spy))
                 )
@@ -475,8 +466,7 @@ class SpyVerifier implements SpyVerifierInterface
         if (!$this->calledAfter($spy)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "The spy was not called after the supplied spy. The " .
-                        "following calls were recorded:\n%s",
+                    "Not called after supplied spy. Actual calls:\n%s",
                     $this->assertionRenderer
                         ->renderCalls($this->callsBySequence($this->spy, $spy))
                 )
@@ -533,8 +523,7 @@ class SpyVerifier implements SpyVerifierInterface
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected the spy to be called with arguments to " .
-                        "match:\n    %s\nThe spy was never called.",
+                    "Expected arguments like:\n    %s\nNever called.",
                     $this->assertionRenderer->renderMatchers($matchers)
                 )
             );
@@ -550,8 +539,7 @@ class SpyVerifier implements SpyVerifierInterface
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                "Expected the spy to be called with arguments to " .
-                    "match:\n    %s\nThe following calls were recorded:\n%s",
+                "Expected arguments like:\n    %s\nActual calls:\n%s",
                 $this->assertionRenderer->renderMatchers($matchers),
                 $this->assertionRenderer->renderCallsArguments($calls)
             )
@@ -605,8 +593,8 @@ class SpyVerifier implements SpyVerifierInterface
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected the spy to always be called with arguments to " .
-                        "match:\n    %s\nThe spy was never called.",
+                    "Expected every call with arguments like:\n    %s\n" .
+                        "Never called.",
                     $this->assertionRenderer->renderMatchers($matchers)
                 )
             );
@@ -618,9 +606,8 @@ class SpyVerifier implements SpyVerifierInterface
             ) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "Expected the spy to always be called with arguments " .
-                            "to match:\n    %s\nThe following calls were " .
-                            "recorded:\n%s",
+                        "Expected every call with arguments like:\n    %s\n" .
+                            "Actual calls:\n%s",
                         $this->assertionRenderer->renderMatchers($matchers),
                         $this->assertionRenderer->renderCallsArguments($calls)
                     )
@@ -676,8 +663,7 @@ class SpyVerifier implements SpyVerifierInterface
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected the spy to be called with arguments to " .
-                        "match:\n    %s\nThe spy was never called.",
+                    "Expected arguments like:\n    %s\nNever called.",
                     $this->assertionRenderer->renderMatchers($matchers)
                 )
             );
@@ -693,8 +679,7 @@ class SpyVerifier implements SpyVerifierInterface
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                "Expected the spy to be called with arguments to " .
-                    "match:\n    %s\nThe following calls were recorded:\n%s",
+                "Expected arguments like:\n    %s\nActual calls:\n%s",
                 $this->assertionRenderer->renderMatchers($matchers),
                 $this->assertionRenderer->renderCallsArguments($calls)
             )
@@ -746,8 +731,8 @@ class SpyVerifier implements SpyVerifierInterface
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected the spy to always be called with arguments to " .
-                        "match:\n    %s\nThe spy was never called.",
+                    "Expected every call with arguments like:\n    %s\n" .
+                        "Never called.",
                     $this->assertionRenderer->renderMatchers($matchers)
                 )
             );
@@ -759,9 +744,8 @@ class SpyVerifier implements SpyVerifierInterface
             ) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "Expected the spy to always be called with arguments " .
-                            "to match:\n    %s\nThe following calls were " .
-                            "recorded:\n%s",
+                        "Expected every call with arguments like:\n    %s\n" .
+                            "Actual calls:\n%s",
                         $this->assertionRenderer->renderMatchers($matchers),
                         $this->assertionRenderer->renderCallsArguments($calls)
                     )
@@ -827,9 +811,8 @@ class SpyVerifier implements SpyVerifierInterface
             ) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "Expected the spy to never be called with arguments " .
-                            "to match:\n    %s\nThe following calls were " .
-                            "recorded:\n%s",
+                        "Expected no call with arguments like:\n    %s\n" .
+                            "Actual calls:\n%s",
                         $this->assertionRenderer->renderMatchers($matchers),
                         $this->assertionRenderer->renderCallsArguments($calls)
                     )
@@ -893,9 +876,8 @@ class SpyVerifier implements SpyVerifierInterface
             ) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "Expected the spy to never be called with arguments " .
-                            "to match:\n    %s\nThe following calls were " .
-                            "recorded:\n%s",
+                        "Expected no call with arguments like:\n    %s\n" .
+                            "Actual calls:\n%s",
                         $this->assertionRenderer->renderMatchers($matchers),
                         $this->assertionRenderer->renderCallsArguments($calls)
                     )
@@ -961,8 +943,7 @@ class SpyVerifier implements SpyVerifierInterface
             if (count($calls) < 1) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'The spy was not called on an object that matches ' .
-                            '%s. The spy was never called.',
+                        'Not called on object like %s. Never called.',
                         $value->describe()
                     )
                 );
@@ -976,8 +957,7 @@ class SpyVerifier implements SpyVerifierInterface
 
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "The spy was not called on an object that matches %s. " .
-                        "Calls were made on the following objects:\n%s",
+                    "Not called on object like %s. Actual objects:\n%s",
                     $value->describe(),
                     $this->assertionRenderer->renderThisValues($calls)
                 )
@@ -985,10 +965,8 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         if (count($calls) < 1) {
-            throw $this->assertionRecorder->createFailure(
-                'The spy was not called on the expected object. The spy was ' .
-                    'never called.'
-            );
+            throw $this->assertionRecorder
+                ->createFailure('Not called on expected object. Never called.');
         }
 
         foreach ($calls as $call) {
@@ -999,8 +977,7 @@ class SpyVerifier implements SpyVerifierInterface
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                "The spy was not called on the expected object. Calls were " .
-                    "made on the following objects:\n%s",
+                "Not called on expected object. Actual objects:\n%s",
                 $this->assertionRenderer->renderThisValues($calls)
             )
         );
@@ -1060,8 +1037,7 @@ class SpyVerifier implements SpyVerifierInterface
             if (count($calls) < 1) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'The spy was not always called on an object that ' .
-                            'matches %s. The spy was never called.',
+                        'Not called on object like %s. Never called.',
                         $value->describe()
                     )
                 );
@@ -1071,9 +1047,8 @@ class SpyVerifier implements SpyVerifierInterface
                 if (!$value->matches($call->thisValue())) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
-                            "The spy was not always called on an object that " .
-                                "matches %s. Calls were made on the " .
-                                "following objects:\n%s",
+                            "Not always called on object like %s. " .
+                                "Actual objects:\n%s",
                             $value->describe(),
                             $this->assertionRenderer->renderThisValues($calls)
                         )
@@ -1086,8 +1061,7 @@ class SpyVerifier implements SpyVerifierInterface
 
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
-                'The spy was not always called on the expected object. The ' .
-                    'spy was never called.'
+                'Not called on expected object. Never called.'
             );
         }
 
@@ -1095,9 +1069,8 @@ class SpyVerifier implements SpyVerifierInterface
             if ($call->thisValue() !== $value) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "The spy was not always called on the expected " .
-                            "object. Calls were made on the following " .
-                            "objects:\n%s",
+                        "Not always called on expected object. " .
+                            "Actual objects:\n%s",
                         $this->assertionRenderer->renderThisValues($calls)
                     )
                 );
@@ -1150,8 +1123,7 @@ class SpyVerifier implements SpyVerifierInterface
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'The spy did not return a value that matches %s. The spy ' .
-                        'was never called.',
+                    'Expected return value like %s. Never called.',
                     $value->describe()
                 )
             );
@@ -1165,8 +1137,7 @@ class SpyVerifier implements SpyVerifierInterface
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                "The spy did not return a value that matches %s. The " .
-                    "recorded calls returned the following values:\n%s",
+                "Expected return value like %s. Actually returned:\n%s",
                 $value->describe(),
                 $this->assertionRenderer->renderReturnValues($calls)
             )
@@ -1214,8 +1185,7 @@ class SpyVerifier implements SpyVerifierInterface
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'The spy did not always return a value that matches %s. ' .
-                        'The spy was never called.',
+                    'Expected return value like %s. Never called.',
                     $value->describe()
                 )
             );
@@ -1225,9 +1195,8 @@ class SpyVerifier implements SpyVerifierInterface
             if (!$value->matches($call->returnValue())) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "The spy did not always return a value that matches " .
-                            "%s. The recorded calls returned the following " .
-                            "values:\n%s",
+                        "Expected every call with return value like %s. " .
+                            "Actually returned:\n%s",
                         $value->describe(),
                         $this->assertionRenderer->renderReturnValues($calls)
                     )
@@ -1317,9 +1286,8 @@ class SpyVerifier implements SpyVerifierInterface
 
         if (null === $type) {
             if ($callCount < 1) {
-                throw $this->assertionRecorder->createFailure(
-                    'Expected an exception. The spy was never called.'
-                );
+                throw $this->assertionRecorder
+                    ->createFailure('Nothing thrown. Never called.');
             }
 
             foreach ($calls as $call) {
@@ -1329,90 +1297,142 @@ class SpyVerifier implements SpyVerifierInterface
             }
 
             throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    'Expected an exception. In %d call(s), the spy never ' .
-                        'threw an exception.',
-                    $callCount
-                )
+                sprintf('Nothing thrown in %d call(s).', $callCount)
             );
         } elseif (is_string($type)) {
             if ($callCount < 1) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'Expected an exception of type %s. The spy was never ' .
-                            'called.',
+                        'Expected %s exception. Never called.',
                         $this->assertionRenderer->renderValue($type)
                     )
                 );
             }
 
+            $isAnyExceptions = false;
+            $isMatch = false;
             foreach ($calls as $call) {
-                if (is_a($call->exception(), $type)) {
-                    return $this->assertionRecorder->recordSuccess();
+                $exception = $call->exception();
+                $isMatch = $isMatch || is_a($exception, $type);
+
+                if (null !== $exception) {
+                    $isAnyExceptions = true;
                 }
             }
 
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected an exception of type %s. Actual exceptions " .
-                        "thrown:\n%s",
-                    $this->assertionRenderer->renderValue($type),
-                    $this->assertionRenderer->renderThrownExceptions($calls)
-                )
-            );
+            if (!$isAnyExceptions) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'Expected %s exception. Nothing thrown in %d call(s).',
+                        $this->assertionRenderer->renderValue($type),
+                        $callCount
+                    )
+                );
+            }
+
+            if (!$isMatch) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected %s exception. Actually threw:\n%s",
+                        $this->assertionRenderer->renderValue($type),
+                        $this->assertionRenderer->renderThrownExceptions($calls)
+                    )
+                );
+            }
+
+            return $this->assertionRecorder->recordSuccess();
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 if ($callCount < 1) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
-                            'Expected an exception equal to %s. The spy was ' .
-                                'never called.',
+                            'Expected exception equal to %s. Never called.',
                             $this->assertionRenderer->renderException($type)
                         )
                     );
                 }
 
+                $isAnyExceptions = false;
+                $isMatch = false;
                 foreach ($calls as $call) {
-                    if ($call->exception() == $type) {
-                        return $this->assertionRecorder->recordSuccess();
+                    $exception = $call->exception();
+                    $isMatch = $isMatch || $exception == $type;
+
+                    if (null !== $exception) {
+                        $isAnyExceptions = true;
                     }
                 }
 
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        "Expected an exception equal to %s. Actual " .
-                            "exceptions thrown:\n%s",
-                        $this->assertionRenderer->renderException($type),
-                        $this->assertionRenderer->renderThrownExceptions($calls)
-                    )
-                );
+                if (!$isAnyExceptions) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected exception equal to %s. ' .
+                                'Nothing thrown in %d call(s).',
+                            $this->assertionRenderer->renderException($type),
+                            $callCount
+                        )
+                    );
+                }
+
+                if (!$isMatch) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "Expected exception equal to %s. " .
+                                "Actually threw:\n%s",
+                            $this->assertionRenderer->renderException($type),
+                            $this->assertionRenderer
+                                ->renderThrownExceptions($calls)
+                        )
+                    );
+                }
+
+                return $this->assertionRecorder->recordSuccess();
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $type = $this->matcherFactory->adapt($type);
 
                 if ($callCount < 1) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
-                            'Expected an exception matching %s. The spy was ' .
-                                'never called.',
+                            'Expected exception like %s. Never called.',
                             $type->describe()
                         )
                     );
                 }
 
+                $isAnyExceptions = false;
+                $isMatch = false;
                 foreach ($calls as $call) {
-                    if ($type->matches($call->exception())) {
-                        return $this->assertionRecorder->recordSuccess();
+                    $exception = $call->exception();
+                    $isMatch = $isMatch || $type->matches($call->exception());
+
+                    if (null !== $exception) {
+                        $isAnyExceptions = true;
                     }
                 }
 
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        "Expected an exception matching %s. Actual " .
-                            "exceptions thrown:\n%s",
-                        $type->describe(),
-                        $this->assertionRenderer->renderThrownExceptions($calls)
-                    )
-                );
+                if (!$isMatch && !$isAnyExceptions) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected exception like %s. ' .
+                                'Nothing thrown in %d call(s).',
+                            $type->describe(),
+                            $callCount
+                        )
+                    );
+                }
+
+                if (!$isMatch) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "Expected exception like %s. Actually threw:\n%s",
+                            $type->describe(),
+                            $this->assertionRenderer
+                                ->renderThrownExceptions($calls)
+                        )
+                    );
+                }
+
+                return $this->assertionRecorder->recordSuccess();
             }
         }
 
@@ -1504,22 +1524,19 @@ class SpyVerifier implements SpyVerifierInterface
 
         if (null === $type) {
             if ($callCount < 1) {
-                throw $this->assertionRecorder->createFailure(
-                    'Expected an exception. The spy was never called.'
-                );
+                throw $this->assertionRecorder
+                    ->createFailure('Nothing thrown. Never called.');
             }
 
+            $isMatch = true;
             foreach ($calls as $call) {
-                if (null === $call->exception()) {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            "Expected all calls to throw exceptions. Actual " .
-                                "exceptions thrown:\n%s",
-                            $this->assertionRenderer
-                                ->renderThrownExceptions($calls)
-                        )
-                    );
-                }
+                $isMatch = $isMatch && null !== $call->exception();
+            }
+
+            if (!$isMatch) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf('Nothing thrown in %d call(s).', $callCount)
+                );
             }
 
             return $this->assertionRecorder->recordSuccess();
@@ -1527,25 +1544,42 @@ class SpyVerifier implements SpyVerifierInterface
             if ($callCount < 1) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'Expected an exception of type %s. The spy was never ' .
-                            'called.',
+                        'Expected %s exception. Never called.',
                         $this->assertionRenderer->renderValue($type)
                     )
                 );
             }
 
+            $isAnyExceptions = false;
+            $isMatch = true;
             foreach ($calls as $call) {
-                if (!is_a($call->exception(), $type)) {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            "Expected all calls to throw exceptions of type " .
-                                "%s. Actual exceptions thrown:\n%s",
-                            $this->assertionRenderer->renderValue($type),
-                            $this->assertionRenderer
-                                ->renderThrownExceptions($calls)
-                        )
-                    );
+                $exception = $call->exception();
+                $isMatch = $isMatch && is_a($exception, $type);
+
+                if (null !== $exception) {
+                    $isAnyExceptions = true;
                 }
+            }
+
+            if (!$isAnyExceptions) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'Expected %s exception. Nothing thrown in %d call(s).',
+                        $this->assertionRenderer->renderValue($type),
+                        $callCount
+                    )
+                );
+            }
+
+            if (!$isMatch) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected every call to throw %s exception. " .
+                            "Actually threw:\n%s",
+                        $this->assertionRenderer->renderValue($type),
+                        $this->assertionRenderer->renderThrownExceptions($calls)
+                    )
+                );
             }
 
             return $this->assertionRecorder->recordSuccess();
@@ -1554,27 +1588,44 @@ class SpyVerifier implements SpyVerifierInterface
                 if ($callCount < 1) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
-                            'Expected an exception equal to %s. The spy was ' .
-                                'never called.',
+                            'Expected exception equal to %s. Never called.',
                             $this->assertionRenderer->renderException($type)
                         )
                     );
                 }
 
+                $isAnyExceptions = false;
+                $isMatch = true;
                 foreach ($calls as $call) {
-                    if ($call->exception() != $type) {
-                        throw $this->assertionRecorder->createFailure(
-                            sprintf(
-                                "Expected all calls to throw exceptions " .
-                                    "equal to %s. Actual exceptions " .
-                                    "thrown:\n%s",
-                                $this->assertionRenderer
-                                    ->renderException($type),
-                                $this->assertionRenderer
-                                    ->renderThrownExceptions($calls)
-                            )
-                        );
+                    $exception = $call->exception();
+                    $isMatch = $isMatch && $exception == $type;
+
+                    if (null !== $exception) {
+                        $isAnyExceptions = true;
                     }
+                }
+
+                if (!$isAnyExceptions) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected exception equal to %s. ' .
+                                'Nothing thrown in %d call(s).',
+                            $this->assertionRenderer->renderException($type),
+                            $callCount
+                        )
+                    );
+                }
+
+                if (!$isMatch) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "Expected every call to throw exception equal to" .
+                                " %s. Actually threw:\n%s",
+                            $this->assertionRenderer->renderException($type),
+                            $this->assertionRenderer
+                                ->renderThrownExceptions($calls)
+                        )
+                    );
                 }
 
                 return $this->assertionRecorder->recordSuccess();
@@ -1584,26 +1635,44 @@ class SpyVerifier implements SpyVerifierInterface
                 if ($callCount < 1) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
-                            'Expected an exception matching %s. The spy was ' .
-                                'never called.',
+                            'Expected exception like %s. Never called.',
                             $type->describe()
                         )
                     );
                 }
 
+                $isAnyExceptions = false;
+                $isMatch = true;
                 foreach ($calls as $call) {
-                    if (!$type->matches($call->exception())) {
-                        throw $this->assertionRecorder->createFailure(
-                            sprintf(
-                                "Expected all calls to throw exceptions " .
-                                    "matching %s. Actual exceptions " .
-                                    "thrown:\n%s",
-                                $type->describe(),
-                                $this->assertionRenderer
-                                    ->renderThrownExceptions($calls)
-                            )
-                        );
+                    $exception = $call->exception();
+                    $isMatch = $isMatch && $type->matches($call->exception());
+
+                    if (null !== $exception) {
+                        $isAnyExceptions = true;
                     }
+                }
+
+                if (!$isMatch && !$isAnyExceptions) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected exception like %s. ' .
+                                'Nothing thrown in %d call(s).',
+                            $type->describe(),
+                            $callCount
+                        )
+                    );
+                }
+
+                if (!$isMatch) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "Expected every call to throw exception like %s. " .
+                                "Actually threw:\n%s",
+                            $type->describe(),
+                            $this->assertionRenderer
+                                ->renderThrownExceptions($calls)
+                        )
+                    );
                 }
 
                 return $this->assertionRecorder->recordSuccess();

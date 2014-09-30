@@ -252,8 +252,8 @@ class CallVerifier implements CallVerifierInterface
         if (!$this->matcherVerifier->matches($matchers, $arguments)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected arguments to match:\n    %s\nThe actual " .
-                        "arguments were:\n    %s",
+                    "Expected arguments like:\n    %s\n" .
+                        "Actual arguments:\n    %s",
                     $this->assertionRenderer->renderMatchers($matchers),
                     $this->assertionRenderer->renderArguments($arguments)
                 )
@@ -294,8 +294,8 @@ class CallVerifier implements CallVerifierInterface
         if (!$this->matcherVerifier->matches($matchers, $arguments)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected arguments to match:\n    %s\nThe actual " .
-                        "arguments were:\n    %s",
+                    "Expected arguments like:\n    %s\n" .
+                        "Actual arguments:\n    %s",
                     $this->assertionRenderer->renderMatchers($matchers),
                     $this->assertionRenderer->renderArguments($arguments)
                 )
@@ -339,8 +339,8 @@ class CallVerifier implements CallVerifierInterface
         if ($this->matcherVerifier->matches($matchers, $arguments)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected arguments not to match:\n    %s\nThe actual " .
-                        "arguments were:\n    %s",
+                    "Expected arguments unlike:\n    %s\n" .
+                        "Actual arguments:\n    %s",
                     $this->assertionRenderer->renderMatchers($matchers),
                     $this->assertionRenderer->renderArguments($arguments)
                 )
@@ -381,8 +381,8 @@ class CallVerifier implements CallVerifierInterface
         if ($this->matcherVerifier->matches($matchers, $arguments)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected arguments not to match:\n    %s\nThe actual " .
-                        "arguments were:\n    %s",
+                    "Expected arguments unlike:\n    %s\n" .
+                        "Actual arguments:\n    %s",
                     $this->assertionRenderer->renderMatchers($matchers),
                     $this->assertionRenderer->renderArguments($arguments)
                 )
@@ -414,9 +414,8 @@ class CallVerifier implements CallVerifierInterface
     public function assertCalledBefore(CallInterface $call)
     {
         if ($call->sequenceNumber() <= $this->call->sequenceNumber()) {
-            throw $this->assertionRecorder->createFailure(
-                'The call was not made before the supplied call.'
-            );
+            throw $this->assertionRecorder
+                ->createFailure('Not called before supplied call.');
         }
 
         $this->assertionRecorder->recordSuccess();
@@ -444,9 +443,8 @@ class CallVerifier implements CallVerifierInterface
     public function assertCalledAfter(CallInterface $call)
     {
         if ($call->sequenceNumber() >= $this->call->sequenceNumber()) {
-            throw $this->assertionRecorder->createFailure(
-                'The call was not made after the supplied call.'
-            );
+            throw $this->assertionRecorder
+                ->createFailure('Not called after supplied call.');
         }
 
         $this->assertionRecorder->recordSuccess();
@@ -487,8 +485,7 @@ class CallVerifier implements CallVerifierInterface
             if (!$value->matches($thisValue)) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'The call was not made on an object that matches %s. ' .
-                            'The actual object was %s.',
+                        'Not called on object like %s. Actual object was %s.',
                         $value->describe(),
                         $this->assertionRenderer->renderValue($thisValue)
                     )
@@ -497,8 +494,7 @@ class CallVerifier implements CallVerifierInterface
         } elseif ($thisValue !== $value) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'The call was not made on the expected object. The ' .
-                        'actual object was %s.',
+                    'Not called on expected object. Actual object was %s.',
                     $this->assertionRenderer->renderValue($thisValue)
                 )
             );
@@ -535,8 +531,7 @@ class CallVerifier implements CallVerifierInterface
         if (!$value->matches($returnValue)) {
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'The return value did not match %s. The actual return ' .
-                        'value was %s.',
+                    'Expected return value like %s. Returned %s.',
                     $value->describe(),
                     $this->assertionRenderer->renderValue($returnValue)
                 )
@@ -549,7 +544,7 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Returns true if an exception of the supplied type was thrown.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Exception|string|null $type An exception like, the type of exception, or null for any exception.
      *
      * @return boolean True if a matching exception was thrown.
      */
@@ -580,7 +575,7 @@ class CallVerifier implements CallVerifierInterface
      * Throws an exception unless this call threw an exception of the supplied
      * type.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Exception|string|null $type An exception like, the type of exception, or null for any exception.
      *
      * @throws Exception If the assertion fails.
      */
@@ -590,9 +585,8 @@ class CallVerifier implements CallVerifierInterface
 
         if (null === $type) {
             if (null === $exception) {
-                throw $this->assertionRecorder->createFailure(
-                    'Expected an exception, but no exception was thrown.'
-                );
+                throw $this->assertionRecorder
+                    ->createFailure('Nothing thrown.');
             }
 
             return $this->assertionRecorder->recordSuccess();
@@ -602,8 +596,7 @@ class CallVerifier implements CallVerifierInterface
             } elseif (null === $exception) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'Expected an exception of type %s, but no exception ' .
-                            'was thrown.',
+                        'Expected %s exception. Nothing thrown.',
                         $this->assertionRenderer->renderValue($type)
                     )
                 );
@@ -611,8 +604,7 @@ class CallVerifier implements CallVerifierInterface
 
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'Expected an exception of type %s. The actual exception ' .
-                        'was %s.',
+                    'Expected %s exception. Threw %s.',
                     $this->assertionRenderer->renderValue($type),
                     $this->assertionRenderer->renderException($exception)
                 )
@@ -624,8 +616,7 @@ class CallVerifier implements CallVerifierInterface
                 } elseif (null === $exception) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
-                            'Expected an exception equal to %s, but no ' .
-                                'exception was thrown.',
+                            'Expected exception equal to %s. Nothing thrown.',
                             $this->assertionRenderer->renderException($type)
                         )
                     );
@@ -633,8 +624,7 @@ class CallVerifier implements CallVerifierInterface
 
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'Expected an exception equal to %s. The actual ' .
-                            'exception was %s.',
+                        'Expected exception equal to %s. Threw %s.',
                         $this->assertionRenderer->renderException($type),
                         $this->assertionRenderer->renderException($exception)
                     )
@@ -648,8 +638,7 @@ class CallVerifier implements CallVerifierInterface
 
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        'Expected an exception matching %s. The actual ' .
-                            'exception was %s.',
+                        'Expected exception like %s. Threw %s.',
                         $type->describe(),
                         $this->assertionRenderer->renderException($exception)
                     )

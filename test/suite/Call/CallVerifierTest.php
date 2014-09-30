@@ -197,9 +197,9 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testAssertCalledWithFailure()
     {
         $expected = <<<'EOD'
-Expected arguments to match:
+Expected arguments like:
     <'argumentB'>, <'argumentC'>, <any>*
-The actual arguments were:
+Actual arguments:
     'argumentA', 'argumentB', 'argumentC'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -209,9 +209,9 @@ EOD;
     public function testAssertCalledWithFailureWithNoArguments()
     {
         $expected = <<<'EOD'
-Expected arguments to match:
+Expected arguments like:
     <'argumentB'>, <'argumentC'>, <any>*
-The actual arguments were:
+Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -253,9 +253,9 @@ EOD;
     public function testAssertCalledWithExactlyFailure()
     {
         $expected = <<<'EOD'
-Expected arguments to match:
+Expected arguments like:
     <'argumentA'>, <'argumentB'>
-The actual arguments were:
+Actual arguments:
     'argumentA', 'argumentB', 'argumentC'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -265,9 +265,9 @@ EOD;
     public function testAssertCalledWithExactlyFailureWithNoArguments()
     {
         $expected = <<<'EOD'
-Expected arguments to match:
+Expected arguments like:
     <'argumentA'>, <'argumentB'>
-The actual arguments were:
+Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -329,9 +329,9 @@ EOD;
     public function testAssertNotCalledWithFailure()
     {
         $expected = <<<'EOD'
-Expected arguments not to match:
+Expected arguments unlike:
     <'argumentA'>, <'argumentB'>, <any>*
-The actual arguments were:
+Actual arguments:
     'argumentA', 'argumentB', 'argumentC'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -341,9 +341,9 @@ EOD;
     public function testAssertNotCalledWithFailureWithNoArguments()
     {
         $expected = <<<'EOD'
-Expected arguments not to match:
+Expected arguments unlike:
     <any>*
-The actual arguments were:
+Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -415,9 +415,9 @@ EOD;
     public function testAssertNotCalledWithExactlyFailure()
     {
         $expected = <<<'EOD'
-Expected arguments not to match:
+Expected arguments unlike:
     <'argumentA'>, <'argumentB'>, <'argumentC'>
-The actual arguments were:
+Actual arguments:
     'argumentA', 'argumentB', 'argumentC'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -427,9 +427,9 @@ EOD;
     public function testAssertNotCalledWithExactlyFailureWithNoArguments()
     {
         $expected = <<<'EOD'
-Expected arguments not to match:
+Expected arguments unlike:
     <none>
-The actual arguments were:
+Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -452,7 +452,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The call was not made before the supplied call."
+            'Not called before supplied call.'
         );
         $this->subject->assertCalledBefore($this->earlyCall);
     }
@@ -473,7 +473,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The call was not made after the supplied call."
+            'Not called after supplied call.'
         );
         $this->subject->assertCalledAfter($this->lateCall);
     }
@@ -496,7 +496,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The call was not made on the expected object. The actual object was stdClass Object ()."
+            "Not called on expected object. Actual object was stdClass Object ()."
         );
         $this->subject->assertCalledOn((object) array());
     }
@@ -505,8 +505,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The call was not made on an object that matches <is identical to an object of class \"stdClass\">. " .
-                "The actual object was stdClass Object ()."
+            "Not called on object like <is identical to an object of class \"stdClass\">. " .
+                "Actual object was stdClass Object ()."
         );
         $this->subject->assertCalledOn($this->identicalTo((object) array()));
     }
@@ -530,7 +530,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "The return value did not match <'value'>. The actual return value was 'returnValue'."
+            "Expected return value like <'value'>. Returned 'returnValue'."
         );
         $this->subject->assertReturned('value');
     }
@@ -574,10 +574,7 @@ EOD;
 
     public function testAssertThrewFailureExpectingAnyNoneThrown()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception, but no exception was thrown."
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', 'Nothing thrown.');
         $this->subjectNoException->assertThrew();
     }
 
@@ -585,8 +582,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception of type 'InvalidArgumentException'. " .
-                "The actual exception was RuntimeException('You done goofed.')."
+            "Expected 'InvalidArgumentException' exception. " .
+                "Threw RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew('InvalidArgumentException');
     }
@@ -595,7 +592,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception of type 'InvalidArgumentException', but no exception was thrown."
+            "Expected 'InvalidArgumentException' exception. Nothing thrown."
         );
         $this->subjectNoException->assertThrew('InvalidArgumentException');
     }
@@ -604,8 +601,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception equal to RuntimeException(). " .
-                "The actual exception was RuntimeException('You done goofed.')."
+            "Expected exception equal to RuntimeException(). " .
+                "Threw RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew(new RuntimeException());
     }
@@ -614,7 +611,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception equal to RuntimeException(), but no exception was thrown."
+            "Expected exception equal to RuntimeException(). Nothing thrown."
         );
         $this->subjectNoException->assertThrew(new RuntimeException());
     }
@@ -623,8 +620,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception matching <is identical to an object of class \"RuntimeException\">. " .
-                "The actual exception was RuntimeException('You done goofed.')."
+            "Expected exception like <is identical to an object of class \"RuntimeException\">. " .
+                "Threw RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew($this->identicalTo(new RuntimeException('You done goofed.')));
     }
