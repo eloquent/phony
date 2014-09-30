@@ -13,10 +13,12 @@ namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use RuntimeException;
 use SebastianBergmann\Exporter\Exporter;
 
 class AssertionRendererTest extends PHPUnit_Framework_TestCase
@@ -33,7 +35,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
             0,
             .1,
             .2,
-            null,
+            new RuntimeException('message'),
             (object) array()
         );
         $this->callB = new Call(new ReflectionMethod(__METHOD__), array(), null, 1, .3, .4);
@@ -55,6 +57,11 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame("'value'", $this->subject->renderValue('value'));
         $this->assertSame("111", $this->subject->renderValue(111));
+        $this->assertSame("'line\nline'", $this->subject->renderValue("line\nline"));
+        $this->assertSame(
+            "'12345678901234567890123456789012345678901234567890'",
+            $this->subject->renderValue('12345678901234567890123456789012345678901234567890')
+        );
     }
 
     public function testRenderMatchers()
@@ -100,6 +107,17 @@ EOD;
         $this->assertSame($expected, $this->subject->renderReturnValues(array($this->callA, $this->callB)));
     }
 
+    public function testRenderThrownExceptions()
+    {
+        $expected = <<<'EOD'
+    - RuntimeException('message')
+    - <none>
+EOD;
+
+        $this->assertSame('', $this->subject->renderThrownExceptions(array()));
+        $this->assertSame($expected, $this->subject->renderThrownExceptions(array($this->callA, $this->callB)));
+    }
+
     public function testRenderThisValues()
     {
         $expected = <<<'EOD'
@@ -143,6 +161,13 @@ EOD;
     public function testRenderCall($call, $expected)
     {
         $this->assertSame($expected, $this->subject->renderCall($call));
+    }
+
+    public function testRenderException()
+    {
+        $this->assertSame("Exception()", $this->subject->renderException(new Exception()));
+        $this->assertSame("RuntimeException()", $this->subject->renderException(new RuntimeException()));
+        $this->assertSame("Exception('message')", $this->subject->renderException(new Exception('message')));
     }
 
     public function testInstance()

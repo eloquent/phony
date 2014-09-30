@@ -342,6 +342,16 @@ interface SpyVerifierInterface extends SpyInterface
     public function threw($type = null);
 
     /**
+     * Throws an exception unless an exception of the supplied type was thrown
+     * at least once.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertThrew($type = null);
+
+    /**
      * Returns true if an exception of the supplied type was always thrown.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
@@ -349,4 +359,14 @@ interface SpyVerifierInterface extends SpyInterface
      * @return boolean True if a matching exception was always thrown.
      */
     public function alwaysThrew($type = null);
+
+    /**
+     * Throws an exception unless an exception of the supplied type was always
+     * thrown.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysThrew($type = null);
 }

@@ -604,7 +604,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception equal to RuntimeException(''). " .
+            "Expected an exception equal to RuntimeException(). " .
                 "The actual exception was RuntimeException('You done goofed.')."
         );
         $this->subject->assertThrew(new RuntimeException());
@@ -614,7 +614,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected an exception equal to RuntimeException(''), but no exception was thrown."
+            "Expected an exception equal to RuntimeException(), but no exception was thrown."
         );
         $this->subjectNoException->assertThrew(new RuntimeException());
     }
@@ -633,8 +633,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Unable to match exceptions against 111."
+            "Unable to match exceptions against stdClass Object ()."
         );
-        $this->subject->assertThrew(111);
+        $this->subject->assertThrew((object) array());
     }
 }

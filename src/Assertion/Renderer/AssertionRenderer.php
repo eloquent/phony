@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Exception;
 use ReflectionMethod;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -70,6 +71,10 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderValue($value)
     {
+        if (is_string($value)) {
+            return $this->exporter->export($value);
+        }
+
         return $this->exporter->shortenedExport($value);
     }
 
@@ -145,6 +150,24 @@ class AssertionRenderer implements AssertionRendererInterface
                 '    - %s',
                 $this->exporter->shortenedExport($call->returnValue())
             );
+        }
+
+        return implode("\n", $rendered);
+    }
+
+    /**
+     * Render a only the thrown exceptions of a sequence of calls.
+     *
+     * @param array<integer,CallInterface> $calls The calls.
+     *
+     * @return string The rendered call exceptions.
+     */
+    public function renderThrownExceptions(array $calls)
+    {
+        $rendered = array();
+        foreach ($calls as $call) {
+            $rendered[] =
+                sprintf('    - %s', $this->renderException($call->exception()));
         }
 
         return implode("\n", $rendered);
@@ -227,6 +250,29 @@ class AssertionRenderer implements AssertionRendererInterface
         }
 
         return implode(', ', $rendered);
+    }
+
+    /**
+     * Render an exception.
+     *
+     * @param Exception|null The exception.
+     *
+     * @return string The rendered exception.
+     */
+    public function renderException(Exception $exception = null)
+    {
+        if (null === $exception) {
+            return '<none>';
+        }
+
+        if ('' === $exception->getMessage()) {
+            $renderedMessage = '';
+        } else {
+            $renderedMessage = $this->exporter
+                ->shortenedExport($exception->getMessage());
+        }
+
+        return sprintf('%s(%s)', get_class($exception), $renderedMessage);
     }
 
     private static $instance;

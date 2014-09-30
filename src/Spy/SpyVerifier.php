@@ -1303,6 +1303,128 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Throws an exception unless an exception of the supplied type was thrown
+     * at least once.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertThrew($type = null)
+    {
+        $calls = $this->spy->calls();
+        $callCount = count($calls);
+
+        if (null === $type) {
+            if ($callCount < 1) {
+                throw $this->assertionRecorder->createFailure(
+                    'Expected an exception. The spy was never called.'
+                );
+            }
+
+            foreach ($calls as $call) {
+                if (null !== $call->exception()) {
+                    return $this->assertionRecorder->recordSuccess();
+                }
+            }
+
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    'Expected an exception. In %d call(s), the spy never ' .
+                        'threw an exception.',
+                    $callCount
+                )
+            );
+        } elseif (is_string($type)) {
+            if ($callCount < 1) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'Expected an exception of type %s. The spy was never ' .
+                            'called.',
+                        $this->assertionRenderer->renderValue($type)
+                    )
+                );
+            }
+
+            foreach ($calls as $call) {
+                if (is_a($call->exception(), $type)) {
+                    return $this->assertionRecorder->recordSuccess();
+                }
+            }
+
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected an exception of type %s. Actual exceptions " .
+                        "thrown:\n%s",
+                    $this->assertionRenderer->renderValue($type),
+                    $this->assertionRenderer->renderThrownExceptions($calls)
+                )
+            );
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                if ($callCount < 1) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected an exception equal to %s. The spy was ' .
+                                'never called.',
+                            $this->assertionRenderer->renderException($type)
+                        )
+                    );
+                }
+
+                foreach ($calls as $call) {
+                    if ($call->exception() == $type) {
+                        return $this->assertionRecorder->recordSuccess();
+                    }
+                }
+
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected an exception equal to %s. Actual " .
+                            "exceptions thrown:\n%s",
+                        $this->assertionRenderer->renderException($type),
+                        $this->assertionRenderer->renderThrownExceptions($calls)
+                    )
+                );
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $type = $this->matcherFactory->adapt($type);
+
+                if ($callCount < 1) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected an exception matching %s. The spy was ' .
+                                'never called.',
+                            $type->describe()
+                        )
+                    );
+                }
+
+                foreach ($calls as $call) {
+                    if ($type->matches($call->exception())) {
+                        return $this->assertionRecorder->recordSuccess();
+                    }
+                }
+
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "Expected an exception matching %s. Actual " .
+                            "exceptions thrown:\n%s",
+                        $type->describe(),
+                        $this->assertionRenderer->renderThrownExceptions($calls)
+                    )
+                );
+            }
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Unable to match exceptions against %s.',
+                $this->assertionRenderer->renderValue($type)
+            )
+        );
+    }
+
+    /**
      * Returns true if an exception of the supplied type was always thrown.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
@@ -1365,6 +1487,135 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         return true;
+    }
+
+    /**
+     * Throws an exception unless an exception of the supplied type was always
+     * thrown.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysThrew($type = null)
+    {
+        $calls = $this->spy->calls();
+        $callCount = count($calls);
+
+        if (null === $type) {
+            if ($callCount < 1) {
+                throw $this->assertionRecorder->createFailure(
+                    'Expected an exception. The spy was never called.'
+                );
+            }
+
+            foreach ($calls as $call) {
+                if (null === $call->exception()) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "Expected all calls to throw exceptions. Actual " .
+                                "exceptions thrown:\n%s",
+                            $this->assertionRenderer
+                                ->renderThrownExceptions($calls)
+                        )
+                    );
+                }
+            }
+
+            return $this->assertionRecorder->recordSuccess();
+        } elseif (is_string($type)) {
+            if ($callCount < 1) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'Expected an exception of type %s. The spy was never ' .
+                            'called.',
+                        $this->assertionRenderer->renderValue($type)
+                    )
+                );
+            }
+
+            foreach ($calls as $call) {
+                if (!is_a($call->exception(), $type)) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "Expected all calls to throw exceptions of type " .
+                                "%s. Actual exceptions thrown:\n%s",
+                            $this->assertionRenderer->renderValue($type),
+                            $this->assertionRenderer
+                                ->renderThrownExceptions($calls)
+                        )
+                    );
+                }
+            }
+
+            return $this->assertionRecorder->recordSuccess();
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                if ($callCount < 1) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected an exception equal to %s. The spy was ' .
+                                'never called.',
+                            $this->assertionRenderer->renderException($type)
+                        )
+                    );
+                }
+
+                foreach ($calls as $call) {
+                    if ($call->exception() != $type) {
+                        throw $this->assertionRecorder->createFailure(
+                            sprintf(
+                                "Expected all calls to throw exceptions " .
+                                    "equal to %s. Actual exceptions " .
+                                    "thrown:\n%s",
+                                $this->assertionRenderer
+                                    ->renderException($type),
+                                $this->assertionRenderer
+                                    ->renderThrownExceptions($calls)
+                            )
+                        );
+                    }
+                }
+
+                return $this->assertionRecorder->recordSuccess();
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $type = $this->matcherFactory->adapt($type);
+
+                if ($callCount < 1) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            'Expected an exception matching %s. The spy was ' .
+                                'never called.',
+                            $type->describe()
+                        )
+                    );
+                }
+
+                foreach ($calls as $call) {
+                    if (!$type->matches($call->exception())) {
+                        throw $this->assertionRecorder->createFailure(
+                            sprintf(
+                                "Expected all calls to throw exceptions " .
+                                    "matching %s. Actual exceptions " .
+                                    "thrown:\n%s",
+                                $type->describe(),
+                                $this->assertionRenderer
+                                    ->renderThrownExceptions($calls)
+                            )
+                        );
+                    }
+                }
+
+                return $this->assertionRecorder->recordSuccess();
+            }
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Unable to match exceptions against %s.',
+                $this->assertionRenderer->renderValue($type)
+            )
+        );
     }
 
     /**

@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Exception;
 
 /**
  * The interface implemented by assertion renderers.
@@ -65,6 +66,15 @@ interface AssertionRendererInterface
     public function renderReturnValues(array $calls);
 
     /**
+     * Render a only the thrown exceptions of a sequence of calls.
+     *
+     * @param array<integer,CallInterface> $calls The calls.
+     *
+     * @return string The rendered call exceptions.
+     */
+    public function renderThrownExceptions(array $calls);
+
+    /**
      * Render a only the $this values of a sequence of calls.
      *
      * @param array<integer,CallInterface> $calls The calls.
@@ -90,4 +100,13 @@ interface AssertionRendererInterface
      * @return string The rendered arguments.
      */
     public function renderArguments(array $arguments);
+
+    /**
+     * Render an exception.
+     *
+     * @param Exception|null The exception.
+     *
+     * @return string The rendered exception.
+     */
+    public function renderException(Exception $exception = null);
 }

@@ -593,12 +593,12 @@ class CallVerifier implements CallVerifierInterface
                 throw $this->assertionRecorder->createFailure(
                     'Expected an exception, but no exception was thrown.'
                 );
-            } else {
-                $this->assertionRecorder->recordSuccess();
             }
+
+            return $this->assertionRecorder->recordSuccess();
         } elseif (is_string($type)) {
             if (is_a($exception, $type)) {
-                $this->assertionRecorder->recordSuccess();
+                return $this->assertionRecorder->recordSuccess();
             } elseif (null === $exception) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
@@ -607,72 +607,62 @@ class CallVerifier implements CallVerifierInterface
                         $this->assertionRenderer->renderValue($type)
                     )
                 );
-            } else {
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Expected an exception of type %s. The actual ' .
-                            'exception was %s(%s).',
-                        $this->assertionRenderer->renderValue($type),
-                        get_class($exception),
-                        $this->assertionRenderer
-                            ->renderValue($exception->getMessage())
-                    )
-                );
             }
+
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    'Expected an exception of type %s. The actual exception ' .
+                        'was %s.',
+                    $this->assertionRenderer->renderValue($type),
+                    $this->assertionRenderer->renderException($exception)
+                )
+            );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 if ($exception == $type) {
-                    $this->assertionRecorder->recordSuccess();
+                    return $this->assertionRecorder->recordSuccess();
                 } elseif (null === $exception) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
-                            'Expected an exception equal to %s(%s), but no ' .
+                            'Expected an exception equal to %s, but no ' .
                                 'exception was thrown.',
-                            get_class($type),
-                            $this->assertionRenderer
-                                ->renderValue($type->getMessage())
-                        )
-                    );
-                } else {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            'Expected an exception equal to %s(%s). The ' .
-                                'actual exception was %s(%s).',
-                            get_class($type),
-                            $this->assertionRenderer
-                                ->renderValue($type->getMessage()),
-                            get_class($exception),
-                            $this->assertionRenderer
-                                ->renderValue($exception->getMessage())
+                            $this->assertionRenderer->renderException($type)
                         )
                     );
                 }
+
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'Expected an exception equal to %s. The actual ' .
+                            'exception was %s.',
+                        $this->assertionRenderer->renderException($type),
+                        $this->assertionRenderer->renderException($exception)
+                    )
+                );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $type = $this->matcherFactory->adapt($type);
 
                 if ($type->matches($exception)) {
-                    $this->assertionRecorder->recordSuccess();
-                } else {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            'Expected an exception matching %s. The actual ' .
-                                'exception was %s(%s).',
-                            $type->describe(),
-                            get_class($exception),
-                            $this->assertionRenderer
-                                ->renderValue($exception->getMessage())
-                        )
-                    );
+                    return $this->assertionRecorder->recordSuccess();
                 }
+
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'Expected an exception matching %s. The actual ' .
+                            'exception was %s.',
+                        $type->describe(),
+                        $this->assertionRenderer->renderException($exception)
+                    )
+                );
             }
-        } else {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    'Unable to match exceptions against %s.',
-                    $this->assertionRenderer->renderValue($type)
-                )
-            );
         }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Unable to match exceptions against %s.',
+                $this->assertionRenderer->renderValue($type)
+            )
+        );
     }
 
     private $call;
