@@ -131,6 +131,26 @@ class AssertionRenderer implements AssertionRendererInterface
     }
 
     /**
+     * Render a only the $this values of a sequence of calls.
+     *
+     * @param array<integer,CallInterface> $calls The calls.
+     *
+     * @return string The rendered call $this values.
+     */
+    public function renderCallsThisValues(array $calls)
+    {
+        $rendered = array();
+        foreach ($calls as $call) {
+            $rendered[] = sprintf(
+                '    - %s',
+                $this->exporter->shortenedExport($call->thisValue())
+            );
+        }
+
+        return implode("\n", $rendered);
+    }
+
+    /**
      * Render the supplied call.
      *
      * @param CallInterface $call The call.

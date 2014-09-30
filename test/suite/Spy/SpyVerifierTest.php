@@ -898,13 +898,77 @@ EOD;
         $this->assertFalse($this->subject->calledOn(null));
         $this->assertFalse($this->subject->calledOn($this->thisValueA));
         $this->assertFalse($this->subject->calledOn($this->thisValueB));
+        $this->assertFalse($this->subject->calledOn($this->identicalTo($this->thisValueA)));
+        $this->assertFalse($this->subject->calledOn((object) array()));
 
         $this->subject->setCalls($this->calls);
 
         $this->assertTrue($this->subject->calledOn(null));
         $this->assertTrue($this->subject->calledOn($this->thisValueA));
         $this->assertTrue($this->subject->calledOn($this->thisValueB));
+        $this->assertTrue($this->subject->calledOn($this->identicalTo($this->thisValueA)));
         $this->assertFalse($this->subject->calledOn((object) array()));
+    }
+
+    public function testAssertCalledOn()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertNull($this->subject->assertCalledOn(null));
+        $this->assertNull($this->subject->assertCalledOn($this->thisValueA));
+        $this->assertNull($this->subject->assertCalledOn($this->thisValueB));
+        $this->assertNull($this->subject->assertCalledOn($this->identicalTo($this->thisValueA)));
+        $this->assertSame(4, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertCalledOnFailure()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+The spy was not called on the expected object. Calls were made on the following objects:
+    - null
+    - null
+    - stdClass Object ()
+    - stdClass Object ()
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledOn((object) array());
+    }
+
+    public function testAssertCalledOnFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+The spy was not called on the expected object. The spy was never called.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledOn((object) array());
+    }
+
+    public function testAssertCalledOnFailureWithMatcher()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+The spy was not called on an object that matches <is identical to an object of class "stdClass">. Calls were made on the following objects:
+    - null
+    - null
+    - stdClass Object ()
+    - stdClass Object ()
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledOn($this->identicalTo((object) array()));
+    }
+
+    public function testAssertCalledOnFailureWithMatcherWithNoCalls()
+    {
+        $expected = <<<'EOD'
+The spy was not called on an object that matches <is identical to an object of class "stdClass">. The spy was never called.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertCalledOn($this->identicalTo((object) array()));
     }
 
     public function testAlwaysCalledOn()
@@ -912,6 +976,7 @@ EOD;
         $this->assertFalse($this->subject->alwaysCalledOn(null));
         $this->assertFalse($this->subject->alwaysCalledOn($this->thisValueA));
         $this->assertFalse($this->subject->alwaysCalledOn($this->thisValueB));
+        $this->assertFalse($this->subject->alwaysCalledOn($this->identicalTo($this->thisValueA)));
         $this->assertFalse($this->subject->alwaysCalledOn((object) array()));
 
         $this->subject->setCalls($this->calls);
@@ -919,14 +984,75 @@ EOD;
         $this->assertFalse($this->subject->alwaysCalledOn(null));
         $this->assertFalse($this->subject->alwaysCalledOn($this->thisValueA));
         $this->assertFalse($this->subject->alwaysCalledOn($this->thisValueB));
+        $this->assertFalse($this->subject->alwaysCalledOn($this->identicalTo($this->thisValueA)));
         $this->assertFalse($this->subject->alwaysCalledOn((object) array()));
 
         $this->subject->setCalls(array($this->callC, $this->callC));
 
         $this->assertTrue($this->subject->alwaysCalledOn($this->thisValueA));
+        $this->assertTrue($this->subject->alwaysCalledOn($this->identicalTo($this->thisValueA)));
         $this->assertFalse($this->subject->alwaysCalledOn(null));
         $this->assertFalse($this->subject->alwaysCalledOn($this->thisValueB));
         $this->assertFalse($this->subject->alwaysCalledOn((object) array()));
+    }
+
+    public function testAssertAlwaysCalledOn()
+    {
+        $this->subject->setCalls(array($this->callC, $this->callC));
+
+        $this->assertNull($this->subject->assertAlwaysCalledOn($this->thisValueA));
+        $this->assertNull($this->subject->assertAlwaysCalledOn($this->identicalTo($this->thisValueA)));
+        $this->assertSame(2, $this->assertionRecorder->successCount());
+    }
+
+    public function testAssertAlwaysCalledOnFailure()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+The spy was not always called on the expected object. Calls were made on the following objects:
+    - null
+    - null
+    - stdClass Object ()
+    - stdClass Object ()
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledOn($this->thisValueA);
+    }
+
+    public function testAssertAlwaysCalledOnFailureWithNoCalls()
+    {
+        $expected = <<<'EOD'
+The spy was not always called on the expected object. The spy was never called.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledOn($this->thisValueA);
+    }
+
+    public function testAssertAlwaysCalledOnFailureWithMatcher()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+The spy was not always called on an object that matches <is identical to an object of class "stdClass">. Calls were made on the following objects:
+    - null
+    - null
+    - stdClass Object ()
+    - stdClass Object ()
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledOn($this->identicalTo($this->thisValueA));
+    }
+
+    public function testAssertAlwaysCalledOnFailureWithMatcherWithNoCalls()
+    {
+        $expected = <<<'EOD'
+The spy was not always called on an object that matches <is identical to an object of class "stdClass">. The spy was never called.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysCalledOn($this->identicalTo($this->thisValueA));
     }
 
     public function testReturned()

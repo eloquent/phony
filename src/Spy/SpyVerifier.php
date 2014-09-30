@@ -923,13 +923,87 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
+        if ($this->matcherFactory->isMatcher($value)) {
+            $isMatcher = true;
+            $value = $this->matcherFactory->adapt($value);
+        } else {
+            $isMatcher = false;
+        }
+
         foreach ($calls as $call) {
-            if ($call->thisValue() === $value) {
+            if ($isMatcher) {
+                if ($value->matches($call->thisValue())) {
+                    return true;
+                }
+            } elseif ($call->thisValue() === $value) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Throws an exception unless the $this value is the same as the supplied
+     * value for at least one call.
+     *
+     * @param object|null $value The possible $this value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledOn($value)
+    {
+        $calls = $this->spy->calls();
+
+        if ($this->matcherFactory->isMatcher($value)) {
+            $value = $this->matcherFactory->adapt($value);
+
+            if (count($calls) < 1) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'The spy was not called on an object that matches ' .
+                            '%s. The spy was never called.',
+                        $value->describe()
+                    )
+                );
+            }
+
+            foreach ($calls as $call) {
+                if ($value->matches($call->thisValue())) {
+                    return $this->assertionRecorder->recordSuccess();
+                }
+            }
+
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "The spy was not called on an object that matches %s. " .
+                        "Calls were made on the following objects:\n%s",
+                    $value->describe(),
+                    $this->assertionRenderer->renderCallsThisValues($calls)
+                )
+            );
+        }
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                'The spy was not called on the expected object. The spy was ' .
+                    'never called.'
+            );
+        }
+
+        foreach ($calls as $call) {
+            if ($call->thisValue() === $value) {
+                return $this->assertionRecorder->recordSuccess();
+            }
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "The spy was not called on the expected object. Calls were " .
+                    "made on the following objects:\n%s",
+                $this->assertionRenderer->renderCallsThisValues($calls)
+            )
+        );
     }
 
     /**
@@ -948,13 +1022,91 @@ class SpyVerifier implements SpyVerifierInterface
             return false;
         }
 
+        if ($this->matcherFactory->isMatcher($value)) {
+            $isMatcher = true;
+            $value = $this->matcherFactory->adapt($value);
+        } else {
+            $isMatcher = false;
+        }
+
         foreach ($calls as $call) {
-            if ($call->thisValue() !== $value) {
+            if ($isMatcher) {
+                if (!$value->matches($call->thisValue())) {
+                    return false;
+                }
+            } elseif ($call->thisValue() !== $value) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Throws an exception unless the $this value is the same as the supplied
+     * value for all calls.
+     *
+     * @param object|null $value The possible $this value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysCalledOn($value)
+    {
+        $calls = $this->spy->calls();
+
+        if ($this->matcherFactory->isMatcher($value)) {
+            $value = $this->matcherFactory->adapt($value);
+
+            if (count($calls) < 1) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'The spy was not always called on an object that ' .
+                            'matches %s. The spy was never called.',
+                        $value->describe()
+                    )
+                );
+            }
+
+            foreach ($calls as $call) {
+                if (!$value->matches($call->thisValue())) {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "The spy was not always called on an object that " .
+                                "matches %s. Calls were made on the " .
+                                "following objects:\n%s",
+                            $value->describe(),
+                            $this->assertionRenderer
+                                ->renderCallsThisValues($calls)
+                        )
+                    );
+                }
+            }
+
+            return $this->assertionRecorder->recordSuccess();
+        }
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                'The spy was not always called on the expected object. The ' .
+                    'spy was never called.'
+            );
+        }
+
+        foreach ($calls as $call) {
+            if ($call->thisValue() !== $value) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        "The spy was not always called on the expected " .
+                            "object. Calls were made on the following " .
+                            "objects:\n%s",
+                        $this->assertionRenderer->renderCallsThisValues($calls)
+                    )
+                );
+
+            }
+        }
+
+        $this->assertionRecorder->recordSuccess();
     }
 
     /**

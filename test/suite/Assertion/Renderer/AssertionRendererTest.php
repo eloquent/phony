@@ -26,7 +26,16 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->exporter = new Exporter();
         $this->subject = new AssertionRenderer($this->exporter);
 
-        $this->callA = new Call(new ReflectionMethod(__METHOD__), array('argumentA', 'argumentB'), null, 0, .1, .2);
+        $this->callA = new Call(
+            new ReflectionMethod(__METHOD__),
+            array('argumentA', 'argumentB'),
+            null,
+            0,
+            .1,
+            .2,
+            null,
+            (object) array()
+        );
         $this->callB = new Call(new ReflectionMethod(__METHOD__), array(), null, 1, .3, .4);
     }
 
@@ -78,6 +87,17 @@ EOD;
 
         $this->assertSame('', $this->subject->renderCallsArguments(array()));
         $this->assertSame($expected, $this->subject->renderCallsArguments(array($this->callA, $this->callB)));
+    }
+
+    public function testRenderCallsThisValues()
+    {
+        $expected = <<<'EOD'
+    - stdClass Object ()
+    - null
+EOD;
+
+        $this->assertSame('', $this->subject->renderCallsThisValues(array()));
+        $this->assertSame($expected, $this->subject->renderCallsThisValues(array($this->callA, $this->callB)));
     }
 
     public function renderCallData()

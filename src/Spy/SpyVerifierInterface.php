@@ -265,6 +265,16 @@ interface SpyVerifierInterface extends SpyInterface
     public function calledOn($value);
 
     /**
+     * Throws an exception unless the $this value is the same as the supplied
+     * value for at least one call.
+     *
+     * @param object|null $value The possible $this value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertCalledOn($value);
+
+    /**
      * Returns true if the $this value is the same as the supplied value for
      * all calls.
      *
@@ -273,6 +283,16 @@ interface SpyVerifierInterface extends SpyInterface
      * @return boolean True if the $this value is the same as the supplied value for all calls.
      */
     public function alwaysCalledOn($value);
+
+    /**
+     * Throws an exception unless the $this value is the same as the supplied
+     * value for all calls.
+     *
+     * @param object|null $value The possible $this value.
+     *
+     * @throws Exception If the assertion fails.
+     */
+    public function assertAlwaysCalledOn($value);
 
     /**
      * Returns true if this spy returned the supplied value at least once.
