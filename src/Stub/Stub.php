@@ -27,10 +27,12 @@ class Stub implements StubInterface
     /**
      * Construct a new stub.
      *
+     * @param object|null                   $thisValue       The $this value.
      * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
      * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
      */
     public function __construct(
+        $thisValue = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null
     ) {
@@ -41,6 +43,7 @@ class Stub implements StubInterface
             $matcherVerifier = MatcherVerifier::instance();
         }
 
+        $this->thisValue = $thisValue;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->matchers = array($this->matcherFactory->wildcard());
@@ -66,6 +69,32 @@ class Stub implements StubInterface
     public function matcherVerifier()
     {
         return $this->matcherVerifier;
+    }
+
+    /**
+     * Set the $this value of this stub.
+     *
+     * This value is used by returnsThis().
+     *
+     * @return object|null The $this value, or null to use the stub object.
+     */
+    public function setThisValue($thisValue)
+    {
+        $this->thisValue = $thisValue;
+    }
+
+    /**
+     * Get the $this value of this stub.
+     *
+     * @return object The $this value.
+     */
+    public function thisValue()
+    {
+        if ($this->thisValue) {
+            return $this->thisValue;
+        }
+
+        return $this;
     }
 
     /**
@@ -179,6 +208,22 @@ class Stub implements StubInterface
                 }
 
                 return func_get_arg($index);
+            }
+        );
+    }
+
+    /**
+     * Add an answer that returns the $this value.
+     *
+     * @return StubInterface This stub.
+     */
+    public function returnsThis()
+    {
+        $stub = $this;
+
+        return $this->does(
+            function () use ($stub) {
+                return $stub->thisValue();
             }
         );
     }

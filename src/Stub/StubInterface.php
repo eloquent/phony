@@ -19,6 +19,22 @@ use Exception;
 interface StubInterface
 {
     /**
+     * Set the $this value of this stub.
+     *
+     * This value is used by returnsThis().
+     *
+     * @param object $thisValue The $this value.
+     */
+    public function setThisValue($thisValue);
+
+    /**
+     * Get the $this value of this stub.
+     *
+     * @return object|null The $this value, or null to use the stub object.
+     */
+    public function thisValue();
+
+    /**
      * Modify the current criteria to match the supplied arguments (and possibly
      * others).
      *
@@ -66,6 +82,13 @@ interface StubInterface
      * @return StubInterface This stub.
      */
     public function returnsArgument($index = null);
+
+    /**
+     * Add an answer that returns the $this value.
+     *
+     * @return StubInterface This stub.
+     */
+    public function returnsThis();
 
     /**
      * Invoke the stub.

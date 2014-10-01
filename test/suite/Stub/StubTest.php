@@ -21,9 +21,10 @@ class StubTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->thisValue = (object) array();
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->subject = new Stub($this->matcherFactory, $this->matcherVerifier);
+        $this->subject = new Stub($this->thisValue, $this->matcherFactory, $this->matcherVerifier);
 
         $this->wildcard = array(WildcardMatcher::instance());
         $this->callbackA = function () { return 'valueA'; };
@@ -36,6 +37,7 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertSame($this->thisValue, $this->subject->thisValue());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
     }
@@ -44,8 +46,21 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Stub();
 
+        $this->assertSame($this->subject, $this->subject->thisValue());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
+    }
+
+    public function testSetThisValue()
+    {
+        $this->subject->setThisValue(null);
+
+        $this->assertSame($this->subject, $this->subject->thisValue());
+
+        $this->thisValue = (object) array();
+        $this->subject->setThisValue($this->thisValue);
+
+        $this->assertSame($this->thisValue, $this->subject->thisValue());
     }
 
     public function testWith()
@@ -105,6 +120,16 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('argumentC', call_user_func($this->subject, 'argumentA', 'argumentB', 'argumentC'));
         $this->assertSame('argumentD', call_user_func($this->subject, 'argumentB', 'argumentC', 'argumentD'));
         $this->assertNull(call_user_func($this->subject));
+    }
+
+    public function testReturnsThis()
+    {
+        $this->assertSame($this->subject, $this->subject->returnsThis());
+        $this->assertSame($this->thisValue, call_user_func($this->subject));
+
+        $this->subject->setThisValue(null);
+
+        $this->assertSame($this->subject, call_user_func($this->subject));
     }
 
     public function testMultipleRules()
