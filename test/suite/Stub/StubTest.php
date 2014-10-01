@@ -157,15 +157,17 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testCallsWithWithReferenceParameters()
     {
-        $callback = function (&$argument) {
-            $argument = 'value';
+        $callback = function (&$argumentA, &$argumentB) {
+            $argumentA = 'valueA';
+            $argumentB = 'valueB';
         };
         $value = null;
-        $arguments = array(&$value);
-        $this->subject->callsWith($callback, $arguments);
-        $this->subject->invoke();
+        $this->subject->callsWith($callback, array(&$value), true);
+        $argument = null;
+        $this->subject->invokeWith(array(&$argument));
 
-        $this->assertSame('value', $value);
+        $this->assertSame('valueA', $value);
+        $this->assertSame('valueB', $argument);
     }
 
     public function testReturns()
