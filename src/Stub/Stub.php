@@ -209,7 +209,13 @@ class Stub implements StubInterface
 
         array_push(
             $this->callbacks,
-            array($callback, $arguments, $appendArguments)
+            array(
+                function () use ($callback) {
+                    return $callback;
+                },
+                $arguments,
+                $appendArguments
+            )
         );
 
         return $this;
@@ -260,9 +266,6 @@ class Stub implements StubInterface
         array $arguments = null,
         $appendArguments = null
     ) {
-        if (null === $index) {
-            $index = 0;
-        }
         if (null === $arguments) {
             $arguments = array();
         }
@@ -270,32 +273,16 @@ class Stub implements StubInterface
             $appendArguments = false;
         }
 
-        return $this->callsWith(
-            function () use ($index, $arguments, $appendArguments) {
-                $argumentCount = func_num_args();
-
-                if ($argumentCount < 1) {
-                    return;
-                }
-
-                if ($index < 0) {
-                    $index = $argumentCount + $index;
-                }
-
-                if ($index >= $argumentCount) {
-                    return;
-                }
-
-                if ($appendArguments) {
-                    $invocationArguments = func_get_args();
-                    $arguments = array_merge($arguments, func_get_args());
-                }
-
-                return call_user_func_array(func_get_arg($index), $arguments);
-            },
-            array(),
-            true
+        array_push(
+            $this->callbacks,
+            array(
+                $this->returnsArgumentCallback($index),
+                $arguments,
+                $appendArguments
+            )
         );
+
+        return $this;
     }
 
     /**
@@ -334,29 +321,7 @@ class Stub implements StubInterface
      */
     public function returnsArgument($index = null)
     {
-        if (null === $index) {
-            $index = 0;
-        }
-
-        return $this->does(
-            function () use ($index) {
-                $argumentCount = func_num_args();
-
-                if ($argumentCount < 1) {
-                    return;
-                }
-
-                if ($index < 0) {
-                    $index = $argumentCount + $index;
-                }
-
-                if ($index >= $argumentCount) {
-                    return;
-                }
-
-                return func_get_arg($index);
-            }
-        );
+        return $this->does($this->returnsArgumentCallback($index));
     }
 
     /**
@@ -424,28 +389,65 @@ class Stub implements StubInterface
             $this->returns();
         }
 
+        /*
+
+        structure is as follows:
+
+        (rules) [
+            (rule) [
+                (criteria) [matcher, ...]
+                (answers) [
+                    (answer) [
+                        (primary callback) callable
+                        (secondary callbacks) [
+                            (call details) [
+                                (callback callback) callable
+                                (arguments) [mixed, ...]
+                                (append arguments) boolean
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        */
+
         foreach ($this->rules as $ruleIndex => &$rule) {
             if ($this->matcherVerifier->matches($rule[0], $arguments)) {
                 $this->ruleCounts[$ruleIndex]++;
 
-                if ($callbacks = current($rule[1])) {
+                // pull out the current answer, using the last one once they are
+                // exhausted
+                if ($answer = current($rule[1])) {
                     next($rule[1]);
                 } else {
-                    $callbacks = end($rule[1]);
+                    $answer = end($rule[1]);
                 }
 
-                foreach ($callbacks[1] as $callback) {
-                    if ($callback[2]) {
-                        $callbackArguments =
-                            array_merge($callback[1], $arguments);
-                    } else {
-                        $callbackArguments = $callback[1];
+                // invoke callbacks added via calls() and friends
+                foreach ($answer[1] as $callDetails) {
+                    // get the actual callback, because it could be an argument
+                    $callback =
+                        call_user_func_array($callDetails[0], $arguments);
+
+                    // only call the callback if it's sane to do so
+                    if (is_callable($callback)) {
+                        // append the arguments if desired
+                        if ($callDetails[2]) {
+                            $callbackArguments =
+                                array_merge($callDetails[1], $arguments);
+                        } else {
+                            $callbackArguments = $callDetails[1];
+                        }
+
+                        // invoke secondary callback
+                        call_user_func_array($callback, $callbackArguments);
                     }
-
-                    call_user_func_array($callback[0], $callbackArguments);
                 }
 
-                return call_user_func_array($callbacks[0], $arguments);
+                // invoke primary callback
+                return call_user_func_array($answer[0], $arguments);
             }
         }
     } // @codeCoverageIgnore
@@ -474,6 +476,38 @@ class Stub implements StubInterface
     public function __invoke()
     {
         return $this->invokeWith(func_get_args());
+    }
+
+    /**
+     * Returns a callback that returns the argument at $index.
+     *
+     * @param integer|null $index The index, or null for the first argument.
+     *
+     * @return callable The callback.
+     */
+    private function returnsArgumentCallback($index = null)
+    {
+        if (null === $index) {
+            $index = 0;
+        }
+
+        return function () use ($index) {
+            $argumentCount = func_num_args();
+
+            if ($argumentCount < 1) {
+                return;
+            }
+
+            if ($index < 0) {
+                $index = $argumentCount + $index;
+            }
+
+            if ($index >= $argumentCount) {
+                return;
+            }
+
+            return func_get_arg($index);
+        };
     }
 
     private $matcherFactory;
