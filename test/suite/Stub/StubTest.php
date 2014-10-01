@@ -170,6 +170,86 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('valueB', $argument);
     }
 
+    public function testCallsArgument()
+    {
+        $callsA = array();
+        $callbackA = function () use (&$callsA) {
+            $callsA[] = func_get_args();
+        };
+        $callsB = array();
+        $callbackB = function () use (&$callsB) {
+            $callsB[] = func_get_args();
+        };
+
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->callsArgument(null, 'first')->returns()
+                ->callsArgument()->callsArgument(1, 'second')->returns()
+        );
+        $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'argument'));
+        $this->assertSame(array(array('first')), $callsA);
+        $this->assertSame(array(), $callsB);
+        $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'argument'));
+        $this->assertSame(array(array('first'), array()), $callsA);
+        $this->assertSame(array(array('second')), $callsB);
+        $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'argument'));
+        $this->assertSame(array(array('first'), array(), array()), $callsA);
+        $this->assertSame(array(array('second'), array('second')), $callsB);
+    }
+
+    public function testCallsArgumentWith()
+    {
+        $callsA = array();
+        $callbackA = function () use (&$callsA) {
+            $callsA[] = func_get_args();
+        };
+        $callsB = array();
+        $callbackB = function () use (&$callsB) {
+            $callsB[] = func_get_args();
+        };
+
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->callsArgumentWith(0, array('first'), true)->returns()
+                ->callsArgumentWith()->callsArgumentWith(-2, array('second'))->returns()
+        );
+        $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'argument'));
+        $this->assertSame(array(array('first', $callbackA, $callbackB, 'argument')), $callsA);
+        $this->assertSame(array(), $callsB);
+        $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'argument'));
+        $this->assertSame(array(array('first', $callbackA, $callbackB, 'argument'), array()), $callsA);
+        $this->assertSame(array(array('second')), $callsB);
+        $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'argument'));
+        $this->assertSame(array(array('first', $callbackA, $callbackB, 'argument'), array(), array()), $callsA);
+        $this->assertSame(array(array('second'), array('second')), $callsB);
+    }
+
+    public function testCallsArgumentWithWithUndefinedArguments()
+    {
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->callsArgumentWith()->returns()
+                ->callsArgumentWith(1)->returns()
+        );
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertNull(call_user_func($this->subject, 'argument'));
+    }
+
+    public function testCallsArgumentWithWithReferenceParameters()
+    {
+        $callback = function (&$argument) {
+            $argument = 'value';
+        };
+        $value = null;
+        $this->subject->callsArgumentWith(null, array(&$value), true);
+        $this->subject->invoke($callback);
+
+        $this->assertSame('value', $value);
+    }
+
     public function testReturns()
     {
         $this->assertSame($this->subject, $this->subject->returns('valueA', 'valueB'));

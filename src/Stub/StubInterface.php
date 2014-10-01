@@ -96,6 +96,42 @@ interface StubInterface
     );
 
     /**
+     * Add an argument callback to be called as part of an answer.
+     *
+     * Negative indices are equivalent to $argumentCount - $index.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param integer|null $index         The argument index, or null to return the first argument.
+     * @param mixed        $arguments,... The arguments to call the callback with.
+     *
+     * @return StubInterface This stub.
+     */
+    public function callsArgument($index = null);
+
+    /**
+     * Add an argument callback to be called as part of an answer.
+     *
+     * Negative indices are equivalent to $argumentCount - $index.
+     *
+     * This method supports reference parameters in the supplied arguments, but
+     * not in the invocation arguments.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param integer|null              $index           The argument index, or null to return the first argument.
+     * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
+     * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
+     *
+     * @return StubInterface This stub.
+     */
+    public function callsArgumentWith(
+        $index = null,
+        array $arguments = null,
+        $appendArguments = null
+    );
+
+    /**
      * Add an answer that returns a value.
      *
      * @param mixed $value                The return value.

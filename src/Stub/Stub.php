@@ -216,6 +216,89 @@ class Stub implements StubInterface
     }
 
     /**
+     * Add an argument callback to be called as part of an answer.
+     *
+     * Negative indices are equivalent to $argumentCount - $index.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param integer|null $index         The argument index, or null to return the first argument.
+     * @param mixed        $arguments,... The arguments to call the callback with.
+     *
+     * @return StubInterface This stub.
+     */
+    public function callsArgument($index = null)
+    {
+        if (0 === func_num_args()) {
+            $arguments = array();
+        } else {
+            $arguments = func_get_args();
+            array_shift($arguments);
+        }
+
+        return $this->callsArgumentWith($index, $arguments, false);
+    }
+
+    /**
+     * Add an argument callback to be called as part of an answer.
+     *
+     * Negative indices are equivalent to $argumentCount - $index.
+     *
+     * This method supports reference parameters in the supplied arguments, but
+     * not in the invocation arguments.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param integer|null              $index           The argument index, or null to return the first argument.
+     * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
+     * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
+     *
+     * @return StubInterface This stub.
+     */
+    public function callsArgumentWith(
+        $index = null,
+        array $arguments = null,
+        $appendArguments = null
+    ) {
+        if (null === $index) {
+            $index = 0;
+        }
+        if (null === $arguments) {
+            $arguments = array();
+        }
+        if (null === $appendArguments) {
+            $appendArguments = false;
+        }
+
+        return $this->callsWith(
+            function () use ($index, $arguments, $appendArguments) {
+                $argumentCount = func_num_args();
+
+                if ($argumentCount < 1) {
+                    return;
+                }
+
+                if ($index < 0) {
+                    $index = $argumentCount + $index;
+                }
+
+                if ($index >= $argumentCount) {
+                    return;
+                }
+
+                if ($appendArguments) {
+                    $invocationArguments = func_get_args();
+                    $arguments = array_merge($arguments, func_get_args());
+                }
+
+                return call_user_func_array(func_get_arg($index), $arguments);
+            },
+            array(),
+            true
+        );
+    }
+
+    /**
      * Add an answer that returns a value.
      *
      * @param mixed $value                The return value.
@@ -260,7 +343,7 @@ class Stub implements StubInterface
                 $argumentCount = func_num_args();
 
                 if ($argumentCount < 1) {
-                    return null;
+                    return;
                 }
 
                 if ($index < 0) {
@@ -268,7 +351,7 @@ class Stub implements StubInterface
                 }
 
                 if ($index >= $argumentCount) {
-                    return null;
+                    return;
                 }
 
                 return func_get_arg($index);
