@@ -15,6 +15,7 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Exception;
 use PHPUnit_Framework_TestCase;
 
 class StubTest extends PHPUnit_Framework_TestCase
@@ -134,6 +135,40 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, call_user_func($this->subject));
     }
 
+    public function testThrows()
+    {
+        $this->assertSame($this->subject, $this->subject->throws());
+
+        $thrownExceptions = array();
+        for ($i = 0; $i < 2; $i++) {
+            try {
+                call_user_func($this->subject);
+            } catch (Exception $thrownException) {
+                $thrownExceptions[] = $thrownException;
+            }
+        }
+
+        $this->assertEquals(array(new Exception(), new Exception()), $thrownExceptions);
+    }
+
+    public function testThrowsWithException()
+    {
+        $exceptionA = new Exception();
+        $exceptionB = new Exception();
+        $this->assertSame($this->subject, $this->subject->throws($exceptionA, $exceptionB));
+
+        $thrownExceptions = array();
+        for ($i = 0; $i < 3; $i++) {
+            try {
+                call_user_func($this->subject);
+            } catch (Exception $thrownException) {
+                $thrownExceptions[] = $thrownException;
+            }
+        }
+
+        $this->assertSame(array($exceptionA, $exceptionB, $exceptionB), $thrownExceptions);
+    }
+
     public function testMultipleRules()
     {
         $this->assertSame(
@@ -141,20 +176,39 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->subject
                 ->returns('valueA')
                 ->with('argumentA')->returns('valueB', 'valueC')->returns('valueD')
-                ->with('argumentB')->returns('valueE', 'valueF')
+                ->with('argumentB')->returns('valueE', 'valueF')->throws()
         );
+
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueA', call_user_func($this->subject));
+
         $this->assertSame('valueB', call_user_func($this->subject, 'argumentA'));
         $this->assertSame('valueC', call_user_func($this->subject, 'argumentA'));
         $this->assertSame('valueD', call_user_func($this->subject, 'argumentA'));
         $this->assertSame('valueD', call_user_func($this->subject, 'argumentA'));
+
         $this->assertSame('valueE', call_user_func($this->subject, 'argumentB'));
         $this->assertSame('valueF', call_user_func($this->subject, 'argumentB'));
-        $this->assertSame('valueF', call_user_func($this->subject, 'argumentB'));
+        $thrownExceptions = array();
+        for ($i = 0; $i < 2; $i++) {
+            try {
+                call_user_func($this->subject, 'argumentB');
+            } catch (Exception $thrownException) {
+                $thrownExceptions[] = $thrownException;
+            }
+        }
+        $this->assertEquals(array(new Exception(), new Exception()), $thrownExceptions);
+
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueD', call_user_func($this->subject, 'argumentA'));
-        $this->assertSame('valueF', call_user_func($this->subject, 'argumentB'));
+        $thrownExceptions = array();
+        try {
+            call_user_func($this->subject, 'argumentB');
+        } catch (Exception $thrownException) {
+            $thrownExceptions[] = $thrownException;
+        }
+        $this->assertEquals(array(new Exception()), $thrownExceptions);
+
         $this->assertSame(
             $this->subject,
             $this->subject
@@ -162,10 +216,13 @@ class StubTest extends PHPUnit_Framework_TestCase
                 ->with('argumentA')->returns('valueC')
                 ->with('argumentB')->returns('valueE')
         );
+
         $this->assertSame('valueB', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject));
+
         $this->assertSame('valueC', call_user_func($this->subject, 'argumentA'));
         $this->assertSame('valueC', call_user_func($this->subject, 'argumentA'));
+
         $this->assertSame('valueE', call_user_func($this->subject, 'argumentB'));
         $this->assertSame('valueE', call_user_func($this->subject, 'argumentB'));
     }

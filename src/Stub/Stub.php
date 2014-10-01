@@ -234,6 +234,35 @@ class Stub implements StubInterface
     }
 
     /**
+     * Add an answer that throws an exception.
+     *
+     * @param Exception|null $exception                The exception, or null to throw a generic exception.
+     * @param Exception      $additionalExceptions,... Additional exceptions for subsequent invocations.
+     *
+     * @return StubInterface This stub.
+     */
+    public function throws(Exception $exception = null)
+    {
+        if (0 === func_num_args()) {
+            return $this->does(
+                function () {
+                    throw new Exception();
+                }
+            );
+        }
+
+        foreach (func_get_args() as $exception) {
+            $this->does(
+                function () use ($exception) {
+                    throw $exception;
+                }
+            );
+        }
+
+        return $this;
+    }
+
+    /**
      * Invoke the stub.
      *
      * @param mixed $arguments,...
