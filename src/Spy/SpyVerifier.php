@@ -235,6 +235,34 @@ class SpyVerifier implements SpyVerifierInterface
     /**
      * Record a call by invocation.
      *
+     * This method supports reference parameters.
+     *
+     * @param array<integer,mixed> The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the subject throws an exception.
+     */
+    public function invokeWith(array $arguments)
+    {
+        return $this->spy->invokeWith($arguments);
+    }
+
+    /**
+     * Record a call by invocation.
+     *
+     * @param mixed $arguments,... The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the subject throws an exception.
+     */
+    public function invoke()
+    {
+        return $this->spy->invokeWith(func_get_args());
+    }
+
+    /**
+     * Record a call by invocation.
+     *
      * @param mixed $arguments,...
      *
      * @return mixed     The result of invocation.
@@ -242,7 +270,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function __invoke()
     {
-        return call_user_func_array($this->spy, func_get_args());
+        return $this->spy->invokeWith(func_get_args());
     }
 
     /**

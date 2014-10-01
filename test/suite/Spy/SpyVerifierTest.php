@@ -19,6 +19,7 @@ use Eloquent\Phony\Clock\TestClock;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestAssertionRecorder;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -34,8 +35,9 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             return '= ' .implode(', ', func_get_args());
         };
         $this->reflector = new ReflectionFunction($this->spySubject);
+        $this->sequencer = new Sequencer();
         $this->clock = new TestClock();
-        $this->spy = new Spy($this->spySubject, $this->reflector, null, $this->clock);
+        $this->spy = new Spy($this->spySubject, $this->reflector, $this->sequencer, $this->clock);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
@@ -125,12 +127,13 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->wrappedCalls, $this->subject->calls());
     }
 
-    public function testInvoke()
+    public function testInvokeMethods()
     {
-        $spy = $this->subject;
-        $spy('argumentA');
-        $spy('argumentB', 'argumentC');
-        $reflector = $spy->reflector();
+        $verifier = $this->subject;
+        $verifier->invokeWith(array('argumentA'));
+        $verifier->invoke('argumentB', 'argumentC');
+        $verifier('argumentD');
+        $reflector = $verifier->reflector();
         $thisValue = $this->thisValue($this->spySubject);
         $expected = array(
             new Call($reflector, array('argumentA'), '= argumentA', 0, 0.123, 1.123, null, $thisValue),
@@ -144,9 +147,96 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
                 null,
                 $thisValue
             ),
+            new Call($reflector, array('argumentD'), '= argumentD', 2, 4.123, 5.123, null, $thisValue),
         );
 
-        $this->assertEquals($expected, $spy->spy()->calls());
+        $this->assertEquals($expected, $this->spy->calls());
+    }
+
+    public function testInvokeMethodsWithoutSubject()
+    {
+        $spy = new Spy(null, null, $this->sequencer, $this->clock);
+        $verifier = new SpyVerifier($spy);
+        $verifier->invokeWith(array('argumentA'));
+        $verifier->invoke('argumentB', 'argumentC');
+        $verifier('argumentD');
+        $reflector = $verifier->reflector();
+        $thisValue = $this->thisValue($verifier->subject());
+        $expected = array(
+            new Call($reflector, array('argumentA'), null, 0, 0.123, 1.123, null, $thisValue),
+            new Call(
+                $reflector,
+                array('argumentB', 'argumentC'),
+                null,
+                1,
+                2.123,
+                3.123,
+                null,
+                $thisValue
+            ),
+            new Call($reflector, array('argumentD'), null, 2, 4.123, 5.123, null, $thisValue),
+        );
+
+        $this->assertEquals($expected, $spy->calls());
+    }
+
+    public function testInvokeWithExceptionThrown()
+    {
+        $exceptions = array(new Exception(), new Exception(), new Exception());
+        $subject = function () use (&$exceptions) {
+            list(, $exception) = each($exceptions);
+            throw $exception;
+        };
+        $spy = new Spy($subject, null, $this->sequencer, $this->clock);
+        $verifier = new SpyVerifier($spy);
+        $caughtExceptions = array();
+        try {
+            $verifier->invokeWith(array('argumentA'));
+        } catch (Exception $caughtException) {
+            $caughtExceptions[] = $caughtException;
+        }
+        try {
+            $verifier->invoke('argumentB', 'argumentC');
+        } catch (Exception $caughtException) {
+            $caughtExceptions[] = $caughtException;
+        }
+        try {
+            $verifier('argumentD');
+        } catch (Exception $caughtException) {
+            $caughtExceptions[] = $caughtException;
+        }
+        $reflector = $verifier->reflector();
+        $thisValue = $this->thisValue($this->spySubject);
+        $expected = array(
+            new Call($reflector, array('argumentA'), null, 0, 0.123, 1.123, $exceptions[0], $thisValue),
+            new Call(
+                $reflector,
+                array('argumentB', 'argumentC'),
+                null,
+                1,
+                2.123,
+                3.123,
+                $exceptions[1],
+                $thisValue
+            ),
+            new Call($reflector, array('argumentD'), null, 2, 4.123, 5.123, $exceptions[2], $thisValue),
+        );
+
+        $this->assertEquals($expected, $spy->calls());
+    }
+
+    public function testInvokeWithWithReferenceParameters()
+    {
+        $subject = function (&$argument) {
+            $argument = 'value';
+        };
+        $spy = new Spy($subject, null, $this->sequencer, $this->clock);
+        $verifier = new SpyVerifier($spy);
+        $value = null;
+        $arguments = array(&$value);
+        $verifier->invokeWith($arguments);
+
+        $this->assertSame('value', $value);
     }
 
     public function testCallCount()

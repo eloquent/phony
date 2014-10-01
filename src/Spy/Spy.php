@@ -158,20 +158,21 @@ class Spy implements SpyInterface
     /**
      * Record a call by invocation.
      *
-     * @param mixed $arguments,...
+     * This method supports reference parameters.
+     *
+     * @param array<integer,mixed> The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If the subject throws an exception.
      */
-    public function __invoke()
+    public function invokeWith(array $arguments)
     {
-        $arguments = func_get_args();
         $returnValue = null;
         $exception = null;
         $startTime = $this->clock->time();
 
         try {
-            $returnValue = call_user_func_array($this->subject, $arguments);
+            $returnValue = $this->reflector->invokeArgs($arguments);
         } catch (Exception $exception) {
             // returned in tuple
         }
@@ -200,6 +201,32 @@ class Spy implements SpyInterface
         }
 
         return $returnValue;
+    }
+
+    /**
+     * Record a call by invocation.
+     *
+     * @param mixed $arguments,... The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the subject throws an exception.
+     */
+    public function invoke()
+    {
+        return $this->invokeWith(func_get_args());
+    }
+
+    /**
+     * Record a call by invocation.
+     *
+     * @param mixed $arguments,... The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the subject throws an exception.
+     */
+    public function __invoke()
+    {
+        return $this->invokeWith(func_get_args());
     }
 
     /**
