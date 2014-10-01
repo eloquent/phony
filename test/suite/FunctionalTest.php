@@ -13,7 +13,7 @@ use Eloquent\Phony\Integration\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
-    public function testTypicalCalledWith()
+    public function testSpy()
     {
         $spy = Phony::spy();
         $spy('argumentA', 'argumentB', 'argumentC');
