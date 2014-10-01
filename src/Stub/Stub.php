@@ -150,6 +150,40 @@ class Stub implements StubInterface
     }
 
     /**
+     * Add an answer that returns an argument.
+     *
+     * @param integer|null $index The argument index, or null to return the first argument.
+     *
+     * @return StubInterface This stub.
+     */
+    public function returnsArgument($index = null)
+    {
+        if (null === $index) {
+            $index = 0;
+        }
+
+        return $this->does(
+            function () use ($index) {
+                $argumentCount = func_num_args();
+
+                if ($argumentCount < 1) {
+                    return null;
+                }
+
+                if ($index < 0) {
+                    $index = $argumentCount + $index;
+                }
+
+                if ($index >= $argumentCount) {
+                    return null;
+                }
+
+                return func_get_arg($index);
+            }
+        );
+    }
+
+    /**
      * Invoke the stub.
      *
      * @param mixed $arguments,...

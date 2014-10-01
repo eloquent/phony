@@ -91,6 +91,22 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('valueB', call_user_func($this->subject));
     }
 
+    public function testReturnsArgument()
+    {
+        $this->assertSame($this->subject, $this->subject->returnsArgument());
+        $this->assertSame('argumentA', call_user_func($this->subject, 'argumentA'));
+        $this->assertSame('argumentB', call_user_func($this->subject, 'argumentB'));
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame($this->subject, $this->subject->with()->returnsArgument(1));
+        $this->assertSame('argumentB', call_user_func($this->subject, 'argumentA', 'argumentB', 'argumentC'));
+        $this->assertSame('argumentC', call_user_func($this->subject, 'argumentB', 'argumentC', 'argumentD'));
+        $this->assertNull(call_user_func($this->subject, 'argumentA'));
+        $this->assertSame($this->subject, $this->subject->with()->returnsArgument(-1));
+        $this->assertSame('argumentC', call_user_func($this->subject, 'argumentA', 'argumentB', 'argumentC'));
+        $this->assertSame('argumentD', call_user_func($this->subject, 'argumentB', 'argumentC', 'argumentD'));
+        $this->assertNull(call_user_func($this->subject));
+    }
+
     public function testMultipleRules()
     {
         $this->assertSame(

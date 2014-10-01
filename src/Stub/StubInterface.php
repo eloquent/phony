@@ -59,6 +59,15 @@ interface StubInterface
     public function returns($value = null);
 
     /**
+     * Add an answer that returns an argument.
+     *
+     * @param integer|null $index The argument index, or null to return the first argument.
+     *
+     * @return StubInterface This stub.
+     */
+    public function returnsArgument($index = null);
+
+    /**
      * Invoke the stub.
      *
      * @param mixed $arguments,...
