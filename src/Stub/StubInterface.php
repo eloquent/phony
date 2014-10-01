@@ -83,12 +83,17 @@ interface StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                  $callback  The callback.
-     * @param array<integer,mixed>|null $arguments The arguments to call the callback with.
+     * @param callable                  $callback        The callback.
+     * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
+     * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
      *
      * @return StubInterface This stub.
      */
-    public function callsWith($callback, array $arguments = null);
+    public function callsWith(
+        $callback,
+        array $arguments = null,
+        $appendArguments = null
+    );
 
     /**
      * Add an answer that returns a value.

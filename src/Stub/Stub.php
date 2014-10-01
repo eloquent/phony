@@ -189,18 +189,28 @@ class Stub implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                  $callback  The callback.
-     * @param array<integer,mixed>|null $arguments The arguments to call the callback with.
+     * @param callable                  $callback        The callback.
+     * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
+     * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
      *
      * @return StubInterface This stub.
      */
-    public function callsWith($callback, array $arguments = null)
-    {
+    public function callsWith(
+        $callback,
+        array $arguments = null,
+        $appendArguments = null
+    ) {
         if (null === $arguments) {
             $arguments = array();
         }
+        if (null === $appendArguments) {
+            $appendArguments = false;
+        }
 
-        array_push($this->callbacks, array($callback, $arguments));
+        array_push(
+            $this->callbacks,
+            array($callback, $arguments, $appendArguments)
+        );
 
         return $this;
     }
@@ -342,7 +352,14 @@ class Stub implements StubInterface
                 }
 
                 foreach ($callbacks[1] as $callback) {
-                    call_user_func_array($callback[0], $callback[1]);
+                    if ($callback[2]) {
+                        $callbackArguments =
+                            array_merge($callback[1], $arguments);
+                    } else {
+                        $callbackArguments = $callback[1];
+                    }
+
+                    call_user_func_array($callback[0], $callbackArguments);
                 }
 
                 return call_user_func_array($callbacks[0], $arguments);
