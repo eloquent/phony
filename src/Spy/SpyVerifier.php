@@ -23,7 +23,6 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
-use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Spy\Exception\UndefinedCallException;
 use Exception;
 use ReflectionFunctionAbstract;
@@ -519,7 +518,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();;
 
         foreach ($calls as $call) {
             if (
@@ -544,7 +543,7 @@ class SpyVerifier implements SpyVerifierInterface
     {
         $calls = $this->spy->calls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();;
 
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
@@ -589,7 +588,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();;
 
         foreach ($calls as $call) {
             if (
@@ -614,7 +613,7 @@ class SpyVerifier implements SpyVerifierInterface
     {
         $calls = $this->spy->calls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();;
 
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
@@ -799,7 +798,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();;
 
         foreach ($calls as $call) {
             if (
@@ -829,7 +828,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();;
 
         foreach ($calls as $call) {
             if (

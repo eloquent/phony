@@ -19,7 +19,6 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
-use Eloquent\Phony\Matcher\WildcardMatcher;
 use Exception;
 use ReflectionFunctionAbstract;
 
@@ -229,7 +228,7 @@ class CallVerifier implements CallVerifierInterface
     public function calledWith()
     {
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();
 
         return $this->matcherVerifier
             ->matches($matchers, $this->call->arguments());
@@ -246,7 +245,7 @@ class CallVerifier implements CallVerifierInterface
     public function assertCalledWith()
     {
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();
         $arguments = $this->call->arguments();
 
         if (!$this->matcherVerifier->matches($matchers, $arguments)) {
@@ -316,7 +315,7 @@ class CallVerifier implements CallVerifierInterface
     public function notCalledWith()
     {
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();
 
         return !$this->matcherVerifier
             ->matches($matchers, $this->call->arguments());
@@ -333,7 +332,7 @@ class CallVerifier implements CallVerifierInterface
     public function assertNotCalledWith()
     {
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = WildcardMatcher::instance();
+        $matchers[] = $this->matcherFactory->wildcard();
         $arguments = $this->call->arguments();
 
         if ($this->matcherVerifier->matches($matchers, $arguments)) {
