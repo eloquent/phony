@@ -39,8 +39,6 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame(array(), $this->subject->rules());
-        $this->assertEquals($this->wildcard, $this->subject->matchers());
     }
 
     public function testConstructorDefaults()
@@ -53,28 +51,34 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testWith()
     {
-        $expected = array(new EqualToMatcher('valueA'), new EqualToMatcher('valueB'), WildcardMatcher::instance());
-
-        $this->assertSame($this->subject, $this->subject->with('valueA', new EqualToMatcher('valueB')));
-        $this->assertEquals($expected, $this->subject->matchers());
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->with('argumentA', new EqualToMatcher('argumentB'))
+                ->returns('value')
+        );
+        $this->assertSame('value', call_user_func($this->subject, 'argumentA', 'argumentB'));
+        $this->assertSame('value', call_user_func($this->subject, 'argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(call_user_func($this->subject));
     }
 
     public function testWithExactly()
     {
-        $expected = array(new EqualToMatcher('valueA'), new EqualToMatcher('valueB'));
-
-        $this->assertSame($this->subject, $this->subject->withExactly('valueA', new EqualToMatcher('valueB')));
-        $this->assertEquals($expected, $this->subject->matchers());
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->withExactly('argumentA', new EqualToMatcher('argumentB'))
+                ->returns('value')
+        );
+        $this->assertSame('value', call_user_func($this->subject, 'argumentA', 'argumentB'));
+        $this->assertSame('value', call_user_func($this->subject, 'argumentA', 'argumentB'));
+        $this->assertNull(call_user_func($this->subject, 'argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull(call_user_func($this->subject));
     }
 
     public function testDoes()
     {
-        $expected = array(
-            array($this->wildcard, array($this->callbackA, $this->callbackB)),
-        );
-
         $this->assertSame($this->subject, $this->subject->does($this->callbackA, $this->callbackB));
-        $this->assertEquals($expected, $this->subject->rules());
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject));
@@ -82,34 +86,14 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testReturns()
     {
-        $expected = array(
-            array($this->wildcard, array($this->callbackA, $this->callbackB)),
-        );
-
         $this->assertSame($this->subject, $this->subject->returns('valueA', 'valueB'));
-        $this->assertEquals($expected, $this->subject->rules());
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject));
     }
 
-    public function testWithMultipleRules()
+    public function testMultipleRules()
     {
-        $expected = array(
-            array(
-                array(new EqualToMatcher('argumentB'), WildcardMatcher::instance()),
-                array($this->callbackE, $this->callbackF),
-            ),
-            array(
-                array(new EqualToMatcher('argumentA'), WildcardMatcher::instance()),
-                array($this->callbackB, $this->callbackC, $this->callbackD),
-            ),
-            array(
-                $this->wildcard,
-                array($this->callbackA),
-            ),
-        );
-
         $this->assertSame(
             $this->subject,
             $this->subject
@@ -117,7 +101,6 @@ class StubTest extends PHPUnit_Framework_TestCase
                 ->with('argumentA')->returns('valueB', 'valueC')->returns('valueD')
                 ->with('argumentB')->returns('valueE', 'valueF')
         );
-        $this->assertEquals($expected, $this->subject->rules());
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject, 'argumentA'));

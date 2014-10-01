@@ -70,26 +70,6 @@ class Stub implements StubInterface
     }
 
     /**
-     * Get the matchers.
-     *
-     * @return array<integer,MatcherInterface> The matchers.
-     */
-    public function matchers()
-    {
-        return $this->matchers;
-    }
-
-    /**
-     * Get the rules.
-     *
-     * @return array<tuple<array<integer,MatcherInterface>,array<integer,callable>>> The rules.
-     */
-    public function rules()
-    {
-        return $this->rules;
-    }
-
-    /**
      * Modify the current criteria to match the supplied arguments (and possibly
      * others).
      *
