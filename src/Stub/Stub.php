@@ -47,6 +47,7 @@ class Stub implements StubInterface
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->matchers = array($this->matcherFactory->wildcard());
+        $this->isNewRule = true;
         $this->rules = array();
         $this->ruleCounts = array();
     }
@@ -107,6 +108,7 @@ class Stub implements StubInterface
      */
     public function with()
     {
+        $this->isNewRule = true;
         $this->matchers = $this->matcherFactory->adaptAll(func_get_args());
         $this->matchers[] = $this->matcherFactory->wildcard();
 
@@ -123,6 +125,7 @@ class Stub implements StubInterface
      */
     public function withExactly()
     {
+        $this->isNewRule = true;
         $this->matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         return $this;
@@ -138,16 +141,18 @@ class Stub implements StubInterface
      */
     public function does($callback)
     {
-        if (isset($this->rules[0]) && $this->rules[0][0] === $this->matchers) {
-            foreach (func_get_args() as $callback) {
-                array_push($this->rules[0][1], $callback);
-            }
-        } else {
+        if ($this->isNewRule) {
+            $this->isNewRule = false;
+
             array_unshift(
                 $this->rules,
                 array($this->matchers, func_get_args())
             );
             array_unshift($this->ruleCounts, 0);
+        } else {
+            foreach (func_get_args() as $callback) {
+                array_push($this->rules[0][1], $callback);
+            }
         }
 
         return $this;
@@ -257,6 +262,7 @@ class Stub implements StubInterface
 
     private $matcherFactory;
     private $matcherVerifier;
+    private $isNewRule;
     private $rules;
     private $ruleCounts;
 }

@@ -104,6 +104,8 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject));
         $this->assertSame('valueB', call_user_func($this->subject));
+        $this->assertSame($this->subject, $this->subject->with()->returns());
+        $this->assertNull(call_user_func($this->subject));
     }
 
     public function testReturnsArgument()
