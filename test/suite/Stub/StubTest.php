@@ -99,6 +99,34 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('valueB', call_user_func($this->subject));
     }
 
+    public function testCalls()
+    {
+        $callCountA = 0;
+        $callbackA = function () use (&$callCountA) {
+            $callCountA++;
+        };
+        $callCountB = 0;
+        $callbackB = function () use (&$callCountB) {
+            $callCountB++;
+        };
+
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->calls($callbackA)->returns()
+                ->calls($callbackA, $callbackB)->returns()
+        );
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame(1, $callCountA);
+        $this->assertSame(0, $callCountB);
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame(2, $callCountA);
+        $this->assertSame(1, $callCountB);
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame(3, $callCountA);
+        $this->assertSame(2, $callCountB);
+    }
+
     public function testReturns()
     {
         $this->assertSame($this->subject, $this->subject->returns('valueA', 'valueB'));
@@ -225,6 +253,36 @@ class StubTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('valueE', call_user_func($this->subject, 'argumentB'));
         $this->assertSame('valueE', call_user_func($this->subject, 'argumentB'));
+    }
+
+    public function testDanglingRules()
+    {
+        $callCountA = 0;
+        $callbackA = function () use (&$callCountA) {
+            $callCountA++;
+        };
+        $callCountB = 0;
+        $callbackB = function () use (&$callCountB) {
+            $callCountB++;
+        };
+
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->with('argumentA')
+                ->with('argumentB')
+                ->withExactly('argumentA')->calls($callbackA)
+                ->withExactly('argumentB')->calls($callbackA)->calls($callbackB)
+        );
+        $this->assertNull(call_user_func($this->subject, 'argumentA'));
+        $this->assertSame(1, $callCountA);
+        $this->assertSame(0, $callCountB);
+        $this->assertNull(call_user_func($this->subject, 'argumentB'));
+        $this->assertSame(2, $callCountA);
+        $this->assertSame(1, $callCountB);
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame(2, $callCountA);
+        $this->assertSame(1, $callCountB);
     }
 
     public function testInvokeWithNoRules()

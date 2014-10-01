@@ -47,6 +47,7 @@ class Stub implements StubInterface
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->matchers = array($this->matcherFactory->wildcard());
+        $this->callbacks = array();
         $this->isNewRule = true;
         $this->rules = array();
         $this->ruleCounts = array();
@@ -108,6 +109,10 @@ class Stub implements StubInterface
      */
     public function with()
     {
+        if ($this->isNewRule) {
+            $this->returns();
+        }
+
         $this->isNewRule = true;
         $this->matchers = $this->matcherFactory->adaptAll(func_get_args());
         $this->matchers[] = $this->matcherFactory->wildcard();
@@ -125,6 +130,10 @@ class Stub implements StubInterface
      */
     public function withExactly()
     {
+        if ($this->isNewRule) {
+            $this->returns();
+        }
+
         $this->isNewRule = true;
         $this->matchers = $this->matcherFactory->adaptAll(func_get_args());
 
@@ -144,15 +153,32 @@ class Stub implements StubInterface
         if ($this->isNewRule) {
             $this->isNewRule = false;
 
-            array_unshift(
-                $this->rules,
-                array($this->matchers, func_get_args())
-            );
+            array_unshift($this->rules, array($this->matchers, array()));
             array_unshift($this->ruleCounts, 0);
-        } else {
-            foreach (func_get_args() as $callback) {
-                array_push($this->rules[0][1], $callback);
-            }
+        }
+
+        foreach (func_get_args() as $callback) {
+            array_push($this->rules[0][1], array($callback, $this->callbacks));
+            $this->callbacks = array();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add a callback to be called as part of an answer.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param callable $callback                The callback.
+     * @param callable $additionalCallbacks,... Additional callbacks.
+     *
+     * @return StubInterface This stub.
+     */
+    public function calls($callback)
+    {
+        foreach (func_get_args() as $callback) {
+            array_push($this->callbacks, $callback);
         }
 
         return $this;
@@ -272,22 +298,30 @@ class Stub implements StubInterface
      */
     public function __invoke()
     {
+        if ($this->isNewRule) {
+            $this->returns();
+        }
+
         $arguments = func_get_args();
 
         foreach ($this->rules as $ruleIndex => &$rule) {
             if ($this->matcherVerifier->matches($rule[0], $arguments)) {
                 $this->ruleCounts[$ruleIndex]++;
 
-                if ($callback = current($rule[1])) {
+                if ($callbacks = current($rule[1])) {
                     next($rule[1]);
                 } else {
-                    $callback = end($rule[1]);
+                    $callbacks = end($rule[1]);
                 }
 
-                return call_user_func_array($callback, $arguments);
+                foreach ($callbacks[1] as $callback) {
+                    call_user_func_array($callback, $arguments);
+                }
+
+                return call_user_func_array($callbacks[0], $arguments);
             }
         }
-    }
+    } // @codeCoverageIgnore
 
     private $matcherFactory;
     private $matcherVerifier;

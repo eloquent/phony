@@ -65,6 +65,18 @@ interface StubInterface
     public function does($callback);
 
     /**
+     * Add a callback to be called as part of an answer.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param callable $callback                The callback.
+     * @param callable $additionalCallbacks,... Additional callbacks.
+     *
+     * @return StubInterface This stub.
+     */
+    public function calls($callback);
+
+    /**
      * Add an answer that returns a value.
      *
      * @param mixed $value                The return value.
