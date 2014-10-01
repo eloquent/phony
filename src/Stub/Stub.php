@@ -291,18 +291,22 @@ class Stub implements StubInterface
     /**
      * Invoke the stub.
      *
-     * @param mixed $arguments,...
+     * This method supports reference parameters.
+     *
+     * @param array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If the stub throws an exception.
      */
-    public function __invoke()
+    public function invokeWith(array $arguments = null)
     {
+        if (null === $arguments) {
+            $arguments = array();
+        }
+
         if ($this->isNewRule) {
             $this->returns();
         }
-
-        $arguments = func_get_args();
 
         foreach ($this->rules as $ruleIndex => &$rule) {
             if ($this->matcherVerifier->matches($rule[0], $arguments)) {
@@ -322,6 +326,32 @@ class Stub implements StubInterface
             }
         }
     } // @codeCoverageIgnore
+
+    /**
+     * Invoke the stub.
+     *
+     * @param mixed $arguments,... The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the stub throws an exception.
+     */
+    public function invoke()
+    {
+        return $this->invokeWith(func_get_args());
+    }
+
+    /**
+     * Invoke the stub.
+     *
+     * @param mixed $arguments,...
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the stub throws an exception.
+     */
+    public function __invoke()
+    {
+        return $this->invokeWith(func_get_args());
+    }
 
     private $matcherFactory;
     private $matcherVerifier;

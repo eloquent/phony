@@ -60,12 +60,12 @@ interface SpyInterface
      *
      * This method supports reference parameters.
      *
-     * @param array<integer,mixed> The arguments.
+     * @param array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If the subject throws an exception.
      */
-    public function invokeWith(array $arguments);
+    public function invokeWith(array $arguments = null);
 
     /**
      * Record a call by invocation.

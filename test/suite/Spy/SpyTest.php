@@ -204,6 +204,19 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $spy->calls());
     }
 
+    public function testInvokeWithDefaults()
+    {
+        $spy = $this->subject;
+        $spy->invokeWith();
+        $reflector = $spy->reflector();
+        $thisValue = $this->thisValue($this->spySubject);
+        $expected = array(
+            new Call($reflector, array(), '= ', 0, 0.123, 1.123, null, $thisValue),
+        );
+
+        $this->assertEquals($expected, $spy->calls());
+    }
+
     public function testInvokeWithWithReferenceParameters()
     {
         $subject = function (&$argument) {

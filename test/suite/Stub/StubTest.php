@@ -285,8 +285,10 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(1, $callCountB);
     }
 
-    public function testInvokeWithNoRules()
+    public function testInvokeMethods()
     {
+        $this->assertNull($this->subject->invokeWith());
+        $this->assertNull($this->subject->invoke());
         $this->assertNull(call_user_func($this->subject));
     }
 }

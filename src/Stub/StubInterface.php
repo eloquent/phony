@@ -115,7 +115,29 @@ interface StubInterface
     /**
      * Invoke the stub.
      *
-     * @param mixed $arguments,...
+     * This method supports reference parameters.
+     *
+     * @param array<integer,mixed>|null The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the stub throws an exception.
+     */
+    public function invokeWith(array $arguments = null);
+
+    /**
+     * Invoke the stub.
+     *
+     * @param mixed $arguments,... The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If the stub throws an exception.
+     */
+    public function invoke();
+
+    /**
+     * Invoke the stub.
+     *
+     * @param mixed $arguments,... The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If the stub throws an exception.
