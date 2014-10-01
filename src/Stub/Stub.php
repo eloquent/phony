@@ -183,14 +183,11 @@ class Stub extends AbstractInvocable implements StubInterface
             $appendArguments = false;
         }
 
-        array_push(
-            $this->callbacks,
-            array(
-                $this->returnsCallbackCallback($callback),
-                $arguments,
-                $appendArguments,
-                false,
-            )
+        $this->callbacks[] = array(
+            $this->returnsCallbackCallback($callback),
+            $arguments,
+            $appendArguments,
+            false,
         );
 
         return $this;
@@ -248,14 +245,11 @@ class Stub extends AbstractInvocable implements StubInterface
             $appendArguments = false;
         }
 
-        array_push(
-            $this->callbacks,
-            array(
-                $this->returnsArgumentCallback($index),
-                $arguments,
-                $appendArguments,
-                false,
-            )
+        $this->callbacks[] = array(
+            $this->returnsArgumentCallback($index),
+            $arguments,
+            $appendArguments,
+            false,
         );
 
         return $this;
@@ -275,32 +269,29 @@ class Stub extends AbstractInvocable implements StubInterface
             $index = 0;
         }
 
-        array_push(
-            $this->callbacks,
-            array(
-                $this->returnsCallbackCallback(
-                    function (array $arguments) use ($value, $index) {
-                        $argumentCount = count($arguments);
+        $this->callbacks[] = array(
+            $this->returnsCallbackCallback(
+                function (array $arguments) use ($value, $index) {
+                    $argumentCount = count($arguments);
 
-                        if ($argumentCount < 1) {
-                            return;
-                        }
-
-                        if ($index < 0) {
-                            $index = $argumentCount + $index;
-                        }
-
-                        if ($index >= $argumentCount) {
-                            return;
-                        }
-
-                        $arguments[$index] = $value;
+                    if ($argumentCount < 1) {
+                        return;
                     }
-                ),
-                array(),
-                false,
-                true,
-            )
+
+                    if ($index < 0) {
+                        $index = $argumentCount + $index;
+                    }
+
+                    if ($index >= $argumentCount) {
+                        return;
+                    }
+
+                    $arguments[$index] = $value;
+                }
+            ),
+            array(),
+            false,
+            true,
         );
 
         return $this;
@@ -324,7 +315,7 @@ class Stub extends AbstractInvocable implements StubInterface
         }
 
         foreach (func_get_args() as $callback) {
-            array_push($this->rules[0][1], array($callback, $this->callbacks));
+            $this->rules[0][1][] = array($callback, $this->callbacks);
             $this->callbacks = array();
         }
 
