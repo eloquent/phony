@@ -55,16 +55,6 @@ interface StubInterface
     public function withExactly();
 
     /**
-     * Add a callback as an answer.
-     *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks for subsequent invocations.
-     *
-     * @return StubInterface This stub.
-     */
-    public function does($callback);
-
-    /**
      * Add a callback to be called as part of an answer.
      *
      * Note that all supplied callbacks will be called in the same invocation.
@@ -102,7 +92,7 @@ interface StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null $index         The argument index, or null to return the first argument.
+     * @param integer|null $index         The argument index, or null to call the first argument.
      * @param mixed        $arguments,... The arguments to call the callback with.
      *
      * @return StubInterface This stub.
@@ -119,7 +109,7 @@ interface StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null              $index           The argument index, or null to return the first argument.
+     * @param integer|null              $index           The argument index, or null to call the first argument.
      * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
      * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
      *
@@ -130,6 +120,26 @@ interface StubInterface
         array $arguments = null,
         $appendArguments = null
     );
+
+    /**
+     * Set the value of an argument passed by reference as part of an answer.
+     *
+     * @param mixed        $value The value to set the argument to.
+     * @param integer|null $index The argument index, or null to set the first argument.
+     *
+     * @return StubInterface This stub.
+     */
+    public function setsArgument($value, $index = null);
+
+    /**
+     * Add a callback as an answer.
+     *
+     * @param callable $callback                The callback.
+     * @param callable $additionalCallbacks,... Additional callbacks for subsequent invocations.
+     *
+     * @return StubInterface This stub.
+     */
+    public function does($callback);
 
     /**
      * Add an answer that returns a value.

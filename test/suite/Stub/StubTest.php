@@ -91,14 +91,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
     }
 
-    public function testDoes()
-    {
-        $this->assertSame($this->subject, $this->subject->does($this->callbackA, $this->callbackB));
-        $this->assertSame('valueA', call_user_func($this->subject));
-        $this->assertSame('valueB', call_user_func($this->subject));
-        $this->assertSame('valueB', call_user_func($this->subject));
-    }
-
     public function testCalls()
     {
         $callsA = array();
@@ -251,6 +243,35 @@ class StubTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('valueA', $value);
         $this->assertSame('valueB', $argument);
+    }
+
+    public function testSetsArgument()
+    {
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->setsArgument('valueA')
+                ->setsArgument('valueB', 1)
+                ->setsArgument('valueC', -1)
+                ->setsArgument('valueD', 111)
+        );
+        $argumentA = null;
+        $argumentB = null;
+        $argumentC = null;
+        $this->subject->invokeWith(array(&$argumentA, &$argumentB, &$argumentC));
+        $this->subject->invokeWith();
+
+        $this->assertSame('valueA', $argumentA);
+        $this->assertSame('valueB', $argumentB);
+        $this->assertSame('valueC', $argumentC);
+    }
+
+    public function testDoes()
+    {
+        $this->assertSame($this->subject, $this->subject->does($this->callbackA, $this->callbackB));
+        $this->assertSame('valueA', call_user_func($this->subject));
+        $this->assertSame('valueB', call_user_func($this->subject));
+        $this->assertSame('valueB', call_user_func($this->subject));
     }
 
     public function testReturns()

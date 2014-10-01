@@ -141,31 +141,6 @@ class Stub implements StubInterface
     }
 
     /**
-     * Add a callback as an answer.
-     *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks for subsequent invocations.
-     *
-     * @return StubInterface This stub.
-     */
-    public function does($callback)
-    {
-        if ($this->isNewRule) {
-            $this->isNewRule = false;
-
-            array_unshift($this->rules, array($this->matchers, array()));
-            array_unshift($this->ruleCounts, 0);
-        }
-
-        foreach (func_get_args() as $callback) {
-            array_push($this->rules[0][1], array($callback, $this->callbacks));
-            $this->callbacks = array();
-        }
-
-        return $this;
-    }
-
-    /**
      * Add a callback to be called as part of an answer.
      *
      * Note that all supplied callbacks will be called in the same invocation.
@@ -210,11 +185,10 @@ class Stub implements StubInterface
         array_push(
             $this->callbacks,
             array(
-                function () use ($callback) {
-                    return $callback;
-                },
+                $this->returnsCallbackCallback($callback),
                 $arguments,
-                $appendArguments
+                $appendArguments,
+                false,
             )
         );
 
@@ -228,7 +202,7 @@ class Stub implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null $index         The argument index, or null to return the first argument.
+     * @param integer|null $index         The argument index, or null to call the first argument.
      * @param mixed        $arguments,... The arguments to call the callback with.
      *
      * @return StubInterface This stub.
@@ -255,7 +229,7 @@ class Stub implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null              $index           The argument index, or null to return the first argument.
+     * @param integer|null              $index           The argument index, or null to call the first argument.
      * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
      * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
      *
@@ -278,9 +252,80 @@ class Stub implements StubInterface
             array(
                 $this->returnsArgumentCallback($index),
                 $arguments,
-                $appendArguments
+                $appendArguments,
+                false,
             )
         );
+
+        return $this;
+    }
+
+    /**
+     * Set the value of an argument passed by reference as part of an answer.
+     *
+     * @param mixed        $value The value to set the argument to.
+     * @param integer|null $index The argument index, or null to set the first argument.
+     *
+     * @return StubInterface This stub.
+     */
+    public function setsArgument($value, $index = null)
+    {
+        if (null === $index) {
+            $index = 0;
+        }
+
+        array_push(
+            $this->callbacks,
+            array(
+                $this->returnsCallbackCallback(
+                    function (array $arguments) use ($value, $index) {
+                        $argumentCount = count($arguments);
+
+                        if ($argumentCount < 1) {
+                            return;
+                        }
+
+                        if ($index < 0) {
+                            $index = $argumentCount + $index;
+                        }
+
+                        if ($index >= $argumentCount) {
+                            return;
+                        }
+
+                        $arguments[$index] = $value;
+                    }
+                ),
+                array(),
+                false,
+                true,
+            )
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add a callback as an answer.
+     *
+     * @param callable $callback                The callback.
+     * @param callable $additionalCallbacks,... Additional callbacks for subsequent invocations.
+     *
+     * @return StubInterface This stub.
+     */
+    public function does($callback)
+    {
+        if ($this->isNewRule) {
+            $this->isNewRule = false;
+
+            array_unshift($this->rules, array($this->matchers, array()));
+            array_unshift($this->ruleCounts, 0);
+        }
+
+        foreach (func_get_args() as $callback) {
+            array_push($this->rules[0][1], array($callback, $this->callbacks));
+            $this->callbacks = array();
+        }
 
         return $this;
     }
@@ -404,6 +449,7 @@ class Stub implements StubInterface
                                 (callback callback) callable
                                 (arguments) [mixed, ...]
                                 (append arguments) boolean
+                                (append argument array) boolean
                             ]
                         ]
                     ]
@@ -433,12 +479,13 @@ class Stub implements StubInterface
 
                     // only call the callback if it's sane to do so
                     if (is_callable($callback)) {
-                        // append the arguments if desired
+                        $callbackArguments = $callDetails[1];
                         if ($callDetails[2]) {
                             $callbackArguments =
-                                array_merge($callDetails[1], $arguments);
-                        } else {
-                            $callbackArguments = $callDetails[1];
+                                array_merge($callbackArguments, $arguments);
+                        }
+                        if ($callDetails[3]) {
+                            $callbackArguments[] = $arguments;
                         }
 
                         // invoke secondary callback
@@ -476,6 +523,20 @@ class Stub implements StubInterface
     public function __invoke()
     {
         return $this->invokeWith(func_get_args());
+    }
+
+    /**
+     * Returns a callback that returns the supplied callback.
+     *
+     * @param callable $callback The callback to return from the callback.
+     *
+     * @return callable The callback.
+     */
+    private function returnsCallbackCallback($callback)
+    {
+        return function () use ($callback) {
+            return $callback;
+        };
     }
 
     /**
