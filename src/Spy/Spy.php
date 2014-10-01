@@ -17,6 +17,7 @@ use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
 use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
+use Eloquent\Phony\Invocable\AbstractInvocable;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Exception;
@@ -31,7 +32,7 @@ use ReflectionMethod;
  *
  * @internal
  */
-class Spy implements SpyInterface
+class Spy extends AbstractInvocable implements SpyInterface
 {
     /**
      * Construct a new spy.
@@ -156,14 +157,14 @@ class Spy implements SpyInterface
     }
 
     /**
-     * Record a call by invocation.
+     * Invoke this object.
      *
      * This method supports reference parameters.
      *
      * @param array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
+     * @throws Exception If an error occurs.
      */
     public function invokeWith(array $arguments = null)
     {
@@ -205,32 +206,6 @@ class Spy implements SpyInterface
         }
 
         return $returnValue;
-    }
-
-    /**
-     * Record a call by invocation.
-     *
-     * @param mixed $arguments,... The arguments.
-     *
-     * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
-     */
-    public function invoke()
-    {
-        return $this->invokeWith(func_get_args());
-    }
-
-    /**
-     * Record a call by invocation.
-     *
-     * @param mixed $arguments,... The arguments.
-     *
-     * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
-     */
-    public function __invoke()
-    {
-        return $this->invokeWith(func_get_args());
     }
 
     /**

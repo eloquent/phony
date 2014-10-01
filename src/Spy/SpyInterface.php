@@ -12,13 +12,13 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallInterface;
-use Exception;
+use Eloquent\Phony\Invocable\InvocableInterface;
 use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by spies.
  */
-interface SpyInterface
+interface SpyInterface extends InvocableInterface
 {
     /**
      * Get the subject.
@@ -54,36 +54,4 @@ interface SpyInterface
      * @return array<CallInterface> The calls.
      */
     public function calls();
-
-    /**
-     * Record a call by invocation.
-     *
-     * This method supports reference parameters.
-     *
-     * @param array<integer,mixed>|null The arguments.
-     *
-     * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
-     */
-    public function invokeWith(array $arguments = null);
-
-    /**
-     * Record a call by invocation.
-     *
-     * @param mixed $arguments,... The arguments.
-     *
-     * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
-     */
-    public function invoke();
-
-    /**
-     * Record a call by invocation.
-     *
-     * @param mixed $arguments,... The arguments.
-     *
-     * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
-     */
-    public function __invoke();
 }

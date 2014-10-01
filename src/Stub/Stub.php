@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Invocable\AbstractInvocable;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -22,7 +23,7 @@ use Exception;
  *
  * @internal
  */
-class Stub implements StubInterface
+class Stub extends AbstractInvocable implements StubInterface
 {
     /**
      * Construct a new stub.
@@ -415,14 +416,14 @@ class Stub implements StubInterface
     }
 
     /**
-     * Invoke the stub.
+     * Invoke this object.
      *
      * This method supports reference parameters.
      *
      * @param array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
-     * @throws Exception If the stub throws an exception.
+     * @throws Exception If an error occurs.
      */
     public function invokeWith(array $arguments = null)
     {
@@ -498,32 +499,6 @@ class Stub implements StubInterface
             }
         }
     } // @codeCoverageIgnore
-
-    /**
-     * Invoke the stub.
-     *
-     * @param mixed $arguments,... The arguments.
-     *
-     * @return mixed     The result of invocation.
-     * @throws Exception If the stub throws an exception.
-     */
-    public function invoke()
-    {
-        return $this->invokeWith(func_get_args());
-    }
-
-    /**
-     * Invoke the stub.
-     *
-     * @param mixed $arguments,...
-     *
-     * @return mixed     The result of invocation.
-     * @throws Exception If the stub throws an exception.
-     */
-    public function __invoke()
-    {
-        return $this->invokeWith(func_get_args());
-    }
 
     /**
      * Returns a callback that returns the supplied callback.
