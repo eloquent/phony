@@ -170,16 +170,18 @@ class Stub implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks.
+     * @param callable $callback      The callback.
+     * @param mixed    $arguments,... The arguments to call the callback with.
      *
      * @return StubInterface This stub.
      */
     public function calls($callback)
     {
-        foreach (func_get_args() as $callback) {
-            array_push($this->callbacks, $callback);
-        }
+        $arguments = func_get_args();
+        array_push(
+            $this->callbacks,
+            array(array_shift($arguments), $arguments)
+        );
 
         return $this;
     }
@@ -211,6 +213,8 @@ class Stub implements StubInterface
 
     /**
      * Add an answer that returns an argument.
+     *
+     * Negative indices are equivalent to $argumentCount - $index.
      *
      * @param integer|null $index The argument index, or null to return the first argument.
      *
@@ -319,7 +323,7 @@ class Stub implements StubInterface
                 }
 
                 foreach ($callbacks[1] as $callback) {
-                    call_user_func_array($callback, $arguments);
+                    call_user_func_array($callback[0], $callback[1]);
                 }
 
                 return call_user_func_array($callbacks[0], $arguments);

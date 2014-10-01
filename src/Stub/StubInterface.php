@@ -69,8 +69,8 @@ interface StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks.
+     * @param callable $callback      The callback.
+     * @param mixed    $arguments,... The arguments to call the callback with.
      *
      * @return StubInterface This stub.
      */
@@ -88,6 +88,8 @@ interface StubInterface
 
     /**
      * Add an answer that returns an argument.
+     *
+     * Negative indices are equivalent to $argumentCount - $index.
      *
      * @param integer|null $index The argument index, or null to return the first argument.
      *
