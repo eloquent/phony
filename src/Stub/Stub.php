@@ -178,10 +178,29 @@ class Stub implements StubInterface
     public function calls($callback)
     {
         $arguments = func_get_args();
-        array_push(
-            $this->callbacks,
-            array(array_shift($arguments), $arguments)
-        );
+
+        return $this->callsWith(array_shift($arguments), $arguments);
+    }
+
+    /**
+     * Add a callback to be called as part of an answer.
+     *
+     * This method supports reference parameters.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param callable                  $callback  The callback.
+     * @param array<integer,mixed>|null $arguments The arguments to call the callback with.
+     *
+     * @return StubInterface This stub.
+     */
+    public function callsWith($callback, array $arguments = null)
+    {
+        if (null === $arguments) {
+            $arguments = array();
+        }
+
+        array_push($this->callbacks, array($callback, $arguments));
 
         return $this;
     }

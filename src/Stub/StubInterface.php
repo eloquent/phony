@@ -77,6 +77,20 @@ interface StubInterface
     public function calls($callback);
 
     /**
+     * Add a callback to be called as part of an answer.
+     *
+     * This method supports reference parameters.
+     *
+     * Note that all supplied callbacks will be called in the same invocation.
+     *
+     * @param callable                  $callback  The callback.
+     * @param array<integer,mixed>|null $arguments The arguments to call the callback with.
+     *
+     * @return StubInterface This stub.
+     */
+    public function callsWith($callback, array $arguments = null);
+
+    /**
      * Add an answer that returns a value.
      *
      * @param mixed $value                The return value.

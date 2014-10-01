@@ -127,6 +127,47 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, $callCountB);
     }
 
+    public function testCallsWith()
+    {
+        $callsA = array();
+        $callbackA = function ($argument) use (&$callsA) {
+            $callsA[] = $argument;
+        };
+        $callCountB = 0;
+        $callbackB = function () use (&$callCountB) {
+            $callCountB++;
+        };
+
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->callsWith($callbackA, array('first'))->returns()
+                ->callsWith($callbackA, array('second'))->callsWith($callbackB)->returns()
+        );
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame(array('first'), $callsA);
+        $this->assertSame(0, $callCountB);
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame(array('first', 'second'), $callsA);
+        $this->assertSame(1, $callCountB);
+        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame(array('first', 'second', 'second'), $callsA);
+        $this->assertSame(2, $callCountB);
+    }
+
+    public function testCallsWithWithReferenceParameters()
+    {
+        $callback = function (&$argument) {
+            $argument = 'value';
+        };
+        $value = null;
+        $arguments = array(&$value);
+        $this->subject->callsWith($callback, $arguments);
+        $this->subject->invoke();
+
+        $this->assertSame('value', $value);
+    }
+
     public function testReturns()
     {
         $this->assertSame($this->subject, $this->subject->returns('valueA', 'valueB'));
@@ -290,5 +331,18 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->invokeWith());
         $this->assertNull($this->subject->invoke());
         $this->assertNull(call_user_func($this->subject));
+    }
+
+    public function testInvokeWithWithReferenceParameters()
+    {
+        $callback = function (&$argument) {
+            $argument = 'value';
+        };
+        $this->subject->does($callback);
+        $value = null;
+        $arguments = array(&$value);
+        $this->subject->invokeWith($arguments);
+
+        $this->assertSame('value', $value);
     }
 }
