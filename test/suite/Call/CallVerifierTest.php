@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
+use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestAssertionRecorder;
@@ -46,7 +46,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->exception,
             $this->thisValue
         );
-        $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
+        $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new TestAssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
@@ -481,14 +481,14 @@ EOD;
     public function testCalledOn()
     {
         $this->assertTrue($this->subject->calledOn($this->thisValue));
-        $this->assertTrue($this->subject->calledOn($this->identicalTo($this->thisValue)));
+        $this->assertTrue($this->subject->calledOn(new EqualToMatcher($this->thisValue)));
         $this->assertFalse($this->subject->calledOn((object) array('property' => 'value')));
     }
 
     public function testAssertCalledOn()
     {
         $this->assertNull($this->subject->assertCalledOn($this->thisValue));
-        $this->assertNull($this->subject->assertCalledOn($this->identicalTo($this->thisValue)));
+        $this->assertNull($this->subject->assertCalledOn(new EqualToMatcher($this->thisValue)));
         $this->assertSame(2, $this->assertionRecorder->successCount());
     }
 
@@ -505,10 +505,10 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Not called on object like <is identical to an object of class \"stdClass\">. " .
+            "Not called on object like <stdClass Object (...)>. " .
                 "Actual object was stdClass Object ()."
         );
-        $this->subject->assertCalledOn($this->identicalTo((object) array()));
+        $this->subject->assertCalledOn(new EqualToMatcher((object) array('property' => 'value')));
     }
 
     public function testReturned()
@@ -541,24 +541,24 @@ EOD;
         $this->assertTrue($this->subject->threw('Exception'));
         $this->assertTrue($this->subject->threw('RuntimeException'));
         $this->assertTrue($this->subject->threw($this->exception));
-        $this->assertTrue($this->subject->threw($this->identicalTo($this->exception)));
+        $this->assertTrue($this->subject->threw(new EqualToMatcher($this->exception)));
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
-        $this->assertFalse($this->subject->threw($this->identicalTo(new RuntimeException('You done goofed.'))));
-        $this->assertFalse($this->subject->threw($this->isNull()));
+        $this->assertFalse($this->subject->threw(new EqualToMatcher(new RuntimeException())));
+        $this->assertFalse($this->subject->threw(new EqualToMatcher(null)));
         $this->assertFalse($this->subject->threw(111));
 
         $this->assertFalse($this->subjectNoException->threw());
         $this->assertFalse($this->subjectNoException->threw('Exception'));
         $this->assertFalse($this->subjectNoException->threw('RuntimeException'));
         $this->assertFalse($this->subjectNoException->threw($this->exception));
-        $this->assertFalse($this->subjectNoException->threw($this->identicalTo($this->exception)));
+        $this->assertFalse($this->subjectNoException->threw(new EqualToMatcher($this->exception)));
         $this->assertFalse($this->subjectNoException->threw('InvalidArgumentException'));
         $this->assertFalse($this->subjectNoException->threw(new Exception()));
         $this->assertFalse($this->subjectNoException->threw(new RuntimeException()));
-        $this->assertFalse($this->subjectNoException->threw($this->identicalTo(new RuntimeException('You done goofed.'))));
-        $this->assertTrue($this->subjectNoException->threw($this->isNull()));
+        $this->assertFalse($this->subjectNoException->threw(new EqualToMatcher(new RuntimeException())));
+        $this->assertTrue($this->subjectNoException->threw(new EqualToMatcher(null)));
         $this->assertFalse($this->subjectNoException->threw(111));
     }
 
@@ -568,7 +568,7 @@ EOD;
         $this->assertNull($this->subject->assertThrew('Exception'));
         $this->assertNull($this->subject->assertThrew('RuntimeException'));
         $this->assertNull($this->subject->assertThrew($this->exception));
-        $this->assertNull($this->subject->assertThrew($this->identicalTo($this->exception)));
+        $this->assertNull($this->subject->assertThrew(new EqualToMatcher($this->exception)));
         $this->assertSame(5, $this->assertionRecorder->successCount());
     }
 
@@ -620,10 +620,10 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected exception like <is identical to an object of class \"RuntimeException\">. " .
+            "Expected exception like <RuntimeException Object (...)>. " .
                 "Threw RuntimeException('You done goofed.')."
         );
-        $this->subject->assertThrew($this->identicalTo(new RuntimeException('You done goofed.')));
+        $this->subject->assertThrew(new EqualToMatcher(new RuntimeException()));
     }
 
     public function testAssertThrewFailureInvalidInput()

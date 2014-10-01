@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
-use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Exception;

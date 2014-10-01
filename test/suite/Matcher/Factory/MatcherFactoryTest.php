@@ -11,15 +11,13 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
-use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcher;
-use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcherDriver;
-use Eloquent\Phony\Integration\Phpunit\PhpunitMatcher;
-use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Hamcrest\Core\IsEqual;
-use PHPUnit_Framework_Constraint_IsEqual;
+use Eloquent\Phony\Test\TestMatcherA;
+use Eloquent\Phony\Test\TestMatcherB;
+use Eloquent\Phony\Test\TestMatcherDriverA;
+use Eloquent\Phony\Test\TestMatcherDriverB;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -27,8 +25,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->driverA = new PhpunitMatcherDriver();
-        $this->driverB = new HamcrestMatcherDriver();
+        $this->driverA = new TestMatcherDriverA();
+        $this->driverB = new TestMatcherDriverB();
         $this->drivers = array($this->driverA, $this->driverB);
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = new WildcardMatcher();
@@ -76,8 +74,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testIsMatcher()
     {
-        $this->assertTrue($this->subject->isMatcher(new EqualToMatcher('value')));
-        $this->assertTrue($this->subject->isMatcher(new PHPUnit_Framework_Constraint_IsEqual('value')));
+        $this->assertTrue($this->subject->isMatcher(new TestMatcherA()));
+        $this->assertTrue($this->subject->isMatcher(new TestMatcherB()));
         $this->assertFalse($this->subject->isMatcher((object) array()));
     }
 
@@ -94,11 +92,11 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptViaDriver()
     {
-        $phpunitConstraint = new PHPUnit_Framework_Constraint_IsEqual('value');
-        $hamcrestMatcher = new IsEqual('value');
+        $driverAMatcher = new TestMatcherA();
+        $driverBMatcher = new TestMatcherB();
 
-        $this->assertEquals(new PhpunitMatcher($phpunitConstraint), $this->subject->adapt($phpunitConstraint));
-        $this->assertEquals(new HamcrestMatcher($hamcrestMatcher), $this->subject->adapt($hamcrestMatcher));
+        $this->assertEquals(new EqualToMatcher('a'), $this->subject->adapt($driverAMatcher));
+        $this->assertEquals(new EqualToMatcher('b'), $this->subject->adapt($driverBMatcher));
     }
 
     public function testAdaptAll()

@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -22,7 +21,7 @@ class StubTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcherFactory = new MatcherFactory(array(new PhpunitMatcherDriver()));
+        $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->subject = new Stub($this->matcherFactory, $this->matcherVerifier);
 
