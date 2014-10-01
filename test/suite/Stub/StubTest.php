@@ -113,6 +113,19 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('valueA', call_user_func($this->subject));
         $this->assertSame('valueD', call_user_func($this->subject, 'argumentA'));
         $this->assertSame('valueF', call_user_func($this->subject, 'argumentB'));
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->with()->returns('valueB')
+                ->with('argumentA')->returns('valueC')
+                ->with('argumentB')->returns('valueE')
+        );
+        $this->assertSame('valueB', call_user_func($this->subject));
+        $this->assertSame('valueB', call_user_func($this->subject));
+        $this->assertSame('valueC', call_user_func($this->subject, 'argumentA'));
+        $this->assertSame('valueC', call_user_func($this->subject, 'argumentA'));
+        $this->assertSame('valueE', call_user_func($this->subject, 'argumentB'));
+        $this->assertSame('valueE', call_user_func($this->subject, 'argumentB'));
     }
 
     public function testInvokeWithNoRules()
