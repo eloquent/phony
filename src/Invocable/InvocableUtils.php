@@ -61,11 +61,7 @@ final class InvocableUtils
             return $callback[0];
         }
 
-        if ($callback instanceof Closure) {
-            if (!self::isBoundClosureSupported()) {
-                return $callback; // @codeCoverageIgnore
-            }
-
+        if ($callback instanceof Closure && self::isBoundClosureSupported()) {
             $reflector = new ReflectionFunction($callback);
 
             return $reflector->getClosureThis();
