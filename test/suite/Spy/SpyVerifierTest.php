@@ -23,8 +23,6 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClass;
 use Exception;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
-use ReflectionFunction;
 use RuntimeException;
 
 class SpyVerifierTest extends PHPUnit_Framework_TestCase
@@ -56,7 +54,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->thisValueA = new TestClass();
         $this->thisValueB = new TestClass();
         $this->arguments = array('a', 'b', 'c');
-        $this->argumentMatchers = $this->matcherFactory->adaptAll($this->arguments);
+        $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
+        $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
             array(
                 $this->callFactory->createCalledEvent(array($this->thisValueA, 'methodA'), $this->arguments),
@@ -511,17 +510,17 @@ EOD;
 
     public function calledWithData()
     {
-        //                                    arguments                                                  calledWith calledWithExactly
+        //                                    arguments                  calledWith calledWithExactly
         return array(
-            'Exact arguments'        => array(array('a', 'b', 'c'),              true,      true),
-            'First arguments'        => array(array('a', 'b'),                           true,      false),
-            'Single argument'        => array(array('a'),                                        true,      false),
-            'Last arguments'         => array(array('b', 'c'),                           false,     false),
-            'Last argument'          => array(array('c'),                                        false,     false),
+            'Exact arguments'        => array(array('a', 'b', 'c'),      true,      true),
+            'First arguments'        => array(array('a', 'b'),           true,      false),
+            'Single argument'        => array(array('a'),                true,      false),
+            'Last arguments'         => array(array('b', 'c'),           false,     false),
+            'Last argument'          => array(array('c'),                false,     false),
             'Extra arguments'        => array(array('a', 'b', 'c', 'd'), false,     false),
-            'First argument differs' => array(array('d', 'b', 'c'),              false,     false),
-            'Last argument differs'  => array(array('a', 'b', 'd'),              false,     false),
-            'Unused argument'        => array(array('d'),                                        false,     false),
+            'First argument differs' => array(array('d', 'b', 'c'),      false,     false),
+            'Last argument differs'  => array(array('a', 'b', 'd'),      false,     false),
+            'Unused argument'        => array(array('d'),                false,     false),
         );
     }
 
@@ -554,14 +553,11 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $this->assertNull($this->subject->assertCalledWith('a', 'b', 'c'));
-        $this->assertNull(
-            $this->subject
-                ->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
-        );
+        $this->assertNull($this->subject->assertCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2]));
         $this->assertNull($this->subject->assertCalledWith('a', 'b'));
-        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1]));
+        $this->assertNull($this->subject->assertCalledWith($this->matchers[0], $this->matchers[1]));
         $this->assertNull($this->subject->assertCalledWith('a'));
-        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertCalledWith($this->matchers[0]));
         $this->assertNull($this->subject->assertCalledWith());
         $this->assertSame(7, $this->assertionRecorder->successCount());
     }
@@ -636,18 +632,12 @@ EOD;
 
         $this->assertNull($this->subject->assertAlwaysCalledWith('a', 'b', 'c'));
         $this->assertNull(
-            $this->subject->assertAlwaysCalledWith(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2]
-            )
+            $this->subject->assertAlwaysCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
         $this->assertNull($this->subject->assertAlwaysCalledWith('a', 'b'));
-        $this->assertNull(
-            $this->subject->assertAlwaysCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1])
-        );
+        $this->assertNull($this->subject->assertAlwaysCalledWith($this->matchers[0], $this->matchers[1]));
         $this->assertNull($this->subject->assertAlwaysCalledWith('a'));
-        $this->assertNull($this->subject->assertAlwaysCalledWith($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertAlwaysCalledWith($this->matchers[0]));
         $this->assertNull($this->subject->assertAlwaysCalledWith());
         $this->assertSame(7, $this->assertionRecorder->successCount());
     }
@@ -716,11 +706,7 @@ EOD;
 
         $this->assertNull($this->subject->assertCalledWithExactly('a', 'b', 'c'));
         $this->assertNull(
-            $this->subject->assertCalledWithExactly(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2]
-            )
+            $this->subject->assertCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
         $this->assertSame(2, $this->assertionRecorder->successCount());
     }
@@ -801,11 +787,7 @@ EOD;
 
         $this->assertNull($this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c'));
         $this->assertNull(
-            $this->subject->assertAlwaysCalledWithExactly(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2]
-            )
+            $this->subject->assertAlwaysCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
         $this->assertSame(2, $this->assertionRecorder->successCount());
     }
@@ -869,38 +851,28 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $this->assertNull($this->subject->assertNeverCalledWith('b', 'c'));
-        $this->assertNull(
-            $this->subject->assertNeverCalledWith($this->argumentMatchers[1], $this->argumentMatchers[2])
-        );
+        $this->assertNull($this->subject->assertNeverCalledWith($this->matchers[1], $this->matchers[2]));
         $this->assertNull($this->subject->assertNeverCalledWith('c'));
-        $this->assertNull($this->subject->assertNeverCalledWith($this->argumentMatchers[2]));
+        $this->assertNull($this->subject->assertNeverCalledWith($this->matchers[2]));
         $this->assertNull($this->subject->assertNeverCalledWith('a', 'b', 'c', 'd'));
         $this->assertNull(
             $this->subject->assertNeverCalledWith(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2],
-                $this->matcherFactory->adapt('d')
+                $this->matchers[0],
+                $this->matchers[1],
+                $this->matchers[2],
+                $this->otherMatcher
             )
         );
         $this->assertNull($this->subject->assertNeverCalledWith('d', 'b', 'c'));
         $this->assertNull(
-            $this->subject->assertNeverCalledWith(
-                $this->matcherFactory->adapt('d'),
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2]
-            )
+            $this->subject->assertNeverCalledWith($this->otherMatcher, $this->matchers[1], $this->matchers[2])
         );
         $this->assertNull($this->subject->assertNeverCalledWith('a', 'b', 'd'));
         $this->assertNull(
-            $this->subject->assertNeverCalledWith(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->matcherFactory->adapt('d')
-            )
+            $this->subject->assertNeverCalledWith($this->matchers[0], $this->matchers[1], $this->otherMatcher)
         );
         $this->assertNull($this->subject->assertNeverCalledWith('d'));
-        $this->assertNull($this->subject->assertNeverCalledWith($this->matcherFactory->adapt('d')));
+        $this->assertNull($this->subject->assertNeverCalledWith($this->otherMatcher));
         $this->assertSame(13, $this->assertionRecorder->successCount());
     }
 
@@ -958,46 +930,32 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $this->assertNull($this->subject->assertNeverCalledWithExactly('a', 'b'));
-        $this->assertNull(
-            $this->subject->assertNeverCalledWithExactly($this->argumentMatchers[0], $this->argumentMatchers[1])
-        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->matchers[0], $this->matchers[1]));
         $this->assertNull($this->subject->assertNeverCalledWithExactly('a'));
-        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->matchers[0]));
         $this->assertNull($this->subject->assertNeverCalledWithExactly('b', 'c'));
-        $this->assertNull(
-            $this->subject->assertNeverCalledWithExactly($this->argumentMatchers[1], $this->argumentMatchers[2])
-        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->matchers[1], $this->matchers[2]));
         $this->assertNull($this->subject->assertNeverCalledWithExactly('c'));
-        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->argumentMatchers[2]));
-        $this->assertNull(
-            $this->subject->assertNeverCalledWithExactly('a', 'b', 'c', 'd')
-        );
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->matchers[2]));
+        $this->assertNull($this->subject->assertNeverCalledWithExactly('a', 'b', 'c', 'd'));
         $this->assertNull(
             $this->subject->assertNeverCalledWithExactly(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2],
-                $this->matcherFactory->adapt('d')
+                $this->matchers[0],
+                $this->matchers[1],
+                $this->matchers[2],
+                $this->otherMatcher
             )
         );
         $this->assertNull($this->subject->assertNeverCalledWithExactly('d', 'b', 'c'));
         $this->assertNull(
-            $this->subject->assertNeverCalledWithExactly(
-                $this->matcherFactory->adapt('d'),
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2]
-            )
+            $this->subject->assertNeverCalledWithExactly($this->otherMatcher, $this->matchers[1], $this->matchers[2])
         );
         $this->assertNull($this->subject->assertNeverCalledWithExactly('a', 'b', 'd'));
         $this->assertNull(
-            $this->subject->assertNeverCalledWithExactly(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->matcherFactory->adapt('d')
-            )
+            $this->subject->assertNeverCalledWithExactly($this->matchers[0], $this->matchers[1], $this->otherMatcher)
         );
         $this->assertNull($this->subject->assertNeverCalledWithExactly('d'));
-        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->matcherFactory->adapt('d')));
+        $this->assertNull($this->subject->assertNeverCalledWithExactly($this->otherMatcher));
         $this->assertSame(17, $this->assertionRecorder->successCount());
     }
 
@@ -1669,17 +1627,5 @@ EOD;
         $this->assertSame(0, SpyVerifier::compareCallOrder($this->callA, $this->callA));
         $this->assertLessThan(0, SpyVerifier::compareCallOrder($this->callA, $this->callB));
         $this->assertGreaterThan(0, SpyVerifier::compareCallOrder($this->callB, $this->callA));
-    }
-
-    protected function thisValue($closure)
-    {
-        $reflectorReflector = new ReflectionClass('ReflectionFunction');
-        if (!$reflectorReflector->hasMethod('getClosureThis')) {
-            return null;
-        }
-
-        $reflector = new ReflectionFunction($closure);
-
-        return $reflector->getClosureThis();
     }
 }

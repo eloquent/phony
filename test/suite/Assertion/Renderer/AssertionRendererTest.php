@@ -58,7 +58,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame("'x'", $this->subject->renderValue('x'));
         $this->assertSame("111", $this->subject->renderValue(111));
-        $this->assertSame("'line\nline'", $this->subject->renderValue("line\nline"));
+        $this->assertSame("'x\ny'", $this->subject->renderValue("x\ny"));
         $this->assertSame(
             "'12345678901234567890123456789012345678901234567890'",
             $this->subject->renderValue('12345678901234567890123456789012345678901234567890')

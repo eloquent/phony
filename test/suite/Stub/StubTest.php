@@ -255,6 +255,7 @@ class StubTest extends PHPUnit_Framework_TestCase
                 ->setsArgument('c', -1)
                 ->setsArgument('d', 111)
         );
+
         $a = null;
         $b = null;
         $c = null;

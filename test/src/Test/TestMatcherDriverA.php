@@ -16,26 +16,11 @@ use Eloquent\Phony\Matcher\MatcherDriverInterface;
 
 class TestMatcherDriverA implements MatcherDriverInterface
 {
-    /**
-     * Returns true if the supplied matcher is supported by this driver.
-     *
-     * @param object $matcher The matcher to test.
-     *
-     * @return boolean True if supported.
-     */
     public function isSupported($matcher)
     {
         return $matcher instanceof TestMatcherA;
     }
 
-    /**
-     * If the supplied matcher is supported, replace it with an equivalent Phony
-     * matcher.
-     *
-     * @param object &$matcher The matcher to adapt.
-     *
-     * @return boolean True if the matcher is supported.
-     */
     public function adapt(&$matcher)
     {
         if ($this->isSupported($matcher)) {
