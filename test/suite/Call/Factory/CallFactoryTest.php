@@ -67,12 +67,17 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testRecordDefaults()
     {
-        $expected = $this->subject->create();
-        $this->sequencer->reset();
-        $this->clock->reset();
         $actual = $this->subject->record();
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Call\Call', $actual);
+
+        $events = $actual->events();
+
+        $this->assertSame(array(0, 1), array_keys($events));
+        $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $events[0]);
+        $this->assertSame(array(), $events[0]->arguments());
+        $this->assertInstanceOf('Eloquent\Phony\Call\Event\ReturnedEvent', $events[1]);
+        $this->assertNull($events[1]->returnValue());
     }
 
     public function testCreate()

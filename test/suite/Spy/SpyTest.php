@@ -192,7 +192,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent(),
+                    $this->callFactory->createCalledEvent($subject),
                     $this->callFactory->createReturnedEvent('x'),
                 )
             ),
