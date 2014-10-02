@@ -23,12 +23,19 @@ class ThrewEvent extends AbstractCallEvent implements ThrewEventInterface
     /**
      * Construct a 'threw' event.
      *
-     * @param Exception $exception      The thrown exception.
-     * @param integer   $sequenceNumber The sequence number.
-     * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param integer        $sequenceNumber The sequence number.
+     * @param float          $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param Exception|null $exception      The thrown exception.
      */
-    public function __construct(Exception $exception, $sequenceNumber, $time)
-    {
+    public function __construct(
+        $sequenceNumber,
+        $time,
+        Exception $exception = null
+    ) {
+        if (null === $exception) {
+            $exception = new Exception();
+        }
+
         parent::__construct($sequenceNumber, $time);
 
         $this->exception = $exception;

@@ -11,8 +11,6 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use ReflectionFunctionAbstract;
-
 /**
  * Represents the start of a call.
  *
@@ -23,44 +21,38 @@ class CalledEvent extends AbstractCallEvent implements CalledEventInterface
     /**
      * Construct a new 'called' event.
      *
-     * @param ReflectionFunctionAbstract $reflector      The function or method called.
-     * @param object|null                $thisValue      The $this value, or null if unbound.
-     * @param array<integer,mixed>       $arguments      The arguments.
-     * @param integer                    $sequenceNumber The sequence number.
-     * @param float                      $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param integer                   $sequenceNumber The sequence number.
+     * @param float                     $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param callable|null             $callback       The callback.
+     * @param array<integer,mixed>|null $arguments      The arguments.
      */
     public function __construct(
-        ReflectionFunctionAbstract $reflector,
-        $thisValue,
-        array $arguments,
         $sequenceNumber,
-        $time
+        $time,
+        $callback = null,
+        array $arguments = null
     ) {
+        if (null === $callback) {
+            $callback = function () {};
+        }
+        if (null === $arguments) {
+            $arguments = array();
+        }
+
         parent::__construct($sequenceNumber, $time);
 
-        $this->reflector = $reflector;
-        $this->thisValue = $thisValue;
+        $this->callback = $callback;
         $this->arguments = $arguments;
     }
 
     /**
-     * Get the called function or method called.
+     * Get the callback.
      *
-     * @return ReflectionFunctionAbstract The function or method called.
+     * @return callable The callback.
      */
-    public function reflector()
+    public function callback()
     {
-        return $this->reflector;
-    }
-
-    /**
-     * Get the $this value.
-     *
-     * @return object|null The $this value, or null if unbound.
-     */
-    public function thisValue()
-    {
-        return $this->thisValue;
+        return $this->callback;
     }
 
     /**
@@ -73,7 +65,6 @@ class CalledEvent extends AbstractCallEvent implements CalledEventInterface
         return $this->arguments;
     }
 
-    private $reflector;
-    private $thisValue;
+    private $callback;
     private $arguments;
 }

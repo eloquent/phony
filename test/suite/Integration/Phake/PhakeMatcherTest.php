@@ -18,10 +18,10 @@ class PhakeMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = Phake::equalTo('value');
+        $this->matcher = Phake::equalTo('x');
         $this->subject = new PhakeMatcher($this->matcher);
 
-        $this->description = '<equal to <string:value>>';
+        $this->description = '<equal to <string:x>>';
     }
 
     public function testConstructor()
@@ -33,7 +33,7 @@ class PhakeMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->subject->matches('value'));
-        $this->assertFalse($this->subject->matches('anotherValue'));
+        $this->assertTrue($this->subject->matches('x'));
+        $this->assertFalse($this->subject->matches('y'));
     }
 }

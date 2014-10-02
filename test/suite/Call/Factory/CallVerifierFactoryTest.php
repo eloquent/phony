@@ -15,15 +15,11 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifier;
-use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Mockery\Exception\RuntimeException;
+use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
-use ReflectionMethod;
 
 class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
 {
@@ -40,18 +36,9 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer
         );
 
-        $this->callA = new Call(
-            array(
-                new CalledEvent(new ReflectionMethod(__METHOD__), $this, array('argumentA', 'argumentB'), 0, .1),
-                new ReturnedEvent('returnValue', 1, .2),
-            )
-        );
-        $this->callB = new Call(
-            array(
-                new CalledEvent(new ReflectionMethod(__METHOD__), null, array(), 2, .3),
-                new ThrewEvent(new RuntimeException('message'), 3, .4),
-            )
-        );
+        $this->callFactory = new TestCallFactory();
+        $this->callA = $this->callFactory->create();
+        $this->callB = $this->callFactory->create();
     }
 
     public function testConstructor()

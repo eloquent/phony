@@ -12,22 +12,29 @@
 namespace Eloquent\Phony\Call\Event;
 
 use PHPUnit_Framework_TestCase;
-use RuntimeException;
+use Exception;
 
 class ThrewEventTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->exception = new RuntimeException();
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->subject = new ThrewEvent($this->exception, $this->sequenceNumber, $this->time);
+        $this->exception = new Exception();
+        $this->subject = new ThrewEvent($this->sequenceNumber, $this->time, $this->exception);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->exception, $this->subject->exception());
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
+        $this->assertSame($this->exception, $this->subject->exception());
+    }
+
+    public function testConstructorDefaults()
+    {
+        $this->subject = new ThrewEvent($this->sequenceNumber, $this->time);
+
+        $this->assertEquals($this->exception, $this->subject->exception());
     }
 }

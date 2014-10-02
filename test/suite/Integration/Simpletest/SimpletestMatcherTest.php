@@ -18,7 +18,7 @@ class SimpletestMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = new EqualExpectation('value');
+        $this->matcher = new EqualExpectation('x');
         $this->subject = new SimpletestMatcher($this->matcher);
 
         $this->description = '<EqualExpectation>';
@@ -33,7 +33,7 @@ class SimpletestMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->subject->matches('value'));
-        $this->assertFalse($this->subject->matches('anotherValue'));
+        $this->assertTrue($this->subject->matches('x'));
+        $this->assertFalse($this->subject->matches('y'));
     }
 }

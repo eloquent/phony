@@ -21,7 +21,7 @@ class MockeryMatcherDriverTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MockeryMatcherDriver();
 
-        $this->matcher = Mockery::mustBe('value');
+        $this->matcher = Mockery::mustBe('x');
     }
 
     public function testIsSupported()

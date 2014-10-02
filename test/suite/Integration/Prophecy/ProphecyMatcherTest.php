@@ -18,10 +18,10 @@ class ProphecyMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = Argument::is('value');
+        $this->matcher = Argument::is('x');
         $this->subject = new ProphecyMatcher($this->matcher);
 
-        $this->description = '<identical("value")>';
+        $this->description = '<identical("x")>';
     }
 
     public function testConstructor()
@@ -33,7 +33,7 @@ class ProphecyMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->subject->matches('value'));
-        $this->assertFalse($this->subject->matches('anotherValue'));
+        $this->assertTrue($this->subject->matches('x'));
+        $this->assertFalse($this->subject->matches('y'));
     }
 }

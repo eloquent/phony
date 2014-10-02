@@ -101,8 +101,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptAll()
     {
-        $valueA = 'valueA';
-        $valueB = new EqualToMatcher('valueB');
+        $valueA = 'a';
+        $valueB = new EqualToMatcher('b');
         $values = array($valueA, $valueB);
         $actual = $this->subject->adaptAll($values);
         $expected = array(new EqualToMatcher($valueA), $valueB);
@@ -112,9 +112,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testWildcard()
     {
-        $expected = new WildcardMatcher(new EqualToMatcher('value'), 111, 222);
+        $expected = new WildcardMatcher(new EqualToMatcher('x'), 111, 222);
 
-        $this->assertEquals($expected, $this->subject->wildcard('value', 111, 222));
+        $this->assertEquals($expected, $this->subject->wildcard('x', 111, 222));
     }
 
     public function testWildcardWithNullValue()

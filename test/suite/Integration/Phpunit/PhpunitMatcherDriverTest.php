@@ -20,7 +20,7 @@ class PhpunitMatcherDriverTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new PhpunitMatcherDriver();
 
-        $this->matcher = $this->equalTo('value');
+        $this->matcher = $this->equalTo('x');
     }
 
     public function testIsSupported()

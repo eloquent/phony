@@ -18,7 +18,7 @@ class MockeryMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = Mockery::mustBe('value');
+        $this->matcher = Mockery::mustBe('x');
         $this->subject = new MockeryMatcher($this->matcher);
 
         $this->description = '<MustBe>';
@@ -33,7 +33,7 @@ class MockeryMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->subject->matches('value'));
-        $this->assertFalse($this->subject->matches('anotherValue'));
+        $this->assertTrue($this->subject->matches('x'));
+        $this->assertFalse($this->subject->matches('y'));
     }
 }

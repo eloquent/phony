@@ -18,12 +18,12 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\EndEventInterface;
+use Eloquent\Phony\Invocable\InvocableUtils;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Exception;
-use ReflectionFunctionAbstract;
 
 /**
  * Provides convenience methods for verifying the details of a call.
@@ -192,23 +192,13 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Get the function or method called.
+     * Get the callback.
      *
-     * @return ReflectionFunctionAbstract The function or method called.
+     * @return callable The callback.
      */
-    public function reflector()
+    public function callback()
     {
-        return $this->call->reflector();
-    }
-
-    /**
-     * Get the $this value.
-     *
-     * @return object The $this value.
-     */
-    public function thisValue()
-    {
-        return $this->call->thisValue();
+        return $this->call->callback();
     }
 
     /**
@@ -531,12 +521,13 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledOn($value)
     {
+        $thisValue = InvocableUtils::callbackThisValue($this->call->callback());
+
         if ($this->matcherFactory->isMatcher($value)) {
-            return $this->matcherFactory->adapt($value)
-                ->matches($this->call->thisValue());
+            return $this->matcherFactory->adapt($value)->matches($thisValue);
         }
 
-        return $this->call->thisValue() === $value;
+        return $thisValue === $value;
     }
 
     /**
@@ -549,7 +540,7 @@ class CallVerifier implements CallVerifierInterface
      */
     public function assertCalledOn($value)
     {
-        $thisValue = $this->call->thisValue();
+        $thisValue = InvocableUtils::callbackThisValue($this->call->callback());
 
         if ($this->matcherFactory->isMatcher($value)) {
             $value = $this->matcherFactory->adapt($value);

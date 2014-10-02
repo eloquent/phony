@@ -12,15 +12,11 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
-use ReflectionFunction;
-use ReflectionMethod;
 use RuntimeException;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -31,16 +27,17 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->exporter = new Exporter();
         $this->subject = new AssertionRenderer($this->exporter);
 
-        $this->callA = new Call(
+        $this->callFactory = new TestCallFactory();
+        $this->callA = $this->callFactory->create(
             array(
-                new CalledEvent(new ReflectionMethod(__METHOD__), $this, array('argumentA', 'argumentB'), 0, .1),
-                new ReturnedEvent('returnValue', 1, .2),
+                $this->callFactory->createCalledEvent(array($this, 'setUp'), array('a', 'b')),
+                $this->callFactory->createReturnedEvent('x'),
             )
         );
-        $this->callB = new Call(
+        $this->callB = $this->callFactory->create(
             array(
-                new CalledEvent(new ReflectionMethod(__METHOD__), null, array(), 2, .3),
-                new ThrewEvent(new RuntimeException('message'), 3, .4),
+                $this->callFactory->createCalledEvent('implode'),
+                $this->callFactory->createThrewEvent(new RuntimeException('You done goofed.')),
             )
         );
     }
@@ -59,7 +56,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
 
     public function testRenderValue()
     {
-        $this->assertSame("'value'", $this->subject->renderValue('value'));
+        $this->assertSame("'x'", $this->subject->renderValue('x'));
         $this->assertSame("111", $this->subject->renderValue(111));
         $this->assertSame("'line\nline'", $this->subject->renderValue("line\nline"));
         $this->assertSame(
@@ -70,19 +67,19 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
 
     public function testRenderMatchers()
     {
-        $matcherA = new EqualToMatcher('argumentA');
+        $matcherA = new EqualToMatcher('a');
         $matcherB = new EqualToMatcher(111);
 
         $this->assertSame("<none>", $this->subject->renderMatchers(array()));
-        $this->assertSame("<'argumentA'>", $this->subject->renderMatchers(array($matcherA)));
-        $this->assertSame("<'argumentA'>, <111>", $this->subject->renderMatchers(array($matcherA, $matcherB)));
+        $this->assertSame("<'a'>", $this->subject->renderMatchers(array($matcherA)));
+        $this->assertSame("<'a'>, <111>", $this->subject->renderMatchers(array($matcherA, $matcherB)));
     }
 
     public function testRenderCalls()
     {
         $expected = <<<'EOD'
-    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('argumentA', 'argumentB')
-    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp()
+    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
+    - implode()
 EOD;
 
         $this->assertSame('', $this->subject->renderCalls(array()));
@@ -92,7 +89,7 @@ EOD;
     public function testRenderCallsArguments()
     {
         $expected = <<<'EOD'
-    - 'argumentA', 'argumentB'
+    - 'a', 'b'
     - <none>
 EOD;
 
@@ -103,7 +100,7 @@ EOD;
     public function testRenderReturnValues()
     {
         $expected = <<<'EOD'
-    - 'returnValue'
+    - 'x'
     - null
 EOD;
 
@@ -115,7 +112,7 @@ EOD;
     {
         $expected = <<<'EOD'
     - <none>
-    - RuntimeException('message')
+    - RuntimeException('You done goofed.')
 EOD;
 
         $this->assertSame('', $this->subject->renderThrownExceptions(array()));
@@ -135,32 +132,28 @@ EOD;
 
     public function renderCallData()
     {
+        $callFactory = new TestCallFactory();
+
         return array(
             'Method' => array(
-                new Call(array(new CalledEvent(new ReflectionMethod(__METHOD__), $this, array(), 0, .1))),
-                "Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->renderCallData()",
+                $callFactory->create(array($callFactory->createCalledEvent(array($this, 'setUp')))),
+                "Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp()",
             ),
             'Static method' => array(
-                new Call(
-                    array(new CalledEvent(new ReflectionMethod('ReflectionMethod::export'), null, array(), 0, .1))
-                ),
+                $callFactory->create(array($callFactory->createCalledEvent('ReflectionMethod::export'))),
                 "ReflectionMethod::export()",
             ),
             'Function' => array(
-                new Call(array(new CalledEvent(new ReflectionFunction('function_exists'), null, array(), 0, .1))),
-                "function_exists()",
+                $callFactory->create(array($callFactory->createCalledEvent('implode'))),
+                "implode()",
             ),
             'Closure' => array(
-                new Call(array(new CalledEvent(new ReflectionFunction(function () {}), $this, array(), 0, .1))),
+                $callFactory->create(array($callFactory->createCalledEvent(function () {}))),
                 "Eloquent\Phony\Assertion\Renderer\{closure}()",
             ),
             'With arguments' => array(
-                new Call(
-                    array(
-                        new CalledEvent(new ReflectionFunction('function_exists'), null, array('argument', 111), 0, .1)
-                    )
-                ),
-                "function_exists('argument', 111)",
+                $callFactory->create(array($callFactory->createCalledEvent('implode', array('a', 111)))),
+                "implode('a', 111)",
             ),
         );
     }
@@ -177,7 +170,10 @@ EOD;
     {
         $this->assertSame("Exception()", $this->subject->renderException(new Exception()));
         $this->assertSame("RuntimeException()", $this->subject->renderException(new RuntimeException()));
-        $this->assertSame("Exception('message')", $this->subject->renderException(new Exception('message')));
+        $this->assertSame(
+            "Exception('You done goofed.')",
+            $this->subject->renderException(new Exception('You done goofed.'))
+        );
     }
 
     public function testInstance()

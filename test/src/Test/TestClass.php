@@ -11,19 +11,10 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Clock\ClockInterface;
-
-class TestClock implements ClockInterface
+class TestClass
 {
-    public function time()
+    public function methodA()
     {
-        return ($this->time += 1.0);
+        return implode(func_get_args());
     }
-
-    public function reset()
-    {
-        $this->time = -1.0;
-    }
-
-    private $time = -1.0;
 }

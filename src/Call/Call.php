@@ -18,7 +18,6 @@ use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Exception;
 use InvalidArgumentException;
-use ReflectionFunctionAbstract;
 
 /**
  * Represents a single call.
@@ -129,23 +128,13 @@ class Call implements CallInterface
     }
 
     /**
-     * Get the called function or method called.
+     * Get the callback.
      *
-     * @return ReflectionFunctionAbstract The function or method called.
+     * @return callable The callback.
      */
-    public function reflector()
+    public function callback()
     {
-        return $this->calledEvent->reflector();
-    }
-
-    /**
-     * Get the $this value.
-     *
-     * @return object|null The $this value, or null if unbound.
-     */
-    public function thisValue()
-    {
-        return $this->calledEvent->thisValue();
+        return $this->calledEvent->callback();
     }
 
     /**

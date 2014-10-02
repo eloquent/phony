@@ -21,34 +21,29 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestAssertionRecorder;
 use Eloquent\Phony\Test\TestCallEvent;
+use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
-use ReflectionMethod;
 use RuntimeException;
 
 class CallVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->reflector = new ReflectionMethod(__METHOD__);
+        $this->callFactory = new TestCallFactory();
+        $this->callFactory->sequencer()->set(111);
         $this->thisValue = (object) array();
-        $this->arguments = array('argumentA', 'argumentB', 'argumentC');
-        $this->sequenceNumber = 111;
-        $this->startTime = 1.11;
-        $this->calledEvent = new CalledEvent(
-            $this->reflector,
-            $this->thisValue,
-            $this->arguments,
-            $this->sequenceNumber,
-            $this->startTime
-        );
-        $this->returnValue = 'returnValue';
-        $this->endTime = 2.22;
-        $this->returnedEvent = new ReturnedEvent($this->returnValue, $this->sequenceNumber + 1, $this->endTime);
-        $this->eventA = new TestCallEvent($this->sequenceNumber + 2, 3.33);
-        $this->eventB = new TestCallEvent($this->sequenceNumber + 3, 4.44);
+        $this->callback = array($this->thisValue, 'implode');
+        $this->arguments = array('a', 'b', 'c');
+        $this->returnValue = 'abc';
+        $this->calledEvent = $this->callFactory->createCalledEvent($this->callback, $this->arguments);
+        $this->returnedEvent = $this->callFactory->createReturnedEvent($this->returnValue);
+        $this->eventA = new TestCallEvent(3, 3.0);
+        $this->eventB = new TestCallEvent(4, 4.0);
         $this->events = array($this->calledEvent, $this->returnedEvent, $this->eventA, $this->eventB);
-        $this->call = new Call($this->events);
+        $this->otherEvents = array($this->eventA, $this->eventB);
+        $this->call = $this->callFactory->create($this->events);
+
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new TestAssertionRecorder();
@@ -61,25 +56,15 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer
         );
 
-        $this->duration = $this->endTime - $this->startTime;
+        $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
         $this->argumentCount = count($this->arguments);
+        $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
+        $this->otherMatcher = $this->matcherFactory->adapt('d');
 
         $this->exception = new RuntimeException('You done goofed.');
-        $this->threwEvent = new ThrewEvent($this->exception, $this->sequenceNumber + 1, $this->endTime);
-        $this->otherEvents = array($this->eventA, $this->eventB);
-
-        $this->callWithException = new Call(
-            array(
-                new CalledEvent(
-                    $this->reflector,
-                    $this->thisValue,
-                    $this->arguments,
-                    $this->sequenceNumber,
-                    $this->startTime
-                ),
-                new ThrewEvent($this->exception, $this->sequenceNumber + 1, $this->endTime),
-            )
-        );
+        $this->threwEvent = $this->callFactory->createThrewEvent($this->exception);
+        $this->callWithException = $this->callFactory
+            ->create(array($this->calledEvent, $this->threwEvent, $this->eventA, $this->eventB));
         $this->subjectWithException = new CallVerifier(
             $this->callWithException,
             $this->matcherFactory,
@@ -88,52 +73,27 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer
         );
 
-        $this->callNoArguments = new Call(
-            array(
-                new CalledEvent($this->reflector, $this->thisValue, array(), $this->sequenceNumber, $this->startTime),
-                new ReturnedEvent($this->returnValue, $this->sequenceNumber + 1, $this->endTime),
-            )
-        );
-        $this->subjectNoArguments = new CallVerifier(
-            $this->callNoArguments,
+        $this->calledEventWithNoArguments = $this->callFactory->createCalledEvent($this->callback);
+        $this->callWithNoArguments = $this->callFactory
+            ->create(array($this->calledEventWithNoArguments, $this->returnedEvent, $this->eventA, $this->eventB));
+        $this->subjectWithNoArguments = new CallVerifier(
+            $this->callWithNoArguments,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
             $this->assertionRenderer
         );
 
-        $this->earlyCall = new Call(
-            array(
-                new CalledEvent(
-                    $this->reflector,
-                    $this->thisValue,
-                    $this->arguments,
-                    $this->sequenceNumber - 2,
-                    $this->startTime
-                ),
-                new ReturnedEvent($this->returnValue, $this->sequenceNumber - 1, $this->endTime),
-            )
-        );
-        $this->lateCall = new Call(
-            array(
-                new CalledEvent(
-                    $this->reflector,
-                    $this->thisValue,
-                    $this->arguments,
-                    $this->sequenceNumber + 2,
-                    $this->startTime
-                ),
-                new ReturnedEvent($this->returnValue, $this->sequenceNumber + 3, $this->endTime),
-            )
-        );
-
-        $this->argumentMatchers = $this->matcherFactory->adaptAll($this->arguments);
+        $this->callFactory->sequencer()->reset();
+        $this->earlyCall = $this->callFactory->create();
+        $this->callFactory->sequencer()->set(222);
+        $this->lateCall = $this->callFactory->create();
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->call, $this->subject->call());
-        $this->assertSame($this->duration, $this->subject->duration());
+        $this->assertEquals($this->duration, $this->subject->duration());
         $this->assertSame($this->argumentCount, $this->subject->argumentCount());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
@@ -153,14 +113,13 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testProxyMethods()
     {
-        $this->assertSame($this->reflector, $this->subject->reflector());
+        $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
-        $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
-        $this->assertSame($this->startTime, $this->subject->startTime());
-        $this->assertSame($this->endTime, $this->subject->endTime());
+        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
+        $this->assertSame($this->calledEvent->time(), $this->subject->startTime());
+        $this->assertSame($this->returnedEvent->time(), $this->subject->endTime());
         $this->assertNull($this->subject->exception());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
     }
 
     public function testSetEvents()
@@ -253,17 +212,17 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function calledWithData()
     {
-        //                                    arguments                                                  calledWith calledWithExactly
+        //                                    arguments                  calledWith calledWithExactly
         return array(
-            'Exact arguments'        => array(array('argumentA', 'argumentB', 'argumentC'),              true,      true),
-            'First arguments'        => array(array('argumentA', 'argumentB'),                           true,      false),
-            'Single argument'        => array(array('argumentA'),                                        true,      false),
-            'Last arguments'         => array(array('argumentB', 'argumentC'),                           false,     false),
-            'Last argument'          => array(array('argumentC'),                                        false,     false),
-            'Extra arguments'        => array(array('argumentA', 'argumentB', 'argumentC', 'argumentD'), false,     false),
-            'First argument differs' => array(array('argumentD', 'argumentB', 'argumentC'),              false,     false),
-            'Last argument differs'  => array(array('argumentA', 'argumentB', 'argumentD'),              false,     false),
-            'Unused argument'        => array(array('argumentD'),                                        false,     false),
+            'Exact arguments'        => array(array('a', 'b', 'c'),      true,      true),
+            'First arguments'        => array(array('a', 'b'),           true,      false),
+            'Single argument'        => array(array('a'),                true,      false),
+            'Last arguments'         => array(array('b', 'c'),           false,     false),
+            'Last argument'          => array(array('c'),                false,     false),
+            'Extra arguments'        => array(array('a', 'b', 'c', 'd'), false,     false),
+            'First argument differs' => array(array('d', 'b', 'c'),      false,     false),
+            'Last argument differs'  => array(array('a', 'b', 'd'),      false,     false),
+            'Unused argument'        => array(array('d'),                false,     false),
         );
     }
 
@@ -285,15 +244,12 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testAssertCalledWith()
     {
-        $this->assertNull($this->subject->assertCalledWith('argumentA', 'argumentB', 'argumentC'));
-        $this->assertNull(
-            $this->subject
-                ->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
-        );
-        $this->assertNull($this->subject->assertCalledWith('argumentA', 'argumentB'));
-        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0], $this->argumentMatchers[1]));
-        $this->assertNull($this->subject->assertCalledWith('argumentA'));
-        $this->assertNull($this->subject->assertCalledWith($this->argumentMatchers[0]));
+        $this->assertNull($this->subject->assertCalledWith('a', 'b', 'c'));
+        $this->assertNull($this->subject->assertCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2]));
+        $this->assertNull($this->subject->assertCalledWith('a', 'b'));
+        $this->assertNull($this->subject->assertCalledWith($this->matchers[0], $this->matchers[1]));
+        $this->assertNull($this->subject->assertCalledWith('a'));
+        $this->assertNull($this->subject->assertCalledWith($this->matchers[0]));
         $this->assertNull($this->subject->assertCalledWith());
         $this->assertSame(7, $this->assertionRecorder->successCount());
     }
@@ -302,24 +258,24 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $expected = <<<'EOD'
 Expected arguments like:
-    <'argumentB'>, <'argumentC'>, <any>*
+    <'b'>, <'c'>, <any>*
 Actual arguments:
-    'argumentA', 'argumentB', 'argumentC'
+    'a', 'b', 'c'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledWith('argumentB', 'argumentC');
+        $this->subject->assertCalledWith('b', 'c');
     }
 
     public function testAssertCalledWithFailureWithNoArguments()
     {
         $expected = <<<'EOD'
 Expected arguments like:
-    <'argumentB'>, <'argumentC'>, <any>*
+    <'b'>, <'c'>, <any>*
 Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subjectNoArguments->assertCalledWith('argumentB', 'argumentC');
+        $this->subjectWithNoArguments->assertCalledWith('b', 'c');
     }
 
     /**
@@ -346,10 +302,9 @@ EOD;
 
     public function testAssertCalledWithExactly()
     {
-        $this->assertNull($this->subject->assertCalledWithExactly('argumentA', 'argumentB', 'argumentC'));
+        $this->assertNull($this->subject->assertCalledWithExactly('a', 'b', 'c'));
         $this->assertNull(
-            $this->subject
-                ->assertCalledWithExactly($this->argumentMatchers[0], $this->argumentMatchers[1], $this->argumentMatchers[2])
+            $this->subject->assertCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
         $this->assertSame(2, $this->assertionRecorder->successCount());
     }
@@ -358,24 +313,24 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected arguments like:
-    <'argumentA'>, <'argumentB'>
+    <'a'>, <'b'>
 Actual arguments:
-    'argumentA', 'argumentB', 'argumentC'
+    'a', 'b', 'c'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledWithExactly('argumentA', 'argumentB');
+        $this->subject->assertCalledWithExactly('a', 'b');
     }
 
     public function testAssertCalledWithExactlyFailureWithNoArguments()
     {
         $expected = <<<'EOD'
 Expected arguments like:
-    <'argumentA'>, <'argumentB'>
+    <'a'>, <'b'>
 Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subjectNoArguments->assertCalledWithExactly('argumentA', 'argumentB');
+        $this->subjectWithNoArguments->assertCalledWithExactly('a', 'b');
     }
 
     /**
@@ -396,37 +351,25 @@ EOD;
 
     public function testAssertNotCalledWith()
     {
-        $this->assertNull($this->subject->assertNotCalledWith('argumentB', 'argumentC'));
-        $this->assertNull($this->subject->assertNotCalledWith($this->argumentMatchers[1], $this->argumentMatchers[2]));
-        $this->assertNull($this->subject->assertNotCalledWith('argumentC'));
-        $this->assertNull($this->subject->assertNotCalledWith($this->argumentMatchers[2]));
-        $this->assertNull($this->subject->assertNotCalledWith('argumentA', 'argumentB', 'argumentC', 'argumentD'));
+        $this->assertNull($this->subject->assertNotCalledWith('b', 'c'));
+        $this->assertNull($this->subject->assertNotCalledWith($this->matchers[1], $this->matchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWith('c'));
+        $this->assertNull($this->subject->assertNotCalledWith($this->matchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWith('a', 'b', 'c', 'd'));
         $this->assertNull(
-            $this->subject->assertNotCalledWith(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2],
-                $this->matcherFactory->adapt('argumentD')
-            )
+            $this->subject
+                ->assertNotCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2], $this->otherMatcher)
         );
-        $this->assertNull($this->subject->assertNotCalledWith('argumentD', 'argumentB', 'argumentC'));
+        $this->assertNull($this->subject->assertNotCalledWith('d', 'b', 'c'));
         $this->assertNull(
-            $this->subject->assertNotCalledWith(
-                $this->matcherFactory->adapt('argumentD'),
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2]
-            )
+            $this->subject->assertNotCalledWith($this->otherMatcher, $this->matchers[1], $this->matchers[2])
         );
-        $this->assertNull($this->subject->assertNotCalledWith('argumentA', 'argumentB', 'argumentD'));
+        $this->assertNull($this->subject->assertNotCalledWith('a', 'b', 'd'));
         $this->assertNull(
-            $this->subject->assertNotCalledWith(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->matcherFactory->adapt('argumentD')
-            )
+            $this->subject->assertNotCalledWith($this->matchers[0], $this->matchers[1], $this->otherMatcher)
         );
-        $this->assertNull($this->subject->assertNotCalledWith('argumentD'));
-        $this->assertNull($this->subject->assertNotCalledWith($this->matcherFactory->adapt('argumentD')));
+        $this->assertNull($this->subject->assertNotCalledWith('d'));
+        $this->assertNull($this->subject->assertNotCalledWith($this->otherMatcher));
         $this->assertSame(12, $this->assertionRecorder->successCount());
     }
 
@@ -434,12 +377,12 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected arguments unlike:
-    <'argumentA'>, <'argumentB'>, <any>*
+    <'a'>, <'b'>, <any>*
 Actual arguments:
-    'argumentA', 'argumentB', 'argumentC'
+    'a', 'b', 'c'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertNotCalledWith('argumentA', 'argumentB');
+        $this->subject->assertNotCalledWith('a', 'b');
     }
 
     public function testAssertNotCalledWithFailureWithNoArguments()
@@ -451,7 +394,7 @@ Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subjectNoArguments->assertNotCalledWith();
+        $this->subjectWithNoArguments->assertNotCalledWith();
     }
 
     /**
@@ -478,41 +421,33 @@ EOD;
 
     public function testAssertNotCalledWithExactly()
     {
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA', 'argumentB'));
-        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[0], $this->argumentMatchers[1]));
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA'));
-        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[0]));
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentB', 'argumentC'));
-        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[1], $this->argumentMatchers[2]));
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentC'));
-        $this->assertNull($this->subject->assertNotCalledWithExactly($this->argumentMatchers[2]));
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA', 'argumentB', 'argumentC', 'argumentD'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('a', 'b'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->matchers[0], $this->matchers[1]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('a'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->matchers[0]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('b', 'c'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->matchers[1], $this->matchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('c'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->matchers[2]));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('a', 'b', 'c', 'd'));
         $this->assertNull(
             $this->subject->assertNotCalledWithExactly(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2],
-                $this->matcherFactory->adapt('argumentD')
+                $this->matchers[0],
+                $this->matchers[1],
+                $this->matchers[2],
+                $this->otherMatcher
             )
         );
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentD', 'argumentB', 'argumentC'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('d', 'b', 'c'));
         $this->assertNull(
-            $this->subject->assertNotCalledWithExactly(
-                $this->matcherFactory->adapt('argumentD'),
-                $this->argumentMatchers[1],
-                $this->argumentMatchers[2]
-            )
+            $this->subject->assertNotCalledWithExactly($this->otherMatcher, $this->matchers[1], $this->matchers[2])
         );
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentA', 'argumentB', 'argumentD'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('a', 'b', 'd'));
         $this->assertNull(
-            $this->subject->assertNotCalledWithExactly(
-                $this->argumentMatchers[0],
-                $this->argumentMatchers[1],
-                $this->matcherFactory->adapt('argumentD')
-            )
+            $this->subject->assertNotCalledWithExactly($this->matchers[0], $this->matchers[1], $this->otherMatcher)
         );
-        $this->assertNull($this->subject->assertNotCalledWithExactly('argumentD'));
-        $this->assertNull($this->subject->assertNotCalledWithExactly($this->matcherFactory->adapt('argumentD')));
+        $this->assertNull($this->subject->assertNotCalledWithExactly('d'));
+        $this->assertNull($this->subject->assertNotCalledWithExactly($this->otherMatcher));
         $this->assertSame(16, $this->assertionRecorder->successCount());
     }
 
@@ -520,12 +455,12 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected arguments unlike:
-    <'argumentA'>, <'argumentB'>, <'argumentC'>
+    <'a'>, <'b'>, <'c'>
 Actual arguments:
-    'argumentA', 'argumentB', 'argumentC'
+    'a', 'b', 'c'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertNotCalledWithExactly('argumentA', 'argumentB', 'argumentC');
+        $this->subject->assertNotCalledWithExactly('a', 'b', 'c');
     }
 
     public function testAssertNotCalledWithExactlyFailureWithNoArguments()
@@ -537,7 +472,7 @@ Actual arguments:
     <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subjectNoArguments->assertNotCalledWithExactly();
+        $this->subjectWithNoArguments->assertNotCalledWithExactly();
     }
 
     public function testCalledBefore()
@@ -619,8 +554,8 @@ EOD;
     {
         $this->assertTrue($this->subject->returned($this->returnValue));
         $this->assertTrue($this->subject->returned($this->matcherFactory->adapt($this->returnValue)));
-        $this->assertFalse($this->subject->returned('anotherValue'));
-        $this->assertFalse($this->subject->returned($this->matcherFactory->adapt('anotherValue')));
+        $this->assertFalse($this->subject->returned('y'));
+        $this->assertFalse($this->subject->returned($this->matcherFactory->adapt('y')));
     }
 
     public function testAssertReturned()
@@ -634,9 +569,9 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return value like <'value'>. Returned 'returnValue'."
+            "Expected return value like <'x'>. Returned 'abc'."
         );
-        $this->subject->assertReturned('value');
+        $this->subject->assertReturned('x');
     }
 
     public function testThrew()

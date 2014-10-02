@@ -15,7 +15,6 @@ use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\EndEventInterface;
 use Exception;
-use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by calls.
@@ -72,18 +71,11 @@ interface CallInterface
     public function otherEvents();
 
     /**
-     * Get the called function or method called.
+     * Get the callback.
      *
-     * @return ReflectionFunctionAbstract The function or method called.
+     * @return callable The callback.
      */
-    public function reflector();
-
-    /**
-     * Get the $this value.
-     *
-     * @return object|null The $this value, or null if unbound.
-     */
-    public function thisValue();
+    public function callback();
 
     /**
      * Get the received arguments.

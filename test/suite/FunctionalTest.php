@@ -16,16 +16,16 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testSpy()
     {
         $spy = Phony::spy();
-        $spy('argumentA', 'argumentB', 'argumentC');
+        $spy('a', 'b', 'c');
         $spy(111);
 
-        $spy->assertCalledWith('argumentA', 'argumentB', 'argumentC');
-        $spy->assertCalledWith('argumentA', 'argumentB');
-        $spy->assertCalledWith('argumentA');
+        $spy->assertCalledWith('a', 'b', 'c');
+        $spy->assertCalledWith('a', 'b');
+        $spy->assertCalledWith('a');
         $spy->assertCalledWith();
         $spy->assertCalledWith(111);
-        $spy->assertCalledWith($this->identicalTo('argumentA'), $this->anything());
-        $spy->callAt(0)->assertCalledWith('argumentA', 'argumentB', 'argumentC');
+        $spy->assertCalledWith($this->identicalTo('a'), $this->anything());
+        $spy->callAt(0)->assertCalledWith('a', 'b', 'c');
         $spy->callAt(1)->assertCalledWith(111);
     }
 }

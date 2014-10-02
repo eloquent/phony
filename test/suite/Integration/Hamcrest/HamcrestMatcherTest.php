@@ -17,10 +17,10 @@ class HamcrestMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = equalTo('value');
+        $this->matcher = equalTo('x');
         $this->subject = new HamcrestMatcher($this->matcher);
 
-        $this->description = '<"value">';
+        $this->description = '<"x">';
     }
 
     public function testConstructor()
@@ -32,7 +32,7 @@ class HamcrestMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->subject->matches('value'));
-        $this->assertFalse($this->subject->matches('anotherValue'));
+        $this->assertTrue($this->subject->matches('x'));
+        $this->assertFalse($this->subject->matches('y'));
     }
 }

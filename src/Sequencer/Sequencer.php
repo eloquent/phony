@@ -43,6 +43,14 @@ class Sequencer implements SequencerInterface
     }
 
     /**
+     * Reset the sequence number to its initial value.
+     */
+    public function reset()
+    {
+        $this->current = -1;
+    }
+
+    /**
      * Get the sequence number.
      *
      * @return integer The sequence number.

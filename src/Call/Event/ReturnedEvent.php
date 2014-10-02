@@ -21,11 +21,11 @@ class ReturnedEvent extends AbstractCallEvent implements ReturnedEventInterface
     /**
      * Construct a 'returned' event.
      *
-     * @param mixed   $returnValue    The return value.
      * @param integer $sequenceNumber The sequence number.
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param mixed   $returnValue    The return value.
      */
-    public function __construct($returnValue, $sequenceNumber, $time)
+    public function __construct($sequenceNumber, $time, $returnValue = null)
     {
         parent::__construct($sequenceNumber, $time);
 

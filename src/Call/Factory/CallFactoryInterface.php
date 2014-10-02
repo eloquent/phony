@@ -18,7 +18,6 @@ use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Exception;
-use InvalidArgumentException;
 
 /**
  * The interface implemented by call factories.
@@ -31,8 +30,7 @@ interface CallFactoryInterface
      * @param callable|null             $callback  The callback.
      * @param array<integer,mixed>|null $arguments The arguments.
      *
-     * @return CallInterface            The newly created call.
-     * @throws InvalidArgumentException If the supplied callback is invalid.
+     * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
@@ -42,11 +40,11 @@ interface CallFactoryInterface
     /**
      * Create a new call.
      *
-     * @param array<integer,CallEventInterface> $events The events.
+     * @param array<integer,CallEventInterface>|null $events The events.
      *
      * @return CallInterface The newly created call.
      */
-    public function create(array $events);
+    public function create(array $events = null);
 
     /**
      * Create a new 'called' event.
@@ -54,8 +52,7 @@ interface CallFactoryInterface
      * @param callable|null             $callback  The callback.
      * @param array<integer,mixed>|null $arguments The arguments.
      *
-     * @return CalledEventInterface     The newly created event.
-     * @throws InvalidArgumentException If the supplied callback is invalid.
+     * @return CalledEventInterface The newly created event.
      */
     public function createCalledEvent(
         $callback = null,
@@ -70,7 +67,10 @@ interface CallFactoryInterface
      *
      * @return EndEventInterface The newly created event.
      */
-    public function createEndEvent($returnValue, Exception $exception = null);
+    public function createEndEvent(
+        $returnValue = null,
+        Exception $exception = null
+    );
 
     /**
      * Create a new 'returned' event.
@@ -79,14 +79,14 @@ interface CallFactoryInterface
      *
      * @return ReturnedEventInterface The newly created event.
      */
-    public function createReturnedEvent($returnValue);
+    public function createReturnedEvent($returnValue = null);
 
     /**
      * Create a new 'thrown' event.
      *
-     * @param Exception $exception The thrown exception.
+     * @param Exception|null $exception The thrown exception.
      *
      * @return ThrewEventInterface The newly created event.
      */
-    public function createThrewEvent(Exception $exception);
+    public function createThrewEvent(Exception $exception = null);
 }

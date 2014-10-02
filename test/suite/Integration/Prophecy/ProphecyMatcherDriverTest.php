@@ -22,7 +22,7 @@ class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new ProphecyMatcherDriver();
 
-        $this->matcher = Argument::is('value');
+        $this->matcher = Argument::is('x');
     }
 
     public function testIsSupported()

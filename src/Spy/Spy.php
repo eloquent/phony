@@ -17,10 +17,6 @@ use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
 use Eloquent\Phony\Invocable\AbstractInvocable;
 use Exception;
-use InvalidArgumentException;
-use ReflectionFunction;
-use ReflectionFunctionAbstract;
-use ReflectionMethod;
 
 /**
  * Spies on a function or method.
@@ -32,29 +28,21 @@ class Spy extends AbstractInvocable implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null                   $subject     The subject, or null to create an unbound spy.
-     * @param ReflectionFunctionAbstract|null $reflector   The reflector to use.
-     * @param CallFactoryInterface|null       $callFactory The call factory to use.
-     *
-     * @throws InvalidArgumentException If the supplied subject is not supported.
+     * @param callable|null             $subject     The subject, or null to create an unbound spy.
+     * @param CallFactoryInterface|null $callFactory The call factory to use.
      */
     public function __construct(
         $subject = null,
-        ReflectionFunctionAbstract $reflector = null,
         CallFactoryInterface $callFactory = null
     ) {
         if (null === $subject) {
             $subject = function () {};
-        }
-        if (null === $reflector) {
-            $reflector = $this->reflectorByCallBack($subject);
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
 
         $this->subject = $subject;
-        $this->reflector = $reflector;
         $this->callFactory = $callFactory;
         $this->calls = array();
     }
@@ -77,16 +65,6 @@ class Spy extends AbstractInvocable implements SpyInterface
     public function subject()
     {
         return $this->subject;
-    }
-
-    /**
-     * Get the reflector.
-     *
-     * @return ReflectionFunctionAbstract The reflector.
-     */
-    public function reflector()
-    {
-        return $this->reflector;
     }
 
     /**
@@ -143,35 +121,7 @@ class Spy extends AbstractInvocable implements SpyInterface
         return $call->returnValue();
     }
 
-    /**
-     * Get the appropriate reflector for the supplied callback.
-     *
-     * @param callable $callback The callback.
-     *
-     * @return ReflectionFunctionAbstract The reflector.
-     * @throws InvalidArgumentException   If the supplied callback is invalid.
-     */
-    protected function reflectorByCallBack($callback)
-    {
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException('Unsupported callback.');
-        }
-
-        if (is_array($callback)) {
-            return new ReflectionMethod($callback[0], $callback[1]);
-        }
-
-        if (is_string($callback) && false !== strpos($callback, '::')) {
-            list($className, $methodName) = explode('::', $callback);
-
-            return new ReflectionMethod($className, $methodName);
-        }
-
-        return new ReflectionFunction($callback);
-    }
-
     private $subject;
-    private $reflector;
     private $callFactory;
     private $calls;
 }

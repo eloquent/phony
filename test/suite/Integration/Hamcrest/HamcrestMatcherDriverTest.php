@@ -20,7 +20,7 @@ class HamcrestMatcherDriverTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new HamcrestMatcherDriver();
 
-        $this->matcher = equalTo('value');
+        $this->matcher = equalTo('x');
     }
 
     public function testIsSupported()

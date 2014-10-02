@@ -19,13 +19,13 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Invocable\InvocableUtils;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Spy\Exception\UndefinedCallException;
 use Exception;
-use ReflectionFunctionAbstract;
 
 /**
  * Provides convenience methods for verifying interactions with a spy.
@@ -190,16 +190,6 @@ class SpyVerifier implements SpyVerifierInterface
     public function subject()
     {
         return $this->spy->subject();
-    }
-
-    /**
-     * Get the reflector.
-     *
-     * @return ReflectionFunctionAbstract The reflector.
-     */
-    public function reflector()
-    {
-        return $this->spy->reflector();
     }
 
     /**
@@ -966,11 +956,13 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         foreach ($calls as $call) {
+            $thisValue = InvocableUtils::callbackThisValue($call->callback());
+
             if ($isMatcher) {
-                if ($value->matches($call->thisValue())) {
+                if ($value->matches($thisValue)) {
                     return true;
                 }
-            } elseif ($call->thisValue() === $value) {
+            } elseif ($thisValue === $value) {
                 return true;
             }
         }
@@ -1003,7 +995,11 @@ class SpyVerifier implements SpyVerifierInterface
             }
 
             foreach ($calls as $call) {
-                if ($value->matches($call->thisValue())) {
+                if (
+                    $value->matches(
+                        InvocableUtils::callbackThisValue($call->callback())
+                    )
+                ) {
                     return $this->assertionRecorder->recordSuccess();
                 }
             }
@@ -1023,7 +1019,9 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         foreach ($calls as $call) {
-            if ($call->thisValue() === $value) {
+            if (
+                InvocableUtils::callbackThisValue($call->callback()) === $value
+            ) {
                 return $this->assertionRecorder->recordSuccess();
             }
         }
@@ -1060,11 +1058,13 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         foreach ($calls as $call) {
+            $thisValue = InvocableUtils::callbackThisValue($call->callback());
+
             if ($isMatcher) {
-                if (!$value->matches($call->thisValue())) {
+                if (!$value->matches($thisValue)) {
                     return false;
                 }
-            } elseif ($call->thisValue() !== $value) {
+            } elseif ($thisValue !== $value) {
                 return false;
             }
         }
@@ -1097,7 +1097,11 @@ class SpyVerifier implements SpyVerifierInterface
             }
 
             foreach ($calls as $call) {
-                if (!$value->matches($call->thisValue())) {
+                if (
+                    !$value->matches(
+                        InvocableUtils::callbackThisValue($call->callback())
+                    )
+                ) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
                             "Not always called on object like %s. " .
@@ -1119,7 +1123,9 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         foreach ($calls as $call) {
-            if ($call->thisValue() !== $value) {
+            if (
+                InvocableUtils::callbackThisValue($call->callback()) !== $value
+            ) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
                         "Not always called on expected object. " .

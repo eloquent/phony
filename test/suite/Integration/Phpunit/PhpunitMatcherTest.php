@@ -17,10 +17,10 @@ class PhpunitMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcher = $this->equalTo('value');
+        $this->matcher = $this->equalTo('x');
         $this->subject = new PhpunitMatcher($this->matcher);
 
-        $this->description = '<is equal to <string:value>>';
+        $this->description = '<is equal to <string:x>>';
     }
 
     public function testConstructor()
@@ -32,7 +32,7 @@ class PhpunitMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->subject->matches('value'));
-        $this->assertFalse($this->subject->matches('anotherValue'));
+        $this->assertTrue($this->subject->matches('x'));
+        $this->assertFalse($this->subject->matches('y'));
     }
 }

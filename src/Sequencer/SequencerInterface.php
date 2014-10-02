@@ -24,6 +24,11 @@ interface SequencerInterface
     public function set($current);
 
     /**
+     * Reset the sequence number to its initial value.
+     */
+    public function reset();
+
+    /**
      * Get the sequence number.
      *
      * @return integer The sequence number.

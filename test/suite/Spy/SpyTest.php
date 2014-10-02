@@ -11,50 +11,30 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
-use ReflectionFunction;
-use ReflectionMethod;
-use RuntimeException;
 
 class SpyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->spySubject = function () {
-            return '= ' .implode(', ', func_get_args());
-        };
-        $this->reflector = new ReflectionFunction($this->spySubject);
+        $this->spySubject = 'implode';
         $this->callFactory = new TestCallFactory();
-        $this->subject =
-            new Spy($this->spySubject, $this->reflector, $this->callFactory);
+        $this->subject = new Spy($this->spySubject, $this->callFactory);
 
-        $this->callA = new Call(
-            array(
-                new CalledEvent(new ReflectionMethod(__METHOD__), $this, array('argumentA', 'argumentB'), 0, .1),
-                new ReturnedEvent('returnValue', 1, .2),
-            )
-        );
-        $this->callB = new Call(
-            array(
-                new CalledEvent(new ReflectionMethod(__METHOD__), null, array(), 2, .3),
-                new ThrewEvent(new RuntimeException('message'), 3, .4),
-            )
-        );
+        $this->callA = $this->callFactory->create();
+        $this->callB = $this->callFactory->create();
         $this->calls = array($this->callA, $this->callB);
+
+        $this->callFactory->sequencer()->reset();
+        $this->callFactory->clock()->reset();
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->spySubject, $this->subject->subject());
-        $this->assertSame($this->reflector, $this->subject->reflector());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
         $this->assertSame(array(), $this->subject->calls());
     }
@@ -63,37 +43,9 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Spy();
 
-        $this->assertInstanceOf('Closure', $this->subject->subject());
-        $this->assertTrue($this->subject->reflector()->isClosure());
+        $this->assertTrue(is_callable($this->subject->subject()));
+        $this->assertNull(call_user_func($this->subject->subject()));
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
-    }
-
-    public function testConstructorFailureUnsupportedSubject()
-    {
-        $this->setExpectedException('InvalidArgumentException', "Unsupported callback.");
-        new Spy(111);
-    }
-
-    public function testReflectorForClosure()
-    {
-        $this->subject = new Spy(function () {});
-
-        $this->assertInstanceOf('Closure', $this->subject->subject());
-        $this->assertTrue($this->subject->reflector()->isClosure());
-    }
-
-    public function testReflectorForMethodString()
-    {
-        $this->subject = new Spy(__METHOD__);
-
-        $this->assertEquals(new ReflectionMethod($this, __FUNCTION__), $this->subject->reflector());
-    }
-
-    public function testReflectorForMethodArray()
-    {
-        $this->subject = new Spy(array($this, __FUNCTION__));
-
-        $this->assertEquals(new ReflectionMethod($this, __FUNCTION__), $this->subject->reflector());
     }
 
     public function testSetCalls()
@@ -117,28 +69,28 @@ class SpyTest extends PHPUnit_Framework_TestCase
     public function testInvokeMethods()
     {
         $spy = $this->subject;
-        $spy->invokeWith(array('argumentA'));
-        $spy->invoke('argumentB', 'argumentC');
-        $spy('argumentD');
-        $reflector = $spy->reflector();
-        $thisValue = $this->thisValue($this->spySubject);
+        $spy->invokeWith(array(array('a')));
+        $spy->invoke(array('b', 'c'));
+        $spy(array('d'));
+        $this->callFactory->sequencer()->reset();
+        $this->callFactory->clock()->reset();
         $expected = array(
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentA'), 0, 0.123),
-                    new ReturnedEvent('= argumentA', 1, 1.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array(array('a'))),
+                    $this->callFactory->createReturnedEvent('a'),
                 )
             ),
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentB', 'argumentC'), 2, 2.123),
-                    new ReturnedEvent('= argumentB, argumentC', 3, 3.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array(array('b', 'c'))),
+                    $this->callFactory->createReturnedEvent('bc'),
                 )
             ),
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentD'), 4, 4.123),
-                    new ReturnedEvent('= argumentD', 5, 5.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array(array('d'))),
+                    $this->callFactory->createReturnedEvent('d'),
                 )
             ),
         );
@@ -148,29 +100,29 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, null, $this->callFactory);
-        $spy->invokeWith(array('argumentA'));
-        $spy->invoke('argumentB', 'argumentC');
-        $spy('argumentD');
-        $reflector = $spy->reflector();
-        $thisValue = $this->thisValue($spy->subject());
+        $spy = new Spy(null, $this->callFactory);
+        $spy->invokeWith(array('a'));
+        $spy->invoke('b', 'c');
+        $spy('d');
+        $this->callFactory->sequencer()->reset();
+        $this->callFactory->clock()->reset();
         $expected = array(
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentA'), 0, 0.123),
-                    new ReturnedEvent(null, 1, 1.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array('a')),
+                    $this->callFactory->createReturnedEvent(),
                 )
             ),
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentB', 'argumentC'), 2, 2.123),
-                    new ReturnedEvent(null, 3, 3.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array('b', 'c')),
+                    $this->callFactory->createReturnedEvent(),
                 )
             ),
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentD'), 4, 4.123),
-                    new ReturnedEvent(null, 5, 5.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array('d')),
+                    $this->callFactory->createReturnedEvent(),
                 )
             ),
         );
@@ -185,42 +137,42 @@ class SpyTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($subject, null, $this->callFactory);
+        $spy = new Spy($subject, $this->callFactory);
         $caughtExceptions = array();
         try {
-            $spy->invokeWith(array('argumentA'));
+            $spy->invokeWith(array('a'));
         } catch (Exception $caughtException) {
             $caughtExceptions[] = $caughtException;
         }
         try {
-            $spy->invoke('argumentB', 'argumentC');
+            $spy->invoke('b', 'c');
         } catch (Exception $caughtException) {
             $caughtExceptions[] = $caughtException;
         }
         try {
-            $spy('argumentD');
+            $spy('d');
         } catch (Exception $caughtException) {
             $caughtExceptions[] = $caughtException;
         }
-        $reflector = $spy->reflector();
-        $thisValue = $this->thisValue($this->spySubject);
+        $this->callFactory->sequencer()->reset();
+        $this->callFactory->clock()->reset();
         $expected = array(
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentA'), 0, 0.123),
-                    new ThrewEvent($exceptions[0], 1, 1.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array('a')),
+                    $this->callFactory->createThrewEvent($exceptions[0]),
                 )
             ),
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentB', 'argumentC'), 2, 2.123),
-                    new ThrewEvent($exceptions[1], 3, 3.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array('b', 'c')),
+                    $this->callFactory->createThrewEvent($exceptions[1]),
                 )
             ),
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array('argumentD'), 4, 4.123),
-                    new ThrewEvent($exceptions[2], 5, 5.123),
+                    $this->callFactory->createCalledEvent($spy->subject(), array('d')),
+                    $this->callFactory->createThrewEvent($exceptions[2]),
                 )
             ),
         );
@@ -230,15 +182,18 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeWithDefaults()
     {
-        $spy = $this->subject;
+        $subject = function () {
+            return 'x';
+        };
+        $spy = new Spy($subject, $this->callFactory);
         $spy->invokeWith();
-        $reflector = $spy->reflector();
-        $thisValue = $this->thisValue($this->spySubject);
+        $this->callFactory->sequencer()->reset();
+        $this->callFactory->clock()->reset();
         $expected = array(
-            new Call(
+            $this->callFactory->create(
                 array(
-                    new CalledEvent($reflector, $thisValue, array(), 0, 0.123),
-                    new ReturnedEvent('= ', 1, 1.123),
+                    $this->callFactory->createCalledEvent(),
+                    $this->callFactory->createReturnedEvent('x'),
                 )
             ),
         );
@@ -249,25 +204,13 @@ class SpyTest extends PHPUnit_Framework_TestCase
     public function testInvokeWithWithReferenceParameters()
     {
         $subject = function (&$argument) {
-            $argument = 'value';
+            $argument = 'x';
         };
-        $spy = new Spy($subject, null, $this->callFactory);
+        $spy = new Spy($subject, $this->callFactory);
         $value = null;
         $arguments = array(&$value);
         $spy->invokeWith($arguments);
 
-        $this->assertSame('value', $value);
-    }
-
-    protected function thisValue($closure)
-    {
-        $reflectorReflector = new ReflectionClass('ReflectionFunction');
-        if (!$reflectorReflector->hasMethod('getClosureThis')) {
-            return null;
-        }
-
-        $reflector = new ReflectionFunction($closure);
-
-        return $reflector->getClosureThis();
+        $this->assertSame('x', $value);
     }
 }

@@ -15,37 +15,28 @@ use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Test\TestCallEvent;
+use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
-use ReflectionMethod;
 use RuntimeException;
 
 class CallTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->reflector = new ReflectionMethod(__METHOD__);
-        $this->thisValue = $this;
-        $this->arguments = array('argumentA', 'argumentB', 'argumentC');
-        $this->sequenceNumber = 111;
-        $this->startTime = 1.11;
-        $this->calledEvent = new CalledEvent(
-            $this->reflector,
-            $this->thisValue,
-            $this->arguments,
-            $this->sequenceNumber,
-            $this->startTime
-        );
-        $this->returnValue = 'returnValue';
-        $this->endTime = 2.22;
-        $this->returnedEvent = new ReturnedEvent($this->returnValue, $this->sequenceNumber + 1, $this->endTime);
-        $this->eventA = new TestCallEvent($this->sequenceNumber + 2, 3.33);
-        $this->eventB = new TestCallEvent($this->sequenceNumber + 3, 4.44);
+        $this->callFactory = new TestCallFactory();
+        $this->callback = 'implode';
+        $this->arguments = array('a', 'b');
+        $this->returnValue = 'ab';
+        $this->calledEvent = $this->callFactory->createCalledEvent($this->callback, $this->arguments);
+        $this->returnedEvent = $this->callFactory->createReturnedEvent($this->returnValue);
+        $this->eventA = new TestCallEvent(3, 3.0);
+        $this->eventB = new TestCallEvent(4, 4.0);
         $this->events = array($this->calledEvent, $this->returnedEvent, $this->eventA, $this->eventB);
+        $this->otherEvents = array($this->eventA, $this->eventB);
         $this->subject = new Call($this->events);
 
-        $this->exception = new RuntimeException();
-        $this->threwEvent = new ThrewEvent($this->exception, $this->sequenceNumber + 1, $this->endTime);
-        $this->otherEvents = array($this->eventA, $this->eventB);
+        $this->exception = new RuntimeException('You done goofed.');
+        $this->threwEvent = $this->callFactory->createThrewEvent($this->exception);
     }
 
     public function testConstructorWithReturnedEvent()
@@ -54,14 +45,13 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-        $this->assertSame($this->reflector, $this->subject->reflector());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
+        $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
-        $this->assertSame($this->startTime, $this->subject->startTime());
+        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
+        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertNull($this->subject->exception());
-        $this->assertSame($this->endTime, $this->subject->endTime());
+        $this->assertEquals($this->returnedEvent->time(), $this->subject->endTime());
     }
 
     public function testConstructorWithThrewEvent()
@@ -73,14 +63,13 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->threwEvent, $this->subject->endEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-        $this->assertSame($this->reflector, $this->subject->reflector());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
+        $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
-        $this->assertSame($this->startTime, $this->subject->startTime());
+        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
+        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
         $this->assertNull($this->subject->returnValue());
         $this->assertSame($this->exception, $this->subject->exception());
-        $this->assertSame($this->endTime, $this->subject->endTime());
+        $this->assertEquals($this->threwEvent->time(), $this->subject->endTime());
     }
 
     public function testConstructorWithNoEndEvent()
@@ -92,11 +81,10 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertNull($this->subject->endEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-        $this->assertSame($this->reflector, $this->subject->reflector());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
+        $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
-        $this->assertSame($this->startTime, $this->subject->startTime());
+        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
+        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
         $this->assertNull($this->subject->returnValue());
         $this->assertNull($this->subject->exception());
         $this->assertNull($this->subject->endTime());

@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
-use Closure;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
@@ -21,8 +20,6 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
-use ReflectionFunction;
-use ReflectionMethod;
 use RuntimeException;
 
 class CallFactoryTest extends PHPUnit_Framework_TestCase
@@ -33,7 +30,6 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->clock = new TestClock();
         $this->subject = new CallFactory($this->sequencer, $this->clock);
 
-        $this->reflector = new ReflectionMethod(__METHOD__);
         $this->exception = new RuntimeException('You done goofed.');
     }
 
@@ -53,136 +49,99 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testRecord()
     {
-        $callback = function () {
-            return '= ' . implode(' + ', func_get_args());
-        };
-        $reflector = new ReflectionFunction($callback);
-        $expected = new Call(
+        $callback = 'implode';
+        $arguments = array(array('a', 'b'));
+        $returnValue = 'ab';
+        $expected = $this->subject->create(
             array(
-                new CalledEvent(
-                    $reflector,
-                    $this->closureThisValue($callback),
-                    array('argumentA', 'argumentB'),
-                    0,
-                    0.123
-                ),
-                new ReturnedEvent('= argumentA + argumentB', 1, 1.123),
+                $this->subject->createCalledEvent($callback, $arguments),
+                $this->subject->createReturnedEvent($returnValue),
             )
         );
-        $actual = $this->subject->record($callback, array('argumentA', 'argumentB'));
+        $this->sequencer->reset();
+        $this->clock->reset();
+        $actual = $this->subject->record($callback, $arguments);
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testRecordDefaults()
     {
+        $expected = $this->subject->create();
+        $this->sequencer->reset();
+        $this->clock->reset();
         $actual = $this->subject->record();
 
-        $this->assertInstanceOf('Eloquent\Phony\Call\Call', $actual);
-
-        $events = $actual->events();
-
-        $this->assertSame(2, count($events));
-        $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $events[0]);
-        $this->assertInstanceOf('ReflectionFunction', $events[0]->reflector());
-        $this->assertSame(array(), $events[0]->arguments());
-        $this->assertSame(0, $events[0]->sequenceNumber());
-        $this->assertEquals(0.123, $events[0]->time());
-        $this->assertEquals(new ReturnedEvent(null, 1, 1.123), $events[1]);
+        $this->assertEquals($expected, $actual);
     }
 
     public function testCreate()
     {
-        $events = array(
-            new CalledEvent($this->reflector, $this, array('argumentA', 'argumentB'), 0, 0.123),
-            new ReturnedEvent(null, 1, 1.123),
-        );
+        $events = array($this->subject->createCalledEvent());
         $expected = new Call($events);
         $actual = $this->subject->create($events);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateCalledEventWithMethod()
+    public function testCreateDefaults()
     {
-        $reflector = $this->reflector;
-        $expected = new CalledEvent($reflector, $this, array('argumentA', 'argumentB'), 0, 0.123);
-        $actual = $this->subject->createCalledEvent(array($this, 'setUp'), array('argumentA', 'argumentB'));
+        $events = array($this->subject->createCalledEvent(), $this->subject->createReturnedEvent());
+        $expected = new Call($events);
+        $this->sequencer->reset();
+        $this->clock->reset();
+        $actual = $this->subject->create();
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateCalledEventWithStaticMethod()
+    public function testCreateCalledEvent()
     {
-        $reflector = new ReflectionMethod('Eloquent\Phony\Call\Factory\CallFactory', 'instance');
-        $expected = new CalledEvent($reflector, null, array('argumentA', 'argumentB'), 0, 0.123);
-        $actual = $this->subject
-            ->createCalledEvent('Eloquent\Phony\Call\Factory\CallFactory::instance', array('argumentA', 'argumentB'));
+        $callback = 'implode';
+        $arguments = array('a', 'b');
+        $expected = new CalledEvent(0, 0.0, $callback, $arguments);
+        $actual = $this->subject->createCalledEvent($callback, $arguments);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateCalledEventWithFunction()
+    public function testCreateEndEventWithNoException()
     {
-        $reflector = new ReflectionFunction('function_exists');
-        $expected = new CalledEvent($reflector, null, array('argumentA', 'argumentB'), 0, 0.123);
-        $actual = $this->subject->createCalledEvent('function_exists', array('argumentA', 'argumentB'));
+        $returnValue = 'x';
+        $expected = new ReturnedEvent(0, 0.0, $returnValue);
+        $actual = $this->subject->createEndEvent($returnValue);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateCalledEventWithClosure()
+    public function testCreateEndEventWithException()
     {
-        $callback = function () {};
-        $reflector = new ReflectionFunction($callback);
-        $expected =
-            new CalledEvent($reflector, $this->closureThisValue($callback), array('argumentA', 'argumentB'), 0, 0.123);
-        $actual = $this->subject->createCalledEvent($callback, array('argumentA', 'argumentB'));
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateCalledEventDefaults()
-    {
-        $actual = $this->subject->createCalledEvent();
-
-        $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $actual);
-        $this->assertInstanceOf('ReflectionFunction', $actual->reflector());
-        $this->assertSame(array(), $actual->arguments());
-        $this->assertSame(0, $actual->sequenceNumber());
-        $this->assertEquals(0.123, $actual->time());
-    }
-
-    public function testCreateCalledEventFailureInvalidCallback()
-    {
-        $this->setExpectedException('InvalidArgumentException', "Unsupported callback of type 'integer'.");
-        $this->subject->createCalledEvent(111);
-    }
-
-    public function testCreateEndEvent()
-    {
-        $expected = new ReturnedEvent('returnValue', 0, 0.123);
-        $actual = $this->subject->createEndEvent('returnValue', null);
-
-        $this->assertEquals($expected, $actual);
-
-        $expected = new ThrewEvent($this->exception, 1, 1.123);
+        $expected = new ThrewEvent(0, 0.0, $this->exception);
         $actual = $this->subject->createEndEvent(null, $this->exception);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateEndEventDefaults()
+    {
+        $expected = new ReturnedEvent(0, 0.0);
+        $actual = $this->subject->createEndEvent();
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testCreateReturnedEvent()
     {
-        $expected = new ReturnedEvent('returnValue', 0, 0.123);
-        $actual = $this->subject->createReturnedEvent('returnValue');
+        $returnValue = 'x';
+        $expected = new ReturnedEvent(0, 0.0, $returnValue);
+        $actual = $this->subject->createReturnedEvent($returnValue);
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testCreateThrewEvent()
     {
-        $expected = new ThrewEvent($this->exception, 0, 0.123);
+        $expected = new ThrewEvent(0, 0.0, $this->exception);
         $actual = $this->subject->createThrewEvent($this->exception);
 
         $this->assertEquals($expected, $actual);
@@ -199,17 +158,5 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
-    }
-
-    protected function closureThisValue(Closure $closure)
-    {
-        $reflectorReflector = new ReflectionClass('ReflectionFunction');
-        if (!$reflectorReflector->hasMethod('getClosureThis')) {
-            return null;
-        }
-
-        $reflector = new ReflectionFunction($closure);
-
-        return $reflector->getClosureThis();
     }
 }

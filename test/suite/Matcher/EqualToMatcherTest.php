@@ -19,7 +19,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->value = 'value';
+        $this->value = 'x';
         $this->comparatorFactory = new Factory();
         $this->exporter = new Exporter();
         $this->subject = new EqualToMatcher($this->value, $this->comparatorFactory, $this->exporter);
@@ -43,12 +43,12 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     public function testMatches()
     {
         $this->assertTrue($this->subject->matches($this->value));
-        $this->assertFalse($this->subject->matches('anotherValue'));
+        $this->assertFalse($this->subject->matches('y'));
     }
 
     public function testDescribe()
     {
-        $this->assertSame("<'value'>", $this->subject->describe());
+        $this->assertSame("<'x'>", $this->subject->describe());
     }
 
     public function testDescribeWithMultilineString()

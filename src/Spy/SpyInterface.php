@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Invocable\InvocableInterface;
-use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by spies.
@@ -26,13 +25,6 @@ interface SpyInterface extends InvocableInterface
      * @return callable The subject.
      */
     public function subject();
-
-    /**
-     * Get the reflector.
-     *
-     * @return ReflectionFunctionAbstract The reflector.
-     */
-    public function reflector();
 
     /**
      * Set the calls.

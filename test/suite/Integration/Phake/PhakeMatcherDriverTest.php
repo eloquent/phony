@@ -22,7 +22,7 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new PhakeMatcherDriver();
 
-        $this->matcher = Phake::equalTo('value');
+        $this->matcher = Phake::equalTo('x');
     }
 
     public function testIsSupported()

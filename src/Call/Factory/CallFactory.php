@@ -26,11 +26,6 @@ use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Exception;
-use InvalidArgumentException;
-use ReflectionClass;
-use ReflectionFunction;
-use ReflectionFunctionAbstract;
-use ReflectionMethod;
 
 /**
  * Creates calls.
@@ -100,8 +95,7 @@ class CallFactory implements CallFactoryInterface
      * @param callable|null             $callback  The callback.
      * @param array<integer,mixed>|null $arguments The arguments.
      *
-     * @return CallInterface            The newly created call.
-     * @throws InvalidArgumentException If the supplied callback is invalid.
+     * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
@@ -134,8 +128,15 @@ class CallFactory implements CallFactoryInterface
      *
      * @return CallInterface The newly created call.
      */
-    public function create(array $events)
+    public function create(array $events = null)
     {
+        if (null === $events) {
+            $events = array(
+                $this->createCalledEvent(),
+                $this->createReturnedEvent(),
+            );
+        }
+
         return new Call($events);
     }
 
@@ -145,28 +146,17 @@ class CallFactory implements CallFactoryInterface
      * @param callable|null             $callback  The callback.
      * @param array<integer,mixed>|null $arguments The arguments.
      *
-     * @return CalledEventInterface     The newly created event.
-     * @throws InvalidArgumentException If the supplied callback is invalid.
+     * @return CalledEventInterface The newly created event.
      */
     public function createCalledEvent(
         $callback = null,
         array $arguments = null
     ) {
-        if (null === $callback) {
-            $callback = function () {};
-        }
-        if (null === $arguments) {
-            $arguments = array();
-        }
-
-        list($reflector, $thisValue) = $this->callbackDetails($callback);
-
         return new CalledEvent(
-            $reflector,
-            $thisValue,
-            $arguments,
             $this->sequencer->next(),
-            $this->clock->time()
+            $this->clock->time(),
+            $callback,
+            $arguments
         );
     }
 
@@ -178,8 +168,10 @@ class CallFactory implements CallFactoryInterface
      *
      * @return EndEventInterface The newly created event.
      */
-    public function createEndEvent($returnValue, Exception $exception = null)
-    {
+    public function createEndEvent(
+        $returnValue = null,
+        Exception $exception = null
+    ) {
         if ($exception) {
             return $this->createThrewEvent($exception);
         }
@@ -194,90 +186,32 @@ class CallFactory implements CallFactoryInterface
      *
      * @return ReturnedEventInterface The newly created event.
      */
-    public function createReturnedEvent($returnValue)
+    public function createReturnedEvent($returnValue = null)
     {
         return new ReturnedEvent(
-            $returnValue,
             $this->sequencer->next(),
-            $this->clock->time()
+            $this->clock->time(),
+            $returnValue
         );
     }
 
     /**
      * Create a new 'thrown' event.
      *
-     * @param Exception $exception The thrown exception.
+     * @param Exception|null $exception The thrown exception.
      *
      * @return ThrewEventInterface The newly created event.
      */
-    public function createThrewEvent(Exception $exception)
+    public function createThrewEvent(Exception $exception = null)
     {
         return new ThrewEvent(
-            $exception,
             $this->sequencer->next(),
-            $this->clock->time()
+            $this->clock->time(),
+            $exception
         );
     }
 
-    /**
-     * Get the appropriate reflector and $this value for the supplied callback.
-     *
-     * @param callable $callback The callback.
-     *
-     * @return tuple<ReflectionFunctionAbstract,object|null> A 2-tuple of the reflector and $this value.
-     * @throws InvalidArgumentException                      If the supplied callback is invalid.
-     */
-    protected function callbackDetails($callback)
-    {
-        if (!is_callable($callback, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Unsupported callback of type %s.',
-                    var_export(gettype($callback), true)
-                )
-            );
-        }
-
-        if (is_array($callback)) {
-            $reflector = new ReflectionMethod($callback[0], $callback[1]);
-            $thisValue = $callback[0];
-        } elseif (is_string($callback) && false !== strpos($callback, '::')) {
-            list($className, $methodName) = explode('::', $callback);
-
-            $reflector = new ReflectionMethod($className, $methodName);
-            $thisValue = null;
-        } else {
-            $reflector = new ReflectionFunction($callback);
-
-            if ($reflector->isClosure() && static::isBoundClosureSupported()) {
-                $thisValue = $reflector->getClosureThis();
-            } else {
-                $thisValue = null;
-            }
-        }
-
-        return array($reflector, $thisValue);
-    }
-
-    /**
-     * Returns true if bound closures are supported.
-     *
-     * @return boolean True if bound closures are supported.
-     */
-    protected static function isBoundClosureSupported()
-    {
-        if (null === self::$isBoundClosureSupported) {
-            $reflectorReflector = new ReflectionClass('ReflectionFunction');
-
-            self::$isBoundClosureSupported = $reflectorReflector
-                ->hasMethod('getClosureThis');
-        }
-
-        return self::$isBoundClosureSupported;
-    }
-
     private static $instance;
-    private static $isBoundClosureSupported;
     private $sequencer;
     private $clock;
 }

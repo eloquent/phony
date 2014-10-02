@@ -11,26 +11,17 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use ReflectionFunctionAbstract;
-
 /**
  * The interface implemented by 'called' events.
  */
 interface CalledEventInterface extends CallEventInterface
 {
     /**
-     * Get the called function or method called.
+     * Get the callback.
      *
-     * @return ReflectionFunctionAbstract The function or method called.
+     * @return callable The callback.
      */
-    public function reflector();
-
-    /**
-     * Get the $this value.
-     *
-     * @return object|null The $this value, or null if unbound.
-     */
-    public function thisValue();
+    public function callback();
 
     /**
      * Get the received arguments.

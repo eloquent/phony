@@ -29,8 +29,8 @@ class AnyMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->subject->matches('value'));
-        $this->assertTrue($this->subject->matches('anotherValue'));
+        $this->assertTrue($this->subject->matches('x'));
+        $this->assertTrue($this->subject->matches('y'));
     }
 
     public function testInstance()

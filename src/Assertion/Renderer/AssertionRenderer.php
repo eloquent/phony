@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Invocable\InvocableUtils;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Exception;
 use ReflectionMethod;
@@ -186,7 +187,9 @@ class AssertionRenderer implements AssertionRendererInterface
         foreach ($calls as $call) {
             $rendered[] = sprintf(
                 '    - %s',
-                $this->exporter->shortenedExport($call->thisValue())
+                $this->exporter->shortenedExport(
+                    InvocableUtils::callbackThisValue($call->callback())
+                )
             );
         }
 
@@ -202,7 +205,7 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderCall(CallInterface $call)
     {
-        $reflector = $call->reflector();
+        $reflector = InvocableUtils::callbackReflector($call->callback());
 
         if ($reflector instanceof ReflectionMethod) {
             if ($reflector->isStatic()) {

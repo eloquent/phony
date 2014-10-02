@@ -21,7 +21,7 @@ class SimpletestMatcherDriverTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new SimpletestMatcherDriver();
 
-        $this->matcher = new EqualExpectation('value');
+        $this->matcher = new EqualExpectation('x');
     }
 
     public function testIsSupported()

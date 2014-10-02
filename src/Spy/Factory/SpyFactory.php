@@ -70,7 +70,7 @@ class SpyFactory implements SpyFactoryInterface
      */
     public function create($subject = null)
     {
-        return new Spy($subject, null, $this->callFactory);
+        return new Spy($subject, $this->callFactory);
     }
 
     private static $instance;
