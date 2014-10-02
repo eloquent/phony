@@ -59,7 +59,13 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $reflector = new ReflectionFunction($callback);
         $expected = new Call(
             array(
-                new CalledEvent($reflector, $this, array('argumentA', 'argumentB'), 0, 0.123),
+                new CalledEvent(
+                    $reflector,
+                    $this->closureThisValue($callback),
+                    array('argumentA', 'argumentB'),
+                    0,
+                    0.123
+                ),
                 new ReturnedEvent('= argumentA + argumentB', 1, 1.123),
             )
         );
@@ -79,7 +85,6 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, count($events));
         $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $events[0]);
         $this->assertInstanceOf('ReflectionFunction', $events[0]->reflector());
-        $this->assertSame($this->subject, $events[0]->thisValue());
         $this->assertSame(array(), $events[0]->arguments());
         $this->assertSame(0, $events[0]->sequenceNumber());
         $this->assertEquals(0.123, $events[0]->time());
@@ -143,7 +148,6 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $actual);
         $this->assertInstanceOf('ReflectionFunction', $actual->reflector());
-        $this->assertSame($this->subject, $actual->thisValue());
         $this->assertSame(array(), $actual->arguments());
         $this->assertSame(0, $actual->sequenceNumber());
         $this->assertEquals(0.123, $actual->time());
