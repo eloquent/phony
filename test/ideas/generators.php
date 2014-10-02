@@ -129,7 +129,6 @@ foreach ($spy->calls[0][3] as $generatorThing) {
 
             break;
 
-
         case 'sentException':
             printf("    - sentException %s(%s)\n", get_class($generatorThing[1]), var_export($generatorThing[1]->getMessage(), true));
 
