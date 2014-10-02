@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Call;
 
+use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
 use Exception;
 use ReflectionFunctionAbstract;
 
@@ -20,6 +23,55 @@ use ReflectionFunctionAbstract;
 interface CallInterface
 {
     /**
+     * Set the events.
+     *
+     * @param array<integer,CallEventInterface> $events The events.
+     */
+    public function setEvents(array $events);
+
+    /**
+     * Add a sequence of events.
+     *
+     * @param array<integer,CallEventInterface> $events The events.
+     */
+    public function addEvents(array $events);
+
+    /**
+     * Add an event.
+     *
+     * @param CallEventInterface $event The event.
+     */
+    public function addEvent(CallEventInterface $event);
+
+    /**
+     * Get the events.
+     *
+     * @return array<integer,CallEventInterface> The events.
+     */
+    public function events();
+
+    /**
+     * Get the 'called' event.
+     *
+     * @return CalledEventInterface The 'called' event.
+     */
+    public function calledEvent();
+
+    /**
+     * Get the end event.
+     *
+     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
+     */
+    public function endEvent();
+
+    /**
+     * Get the non-'called', non-end events.
+     *
+     * @return array<integer,CallEventInterface> The events.
+     */
+    public function otherEvents();
+
+    /**
      * Get the called function or method called.
      *
      * @return ReflectionFunctionAbstract The function or method called.
@@ -27,18 +79,18 @@ interface CallInterface
     public function reflector();
 
     /**
+     * Get the $this value.
+     *
+     * @return object|null The $this value, or null if unbound.
+     */
+    public function thisValue();
+
+    /**
      * Get the received arguments.
      *
      * @return array<integer,mixed> The received arguments.
      */
     public function arguments();
-
-    /**
-     * Get the returned value.
-     *
-     * @return mixed The returned value.
-     */
-    public function returnValue();
 
     /**
      * Get the sequence number.
@@ -55,11 +107,11 @@ interface CallInterface
     public function startTime();
 
     /**
-     * Get the time at which the call completed.
+     * Get the returned value.
      *
-     * @return float The time at which the call completed, in seconds since the Unix epoch.
+     * @return mixed The returned value.
      */
-    public function endTime();
+    public function returnValue();
 
     /**
      * Get the thrown exception.
@@ -69,9 +121,9 @@ interface CallInterface
     public function exception();
 
     /**
-     * Get the $this value.
+     * Get the time at which the call completed.
      *
-     * @return object|null The $this value, or null if unbound.
+     * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
-    public function thisValue();
+    public function endTime();
 }

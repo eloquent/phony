@@ -12,14 +12,8 @@
 namespace Eloquent\Phony\Call\Event;
 
 /**
- * The interface implemented by 'threw' events.
+ * The interface used to identify end events.
  */
-interface ThrewEventInterface extends EndEventInterface
+interface EndEventInterface extends CallEventInterface
 {
-    /**
-     * Get the thrown exception.
-     *
-     * @return Exception The thrown exception.
-     */
-    public function exception();
 }

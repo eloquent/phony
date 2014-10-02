@@ -13,10 +13,6 @@ namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
-use Eloquent\Phony\Clock\ClockInterface;
-use Eloquent\Phony\Clock\SystemClock;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyInterface;
 
@@ -44,48 +40,15 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param SequencerInterface|null   $sequencer   The sequencer to use.
-     * @param ClockInterface|null       $clock       The clock to use.
      * @param CallFactoryInterface|null $callFactory The call factory to use.
      */
-    public function __construct(
-        SequencerInterface $sequencer = null,
-        ClockInterface $clock = null,
-        CallFactoryInterface $callFactory = null
-    ) {
-        if (null === $sequencer) {
-            $sequencer = Sequencer::instance();
-        }
-        if (null === $clock) {
-            $clock = SystemClock::instance();
-        }
+    public function __construct(CallFactoryInterface $callFactory = null)
+    {
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
 
-        $this->sequencer = $sequencer;
-        $this->clock = $clock;
         $this->callFactory = $callFactory;
-    }
-
-    /**
-     * Get the sequencer.
-     *
-     * @return SequencerInterface The sequencer.
-     */
-    public function sequencer()
-    {
-        return $this->sequencer;
-    }
-
-    /**
-     * Get the clock.
-     *
-     * @return ClockInterface The clock.
-     */
-    public function clock()
-    {
-        return $this->clock;
     }
 
     /**
@@ -107,17 +70,9 @@ class SpyFactory implements SpyFactoryInterface
      */
     public function create($subject = null)
     {
-        return new Spy(
-            $subject,
-            null,
-            $this->sequencer,
-            $this->clock,
-            $this->callFactory
-        );
+        return new Spy($subject, null, $this->callFactory);
     }
 
     private static $instance;
-    private $sequencer;
-    private $clock;
     private $callFactory;
 }

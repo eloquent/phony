@@ -14,13 +14,15 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
-use Eloquent\Phony\Clock\TestClock;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestAssertionRecorder;
+use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -35,9 +37,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             return '= ' .implode(', ', func_get_args());
         };
         $this->reflector = new ReflectionFunction($this->spySubject);
-        $this->sequencer = new Sequencer();
-        $this->clock = new TestClock();
-        $this->spy = new Spy($this->spySubject, $this->reflector, $this->sequencer, $this->clock);
+        $this->callFactory = new TestCallFactory();
+        $this->spy = new Spy($this->spySubject, $this->reflector, $this->callFactory);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
@@ -60,10 +61,30 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->thisValueB = (object) array();
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
         $this->argumentMatchers = $this->matcherFactory->adaptAll($this->arguments);
-        $this->callA = new Call($this->reflector, $this->arguments, null, 0, 1.11, 2.22);
-        $this->callB = new Call($this->reflector, array(), null, 1, 3.33, 4.44);
-        $this->callC = new Call($this->reflector, array(), $this->returnValueA, 2, 5.55, 6.66, $this->exceptionA, $this->thisValueA);
-        $this->callD = new Call($this->reflector, array(), $this->returnValueB, 3, 7.77, 8.88, $this->exceptionB, $this->thisValueB);
+        $this->callA = new Call(
+            array(
+                new CalledEvent($this->reflector, $this->thisValueA, $this->arguments, 0, 0.123),
+                new ReturnedEvent($this->returnValueA, 1, 1.123),
+            )
+        );
+        $this->callB = new Call(
+            array(
+                new CalledEvent($this->reflector, $this->thisValueB, array(), 2, 2.123),
+                new ReturnedEvent($this->returnValueB, 3, 3.123),
+            )
+        );
+        $this->callC = new Call(
+            array(
+                new CalledEvent($this->reflector, $this->thisValueA, $this->arguments, 4, 4.123),
+                new ThrewEvent($this->exceptionA, 5, 5.123),
+            )
+        );
+        $this->callD = new Call(
+            array(
+                new CalledEvent($this->reflector, null, array(), 6, 6.123),
+                new ThrewEvent($this->exceptionB, 7, 7.123),
+            )
+        );
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
         $this->wrappedCallA = $this->callVerifierFactory->adapt($this->callA);
         $this->wrappedCallB = $this->callVerifierFactory->adapt($this->callB);
@@ -136,18 +157,24 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $reflector = $verifier->reflector();
         $thisValue = $this->thisValue($this->spySubject);
         $expected = array(
-            new Call($reflector, array('argumentA'), '= argumentA', 0, 0.123, 1.123, null, $thisValue),
             new Call(
-                $reflector,
-                array('argumentB', 'argumentC'),
-                '= argumentB, argumentC',
-                1,
-                2.123,
-                3.123,
-                null,
-                $thisValue
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentA'), 0, 0.123),
+                    new ReturnedEvent('= argumentA', 1, 1.123),
+                )
             ),
-            new Call($reflector, array('argumentD'), '= argumentD', 2, 4.123, 5.123, null, $thisValue),
+            new Call(
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentB', 'argumentC'), 2, 2.123),
+                    new ReturnedEvent('= argumentB, argumentC', 3, 3.123),
+                )
+            ),
+            new Call(
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentD'), 4, 4.123),
+                    new ReturnedEvent('= argumentD', 5, 5.123),
+                )
+            ),
         );
 
         $this->assertEquals($expected, $this->spy->calls());
@@ -155,7 +182,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, null, $this->sequencer, $this->clock);
+        $spy = new Spy(null, null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $verifier->invokeWith(array('argumentA'));
         $verifier->invoke('argumentB', 'argumentC');
@@ -163,18 +190,24 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $reflector = $verifier->reflector();
         $thisValue = $this->thisValue($verifier->subject());
         $expected = array(
-            new Call($reflector, array('argumentA'), null, 0, 0.123, 1.123, null, $thisValue),
             new Call(
-                $reflector,
-                array('argumentB', 'argumentC'),
-                null,
-                1,
-                2.123,
-                3.123,
-                null,
-                $thisValue
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentA'), 0, 0.123),
+                    new ReturnedEvent(null, 1, 1.123),
+                )
             ),
-            new Call($reflector, array('argumentD'), null, 2, 4.123, 5.123, null, $thisValue),
+            new Call(
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentB', 'argumentC'), 2, 2.123),
+                    new ReturnedEvent(null, 3, 3.123),
+                )
+            ),
+            new Call(
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentD'), 4, 4.123),
+                    new ReturnedEvent(null, 5, 5.123),
+                )
+            ),
         );
 
         $this->assertEquals($expected, $spy->calls());
@@ -187,7 +220,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($subject, null, $this->sequencer, $this->clock);
+        $spy = new Spy($subject, null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $caughtExceptions = array();
         try {
@@ -208,18 +241,24 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $reflector = $verifier->reflector();
         $thisValue = $this->thisValue($this->spySubject);
         $expected = array(
-            new Call($reflector, array('argumentA'), null, 0, 0.123, 1.123, $exceptions[0], $thisValue),
             new Call(
-                $reflector,
-                array('argumentB', 'argumentC'),
-                null,
-                1,
-                2.123,
-                3.123,
-                $exceptions[1],
-                $thisValue
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentA'), 0, 0.123),
+                    new ThrewEvent($exceptions[0], 1, 1.123),
+                )
             ),
-            new Call($reflector, array('argumentD'), null, 2, 4.123, 5.123, $exceptions[2], $thisValue),
+            new Call(
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentB', 'argumentC'), 2, 2.123),
+                    new ThrewEvent($exceptions[1], 3, 3.123),
+                )
+            ),
+            new Call(
+                array(
+                    new CalledEvent($reflector, $thisValue, array('argumentD'), 4, 4.123),
+                    new ThrewEvent($exceptions[2], 5, 5.123),
+                )
+            ),
         );
 
         $this->assertEquals($expected, $spy->calls());
@@ -230,7 +269,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $subject = function (&$argument) {
             $argument = 'value';
         };
-        $spy = new Spy($subject, null, $this->sequencer, $this->clock);
+        $spy = new Spy($subject, null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $value = null;
         $arguments = array(&$value);
@@ -417,7 +456,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 Not called before supplied spy. Actual calls:
     - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
-    - Eloquent\Phony\Spy\{closure}()
+    - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
 EOD;
 
@@ -463,7 +502,7 @@ EOD;
 Not called after supplied spy. Actual calls:
     - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
-    - Eloquent\Phony\Spy\{closure}()
+    - Eloquent\Phony\Spy\{closure}('argumentA', 'argumentB', 'argumentC')
     - Eloquent\Phony\Spy\{closure}()
 EOD;
 
@@ -538,7 +577,7 @@ Expected arguments like:
 Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
-    - <none>
+    - 'argumentA', 'argumentB', 'argumentC'
     - <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -624,7 +663,7 @@ Expected every call with arguments like:
 Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
-    - <none>
+    - 'argumentA', 'argumentB', 'argumentC'
     - <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -697,7 +736,7 @@ Expected arguments like:
 Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
-    - <none>
+    - 'argumentA', 'argumentB', 'argumentC'
     - <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -782,7 +821,7 @@ Expected every call with arguments like:
 Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
-    - <none>
+    - 'argumentA', 'argumentB', 'argumentC'
     - <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -876,7 +915,7 @@ Expected no call with arguments like:
 Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
-    - <none>
+    - 'argumentA', 'argumentB', 'argumentC'
     - <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -973,7 +1012,7 @@ Expected no call with arguments like:
 Actual calls:
     - 'argumentA', 'argumentB', 'argumentC'
     - <none>
-    - <none>
+    - 'argumentA', 'argumentB', 'argumentC'
     - <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1013,10 +1052,10 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Not called on expected object. Actual objects:
-    - null
-    - null
     - stdClass Object ()
     - stdClass Object ()
+    - stdClass Object ()
+    - null
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1037,10 +1076,10 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Not called on object like <stdClass Object (...)>. Actual objects:
-    - null
-    - null
     - stdClass Object ()
     - stdClass Object ()
+    - stdClass Object ()
+    - null
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1095,10 +1134,10 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Not always called on expected object. Actual objects:
-    - null
-    - null
     - stdClass Object ()
     - stdClass Object ()
+    - stdClass Object ()
+    - null
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1119,10 +1158,10 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Not always called on object like <stdClass Object ()>. Actual objects:
-    - null
-    - null
     - stdClass Object ()
     - stdClass Object ()
+    - stdClass Object ()
+    - null
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1172,10 +1211,10 @@ EOD;
 
         $expected = <<<'EOD'
 Expected return value like <'anotherValue'>. Actually returned:
-    - null
-    - null
     - 'returnValueA'
     - 'returnValueB'
+    - null
+    - null
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1207,7 +1246,7 @@ EOD;
         $this->assertFalse($this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
         $this->assertFalse($this->subject->alwaysReturned('anotherValue'));
 
-        $this->subject->setCalls(array($this->callC, $this->callC));
+        $this->subject->setCalls(array($this->callA, $this->callA));
 
         $this->assertTrue($this->subject->alwaysReturned($this->returnValueA));
         $this->assertTrue($this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
@@ -1218,7 +1257,7 @@ EOD;
 
     public function testAssertAlwaysReturned()
     {
-        $this->subject->setCalls(array($this->callC, $this->callC));
+        $this->subject->setCalls(array($this->callA, $this->callA));
 
         $this->assertNull($this->subject->assertAlwaysReturned($this->returnValueA));
         $this->assertNull($this->subject->assertAlwaysReturned(new EqualToMatcher($this->returnValueA)));
@@ -1231,10 +1270,10 @@ EOD;
 
         $expected = <<<'EOD'
 Expected every call with return value like <'returnValueA'>. Actually returned:
-    - null
-    - null
     - 'returnValueA'
     - 'returnValueB'
+    - null
+    - null
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1629,8 +1668,8 @@ EOD;
     public function testCompareCallOrder()
     {
         $this->assertSame(0, SpyVerifier::compareCallOrder($this->callA, $this->callA));
-        $this->assertSame(-1, SpyVerifier::compareCallOrder($this->callA, $this->callB));
-        $this->assertSame(1, SpyVerifier::compareCallOrder($this->callB, $this->callA));
+        $this->assertLessThan(0, SpyVerifier::compareCallOrder($this->callA, $this->callB));
+        $this->assertGreaterThan(0, SpyVerifier::compareCallOrder($this->callB, $this->callA));
     }
 
     protected function thisValue($closure)

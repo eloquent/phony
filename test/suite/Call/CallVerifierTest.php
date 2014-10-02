@@ -13,10 +13,14 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestAssertionRecorder;
+use Eloquent\Phony\Test\TestCallEvent;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
@@ -27,25 +31,24 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->reflector = new ReflectionMethod(__METHOD__);
+        $this->thisValue = (object) array();
         $this->arguments = array('argumentA', 'argumentB', 'argumentC');
-        $this->argumentCount = count($this->arguments);
-        $this->returnValue = 'returnValue';
         $this->sequenceNumber = 111;
         $this->startTime = 1.11;
-        $this->endTime = 2.22;
-        $this->duration = $this->endTime - $this->startTime;
-        $this->exception = new RuntimeException('You done goofed.');
-        $this->thisValue = (object) array();
-        $this->call = new Call(
+        $this->calledEvent = new CalledEvent(
             $this->reflector,
+            $this->thisValue,
             $this->arguments,
-            $this->returnValue,
             $this->sequenceNumber,
-            $this->startTime,
-            $this->endTime,
-            $this->exception,
-            $this->thisValue
+            $this->startTime
         );
+        $this->returnValue = 'returnValue';
+        $this->endTime = 2.22;
+        $this->returnedEvent = new ReturnedEvent($this->returnValue, $this->sequenceNumber + 1, $this->endTime);
+        $this->eventA = new TestCallEvent($this->sequenceNumber + 2, 3.33);
+        $this->eventB = new TestCallEvent($this->sequenceNumber + 3, 4.44);
+        $this->events = array($this->calledEvent, $this->returnedEvent, $this->eventA, $this->eventB);
+        $this->call = new Call($this->events);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new TestAssertionRecorder();
@@ -58,18 +61,27 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer
         );
 
-        $this->callNoException = new Call(
-            $this->reflector,
-            $this->arguments,
-            $this->returnValue,
-            $this->sequenceNumber,
-            $this->startTime,
-            $this->endTime,
-            null,
-            $this->thisValue
+        $this->duration = $this->endTime - $this->startTime;
+        $this->argumentCount = count($this->arguments);
+
+        $this->exception = new RuntimeException('You done goofed.');
+        $this->threwEvent = new ThrewEvent($this->exception, $this->sequenceNumber + 1, $this->endTime);
+        $this->otherEvents = array($this->eventA, $this->eventB);
+
+        $this->callWithException = new Call(
+            array(
+                new CalledEvent(
+                    $this->reflector,
+                    $this->thisValue,
+                    $this->arguments,
+                    $this->sequenceNumber,
+                    $this->startTime
+                ),
+                new ThrewEvent($this->exception, $this->sequenceNumber + 1, $this->endTime),
+            )
         );
-        $this->subjectNoException = new CallVerifier(
-            $this->callNoException,
+        $this->subjectWithException = new CallVerifier(
+            $this->callWithException,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
@@ -77,14 +89,10 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->callNoArguments = new Call(
-            $this->reflector,
-            array(),
-            $this->returnValue,
-            $this->sequenceNumber,
-            $this->startTime,
-            $this->endTime,
-            null,
-            $this->thisValue
+            array(
+                new CalledEvent($this->reflector, $this->thisValue, array(), $this->sequenceNumber, $this->startTime),
+                new ReturnedEvent($this->returnValue, $this->sequenceNumber + 1, $this->endTime),
+            )
         );
         $this->subjectNoArguments = new CallVerifier(
             $this->callNoArguments,
@@ -95,20 +103,28 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->earlyCall = new Call(
-            $this->reflector,
-            $this->arguments,
-            $this->returnValue,
-            $this->sequenceNumber - 1,
-            $this->startTime,
-            $this->endTime
+            array(
+                new CalledEvent(
+                    $this->reflector,
+                    $this->thisValue,
+                    $this->arguments,
+                    $this->sequenceNumber - 2,
+                    $this->startTime
+                ),
+                new ReturnedEvent($this->returnValue, $this->sequenceNumber - 1, $this->endTime),
+            )
         );
         $this->lateCall = new Call(
-            $this->reflector,
-            $this->arguments,
-            $this->returnValue,
-            $this->sequenceNumber + 1,
-            $this->startTime,
-            $this->endTime
+            array(
+                new CalledEvent(
+                    $this->reflector,
+                    $this->thisValue,
+                    $this->arguments,
+                    $this->sequenceNumber + 2,
+                    $this->startTime
+                ),
+                new ReturnedEvent($this->returnValue, $this->sequenceNumber + 3, $this->endTime),
+            )
         );
 
         $this->argumentMatchers = $this->matcherFactory->adaptAll($this->arguments);
@@ -143,8 +159,96 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->startTime, $this->subject->startTime());
         $this->assertSame($this->endTime, $this->subject->endTime());
-        $this->assertSame($this->exception, $this->subject->exception());
+        $this->assertNull($this->subject->exception());
         $this->assertSame($this->thisValue, $this->subject->thisValue());
+    }
+
+    public function testSetEvents()
+    {
+        $this->events = array($this->calledEvent, $this->eventA, $this->returnedEvent);
+        $this->otherEvents = array($this->eventA);
+        $this->subject->setEvents($this->events);
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+
+        $this->events = array($this->calledEvent, $this->eventA, $this->threwEvent);
+        $this->otherEvents = array($this->eventA);
+        $this->subject->setEvents($this->events);
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->threwEvent, $this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+
+        $this->events = array($this->calledEvent);
+        $this->otherEvents = array();
+        $this->subject->setEvents($this->events);
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertNull($this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+    }
+
+    public function testAddEvents()
+    {
+        $this->subject->setEvents(array($this->calledEvent));
+        $this->subject->addEvents(array($this->eventA, $this->returnedEvent));
+        $this->events = array($this->calledEvent, $this->eventA, $this->returnedEvent);
+        $this->otherEvents = array($this->eventA);
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+
+        $this->subject->setEvents(array($this->calledEvent));
+        $this->subject->addEvents(array($this->eventA, $this->threwEvent));
+        $this->events = array($this->calledEvent, $this->eventA, $this->threwEvent);
+        $this->otherEvents = array($this->eventA);
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->threwEvent, $this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+
+        $this->subject->setEvents(array($this->calledEvent));
+        $this->subject->addEvents(array());
+        $this->events = array($this->calledEvent);
+        $this->otherEvents = array();
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertNull($this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+    }
+
+    public function testAddEvent()
+    {
+        $this->subject->setEvents(array($this->calledEvent));
+        $this->subject->addEvent($this->eventA);
+        $this->subject->addEvent($this->returnedEvent);
+        $this->events = array($this->calledEvent, $this->eventA, $this->returnedEvent);
+        $this->otherEvents = array($this->eventA);
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+
+        $this->subject->setEvents(array($this->calledEvent));
+        $this->subject->addEvent($this->eventA);
+        $this->subject->addEvent($this->threwEvent);
+        $this->events = array($this->calledEvent, $this->eventA, $this->threwEvent);
+        $this->otherEvents = array($this->eventA);
+
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->threwEvent, $this->subject->endEvent());
+        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
     }
 
     public function calledWithData()
@@ -537,45 +641,45 @@ EOD;
 
     public function testThrew()
     {
-        $this->assertTrue($this->subject->threw());
-        $this->assertTrue($this->subject->threw('Exception'));
-        $this->assertTrue($this->subject->threw('RuntimeException'));
-        $this->assertTrue($this->subject->threw($this->exception));
-        $this->assertTrue($this->subject->threw(new EqualToMatcher($this->exception)));
+        $this->assertFalse($this->subject->threw());
+        $this->assertFalse($this->subject->threw('Exception'));
+        $this->assertFalse($this->subject->threw('RuntimeException'));
+        $this->assertFalse($this->subject->threw($this->exception));
+        $this->assertFalse($this->subject->threw(new EqualToMatcher($this->exception)));
         $this->assertFalse($this->subject->threw('InvalidArgumentException'));
         $this->assertFalse($this->subject->threw(new Exception()));
         $this->assertFalse($this->subject->threw(new RuntimeException()));
         $this->assertFalse($this->subject->threw(new EqualToMatcher(new RuntimeException())));
-        $this->assertFalse($this->subject->threw(new EqualToMatcher(null)));
+        $this->assertTrue($this->subject->threw(new EqualToMatcher(null)));
         $this->assertFalse($this->subject->threw(111));
 
-        $this->assertFalse($this->subjectNoException->threw());
-        $this->assertFalse($this->subjectNoException->threw('Exception'));
-        $this->assertFalse($this->subjectNoException->threw('RuntimeException'));
-        $this->assertFalse($this->subjectNoException->threw($this->exception));
-        $this->assertFalse($this->subjectNoException->threw(new EqualToMatcher($this->exception)));
-        $this->assertFalse($this->subjectNoException->threw('InvalidArgumentException'));
-        $this->assertFalse($this->subjectNoException->threw(new Exception()));
-        $this->assertFalse($this->subjectNoException->threw(new RuntimeException()));
-        $this->assertFalse($this->subjectNoException->threw(new EqualToMatcher(new RuntimeException())));
-        $this->assertTrue($this->subjectNoException->threw(new EqualToMatcher(null)));
-        $this->assertFalse($this->subjectNoException->threw(111));
+        $this->assertTrue($this->subjectWithException->threw());
+        $this->assertTrue($this->subjectWithException->threw('Exception'));
+        $this->assertTrue($this->subjectWithException->threw('RuntimeException'));
+        $this->assertTrue($this->subjectWithException->threw($this->exception));
+        $this->assertTrue($this->subjectWithException->threw(new EqualToMatcher($this->exception)));
+        $this->assertFalse($this->subjectWithException->threw('InvalidArgumentException'));
+        $this->assertFalse($this->subjectWithException->threw(new Exception()));
+        $this->assertFalse($this->subjectWithException->threw(new RuntimeException()));
+        $this->assertFalse($this->subjectWithException->threw(new EqualToMatcher(new RuntimeException())));
+        $this->assertFalse($this->subjectWithException->threw(new EqualToMatcher(null)));
+        $this->assertFalse($this->subjectWithException->threw(111));
     }
 
     public function testAssertThrew()
     {
-        $this->assertNull($this->subject->assertThrew());
-        $this->assertNull($this->subject->assertThrew('Exception'));
-        $this->assertNull($this->subject->assertThrew('RuntimeException'));
-        $this->assertNull($this->subject->assertThrew($this->exception));
-        $this->assertNull($this->subject->assertThrew(new EqualToMatcher($this->exception)));
+        $this->assertNull($this->subjectWithException->assertThrew());
+        $this->assertNull($this->subjectWithException->assertThrew('Exception'));
+        $this->assertNull($this->subjectWithException->assertThrew('RuntimeException'));
+        $this->assertNull($this->subjectWithException->assertThrew($this->exception));
+        $this->assertNull($this->subjectWithException->assertThrew(new EqualToMatcher($this->exception)));
         $this->assertSame(5, $this->assertionRecorder->successCount());
     }
 
     public function testAssertThrewFailureExpectingAnyNoneThrown()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', 'Nothing thrown.');
-        $this->subjectNoException->assertThrew();
+        $this->subject->assertThrew();
     }
 
     public function testAssertThrewFailureTypeMismatch()
@@ -585,7 +689,7 @@ EOD;
             "Expected 'InvalidArgumentException' exception. " .
                 "Threw RuntimeException('You done goofed.')."
         );
-        $this->subject->assertThrew('InvalidArgumentException');
+        $this->subjectWithException->assertThrew('InvalidArgumentException');
     }
 
     public function testAssertThrewFailureExpectingTypeNoneThrown()
@@ -594,7 +698,7 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected 'InvalidArgumentException' exception. Nothing thrown."
         );
-        $this->subjectNoException->assertThrew('InvalidArgumentException');
+        $this->subject->assertThrew('InvalidArgumentException');
     }
 
     public function testAssertThrewFailureExceptionMismatch()
@@ -604,7 +708,7 @@ EOD;
             "Expected exception equal to RuntimeException(). " .
                 "Threw RuntimeException('You done goofed.')."
         );
-        $this->subject->assertThrew(new RuntimeException());
+        $this->subjectWithException->assertThrew(new RuntimeException());
     }
 
     public function testAssertThrewFailureExpectingExceptionNoneThrown()
@@ -613,7 +717,7 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected exception equal to RuntimeException(). Nothing thrown."
         );
-        $this->subjectNoException->assertThrew(new RuntimeException());
+        $this->subject->assertThrew(new RuntimeException());
     }
 
     public function testAssertThrewFailureMatcherMismatch()
@@ -623,7 +727,7 @@ EOD;
             "Expected exception like <RuntimeException Object (...)>. " .
                 "Threw RuntimeException('You done goofed.')."
         );
-        $this->subject->assertThrew(new EqualToMatcher(new RuntimeException()));
+        $this->subjectWithException->assertThrew(new EqualToMatcher(new RuntimeException()));
     }
 
     public function testAssertThrewFailureInvalidInput()
@@ -632,6 +736,6 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Unable to match exceptions against stdClass Object ()."
         );
-        $this->subject->assertThrew((object) array());
+        $this->subjectWithException->assertThrew((object) array());
     }
 }

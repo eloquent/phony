@@ -15,6 +15,9 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -119,6 +122,76 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
+     * Set the events.
+     *
+     * @param array<integer,CallEventInterface> $events The events.
+     */
+    public function setEvents(array $events)
+    {
+        $this->call->setEvents($events);
+    }
+
+    /**
+     * Add a sequence of events.
+     *
+     * @param array<integer,CallEventInterface> $events The events.
+     */
+    public function addEvents(array $events)
+    {
+        $this->call->addEvents($events);
+    }
+
+    /**
+     * Add an event.
+     *
+     * @param CallEventInterface $event The event.
+     */
+    public function addEvent(CallEventInterface $event)
+    {
+        $this->call->addEvent($event);
+    }
+
+    /**
+     * Get the events.
+     *
+     * @return array<integer,CallEventInterface> The events.
+     */
+    public function events()
+    {
+        return $this->call->events();
+    }
+
+    /**
+     * Get the 'called' event.
+     *
+     * @return CalledEventInterface The 'called' event.
+     */
+    public function calledEvent()
+    {
+        return $this->call->calledEvent();
+    }
+
+    /**
+     * Get the end event.
+     *
+     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
+     */
+    public function endEvent()
+    {
+        return $this->call->endEvent();
+    }
+
+    /**
+     * Get the non-'called', non-end events.
+     *
+     * @return array<integer,CallEventInterface> The events.
+     */
+    public function otherEvents()
+    {
+        return $this->call->otherEvents();
+    }
+
+    /**
      * Get the function or method called.
      *
      * @return ReflectionFunctionAbstract The function or method called.
@@ -129,6 +202,16 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
+     * Get the $this value.
+     *
+     * @return object The $this value.
+     */
+    public function thisValue()
+    {
+        return $this->call->thisValue();
+    }
+
+    /**
      * Get the received arguments.
      *
      * @return array<integer,mixed> The received arguments.
@@ -136,16 +219,6 @@ class CallVerifier implements CallVerifierInterface
     public function arguments()
     {
         return $this->call->arguments();
-    }
-
-    /**
-     * Get the return value.
-     *
-     * @return mixed The return value.
-     */
-    public function returnValue()
-    {
-        return $this->call->returnValue();
     }
 
     /**
@@ -169,13 +242,13 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Get the time at which the call completed.
+     * Get the return value.
      *
-     * @return float The time at which the call completed, in seconds since the Unix epoch.
+     * @return mixed The return value.
      */
-    public function endTime()
+    public function returnValue()
     {
-        return $this->call->endTime();
+        return $this->call->returnValue();
     }
 
     /**
@@ -189,13 +262,13 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Get the $this value.
+     * Get the time at which the call completed.
      *
-     * @return object The $this value.
+     * @return float The time at which the call completed, in seconds since the Unix epoch.
      */
-    public function thisValue()
+    public function endTime()
     {
-        return $this->call->thisValue();
+        return $this->call->endTime();
     }
 
     /**

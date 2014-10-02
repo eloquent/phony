@@ -12,8 +12,6 @@
 namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Clock\SystemClock;
-use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\Spy;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -22,16 +20,12 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->sequencer = new Sequencer();
-        $this->clock = new SystemClock();
         $this->callFactory = new CallFactory();
-        $this->subject = new SpyFactory($this->sequencer, $this->clock, $this->callFactory);
+        $this->subject = new SpyFactory($this->callFactory);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->sequencer, $this->subject->sequencer());
-        $this->assertSame($this->clock, $this->subject->clock());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
     }
 
@@ -39,21 +33,17 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new SpyFactory();
 
-        $this->assertSame(Sequencer::instance(), $this->subject->sequencer());
-        $this->assertSame(SystemClock::instance(), $this->subject->clock());
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
     }
 
     public function testCreate()
     {
         $subject = function () {};
-        $expected = new Spy($subject, null, $this->sequencer, $this->clock, $this->callFactory);
+        $expected = new Spy($subject, null, $this->callFactory);
         $actual = $this->subject->create($subject);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($subject, $actual->subject());
-        $this->assertSame($this->sequencer, $actual->sequencer());
-        $this->assertSame($this->clock, $actual->clock());
         $this->assertSame($this->callFactory, $actual->callFactory());
     }
 

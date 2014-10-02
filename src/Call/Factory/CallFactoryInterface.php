@@ -12,8 +12,13 @@
 namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
+use Eloquent\Phony\Call\Event\ReturnedEventInterface;
+use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Exception;
-use ReflectionFunctionAbstract;
+use InvalidArgumentException;
 
 /**
  * The interface implemented by call factories.
@@ -21,27 +26,67 @@ use ReflectionFunctionAbstract;
 interface CallFactoryInterface
 {
     /**
+     * Record call details by invoking a callback.
+     *
+     * @param callable|null             $callback  The callback.
+     * @param array<integer,mixed>|null $arguments The arguments.
+     *
+     * @return CallInterface            The newly created call.
+     * @throws InvalidArgumentException If the supplied callback is invalid.
+     */
+    public function record(
+        $callback = null,
+        array $arguments = null
+    );
+
+    /**
      * Create a new call.
      *
-     * @param ReflectionFunctionAbstract $subject        The function or method called.
-     * @param array<integer,mixed>       $arguments      The arguments.
-     * @param mixed                      $returnValue    The return value.
-     * @param integer                    $sequenceNumber The sequence number.
-     * @param float                      $startTime      The time at which the call was made, in seconds since the Unix epoch.
-     * @param float                      $endTime        The time at which the call completed, in seconds since the Unix epoch.
-     * @param Exception|null             $exception      The thrown exception, or null if no exception was thrown.
-     * @param object|null                $thisValue      The $this value, or null if unbound.
+     * @param array<integer,CallEventInterface> $events The events.
      *
      * @return CallInterface The newly created call.
      */
-    public function create(
-        ReflectionFunctionAbstract $subject,
-        array $arguments,
-        $returnValue,
-        $sequenceNumber,
-        $startTime,
-        $endTime,
-        Exception $exception = null,
-        $thisValue = null
+    public function create(array $events);
+
+    /**
+     * Create a new 'called' event.
+     *
+     * @param callable|null             $callback  The callback.
+     * @param array<integer,mixed>|null $arguments The arguments.
+     *
+     * @return CalledEventInterface     The newly created event.
+     * @throws InvalidArgumentException If the supplied callback is invalid.
+     */
+    public function createCalledEvent(
+        $callback = null,
+        array $arguments = null
     );
+
+    /**
+     * Create a new end event.
+     *
+     * @param mixed          $returnValue The return value.
+     * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
+     *
+     * @return EndEventInterface The newly created event.
+     */
+    public function createEndEvent($returnValue, Exception $exception = null);
+
+    /**
+     * Create a new 'returned' event.
+     *
+     * @param mixed $returnValue The return value.
+     *
+     * @return ReturnedEventInterface The newly created event.
+     */
+    public function createReturnedEvent($returnValue);
+
+    /**
+     * Create a new 'thrown' event.
+     *
+     * @param Exception $exception The thrown exception.
+     *
+     * @return ThrewEventInterface The newly created event.
+     */
+    public function createThrewEvent(Exception $exception);
 }

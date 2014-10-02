@@ -15,14 +15,9 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
-use Eloquent\Phony\Clock\ClockInterface;
-use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Invocable\AbstractInvocable;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Sequencer\SequencerInterface;
 use Exception;
 use InvalidArgumentException;
-use ReflectionClass;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
@@ -39,8 +34,6 @@ class Spy extends AbstractInvocable implements SpyInterface
      *
      * @param callable|null                   $subject     The subject, or null to create an unbound spy.
      * @param ReflectionFunctionAbstract|null $reflector   The reflector to use.
-     * @param SequencerInterface|null         $sequencer   The sequencer to use.
-     * @param ClockInterface|null             $clock       The clock to use.
      * @param CallFactoryInterface|null       $callFactory The call factory to use.
      *
      * @throws InvalidArgumentException If the supplied subject is not supported.
@@ -48,21 +41,13 @@ class Spy extends AbstractInvocable implements SpyInterface
     public function __construct(
         $subject = null,
         ReflectionFunctionAbstract $reflector = null,
-        SequencerInterface $sequencer = null,
-        ClockInterface $clock = null,
         CallFactoryInterface $callFactory = null
     ) {
         if (null === $subject) {
             $subject = function () {};
         }
         if (null === $reflector) {
-            $reflector = $this->reflectorBySubject($subject);
-        }
-        if (null === $sequencer) {
-            $sequencer = Sequencer::instance();
-        }
-        if (null === $clock) {
-            $clock = SystemClock::instance();
+            $reflector = $this->reflectorByCallBack($subject);
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
@@ -70,30 +55,8 @@ class Spy extends AbstractInvocable implements SpyInterface
 
         $this->subject = $subject;
         $this->reflector = $reflector;
-        $this->sequencer = $sequencer;
-        $this->clock = $clock;
         $this->callFactory = $callFactory;
         $this->calls = array();
-    }
-
-    /**
-     * Get the sequencer.
-     *
-     * @return SequencerInterface The sequencer.
-     */
-    public function sequencer()
-    {
-        return $this->sequencer;
-    }
-
-    /**
-     * Get the clock.
-     *
-     * @return ClockInterface The clock.
-     */
-    public function clock()
-    {
-        return $this->clock;
     }
 
     /**
@@ -168,95 +131,47 @@ class Spy extends AbstractInvocable implements SpyInterface
      */
     public function invokeWith(array $arguments = null)
     {
-        if (null === $arguments) {
-            $arguments = array();
-        }
+        $this->calls[] = $call = $this->callFactory
+            ->record($this->subject, $arguments);
 
-        $returnValue = null;
-        $exception = null;
-        $startTime = $this->clock->time();
-
-        try {
-            $returnValue = $this->reflector->invokeArgs($arguments);
-        } catch (Exception $exception) {
-            // returned in tuple
-        }
-
-        $endTime = $this->clock->time();
-
-        if (static::isBoundClosureSupported()) {
-            $thisValue = $this->reflector->getClosureThis();
-        } else { // @codeCoverageIgnoreStart
-            $thisValue = null;
-        } // @codeCoverageIgnoreEnd
-
-        $this->calls[] = $this->callFactory->create(
-            $this->reflector,
-            $arguments,
-            $returnValue,
-            $this->sequencer->next(),
-            $startTime,
-            $endTime,
-            $exception,
-            $thisValue
-        );
+        $exception = $call->exception();
 
         if ($exception) {
             throw $exception;
         }
 
-        return $returnValue;
+        return $call->returnValue();
     }
 
     /**
-     * Get the appropriate reflector for the supplied subject.
+     * Get the appropriate reflector for the supplied callback.
      *
-     * @param callable $subject The subject.
+     * @param callable $callback The callback.
      *
      * @return ReflectionFunctionAbstract The reflector.
-     * @throws InvalidArgumentException   If the supplied subject is invalid.
+     * @throws InvalidArgumentException   If the supplied callback is invalid.
      */
-    protected function reflectorBySubject($subject)
+    protected function reflectorByCallBack($callback)
     {
-        if (!is_callable($subject)) {
-            throw new InvalidArgumentException('Unsupported spy subject.');
+        if (!is_callable($callback)) {
+            throw new InvalidArgumentException('Unsupported callback.');
         }
 
-        if (is_array($subject)) {
-            return new ReflectionMethod($subject[0], $subject[1]);
+        if (is_array($callback)) {
+            return new ReflectionMethod($callback[0], $callback[1]);
         }
 
-        if (is_string($subject) && false !== strpos($subject, '::')) {
-            list($className, $methodName) = explode('::', $subject);
+        if (is_string($callback) && false !== strpos($callback, '::')) {
+            list($className, $methodName) = explode('::', $callback);
 
             return new ReflectionMethod($className, $methodName);
         }
 
-        return new ReflectionFunction($subject);
+        return new ReflectionFunction($callback);
     }
 
-    /**
-     * Returns true if bound closures are supported.
-     *
-     * @return boolean True if bound closures are supported.
-     */
-    protected static function isBoundClosureSupported()
-    {
-        if (null === self::$isBoundClosureSupported) {
-            $reflectorReflector = new ReflectionClass('ReflectionFunction');
-
-            self::$isBoundClosureSupported = $reflectorReflector
-                ->hasMethod('getClosureThis');
-        }
-
-        return self::$isBoundClosureSupported;
-    }
-
-    private static $isBoundClosureSupported;
     private $subject;
     private $reflector;
-    private $sequencer;
-    private $clock;
     private $callFactory;
     private $calls;
 }

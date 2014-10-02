@@ -15,6 +15,8 @@ use ReflectionFunctionAbstract;
 
 /**
  * Represents the start of a call.
+ *
+ * @internal
  */
 class CalledEvent extends AbstractCallEvent implements CalledEventInterface
 {

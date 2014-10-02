@@ -9,7 +9,9 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Clock;
+namespace Eloquent\Phony\Test;
+
+use Eloquent\Phony\Clock\ClockInterface;
 
 class TestClock implements ClockInterface
 {

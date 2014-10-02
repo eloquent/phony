@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Call\Event;
 
 /**
  * An abstract base class for implementing call events.
+ *
+ * @internal
  */
 abstract class AbstractCallEvent implements CallEventInterface
 {

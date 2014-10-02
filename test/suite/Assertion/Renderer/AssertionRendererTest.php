@@ -12,6 +12,9 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -29,16 +32,17 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->subject = new AssertionRenderer($this->exporter);
 
         $this->callA = new Call(
-            new ReflectionMethod(__METHOD__),
-            array('argumentA', 'argumentB'),
-            'returnValue',
-            0,
-            .1,
-            .2,
-            new RuntimeException('message'),
-            (object) array()
+            array(
+                new CalledEvent(new ReflectionMethod(__METHOD__), $this, array('argumentA', 'argumentB'), 0, .1),
+                new ReturnedEvent('returnValue', 1, .2),
+            )
         );
-        $this->callB = new Call(new ReflectionMethod(__METHOD__), array(), null, 1, .3, .4);
+        $this->callB = new Call(
+            array(
+                new CalledEvent(new ReflectionMethod(__METHOD__), null, array(), 2, .3),
+                new ThrewEvent(new RuntimeException('message'), 3, .4),
+            )
+        );
     }
 
     public function testConstructor()
@@ -110,8 +114,8 @@ EOD;
     public function testRenderThrownExceptions()
     {
         $expected = <<<'EOD'
-    - RuntimeException('message')
     - <none>
+    - RuntimeException('message')
 EOD;
 
         $this->assertSame('', $this->subject->renderThrownExceptions(array()));
@@ -121,7 +125,7 @@ EOD;
     public function testRenderThisValues()
     {
         $expected = <<<'EOD'
-    - stdClass Object ()
+    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest Object (...)
     - null
 EOD;
 
@@ -133,23 +137,29 @@ EOD;
     {
         return array(
             'Method' => array(
-                new Call(new ReflectionMethod(__METHOD__), array(), null, 0, .1, .2),
+                new Call(array(new CalledEvent(new ReflectionMethod(__METHOD__), $this, array(), 0, .1))),
                 "Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->renderCallData()",
             ),
             'Static method' => array(
-                new Call(new ReflectionMethod('ReflectionMethod::export'), array(), null, 0, .1, .2),
+                new Call(
+                    array(new CalledEvent(new ReflectionMethod('ReflectionMethod::export'), null, array(), 0, .1))
+                ),
                 "ReflectionMethod::export()",
             ),
             'Function' => array(
-                new Call(new ReflectionFunction('function_exists'), array(), null, 0, .1, .2),
+                new Call(array(new CalledEvent(new ReflectionFunction('function_exists'), null, array(), 0, .1))),
                 "function_exists()",
             ),
             'Closure' => array(
-                new Call(new ReflectionFunction(function () {}), array(), null, 0, .1, .2),
+                new Call(array(new CalledEvent(new ReflectionFunction(function () {}), $this, array(), 0, .1))),
                 "Eloquent\Phony\Assertion\Renderer\{closure}()",
             ),
             'With arguments' => array(
-                new Call(new ReflectionFunction('function_exists'), array('argument', 111), null, 0, .1, .2),
+                new Call(
+                    array(
+                        new CalledEvent(new ReflectionFunction('function_exists'), null, array('argument', 111), 0, .1)
+                    )
+                ),
                 "function_exists('argument', 111)",
             ),
         );
