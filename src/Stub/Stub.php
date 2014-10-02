@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Invocable\AbstractInvocable;
+use Eloquent\Phony\Invocable\AbstractWrappedInvocable;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -23,16 +23,18 @@ use Exception;
  *
  * @internal
  */
-class Stub extends AbstractInvocable implements StubInterface
+class Stub extends AbstractWrappedInvocable implements StubInterface
 {
     /**
      * Construct a new stub.
      *
+     * @param callable|null                 $callback        The callback, or null to create an unbound stub.
      * @param object|null                   $thisValue       The $this value.
      * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
      * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
      */
     public function __construct(
+        $callback = null,
         $thisValue = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null
@@ -43,6 +45,8 @@ class Stub extends AbstractInvocable implements StubInterface
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
+
+        parent::__construct($callback);
 
         $this->thisValue = $thisValue;
         $this->matcherFactory = $matcherFactory;
@@ -453,43 +457,44 @@ class Stub extends AbstractInvocable implements StubInterface
 
         foreach ($this->rules as $ruleIndex => &$rule) {
             if ($this->matcherVerifier->matches($rule[0], $arguments)) {
-                $this->ruleCounts[$ruleIndex]++;
-
-                // pull out the current answer, using the last one once they are
-                // exhausted
-                if ($answer = current($rule[1])) {
-                    next($rule[1]);
-                } else {
-                    $answer = end($rule[1]);
-                }
-
-                // invoke callbacks added via calls() and friends
-                foreach ($answer[1] as $callDetails) {
-                    // get the actual callback, because it could be an argument
-                    $callback =
-                        call_user_func_array($callDetails[0], $arguments);
-
-                    // only call the callback if it's sane to do so
-                    if (is_callable($callback)) {
-                        $callbackArguments = $callDetails[1];
-                        if ($callDetails[2]) {
-                            $callbackArguments =
-                                array_merge($callbackArguments, $arguments);
-                        }
-                        if ($callDetails[3]) {
-                            $callbackArguments[] = $arguments;
-                        }
-
-                        // invoke secondary callback
-                        call_user_func_array($callback, $callbackArguments);
-                    }
-                }
-
-                // invoke primary callback
-                return call_user_func_array($answer[0], $arguments);
+                break;
             }
         }
-    } // @codeCoverageIgnore
+
+        $this->ruleCounts[$ruleIndex]++;
+
+        // pull out the current answer, using the last one once they are
+        // exhausted
+        if ($answer = current($rule[1])) {
+            next($rule[1]);
+        } else {
+            $answer = end($rule[1]);
+        }
+
+        // invoke callbacks added via calls() and friends
+        foreach ($answer[1] as $callDetails) {
+            // get the actual callback, because it could be an argument
+            $callback = call_user_func_array($callDetails[0], $arguments);
+
+            // only call the callback if it's sane to do so
+            if (is_callable($callback)) {
+                $callbackArguments = $callDetails[1];
+                if ($callDetails[2]) {
+                    $callbackArguments =
+                        array_merge($callbackArguments, $arguments);
+                }
+                if ($callDetails[3]) {
+                    $callbackArguments[] = $arguments;
+                }
+
+                // invoke secondary callback
+                call_user_func_array($callback, $callbackArguments);
+            }
+        }
+
+        // invoke primary callback
+        return call_user_func_array($answer[0], $arguments);
+    }
 
     /**
      * Returns a callback that returns the supplied callback.

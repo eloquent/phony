@@ -12,20 +12,13 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Invocable\InvocableInterface;
+use Eloquent\Phony\Invocable\WrappedInvocableInterface;
 
 /**
  * The interface implemented by spies.
  */
-interface SpyInterface extends InvocableInterface
+interface SpyInterface extends WrappedInvocableInterface
 {
-    /**
-     * Get the callback.
-     *
-     * @return callable The callback.
-     */
-    public function callback();
-
     /**
      * Set the calls.
      *

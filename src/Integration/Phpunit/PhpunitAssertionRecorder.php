@@ -59,7 +59,7 @@ class PhpunitAssertionRecorder implements AssertionRecorderInterface
     public function createFailure($description)
     {
         return new PHPUnit_Framework_ExpectationFailedException($description);
-    } // @codeCoverageIgnore
+    }
 
     private static $instance;
 }

@@ -22,10 +22,11 @@ class StubTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->callback = 'implode';
         $this->thisValue = (object) array();
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->subject = new Stub($this->thisValue, $this->matcherFactory, $this->matcherVerifier);
+        $this->subject = new Stub($this->callback, $this->thisValue, $this->matcherFactory, $this->matcherVerifier);
 
         $this->wildcard = array(WildcardMatcher::instance());
         $this->callbackA = function () { return 'a'; };
@@ -38,6 +39,7 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->thisValue, $this->subject->thisValue());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
@@ -47,6 +49,8 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Stub();
 
+        $this->assertTrue(is_callable($this->subject->callback()));
+        $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertSame($this->subject, $this->subject->thisValue());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());

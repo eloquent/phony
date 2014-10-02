@@ -11,13 +11,13 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Invocable\InvocableInterface;
+use Eloquent\Phony\Invocable\WrappedInvocableInterface;
 use Exception;
 
 /**
  * The interface implemented by stubs.
  */
-interface StubInterface extends InvocableInterface
+interface StubInterface extends WrappedInvocableInterface
 {
     /**
      * Set the $this value of this stub.

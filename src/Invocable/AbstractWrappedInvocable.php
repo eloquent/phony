@@ -14,12 +14,36 @@ namespace Eloquent\Phony\Invocable;
 use Exception;
 
 /**
- * An abstract base class for implementing invocables.
+ * An abstract base class for implementing wrapped invocables.
  *
  * @internal
  */
-abstract class AbstractInvocable implements InvocableInterface
+abstract class AbstractWrappedInvocable implements WrappedInvocableInterface
 {
+    /**
+     * Construct a new wrapped invocable.
+     *
+     * @param callable|null $callback The callback.
+     */
+    public function __construct($callback = null)
+    {
+        if (null === $callback) {
+            $callback = function () {};
+        }
+
+        $this->callback = $callback;
+    }
+
+    /**
+     * Get the callback.
+     *
+     * @return callable The callback.
+     */
+    public function callback()
+    {
+        return $this->callback;
+    }
+
     /**
      * Invoke this object.
      *
@@ -45,4 +69,6 @@ abstract class AbstractInvocable implements InvocableInterface
     {
         return $this->invokeWith(func_get_args());
     }
+
+    protected $callback;
 }

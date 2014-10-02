@@ -15,7 +15,7 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
-use Eloquent\Phony\Invocable\AbstractInvocable;
+use Eloquent\Phony\Invocable\AbstractWrappedInvocable;
 use Exception;
 
 /**
@@ -23,7 +23,7 @@ use Exception;
  *
  * @internal
  */
-class Spy extends AbstractInvocable implements SpyInterface
+class Spy extends AbstractWrappedInvocable implements SpyInterface
 {
     /**
      * Construct a new spy.
@@ -35,14 +35,12 @@ class Spy extends AbstractInvocable implements SpyInterface
         $callback = null,
         CallFactoryInterface $callFactory = null
     ) {
-        if (null === $callback) {
-            $callback = function () {};
-        }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
 
-        $this->callback = $callback;
+        parent::__construct($callback);
+
         $this->callFactory = $callFactory;
         $this->calls = array();
     }
@@ -55,16 +53,6 @@ class Spy extends AbstractInvocable implements SpyInterface
     public function callFactory()
     {
         return $this->callFactory;
-    }
-
-    /**
-     * Get the callback.
-     *
-     * @return callable The callback.
-     */
-    public function callback()
-    {
-        return $this->callback;
     }
 
     /**
@@ -121,7 +109,6 @@ class Spy extends AbstractInvocable implements SpyInterface
         return $call->returnValue();
     }
 
-    private $callback;
     private $callFactory;
     private $calls;
 }
