@@ -15,6 +15,8 @@ use Exception;
 
 /**
  * An abstract base class for implementing invocables.
+ *
+ * @internal
  */
 abstract class AbstractInvocable implements InvocableInterface
 {
