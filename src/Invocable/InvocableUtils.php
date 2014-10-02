@@ -12,14 +12,16 @@
 namespace Eloquent\Phony\Invocable;
 
 use Closure;
-use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 /**
  * A static utility class for inspecting callable values.
+ *
+ * @internal
  */
 final class InvocableUtils
 {
@@ -29,19 +31,10 @@ final class InvocableUtils
      * @param callable $callback The callback.
      *
      * @return ReflectionFunctionAbstract The reflector.
-     * @throws InvalidArgumentException   If the supplied callback is invalid.
+     * @throws ReflectionException        If the callback cannot be reflected.
      */
     public static function callbackReflector($callback)
     {
-        if (!is_callable($callback, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Unsupported callback of type %s.',
-                    var_export(gettype($callback), true)
-                )
-            );
-        }
-
         if (is_array($callback)) {
             return new ReflectionMethod($callback[0], $callback[1]);
         }
@@ -60,30 +53,22 @@ final class InvocableUtils
      *
      * @param callable $callback The callback.
      *
-     * @return object|null              The $this value.
-     * @throws InvalidArgumentException If the supplied callback is invalid.
+     * @return object|null The $this value.
      */
     public static function callbackThisValue($callback)
     {
-        if (!is_callable($callback, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Unsupported callback of type %s.',
-                    var_export(gettype($callback), true)
-                )
-            );
-        }
-
-        if (is_array($callback)) {
+        if (is_array($callback) && is_object($callback[0])) {
             return $callback[0];
         }
 
-        if ($callback instanceof Closure && static::isBoundClosureSupported()) {
+        if ($callback instanceof Closure) {
+            if (!self::isBoundClosureSupported()) {
+                return $callback; // @codeCoverageIgnore
+            }
+
             $reflector = new ReflectionFunction($callback);
 
-            if ($reflector->isClosure()) {
-                return $reflector->getClosureThis();
-            }
+            return $reflector->getClosureThis();
         }
 
         return null;
@@ -94,7 +79,7 @@ final class InvocableUtils
      *
      * @return boolean True if bound closures are supported.
      */
-    private static function isBoundClosureSupported()
+    public static function isBoundClosureSupported()
     {
         if (null === self::$isBoundClosureSupported) {
             $reflectorReflector = new ReflectionClass('ReflectionFunction');

@@ -74,6 +74,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testIsMatcher()
     {
+        $this->assertTrue($this->subject->isMatcher(new EqualToMatcher('a')));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherA()));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherB()));
         $this->assertFalse($this->subject->isMatcher((object) array()));

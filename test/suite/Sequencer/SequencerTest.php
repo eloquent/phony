@@ -33,6 +33,14 @@ class SequencerTest extends PHPUnit_Framework_TestCase
         $this->assertSame(111, $this->subject->get());
     }
 
+    public function testReset()
+    {
+        $this->subject->set(111);
+        $this->subject->reset();
+
+        $this->assertSame(-1, $this->subject->get());
+    }
+
     public function testNext()
     {
         $this->assertSame(0, $this->subject->next());
