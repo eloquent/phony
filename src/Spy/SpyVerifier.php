@@ -183,13 +183,13 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Get the subject.
+     * Get the callback.
      *
-     * @return callable The subject.
+     * @return callable The callback.
      */
-    public function subject()
+    public function callback()
     {
-        return $this->spy->subject();
+        return $this->spy->callback();
     }
 
     /**
@@ -223,14 +223,14 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Record a call by invocation.
+     * Invoke this object.
      *
      * This method supports reference parameters.
      *
      * @param array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
+     * @throws Exception If an error occurs.
      */
     public function invokeWith(array $arguments = null)
     {
@@ -238,12 +238,12 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Record a call by invocation.
+     * Invoke this object.
      *
      * @param mixed $arguments,... The arguments.
      *
      * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
+     * @throws Exception If an error occurs.
      */
     public function invoke()
     {
@@ -251,12 +251,12 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Record a call by invocation.
+     * Invoke this object.
      *
-     * @param mixed $arguments,...
+     * @param mixed $arguments,... The arguments.
      *
      * @return mixed     The result of invocation.
-     * @throws Exception If the subject throws an exception.
+     * @throws Exception If an error occurs.
      */
     public function __invoke()
     {

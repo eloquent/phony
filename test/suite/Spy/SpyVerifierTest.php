@@ -29,9 +29,9 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->spySubject = 'implode';
+        $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
-        $this->spy = new Spy($this->spySubject, $this->callFactory);
+        $this->spy = new Spy($this->callback, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -115,7 +115,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testProxyMethods()
     {
-        $this->assertSame($this->spySubject, $this->subject->subject());
+        $this->assertSame($this->callback, $this->subject->callback());
     }
 
     public function testSetCalls()
@@ -157,19 +157,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array(array('a'))),
+                    $this->callFactory->createCalledEvent($spy->callback(), array(array('a'))),
                     $this->callFactory->createReturnedEvent('a'),
                 )
             ),
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array(array('b', 'c'))),
+                    $this->callFactory->createCalledEvent($spy->callback(), array(array('b', 'c'))),
                     $this->callFactory->createReturnedEvent('bc'),
                 )
             ),
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array(array('d'))),
+                    $this->callFactory->createCalledEvent($spy->callback(), array(array('d'))),
                     $this->callFactory->createReturnedEvent('d'),
                 )
             ),
@@ -190,19 +190,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array('a')),
+                    $this->callFactory->createCalledEvent($spy->callback(), array('a')),
                     $this->callFactory->createReturnedEvent(),
                 )
             ),
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array('b', 'c')),
+                    $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
                     $this->callFactory->createReturnedEvent(),
                 )
             ),
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array('d')),
+                    $this->callFactory->createCalledEvent($spy->callback(), array('d')),
                     $this->callFactory->createReturnedEvent(),
                 )
             ),
@@ -214,11 +214,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testInvokeWithExceptionThrown()
     {
         $exceptions = array(new Exception(), new Exception(), new Exception());
-        $subject = function () use (&$exceptions) {
+        $callback = function () use (&$exceptions) {
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($subject, $this->callFactory);
+        $spy = new Spy($callback, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $caughtExceptions = array();
         try {
@@ -241,19 +241,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array('a')),
+                    $this->callFactory->createCalledEvent($spy->callback(), array('a')),
                     $this->callFactory->createThrewEvent($exceptions[0]),
                 )
             ),
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array('b', 'c')),
+                    $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
                     $this->callFactory->createThrewEvent($exceptions[1]),
                 )
             ),
             $this->callFactory->create(
                 array(
-                    $this->callFactory->createCalledEvent($spy->subject(), array('d')),
+                    $this->callFactory->createCalledEvent($spy->callback(), array('d')),
                     $this->callFactory->createThrewEvent($exceptions[2]),
                 )
             ),
@@ -264,10 +264,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeWithWithReferenceParameters()
     {
-        $subject = function (&$argument) {
+        $callback = function (&$argument) {
             $argument = 'x';
         };
-        $spy = new Spy($subject, $this->callFactory);
+        $spy = new Spy($callback, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $value = null;
         $arguments = array(&$value);

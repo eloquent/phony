@@ -177,13 +177,13 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     /**
      * Create a new spy verifier.
      *
-     * @param callable|null $subject The subject, or null to create an unbound spy.
+     * @param callable|null $callback The callback, or null to create an unbound spy.
      *
      * @return SpyVerifierInterface The newly created spy verifier.
      */
-    public function createFromSubject($subject = null)
+    public function createFromCallback($callback = null)
     {
-        return $this->create($this->spyFactory->create($subject));
+        return $this->create($this->spyFactory->create($callback));
     }
 
     private static $instance;

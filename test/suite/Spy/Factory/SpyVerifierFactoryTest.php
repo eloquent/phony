@@ -93,12 +93,12 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
     }
 
-    public function testCreateFromSubject()
+    public function testCreateFromCallback()
     {
-        $subject = function () {};
-        $spy = new Spy($subject);
+        $callback = function () {};
+        $spy = new Spy($callback);
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
-        $actual = $this->subject->createFromSubject($subject);
+        $actual = $this->subject->createFromCallback($callback);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
@@ -109,11 +109,11 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
     }
 
-    public function testCreateFromSubjectDefaults()
+    public function testCreateFromCallbackDefaults()
     {
         $spy = new Spy();
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
-        $actual = $this->subject->createFromSubject();
+        $actual = $this->subject->createFromCallback();
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());

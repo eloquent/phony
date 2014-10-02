@@ -22,13 +22,13 @@ class Phony
     /**
      * Create a new spy.
      *
-     * @param callable|null $subject The subject, or null to create an unbound spy.
+     * @param callable|null $callback The callback, or null to create an unbound spy.
      *
      * @return SpyVerifierInterface The newly created spy.
      */
-    public static function spy($subject = null)
+    public static function spy($callback = null)
     {
-        return static::spyVerifierFactory()->createFromSubject($subject);
+        return static::spyVerifierFactory()->createFromCallback($callback);
     }
 
     /**

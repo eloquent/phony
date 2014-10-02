@@ -20,11 +20,11 @@ use Eloquent\Phony\Invocable\InvocableInterface;
 interface SpyInterface extends InvocableInterface
 {
     /**
-     * Get the subject.
+     * Get the callback.
      *
-     * @return callable The subject.
+     * @return callable The callback.
      */
-    public function subject();
+    public function callback();
 
     /**
      * Set the calls.

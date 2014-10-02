@@ -64,13 +64,13 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Create a new spy.
      *
-     * @param callable|null $subject The subject, or null to create an unbound spy.
+     * @param callable|null $callback The callback, or null to create an unbound spy.
      *
      * @return SpyInterface The newly created spy.
      */
-    public function create($subject = null)
+    public function create($callback = null)
     {
-        return new Spy($subject, $this->callFactory);
+        return new Spy($callback, $this->callFactory);
     }
 
     private static $instance;

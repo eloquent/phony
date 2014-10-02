@@ -29,11 +29,11 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testSpy()
     {
-        $subject = function () {};
-        $actual = Phony::spy($subject);
+        $callback = function () {};
+        $actual = Phony::spy($callback);
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
-        $this->assertSame($subject, $actual->subject());
+        $this->assertSame($callback, $actual->callback());
         $this->assertSame(array(PhpunitMatcherDriver::instance()), $actual->matcherFactory()->drivers());
         $this->assertSame(
             array(PhpunitMatcherDriver::instance()),

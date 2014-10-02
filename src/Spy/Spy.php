@@ -28,21 +28,21 @@ class Spy extends AbstractInvocable implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null             $subject     The subject, or null to create an unbound spy.
+     * @param callable|null             $callback    The callback, or null to create an unbound spy.
      * @param CallFactoryInterface|null $callFactory The call factory to use.
      */
     public function __construct(
-        $subject = null,
+        $callback = null,
         CallFactoryInterface $callFactory = null
     ) {
-        if (null === $subject) {
-            $subject = function () {};
+        if (null === $callback) {
+            $callback = function () {};
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
 
-        $this->subject = $subject;
+        $this->callback = $callback;
         $this->callFactory = $callFactory;
         $this->calls = array();
     }
@@ -58,13 +58,13 @@ class Spy extends AbstractInvocable implements SpyInterface
     }
 
     /**
-     * Get the subject.
+     * Get the callback.
      *
-     * @return callable The subject.
+     * @return callable The callback.
      */
-    public function subject()
+    public function callback()
     {
-        return $this->subject;
+        return $this->callback;
     }
 
     /**
@@ -110,7 +110,7 @@ class Spy extends AbstractInvocable implements SpyInterface
     public function invokeWith(array $arguments = null)
     {
         $this->calls[] = $call = $this->callFactory
-            ->record($this->subject, $arguments);
+            ->record($this->callback, $arguments);
 
         $exception = $call->exception();
 
@@ -121,7 +121,7 @@ class Spy extends AbstractInvocable implements SpyInterface
         return $call->returnValue();
     }
 
-    private $subject;
+    private $callback;
     private $callFactory;
     private $calls;
 }

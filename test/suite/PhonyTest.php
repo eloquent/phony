@@ -19,11 +19,11 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     public function testSpy()
     {
-        $subject = function () {};
-        $expected = new SpyVerifier(new Spy($subject));
-        $actual = Phony::spy($subject);
+        $callback = function () {};
+        $expected = new SpyVerifier(new Spy($callback));
+        $actual = Phony::spy($callback);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($subject, $actual->subject());
+        $this->assertSame($callback, $actual->callback());
     }
 }
