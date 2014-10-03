@@ -122,27 +122,27 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertSame($this->calls, $this->subject->spy()->calls());
+        $this->assertSame($this->calls, $this->subject->spy()->recordedCalls());
     }
 
     public function testAddCall()
     {
         $this->subject->addCall($this->callA);
 
-        $this->assertSame(array($this->callA), $this->subject->spy()->calls());
+        $this->assertSame(array($this->callA), $this->subject->spy()->recordedCalls());
 
         $this->subject->addCall($this->callB);
 
-        $this->assertSame(array($this->callA, $this->callB), $this->subject->spy()->calls());
+        $this->assertSame(array($this->callA, $this->callB), $this->subject->spy()->recordedCalls());
     }
 
     public function testCalls()
     {
-        $this->assertSame(array(), $this->subject->calls());
+        $this->assertSame(array(), $this->subject->recordedCalls());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals($this->wrappedCalls, $this->subject->calls());
+        $this->assertEquals($this->wrappedCalls, $this->subject->recordedCalls());
     }
 
     public function testInvokeMethods()
@@ -175,7 +175,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $this->spy->calls());
+        $this->assertEquals($expected, $this->spy->recordedCalls());
     }
 
     public function testInvokeMethodsWithoutSubject()
@@ -208,7 +208,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->calls());
+        $this->assertEquals($expected, $spy->recordedCalls());
     }
 
     public function testInvokeWithExceptionThrown()
@@ -259,7 +259,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->calls());
+        $this->assertEquals($expected, $spy->recordedCalls());
     }
 
     public function testInvokeWithWithReferenceParameters()

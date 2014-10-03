@@ -11,14 +11,74 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Invocable\WrappedInvocableInterface;
+use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Invocable\InvocableUtils;
+use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Spy\SpyVerifier;
 use Exception;
 
 /**
- * The interface implemented by stubs.
+ * Pairs a stub and a spy, and provides convenience methods for verifying
+ * interactions with the spy.
+ *
+ * @internal
  */
-interface StubInterface extends WrappedInvocableInterface
+class StubVerifier extends SpyVerifier implements StubVerifierInterface
 {
+    /**
+     * Construct a new stub verifier.
+     *
+     * @param StubInterface|null                $stub                The stub.
+     * @param SpyInterface|null                 $spy                 The spy.
+     * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
+     * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
+     * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
+     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
+     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     */
+    public function __construct(
+        StubInterface $stub = null,
+        SpyInterface $spy = null,
+        MatcherFactoryInterface $matcherFactory = null,
+        MatcherVerifierInterface $matcherVerifier = null,
+        CallVerifierFactoryInterface $callVerifierFactory = null,
+        AssertionRecorderInterface $assertionRecorder = null,
+        AssertionRendererInterface $assertionRenderer = null
+    ) {
+        if (null === $stub) {
+            $stub = new Stub();
+        }
+        if (null === $spy) {
+            $spy = new Spy($stub);
+        }
+
+        parent::__construct(
+            $spy,
+            $matcherFactory,
+            $matcherVerifier,
+            $callVerifierFactory,
+            $assertionRecorder,
+            $assertionRenderer
+        );
+
+        $this->stub = $stub;
+    }
+
+    /**
+     * Get the stub.
+     *
+     * @return StubInterface The stub.
+     */
+    public function stub()
+    {
+        return $this->stub;
+    }
+
     /**
      * Set the $this value of this stub.
      *
@@ -26,14 +86,20 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @param object $thisValue The $this value.
      */
-    public function setThisValue($thisValue);
+    public function setThisValue($thisValue)
+    {
+        $this->stub->setThisValue($thisValue);
+    }
 
     /**
      * Get the $this value of this stub.
      *
      * @return object The $this value.
      */
-    public function thisValue();
+    public function thisValue()
+    {
+        return $this->stub->thisValue();
+    }
 
     /**
      * Modify the current criteria to match the supplied arguments (and possibly
@@ -43,7 +109,15 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function with();
+    public function with()
+    {
+        InvocableUtils::callWith(
+            array($this->stub, __FUNCTION__),
+            func_get_args()
+        );
+
+        return $this;
+    }
 
     /**
      * Modify the current criteria to match the supplied arguments (and no
@@ -53,7 +127,15 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function withExactly();
+    public function withExactly()
+    {
+        InvocableUtils::callWith(
+            array($this->stub, __FUNCTION__),
+            func_get_args()
+        );
+
+        return $this;
+    }
 
     /**
      * Add a callback to be called as part of an answer.
@@ -65,7 +147,15 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function calls($callback);
+    public function calls($callback)
+    {
+        InvocableUtils::callWith(
+            array($this->stub, __FUNCTION__),
+            func_get_args()
+        );
+
+        return $this;
+    }
 
     /**
      * Add a callback to be called as part of an answer.
@@ -84,7 +174,11 @@ interface StubInterface extends WrappedInvocableInterface
         $callback,
         array $arguments = null,
         $appendArguments = null
-    );
+    ) {
+        $this->stub->callsWith($callback, $arguments, $appendArguments);
+
+        return $this;
+    }
 
     /**
      * Add an argument callback to be called as part of an answer.
@@ -98,7 +192,15 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function callsArgument($index = null);
+    public function callsArgument($index = null)
+    {
+        InvocableUtils::callWith(
+            array($this->stub, __FUNCTION__),
+            func_get_args()
+        );
+
+        return $this;
+    }
 
     /**
      * Add an argument callback to be called as part of an answer.
@@ -120,7 +222,11 @@ interface StubInterface extends WrappedInvocableInterface
         $index = null,
         array $arguments = null,
         $appendArguments = null
-    );
+    ) {
+        $this->stub->callsArgumentWith($index, $arguments, $appendArguments);
+
+        return $this;
+    }
 
     /**
      * Set the value of an argument passed by reference as part of an answer.
@@ -130,7 +236,12 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function setsArgument($value, $index = null);
+    public function setsArgument($value, $index = null)
+    {
+        $this->stub->setsArgument($value, $index);
+
+        return $this;
+    }
 
     /**
      * Add a callback as an answer.
@@ -140,14 +251,27 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function does($callback);
+    public function does($callback)
+    {
+        InvocableUtils::callWith(
+            array($this->stub, __FUNCTION__),
+            func_get_args()
+        );
+
+        return $this;
+    }
 
     /**
      * Add an answer that calls the wrapped callback.
      *
      * @return StubInterface This stub.
      */
-    public function forwards();
+    public function forwards()
+    {
+        $this->stub->forwards();
+
+        return $this;
+    }
 
     /**
      * Add an answer that returns a value.
@@ -157,7 +281,15 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function returns($value = null);
+    public function returns($value = null)
+    {
+        InvocableUtils::callWith(
+            array($this->stub, __FUNCTION__),
+            func_get_args()
+        );
+
+        return $this;
+    }
 
     /**
      * Add an answer that returns an argument.
@@ -168,14 +300,24 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function returnsArgument($index = null);
+    public function returnsArgument($index = null)
+    {
+        $this->stub->returnsArgument($index);
+
+        return $this;
+    }
 
     /**
      * Add an answer that returns the $this value.
      *
      * @return StubInterface This stub.
      */
-    public function returnsThis();
+    public function returnsThis()
+    {
+        $this->stub->returnsThis();
+
+        return $this;
+    }
 
     /**
      * Add an answer that throws an exception.
@@ -185,5 +327,15 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @return StubInterface This stub.
      */
-    public function throws(Exception $exception = null);
+    public function throws(Exception $exception = null)
+    {
+        InvocableUtils::callWith(
+            array($this->stub, __FUNCTION__),
+            func_get_args()
+        );
+
+        return $this;
+    }
+
+    private $stub;
 }

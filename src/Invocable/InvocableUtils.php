@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Invocable;
 
 use Closure;
+use Exception;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -25,6 +26,28 @@ use ReflectionMethod;
  */
 final class InvocableUtils
 {
+    /**
+     * Calls a callback, maintaining reference parameters.
+     *
+     * @param callable                  $callback  The callback.
+     * @param array<integer,mixed>|null $arguments The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Exception If an error occurs.
+     */
+    public static function callWith($callback, array $arguments = null)
+    {
+        if ($callback instanceof InvocableInterface) {
+            return $callback->invokeWith($arguments);
+        }
+
+        if (null === $arguments) {
+            $arguments = array();
+        }
+
+        return call_user_func_array($callback, $arguments);
+    }
+
     /**
      * Get the appropriate reflector for the supplied callback.
      *
@@ -61,10 +84,16 @@ final class InvocableUtils
             return $callback[0];
         }
 
-        if ($callback instanceof Closure && self::isBoundClosureSupported()) {
-            $reflector = new ReflectionFunction($callback);
+        if (is_object($callback)) {
+            if (
+                $callback instanceof Closure && self::isBoundClosureSupported()
+            ) {
+                $reflector = new ReflectionFunction($callback);
 
-            return $reflector->getClosureThis();
+                return $reflector->getClosureThis();
+            }
+
+            return $callback;
         }
 
         return null;

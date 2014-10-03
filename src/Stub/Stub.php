@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Invocable\AbstractWrappedInvocable;
+use Eloquent\Phony\Invocable\InvocableUtils;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -83,10 +84,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * This value is used by returnsThis().
      *
-     * @return object|null The $this value, or null to use the stub object.
+     * @param object $thisValue The $this value.
      */
     public function setThisValue($thisValue)
     {
+        if ($thisValue === $this) {
+            $thisValue = null;
+        }
+
         $this->thisValue = $thisValue;
     }
 
@@ -484,7 +489,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         // invoke callbacks added via calls() and friends
         foreach ($answer[1] as $callDetails) {
             // get the actual callback, because it could be an argument
-            $callback = call_user_func_array($callDetails[0], $arguments);
+            $callback = InvocableUtils::callWith($callDetails[0], $arguments);
 
             // only call the callback if it's sane to do so
             if (is_callable($callback)) {
@@ -498,12 +503,12 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 }
 
                 // invoke secondary callback
-                call_user_func_array($callback, $callbackArguments);
+                InvocableUtils::callWith($callback, $callbackArguments);
             }
         }
 
         // invoke primary callback
-        return call_user_func_array($answer[0], $arguments);
+        return InvocableUtils::callWith($answer[0], $arguments);
     }
 
     /**
@@ -552,8 +557,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         };
     }
 
+    private $thisValue;
     private $matcherFactory;
     private $matcherVerifier;
+    private $matchers;
+    private $callbacks;
     private $isNewRule;
     private $rules;
     private $ruleCounts;

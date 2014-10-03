@@ -46,7 +46,7 @@ class SpyVerifier implements SpyVerifierInterface
         $calls = array();
 
         foreach ($spies as $spy) {
-            foreach ($spy->calls() as $call) {
+            foreach ($spy->recordedCalls() as $call) {
                 if (!in_array($call, $calls, true)) {
                     $calls[] = $call;
                 }
@@ -213,13 +213,14 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
-     * Get the calls.
+     * Get the recorded calls.
      *
-     * @return array<CallVerifierInterface> The calls.
+     * @return array<CallInterface> The recorded calls.
      */
-    public function calls()
+    public function recordedCalls()
     {
-        return $this->callVerifierFactory->adaptAll($this->spy->calls());
+        return $this->callVerifierFactory
+            ->adaptAll($this->spy->recordedCalls());
     }
 
     /**
@@ -270,7 +271,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function callCount()
     {
-        return count($this->spy->calls());
+        return count($this->spy->recordedCalls());
     }
 
     /**
@@ -283,7 +284,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function callAt($index)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         if (!isset($calls[$index])) {
             throw new UndefinedCallException($index);
         }
@@ -299,7 +300,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function firstCall()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         if (!isset($calls[0])) {
             throw new UndefinedCallException(0);
         }
@@ -315,14 +316,14 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function lastCall()
     {
-        $callCount = count($this->spy->calls());
+        $callCount = count($this->spy->recordedCalls());
         if ($callCount > 0) {
             $index = $callCount - 1;
         } else {
             $index = 0;
         }
 
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         if (!isset($calls[$index])) {
             throw new UndefinedCallException($index);
         }
@@ -337,7 +338,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function called()
     {
-        return count($this->spy->calls()) > 0;
+        return count($this->spy->recordedCalls()) > 0;
     }
 
     /**
@@ -347,7 +348,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertCalled()
     {
-        if (count($this->spy->calls()) < 1) {
+        if (count($this->spy->recordedCalls()) < 1) {
             throw $this->assertionRecorder->createFailure('Never called.');
         }
 
@@ -361,7 +362,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function calledOnce()
     {
-        return 1 === count($this->spy->calls());
+        return 1 === count($this->spy->recordedCalls());
     }
 
     /**
@@ -371,7 +372,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertCalledOnce()
     {
-        $callCount = count($this->spy->calls());
+        $callCount = count($this->spy->recordedCalls());
 
         if (1 !== $callCount) {
             throw $this->assertionRecorder->createFailure(
@@ -391,7 +392,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function calledTimes($times)
     {
-        return $times === count($this->spy->calls());
+        return $times === count($this->spy->recordedCalls());
     }
 
     /**
@@ -403,7 +404,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertCalledTimes($times)
     {
-        $callCount = count($this->spy->calls());
+        $callCount = count($this->spy->recordedCalls());
 
         if ($times !== $callCount) {
             throw $this->assertionRecorder->createFailure(
@@ -427,13 +428,13 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function calledBefore(SpyInterface $spy)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
         if ($callCount < 1) {
             return false;
         }
 
-        $otherCalls = $spy->calls();
+        $otherCalls = $spy->recordedCalls();
         $otherCallCount = count($otherCalls);
         if ($otherCallCount < 1) {
             return false;
@@ -477,13 +478,13 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function calledAfter(SpyInterface $spy)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
         if ($callCount < 1) {
             return false;
         }
 
-        $otherCalls = $spy->calls();
+        $otherCalls = $spy->recordedCalls();
         $otherCallCount = count($otherCalls);
         if ($otherCallCount < 1) {
             return false;
@@ -529,7 +530,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function calledWith()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -559,7 +560,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertCalledWith()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $matchers[] = $this->matcherFactory->wildcard();;
 
@@ -599,7 +600,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function alwaysCalledWith()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -629,7 +630,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertAlwaysCalledWith()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $matchers[] = $this->matcherFactory->wildcard();;
 
@@ -671,7 +672,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function calledWithExactly()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -700,7 +701,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertCalledWithExactly()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         if (count($calls) < 1) {
@@ -739,7 +740,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function alwaysCalledWithExactly()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -768,7 +769,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertAlwaysCalledWithExactly()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         if (count($calls) < 1) {
@@ -809,7 +810,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function neverCalledWith()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return true;
@@ -839,7 +840,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertNeverCalledWith()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return $this->assertionRecorder->recordSuccess();
@@ -876,7 +877,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function neverCalledWithExactly()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return true;
@@ -905,7 +906,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertNeverCalledWithExactly()
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return $this->assertionRecorder->recordSuccess();
@@ -942,7 +943,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function calledOn($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -980,7 +981,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertCalledOn($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if ($this->matcherFactory->isMatcher($value)) {
             $value = $this->matcherFactory->adapt($value);
@@ -1044,7 +1045,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function alwaysCalledOn($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -1082,7 +1083,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertAlwaysCalledOn($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if ($this->matcherFactory->isMatcher($value)) {
             $value = $this->matcherFactory->adapt($value);
@@ -1149,7 +1150,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function returned($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -1176,7 +1177,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertReturned($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $value = $this->matcherFactory->adapt($value);
 
         if (count($calls) < 1) {
@@ -1212,7 +1213,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function alwaysReturned($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -1238,7 +1239,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertAlwaysReturned($value)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $value = $this->matcherFactory->adapt($value);
 
         if (count($calls) < 1) {
@@ -1276,7 +1277,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function threw($type = null)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -1340,7 +1341,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertThrew($type = null)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
 
         if (null === $type) {
@@ -1512,7 +1513,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function alwaysThrew($type = null)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
 
         if (count($calls) < 1) {
             return false;
@@ -1578,7 +1579,7 @@ class SpyVerifier implements SpyVerifierInterface
      */
     public function assertAlwaysThrew($type = null)
     {
-        $calls = $this->spy->calls();
+        $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
 
         if (null === $type) {

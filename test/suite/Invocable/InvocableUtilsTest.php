@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Invocable;
 
+use Eloquent\Phony\Test\TestInvocable;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionFunction;
@@ -28,6 +29,17 @@ class InvocableUtilsTest extends PHPUnit_Framework_TestCase
         }
 
         $this->callback = function () {};
+        $this->invocable = new TestInvocable();
+    }
+
+    public function testCallWith()
+    {
+        $this->assertSame(phpversion(), InvocableUtils::callWith('phpversion'));
+        $this->assertSame(1, InvocableUtils::callWith('strlen', array('a')));
+        $this->assertSame(
+            array('invokeWith', array('a', 'b')),
+            InvocableUtils::callWith($this->invocable, array('a', 'b'))
+        );
     }
 
     public function testCallbackReflector()
@@ -57,6 +69,7 @@ class InvocableUtilsTest extends PHPUnit_Framework_TestCase
     public function testCallbackThisValue()
     {
         $this->assertSame($this, InvocableUtils::callbackThisValue(array($this, 'a')));
+        $this->assertSame($this->invocable, InvocableUtils::callbackThisValue($this->invocable));
         $this->assertNull(InvocableUtils::callbackThisValue(array('a', 'b')));
         $this->assertNull(InvocableUtils::callbackThisValue('a::b'));
         $this->assertNull(InvocableUtils::callbackThisValue('a'));

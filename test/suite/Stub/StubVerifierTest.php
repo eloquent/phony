@@ -11,22 +11,40 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Test\TestAssertionRecorder;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
-class StubTest extends PHPUnit_Framework_TestCase
+class StubVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         $this->callback = 'implode';
         $this->thisValue = (object) array();
+        $this->stub = new Stub($this->callback, $this->thisValue);
+        $this->spy = new Spy($this->stub);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->subject = new Stub($this->callback, $this->thisValue, $this->matcherFactory, $this->matcherVerifier);
+        $this->callVerifierFactory = new CallVerifierFactory();
+        $this->assertionRecorder = new TestAssertionRecorder();
+        $this->assertionRenderer = new AssertionRenderer();
+        $this->subject = new StubVerifier(
+            $this->stub,
+            $this->spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer
+        );
 
         $this->wildcard = array(WildcardMatcher::instance());
         $this->callbackA = function () { return 'a'; };
@@ -39,21 +57,26 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
+        $this->assertSame($this->stub, $this->subject->stub());
+        $this->assertSame($this->spy, $this->subject->spy());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
+        $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
+        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
     }
 
     public function testConstructorDefaults()
     {
-        $this->subject = new Stub();
+        $this->subject = new StubVerifier();
 
-        $this->assertTrue(is_callable($this->subject->callback()));
-        $this->assertNull(call_user_func($this->subject->callback()));
-        $this->assertSame($this->subject, $this->subject->thisValue());
+        $this->assertEquals(new Stub(), $this->subject->stub());
+        $this->assertEquals(new Spy($this->subject->stub()), $this->subject->spy());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
+        $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
+        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
     }
 
     public function testSetThisValue()

@@ -76,11 +76,11 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     }
 
     /**
-     * Get the calls.
+     * Get the recorded calls.
      *
-     * @return array<CallInterface> The calls.
+     * @return array<CallInterface> The recorded calls.
      */
-    public function calls()
+    public function recordedCalls()
     {
         return $this->calls;
     }

@@ -36,7 +36,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
-        $this->assertSame(array(), $this->subject->calls());
+        $this->assertSame(array(), $this->subject->recordedCalls());
     }
 
     public function testConstructorDefaults()
@@ -52,18 +52,18 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertSame($this->calls, $this->subject->calls());
+        $this->assertSame($this->calls, $this->subject->recordedCalls());
     }
 
     public function testAddCall()
     {
         $this->subject->addCall($this->callA);
 
-        $this->assertSame(array($this->callA), $this->subject->calls());
+        $this->assertSame(array($this->callA), $this->subject->recordedCalls());
 
         $this->subject->addCall($this->callB);
 
-        $this->assertSame($this->calls, $this->subject->calls());
+        $this->assertSame($this->calls, $this->subject->recordedCalls());
     }
 
     public function testInvokeMethods()
@@ -95,7 +95,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->calls());
+        $this->assertEquals($expected, $spy->recordedCalls());
     }
 
     public function testInvokeMethodsWithoutSubject()
@@ -127,7 +127,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->calls());
+        $this->assertEquals($expected, $spy->recordedCalls());
     }
 
     public function testInvokeWithExceptionThrown()
@@ -177,7 +177,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->calls());
+        $this->assertEquals($expected, $spy->recordedCalls());
     }
 
     public function testInvokeWithDefaults()
@@ -198,7 +198,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->calls());
+        $this->assertEquals($expected, $spy->recordedCalls());
     }
 
     public function testInvokeWithWithReferenceParameters()

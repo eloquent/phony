@@ -23,6 +23,7 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
+use Eloquent\Phony\Invocable\InvocableUtils;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Exception;
@@ -113,7 +114,7 @@ class CallFactory implements CallFactoryInterface
         $calledEvent = $this->createCalledEvent($callback, $arguments);
 
         try {
-            $returnValue = call_user_func_array($callback, $arguments);
+            $returnValue = InvocableUtils::callWith($callback, $arguments);
         } catch (Exception $exception) {}
 
         return $this->create(

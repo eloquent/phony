@@ -34,9 +34,9 @@ interface SpyInterface extends WrappedInvocableInterface
     public function addCall(CallInterface $call);
 
     /**
-     * Get the calls.
+     * Get the recorded calls.
      *
-     * @return array<CallInterface> The calls.
+     * @return array<CallInterface> The recorded calls.
      */
-    public function calls();
+    public function recordedCalls();
 }
