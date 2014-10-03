@@ -279,6 +279,12 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', call_user_func($this->subject));
     }
 
+    public function testForwards()
+    {
+        $this->assertSame($this->subject, $this->subject->forwards());
+        $this->assertSame('a, b', call_user_func($this->subject, ', ', array('a', 'b')));
+    }
+
     public function testReturns()
     {
         $this->assertSame($this->subject, $this->subject->returns('a', 'b'));

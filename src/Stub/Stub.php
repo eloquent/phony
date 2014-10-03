@@ -327,6 +327,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
+     * Add an answer that calls the wrapped callback.
+     *
+     * @return StubInterface This stub.
+     */
+    public function forwards()
+    {
+        return $this->does($this->callback);
+    }
+
+    /**
      * Add an answer that returns a value.
      *
      * @param mixed $value                The return value.
@@ -503,7 +513,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * @return callable The callback.
      */
-    private function returnsCallbackCallback($callback)
+    protected function returnsCallbackCallback($callback)
     {
         return function () use ($callback) {
             return $callback;
@@ -517,7 +527,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * @return callable The callback.
      */
-    private function returnsArgumentCallback($index = null)
+    protected function returnsArgumentCallback($index = null)
     {
         if (null === $index) {
             $index = 0;

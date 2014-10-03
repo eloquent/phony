@@ -143,6 +143,13 @@ interface StubInterface extends WrappedInvocableInterface
     public function does($callback);
 
     /**
+     * Add an answer that calls the wrapped callback.
+     *
+     * @return StubInterface This stub.
+     */
+    public function forwards();
+
+    /**
      * Add an answer that returns a value.
      *
      * @param mixed $value                The return value.
