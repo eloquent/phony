@@ -17,6 +17,8 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -55,6 +57,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     * @param InvocableInspectorInterface|null  $invocableInspector  The invocable inspector to use.
      */
     public function __construct(
         SpyFactoryInterface $spyFactory = null,
@@ -62,7 +65,8 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         MatcherVerifierInterface $matcherVerifier = null,
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null
+        AssertionRendererInterface $assertionRenderer = null,
+        InvocableInspectorInterface $invocableInspector = null
     ) {
         if (null === $spyFactory) {
             $spyFactory = SpyFactory::instance();
@@ -82,6 +86,9 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         if (null === $assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
 
         $this->spyFactory = $spyFactory;
         $this->matcherFactory = $matcherFactory;
@@ -89,6 +96,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->invocableInspector = $invocableInspector;
     }
 
     /**
@@ -152,6 +160,16 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     }
 
     /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
+    }
+
+    /**
      * Create a new spy verifier.
      *
      * @param SpyInterface|null $spy The spy, or null to create an unbound spy verifier.
@@ -170,7 +188,8 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
     }
 
@@ -193,4 +212,5 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
+    private $invocableInspector;
 }

@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -38,13 +39,15 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->assertionRecorder = new TestAssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
+        $this->invocableInspector = new InvocableInspector();
         $this->subject = new SpyVerifier(
             $this->spy,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
 
         $this->returnValueA = 'x';
@@ -99,6 +102,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
     }
 
     public function testConstructorDefaults()
@@ -111,6 +115,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testProxyMethods()

@@ -19,7 +19,8 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
-use Eloquent\Phony\Invocation\InvocableUtils;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -86,6 +87,7 @@ class SpyVerifier implements SpyVerifierInterface
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     * @param InvocableInspectorInterface|null  $invocableInspector  The invocable inspector to use.
      */
     public function __construct(
         SpyInterface $spy = null,
@@ -93,7 +95,8 @@ class SpyVerifier implements SpyVerifierInterface
         MatcherVerifierInterface $matcherVerifier = null,
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null
+        AssertionRendererInterface $assertionRenderer = null,
+        InvocableInspectorInterface $invocableInspector = null
     ) {
         if (null === $spy) {
             $spy = new Spy();
@@ -113,6 +116,9 @@ class SpyVerifier implements SpyVerifierInterface
         if (null === $assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
 
         $this->spy = $spy;
         $this->matcherFactory = $matcherFactory;
@@ -120,6 +126,7 @@ class SpyVerifier implements SpyVerifierInterface
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->invocableInspector = $invocableInspector;
     }
 
     /**
@@ -180,6 +187,16 @@ class SpyVerifier implements SpyVerifierInterface
     public function assertionRenderer()
     {
         return $this->assertionRenderer;
+    }
+
+    /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
     }
 
     /**
@@ -957,7 +974,8 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         foreach ($calls as $call) {
-            $thisValue = InvocableUtils::callbackThisValue($call->callback());
+            $thisValue =
+                $this->invocableInspector->callbackThisValue($call->callback());
 
             if ($isMatcher) {
                 if ($value->matches($thisValue)) {
@@ -998,7 +1016,8 @@ class SpyVerifier implements SpyVerifierInterface
             foreach ($calls as $call) {
                 if (
                     $value->matches(
-                        InvocableUtils::callbackThisValue($call->callback())
+                        $this->invocableInspector
+                            ->callbackThisValue($call->callback())
                     )
                 ) {
                     return $this->assertionRecorder->recordSuccess();
@@ -1021,7 +1040,8 @@ class SpyVerifier implements SpyVerifierInterface
 
         foreach ($calls as $call) {
             if (
-                InvocableUtils::callbackThisValue($call->callback()) === $value
+                $this->invocableInspector
+                    ->callbackThisValue($call->callback()) === $value
             ) {
                 return $this->assertionRecorder->recordSuccess();
             }
@@ -1059,7 +1079,8 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         foreach ($calls as $call) {
-            $thisValue = InvocableUtils::callbackThisValue($call->callback());
+            $thisValue =
+                $this->invocableInspector->callbackThisValue($call->callback());
 
             if ($isMatcher) {
                 if (!$value->matches($thisValue)) {
@@ -1100,7 +1121,8 @@ class SpyVerifier implements SpyVerifierInterface
             foreach ($calls as $call) {
                 if (
                     !$value->matches(
-                        InvocableUtils::callbackThisValue($call->callback())
+                        $this->invocableInspector
+                            ->callbackThisValue($call->callback())
                     )
                 ) {
                     throw $this->assertionRecorder->createFailure(
@@ -1125,7 +1147,8 @@ class SpyVerifier implements SpyVerifierInterface
 
         foreach ($calls as $call) {
             if (
-                InvocableUtils::callbackThisValue($call->callback()) !== $value
+                $this->invocableInspector
+                    ->callbackThisValue($call->callback()) !== $value
             ) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
@@ -1753,4 +1776,5 @@ class SpyVerifier implements SpyVerifierInterface
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
+    private $invocableInspector;
 }

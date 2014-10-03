@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Spy\Factory;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
@@ -31,13 +32,15 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->assertionRecorder = new AssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
+        $this->invocableInspector = new InvocableInspector();
         $this->subject = new SpyVerifierFactory(
             $this->spyFactory,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
     }
 
@@ -49,6 +52,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
     }
 
     public function testConstructorDefaults()
@@ -61,6 +65,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testCreate()
@@ -76,6 +81,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $actual->invocableInspector());
     }
 
     public function testCreateDefaults()
@@ -91,6 +97,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $actual->invocableInspector());
     }
 
     public function testCreateFromCallback()
@@ -107,6 +114,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $actual->invocableInspector());
     }
 
     public function testCreateFromCallbackDefaults()
@@ -122,6 +130,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $actual->invocableInspector());
     }
 
     public function testInstance()
