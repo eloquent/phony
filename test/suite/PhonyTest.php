@@ -13,6 +13,8 @@ namespace Eloquent\Phony;
 
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
+use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Stub\StubVerifier;
 use PHPUnit_Framework_TestCase;
 
 class PhonyTest extends PHPUnit_Framework_TestCase
@@ -25,5 +27,16 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($callback, $actual->callback());
+    }
+
+    public function testStub()
+    {
+        $callback = function () {};
+        $expected = new StubVerifier(new Stub($callback));
+        $actual = Phony::stub($callback);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame($actual->stub(), $actual->spy()->callback());
     }
 }

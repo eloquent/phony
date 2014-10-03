@@ -11,71 +11,16 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
-use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Facade\AbstractFacade;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
-use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
-use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 
 /**
  * A facade for Phony usage under PHPUnit.
  */
-class Phony
+class Phony extends AbstractFacade
 {
-    /**
-     * Create a new spy verifier for the supplied callback.
-     *
-     * @param callable|null $callback The callback, or null to create an unbound spy verifier.
-     *
-     * @return SpyVerifierInterface The newly created spy verifier.
-     */
-    public static function spy($callback = null)
-    {
-        return static::spyVerifierFactory()->createFromCallback($callback);
-    }
-
-    /**
-     * Get the static spy verifier factory.
-     *
-     * @internal
-     *
-     * @return SpyVerifierFactoryInterface The spy verifier factory.
-     */
-    protected static function spyVerifierFactory()
-    {
-        if (null === self::$spyVerifierFactory) {
-            self::$spyVerifierFactory = new SpyVerifierFactory(
-                null,
-                static::matcherFactory(),
-                null,
-                static::callVerifierFactory()
-            );
-        }
-
-        return self::$spyVerifierFactory;
-    }
-
-    /**
-     * Get the static call verifier factory.
-     *
-     * @internal
-     *
-     * @return CallVerifierFactoryInterface The call verifier factory.
-     */
-    protected static function callVerifierFactory()
-    {
-        if (null === self::$callVerifierFactory) {
-            self::$callVerifierFactory = new CallVerifierFactory(
-                static::matcherFactory(),
-                null,
-                PhpunitAssertionRecorder::instance()
-            );
-        }
-
-        return self::$callVerifierFactory;
-    }
-
     /**
      * Get the static matcher factory.
      *
@@ -85,15 +30,30 @@ class Phony
      */
     protected static function matcherFactory()
     {
-        if (null === self::$matcherFactory) {
-            self::$matcherFactory =
-                new MatcherFactory(array(PhpunitMatcherDriver::instance()));
-        }
-
-        return self::$matcherFactory;
+        return static::service(
+            'Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface',
+            function () {
+                return
+                    new MatcherFactory(array(PhpunitMatcherDriver::instance()));
+            }
+        );
     }
 
-    private static $spyVerifierFactory;
-    private static $callVerifierFactory;
-    private static $matcherFactory;
+    /**
+     * Get the static assertion recorder.
+     *
+     * @internal
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
+     */
+    protected static function assertionRecorder()
+    {
+        return static::service(
+            'Eloquent\Phony\Assertion\AssertionRecorderInterface',
+            array(
+                'Eloquent\Phony\Integration\Phpunit\PhpunitAssertionRecorder',
+                'instance',
+            )
+        );
+    }
 }

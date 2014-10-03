@@ -35,10 +35,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
         $this->assertSame(array(PhpunitMatcherDriver::instance()), $actual->matcherFactory()->drivers());
-        $this->assertSame(
-            array(PhpunitMatcherDriver::instance()),
-            $actual->callVerifierFactory()->matcherFactory()->drivers()
-        );
+        $this->assertSame(PhpunitAssertionRecorder::instance(), $actual->callVerifierFactory()->assertionRecorder());
+    }
+
+    public function testStub()
+    {
+        $callback = function () {};
+        $actual = Phony::stub($callback);
+
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame($actual->stub(), $actual->spy()->callback());
+        $this->assertSame(array(PhpunitMatcherDriver::instance()), $actual->matcherFactory()->drivers());
         $this->assertSame(PhpunitAssertionRecorder::instance(), $actual->callVerifierFactory()->assertionRecorder());
     }
 }
