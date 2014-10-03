@@ -85,15 +85,15 @@ final class InvocableUtils
         }
 
         if (is_object($callback)) {
-            if (
-                $callback instanceof Closure && self::isBoundClosureSupported()
-            ) {
-                $reflector = new ReflectionFunction($callback);
+            if ($callback instanceof Closure) {
+                if (self::isBoundClosureSupported()) {
+                    $reflector = new ReflectionFunction($callback);
 
-                return $reflector->getClosureThis();
+                    return $reflector->getClosureThis();
+                }
+            } elseif (method_exists($callback, '__invoke')) {
+                return $callback;
             }
-
-            return $callback;
         }
 
         return null;

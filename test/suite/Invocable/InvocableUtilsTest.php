@@ -73,7 +73,7 @@ class InvocableUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertNull(InvocableUtils::callbackThisValue(array('a', 'b')));
         $this->assertNull(InvocableUtils::callbackThisValue('a::b'));
         $this->assertNull(InvocableUtils::callbackThisValue('a'));
-        $this->assertNull(InvocableUtils::callbackThisValue(111));
+        $this->assertNull(InvocableUtils::callbackThisValue((object) array()));
 
         if (InvocableUtils::isBoundClosureSupported()) {
             $this->assertSame($this, InvocableUtils::callbackThisValue($this->callback));
