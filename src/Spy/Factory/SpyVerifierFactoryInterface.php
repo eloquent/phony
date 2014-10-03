@@ -29,9 +29,9 @@ interface SpyVerifierFactoryInterface
     public function create(SpyInterface $spy = null);
 
     /**
-     * Create a new spy verifier.
+     * Create a new spy verifier for the supplied callback.
      *
-     * @param callable|null $callback The callback, or null to create an unbound spy.
+     * @param callable|null $callback The callback, or null to create an unbound spy verifier.
      *
      * @return SpyVerifierInterface The newly created spy verifier.
      */

@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Spy\Factory;
+namespace Eloquent\Phony\Stub\Factory;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRecorderInterface;
@@ -21,21 +21,23 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
+use Eloquent\Phony\Spy\Factory\SpyFactoryInterface;
 use Eloquent\Phony\Spy\SpyInterface;
-use Eloquent\Phony\Spy\SpyVerifier;
-use Eloquent\Phony\Spy\SpyVerifierInterface;
+use Eloquent\Phony\Stub\StubInterface;
+use Eloquent\Phony\Stub\StubVerifier;
 
 /**
- * Creates spy verifiers.
+ * Creates stub verifierss.
  *
  * @internal
  */
-class SpyVerifierFactory implements SpyVerifierFactoryInterface
+class StubVerifierFactory implements StubVerifierFactoryInterface
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return SpyVerifierFactoryInterface The static factory.
+     * @return StubVerifierFactoryInterface The static factory.
      */
     public static function instance()
     {
@@ -47,8 +49,9 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     }
 
     /**
-     * Construct a new spy verifier factory.
+     * Construct a new stub verifier factory.
      *
+     * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param SpyFactoryInterface|null          $spyFactory          The spy factory to use.
      * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
      * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
@@ -57,6 +60,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
      */
     public function __construct(
+        StubFactoryInterface $stubFactory = null,
         SpyFactoryInterface $spyFactory = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
@@ -64,6 +68,9 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         AssertionRecorderInterface $assertionRecorder = null,
         AssertionRendererInterface $assertionRenderer = null
     ) {
+        if (null === $stubFactory) {
+            $stubFactory = StubFactory::instance();
+        }
         if (null === $spyFactory) {
             $spyFactory = SpyFactory::instance();
         }
@@ -83,12 +90,23 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
             $assertionRenderer = AssertionRenderer::instance();
         }
 
+        $this->stubFactory = $stubFactory;
         $this->spyFactory = $spyFactory;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+    }
+
+    /**
+     * Get the stub factory.
+     *
+     * @return StubFactoryInterface The stub factory.
+     */
+    public function stubFactory()
+    {
+        return $this->stubFactory;
     }
 
     /**
@@ -152,19 +170,24 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     }
 
     /**
-     * Create a new spy verifier.
+     * Create a new stub verifier.
      *
-     * @param SpyInterface|null $spy The spy, or null to create an unbound spy verifier.
+     * @param StubInterface|null $stub The stub, or null to create an unbound stub verifier.
+     * @param SpyInterface|null  $spy  The spy, or null to spy on the supplied stub.
      *
-     * @return SpyVerifierInterface The newly created spy verifier.
+     * @return StubVerifierInterface The newly created stub verifier.
      */
-    public function create(SpyInterface $spy = null)
+    public function create(StubInterface $stub = null, SpyInterface $spy = null)
     {
+        if (null === $stub) {
+            $stub = $this->stubFactory->create();
+        }
         if (null === $spy) {
-            $spy = $this->spyFactory->create();
+            $spy = $this->spyFactory->create($stub);
         }
 
-        return new SpyVerifier(
+        return new StubVerifier(
+            $stub,
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
@@ -175,18 +198,20 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     }
 
     /**
-     * Create a new spy verifier for the supplied callback.
+     * Create a new stub verifier for the supplied callback.
      *
-     * @param callable|null $callback The callback, or null to create an unbound spy verifier.
+     * @param callable|null $callback  The callback, or null to create an unbound stub verifier.
+     * @param object|null   $thisValue The $this value.
      *
-     * @return SpyVerifierInterface The newly created spy verifier.
+     * @return StubVerifierInterface The newly created stub verifier.
      */
-    public function createFromCallback($callback = null)
+    public function createFromCallback($callback = null, $thisValue = null)
     {
-        return $this->create($this->spyFactory->create($callback));
+        return $this->create($this->stubFactory->create($callback, $thisValue));
     }
 
     private static $instance;
+    private $stubFactory;
     private $spyFactory;
     private $matcherFactory;
     private $matcherVerifier;
