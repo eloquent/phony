@@ -11,10 +11,8 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Assertion\AssertionRecorderInterface;
 use Eloquent\Phony\Facade\AbstractFacade;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
+use Eloquent\Phony\Facade\FacadeDriverInterface;
 
 /**
  * A facade for Phony usage under PHPUnit.
@@ -22,38 +20,12 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 class Phony extends AbstractFacade
 {
     /**
-     * Get the static matcher factory.
+     * Get the facade driver.
      *
-     * @internal
-     *
-     * @return MatcherFactoryInterface The matcher factory.
+     * @return FacadeDriverInterface The facade driver.
      */
-    protected static function matcherFactory()
+    protected static function driver()
     {
-        return static::service(
-            'Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface',
-            function () {
-                return
-                    new MatcherFactory(array(PhpunitMatcherDriver::instance()));
-            }
-        );
-    }
-
-    /**
-     * Get the static assertion recorder.
-     *
-     * @internal
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    protected static function assertionRecorder()
-    {
-        return static::service(
-            'Eloquent\Phony\Assertion\AssertionRecorderInterface',
-            array(
-                'Eloquent\Phony\Integration\Phpunit\PhpunitAssertionRecorder',
-                'instance',
-            )
-        );
+        return PhpunitFacadeDriver::instance();
     }
 }

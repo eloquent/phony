@@ -12,10 +12,21 @@
 namespace Eloquent\Phony;
 
 use Eloquent\Phony\Facade\AbstractFacade;
+use Eloquent\Phony\Facade\FacadeDriver;
+use Eloquent\Phony\Facade\FacadeDriverInterface;
 
 /**
  * A facade for standalone Phony usage.
  */
 class Phony extends AbstractFacade
 {
+    /**
+     * Get the facade driver.
+     *
+     * @return FacadeDriverInterface The facade driver.
+     */
+    protected static function driver()
+    {
+        return FacadeDriver::instance();
+    }
 }
