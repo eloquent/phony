@@ -15,6 +15,8 @@ use Exception;
 
 /**
  * Invokes callbacks, maintaining reference parameters.
+ *
+ * @internal
  */
 class Invoker implements InvokerInterface
 {
