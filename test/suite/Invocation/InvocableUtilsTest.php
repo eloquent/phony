@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Invocable;
+namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Test\TestInvocable;
 use PHPUnit_Framework_TestCase;
@@ -22,7 +22,7 @@ class InvocableUtilsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $reflector = new ReflectionClass('Eloquent\Phony\Invocable\InvocableUtils');
+        $reflector = new ReflectionClass('Eloquent\Phony\Invocation\InvocableUtils');
         foreach ($reflector->getProperties(ReflectionProperty::IS_STATIC) as $property) {
             $property->setAccessible(true);
             $property->setValue(null, null);
@@ -30,16 +30,6 @@ class InvocableUtilsTest extends PHPUnit_Framework_TestCase
 
         $this->callback = function () {};
         $this->invocable = new TestInvocable();
-    }
-
-    public function testCallWith()
-    {
-        $this->assertSame(phpversion(), InvocableUtils::callWith('phpversion'));
-        $this->assertSame(1, InvocableUtils::callWith('strlen', array('a')));
-        $this->assertSame(
-            array('invokeWith', array('a', 'b')),
-            InvocableUtils::callWith($this->invocable, array('a', 'b'))
-        );
     }
 
     public function testCallbackReflector()

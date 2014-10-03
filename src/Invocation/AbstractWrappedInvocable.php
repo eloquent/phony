@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Invocable;
+namespace Eloquent\Phony\Invocation;
 
 /**
  * An abstract base class for implementing wrapped invocables.

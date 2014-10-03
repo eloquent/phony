@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -43,10 +45,12 @@ class StubFactory implements StubFactoryInterface
      *
      * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
      * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
+     * @param InvokerInterface|null         $invoker         The invoker to use.
      */
     public function __construct(
         MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null
+        MatcherVerifierInterface $matcherVerifier = null,
+        InvokerInterface $invoker = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -54,9 +58,13 @@ class StubFactory implements StubFactoryInterface
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
+        }
 
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->invoker = $invoker;
     }
 
     /**
@@ -80,6 +88,16 @@ class StubFactory implements StubFactoryInterface
     }
 
     /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
+    }
+
+    /**
      * Create a new stub.
      *
      * @param callable|null $callback  The callback, or null to create an unbound stub.
@@ -93,11 +111,13 @@ class StubFactory implements StubFactoryInterface
             $callback,
             $thisValue,
             $this->matcherFactory,
-            $this->matcherVerifier
+            $this->matcherVerifier,
+            $this->invoker
         );
     }
 
     private static $instance;
     private $matcherFactory;
     private $matcherVerifier;
+    private $invoker;
 }

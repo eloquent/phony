@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Stub;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -36,6 +37,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->assertionRecorder = new TestAssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
+        $this->invoker = new Invoker();
         $this->subject = new StubVerifier(
             $this->stub,
             $this->spy,
@@ -43,7 +45,8 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invoker
         );
 
         $this->wildcard = array(WildcardMatcher::instance());
@@ -64,6 +67,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
     public function testConstructorDefaults()
@@ -77,6 +81,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
     public function testSetThisValue()

@@ -16,6 +16,7 @@ use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Clock\SystemClock;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit_Framework_TestCase;
@@ -28,7 +29,8 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->sequencer = new Sequencer();
         $this->clock = new TestClock();
-        $this->subject = new CallFactory($this->sequencer, $this->clock);
+        $this->invoker = new Invoker();
+        $this->subject = new CallFactory($this->sequencer, $this->clock, $this->invoker);
 
         $this->exception = new RuntimeException('You done goofed.');
     }
@@ -37,6 +39,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->sequencer, $this->subject->sequencer());
         $this->assertSame($this->clock, $this->subject->clock());
+        $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
     public function testConstructorDefaults()
@@ -45,6 +48,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(Sequencer::instance(), $this->subject->sequencer());
         $this->assertSame(SystemClock::instance(), $this->subject->clock());
+        $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
     public function testRecord()

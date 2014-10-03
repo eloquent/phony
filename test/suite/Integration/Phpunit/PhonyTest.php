@@ -13,20 +13,9 @@ namespace Eloquent\Phony\Integration\Phpunit;
 
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
-use ReflectionProperty;
 
 class PhonyTest extends PHPUnit_Framework_TestCase
 {
-    protected function setUp()
-    {
-        $reflector = new ReflectionClass('Eloquent\Phony\Integration\Phpunit\Phony');
-        foreach ($reflector->getProperties(ReflectionProperty::IS_STATIC) as $property) {
-            $property->setAccessible(true);
-            $property->setValue(null, null);
-        }
-    }
-
     public function testSpy()
     {
         $callback = function () {};

@@ -19,7 +19,7 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
-use Eloquent\Phony\Invocable\InvocableUtils;
+use Eloquent\Phony\Invocation\InvocableUtils;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;

@@ -15,7 +15,7 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
-use Eloquent\Phony\Invocable\AbstractWrappedInvocable;
+use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Exception;
 
 /**

@@ -11,8 +11,9 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Invocable\AbstractWrappedInvocable;
-use Eloquent\Phony\Invocable\InvocableUtils;
+use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -33,12 +34,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      * @param object|null                   $thisValue       The $this value.
      * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
      * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
+     * @param InvokerInterface|null         $invoker         The invoker to use.
      */
     public function __construct(
         $callback = null,
         $thisValue = null,
         MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null
+        MatcherVerifierInterface $matcherVerifier = null,
+        InvokerInterface $invoker = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -46,12 +49,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         if (null === $matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
+        }
 
         parent::__construct($callback);
 
         $this->thisValue = $thisValue;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->invoker = $invoker;
         $this->matchers = array($this->matcherFactory->wildcard());
         $this->callbacks = array();
         $this->isNewRule = true;
@@ -77,6 +84,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function matcherVerifier()
     {
         return $this->matcherVerifier;
+    }
+
+    /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
     }
 
     /**
@@ -489,7 +506,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         // invoke callbacks added via calls() and friends
         foreach ($answer[1] as $callDetails) {
             // get the actual callback, because it could be an argument
-            $callback = InvocableUtils::callWith($callDetails[0], $arguments);
+            $callback = $this->invoker->callWith($callDetails[0], $arguments);
 
             // only call the callback if it's sane to do so
             if (is_callable($callback)) {
@@ -503,12 +520,12 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 }
 
                 // invoke secondary callback
-                InvocableUtils::callWith($callback, $callbackArguments);
+                $this->invoker->callWith($callback, $callbackArguments);
             }
         }
 
         // invoke primary callback
-        return InvocableUtils::callWith($answer[0], $arguments);
+        return $this->invoker->callWith($answer[0], $arguments);
     }
 
     /**
@@ -560,6 +577,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     private $thisValue;
     private $matcherFactory;
     private $matcherVerifier;
+    private $invoker;
     private $matchers;
     private $callbacks;
     private $isNewRule;

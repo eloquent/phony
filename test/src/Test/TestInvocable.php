@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Invocable\InvocableInterface;
+use Eloquent\Phony\Invocation\InvocableInterface;
 
 class TestInvocable implements InvocableInterface
 {

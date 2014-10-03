@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Invocable\WrappedInvocableInterface;
+use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 use Exception;
 
 /**

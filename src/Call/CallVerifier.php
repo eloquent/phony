@@ -18,7 +18,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\EndEventInterface;
-use Eloquent\Phony\Invocable\InvocableUtils;
+use Eloquent\Phony\Invocation\InvocableUtils;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;

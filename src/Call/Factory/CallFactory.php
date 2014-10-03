@@ -23,7 +23,8 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
-use Eloquent\Phony\Invocable\InvocableUtils;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Exception;
@@ -54,10 +55,12 @@ class CallFactory implements CallFactoryInterface
      *
      * @param SequencerInterface|null $sequencer The sequencer to use.
      * @param ClockInterface|null     $clock     The clock to use.
+     * @param InvokerInterface|null   $invoker   The invoker to use.
      */
     public function __construct(
         SequencerInterface $sequencer = null,
-        ClockInterface $clock = null
+        ClockInterface $clock = null,
+        InvokerInterface $invoker = null
     ) {
         if (null === $sequencer) {
             $sequencer = Sequencer::instance();
@@ -65,9 +68,13 @@ class CallFactory implements CallFactoryInterface
         if (null === $clock) {
             $clock = SystemClock::instance();
         }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
+        }
 
         $this->sequencer = $sequencer;
         $this->clock = $clock;
+        $this->invoker = $invoker;
     }
 
     /**
@@ -88,6 +95,16 @@ class CallFactory implements CallFactoryInterface
     public function clock()
     {
         return $this->clock;
+    }
+
+    /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
     }
 
     /**
@@ -114,7 +131,7 @@ class CallFactory implements CallFactoryInterface
         $calledEvent = $this->createCalledEvent($callback, $arguments);
 
         try {
-            $returnValue = InvocableUtils::callWith($callback, $arguments);
+            $returnValue = $this->invoker->callWith($callback, $arguments);
         } catch (Exception $exception) {}
 
         return $this->create(
@@ -215,4 +232,5 @@ class CallFactory implements CallFactoryInterface
     private static $instance;
     private $sequencer;
     private $clock;
+    private $invoker;
 }

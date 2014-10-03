@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Stub\Factory;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Spy\Factory\SpyFactory;
@@ -36,6 +37,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->assertionRecorder = new AssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
+        $this->invoker = new Invoker();
         $this->subject = new StubVerifierFactory(
             $this->stubFactory,
             $this->spyFactory,
@@ -43,7 +45,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invoker
         );
     }
 
@@ -56,6 +59,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
     public function testConstructorDefaults()
@@ -69,6 +73,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
     public function testCreate()
@@ -82,7 +87,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invoker
         );
         $actual = $this->subject->create($stub, $spy);
 
@@ -94,6 +100,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
+        $this->assertSame($this->invoker, $actual->invoker());
     }
 
     public function testCreateDefaults()
@@ -107,7 +114,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invoker
         );
         $actual = $this->subject->create();
 
@@ -117,6 +125,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
+        $this->assertSame($this->invoker, $actual->invoker());
     }
 
     public function testCreateFromCallback()
@@ -132,7 +141,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invoker
         );
         $actual = $this->subject->createFromCallback($callback, $thisValue);
 
@@ -144,6 +154,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
         $this->assertSame($this->matcherFactory, $actual->stub()->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->stub()->matcherVerifier());
+        $this->assertSame($this->invoker, $actual->invoker());
         $this->assertSame($this->callFactory, $actual->spy()->callFactory());
     }
 

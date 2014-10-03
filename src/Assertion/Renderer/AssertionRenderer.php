@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Invocable\InvocableUtils;
+use Eloquent\Phony\Invocation\InvocableUtils;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Exception;
 use ReflectionMethod;

@@ -17,6 +17,8 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -58,6 +60,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
      * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     * @param InvokerInterface|null             $invoker             The invoker to use.
      */
     public function __construct(
         StubFactoryInterface $stubFactory = null,
@@ -66,7 +69,8 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         MatcherVerifierInterface $matcherVerifier = null,
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null
+        AssertionRendererInterface $assertionRenderer = null,
+        InvokerInterface $invoker = null
     ) {
         if (null === $stubFactory) {
             $stubFactory = StubFactory::instance();
@@ -89,6 +93,9 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         if (null === $assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
+        }
 
         $this->stubFactory = $stubFactory;
         $this->spyFactory = $spyFactory;
@@ -97,6 +104,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->invoker = $invoker;
     }
 
     /**
@@ -170,6 +178,16 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     }
 
     /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
+    }
+
+    /**
      * Create a new stub verifier.
      *
      * @param StubInterface|null $stub The stub, or null to create an unbound stub verifier.
@@ -193,7 +211,8 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
             $this->matcherVerifier,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invoker
         );
     }
 
@@ -218,4 +237,5 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
+    private $invoker;
 }

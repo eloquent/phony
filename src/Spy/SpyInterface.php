@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Invocable\WrappedInvocableInterface;
+use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 
 /**
  * The interface implemented by spies.
