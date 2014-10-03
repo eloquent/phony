@@ -18,6 +18,8 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Call\CallVerifierInterface;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -47,16 +49,18 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     /**
      * Construct a new call verifier factory.
      *
-     * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
-     * @param MatcherVerifierInterface|null   $matcherVerifier   The macther verifier to use.
-     * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
-     * @param AssertionRendererInterface|null $assertionRenderer The assertion renderer to use.
+     * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
+     * @param MatcherVerifierInterface|null    $matcherVerifier    The macther verifier to use.
+     * @param AssertionRecorderInterface|null  $assertionRecorder  The assertion recorder to use.
+     * @param AssertionRendererInterface|null  $assertionRenderer  The assertion renderer to use.
+     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
      */
     public function __construct(
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null
+        AssertionRendererInterface $assertionRenderer = null,
+        InvocableInspectorInterface $invocableInspector = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -70,11 +74,15 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
         if (null === $assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
 
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->invocableInspector = $invocableInspector;
     }
 
     /**
@@ -118,6 +126,16 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     }
 
     /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
+    }
+
+    /**
      * Wrap the supplied call in a verifier, or return unchanged if already
      * wrapped.
      *
@@ -136,7 +154,8 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
     }
 
@@ -163,4 +182,5 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     private $matcherVerifier;
     private $assertionRecorder;
     private $assertionRenderer;
+    private $invocableInspector;
 }

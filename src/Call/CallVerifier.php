@@ -18,7 +18,8 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\EndEventInterface;
-use Eloquent\Phony\Invocation\InvocableUtils;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -35,18 +36,20 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Construct a new call verifier.
      *
-     * @param CallInterface                   $call              The call.
-     * @param MatcherFactoryInterface|null    $matcherFactory    The matcher factory to use.
-     * @param MatcherVerifierInterface|null   $matcherVerifier   The matcher verifier to use.
-     * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
-     * @param AssertionRendererInterface|null $assertionRenderer The assertion renderer to use.
+     * @param CallInterface                    $call               The call.
+     * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
+     * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
+     * @param AssertionRecorderInterface|null  $assertionRecorder  The assertion recorder to use.
+     * @param AssertionRendererInterface|null  $assertionRenderer  The assertion renderer to use.
+     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
      */
     public function __construct(
         CallInterface $call,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null
+        AssertionRendererInterface $assertionRenderer = null,
+        InvocableInspectorInterface $invocableInspector = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -60,12 +63,16 @@ class CallVerifier implements CallVerifierInterface
         if (null === $assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
 
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->invocableInspector = $invocableInspector;
 
         $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
@@ -119,6 +126,16 @@ class CallVerifier implements CallVerifierInterface
     public function assertionRenderer()
     {
         return $this->assertionRenderer;
+    }
+
+    /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
     }
 
     /**
@@ -521,7 +538,8 @@ class CallVerifier implements CallVerifierInterface
      */
     public function calledOn($value)
     {
-        $thisValue = InvocableUtils::callbackThisValue($this->call->callback());
+        $thisValue = $this->invocableInspector
+            ->callbackThisValue($this->call->callback());
 
         if ($this->matcherFactory->isMatcher($value)) {
             return $this->matcherFactory->adapt($value)->matches($thisValue);
@@ -540,7 +558,8 @@ class CallVerifier implements CallVerifierInterface
      */
     public function assertCalledOn($value)
     {
-        $thisValue = InvocableUtils::callbackThisValue($this->call->callback());
+        $thisValue = $this->invocableInspector
+            ->callbackThisValue($this->call->callback());
 
         if ($this->matcherFactory->isMatcher($value)) {
             $value = $this->matcherFactory->adapt($value);
@@ -722,6 +741,7 @@ class CallVerifier implements CallVerifierInterface
     private $matcherVerifier;
     private $assertionRecorder;
     private $assertionRenderer;
+    private $invocableInspector;
     private $duration;
     private $argumentCount;
 }

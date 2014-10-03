@@ -16,6 +16,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -48,12 +49,14 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new TestAssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
+        $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifier(
             $this->call,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
 
         $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
@@ -70,7 +73,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
 
         $this->calledEventWithNoArguments = $this->callFactory->createCalledEvent($this->callback);
@@ -81,7 +85,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
 
         $this->callFactory->sequencer()->reset();
@@ -99,6 +104,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
     }
 
     public function testConstructorDefaults()
@@ -109,6 +115,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testProxyMethods()

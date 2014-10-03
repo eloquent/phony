@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifier;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -29,11 +30,13 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new AssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
+        $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifierFactory(
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
 
         $this->callFactory = new TestCallFactory();
@@ -47,6 +50,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
     }
 
     public function testConstructorDefaults()
@@ -57,6 +61,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testAdapt()
@@ -71,6 +76,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $adaptedCall->matcherVerifier());
         $this->assertSame($this->assertionRecorder, $adaptedCall->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $adaptedCall->assertionRenderer());
+        $this->assertSame($this->invocableInspector, $adaptedCall->invocableInspector());
     }
 
     public function testAdaptAll()

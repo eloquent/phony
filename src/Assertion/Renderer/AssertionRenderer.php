@@ -12,7 +12,8 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Invocation\InvocableUtils;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Exception;
 use ReflectionMethod;
@@ -42,15 +43,32 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Construct a new call renderer.
      *
-     * @param Exporter|null $exporter The exporter to use.
+     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
+     * @param Exporter|null                    $exporter           The exporter to use.
      */
-    public function __construct(Exporter $exporter = null)
-    {
+    public function __construct(
+        InvocableInspectorInterface $invocableInspector = null,
+        Exporter $exporter = null
+    ) {
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
         if (null === $exporter) {
             $exporter = new Exporter();
         }
 
+        $this->invocableInspector = $invocableInspector;
         $this->exporter = $exporter;
+    }
+
+    /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
     }
 
     /**
@@ -188,7 +206,8 @@ class AssertionRenderer implements AssertionRendererInterface
             $rendered[] = sprintf(
                 '    - %s',
                 $this->exporter->shortenedExport(
-                    InvocableUtils::callbackThisValue($call->callback())
+                    $this->invocableInspector
+                        ->callbackThisValue($call->callback())
                 )
             );
         }
@@ -205,7 +224,8 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderCall(CallInterface $call)
     {
-        $reflector = InvocableUtils::callbackReflector($call->callback());
+        $reflector = $this->invocableInspector
+            ->callbackReflector($call->callback());
 
         if ($reflector instanceof ReflectionMethod) {
             if ($reflector->isStatic()) {
@@ -279,4 +299,6 @@ class AssertionRenderer implements AssertionRendererInterface
     }
 
     private static $instance;
+    private $invocableInspector;
+    private $exporter;
 }

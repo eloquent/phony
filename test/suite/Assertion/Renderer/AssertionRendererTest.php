@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
@@ -24,8 +25,9 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->invocableInspector = new InvocableInspector();
         $this->exporter = new Exporter();
-        $this->subject = new AssertionRenderer($this->exporter);
+        $this->subject = new AssertionRenderer($this->invocableInspector, $this->exporter);
 
         $this->callFactory = new TestCallFactory();
         $this->callA = $this->callFactory->create(
@@ -44,6 +46,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->exporter, $this->subject->exporter());
     }
 
@@ -51,6 +54,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new AssertionRenderer();
 
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
         $this->assertEquals($this->exporter, $this->subject->exporter());
     }
 
