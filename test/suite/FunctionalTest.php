@@ -28,4 +28,24 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy->callAt(0)->assertCalledWith('a', 'b', 'c');
         $spy->callAt(1)->assertCalledWith(111);
     }
+
+    public function testStub()
+    {
+        $stub = Phony::stub()
+            ->returns('x')
+            ->with(111)->returns('y');
+
+        $this->assertSame('x', $stub('a', 'b', 'c'));
+        $this->assertSame('y', $stub(111));
+        $stub->assertCalledWith('a', 'b', 'c');
+        $stub->assertCalledWith('a', 'b');
+        $stub->assertCalledWith('a');
+        $stub->assertCalledWith();
+        $stub->assertCalledWith(111);
+        $stub->assertCalledWith($this->identicalTo('a'), $this->anything());
+        $stub->callAt(0)->assertCalledWith('a', 'b', 'c');
+        $stub->callAt(1)->assertCalledWith(111);
+        $stub->assertReturned('x');
+        $stub->assertReturned('y');
+    }
 }
