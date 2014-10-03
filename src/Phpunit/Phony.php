@@ -9,10 +9,11 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Integration\Phpunit;
+namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Facade\AbstractFacade;
 use Eloquent\Phony\Facade\FacadeDriverInterface;
+use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 
 /**
  * A facade for Phony usage under PHPUnit.

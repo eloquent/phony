@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-use Eloquent\Phony\Integration\Phpunit\Phony;
+use Eloquent\Phony\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
