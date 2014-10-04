@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Integration\Prophecy;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
+use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 

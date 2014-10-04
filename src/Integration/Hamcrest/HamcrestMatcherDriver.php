@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Integration\Hamcrest;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
-use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 
 /**
  * A matcher driver for Hamcrest matchers.
@@ -43,18 +43,6 @@ class HamcrestMatcherDriver extends AbstractMatcherDriver
     protected function matcherClassName()
     {
         return 'Hamcrest\Matcher';
-    }
-
-    /**
-     * Wrap the supplied matcher in a Phony matcher.
-     *
-     * @param object $matcher The matcher to wrap.
-     *
-     * @return MatcherInterface The wrapped matcher.
-     */
-    protected function wrapMatcher($matcher)
-    {
-        return new HamcrestMatcher($matcher);
     }
 
     private static $instance;

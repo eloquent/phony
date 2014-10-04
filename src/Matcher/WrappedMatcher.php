@@ -12,11 +12,11 @@
 namespace Eloquent\Phony\Matcher;
 
 /**
- * An abstract base class for implementing wrapped matchers.
+ * Wraps a typical third party matcher.
  *
  * @internal
  */
-abstract class AbstractWrappedMatcher extends AbstractMatcher implements
+class WrappedMatcher extends AbstractMatcher implements
     WrappedMatcherInterface
 {
     /**

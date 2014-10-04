@@ -17,6 +17,7 @@
         "sebastian/exporter": "~1"
     },
     "require-dev": {
+        "counterpart/counterpart": "~1.5.0",
         "hamcrest/hamcrest-php": "~1.2.0",
         "mockery/mockery": "~0.9.0",
         "phake/phake": "~1",

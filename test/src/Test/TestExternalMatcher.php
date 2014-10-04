@@ -9,15 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Integration\Phake;
+namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
-
-/**
- * A matcher that wraps a Phake matcher.
- *
- * @internal
- */
-class PhakeMatcher extends AbstractWrappedMatcher
+class TestExternalMatcher
 {
+    public function matches($value)
+    {
+        return 'value' === $value;
+    }
+
+    public function __toString()
+    {
+        return __CLASS__;
+    }
 }

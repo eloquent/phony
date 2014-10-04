@@ -9,18 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Integration\Mockery;
+namespace Eloquent\Phony\Integration\Counterpart;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
 use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
-use Eloquent\Phony\Matcher\MatcherInterface;
 
 /**
- * A matcher driver for Mockery matchers.
+ * A matcher driver for Counterpart matchers.
  *
  * @internal
  */
-class MockeryMatcherDriver extends AbstractMatcherDriver
+class CounterpartMatcherDriver extends AbstractMatcherDriver
 {
     /**
      * Get the static instance of this driver.
@@ -43,19 +42,7 @@ class MockeryMatcherDriver extends AbstractMatcherDriver
      */
     protected function matcherClassName()
     {
-        return 'Mockery\Matcher\MatcherAbstract';
-    }
-
-    /**
-     * Wrap the supplied matcher in a Phony matcher.
-     *
-     * @param object $matcher The matcher to wrap.
-     *
-     * @return MatcherInterface The wrapped matcher.
-     */
-    protected function wrapMatcher($matcher)
-    {
-        return new MockeryMatcher($matcher);
+        return 'Counterpart\Matcher';
     }
 
     private static $instance;

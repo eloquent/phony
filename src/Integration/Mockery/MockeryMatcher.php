@@ -11,14 +11,14 @@
 
 namespace Eloquent\Phony\Integration\Mockery;
 
-use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher that wraps a Mockery matcher.
  *
  * @internal
  */
-class MockeryMatcher extends AbstractWrappedMatcher
+class MockeryMatcher extends WrappedMatcher
 {
     /**
      * Returns true if the supplied value matches.

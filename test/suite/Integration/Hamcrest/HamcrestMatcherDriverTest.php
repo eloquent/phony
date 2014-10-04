@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Integration\Hamcrest;
 
+use Eloquent\Phony\Matcher\WrappedMatcher;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -37,7 +38,7 @@ class HamcrestMatcherDriverTest extends PHPUnit_Framework_TestCase
     public function testAdapt()
     {
         $object = (object) array();
-        $expected = new HamcrestMatcher($this->matcher);
+        $expected = new WrappedMatcher($this->matcher);
 
         $this->assertTrue($this->subject->adapt($this->matcher));
         $this->assertEquals($expected, $this->matcher);

@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Matcher\Driver;
 
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * An abstract base class for implementing matcher drivers.
@@ -62,18 +63,21 @@ abstract class AbstractMatcherDriver implements MatcherDriverInterface
     }
 
     /**
-     * Get the matcher class name.
-     *
-     * @return string The matcher class name.
-     */
-    abstract protected function matcherClassName();
-
-    /**
      * Wrap the supplied matcher in a Phony matcher.
      *
      * @param object $matcher The matcher to wrap.
      *
      * @return MatcherInterface The wrapped matcher.
      */
-    abstract protected function wrapMatcher($matcher);
+    protected function wrapMatcher($matcher)
+    {
+        return new WrappedMatcher($matcher);
+    }
+
+    /**
+     * Get the matcher class name.
+     *
+     * @return string The matcher class name.
+     */
+    abstract protected function matcherClassName();
 }

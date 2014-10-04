@@ -12,8 +12,10 @@
 namespace Eloquent\Phony\Integration\Phake;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
+use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher driver for Phake matchers.
@@ -59,7 +61,7 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
             return WildcardMatcher::instance();
         }
 
-        return new PhakeMatcher($matcher);
+        return new WrappedMatcher($matcher);
     }
 
     private static $instance;

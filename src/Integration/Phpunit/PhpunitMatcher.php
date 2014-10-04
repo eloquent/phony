@@ -11,14 +11,14 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher that wraps a PHPUnit constraint.
  *
  * @internal
  */
-class PhpunitMatcher extends AbstractWrappedMatcher
+class PhpunitMatcher extends WrappedMatcher
 {
     /**
      * Returns true if the supplied value matches.

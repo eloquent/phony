@@ -11,14 +11,14 @@
 
 namespace Eloquent\Phony\Integration\Simpletest;
 
-use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher that wraps a SimpleTest expectation.
  *
  * @internal
  */
-class SimpletestMatcher extends AbstractWrappedMatcher
+class SimpletestMatcher extends WrappedMatcher
 {
     /**
      * Returns true if the supplied value matches.

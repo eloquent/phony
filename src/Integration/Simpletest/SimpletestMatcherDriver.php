@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Integration\Simpletest;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
+use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 
 /**

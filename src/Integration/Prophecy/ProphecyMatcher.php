@@ -11,14 +11,14 @@
 
 namespace Eloquent\Phony\Integration\Prophecy;
 
-use Eloquent\Phony\Matcher\AbstractWrappedMatcher;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher that wraps a Prophecy token.
  *
  * @internal
  */
-class ProphecyMatcher extends AbstractWrappedMatcher
+class ProphecyMatcher extends WrappedMatcher
 {
     /**
      * Returns true if the supplied value matches.

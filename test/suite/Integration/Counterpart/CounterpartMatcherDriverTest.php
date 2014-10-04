@@ -9,21 +9,20 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Integration\Phake;
+namespace Eloquent\Phony\Integration\Counterpart;
 
-use Eloquent\Phony\Matcher\WildcardMatcher;
+use Counterpart\Matchers;
 use Eloquent\Phony\Matcher\WrappedMatcher;
 use PHPUnit_Framework_TestCase;
-use Phake;
 use ReflectionClass;
 
-class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
+class CounterpartMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new PhakeMatcherDriver();
+        $this->subject = new CounterpartMatcherDriver();
 
-        $this->matcher = Phake::equalTo('x');
+        $this->matcher = Matchers::isEqual('x');
     }
 
     public function testIsAvailable()
@@ -45,14 +44,6 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->adapt($this->matcher));
         $this->assertEquals($expected, $this->matcher);
         $this->assertFalse($this->subject->adapt($object));
-    }
-
-    public function testAdaptWildcard()
-    {
-        $this->matcher = Phake::anyParameters();
-
-        $this->assertTrue($this->subject->adapt($this->matcher));
-        $this->assertSame(WildcardMatcher::instance(), $this->matcher);
     }
 
     public function testInstance()
