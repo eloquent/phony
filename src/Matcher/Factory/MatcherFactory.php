@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Matcher\Factory;
 
 use Eloquent\Phony\Matcher\AnyMatcher;
+use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;

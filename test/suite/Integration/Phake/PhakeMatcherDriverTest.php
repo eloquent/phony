@@ -25,6 +25,11 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
         $this->matcher = Phake::equalTo('x');
     }
 
+    public function testIsAvailable()
+    {
+        $this->assertTrue($this->subject->isAvailable());
+    }
+
     public function testIsSupported()
     {
         $this->assertTrue($this->subject->isSupported($this->matcher));

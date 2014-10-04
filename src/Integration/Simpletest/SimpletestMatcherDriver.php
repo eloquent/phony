@@ -11,14 +11,15 @@
 
 namespace Eloquent\Phony\Integration\Simpletest;
 
-use Eloquent\Phony\Matcher\MatcherDriverInterface;
+use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
+use Eloquent\Phony\Matcher\MatcherInterface;
 
 /**
  * A matcher driver for SimpleTest expectations.
  *
  * @internal
  */
-class SimpletestMatcherDriver implements MatcherDriverInterface
+class SimpletestMatcherDriver extends AbstractMatcherDriver
 {
     /**
      * Get the static instance of this driver.
@@ -35,34 +36,25 @@ class SimpletestMatcherDriver implements MatcherDriverInterface
     }
 
     /**
-     * Returns true if the supplied matcher is supported by this driver.
+     * Get the matcher class name.
      *
-     * @param object $matcher The matcher to test.
-     *
-     * @return boolean True if supported.
+     * @return string The matcher class name.
      */
-    public function isSupported($matcher)
+    protected function matcherClassName()
     {
-        return is_a($matcher, 'SimpleExpectation');
+        return 'SimpleExpectation';
     }
 
     /**
-     * If the supplied matcher is supported, replace it with an equivalent Phony
-     * matcher.
+     * Wrap the supplied matcher in a Phony matcher.
      *
-     * @param object &$matcher The matcher to adapt.
+     * @param object $matcher The matcher to wrap.
      *
-     * @return boolean True if the matcher is supported.
+     * @return MatcherInterface The wrapped matcher.
      */
-    public function adapt(&$matcher)
+    protected function wrapMatcher($matcher)
     {
-        if (is_a($matcher, 'SimpleExpectation')) {
-            $matcher = new SimpletestMatcher($matcher);
-
-            return true;
-        }
-
-        return false;
+        return new SimpletestMatcher($matcher);
     }
 
     private static $instance;

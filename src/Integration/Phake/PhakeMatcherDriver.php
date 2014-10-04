@@ -11,7 +11,8 @@
 
 namespace Eloquent\Phony\Integration\Phake;
 
-use Eloquent\Phony\Matcher\MatcherDriverInterface;
+use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
+use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 
 /**
@@ -19,7 +20,7 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
  *
  * @internal
  */
-class PhakeMatcherDriver implements MatcherDriverInterface
+class PhakeMatcherDriver extends AbstractMatcherDriver
 {
     /**
      * Get the static instance of this driver.
@@ -36,40 +37,29 @@ class PhakeMatcherDriver implements MatcherDriverInterface
     }
 
     /**
-     * Returns true if the supplied matcher is supported by this driver.
+     * Get the matcher class name.
      *
-     * @param object $matcher The matcher to test.
-     *
-     * @return boolean True if supported.
+     * @return string The matcher class name.
      */
-    public function isSupported($matcher)
+    protected function matcherClassName()
     {
-        return is_a($matcher, 'Phake_Matchers_IArgumentMatcher');
+        return 'Phake_Matchers_IArgumentMatcher';
     }
 
     /**
-     * If the supplied matcher is supported, replace it with an equivalent Phony
-     * matcher.
+     * Wrap the supplied matcher in a Phony matcher.
      *
-     * @param object &$matcher The matcher to adapt.
+     * @param object $matcher The matcher to wrap.
      *
-     * @return boolean True if the matcher is supported.
+     * @return MatcherInterface The wrapped matcher.
      */
-    public function adapt(&$matcher)
+    protected function wrapMatcher($matcher)
     {
         if (is_a($matcher, 'Phake_Matchers_AnyParameters')) {
-            $matcher = WildcardMatcher::instance();
-
-            return true;
+            return WildcardMatcher::instance();
         }
 
-        if (is_a($matcher, 'Phake_Matchers_IArgumentMatcher')) {
-            $matcher = new PhakeMatcher($matcher);
-
-            return true;
-        }
-
-        return false;
+        return new PhakeMatcher($matcher);
     }
 
     private static $instance;

@@ -9,13 +9,20 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Matcher;
+namespace Eloquent\Phony\Matcher\Driver;
 
 /**
  * The interface implemented by matcher drivers.
  */
 interface MatcherDriverInterface
 {
+    /**
+     * Returns true if the matchers supported by this driver are available.
+     *
+     * @return boolean True if available.
+     */
+    public function isAvailable();
+
     /**
      * Returns true if the supplied matcher is supported by this driver.
      *
