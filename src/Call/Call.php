@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
+use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Exception;
@@ -53,7 +53,7 @@ class Call implements CallInterface
 
         $this->events = array();
         $this->calledEvent = $events[0];
-        $this->endEvent = null;
+        $this->responseEvent = null;
         $this->otherEvents = array();
 
         $this->addEvents($events);
@@ -80,8 +80,8 @@ class Call implements CallInterface
     {
         $this->events[] = $event;
 
-        if ($event instanceof EndEventInterface) {
-            $this->endEvent = $event;
+        if ($event instanceof ResponseEventInterface) {
+            $this->responseEvent = $event;
         } elseif (!$event instanceof CalledEventInterface) {
             $this->otherEvents[] = $event;
         }
@@ -108,17 +108,17 @@ class Call implements CallInterface
     }
 
     /**
-     * Get the end event.
+     * Get the response event.
      *
-     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
+     * @return ResponseEventInterface|null The response event, or null if the call has not yet completed.
      */
-    public function endEvent()
+    public function responseEvent()
     {
-        return $this->endEvent;
+        return $this->responseEvent;
     }
 
     /**
-     * Get the non-'called', non-end events.
+     * Get the non-'called', non-response events.
      *
      * @return array<integer,CallEventInterface> The events.
      */
@@ -174,8 +174,8 @@ class Call implements CallInterface
      */
     public function returnValue()
     {
-        if ($this->endEvent instanceof ReturnedEventInterface) {
-            return $this->endEvent->returnValue();
+        if ($this->responseEvent instanceof ReturnedEventInterface) {
+            return $this->responseEvent->returnValue();
         }
     }
 
@@ -186,8 +186,8 @@ class Call implements CallInterface
      */
     public function exception()
     {
-        if ($this->endEvent instanceof ThrewEventInterface) {
-            return $this->endEvent->exception();
+        if ($this->responseEvent instanceof ThrewEventInterface) {
+            return $this->responseEvent->exception();
         }
     }
 
@@ -198,13 +198,13 @@ class Call implements CallInterface
      */
     public function endTime()
     {
-        if ($this->endEvent) {
-            return $this->endEvent->time();
+        if ($this->responseEvent) {
+            return $this->responseEvent->time();
         }
     }
 
     private $events;
     private $calledEvent;
-    private $endEvent;
+    private $responseEvent;
     private $otherEvents;
 }

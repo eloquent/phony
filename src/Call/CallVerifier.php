@@ -17,7 +17,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
+use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -189,17 +189,17 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Get the end event.
+     * Get the response event.
      *
-     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
+     * @return ResponseEventInterface|null The response event, or null if the call has not yet completed.
      */
-    public function endEvent()
+    public function responseEvent()
     {
-        return $this->call->endEvent();
+        return $this->call->responseEvent();
     }
 
     /**
-     * Get the non-'called', non-end events.
+     * Get the non-'called', non-response events.
      *
      * @return array<integer,CallEventInterface> The events.
      */

@@ -43,7 +43,7 @@ class CallTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
@@ -61,7 +61,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->threwEvent, $this->subject->endEvent());
+        $this->assertSame($this->threwEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
@@ -72,14 +72,14 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->threwEvent->time(), $this->subject->endTime());
     }
 
-    public function testConstructorWithNoEndEvent()
+    public function testConstructorWithNoResponseEvent()
     {
         $this->events = array($this->calledEvent, $this->eventA, $this->eventB);
         $this->subject = new Call($this->events);
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertNull($this->subject->endEvent());
+        $this->assertNull($this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
@@ -110,7 +110,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
 
         $this->events = array($this->calledEvent, $this->eventA, $this->threwEvent);
@@ -119,7 +119,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->threwEvent, $this->subject->endEvent());
+        $this->assertSame($this->threwEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
 
         $this->events = array($this->calledEvent);
@@ -128,7 +128,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertNull($this->subject->endEvent());
+        $this->assertNull($this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
     }
 
@@ -141,7 +141,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
 
         $this->subject->setEvents(array($this->calledEvent));
@@ -151,7 +151,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->threwEvent, $this->subject->endEvent());
+        $this->assertSame($this->threwEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
 
         $this->subject->setEvents(array($this->calledEvent));
@@ -161,7 +161,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertNull($this->subject->endEvent());
+        $this->assertNull($this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
     }
 
@@ -175,7 +175,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
 
         $this->subject->setEvents(array($this->calledEvent));
@@ -186,7 +186,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->threwEvent, $this->subject->endEvent());
+        $this->assertSame($this->threwEvent, $this->subject->responseEvent());
         $this->assertSame($this->otherEvents, $this->subject->otherEvents());
     }
 }

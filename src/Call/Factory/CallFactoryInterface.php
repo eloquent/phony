@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Exception;
@@ -60,14 +60,14 @@ interface CallFactoryInterface
     );
 
     /**
-     * Create a new end event.
+     * Create a new response event.
      *
      * @param mixed          $returnValue The return value.
      * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
      *
-     * @return EndEventInterface The newly created event.
+     * @return ResponseEventInterface The newly created event.
      */
-    public function createEndEvent(
+    public function createResponseEvent(
         $returnValue = null,
         Exception $exception = null
     );

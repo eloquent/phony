@@ -16,7 +16,7 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
+use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEvent;
@@ -135,7 +135,7 @@ class CallFactory implements CallFactoryInterface
         } catch (Exception $exception) {}
 
         return $this->create(
-            array($calledEvent, $this->createEndEvent($returnValue, $exception))
+            array($calledEvent, $this->createResponseEvent($returnValue, $exception))
         );
     }
 
@@ -179,14 +179,14 @@ class CallFactory implements CallFactoryInterface
     }
 
     /**
-     * Create a new end event.
+     * Create a new response event.
      *
      * @param mixed          $returnValue The return value.
      * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
      *
-     * @return EndEventInterface The newly created event.
+     * @return ResponseEventInterface The newly created event.
      */
-    public function createEndEvent(
+    public function createResponseEvent(
         $returnValue = null,
         Exception $exception = null
     ) {

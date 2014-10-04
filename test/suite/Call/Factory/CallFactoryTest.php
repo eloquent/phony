@@ -114,27 +114,27 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateEndEventWithNoException()
+    public function testCreateResponseEventWithNoException()
     {
         $returnValue = 'x';
         $expected = new ReturnedEvent(0, 0.0, $returnValue);
-        $actual = $this->subject->createEndEvent($returnValue);
+        $actual = $this->subject->createResponseEvent($returnValue);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateEndEventWithException()
+    public function testCreateResponseEventWithException()
     {
         $expected = new ThrewEvent(0, 0.0, $this->exception);
-        $actual = $this->subject->createEndEvent(null, $this->exception);
+        $actual = $this->subject->createResponseEvent(null, $this->exception);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateEndEventDefaults()
+    public function testCreateResponseEventDefaults()
     {
         $expected = new ReturnedEvent(0, 0.0);
-        $actual = $this->subject->createEndEvent();
+        $actual = $this->subject->createResponseEvent();
 
         $this->assertEquals($expected, $actual);
     }
