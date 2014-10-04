@@ -17,7 +17,6 @@
         "sebastian/exporter": "~1"
     },
     "require-dev": {
-        "counterpart/counterpart": "~1.5.0",
         "hamcrest/hamcrest-php": "~1.2.0",
         "mockery/mockery": "~0.9.0",
         "phake/phake": "~1",
@@ -29,5 +28,12 @@
         "psr-4": {
             "Eloquent\\Phony\\": "src"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "cp composer.json composer.json.tmp; cp composer.lock composer.lock.tmp",
+            "(php -r\"exit(version_compare(phpversion(),'5.4.0-dev','>=')?0:1);\" && composer require --dev counterpart/counterpart:~1.5.0); true",
+            "cp composer.json.tmp composer.json; cp composer.lock.tmp composer.lock; rm composer.json.tmp; rm composer.lock.tmp"
+        ]
     }
 }

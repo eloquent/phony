@@ -20,6 +20,10 @@ class CounterpartMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        if (!is_callable('Counterpart\Matchers::isEqual')) {
+            $this->markTestSkipped('Requires Counterpart.');
+        }
+
         $this->subject = new CounterpartMatcherDriver();
 
         $this->matcher = Matchers::isEqual('x');
