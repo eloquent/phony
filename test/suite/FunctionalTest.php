@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-use Eloquent\Phony\Phpunit as p;
+use Eloquent\Phony\Phpunit as a;
 use Eloquent\Phony\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
@@ -32,7 +32,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testSpyFunction()
     {
-        $spy = p\spy();
+        $spy = a\spy();
         $spy('a', 'b', 'c');
         $spy(111);
 
@@ -68,7 +68,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testStubFunction()
     {
-        $stub = p\stub()
+        $stub = a\stub()
             ->returns('x')
             ->with(111)->returns('y');
 
