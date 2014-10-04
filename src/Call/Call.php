@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
@@ -29,72 +30,22 @@ class Call implements CallInterface
     /**
      * Construct a new call.
      *
-     * @param array<intger,CallEventInterface> The call events.
+     * @param CalledEventInterface                        $calledEvent     The 'called' event.
+     * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet completed.
+     * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
      */
-    public function __construct(array $events)
-    {
-        $this->setEvents($events);
-    }
-
-    /**
-     * Set the events.
-     *
-     * @param array<integer,CallEventInterface> $events The events.
-     */
-    public function setEvents(array $events)
-    {
-        if (!isset($events[0]) || !$events[0] instanceof CalledEventInterface) {
-            throw new InvalidArgumentException(
-                'Calls must have at least one event, ' .
-                    'and the first event must be an instance of ' .
-                    'Eloquent\Phony\Call\Event\CalledEventInterface.'
-            );
+    public function __construct(
+        CalledEventInterface $calledEvent,
+        ResponseEventInterface $responseEvent = null,
+        array $generatorEvents = null
+    ) {
+        if (null === $generatorEvents) {
+            $generatorEvents = array();
         }
 
-        $this->events = array();
-        $this->calledEvent = $events[0];
-        $this->responseEvent = null;
-        $this->otherEvents = array();
-
-        $this->addEvents($events);
-    }
-
-    /**
-     * Add a sequence of events.
-     *
-     * @param array<integer,CallEventInterface> $events The events.
-     */
-    public function addEvents(array $events)
-    {
-        foreach ($events as $event) {
-            $this->addEvent($event);
-        }
-    }
-
-    /**
-     * Add an event.
-     *
-     * @param CallEventInterface $event The event.
-     */
-    public function addEvent(CallEventInterface $event)
-    {
-        $this->events[] = $event;
-
-        if ($event instanceof ResponseEventInterface) {
-            $this->responseEvent = $event;
-        } elseif (!$event instanceof CalledEventInterface) {
-            $this->otherEvents[] = $event;
-        }
-    }
-
-    /**
-     * Get the events.
-     *
-     * @return array<integer,CallEventInterface> The events.
-     */
-    public function events()
-    {
-        return $this->events;
+        $this->calledEvent = $calledEvent;
+        $this->responseEvent = $responseEvent;
+        $this->generatorEvents = $generatorEvents;
     }
 
     /**
@@ -108,6 +59,22 @@ class Call implements CallInterface
     }
 
     /**
+     * Set the 'response' event.
+     *
+     * @param ResponseEventInterface $responseEvent The response event.
+     *
+     * @throws InvalidArgumentException If the call has already completed.
+     */
+    public function setResponseEvent(ResponseEventInterface $responseEvent)
+    {
+        if ($this->responseEvent) {
+            throw new InvalidArgumentException('Call already completed.');
+        }
+
+        $this->responseEvent = $responseEvent;
+    }
+
+    /**
      * Get the response event.
      *
      * @return ResponseEventInterface|null The response event, or null if the call has not yet completed.
@@ -118,13 +85,41 @@ class Call implements CallInterface
     }
 
     /**
-     * Get the non-'called', non-response events.
+     * Add a generator event.
+     *
+     * @param GeneratorEventInterface $event The generator event.
+     */
+    public function addGeneratorEvent(GeneratorEventInterface $event)
+    {
+        $this->generatorEvents[] = $event;
+    }
+
+    /**
+     * Get the generator events.
+     *
+     * @return array<integer,GeneratorEventInterface> The generator events.
+     */
+    public function generatorEvents()
+    {
+        return $this->generatorEvents;
+    }
+
+    /**
+     * Get the events.
      *
      * @return array<integer,CallEventInterface> The events.
      */
-    public function otherEvents()
+    public function events()
     {
-        return $this->otherEvents;
+        $events = $this->generatorEvents();
+
+        if ($this->responseEvent) {
+            array_unshift($events, $this->responseEvent);
+        }
+
+        array_unshift($events, $this->calledEvent);
+
+        return $events;
     }
 
     /**
@@ -203,8 +198,7 @@ class Call implements CallInterface
         }
     }
 
-    private $events;
     private $calledEvent;
     private $responseEvent;
-    private $otherEvents;
+    private $generatorEvents;
 }

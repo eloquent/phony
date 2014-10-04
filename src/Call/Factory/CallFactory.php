@@ -13,12 +13,14 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
+use Eloquent\Phony\Call\Event\SentValueEvent;
+use Eloquent\Phony\Call\Event\SentValueEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Clock\ClockInterface;
@@ -135,27 +137,30 @@ class CallFactory implements CallFactoryInterface
         } catch (Exception $exception) {}
 
         return $this->create(
-            array($calledEvent, $this->createResponseEvent($returnValue, $exception))
+            $calledEvent,
+            $this->createResponseEvent($returnValue, $exception)
         );
     }
 
     /**
      * Create a new call.
      *
-     * @param array<integer,CallEventInterface> $events The events.
+     * @param CalledEventInterface|null                   $calledEvent     The 'called' event.
+     * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet completed.
+     * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
      *
      * @return CallInterface The newly created call.
      */
-    public function create(array $events = null)
-    {
-        if (null === $events) {
-            $events = array(
-                $this->createCalledEvent(),
-                $this->createReturnedEvent(),
-            );
+    public function create(
+        CalledEventInterface $calledEvent = null,
+        ResponseEventInterface $responseEvent = null,
+        array $generatorEvents = null
+    ) {
+        if (null === $calledEvent) {
+            $calledEvent = $this->createCalledEvent();
         }
 
-        return new Call($events);
+        return new Call($calledEvent, $responseEvent, $generatorEvents);
     }
 
     /**
@@ -226,6 +231,22 @@ class CallFactory implements CallFactoryInterface
             $this->sequencer->next(),
             $this->clock->time(),
             $exception
+        );
+    }
+
+    /**
+     * Create a new 'sent value' event.
+     *
+     * @param mixed $sentValue The sent value.
+     *
+     * @return SentValueEventInterface The newly created event.
+     */
+    public function createSentValueEvent($sentValue = null)
+    {
+        return new SentValueEvent(
+            $this->sequencer->next(),
+            $this->clock->time(),
+            $sentValue
         );
     }
 

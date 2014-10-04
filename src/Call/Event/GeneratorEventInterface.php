@@ -9,10 +9,11 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Test;
+namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Call\Event\AbstractCallEvent;
-
-class TestCallEvent extends AbstractCallEvent
+/**
+ * The interface used to identify generator events.
+ */
+interface GeneratorEventInterface extends CallEventInterface
 {
 }

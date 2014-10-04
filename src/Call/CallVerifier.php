@@ -17,6 +17,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
@@ -139,46 +140,6 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Set the events.
-     *
-     * @param array<integer,CallEventInterface> $events The events.
-     */
-    public function setEvents(array $events)
-    {
-        $this->call->setEvents($events);
-    }
-
-    /**
-     * Add a sequence of events.
-     *
-     * @param array<integer,CallEventInterface> $events The events.
-     */
-    public function addEvents(array $events)
-    {
-        $this->call->addEvents($events);
-    }
-
-    /**
-     * Add an event.
-     *
-     * @param CallEventInterface $event The event.
-     */
-    public function addEvent(CallEventInterface $event)
-    {
-        $this->call->addEvent($event);
-    }
-
-    /**
-     * Get the events.
-     *
-     * @return array<integer,CallEventInterface> The events.
-     */
-    public function events()
-    {
-        return $this->call->events();
-    }
-
-    /**
      * Get the 'called' event.
      *
      * @return CalledEventInterface The 'called' event.
@@ -186,6 +147,18 @@ class CallVerifier implements CallVerifierInterface
     public function calledEvent()
     {
         return $this->call->calledEvent();
+    }
+
+    /**
+     * Set the 'response' event.
+     *
+     * @param ResponseEventInterface $responseEvent The response event.
+     *
+     * @throws InvalidArgumentException If the call has already completed.
+     */
+    public function setResponseEvent(ResponseEventInterface $responseEvent)
+    {
+        $this->call->setResponseEvent($responseEvent);
     }
 
     /**
@@ -199,13 +172,33 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Get the non-'called', non-response events.
+     * Add a generator event.
+     *
+     * @param GeneratorEventInterface $event The generator event.
+     */
+    public function addGeneratorEvent(GeneratorEventInterface $event)
+    {
+        $this->call->addGeneratorEvent($event);
+    }
+
+    /**
+     * Get the generator events.
+     *
+     * @return array<integer,GeneratorEventInterface> The generator events.
+     */
+    public function generatorEvents()
+    {
+        return $this->call->generatorEvents();
+    }
+
+    /**
+     * Get all events.
      *
      * @return array<integer,CallEventInterface> The events.
      */
-    public function otherEvents()
+    public function events()
     {
-        return $this->call->otherEvents();
+        return $this->call->events();
     }
 
     /**

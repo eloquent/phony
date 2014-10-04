@@ -13,8 +13,8 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Call\Event\SentValueEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
-use Eloquent\Phony\Test\TestCallEvent;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -29,22 +29,22 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->returnValue = 'ab';
         $this->calledEvent = $this->callFactory->createCalledEvent($this->callback, $this->arguments);
         $this->returnedEvent = $this->callFactory->createReturnedEvent($this->returnValue);
-        $this->eventA = new TestCallEvent(3, 3.0);
-        $this->eventB = new TestCallEvent(4, 4.0);
-        $this->events = array($this->calledEvent, $this->returnedEvent, $this->eventA, $this->eventB);
-        $this->otherEvents = array($this->eventA, $this->eventB);
-        $this->subject = new Call($this->events);
+        $this->generatorEventA = new SentValueEvent(3, 3.0, 'c');
+        $this->generatorEventB = new SentValueEvent(4, 4.0, 'd');
+        $this->generatorEvents = array($this->generatorEventA, $this->generatorEventB);
+        $this->subject = new Call($this->calledEvent, $this->returnedEvent, $this->generatorEvents);
 
+        $this->events = array($this->calledEvent, $this->returnedEvent, $this->generatorEventA, $this->generatorEventB);
         $this->exception = new RuntimeException('You done goofed.');
         $this->threwEvent = $this->callFactory->createThrewEvent($this->exception);
     }
 
     public function testConstructorWithReturnedEvent()
     {
-        $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+        $this->assertSame($this->generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
@@ -56,13 +56,13 @@ class CallTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithThrewEvent()
     {
-        $this->events = array($this->calledEvent, $this->threwEvent, $this->eventA, $this->eventB);
-        $this->subject = new Call($this->events);
+        $this->subject = new Call($this->calledEvent, $this->threwEvent, $this->generatorEvents);
+        $this->events = array($this->calledEvent, $this->threwEvent, $this->generatorEventA, $this->generatorEventB);
 
-        $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->threwEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+        $this->assertSame($this->generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
@@ -74,13 +74,13 @@ class CallTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithNoResponseEvent()
     {
-        $this->events = array($this->calledEvent, $this->eventA, $this->eventB);
-        $this->subject = new Call($this->events);
+        $this->subject = new Call($this->calledEvent, null, $this->generatorEvents);
+        $this->events = array($this->calledEvent, $this->generatorEventA, $this->generatorEventB);
 
-        $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertNull($this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+        $this->assertSame($this->generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
@@ -90,103 +90,25 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->endTime());
     }
 
-    public function testConstructorFailureNoFirstCalledEvent()
+    public function testSetResponseEvent()
     {
-        $this->events = array($this->eventA, $this->calledEvent, $this->returnedEvent);
+        $this->subject = new Call($this->calledEvent);
+        $this->subject->setResponseEvent($this->returnedEvent);
 
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Calls must have at least one event, and the first event must be an instance of ' .
-                'Eloquent\Phony\Call\Event\CalledEventInterface.'
-        );
-        $this->subject = new Call($this->events);
+        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
     }
 
-    public function testSetEvents()
+    public function testSetResponseEventFailureAlreadySet()
     {
-        $this->events = array($this->calledEvent, $this->eventA, $this->returnedEvent);
-        $this->otherEvents = array($this->eventA);
-        $this->subject->setEvents($this->events);
-
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-
-        $this->events = array($this->calledEvent, $this->eventA, $this->threwEvent);
-        $this->otherEvents = array($this->eventA);
-        $this->subject->setEvents($this->events);
-
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->threwEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-
-        $this->events = array($this->calledEvent);
-        $this->otherEvents = array();
-        $this->subject->setEvents($this->events);
-
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertNull($this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+        $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
+        $this->subject->setResponseEvent($this->returnedEvent);
     }
 
-    public function testAddEvents()
+    public function testAddGeneratorEvent()
     {
-        $this->subject->setEvents(array($this->calledEvent));
-        $this->subject->addEvents(array($this->eventA, $this->returnedEvent));
-        $this->events = array($this->calledEvent, $this->eventA, $this->returnedEvent);
-        $this->otherEvents = array($this->eventA);
+        $this->subject->addGeneratorEvent($this->generatorEventA);
+        $this->generatorEvents = array($this->generatorEventA, $this->generatorEventB, $this->generatorEventA);
 
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-
-        $this->subject->setEvents(array($this->calledEvent));
-        $this->subject->addEvents(array($this->eventA, $this->threwEvent));
-        $this->events = array($this->calledEvent, $this->eventA, $this->threwEvent);
-        $this->otherEvents = array($this->eventA);
-
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->threwEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-
-        $this->subject->setEvents(array($this->calledEvent));
-        $this->subject->addEvents(array());
-        $this->events = array($this->calledEvent);
-        $this->otherEvents = array();
-
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertNull($this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-    }
-
-    public function testAddEvent()
-    {
-        $this->subject->setEvents(array($this->calledEvent));
-        $this->subject->addEvent($this->eventA);
-        $this->subject->addEvent($this->returnedEvent);
-        $this->events = array($this->calledEvent, $this->eventA, $this->returnedEvent);
-        $this->otherEvents = array($this->eventA);
-
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
-
-        $this->subject->setEvents(array($this->calledEvent));
-        $this->subject->addEvent($this->eventA);
-        $this->subject->addEvent($this->threwEvent);
-        $this->events = array($this->calledEvent, $this->eventA, $this->threwEvent);
-        $this->otherEvents = array($this->eventA);
-
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($this->threwEvent, $this->subject->responseEvent());
-        $this->assertSame($this->otherEvents, $this->subject->otherEvents());
+        $this->assertSame($this->generatorEvents, $this->subject->generatorEvents());
     }
 }

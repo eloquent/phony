@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Call\Factory;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Call\Event\SentValueEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Invocation\Invoker;
@@ -57,10 +58,8 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $arguments = array(array('a', 'b'));
         $returnValue = 'ab';
         $expected = $this->subject->create(
-            array(
-                $this->subject->createCalledEvent($callback, $arguments),
-                $this->subject->createReturnedEvent($returnValue),
-            )
+            $this->subject->createCalledEvent($callback, $arguments),
+            $this->subject->createReturnedEvent($returnValue)
         );
         $this->sequencer->reset();
         $this->clock->reset();
@@ -75,28 +74,26 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Call\Call', $actual);
 
-        $events = $actual->events();
-
-        $this->assertSame(array(0, 1), array_keys($events));
-        $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $events[0]);
-        $this->assertSame(array(), $events[0]->arguments());
-        $this->assertInstanceOf('Eloquent\Phony\Call\Event\ReturnedEvent', $events[1]);
-        $this->assertNull($events[1]->returnValue());
+        $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $actual->calledEvent());
+        $this->assertSame(array(), $actual->calledEvent()->arguments());
+        $this->assertInstanceOf('Eloquent\Phony\Call\Event\ReturnedEvent', $actual->responseEvent());
+        $this->assertNull($actual->responseEvent()->returnValue());
     }
 
     public function testCreate()
     {
-        $events = array($this->subject->createCalledEvent());
-        $expected = new Call($events);
-        $actual = $this->subject->create($events);
+        $calledEvent = $this->subject->createCalledEvent();
+        $returnedEvent = $this->subject->createReturnedEvent();
+        $generatorEvents = array($this->subject->createSentValueEvent());
+        $expected = new Call($calledEvent, $returnedEvent, $generatorEvents);
+        $actual = $this->subject->create($calledEvent, $returnedEvent, $generatorEvents);
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testCreateDefaults()
     {
-        $events = array($this->subject->createCalledEvent(), $this->subject->createReturnedEvent());
-        $expected = new Call($events);
+        $expected = new Call($this->subject->createCalledEvent());
         $this->sequencer->reset();
         $this->clock->reset();
         $actual = $this->subject->create();
@@ -144,6 +141,15 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $returnValue = 'x';
         $expected = new ReturnedEvent(0, 0.0, $returnValue);
         $actual = $this->subject->createReturnedEvent($returnValue);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateSentValueEvent()
+    {
+        $sentValue = 'x';
+        $expected = new SentValueEvent(0, 0.0, $sentValue);
+        $actual = $this->subject->createSentValueEvent($sentValue);
 
         $this->assertEquals($expected, $actual);
     }

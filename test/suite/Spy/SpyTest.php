@@ -76,22 +76,16 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->callFactory->clock()->reset();
         $expected = array(
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array(array('a'))),
-                    $this->callFactory->createReturnedEvent('a'),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array(array('a'))),
+                $this->callFactory->createReturnedEvent('a')
             ),
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array(array('b', 'c'))),
-                    $this->callFactory->createReturnedEvent('bc'),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array(array('b', 'c'))),
+                $this->callFactory->createReturnedEvent('bc')
             ),
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array(array('d'))),
-                    $this->callFactory->createReturnedEvent('d'),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array(array('d'))),
+                $this->callFactory->createReturnedEvent('d')
             ),
         );
 
@@ -108,22 +102,16 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->callFactory->clock()->reset();
         $expected = array(
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array('a')),
-                    $this->callFactory->createReturnedEvent(),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array('a')),
+                $this->callFactory->createReturnedEvent()
             ),
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
-                    $this->callFactory->createReturnedEvent(),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
+                $this->callFactory->createReturnedEvent()
             ),
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array('d')),
-                    $this->callFactory->createReturnedEvent(),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array('d')),
+                $this->callFactory->createReturnedEvent()
             ),
         );
 
@@ -158,22 +146,16 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->callFactory->clock()->reset();
         $expected = array(
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array('a')),
-                    $this->callFactory->createThrewEvent($exceptions[0]),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array('a')),
+                $this->callFactory->createThrewEvent($exceptions[0])
             ),
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
-                    $this->callFactory->createThrewEvent($exceptions[1]),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
+                $this->callFactory->createThrewEvent($exceptions[1])
             ),
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($spy->callback(), array('d')),
-                    $this->callFactory->createThrewEvent($exceptions[2]),
-                )
+                $this->callFactory->createCalledEvent($spy->callback(), array('d')),
+                $this->callFactory->createThrewEvent($exceptions[2])
             ),
         );
 
@@ -191,10 +173,8 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->callFactory->clock()->reset();
         $expected = array(
             $this->callFactory->create(
-                array(
-                    $this->callFactory->createCalledEvent($callback),
-                    $this->callFactory->createReturnedEvent('x'),
-                )
+                $this->callFactory->createCalledEvent($callback),
+                $this->callFactory->createReturnedEvent('x')
             ),
         );
 

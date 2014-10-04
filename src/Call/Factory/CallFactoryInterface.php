@@ -13,9 +13,10 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
+use Eloquent\Phony\Call\Event\SentValueEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Exception;
 
@@ -40,11 +41,17 @@ interface CallFactoryInterface
     /**
      * Create a new call.
      *
-     * @param array<integer,CallEventInterface>|null $events The events.
+     * @param CalledEventInterface|null                   $calledEvent     The 'called' event.
+     * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet completed.
+     * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
      *
      * @return CallInterface The newly created call.
      */
-    public function create(array $events = null);
+    public function create(
+        CalledEventInterface $calledEvent = null,
+        ResponseEventInterface $responseEvent = null,
+        array $generatorEvents = null
+    );
 
     /**
      * Create a new 'called' event.
@@ -89,4 +96,13 @@ interface CallFactoryInterface
      * @return ThrewEventInterface The newly created event.
      */
     public function createThrewEvent(Exception $exception = null);
+
+    /**
+     * Create a new 'sent value' event.
+     *
+     * @param mixed $sentValue The sent value.
+     *
+     * @return SentValueEventInterface The newly created event.
+     */
+    public function createSentValueEvent($sentValue = null);
 }

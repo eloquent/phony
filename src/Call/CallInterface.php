@@ -13,8 +13,10 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * The interface implemented by calls.
@@ -22,39 +24,20 @@ use Exception;
 interface CallInterface
 {
     /**
-     * Set the events.
-     *
-     * @param array<integer,CallEventInterface> $events The events.
-     */
-    public function setEvents(array $events);
-
-    /**
-     * Add a sequence of events.
-     *
-     * @param array<integer,CallEventInterface> $events The events.
-     */
-    public function addEvents(array $events);
-
-    /**
-     * Add an event.
-     *
-     * @param CallEventInterface $event The event.
-     */
-    public function addEvent(CallEventInterface $event);
-
-    /**
-     * Get the events.
-     *
-     * @return array<integer,CallEventInterface> The events.
-     */
-    public function events();
-
-    /**
      * Get the 'called' event.
      *
      * @return CalledEventInterface The 'called' event.
      */
     public function calledEvent();
+
+    /**
+     * Set the 'response' event.
+     *
+     * @param ResponseEventInterface $responseEvent The response event.
+     *
+     * @throws InvalidArgumentException If the call has already completed.
+     */
+    public function setResponseEvent(ResponseEventInterface $responseEvent);
 
     /**
      * Get the response event.
@@ -64,11 +47,25 @@ interface CallInterface
     public function responseEvent();
 
     /**
-     * Get the non-'called', non-response events.
+     * Add a generator event.
+     *
+     * @param GeneratorEventInterface $event The generator event.
+     */
+    public function addGeneratorEvent(GeneratorEventInterface $event);
+
+    /**
+     * Get the generator events.
+     *
+     * @return array<integer,GeneratorEventInterface> The generator events.
+     */
+    public function generatorEvents();
+
+    /**
+     * Get all events.
      *
      * @return array<integer,CallEventInterface> The events.
      */
-    public function otherEvents();
+    public function events();
 
     /**
      * Get the callback.
