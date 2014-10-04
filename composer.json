@@ -27,7 +27,11 @@
     "autoload": {
         "psr-4": {
             "Eloquent\\Phony\\": "src"
-        }
+        },
+        "files": [
+            "src/functions.php",
+            "src/Phpunit/functions.php"
+        ]
     },
     "scripts": {
         "post-install-cmd": [
