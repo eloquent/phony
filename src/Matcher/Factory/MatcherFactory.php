@@ -11,6 +11,12 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
+use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcherDriver;
+use Eloquent\Phony\Integration\Mockery\MockeryMatcherDriver;
+use Eloquent\Phony\Integration\Phake\PhakeMatcherDriver;
+use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
+use Eloquent\Phony\Integration\Prophecy\ProphecyMatcherDriver;
+use Eloquent\Phony\Integration\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -34,6 +40,7 @@ class MatcherFactory implements MatcherFactoryInterface
     {
         if (null === self::$instance) {
             self::$instance = new self();
+            self::$instance->addAvailableMatcherDrivers();
         }
 
         return self::$instance;
@@ -86,6 +93,31 @@ class MatcherFactory implements MatcherFactoryInterface
         if (!in_array($driver, $this->drivers, true)) {
             $this->drivers[] = $driver;
         }
+    }
+
+    /**
+     * Add a matcher driver, only if the relevant matchers are available.
+     *
+     * @param MatcherDriverInterface $driver The matcher driver.
+     */
+    public function addMatcherDriverIfAvailable(MatcherDriverInterface $driver)
+    {
+        if ($driver->isAvailable()) {
+            $this->addMatcherDriver($driver);
+        }
+    }
+
+    /**
+     * Add any matcher drivers for which the relevant matchers are available.
+     */
+    public function addAvailableMatcherDrivers()
+    {
+        $this->addMatcherDriverIfAvailable(HamcrestMatcherDriver::instance());
+        $this->addMatcherDriverIfAvailable(PhpunitMatcherDriver::instance());
+        $this->addMatcherDriverIfAvailable(SimpletestMatcherDriver::instance());
+        $this->addMatcherDriverIfAvailable(PhakeMatcherDriver::instance());
+        $this->addMatcherDriverIfAvailable(ProphecyMatcherDriver::instance());
+        $this->addMatcherDriverIfAvailable(MockeryMatcherDriver::instance());
     }
 
     /**

@@ -27,6 +27,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory->addAvailableMatcherDrivers();
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = new AssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();

@@ -12,8 +12,6 @@
 namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Integration\Phpunit\PhpunitAssertionRecorder;
-use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use PHPUnit_Framework_TestCase;
 
 class PhonyTest extends PHPUnit_Framework_TestCase
@@ -25,7 +23,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertEquals(array(new PhpunitMatcherDriver()), $actual->matcherFactory()->drivers());
         $this->assertEquals(new PhpunitAssertionRecorder(), $actual->callVerifierFactory()->assertionRecorder());
     }
 
@@ -37,7 +34,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($callback, $actual->stub()->callback());
         $this->assertSame($actual->stub(), $actual->spy()->callback());
-        $this->assertEquals(array(new PhpunitMatcherDriver()), $actual->matcherFactory()->drivers());
         $this->assertEquals(new PhpunitAssertionRecorder(), $actual->callVerifierFactory()->assertionRecorder());
     }
 }

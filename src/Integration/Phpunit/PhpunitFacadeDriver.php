@@ -14,9 +14,7 @@ namespace Eloquent\Phony\Integration\Phpunit;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Facade\FacadeDriverInterface;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
-use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 
 /**
@@ -45,24 +43,22 @@ class PhpunitFacadeDriver extends FacadeDriver
      */
     public function __construct()
     {
-        $matcherFactory =
-            new MatcherFactory(array(PhpunitMatcherDriver::instance()));
         $assertionRecorder = PhpunitAssertionRecorder::instance();
         $callVerifierFactory =
-            new CallVerifierFactory($matcherFactory, null, $assertionRecorder);
+            new CallVerifierFactory(null, null, $assertionRecorder);
 
         parent::__construct(
             new SpyVerifierFactory(
                 null,
-                $matcherFactory,
+                null,
                 null,
                 $callVerifierFactory,
                 $assertionRecorder
             ),
             new StubVerifierFactory(
-                new StubFactory($matcherFactory),
                 null,
-                $matcherFactory,
+                null,
+                null,
                 null,
                 $callVerifierFactory,
                 $assertionRecorder

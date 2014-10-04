@@ -11,6 +11,12 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
+use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcherDriver;
+use Eloquent\Phony\Integration\Mockery\MockeryMatcherDriver;
+use Eloquent\Phony\Integration\Phake\PhakeMatcherDriver;
+use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
+use Eloquent\Phony\Integration\Prophecy\ProphecyMatcherDriver;
+use Eloquent\Phony\Integration\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -70,6 +76,36 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject->addMatcherDriver($this->driverB);
 
         $this->assertSame($this->drivers, $this->subject->drivers());
+    }
+
+    public function testAddMatcherDriverIfAvailable()
+    {
+        $this->subject->setMatcherDrivers(array());
+        $this->subject->addMatcherDriverIfAvailable($this->driverA);
+
+        $this->assertSame(array($this->driverA), $this->subject->drivers());
+
+        $this->subject->addMatcherDriverIfAvailable($this->driverB);
+
+        $this->assertSame(array($this->driverA), $this->subject->drivers());
+    }
+
+    public function testAddAvailableMatcherDrivers()
+    {
+        $this->subject->setMatcherDrivers(array());
+        $this->subject->addAvailableMatcherDrivers();
+
+        $this->assertSame(
+            array(
+                HamcrestMatcherDriver::instance(),
+                PhpunitMatcherDriver::instance(),
+                SimpletestMatcherDriver::instance(),
+                PhakeMatcherDriver::instance(),
+                ProphecyMatcherDriver::instance(),
+                MockeryMatcherDriver::instance(),
+            ),
+            $this->subject->drivers()
+        );
     }
 
     public function testIsMatcher()
@@ -136,5 +172,16 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
+        $this->assertSame(
+            array(
+                HamcrestMatcherDriver::instance(),
+                PhpunitMatcherDriver::instance(),
+                SimpletestMatcherDriver::instance(),
+                PhakeMatcherDriver::instance(),
+                ProphecyMatcherDriver::instance(),
+                MockeryMatcherDriver::instance(),
+            ),
+            $instance->drivers()
+        );
     }
 }

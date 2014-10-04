@@ -18,7 +18,7 @@ class TestMatcherDriverB implements MatcherDriverInterface
 {
     public function isAvailable()
     {
-        return true;
+        return false;
     }
 
     public function isSupported($matcher)
