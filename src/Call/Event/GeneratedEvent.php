@@ -37,7 +37,7 @@ class GeneratedEvent extends AbstractCallEvent implements
             $generator = call_user_func(
                 function () {
                     if (false) {
-                        yield; // @codeCoverageIgnore
+                        yield null; // @codeCoverageIgnore
                     }
                 }
             );
