@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
+use Eloquent\Phony\Integration\Counterpart\CounterpartMatcherDriver;
 use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Integration\Mockery\MockeryMatcherDriver;
 use Eloquent\Phony\Integration\Phake\PhakeMatcherDriver;
@@ -113,6 +114,7 @@ class MatcherFactory implements MatcherFactoryInterface
     public function addAvailableMatcherDrivers()
     {
         $this->addMatcherDriverIfAvailable(HamcrestMatcherDriver::instance());
+        $this->addMatcherDriverIfAvailable(CounterpartMatcherDriver::instance());
         $this->addMatcherDriverIfAvailable(PhpunitMatcherDriver::instance());
         $this->addMatcherDriverIfAvailable(SimpletestMatcherDriver::instance());
         $this->addMatcherDriverIfAvailable(PhakeMatcherDriver::instance());

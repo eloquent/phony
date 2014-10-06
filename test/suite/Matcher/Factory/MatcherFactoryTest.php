@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
+use Eloquent\Phony\Integration\Counterpart\CounterpartMatcherDriver;
 use Eloquent\Phony\Integration\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Integration\Mockery\MockeryMatcherDriver;
 use Eloquent\Phony\Integration\Phake\PhakeMatcherDriver;
@@ -90,6 +91,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array($this->driverA), $this->subject->drivers());
     }
 
+    /**
+     * @requires PHP 5.4.0-dev
+     */
     public function testAddAvailableMatcherDrivers()
     {
         $this->subject->setMatcherDrivers(array());
@@ -98,6 +102,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             array(
                 HamcrestMatcherDriver::instance(),
+                CounterpartMatcherDriver::instance(),
                 PhpunitMatcherDriver::instance(),
                 SimpletestMatcherDriver::instance(),
                 PhakeMatcherDriver::instance(),
@@ -161,6 +166,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->subject->wildcard(null, 111, 222));
     }
 
+    /**
+     * @requires PHP 5.4.0-dev
+     */
     public function testInstance()
     {
         $class = get_class($this->subject);
@@ -175,6 +183,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             array(
                 HamcrestMatcherDriver::instance(),
+                CounterpartMatcherDriver::instance(),
                 PhpunitMatcherDriver::instance(),
                 SimpletestMatcherDriver::instance(),
                 PhakeMatcherDriver::instance(),
