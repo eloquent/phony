@@ -24,9 +24,6 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('Not supported under HHVM.');
         }
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
 
         $this->callFactory = new TestCallFactory();
         $this->subject = new GeneratorSpyFactory($this->callFactory);

@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\GeneratedEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\SentEvent;
 use Eloquent\Phony\Call\Event\SentExceptionEvent;
@@ -96,21 +95,6 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateWithGeneratorEvents()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $calledEvent = $this->subject->createCalledEvent();
-        $generatedEvent = $this->subject->createGeneratedEvent();
-        $generatorEvents = array($this->subject->createSentEvent());
-        $expected = new Call($calledEvent, $generatedEvent, $generatorEvents);
-        $actual = $this->subject->create($calledEvent, $generatedEvent, $generatorEvents);
-
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testCreateDefaults()
     {
         $expected = new Call($this->subject->createCalledEvent());
@@ -169,20 +153,6 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     {
         $expected = new ThrewEvent(0, 0.0, $this->exception);
         $actual = $this->subject->createThrewEvent($this->exception);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateGeneratedEvent()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $generatorFactory = eval('return function () { return; yield null; };');
-        $generator = call_user_func($generatorFactory);
-        $expected = new GeneratedEvent(0, 0.0, $generator);
-        $actual = $this->subject->createGeneratedEvent($generator);
 
         $this->assertEquals($expected, $actual);
     }

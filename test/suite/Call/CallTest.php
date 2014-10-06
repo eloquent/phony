@@ -95,99 +95,6 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->endTime());
     }
 
-    public function testConstructorWithGeneratedEventWithReturnEnd()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
-        $generatorEventA = $this->callFactory->createYieldedEvent();
-        $generatorEventB = $this->callFactory->createSentEvent();
-        $generatorEvents = array($generatorEventA, $generatorEventB);
-        $endEvent = $this->callFactory->createReturnedEvent();
-        $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
-        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
-
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
-        $this->assertSame($endEvent, $this->subject->endEvent());
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertTrue($this->subject->hasResponded());
-        $this->assertTrue($this->subject->hasCompleted());
-        $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
-        $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
-        $this->assertEquals($endEvent->time(), $this->subject->endTime());
-    }
-
-    public function testConstructorWithGeneratedEventWithThrowEnd()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
-        $generatorEventA = $this->callFactory->createYieldedEvent();
-        $generatorEventB = $this->callFactory->createSentEvent();
-        $generatorEvents = array($generatorEventA, $generatorEventB);
-        $exception = new RuntimeException('You done goofed.');
-        $endEvent = $this->callFactory->createThrewEvent($exception);
-        $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
-        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
-
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
-        $this->assertSame($endEvent, $this->subject->endEvent());
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertTrue($this->subject->hasResponded());
-        $this->assertTrue($this->subject->hasCompleted());
-        $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
-        $this->assertSame($exception, $this->subject->exception());
-        $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
-        $this->assertEquals($endEvent->time(), $this->subject->endTime());
-    }
-
-    public function testConstructorWithGeneratedEventWithoutEnd()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
-        $generatorEventA = $this->callFactory->createYieldedEvent();
-        $generatorEventB = $this->callFactory->createSentEvent();
-        $generatorEvents = array($generatorEventA, $generatorEventB);
-        $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents);
-        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB);
-
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
-        $this->assertNull($this->subject->endEvent());
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertTrue($this->subject->hasResponded());
-        $this->assertFalse($this->subject->hasCompleted());
-        $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
-        $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
-        $this->assertNull($this->subject->endTime());
-    }
-
     public function testSetResponseEventWithReturnedEvent()
     {
         $this->subject = new Call($this->calledEvent);
@@ -197,51 +104,10 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
     }
 
-    public function testSetResponseEventWithGeneratedEvent()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
-        $this->subject = new Call($this->calledEvent);
-        $this->subject->setResponseEvent($generatedEvent);
-
-        $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertNull($this->subject->endEvent());
-    }
-
     public function testSetResponseEventFailureAlreadySet()
     {
         $this->setExpectedException('InvalidArgumentException', 'Call already responded.');
         $this->subject->setResponseEvent($this->returnedEvent);
-    }
-
-    public function testAddGeneratorEvent()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
-        $generatorEventA = $this->callFactory->createYieldedEvent();
-        $generatorEventB = $this->callFactory->createSentEvent();
-        $this->subject = new Call($this->calledEvent, $generatedEvent);
-        $this->subject->addGeneratorEvent($generatorEventA);
-        $this->subject->addGeneratorEvent($generatorEventB);
-        $generatorEvents = array($generatorEventA, $generatorEventB);
-
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
-    }
-
-    public function testAddGeneratorEventFailureAlreadyCompleted()
-    {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
-        $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
-        $this->subject->addGeneratorEvent($this->callFactory->createSentEvent('e'));
     }
 
     public function testSetEndEventWithReturnedEvent()

@@ -16,6 +16,7 @@
     <testsuites>
         <testsuite>
             <directory>test/suite</directory>
+            <directory phpVersion="5.5-dev">test/suite-generators</directory>
         </testsuite>
     </testsuites>
 

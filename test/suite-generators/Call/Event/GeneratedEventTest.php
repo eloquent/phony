@@ -17,13 +17,9 @@ class GeneratedEventTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generator support.');
-        }
-
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->generatorFactory = eval('return function () { return; yield null; };');
+        $this->generatorFactory = function () { return; yield null; };
         $this->generator = call_user_func($this->generatorFactory);
         $this->subject = new GeneratedEvent($this->sequenceNumber, $this->time, $this->generator);
     }
