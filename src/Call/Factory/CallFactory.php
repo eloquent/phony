@@ -29,6 +29,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use Eloquent\Phony\Spy\SpyInterface;
 use Exception;
 
 /**
@@ -114,12 +115,14 @@ class CallFactory implements CallFactoryInterface
      *
      * @param callable|null             $callback  The callback.
      * @param array<integer,mixed>|null $arguments The arguments.
+     * @param SpyInterface|null         $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
-        array $arguments = null
+        array $arguments = null,
+        SpyInterface $spy = null
     ) {
         if (null === $callback) {
             $callback = function () {};
@@ -128,18 +131,24 @@ class CallFactory implements CallFactoryInterface
             $arguments = array();
         }
 
+        $call = $this->create($this->createCalledEvent($callback, $arguments));
+
+        if ($spy) {
+            $spy->addCall($call);
+        }
+
         $returnValue = null;
         $exception = null;
-        $calledEvent = $this->createCalledEvent($callback, $arguments);
 
         try {
             $returnValue = $this->invoker->callWith($callback, $arguments);
         } catch (Exception $exception) {}
 
-        return $this->create(
-            $calledEvent,
+        $call->setResponseEvent(
             $this->createResponseEvent($returnValue, $exception)
         );
+
+        return $call;
     }
 
     /**

@@ -19,6 +19,7 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -63,9 +64,11 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->sequencer->reset();
         $this->clock->reset();
-        $actual = $this->subject->record($callback, $arguments);
+        $spy = new Spy();
+        $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
+        $this->assertEquals(array($expected), $spy->recordedCalls());
     }
 
     public function testRecordDefaults()

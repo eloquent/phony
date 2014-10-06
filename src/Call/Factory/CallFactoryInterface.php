@@ -18,6 +18,7 @@ use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\SentValueEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
+use Eloquent\Phony\Spy\SpyInterface;
 use Exception;
 
 /**
@@ -30,12 +31,14 @@ interface CallFactoryInterface
      *
      * @param callable|null             $callback  The callback.
      * @param array<integer,mixed>|null $arguments The arguments.
+     * @param SpyInterface|null         $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
-        array $arguments = null
+        array $arguments = null,
+        SpyInterface $spy = null
     );
 
     /**
