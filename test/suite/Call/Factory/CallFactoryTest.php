@@ -179,7 +179,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires generator support.');
         }
 
-        $generatorFactory = eval('return function () { return; yield; };');
+        $generatorFactory = eval('return function () { return; yield null; };');
         $generator = call_user_func($generatorFactory);
         $expected = new GeneratedEvent(0, 0.0, $generator);
         $actual = $this->subject->createGeneratedEvent($generator);
