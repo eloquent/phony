@@ -111,7 +111,7 @@ interface CallFactoryInterface
      *
      * @return GeneratedEventInterface The newly created event.
      */
-    public function createGeneratedEvent($generator = null);
+    public function createGeneratedEvent(Generator $generator = null);
 
     /**
      * Create a new 'yielded' event.

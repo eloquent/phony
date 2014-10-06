@@ -20,6 +20,11 @@ class TestClock implements ClockInterface
         return ($this->time += 1.0);
     }
 
+    public function setTime($time)
+    {
+        $this->time = $time - 1.0;
+    }
+
     public function reset()
     {
         $this->time = -1.0;
