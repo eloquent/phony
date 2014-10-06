@@ -23,7 +23,7 @@ class GeneratedEventTest extends PHPUnit_Framework_TestCase
 
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->generatorFactory = function () { yield 1; };
+        $this->generatorFactory = eval('return function () { yield 1; };');
         $this->generator = call_user_func($this->generatorFactory);
         $this->subject = new GeneratedEvent($this->sequenceNumber, $this->time, $this->generator);
     }
