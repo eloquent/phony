@@ -16,6 +16,9 @@ use Eloquent\Phony\Matcher\WrappedMatcher;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
+/**
+ * @requires PHP 5.4.0-dev
+ */
 class CounterpartMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
