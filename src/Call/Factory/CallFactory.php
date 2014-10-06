@@ -23,7 +23,6 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Exception;
-use Generator;
 use InvalidArgumentException;
 
 /**
@@ -91,16 +90,18 @@ class CallFactory implements CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null             $callback  The callback.
-     * @param array<integer,mixed>|null $arguments The arguments.
-     * @param SpyInterface|null         $spy       The spy to record the call to.
+     * @param callable|null             $callback           The callback.
+     * @param array<integer,mixed>|null $arguments          The arguments.
+     * @param SpyInterface|null         $spy                The spy to record the call to.
+     * @param boolean|null              $useGeneratedEvents True if 'generated' events should be used.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
         array $arguments = null,
-        SpyInterface $spy = null
+        SpyInterface $spy = null,
+        $useGeneratedEvents = null
     ) {
         if (null === $callback) {
             $callback = function () {};
@@ -125,7 +126,8 @@ class CallFactory implements CallFactoryInterface
         } catch (Exception $exception) {}
 
         $call->setResponseEvent(
-            $this->eventFactory->createResponse($returnValue, $exception)
+            $this->eventFactory
+                ->createResponse($returnValue, $exception, $useGeneratedEvents)
         );
 
         return $call;

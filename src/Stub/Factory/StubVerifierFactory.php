@@ -219,14 +219,23 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     /**
      * Create a new stub verifier for the supplied callback.
      *
-     * @param callable|null $callback  The callback, or null to create an unbound stub verifier.
-     * @param object|null   $thisValue The $this value.
+     * @param callable|null $callback          The callback, or null to create an unbound stub verifier.
+     * @param object|null   $thisValue         The $this value.
+     * @param boolean|null  $useGeneratorSpies True if generator spies should be used.
      *
      * @return StubVerifierInterface The newly created stub verifier.
      */
-    public function createFromCallback($callback = null, $thisValue = null)
-    {
-        return $this->create($this->stubFactory->create($callback, $thisValue));
+    public function createFromCallback(
+        $callback = null,
+        $thisValue = null,
+        $useGeneratorSpies = null
+    ) {
+        $stub = $this->stubFactory->create($callback, $thisValue);
+
+        return $this->create(
+            $stub,
+            $this->spyFactory->create($stub, $useGeneratorSpies)
+        );
     }
 
     private static $instance;

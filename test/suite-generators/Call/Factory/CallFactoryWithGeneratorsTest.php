@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Call\Factory;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\GeneratedEvent;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Test\TestCallEventFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -30,6 +31,23 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject = new CallFactory($this->eventFactory, $this->invoker);
 
         $this->exception = new RuntimeException('You done goofed.');
+    }
+
+    public function testRecordWithGeneratedEvents()
+    {
+        $callback = function () { return; yield null; };
+        $arguments = array(array('a', 'b'));
+        $generator = call_user_func($callback);
+        $expected = $this->subject->create(
+            $this->eventFactory->createCalled($callback, $arguments),
+            $this->eventFactory->createGenerated($generator)
+        );
+        $this->eventFactory->reset();
+        $spy = new Spy();
+        $actual = $this->subject->record($callback, $arguments, $spy, true);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertEquals(array($expected), $spy->recordedCalls());
     }
 
     public function testCreateGeneratedEvent()

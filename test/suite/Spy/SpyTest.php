@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
+use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -21,21 +22,26 @@ class SpyTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
+        $this->useGeneratorSpies = false;
         $this->callFactory = new TestCallFactory();
-        $this->subject = new Spy($this->callback, $this->callFactory);
+        $this->callEventFactory = $this->callFactory->eventFactory();
+        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory);
+        $this->subject =
+            new Spy($this->callback, $this->useGeneratorSpies, $this->callFactory, $this->generatorSpyFactory);
 
         $this->callA = $this->callFactory->create();
         $this->callB = $this->callFactory->create();
         $this->calls = array($this->callA, $this->callB);
 
         $this->callFactory->reset();
-        $this->callEventFactory = $this->callFactory->eventFactory();
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->useGeneratorSpies, $this->subject->useGeneratorSpies());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
+        $this->assertSame($this->generatorSpyFactory, $this->subject->generatorSpyFactory());
         $this->assertSame(array(), $this->subject->recordedCalls());
     }
 
@@ -46,6 +52,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
+        $this->assertSame(GeneratorSpyFactory::instance(), $this->subject->generatorSpyFactory());
     }
 
     public function testSetCalls()
@@ -93,7 +100,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, $this->callFactory);
+        $spy = new Spy(null, false, $this->callFactory);
         $spy->invokeWith(array('a'));
         $spy->invoke('b', 'c');
         $spy('d');
@@ -123,7 +130,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($callback, $this->callFactory);
+        $spy = new Spy($callback, false, $this->callFactory);
         $caughtExceptions = array();
         try {
             $spy->invokeWith(array('a'));
@@ -164,7 +171,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $callback = function () {
             return 'x';
         };
-        $spy = new Spy($callback, $this->callFactory);
+        $spy = new Spy($callback, false, $this->callFactory);
         $spy->invokeWith();
         $this->callFactory->reset();
         $expected = array(
@@ -182,7 +189,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $callback = function (&$argument) {
             $argument = 'x';
         };
-        $spy = new Spy($callback, $this->callFactory);
+        $spy = new Spy($callback, false, $this->callFactory);
         $value = null;
         $arguments = array(&$value);
         $spy->invokeWith($arguments);

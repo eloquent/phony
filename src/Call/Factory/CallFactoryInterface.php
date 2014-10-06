@@ -27,16 +27,18 @@ interface CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null             $callback  The callback.
-     * @param array<integer,mixed>|null $arguments The arguments.
-     * @param SpyInterface|null         $spy       The spy to record the call to.
+     * @param callable|null             $callback           The callback.
+     * @param array<integer,mixed>|null $arguments          The arguments.
+     * @param SpyInterface|null         $spy                The spy to record the call to.
+     * @param boolean|null              $useGeneratedEvents True if 'generated' events should be used.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
         array $arguments = null,
-        SpyInterface $spy = null
+        SpyInterface $spy = null,
+        $useGeneratedEvents = null
     );
 
     /**

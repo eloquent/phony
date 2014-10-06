@@ -16,7 +16,10 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
+use Eloquent\Phony\Spy\Factory\GeneratorSpyFactoryInterface;
 use Exception;
+use Generator;
 
 /**
  * Spies on a function or method.
@@ -28,21 +31,43 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null             $callback    The callback, or null to create an unbound spy.
-     * @param CallFactoryInterface|null $callFactory The call factory to use.
+     * @param callable|null                     $callback            The callback, or null to create an unbound spy.
+     * @param boolean|null                      $useGeneratorSpies   True if generator spies should be used.
+     * @param CallFactoryInterface|null         $callFactory         The call factory to use.
+     * @param GeneratorSpyFactoryInterface|null $generatorSpyFactory The generator spy factory to use.
      */
     public function __construct(
         $callback = null,
-        CallFactoryInterface $callFactory = null
+        $useGeneratorSpies = null,
+        CallFactoryInterface $callFactory = null,
+        GeneratorSpyFactoryInterface $generatorSpyFactory = null
     ) {
+        if (null === $useGeneratorSpies) {
+            $useGeneratorSpies = !defined('HHVM_VERSION');
+        }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
+        }
+        if (null === $generatorSpyFactory) {
+            $generatorSpyFactory = GeneratorSpyFactory::instance();
         }
 
         parent::__construct($callback);
 
+        $this->useGeneratorSpies = $useGeneratorSpies;
         $this->callFactory = $callFactory;
+        $this->generatorSpyFactory = $generatorSpyFactory;
         $this->calls = array();
+    }
+
+    /**
+     * Returns true if this spy uses generator spies.
+     *
+     * @return boolean True if this spy uses generator spies.
+     */
+    public function useGeneratorSpies()
+    {
+        return $this->useGeneratorSpies;
     }
 
     /**
@@ -53,6 +78,16 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function callFactory()
     {
         return $this->callFactory;
+    }
+
+    /**
+     * Get the generator spy factory.
+     *
+     * @return GeneratorSpyFactoryInterface The generator spy factory.
+     */
+    public function generatorSpyFactory()
+    {
+        return $this->generatorSpyFactory;
     }
 
     /**
@@ -97,16 +132,29 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      */
     public function invokeWith(array $arguments = null)
     {
-        $call = $this->callFactory->record($this->callback, $arguments, $this);
+        $call = $this->callFactory->record(
+            $this->callback,
+            $arguments,
+            $this,
+            $this->useGeneratorSpies
+        );
         $exception = $call->exception();
 
         if ($exception) {
             throw $exception;
         }
 
-        return $call->returnValue();
+        $returnValue = $call->returnValue();
+
+        if ($this->useGeneratorSpies && $returnValue instanceof Generator) {
+            return $this->generatorSpyFactory->create($call, $returnValue);
+        }
+
+        return $returnValue;
     }
 
+    private $useGeneratorSpies;
     private $callFactory;
+    private $generatorSpyFactory;
     private $calls;
 }

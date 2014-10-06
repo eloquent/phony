@@ -40,14 +40,16 @@ interface CallEventFactoryInterface
     /**
      * Create a new response event.
      *
-     * @param mixed          $returnValue The return value.
-     * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
+     * @param mixed          $returnValue        The return value.
+     * @param Exception|null $exception          The thrown exception, or null if no exception was thrown.
+     * @param boolean|null   $useGeneratedEvents True if 'generated' events should be used.
      *
      * @return ResponseEventInterface The newly created event.
      */
     public function createResponse(
         $returnValue = null,
-        Exception $exception = null
+        Exception $exception = null,
+        $useGeneratedEvents = null
     );
 
     /**

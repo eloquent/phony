@@ -36,10 +36,15 @@ interface StubVerifierFactoryInterface
     /**
      * Create a new stub verifier for the supplied callback.
      *
-     * @param callable|null $callback  The callback, or null to create an unbound stub verifier.
-     * @param object|null   $thisValue The $this value.
+     * @param callable|null $callback          The callback, or null to create an unbound stub verifier.
+     * @param object|null   $thisValue         The $this value.
+     * @param boolean|null  $useGeneratorSpies True if generator spies should be used.
      *
      * @return StubVerifierInterface The newly created stub verifier.
      */
-    public function createFromCallback($callback = null, $thisValue = null);
+    public function createFromCallback(
+        $callback = null,
+        $thisValue = null,
+        $useGeneratorSpies = null
+    );
 }

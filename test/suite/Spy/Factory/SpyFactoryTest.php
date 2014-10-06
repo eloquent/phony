@@ -21,12 +21,14 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callFactory = new CallFactory();
-        $this->subject = new SpyFactory($this->callFactory);
+        $this->generatorSpyFactory = new GeneratorSpyFactory();
+        $this->subject = new SpyFactory($this->callFactory, $this->generatorSpyFactory);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->callFactory, $this->subject->callFactory());
+        $this->assertSame($this->generatorSpyFactory, $this->subject->generatorSpyFactory());
     }
 
     public function testConstructorDefaults()
@@ -34,15 +36,18 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject = new SpyFactory();
 
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
+        $this->assertSame(GeneratorSpyFactory::instance(), $this->subject->generatorSpyFactory());
     }
 
     public function testCreate()
     {
         $callback = function () {};
-        $expected = new Spy($callback, $this->callFactory);
-        $actual = $this->subject->create($callback);
+        $useGeneratorSpies = false;
+        $expected = new Spy($callback, $useGeneratorSpies, $this->callFactory);
+        $actual = $this->subject->create($callback, false);
 
         $this->assertEquals($expected, $actual);
+        $this->assertSame($useGeneratorSpies, $actual->useGeneratorSpies());
         $this->assertSame($callback, $actual->callback());
         $this->assertSame($this->callFactory, $actual->callFactory());
     }
