@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Spy\Factory;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
-use Exception;
 use Generator;
 
 /**
@@ -73,62 +72,11 @@ class GeneratorSpyFactory implements GeneratorSpyFactoryInterface
      */
     public function create(CallInterface $call, Generator $generator)
     {
-        $isFirst = true;
-        $sent = null;
-        $sentException = null;
-
-        while (true) {
-            $thrown = null;
-            $key = null;
-            $value = null;
-
-            try {
-                if (!$isFirst) {
-                    if ($sentException) {
-                        $generator->throw($sentException);
-                    } else {
-                        $generator->send($sent);
-                    }
-                }
-
-                if (!$generator->valid()) {
-                    $call->setEndEvent(
-                        $this->callEventFactory->createReturned()
-                    );
-
-                    break;
-                }
-            } catch (Exception $thrown) {
-                $call->setEndEvent(
-                    $this->callEventFactory->createThrew($thrown)
-                );
-
-                return;
-            }
-
-            $key = $generator->key();
-            $value = $generator->current();
-            $sent = null;
-            $sentException = null;
-
-            $call->addGeneratorEvent(
-                $this->callEventFactory->createYielded($value, $key)
-            );
-
-            try {
-                $sent = (yield $key => $value);
-
-                $call->addGeneratorEvent(
-                    $this->callEventFactory->createSent($sent)
-                );
-            } catch (Exception $sentException) {
-                $call->addGeneratorEvent(
-                    $this->callEventFactory->createSentException($sentException)
-                );
-            }
-
-            $isFirst = false;
-        }
+        return GeneratorSpyFactoryDetail::create(
+            $call,
+            $generator,
+            $this->callEventFactory
+        );
     }
 
     private static $instance;
