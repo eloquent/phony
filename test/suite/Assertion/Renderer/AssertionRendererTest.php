@@ -30,13 +30,14 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->subject = new AssertionRenderer($this->invocableInspector, $this->exporter);
 
         $this->callFactory = new TestCallFactory();
+        $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callA = $this->callFactory->create(
-            $this->callFactory->createCalledEvent(array($this, 'setUp'), array('a', 'b')),
-            $this->callFactory->createReturnedEvent('x')
+            $this->callEventFactory->createCalled(array($this, 'setUp'), array('a', 'b')),
+            $this->callEventFactory->createReturned('x')
         );
         $this->callB = $this->callFactory->create(
-            $this->callFactory->createCalledEvent('implode'),
-            $this->callFactory->createThrewEvent(new RuntimeException('You done goofed.'))
+            $this->callEventFactory->createCalled('implode'),
+            $this->callEventFactory->createThrew(new RuntimeException('You done goofed.'))
         );
     }
 
@@ -133,26 +134,27 @@ EOD;
     public function renderCallData()
     {
         $callFactory = new TestCallFactory();
+        $callEventFactory = $callFactory->eventFactory();
 
         return array(
             'Method' => array(
-                $callFactory->create($callFactory->createCalledEvent(array($this, 'setUp'))),
+                $callFactory->create($callEventFactory->createCalled(array($this, 'setUp'))),
                 "Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp()",
             ),
             'Static method' => array(
-                $callFactory->create($callFactory->createCalledEvent('ReflectionMethod::export')),
+                $callFactory->create($callEventFactory->createCalled('ReflectionMethod::export')),
                 "ReflectionMethod::export()",
             ),
             'Function' => array(
-                $callFactory->create($callFactory->createCalledEvent('implode')),
+                $callFactory->create($callEventFactory->createCalled('implode')),
                 "implode()",
             ),
             'Closure' => array(
-                $callFactory->create($callFactory->createCalledEvent(function () {})),
+                $callFactory->create($callEventFactory->createCalled(function () {})),
                 "Eloquent\Phony\Assertion\Renderer\{closure}()",
             ),
             'With arguments' => array(
-                $callFactory->create($callFactory->createCalledEvent('implode', array('a', 111))),
+                $callFactory->create($callEventFactory->createCalled('implode', array('a', 111))),
                 "implode('a', 111)",
             ),
         );

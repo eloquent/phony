@@ -11,17 +11,19 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Call\Factory\CallFactory;
+use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
+use Eloquent\Phony\Sequencer\Sequencer;
 
-class TestCallFactory extends CallFactory
+class TestCallEventFactory extends CallEventFactory
 {
     public function __construct()
     {
-        parent::__construct(new TestCallEventFactory());
+        parent::__construct(new Sequencer(), new TestClock());
     }
 
     public function reset()
     {
-        $this->eventFactory()->reset();
+        $this->sequencer()->reset();
+        $this->clock()->reset();
     }
 }

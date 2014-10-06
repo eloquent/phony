@@ -35,7 +35,7 @@ class Call implements CallInterface
      * @param CalledEventInterface                        $calledEvent     The 'called' event.
      * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet responded.
      * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
-     * @param ResponseEventInterface|null                 $endEvent        The end event, or null if the call has not yet completed.
+     * @param EndEventInterface|null                      $endEvent        The end event, or null if the call has not yet completed.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
@@ -43,7 +43,7 @@ class Call implements CallInterface
         CalledEventInterface $calledEvent,
         ResponseEventInterface $responseEvent = null,
         array $generatorEvents = null,
-        ResponseEventInterface $endEvent = null
+        EndEventInterface $endEvent = null
     ) {
         $this->calledEvent = $calledEvent;
         $this->generatorEvents = array();

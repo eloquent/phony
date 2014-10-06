@@ -20,11 +20,12 @@ class CallTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callFactory = new TestCallFactory();
+        $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
         $this->arguments = array('a', 'b');
-        $this->calledEvent = $this->callFactory->createCalledEvent($this->callback, $this->arguments);
+        $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnValue = 'ab';
-        $this->returnedEvent = $this->callFactory->createReturnedEvent($this->returnValue);
+        $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->subject = new Call($this->calledEvent, $this->returnedEvent);
 
         $this->events = array($this->calledEvent, $this->returnedEvent);
@@ -52,7 +53,7 @@ class CallTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithThrewEvent()
     {
         $exception = new RuntimeException('You done goofed.');
-        $threwEvent = $this->callFactory->createThrewEvent($exception);
+        $threwEvent = $this->callEventFactory->createThrew($exception);
         $this->subject = new Call($this->calledEvent, $threwEvent);
         $this->events = array($this->calledEvent, $threwEvent);
 

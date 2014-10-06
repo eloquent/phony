@@ -14,8 +14,7 @@ namespace Eloquent\Phony\Call\Factory;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\GeneratedEvent;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Test\TestClock;
+use Eloquent\Phony\Test\TestCallEventFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
 
@@ -26,10 +25,9 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->sequencer = new Sequencer();
-        $this->clock = new TestClock();
+        $this->eventFactory = new TestCallEventFactory();
         $this->invoker = new Invoker();
-        $this->subject = new CallFactory($this->sequencer, $this->clock, $this->invoker);
+        $this->subject = new CallFactory($this->eventFactory, $this->invoker);
 
         $this->exception = new RuntimeException('You done goofed.');
     }
@@ -39,16 +37,16 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generatorFactory = eval('return function () { return; yield null; };');
         $generator = call_user_func($generatorFactory);
         $expected = new GeneratedEvent(0, 0.0, $generator);
-        $actual = $this->subject->createGeneratedEvent($generator);
+        $actual = $this->eventFactory->createGenerated($generator);
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testCreateWithGeneratorEvents()
     {
-        $calledEvent = $this->subject->createCalledEvent();
-        $generatedEvent = $this->subject->createGeneratedEvent();
-        $generatorEvents = array($this->subject->createSentEvent());
+        $calledEvent = $this->eventFactory->createCalled();
+        $generatedEvent = $this->eventFactory->createGenerated();
+        $generatorEvents = array($this->eventFactory->createSent());
         $expected = new Call($calledEvent, $generatedEvent, $generatorEvents);
         $actual = $this->subject->create($calledEvent, $generatedEvent, $generatorEvents);
 

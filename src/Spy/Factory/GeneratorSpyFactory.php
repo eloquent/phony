@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Call\Factory\CallFactoryInterface;
+use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
+use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
 use Exception;
 use Generator;
 
@@ -41,25 +41,26 @@ class GeneratorSpyFactory implements GeneratorSpyFactoryInterface
     /**
      * Construct a new generator spy factory.
      *
-     * @param CallFactoryInterface|null $callFactory The call factory to use.
+     * @param CallEventFactoryInterface|null $callEventFactory The call event factory to use.
      */
-    public function __construct(CallFactoryInterface $callFactory = null)
-    {
-        if (null === $callFactory) {
-            $callFactory = CallFactory::instance();
+    public function __construct(
+        CallEventFactoryInterface $callEventFactory = null
+    ) {
+        if (null === $callEventFactory) {
+            $callEventFactory = CallEventFactory::instance();
         }
 
-        $this->callFactory = $callFactory;
+        $this->callEventFactory = $callEventFactory;
     }
 
     /**
-     * Get the call factory.
+     * Get the call event factory.
      *
-     * @return CallFactoryInterface The call factory.
+     * @return CallEventFactoryInterface The call event factory.
      */
-    public function callFactory()
+    public function callEventFactory()
     {
-        return $this->callFactory;
+        return $this->callEventFactory;
     }
 
     /**
@@ -92,14 +93,14 @@ class GeneratorSpyFactory implements GeneratorSpyFactoryInterface
 
                 if (!$generator->valid()) {
                     $call->setEndEvent(
-                        $this->callFactory->createReturnedEvent()
+                        $this->callEventFactory->createReturned()
                     );
 
                     break;
                 }
             } catch (Exception $thrown) {
                 $call->setEndEvent(
-                    $this->callFactory->createThrewEvent($thrown)
+                    $this->callEventFactory->createThrew($thrown)
                 );
 
                 return;
@@ -111,18 +112,18 @@ class GeneratorSpyFactory implements GeneratorSpyFactoryInterface
             $sentException = null;
 
             $call->addGeneratorEvent(
-                $this->callFactory->createYieldedEvent($value, $key)
+                $this->callEventFactory->createYielded($value, $key)
             );
 
             try {
                 $sent = (yield $key => $value);
 
                 $call->addGeneratorEvent(
-                    $this->callFactory->createSentEvent($sent)
+                    $this->callEventFactory->createSent($sent)
                 );
             } catch (Exception $sentException) {
                 $call->addGeneratorEvent(
-                    $this->callFactory->createSentExceptionEvent($sentException)
+                    $this->callEventFactory->createSentException($sentException)
                 );
             }
 
@@ -131,5 +132,5 @@ class GeneratorSpyFactory implements GeneratorSpyFactoryInterface
     }
 
     private static $instance;
-    private $callFactory;
+    private $callEventFactory;
 }

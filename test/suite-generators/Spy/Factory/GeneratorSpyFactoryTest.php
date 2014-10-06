@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Spy\Factory;
 
+use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
@@ -26,21 +27,22 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         }
 
         $this->callFactory = new TestCallFactory();
-        $this->subject = new GeneratorSpyFactory($this->callFactory);
+        $this->callEventFactory = $this->callFactory->eventFactory();
+        $this->subject = new GeneratorSpyFactory($this->callEventFactory);
 
         $this->call = $this->callFactory->create();
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->callFactory, $this->subject->callFactory());
+        $this->assertSame($this->callEventFactory, $this->subject->callEventFactory());
     }
 
     public function testConstructorDefaults()
     {
         $this->subject = new GeneratorSpyFactory();
 
-        $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
+        $this->assertSame(CallEventFactory::instance(), $this->subject->callEventFactory());
     }
 
     public function testCreateWithReturnedEnd()
@@ -67,17 +69,17 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 }
             }
         } catch (RuntimeException $caughtException) {}
-        $this->callFactory->sequencer()->set(0);
-        $this->callFactory->clock()->setTime(1.0);
+        $this->callEventFactory->sequencer()->set(0);
+        $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array(
-            $this->callFactory->createYieldedEvent('a', 0),
-            $this->callFactory->createSentEvent('A'),
-            $this->callFactory->createYieldedEvent('b', 1),
-            $this->callFactory->createSentExceptionEvent($sentException),
-            $this->callFactory->createYieldedEvent('c', 2),
-            $this->callFactory->createSentEvent('C'),
+            $this->callEventFactory->createYielded('a', 0),
+            $this->callEventFactory->createSent('A'),
+            $this->callEventFactory->createYielded('b', 1),
+            $this->callEventFactory->createSentException($sentException),
+            $this->callEventFactory->createYielded('c', 2),
+            $this->callEventFactory->createSent('C'),
         );
-        $endEvent = $this->callFactory->createReturnedEvent();
+        $endEvent = $this->callEventFactory->createReturned();
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());
@@ -111,17 +113,17 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 }
             }
         } catch (RuntimeException $caughtException) {}
-        $this->callFactory->sequencer()->set(0);
-        $this->callFactory->clock()->setTime(1.0);
+        $this->callEventFactory->sequencer()->set(0);
+        $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array(
-            $this->callFactory->createYieldedEvent('a', 0),
-            $this->callFactory->createSentEvent('A'),
-            $this->callFactory->createYieldedEvent('b', 1),
-            $this->callFactory->createSentExceptionEvent($sentException),
-            $this->callFactory->createYieldedEvent('c', 2),
-            $this->callFactory->createSentEvent('C'),
+            $this->callEventFactory->createYielded('a', 0),
+            $this->callEventFactory->createSent('A'),
+            $this->callEventFactory->createYielded('b', 1),
+            $this->callEventFactory->createSentException($sentException),
+            $this->callEventFactory->createYielded('c', 2),
+            $this->callEventFactory->createSent('C'),
         );
-        $endEvent = $this->callFactory->createThrewEvent($exception);
+        $endEvent = $this->callEventFactory->createThrew($exception);
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());
@@ -138,10 +140,10 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         );
         $spy = $this->subject->create($this->call, $generator);
         foreach ($spy as $value) {}
-        $this->callFactory->sequencer()->set(0);
-        $this->callFactory->clock()->setTime(1.0);
+        $this->callEventFactory->sequencer()->set(0);
+        $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array();
-        $endEvent = $this->callFactory->createReturnedEvent();
+        $endEvent = $this->callEventFactory->createReturned();
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());
@@ -159,10 +161,10 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         );
         $spy = $this->subject->create($this->call, $generator);
         foreach ($spy as $value) {}
-        $this->callFactory->sequencer()->set(0);
-        $this->callFactory->clock()->setTime(1.0);
+        $this->callEventFactory->sequencer()->set(0);
+        $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array();
-        $endEvent = $this->callFactory->createThrewEvent($exception);
+        $endEvent = $this->callEventFactory->createThrew($exception);
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());

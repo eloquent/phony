@@ -30,13 +30,14 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callFactory = new TestCallFactory();
-        $this->callFactory->sequencer()->set(111);
+        $this->callEventFactory = $this->callFactory->eventFactory();
+        $this->callEventFactory->sequencer()->set(111);
         $this->thisValue = (object) array();
         $this->callback = array($this->thisValue, 'implode');
         $this->arguments = array('a', 'b', 'c');
         $this->returnValue = 'abc';
-        $this->calledEvent = $this->callFactory->createCalledEvent($this->callback, $this->arguments);
-        $this->returnedEvent = $this->callFactory->createReturnedEvent($this->returnValue);
+        $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
+        $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent);
 
         $this->matcherFactory = new MatcherFactory();
@@ -60,7 +61,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->events = array($this->calledEvent, $this->returnedEvent);
 
         $this->exception = new RuntimeException('You done goofed.');
-        $this->threwEvent = $this->callFactory->createThrewEvent($this->exception);
+        $this->threwEvent = $this->callEventFactory->createThrew($this->exception);
         $this->callWithException = $this->callFactory->create($this->calledEvent, $this->threwEvent);
         $this->subjectWithException = new CallVerifier(
             $this->callWithException,
@@ -71,7 +72,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->invocableInspector
         );
 
-        $this->calledEventWithNoArguments = $this->callFactory->createCalledEvent($this->callback);
+        $this->calledEventWithNoArguments = $this->callEventFactory->createCalled($this->callback);
         $this->callWithNoArguments = $this->callFactory
             ->create($this->calledEventWithNoArguments, $this->returnedEvent);
         $this->subjectWithNoArguments = new CallVerifier(
@@ -83,7 +84,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->invocableInspector
         );
 
-        $this->calledEventWithNoArguments = $this->callFactory->createCalledEvent($this->callback);
+        $this->calledEventWithNoArguments = $this->callEventFactory->createCalled($this->callback);
         $this->callWithNoResponse = $this->callFactory->create($this->calledEvent);
         $this->subjectWithNoResponse = new CallVerifier(
             $this->callWithNoResponse,
@@ -94,19 +95,19 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->invocableInspector
         );
 
-        $this->callFactory->sequencer()->reset();
+        $this->callEventFactory->sequencer()->reset();
         $this->earlyCall = $this->callFactory->create();
-        $this->callFactory->sequencer()->set(222);
+        $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
     }
 
     public function testProxyMethodsWithGeneratorEvents()
     {
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
-        $generatorEventA = $this->callFactory->createYieldedEvent();
-        $generatorEventB = $this->callFactory->createSentEvent();
+        $generatedEvent = $this->callEventFactory->createGenerated();
+        $generatorEventA = $this->callEventFactory->createYielded();
+        $generatorEventB = $this->callEventFactory->createSent();
         $generatorEvents = array($generatorEventA, $generatorEventB);
-        $endEvent = $this->callFactory->createReturnedEvent();
+        $endEvent = $this->callEventFactory->createReturned();
         $this->call = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
         $this->subject = new CallVerifier(
@@ -137,9 +138,9 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testAddGeneratorEvent()
     {
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
-        $generatorEventA = $this->callFactory->createYieldedEvent();
-        $generatorEventB = $this->callFactory->createSentEvent();
+        $generatedEvent = $this->callEventFactory->createGenerated();
+        $generatorEventA = $this->callEventFactory->createYielded();
+        $generatorEventB = $this->callEventFactory->createSent();
         $generatorEvents = array($generatorEventA, $generatorEventB);
         $this->call = new Call($this->calledEvent, $generatedEvent);
         $this->subject = new CallVerifier(
@@ -158,8 +159,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testDurationMethodsWithGeneratorEvents()
     {
-        $this->calledEvent = $this->callFactory->createCalledEvent();
-        $generatedEvent = $this->callFactory->createGeneratedEvent();
+        $this->calledEvent = $this->callEventFactory->createCalled();
+        $generatedEvent = $this->callEventFactory->createGenerated();
         $this->call = new Call($this->calledEvent, $generatedEvent);
         $this->subject = new CallVerifier(
             $this->call,

@@ -13,16 +13,11 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\SentEvent;
-use Eloquent\Phony\Call\Event\SentExceptionEvent;
-use Eloquent\Phony\Call\Event\ThrewEvent;
-use Eloquent\Phony\Call\Event\YieldedEvent;
-use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\Spy;
-use Eloquent\Phony\Test\TestClock;
+use Eloquent\Phony\Test\TestCallEventFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use RuntimeException;
@@ -31,18 +26,16 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->sequencer = new Sequencer();
-        $this->clock = new TestClock();
+        $this->eventFactory = new TestCallEventFactory();
         $this->invoker = new Invoker();
-        $this->subject = new CallFactory($this->sequencer, $this->clock, $this->invoker);
+        $this->subject = new CallFactory($this->eventFactory, $this->invoker);
 
         $this->exception = new RuntimeException('You done goofed.');
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->sequencer, $this->subject->sequencer());
-        $this->assertSame($this->clock, $this->subject->clock());
+        $this->assertSame($this->eventFactory, $this->subject->eventFactory());
         $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
@@ -50,8 +43,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new CallFactory();
 
-        $this->assertSame(Sequencer::instance(), $this->subject->sequencer());
-        $this->assertSame(SystemClock::instance(), $this->subject->clock());
+        $this->assertSame(CallEventFactory::instance(), $this->subject->eventFactory());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
@@ -61,11 +53,10 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $arguments = array(array('a', 'b'));
         $returnValue = 'ab';
         $expected = $this->subject->create(
-            $this->subject->createCalledEvent($callback, $arguments),
-            $this->subject->createReturnedEvent($returnValue)
+            $this->eventFactory->createCalled($callback, $arguments),
+            $this->eventFactory->createReturned($returnValue)
         );
-        $this->sequencer->reset();
-        $this->clock->reset();
+        $this->eventFactory->reset();
         $spy = new Spy();
         $actual = $this->subject->record($callback, $arguments, $spy);
 
@@ -87,8 +78,8 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $calledEvent = $this->subject->createCalledEvent();
-        $returnedEvent = $this->subject->createReturnedEvent();
+        $calledEvent = $this->eventFactory->createCalled();
+        $returnedEvent = $this->eventFactory->createReturned();
         $expected = new Call($calledEvent, $returnedEvent);
         $actual = $this->subject->create($calledEvent, $returnedEvent);
 
@@ -97,89 +88,9 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateDefaults()
     {
-        $expected = new Call($this->subject->createCalledEvent());
-        $this->sequencer->reset();
-        $this->clock->reset();
+        $expected = new Call($this->eventFactory->createCalled());
+        $this->eventFactory->reset();
         $actual = $this->subject->create();
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateCalledEvent()
-    {
-        $callback = 'implode';
-        $arguments = array('a', 'b');
-        $expected = new CalledEvent(0, 0.0, $callback, $arguments);
-        $actual = $this->subject->createCalledEvent($callback, $arguments);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateResponseEventWithNoException()
-    {
-        $returnValue = 'x';
-        $expected = new ReturnedEvent(0, 0.0, $returnValue);
-        $actual = $this->subject->createResponseEvent($returnValue);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateResponseEventWithException()
-    {
-        $expected = new ThrewEvent(0, 0.0, $this->exception);
-        $actual = $this->subject->createResponseEvent(null, $this->exception);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateResponseEventDefaults()
-    {
-        $expected = new ReturnedEvent(0, 0.0);
-        $actual = $this->subject->createResponseEvent();
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateReturnedEvent()
-    {
-        $returnValue = 'x';
-        $expected = new ReturnedEvent(0, 0.0, $returnValue);
-        $actual = $this->subject->createReturnedEvent($returnValue);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateThrewEvent()
-    {
-        $expected = new ThrewEvent(0, 0.0, $this->exception);
-        $actual = $this->subject->createThrewEvent($this->exception);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateYieldedEvent()
-    {
-        $value = 'x';
-        $key = 'y';
-        $expected = new YieldedEvent(0, 0.0, $key, $value);
-        $actual = $this->subject->createYieldedEvent($key, $value);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateSentEvent()
-    {
-        $sentValue = 'x';
-        $expected = new SentEvent(0, 0.0, $sentValue);
-        $actual = $this->subject->createSentEvent($sentValue);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateSentExceptionEvent()
-    {
-        $expected = new SentExceptionEvent(0, 0.0, $this->exception);
-        $actual = $this->subject->createSentExceptionEvent($this->exception);
 
         $this->assertEquals($expected, $actual);
     }

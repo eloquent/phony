@@ -50,6 +50,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->invocableInspector
         );
 
+        $this->callEventFactory = $this->callFactory->eventFactory();
+
         $this->returnValueA = 'x';
         $this->returnValueB = 'y';
         $this->exceptionA = new RuntimeException('You done goofed.');
@@ -60,20 +62,20 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
-            $this->callFactory->createCalledEvent(array($this->thisValueA, 'methodA'), $this->arguments),
-            $this->callFactory->createReturnedEvent($this->returnValueA)
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'methodA'), $this->arguments),
+            $this->callEventFactory->createReturned($this->returnValueA)
         );
         $this->callB = $this->callFactory->create(
-            $this->callFactory->createCalledEvent(array($this->thisValueB, 'methodA')),
-            $this->callFactory->createReturnedEvent($this->returnValueB)
+            $this->callEventFactory->createCalled(array($this->thisValueB, 'methodA')),
+            $this->callEventFactory->createReturned($this->returnValueB)
         );
         $this->callC = $this->callFactory->create(
-            $this->callFactory->createCalledEvent(array($this->thisValueA, 'methodA'), $this->arguments),
-            $this->callFactory->createThrewEvent($this->exceptionA)
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'methodA'), $this->arguments),
+            $this->callEventFactory->createThrew($this->exceptionA)
         );
         $this->callD = $this->callFactory->create(
-            $this->callFactory->createCalledEvent('implode'),
-            $this->callFactory->createThrewEvent($this->exceptionB)
+            $this->callEventFactory->createCalled('implode'),
+            $this->callEventFactory->createThrew($this->exceptionB)
         );
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
         $this->wrappedCallA = $this->callVerifierFactory->adapt($this->callA);
@@ -82,8 +84,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
         $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
 
-        $this->callFactory->sequencer()->reset();
-        $this->callFactory->clock()->reset();
+        $this->callFactory->reset();
     }
 
     public function testConstructor()
@@ -149,20 +150,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $verifier->invokeWith(array(array('a')));
         $verifier->invoke(array('b', 'c'));
         $verifier(array('d'));
-        $this->callFactory->sequencer()->reset();
-        $this->callFactory->clock()->reset();
+        $this->callFactory->reset();
         $expected = array(
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array(array('a'))),
-                $this->callFactory->createReturnedEvent('a')
+                $this->callEventFactory->createCalled($spy->callback(), array(array('a'))),
+                $this->callEventFactory->createReturned('a')
             ),
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array(array('b', 'c'))),
-                $this->callFactory->createReturnedEvent('bc')
+                $this->callEventFactory->createCalled($spy->callback(), array(array('b', 'c'))),
+                $this->callEventFactory->createReturned('bc')
             ),
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array(array('d'))),
-                $this->callFactory->createReturnedEvent('d')
+                $this->callEventFactory->createCalled($spy->callback(), array(array('d'))),
+                $this->callEventFactory->createReturned('d')
             ),
         );
 
@@ -176,20 +176,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $verifier->invokeWith(array('a'));
         $verifier->invoke('b', 'c');
         $verifier('d');
-        $this->callFactory->sequencer()->reset();
-        $this->callFactory->clock()->reset();
+        $this->callFactory->reset();
         $expected = array(
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array('a')),
-                $this->callFactory->createReturnedEvent()
+                $this->callEventFactory->createCalled($spy->callback(), array('a')),
+                $this->callEventFactory->createReturned()
             ),
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
-                $this->callFactory->createReturnedEvent()
+                $this->callEventFactory->createCalled($spy->callback(), array('b', 'c')),
+                $this->callEventFactory->createReturned()
             ),
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array('d')),
-                $this->callFactory->createReturnedEvent()
+                $this->callEventFactory->createCalled($spy->callback(), array('d')),
+                $this->callEventFactory->createReturned()
             ),
         );
 
@@ -221,20 +220,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         } catch (Exception $caughtException) {
             $caughtExceptions[] = $caughtException;
         }
-        $this->callFactory->sequencer()->reset();
-        $this->callFactory->clock()->reset();
+        $this->callFactory->reset();
         $expected = array(
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array('a')),
-                $this->callFactory->createThrewEvent($exceptions[0])
+                $this->callEventFactory->createCalled($spy->callback(), array('a')),
+                $this->callEventFactory->createThrew($exceptions[0])
             ),
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array('b', 'c')),
-                $this->callFactory->createThrewEvent($exceptions[1])
+                $this->callEventFactory->createCalled($spy->callback(), array('b', 'c')),
+                $this->callEventFactory->createThrew($exceptions[1])
             ),
             $this->callFactory->create(
-                $this->callFactory->createCalledEvent($spy->callback(), array('d')),
-                $this->callFactory->createThrewEvent($exceptions[2])
+                $this->callEventFactory->createCalled($spy->callback(), array('d')),
+                $this->callEventFactory->createThrew($exceptions[2])
             ),
         );
 
