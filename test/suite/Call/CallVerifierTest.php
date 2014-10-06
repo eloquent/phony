@@ -15,7 +15,6 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\SentValueEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -39,10 +38,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->returnValue = 'abc';
         $this->calledEvent = $this->callFactory->createCalledEvent($this->callback, $this->arguments);
         $this->returnedEvent = $this->callFactory->createReturnedEvent($this->returnValue);
-        $this->generatorEventA = new SentValueEvent(3, 3.0, 'c');
-        $this->generatorEventB = new SentValueEvent(4, 4.0, 'd');
-        $this->generatorEvents = array($this->generatorEventA, $this->generatorEventB);
-        $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, $this->generatorEvents);
+        $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -62,7 +58,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->argumentCount = count($this->arguments);
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
         $this->otherMatcher = $this->matcherFactory->adapt('d');
-        $this->events = array($this->calledEvent, $this->returnedEvent, $this->generatorEventA, $this->generatorEventB);
+        $this->events = array($this->calledEvent, $this->returnedEvent);
 
         $this->exception = new RuntimeException('You done goofed.');
         $this->threwEvent = $this->callFactory->createThrewEvent($this->exception);
@@ -81,6 +77,17 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             ->create($this->calledEventWithNoArguments, $this->returnedEvent);
         $this->subjectWithNoArguments = new CallVerifier(
             $this->callWithNoArguments,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+
+        $this->calledEventWithNoArguments = $this->callFactory->createCalledEvent($this->callback);
+        $this->callWithNoResponse = $this->callFactory->create($this->calledEvent);
+        $this->subjectWithNoResponse = new CallVerifier(
+            $this->callWithNoResponse,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
@@ -121,20 +128,34 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame($this->generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame(array(), $this->subject->generatorEvents());
+        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertSame($this->events, $this->subject->events());
+        $this->assertTrue($this->subject->hasResponded());
+        $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertSame($this->calledEvent->time(), $this->subject->startTime());
+        $this->assertSame($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertSame($this->returnedEvent->time(), $this->subject->endTime());
         $this->assertNull($this->subject->exception());
     }
 
-    public function testSetResponseEvent()
+    public function testProxyMethodsWithGeneratorEvents()
     {
-        $this->call = new Call($this->calledEvent);
+        if (!class_exists('Generator')) {
+            $this->markTestSkipped('Requires generator support.');
+        }
+
+        $generatedEvent = $this->callFactory->createGeneratedEvent();
+        $generatorEventA = $this->callFactory->createYieldedEvent();
+        $generatorEventB = $this->callFactory->createSentEvent();
+        $generatorEvents = array($generatorEventA, $generatorEventB);
+        $endEvent = $this->callFactory->createReturnedEvent();
+        $this->call = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
+        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
         $this->subject = new CallVerifier(
             $this->call,
             $this->matcherFactory,
@@ -143,23 +164,97 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer,
             $this->invocableInspector
         );
-        $this->subject->setResponseEvent($this->returnedEvent);
 
-        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
+        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($generatedEvent, $this->subject->responseEvent());
+        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($endEvent, $this->subject->endEvent());
+        $this->assertSame($this->events, $this->subject->events());
+        $this->assertTrue($this->subject->hasResponded());
+        $this->assertTrue($this->subject->hasCompleted());
+        $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->arguments, $this->subject->arguments());
+        $this->assertInstanceOf('Generator', $this->subject->returnValue());
+        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
+        $this->assertSame($this->calledEvent->time(), $this->subject->startTime());
+        $this->assertSame($generatedEvent->time(), $this->subject->responseTime());
+        $this->assertSame($endEvent->time(), $this->subject->endTime());
+        $this->assertNull($this->subject->exception());
     }
 
-    public function testSetResponseEventFailureAlreadySet()
+    public function testSetResponseEvent()
     {
-        $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
-        $this->subject->setResponseEvent($this->returnedEvent);
+        $this->subjectWithNoResponse->setResponseEvent($this->returnedEvent);
+
+        $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->responseEvent());
+        $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->endEvent());
     }
 
     public function testAddGeneratorEvent()
     {
-        $this->subject->addGeneratorEvent($this->generatorEventA);
-        $this->generatorEvents = array($this->generatorEventA, $this->generatorEventB, $this->generatorEventA);
+        if (!class_exists('Generator')) {
+            $this->markTestSkipped('Requires generator support.');
+        }
 
-        $this->assertSame($this->generatorEvents, $this->subject->generatorEvents());
+        $generatedEvent = $this->callFactory->createGeneratedEvent();
+        $generatorEventA = $this->callFactory->createYieldedEvent();
+        $generatorEventB = $this->callFactory->createSentEvent();
+        $generatorEvents = array($generatorEventA, $generatorEventB);
+        $this->call = new Call($this->calledEvent, $generatedEvent);
+        $this->subject = new CallVerifier(
+            $this->call,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+        $this->subject->addGeneratorEvent($generatorEventA);
+        $this->subject->addGeneratorEvent($generatorEventB);
+
+        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
+    }
+
+    public function testSetEndEvent()
+    {
+        $this->subjectWithNoResponse->setEndEvent($this->returnedEvent);
+
+        $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->endEvent());
+        $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->responseEvent());
+    }
+
+    public function testDuration()
+    {
+        $this->assertEquals($this->duration, $this->subject->duration());
+        $this->assertNull($this->subjectWithNoResponse->duration());
+    }
+
+    public function testResponseDuration()
+    {
+        $this->assertEquals($this->duration, $this->subject->responseDuration());
+        $this->assertNull($this->subjectWithNoResponse->responseDuration());
+    }
+
+    public function testDurationMethodsWithGeneratorEvents()
+    {
+        if (!class_exists('Generator')) {
+            $this->markTestSkipped('Requires generator support.');
+        }
+
+        $this->calledEvent = $this->callFactory->createCalledEvent();
+        $generatedEvent = $this->callFactory->createGeneratedEvent();
+        $this->call = new Call($this->calledEvent, $generatedEvent);
+        $this->subject = new CallVerifier(
+            $this->call,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+
+        $this->assertEquals(1, $this->subject->responseDuration());
+        $this->assertNull($this->subjectWithNoResponse->duration());
     }
 
     public function calledWithData()

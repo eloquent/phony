@@ -26,10 +26,22 @@ class GeneratedEvent extends AbstractCallEvent implements
      *
      * @param integer   $sequenceNumber The sequence number.
      * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param Generator $generator      The return value.
+     * @param Generator $generator      The generator.
      */
-    public function __construct($sequenceNumber, $time, Generator $generator)
-    {
+    public function __construct(
+        $sequenceNumber,
+        $time,
+        Generator $generator = null
+    ) {
+        if (null === $generator) {
+            $generator = call_user_func(
+                function () {
+                    return;
+                    yield; // @codeCoverageIgnoreStart
+                } // @codeCoverageIgnoreEnd
+            );
+        }
+
         parent::__construct($sequenceNumber, $time);
 
         $this->generator = $generator;

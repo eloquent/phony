@@ -12,14 +12,14 @@
 namespace Eloquent\Phony\Call\Event;
 
 /**
- * The interface implemented by 'sent value' events.
+ * The interface implemented by 'sent' events.
  */
-interface SentValueEventInterface extends GeneratorEventInterface
+interface SentEventInterface extends GeneratorEventInterface
 {
     /**
      * Get the sent value.
      *
      * @return mixed The sent value.
      */
-    public function sentValue();
+    public function value();
 }

@@ -14,12 +14,13 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * The interface implemented by 'returned' events.
  */
-interface ReturnedEventInterface extends ResponseEventInterface
+interface ReturnedEventInterface extends ResponseEventInterface,
+    EndEventInterface
 {
     /**
      * Get the returned value.
      *
      * @return mixed The returned value.
      */
-    public function returnValue();
+    public function value();
 }

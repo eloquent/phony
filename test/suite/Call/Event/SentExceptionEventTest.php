@@ -30,4 +30,11 @@ class SentExceptionEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->time, $this->subject->time());
         $this->assertSame($this->exception, $this->subject->exception());
     }
+
+    public function testConstructorDefaults()
+    {
+        $this->subject = new SentExceptionEvent($this->sequenceNumber, $this->time);
+
+        $this->assertEquals($this->exception, $this->subject->exception());
+    }
 }

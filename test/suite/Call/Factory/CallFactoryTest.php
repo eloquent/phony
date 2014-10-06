@@ -13,9 +13,12 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\GeneratedEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\SentValueEvent;
+use Eloquent\Phony\Call\Event\SentEvent;
+use Eloquent\Phony\Call\Event\SentExceptionEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Call\Event\YieldedEvent;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -80,16 +83,30 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $actual->calledEvent());
         $this->assertSame(array(), $actual->calledEvent()->arguments());
         $this->assertInstanceOf('Eloquent\Phony\Call\Event\ReturnedEvent', $actual->responseEvent());
-        $this->assertNull($actual->responseEvent()->returnValue());
+        $this->assertNull($actual->responseEvent()->value());
     }
 
     public function testCreate()
     {
         $calledEvent = $this->subject->createCalledEvent();
         $returnedEvent = $this->subject->createReturnedEvent();
-        $generatorEvents = array($this->subject->createSentValueEvent());
-        $expected = new Call($calledEvent, $returnedEvent, $generatorEvents);
-        $actual = $this->subject->create($calledEvent, $returnedEvent, $generatorEvents);
+        $expected = new Call($calledEvent, $returnedEvent);
+        $actual = $this->subject->create($calledEvent, $returnedEvent);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateWithGeneratorEvents()
+    {
+        if (!class_exists('Generator')) {
+            $this->markTestSkipped('Requires generator support.');
+        }
+
+        $calledEvent = $this->subject->createCalledEvent();
+        $generatedEvent = $this->subject->createGeneratedEvent();
+        $generatorEvents = array($this->subject->createSentEvent());
+        $expected = new Call($calledEvent, $generatedEvent, $generatorEvents);
+        $actual = $this->subject->create($calledEvent, $generatedEvent, $generatorEvents);
 
         $this->assertEquals($expected, $actual);
     }
@@ -148,19 +165,51 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateSentValueEvent()
-    {
-        $sentValue = 'x';
-        $expected = new SentValueEvent(0, 0.0, $sentValue);
-        $actual = $this->subject->createSentValueEvent($sentValue);
-
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testCreateThrewEvent()
     {
         $expected = new ThrewEvent(0, 0.0, $this->exception);
         $actual = $this->subject->createThrewEvent($this->exception);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateGeneratedEvent()
+    {
+        if (!class_exists('Generator')) {
+            $this->markTestSkipped('Requires generator support.');
+        }
+
+        $generatorFactory = eval('return function () { return; yield; };');
+        $generator = call_user_func($generatorFactory);
+        $expected = new GeneratedEvent(0, 0.0, $generator);
+        $actual = $this->subject->createGeneratedEvent($generator);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateYieldedEvent()
+    {
+        $value = 'x';
+        $key = 'y';
+        $expected = new YieldedEvent(0, 0.0, $key, $value);
+        $actual = $this->subject->createYieldedEvent($key, $value);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateSentEvent()
+    {
+        $sentValue = 'x';
+        $expected = new SentEvent(0, 0.0, $sentValue);
+        $actual = $this->subject->createSentEvent($sentValue);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateSentExceptionEvent()
+    {
+        $expected = new SentExceptionEvent(0, 0.0, $this->exception);
+        $actual = $this->subject->createSentExceptionEvent($this->exception);
 
         $this->assertEquals($expected, $actual);
     }

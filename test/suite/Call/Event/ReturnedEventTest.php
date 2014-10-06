@@ -19,21 +19,21 @@ class ReturnedEventTest extends PHPUnit_Framework_TestCase
     {
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->returnValue = 'x';
-        $this->subject = new ReturnedEvent($this->sequenceNumber, $this->time, $this->returnValue);
+        $this->value = 'x';
+        $this->subject = new ReturnedEvent($this->sequenceNumber, $this->time, $this->value);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
-        $this->assertSame($this->returnValue, $this->subject->returnValue());
+        $this->assertSame($this->value, $this->subject->value());
     }
 
     public function testConstructorDefaults()
     {
         $this->subject = new ReturnedEvent($this->sequenceNumber, $this->time);
 
-        $this->assertNull($this->subject->returnValue());
+        $this->assertNull($this->subject->value());
     }
 }

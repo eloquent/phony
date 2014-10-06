@@ -17,6 +17,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -75,7 +76,6 @@ class CallVerifier implements CallVerifierInterface
         $this->assertionRenderer = $assertionRenderer;
         $this->invocableInspector = $invocableInspector;
 
-        $this->duration = $call->endTime() - $call->startTime();
         $this->argumentCount = count($call->arguments());
     }
 
@@ -150,11 +150,11 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Set the 'response' event.
+     * Set the response event.
      *
      * @param ResponseEventInterface $responseEvent The response event.
      *
-     * @throws InvalidArgumentException If the call has already completed.
+     * @throws InvalidArgumentException If the call has already responded.
      */
     public function setResponseEvent(ResponseEventInterface $responseEvent)
     {
@@ -164,7 +164,7 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Get the response event.
      *
-     * @return ResponseEventInterface|null The response event, or null if the call has not yet completed.
+     * @return ResponseEventInterface|null The response event, or null if the call has not yet responded.
      */
     public function responseEvent()
     {
@@ -175,6 +175,8 @@ class CallVerifier implements CallVerifierInterface
      * Add a generator event.
      *
      * @param GeneratorEventInterface $event The generator event.
+     *
+     * @throws InvalidArgumentException If the call has already completed.
      */
     public function addGeneratorEvent(GeneratorEventInterface $event)
     {
@@ -192,6 +194,28 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
+     * Set the end event.
+     *
+     * @param EndEventInterface $endEvent The end event.
+     *
+     * @throws InvalidArgumentException If the call has already completed.
+     */
+    public function setEndEvent(EndEventInterface $endEvent)
+    {
+        $this->call->setEndEvent($endEvent);
+    }
+
+    /**
+     * Get the end event.
+     *
+     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
+     */
+    public function endEvent()
+    {
+        return $this->call->endEvent();
+    }
+
+    /**
      * Get all events.
      *
      * @return array<integer,CallEventInterface> The events.
@@ -199,6 +223,26 @@ class CallVerifier implements CallVerifierInterface
     public function events()
     {
         return $this->call->events();
+    }
+
+    /**
+     * Returns true if this call has responded.
+     *
+     * @return boolean True if this call has responded.
+     */
+    public function hasResponded()
+    {
+        return $this->call->hasResponded();
+    }
+
+    /**
+     * Returns true if this call has completed.
+     *
+     * @return boolean True if this call has completed.
+     */
+    public function hasCompleted()
+    {
+        return $this->call->hasCompleted();
     }
 
     /**
@@ -262,9 +306,19 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
+     * Get the time at which the call responded.
+     *
+     * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
+     */
+    public function responseTime()
+    {
+        return $this->call->responseTime();
+    }
+
+    /**
      * Get the time at which the call completed.
      *
-     * @return float The time at which the call completed, in seconds since the Unix epoch.
+     * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
     public function endTime()
     {
@@ -274,11 +328,33 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Get the call duration.
      *
-     * @return float The call duration, in seconds.
+     * @return float|null The call duration in seconds, or null if the call has not yet completed.
      */
     public function duration()
     {
-        return $this->duration;
+        $endTime = $this->call->endTime();
+
+        if (null === $endTime) {
+            return null;
+        }
+
+        return $endTime - $this->call->startTime();
+    }
+
+    /**
+     * Get the call response duration.
+     *
+     * @return float|null The call response duration in seconds, or null if the call has not yet responded.
+     */
+    public function responseDuration()
+    {
+        $responseTime = $this->call->responseTime();
+
+        if (null === $responseTime) {
+            return null;
+        }
+
+        return $responseTime - $this->call->startTime();
     }
 
     /**
@@ -735,6 +811,5 @@ class CallVerifier implements CallVerifierInterface
     private $assertionRecorder;
     private $assertionRenderer;
     private $invocableInspector;
-    private $duration;
     private $argumentCount;
 }

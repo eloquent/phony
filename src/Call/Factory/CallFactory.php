@@ -15,14 +15,20 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\GeneratedEvent;
+use Eloquent\Phony\Call\Event\GeneratedEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
-use Eloquent\Phony\Call\Event\SentValueEvent;
-use Eloquent\Phony\Call\Event\SentValueEventInterface;
+use Eloquent\Phony\Call\Event\SentEvent;
+use Eloquent\Phony\Call\Event\SentEventInterface;
+use Eloquent\Phony\Call\Event\SentExceptionEvent;
+use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
+use Eloquent\Phony\Call\Event\YieldedEvent;
+use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Invocation\Invoker;
@@ -31,6 +37,7 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Exception;
+use Generator;
 
 /**
  * Creates calls.
@@ -214,16 +221,16 @@ class CallFactory implements CallFactoryInterface
     /**
      * Create a new 'returned' event.
      *
-     * @param mixed $returnValue The return value.
+     * @param mixed $value The return value.
      *
      * @return ReturnedEventInterface The newly created event.
      */
-    public function createReturnedEvent($returnValue = null)
+    public function createReturnedEvent($value = null)
     {
         return new ReturnedEvent(
             $this->sequencer->next(),
             $this->clock->time(),
-            $returnValue
+            $value
         );
     }
 
@@ -244,18 +251,68 @@ class CallFactory implements CallFactoryInterface
     }
 
     /**
-     * Create a new 'sent value' event.
+     * Create a new 'generated' event.
      *
-     * @param mixed $sentValue The sent value.
+     * @param Generator|null $generator The generator.
      *
-     * @return SentValueEventInterface The newly created event.
+     * @return GeneratedEventInterface The newly created event.
      */
-    public function createSentValueEvent($sentValue = null)
+    public function createGeneratedEvent($generator = null)
     {
-        return new SentValueEvent(
+        return new GeneratedEvent(
             $this->sequencer->next(),
             $this->clock->time(),
-            $sentValue
+            $generator
+        );
+    }
+
+    /**
+     * Create a new 'yielded' event.
+     *
+     * @param mixed $value The yielded value.
+     * @param mixed $key   The yielded key.
+     *
+     * @return YieldedEventInterface The newly created event.
+     */
+    public function createYieldedEvent($value = null, $key = null)
+    {
+        return new YieldedEvent(
+            $this->sequencer->next(),
+            $this->clock->time(),
+            $value,
+            $key
+        );
+    }
+
+    /**
+     * Create a new 'sent' event.
+     *
+     * @param mixed $value The sent value.
+     *
+     * @return SentEventInterface The newly created event.
+     */
+    public function createSentEvent($value = null)
+    {
+        return new SentEvent(
+            $this->sequencer->next(),
+            $this->clock->time(),
+            $value
+        );
+    }
+
+    /**
+     * Create a new 'sent exception' event.
+     *
+     * @param Exception|null $exception The sent exception.
+     *
+     * @return SentExceptionEventInterface The newly created event.
+     */
+    public function createSentExceptionEvent(Exception $exception = null)
+    {
+        return new SentExceptionEvent(
+            $this->sequencer->next(),
+            $this->clock->time(),
+            $exception
         );
     }
 

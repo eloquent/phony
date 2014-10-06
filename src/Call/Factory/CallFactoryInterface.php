@@ -13,13 +13,17 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\GeneratedEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
-use Eloquent\Phony\Call\Event\SentValueEventInterface;
+use Eloquent\Phony\Call\Event\SentEventInterface;
+use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
+use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Exception;
+use Generator;
 
 /**
  * The interface implemented by call factories.
@@ -85,11 +89,11 @@ interface CallFactoryInterface
     /**
      * Create a new 'returned' event.
      *
-     * @param mixed $returnValue The return value.
+     * @param mixed $value The return value.
      *
      * @return ReturnedEventInterface The newly created event.
      */
-    public function createReturnedEvent($returnValue = null);
+    public function createReturnedEvent($value = null);
 
     /**
      * Create a new 'thrown' event.
@@ -101,11 +105,39 @@ interface CallFactoryInterface
     public function createThrewEvent(Exception $exception = null);
 
     /**
-     * Create a new 'sent value' event.
+     * Create a new 'generated' event.
      *
-     * @param mixed $sentValue The sent value.
+     * @param Generator|null $generator The generator.
      *
-     * @return SentValueEventInterface The newly created event.
+     * @return GeneratedEventInterface The newly created event.
      */
-    public function createSentValueEvent($sentValue = null);
+    public function createGeneratedEvent($generator = null);
+
+    /**
+     * Create a new 'yielded' event.
+     *
+     * @param mixed $value The yielded value.
+     * @param mixed $key   The yielded key.
+     *
+     * @return YieldedEventInterface The newly created event.
+     */
+    public function createYieldedEvent($value = null, $key = null);
+
+    /**
+     * Create a new 'sent' event.
+     *
+     * @param mixed $value The sent value.
+     *
+     * @return SentEventInterface The newly created event.
+     */
+    public function createSentEvent($value = null);
+
+    /**
+     * Create a new 'sent exception' event.
+     *
+     * @param Exception|null $exception The sent exception.
+     *
+     * @return SentExceptionEventInterface The newly created event.
+     */
+    public function createSentExceptionEvent(Exception $exception = null);
 }

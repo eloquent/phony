@@ -23,7 +23,7 @@ class GeneratedEventTest extends PHPUnit_Framework_TestCase
 
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->generatorFactory = eval('return function () { yield 1; };');
+        $this->generatorFactory = eval('return function () { return; yield; };');
         $this->generator = call_user_func($this->generatorFactory);
         $this->subject = new GeneratedEvent($this->sequenceNumber, $this->time, $this->generator);
     }
@@ -33,5 +33,16 @@ class GeneratedEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
         $this->assertSame($this->generator, $this->subject->generator());
+    }
+
+    public function testConstructorDefaults()
+    {
+        $this->subject = new GeneratedEvent($this->sequenceNumber, $this->time);
+
+        $this->assertInstanceOf('Generator', $this->subject->generator());
+
+        $values = iterator_to_array($this->subject->generator());
+
+        $this->assertSame(array(), $values);
     }
 }

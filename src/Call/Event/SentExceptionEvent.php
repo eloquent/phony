@@ -24,15 +24,19 @@ class SentExceptionEvent extends AbstractCallEvent implements
     /**
      * Construct a 'sent exception' event.
      *
-     * @param integer   $sequenceNumber The sequence number.
-     * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param Exception $exception      The sent exception.
+     * @param integer        $sequenceNumber The sequence number.
+     * @param float          $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param Exception|null $exception      The sent exception.
      */
     public function __construct(
         $sequenceNumber,
         $time,
-        Exception $exception
+        Exception $exception = null
     ) {
+        if (null === $exception) {
+            $exception = new Exception();
+        }
+
         parent::__construct($sequenceNumber, $time);
 
         $this->exception = $exception;

@@ -23,25 +23,19 @@ class YieldedEvent extends AbstractCallEvent implements YieldedEventInterface
      *
      * @param integer $sequenceNumber The sequence number.
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $key            The yielded key.
      * @param mixed   $value          The yielded value.
+     * @param mixed   $key            The yielded key.
      */
-    public function __construct($sequenceNumber, $time, $key, $value = null)
-    {
+    public function __construct(
+        $sequenceNumber,
+        $time,
+        $value = null,
+        $key = null
+    ) {
         parent::__construct($sequenceNumber, $time);
 
-        $this->key = $key;
         $this->value = $value;
-    }
-
-    /**
-     * Get the yielded key.
-     *
-     * @return mixed The yielded key.
-     */
-    public function key()
-    {
-        return $this->key;
+        $this->key = $key;
     }
 
     /**
@@ -54,6 +48,16 @@ class YieldedEvent extends AbstractCallEvent implements YieldedEventInterface
         return $this->value;
     }
 
-    private $key;
+    /**
+     * Get the yielded key.
+     *
+     * @return mixed The yielded key.
+     */
+    public function key()
+    {
+        return $this->key;
+    }
+
     private $value;
+    private $key;
 }

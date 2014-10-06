@@ -17,16 +17,16 @@ namespace Eloquent\Phony\Call\Event;
 interface YieldedEventInterface extends GeneratorEventInterface
 {
     /**
-     * Get the yielded key.
-     *
-     * @return mixed The yielded key.
-     */
-    public function key();
-
-    /**
      * Get the yielded value.
      *
      * @return mixed The yielded value.
      */
     public function value();
+
+    /**
+     * Get the yielded key.
+     *
+     * @return mixed The yielded key.
+     */
+    public function key();
 }

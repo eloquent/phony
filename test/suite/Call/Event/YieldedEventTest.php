@@ -19,23 +19,24 @@ class YieldedEventTest extends PHPUnit_Framework_TestCase
     {
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->key = 'x';
-        $this->value = 'y';
-        $this->subject = new YieldedEvent($this->sequenceNumber, $this->time, $this->key, $this->value);
+        $this->value = 'x';
+        $this->key = 'y';
+        $this->subject = new YieldedEvent($this->sequenceNumber, $this->time, $this->value, $this->key);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
-        $this->assertSame($this->key, $this->subject->key());
         $this->assertSame($this->value, $this->subject->value());
+        $this->assertSame($this->key, $this->subject->key());
     }
 
     public function testConstructorDefaults()
     {
-        $this->subject = new YieldedEvent($this->sequenceNumber, $this->time, $this->key);
+        $this->subject = new YieldedEvent($this->sequenceNumber, $this->time);
 
         $this->assertNull($this->subject->value());
+        $this->assertNull($this->subject->key());
     }
 }

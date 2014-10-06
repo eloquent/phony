@@ -21,9 +21,16 @@ interface CallVerifierInterface extends CallInterface
     /**
      * Get the call duration.
      *
-     * @return float The call duration, in seconds.
+     * @return float|null The call duration in seconds, or null if the call has not yet completed.
      */
     public function duration();
+
+    /**
+     * Get the call response duration.
+     *
+     * @return float|null The call response duration in seconds, or null if the call has not yet responded.
+     */
+    public function responseDuration();
 
     /**
      * Get the number of arguments.

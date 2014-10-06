@@ -13,27 +13,27 @@ namespace Eloquent\Phony\Call\Event;
 
 use PHPUnit_Framework_TestCase;
 
-class SentValueEventTest extends PHPUnit_Framework_TestCase
+class SentEventTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->sentValue = 'x';
-        $this->subject = new SentValueEvent($this->sequenceNumber, $this->time, $this->sentValue);
+        $this->value = 'x';
+        $this->subject = new SentEvent($this->sequenceNumber, $this->time, $this->value);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
-        $this->assertSame($this->sentValue, $this->subject->sentValue());
+        $this->assertSame($this->value, $this->subject->value());
     }
 
     public function testConstructorDefaults()
     {
-        $this->subject = new SentValueEvent($this->sequenceNumber, $this->time);
+        $this->subject = new SentEvent($this->sequenceNumber, $this->time);
 
-        $this->assertNull($this->subject->sentValue());
+        $this->assertNull($this->subject->value());
     }
 }

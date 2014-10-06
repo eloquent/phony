@@ -16,21 +16,20 @@ namespace Eloquent\Phony\Call\Event;
  *
  * @internal
  */
-class SentValueEvent extends AbstractCallEvent implements
-    SentValueEventInterface
+class SentEvent extends AbstractCallEvent implements SentEventInterface
 {
     /**
      * Construct a 'sent value' event.
      *
      * @param integer $sequenceNumber The sequence number.
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $sentValue      The sent value.
+     * @param mixed   $value          The sent value.
      */
-    public function __construct($sequenceNumber, $time, $sentValue = null)
+    public function __construct($sequenceNumber, $time, $value = null)
     {
         parent::__construct($sequenceNumber, $time);
 
-        $this->sentValue = $sentValue;
+        $this->value = $value;
     }
 
     /**
@@ -38,10 +37,10 @@ class SentValueEvent extends AbstractCallEvent implements
      *
      * @return mixed The sent value.
      */
-    public function sentValue()
+    public function value()
     {
-        return $this->sentValue;
+        return $this->value;
     }
 
-    private $sentValue;
+    private $value;
 }

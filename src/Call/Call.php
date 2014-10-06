@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
+use Eloquent\Phony\Call\Event\GeneratedEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
@@ -31,21 +33,34 @@ class Call implements CallInterface
      * Construct a new call.
      *
      * @param CalledEventInterface                        $calledEvent     The 'called' event.
-     * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet completed.
+     * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet responded.
      * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
+     * @param ResponseEventInterface|null                 $endEvent        The end event, or null if the call has not yet completed.
+     *
+     * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
     public function __construct(
         CalledEventInterface $calledEvent,
         ResponseEventInterface $responseEvent = null,
-        array $generatorEvents = null
+        array $generatorEvents = null,
+        ResponseEventInterface $endEvent = null
     ) {
-        if (null === $generatorEvents) {
-            $generatorEvents = array();
+        $this->calledEvent = $calledEvent;
+        $this->generatorEvents = array();
+
+        if ($responseEvent) {
+            $this->setResponseEvent($responseEvent);
         }
 
-        $this->calledEvent = $calledEvent;
-        $this->responseEvent = $responseEvent;
-        $this->generatorEvents = $generatorEvents;
+        if (null !== $generatorEvents) {
+            foreach ($generatorEvents as $generatorEvent) {
+                $this->addGeneratorEvent($generatorEvent);
+            }
+        }
+
+        if ($endEvent) {
+            $this->setEndEvent($endEvent);
+        }
     }
 
     /**
@@ -59,25 +74,29 @@ class Call implements CallInterface
     }
 
     /**
-     * Set the 'response' event.
+     * Set the response event.
      *
      * @param ResponseEventInterface $responseEvent The response event.
      *
-     * @throws InvalidArgumentException If the call has already completed.
+     * @throws InvalidArgumentException If the call has already responded.
      */
     public function setResponseEvent(ResponseEventInterface $responseEvent)
     {
         if ($this->responseEvent) {
-            throw new InvalidArgumentException('Call already completed.');
+            throw new InvalidArgumentException('Call already responded.');
         }
 
         $this->responseEvent = $responseEvent;
+
+        if (!$responseEvent instanceof GeneratedEventInterface) {
+            $this->endEvent = $responseEvent;
+        }
     }
 
     /**
      * Get the response event.
      *
-     * @return ResponseEventInterface|null The response event, or null if the call has not yet completed.
+     * @return ResponseEventInterface|null The response event, or null if the call has not yet responded.
      */
     public function responseEvent()
     {
@@ -88,9 +107,15 @@ class Call implements CallInterface
      * Add a generator event.
      *
      * @param GeneratorEventInterface $event The generator event.
+     *
+     * @throws InvalidArgumentException If the call has already completed.
      */
     public function addGeneratorEvent(GeneratorEventInterface $event)
     {
+        if ($this->endEvent) {
+            throw new InvalidArgumentException('Call already completed.');
+        }
+
         $this->generatorEvents[] = $event;
     }
 
@@ -105,6 +130,36 @@ class Call implements CallInterface
     }
 
     /**
+     * Set the end event.
+     *
+     * @param EndEventInterface $endEvent The end event.
+     *
+     * @throws InvalidArgumentException If the call has already completed.
+     */
+    public function setEndEvent(EndEventInterface $endEvent)
+    {
+        if ($this->endEvent) {
+            throw new InvalidArgumentException('Call already completed.');
+        }
+
+        if (!$this->responseEvent) {
+            $this->responseEvent = $endEvent;
+        }
+
+        $this->endEvent = $endEvent;
+    }
+
+    /**
+     * Get the end event.
+     *
+     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
+     */
+    public function endEvent()
+    {
+        return $this->endEvent;
+    }
+
+    /**
      * Get the events.
      *
      * @return array<integer,CallEventInterface> The events.
@@ -114,12 +169,39 @@ class Call implements CallInterface
         $events = $this->generatorEvents();
 
         if ($this->responseEvent) {
+            if (
+                $this->endEvent &&
+                $this->responseEvent instanceof GeneratedEventInterface
+            ) {
+                $events[] = $this->endEvent;
+            }
+
             array_unshift($events, $this->responseEvent);
         }
 
         array_unshift($events, $this->calledEvent);
 
         return $events;
+    }
+
+    /**
+     * Returns true if this call has responded.
+     *
+     * @return boolean True if this call has responded.
+     */
+    public function hasResponded()
+    {
+        return $this->responseEvent && true;
+    }
+
+    /**
+     * Returns true if this call has completed.
+     *
+     * @return boolean True if this call has completed.
+     */
+    public function hasCompleted()
+    {
+        return $this->endEvent && true;
     }
 
     /**
@@ -170,7 +252,11 @@ class Call implements CallInterface
     public function returnValue()
     {
         if ($this->responseEvent instanceof ReturnedEventInterface) {
-            return $this->responseEvent->returnValue();
+            return $this->responseEvent->value();
+        }
+
+        if ($this->responseEvent instanceof GeneratedEventInterface) {
+            return $this->responseEvent->generator();
         }
     }
 
@@ -181,8 +267,20 @@ class Call implements CallInterface
      */
     public function exception()
     {
-        if ($this->responseEvent instanceof ThrewEventInterface) {
-            return $this->responseEvent->exception();
+        if ($this->endEvent instanceof ThrewEventInterface) {
+            return $this->endEvent->exception();
+        }
+    }
+
+    /**
+     * Get the time at which the call responded.
+     *
+     * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
+     */
+    public function responseTime()
+    {
+        if ($this->responseEvent) {
+            return $this->responseEvent->time();
         }
     }
 
@@ -193,12 +291,13 @@ class Call implements CallInterface
      */
     public function endTime()
     {
-        if ($this->responseEvent) {
-            return $this->responseEvent->time();
+        if ($this->endEvent) {
+            return $this->endEvent->time();
         }
     }
 
     private $calledEvent;
     private $responseEvent;
     private $generatorEvents;
+    private $endEvent;
 }
