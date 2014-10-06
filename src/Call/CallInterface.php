@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Exception;
@@ -66,16 +65,16 @@ interface CallInterface
     /**
      * Set the end event.
      *
-     * @param EndEventInterface $endEvent The end event.
+     * @param ResponseEventInterface $endEvent The end event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function setEndEvent(EndEventInterface $endEvent);
+    public function setEndEvent(ResponseEventInterface $endEvent);
 
     /**
      * Get the end event.
      *
-     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
+     * @return ResponseEventInterface|null The end event, or null if the call has not yet completed.
      */
     public function endEvent();
 
@@ -92,6 +91,13 @@ interface CallInterface
      * @return boolean True if this call has responded.
      */
     public function hasResponded();
+
+    /**
+     * Returns true if this call has responded with a generator.
+     *
+     * @return boolean True if this call has responded with a generator.
+     */
+    public function isGenerator();
 
     /**
      * Returns true if this call has completed.

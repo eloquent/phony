@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Call\Event\Factory;
 
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\GeneratedEvent;
-use Eloquent\Phony\Call\Event\GeneratedEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
@@ -116,27 +114,17 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new response event.
      *
-     * @param mixed          $returnValue        The return value.
-     * @param Exception|null $exception          The thrown exception, or null if no exception was thrown.
-     * @param boolean|null   $useGeneratedEvents True if 'generated' events should be used.
+     * @param mixed          $returnValue The return value.
+     * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
      *
      * @return ResponseEventInterface The newly created event.
      */
     public function createResponse(
         $returnValue = null,
-        Exception $exception = null,
-        $useGeneratedEvents = null
+        Exception $exception = null
     ) {
         if ($exception) {
             return $this->createThrew($exception);
-        }
-
-        if (null === $useGeneratedEvents) {
-            $useGeneratedEvents = !defined('HHVM_VERSION');
-        }
-
-        if ($useGeneratedEvents && $returnValue instanceof Generator) {
-            return $this->createGenerated($returnValue);
         }
 
         return $this->createReturned($returnValue);
@@ -159,6 +147,22 @@ class CallEventFactory implements CallEventFactoryInterface
     }
 
     /**
+     * Create a new 'returned' event for a generator.
+     *
+     * @param Generator|null $generator The generator.
+     *
+     * @return ReturnedEventInterface The newly created event.
+     */
+    public function createGenerated(Generator $generator = null)
+    {
+        if (null === $generator) {
+            $generator = CallEventFactoryDetail::createEmptyGenerator();
+        }
+
+        return $this->createReturned($generator);
+    }
+
+    /**
      * Create a new 'thrown' event.
      *
      * @param Exception|null $exception The thrown exception.
@@ -171,22 +175,6 @@ class CallEventFactory implements CallEventFactoryInterface
             $this->sequencer->next(),
             $this->clock->time(),
             $exception
-        );
-    }
-
-    /**
-     * Create a new 'generated' event.
-     *
-     * @param Generator|null $generator The generator.
-     *
-     * @return GeneratedEventInterface The newly created event.
-     */
-    public function createGenerated(Generator $generator = null)
-    {
-        return new GeneratedEvent(
-            $this->sequencer->next(),
-            $this->clock->time(),
-            $generator
         );
     }
 

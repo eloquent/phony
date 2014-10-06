@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Call\Event\Factory;
 
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\GeneratedEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\SentEventInterface;
@@ -40,16 +39,14 @@ interface CallEventFactoryInterface
     /**
      * Create a new response event.
      *
-     * @param mixed          $returnValue        The return value.
-     * @param Exception|null $exception          The thrown exception, or null if no exception was thrown.
-     * @param boolean|null   $useGeneratedEvents True if 'generated' events should be used.
+     * @param mixed          $returnValue The return value.
+     * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
      *
      * @return ResponseEventInterface The newly created event.
      */
     public function createResponse(
         $returnValue = null,
-        Exception $exception = null,
-        $useGeneratedEvents = null
+        Exception $exception = null
     );
 
     /**
@@ -62,6 +59,15 @@ interface CallEventFactoryInterface
     public function createReturned($value = null);
 
     /**
+     * Create a new 'returned' event for a generator.
+     *
+     * @param Generator|null $generator The generator.
+     *
+     * @return ReturnedEventInterface The newly created event.
+     */
+    public function createGenerated(Generator $generator = null);
+
+    /**
      * Create a new 'thrown' event.
      *
      * @param Exception|null $exception The thrown exception.
@@ -69,15 +75,6 @@ interface CallEventFactoryInterface
      * @return ThrewEventInterface The newly created event.
      */
     public function createThrew(Exception $exception = null);
-
-    /**
-     * Create a new 'generated' event.
-     *
-     * @param Generator|null $generator The generator.
-     *
-     * @return GeneratedEventInterface The newly created event.
-     */
-    public function createGenerated(Generator $generator = null);
 
     /**
      * Create a new 'yielded' event.

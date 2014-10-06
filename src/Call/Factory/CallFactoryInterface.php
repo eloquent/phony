@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Spy\SpyInterface;
@@ -27,18 +26,16 @@ interface CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null             $callback           The callback.
-     * @param array<integer,mixed>|null $arguments          The arguments.
-     * @param SpyInterface|null         $spy                The spy to record the call to.
-     * @param boolean|null              $useGeneratedEvents True if 'generated' events should be used.
+     * @param callable|null             $callback  The callback.
+     * @param array<integer,mixed>|null $arguments The arguments.
+     * @param SpyInterface|null         $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
         array $arguments = null,
-        SpyInterface $spy = null,
-        $useGeneratedEvents = null
+        SpyInterface $spy = null
     );
 
     /**
@@ -47,7 +44,7 @@ interface CallFactoryInterface
      * @param CalledEventInterface|null                   $calledEvent     The 'called' event.
      * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet responded.
      * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
-     * @param EndEventInterface|null                      $endEvent        The end event, or null if the call has not yet completed.
+     * @param ResponseEventInterface|null                 $endEvent        The end event, or null if the call has not yet completed.
      *
      * @return CallInterface            The newly created call.
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
@@ -56,6 +53,6 @@ interface CallFactoryInterface
         CalledEventInterface $calledEvent = null,
         ResponseEventInterface $responseEvent = null,
         array $generatorEvents = null,
-        EndEventInterface $endEvent = null
+        ResponseEventInterface $endEvent = null
     );
 }

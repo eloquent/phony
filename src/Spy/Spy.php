@@ -132,12 +132,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      */
     public function invokeWith(array $arguments = null)
     {
-        $call = $this->callFactory->record(
-            $this->callback,
-            $arguments,
-            $this,
-            $this->useGeneratorSpies
-        );
+        $call = $this->callFactory->record($this->callback, $arguments, $this);
         $exception = $call->exception();
 
         if ($exception) {

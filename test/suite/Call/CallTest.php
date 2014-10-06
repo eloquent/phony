@@ -39,6 +39,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
+        $this->assertFalse($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
@@ -63,6 +64,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($threwEvent, $this->subject->endEvent());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
+        $this->assertFalse($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
@@ -85,6 +87,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->endEvent());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertFalse($this->subject->hasResponded());
+        $this->assertFalse($this->subject->isGenerator());
         $this->assertFalse($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());

@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Event\GeneratedEvent;
+use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Test\TestCallEventFactory;
@@ -54,7 +54,7 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $generatorFactory = eval('return function () { return; yield null; };');
         $generator = call_user_func($generatorFactory);
-        $expected = new GeneratedEvent(0, 0.0, $generator);
+        $expected = new ReturnedEvent(0, 0.0, $generator);
         $actual = $this->eventFactory->createGenerated($generator);
 
         $this->assertEquals($expected, $actual);
