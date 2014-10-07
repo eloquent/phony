@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Spy\Factory;
 
-use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Invocation\InvocableInspector;

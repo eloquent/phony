@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 
 class TestAssertionRecorder extends AssertionRecorder
 {

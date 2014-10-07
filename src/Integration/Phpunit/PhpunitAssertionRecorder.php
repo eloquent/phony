@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Exception;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_ExpectationFailedException;

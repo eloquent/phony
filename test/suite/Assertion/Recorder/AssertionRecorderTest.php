@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Assertion;
+namespace Eloquent\Phony\Assertion\Recorder;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use PHPUnit_Framework_TestCase;

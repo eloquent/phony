@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Assertion\AssertionRecorder;
-use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;

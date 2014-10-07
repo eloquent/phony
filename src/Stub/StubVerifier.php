@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Assertion\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Invocation\Invoker;
