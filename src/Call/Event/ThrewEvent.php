@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Eloquent\Phony\Event\AbstractEvent;
 use Exception;
 
 /**
@@ -18,7 +19,7 @@ use Exception;
  *
  * @internal
  */
-class ThrewEvent extends AbstractCallEvent implements ThrewEventInterface
+class ThrewEvent extends AbstractEvent implements ThrewEventInterface
 {
     /**
      * Construct a 'threw' event.

@@ -11,22 +11,11 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-/**
- * The interface implemented by call events.
- */
-interface CallEventInterface
-{
-    /**
-     * Get the sequence number.
-     *
-     * @return integer The sequence number.
-     */
-    public function sequenceNumber();
+use Eloquent\Phony\Event\EventInterface;
 
-    /**
-     * Get the time at which the event occurred.
-     *
-     * @return float The time at which the event occurred, in seconds since the Unix epoch.
-     */
-    public function time();
+/**
+ * The interface used to identify call events.
+ */
+interface CallEventInterface extends EventInterface
+{
 }

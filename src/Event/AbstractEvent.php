@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Call\Event;
+namespace Eloquent\Phony\Event;
 
 /**
- * An abstract base class for implementing call events.
+ * An abstract base class for implementing events.
  *
  * @internal
  */
-abstract class AbstractCallEvent implements CallEventInterface
+abstract class AbstractEvent implements EventInterface
 {
     /**
-     * Construct a new call event.
+     * Construct a new event.
      *
      * @param integer $sequenceNumber The sequence number.
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
