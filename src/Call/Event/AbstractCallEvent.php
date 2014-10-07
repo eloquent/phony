@@ -12,24 +12,35 @@
 namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Event\AbstractEvent;
 
 /**
- * The interface implemented by call events.
+ * An abstract base class for implementing call events.
+ *
+ * @internal
  */
-interface CallEventInterface extends EventInterface
+abstract class AbstractCallEvent extends AbstractEvent implements
+    CallEventInterface
 {
     /**
      * Set the call.
      *
      * @param CallInterface $call The call.
      */
-    public function setCall(CallInterface $call);
+    public function setCall(CallInterface $call)
+    {
+        $this->call = $call;
+    }
 
     /**
      * Get the call.
      *
      * @return CallInterface|null The call, or null if no call has been set.
      */
-    public function call();
+    public function call()
+    {
+        return $this->call;
+    }
+
+    private $call;
 }

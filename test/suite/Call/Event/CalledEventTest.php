@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
 class CalledEventTest extends PHPUnit_Framework_TestCase
@@ -22,6 +23,8 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->arguments = array('a', 'b');
         $this->subject = new CalledEvent($this->sequenceNumber, $this->time, $this->callback, $this->arguments);
+
+        $this->callFactory = new TestCallFactory();
     }
 
     public function testConstructor()
@@ -30,6 +33,7 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->time, $this->subject->time());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
+        $this->assertNull($this->subject->call());
     }
 
     public function testConstructorDefaults()
@@ -39,5 +43,13 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertSame(array(), $this->subject->arguments());
+    }
+
+    public function testSetCall()
+    {
+        $call = $this->callFactory->create();
+        $this->subject->setCall($call);
+
+        $this->assertSame($call, $this->subject->call());
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
 class YieldedEventTest extends PHPUnit_Framework_TestCase
@@ -22,6 +23,8 @@ class YieldedEventTest extends PHPUnit_Framework_TestCase
         $this->value = 'x';
         $this->key = 'y';
         $this->subject = new YieldedEvent($this->sequenceNumber, $this->time, $this->value, $this->key);
+
+        $this->callFactory = new TestCallFactory();
     }
 
     public function testConstructor()
@@ -30,6 +33,7 @@ class YieldedEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->time, $this->subject->time());
         $this->assertSame($this->value, $this->subject->value());
         $this->assertSame($this->key, $this->subject->key());
+        $this->assertNull($this->subject->call());
     }
 
     public function testConstructorDefaults()
@@ -38,5 +42,13 @@ class YieldedEventTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($this->subject->value());
         $this->assertNull($this->subject->key());
+    }
+
+    public function testSetCall()
+    {
+        $call = $this->callFactory->create();
+        $this->subject->setCall($call);
+
+        $this->assertSame($call, $this->subject->call());
     }
 }

@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Event\AbstractEvent;
 use Exception;
 
 /**
@@ -19,7 +18,7 @@ use Exception;
  *
  * @internal
  */
-class SentExceptionEvent extends AbstractEvent implements
+class SentExceptionEvent extends AbstractCallEvent implements
     SentExceptionEventInterface
 {
     /**

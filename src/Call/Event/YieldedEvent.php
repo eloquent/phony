@@ -11,14 +11,12 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Event\AbstractEvent;
-
 /**
  * Represents a yielded key-value pair.
  *
  * @internal
  */
-class YieldedEvent extends AbstractEvent implements YieldedEventInterface
+class YieldedEvent extends AbstractCallEvent implements YieldedEventInterface
 {
     /**
      * Construct a 'yielded' event.

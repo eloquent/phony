@@ -11,14 +11,12 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Event\AbstractEvent;
-
 /**
  * Represents a value sent to a generator.
  *
  * @internal
  */
-class SentEvent extends AbstractEvent implements SentEventInterface
+class SentEvent extends AbstractCallEvent implements SentEventInterface
 {
     /**
      * Construct a 'sent value' event.

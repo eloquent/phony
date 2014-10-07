@@ -11,14 +11,12 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Event\AbstractEvent;
-
 /**
  * Represents the start of a call.
  *
  * @internal
  */
-class CalledEvent extends AbstractEvent implements CalledEventInterface
+class CalledEvent extends AbstractCallEvent implements CalledEventInterface
 {
     /**
      * Construct a new 'called' event.

@@ -11,8 +11,9 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use PHPUnit_Framework_TestCase;
+use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
+use PHPUnit_Framework_TestCase;
 
 class ThrewEventTest extends PHPUnit_Framework_TestCase
 {
@@ -22,6 +23,8 @@ class ThrewEventTest extends PHPUnit_Framework_TestCase
         $this->time = 1.11;
         $this->exception = new Exception();
         $this->subject = new ThrewEvent($this->sequenceNumber, $this->time, $this->exception);
+
+        $this->callFactory = new TestCallFactory();
     }
 
     public function testConstructor()
@@ -29,6 +32,7 @@ class ThrewEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
         $this->assertSame($this->exception, $this->subject->exception());
+        $this->assertNull($this->subject->call());
     }
 
     public function testConstructorDefaults()
@@ -36,5 +40,13 @@ class ThrewEventTest extends PHPUnit_Framework_TestCase
         $this->subject = new ThrewEvent($this->sequenceNumber, $this->time);
 
         $this->assertEquals($this->exception, $this->subject->exception());
+    }
+
+    public function testSetCall()
+    {
+        $call = $this->callFactory->create();
+        $this->subject->setCall($call);
+
+        $this->assertSame($call, $this->subject->call());
     }
 }
