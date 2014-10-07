@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call;
 
+use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
 use Exception;
 
 /**
@@ -54,7 +55,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledWith();
 
@@ -73,7 +75,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledWithExactly();
 
@@ -93,7 +96,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertNotCalledWith();
 
@@ -112,7 +116,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertNotCalledWithExactly();
 
@@ -130,7 +135,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledBefore(CallInterface $call);
 
@@ -148,7 +154,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledAfter(CallInterface $call);
 
@@ -167,7 +174,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledOn($value);
 
@@ -185,7 +193,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $value The value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertReturned($value);
 
@@ -204,7 +213,8 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertThrew($type = null);
 }

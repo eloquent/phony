@@ -20,7 +20,6 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Spy\Spy;
-use Eloquent\Phony\Test\TestAssertionRecorder;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
@@ -35,7 +34,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
-        $this->assertionRecorder = new TestAssertionRecorder();
+        $this->assertionRecorder = new AssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
         $this->invoker = new Invoker();
         $this->subject = new StubVerifier(

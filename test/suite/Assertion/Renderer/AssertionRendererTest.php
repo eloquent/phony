@@ -102,7 +102,7 @@ EOD;
     {
         $expected = <<<'EOD'
     - 'x'
-    - null
+    - <none>
 EOD;
 
         $this->assertSame('', $this->subject->renderReturnValues(array()));

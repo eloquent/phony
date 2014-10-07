@@ -11,15 +11,15 @@
 
 namespace Eloquent\Phony\Call;
 
-use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\Result\AssertionResult;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Test\TestAssertionRecorder;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -42,7 +42,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->assertionRecorder = new TestAssertionRecorder();
+        $this->assertionRecorder = new AssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifier(
@@ -99,6 +99,11 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->earlyCall = $this->callFactory->create();
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
+
+        $this->assertionResult = new AssertionResult(array($this->call));
+        $this->returnedAssertionResult = new AssertionResult(array($this->call->responseEvent()));
+        $this->threwAssertionResult = new AssertionResult(array($this->callWithException->responseEvent()));
+        $this->emptyAssertionResult = new AssertionResult();
     }
 
     public function testProxyMethodsWithGeneratorEvents()
@@ -131,7 +136,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertInstanceOf('Generator', $this->subject->returnValue());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertSame($this->calledEvent->time(), $this->subject->startTime());
+        $this->assertSame($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($generatedEvent->time(), $this->subject->responseTime());
         $this->assertSame($endEvent->time(), $this->subject->endTime());
         $this->assertNull($this->subject->exception());

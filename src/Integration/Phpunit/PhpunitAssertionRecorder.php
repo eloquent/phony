@@ -11,7 +11,10 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
+use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_ExpectationFailedException;
@@ -22,7 +25,7 @@ use PHPUnit_Framework_ExpectationFailedException;
  * @see PHPUnit_Framework_Assert::assertThat()
  * @internal
  */
-class PhpunitAssertionRecorder implements AssertionRecorderInterface
+class PhpunitAssertionRecorder extends AssertionRecorder
 {
     /**
      * Get the static instance of this recorder.
@@ -40,13 +43,19 @@ class PhpunitAssertionRecorder implements AssertionRecorderInterface
 
     /**
      * Record that a successful assertion occurred.
+     *
+     * @param array<integer,EventInterface>|null $events The events.
+     *
+     * @return AssertionResultInterface An assertion result.
      */
-    public function recordSuccess()
+    public function createSuccess(array $events = null)
     {
         PHPUnit_Framework_Assert::assertThat(
             true,
             PHPUnit_Framework_Assert::isTrue()
         );
+
+        return parent::createSuccess($events);
     }
 
     /**

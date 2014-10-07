@@ -165,10 +165,14 @@ class AssertionRenderer implements AssertionRendererInterface
     {
         $rendered = array();
         foreach ($calls as $call) {
-            $rendered[] = sprintf(
-                '    - %s',
-                $this->exporter->shortenedExport($call->returnValue())
-            );
+            if ($call->exception()) {
+                $rendered[] = '    - <none>';
+            } else {
+                $rendered[] = sprintf(
+                    '    - %s',
+                    $this->exporter->shortenedExport($call->returnValue())
+                );
+            }
         }
 
         return implode("\n", $rendered);

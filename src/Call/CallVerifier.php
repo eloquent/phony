@@ -15,8 +15,9 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -136,6 +137,26 @@ class CallVerifier implements CallVerifierInterface
     public function invocableInspector()
     {
         return $this->invocableInspector;
+    }
+
+    /**
+     * Get the sequence number.
+     *
+     * @return integer The sequence number.
+     */
+    public function sequenceNumber()
+    {
+        return $this->call->sequenceNumber();
+    }
+
+    /**
+     * Get the time at which the event occurred.
+     *
+     * @return float The time at which the event occurred, in seconds since the Unix epoch.
+     */
+    public function time()
+    {
+        return $this->call->time();
     }
 
     /**
@@ -275,26 +296,6 @@ class CallVerifier implements CallVerifierInterface
     }
 
     /**
-     * Get the sequence number.
-     *
-     * @return integer The sequence number.
-     */
-    public function sequenceNumber()
-    {
-        return $this->call->sequenceNumber();
-    }
-
-    /**
-     * Get the time at which the call was made.
-     *
-     * @return float The time at which the call was made, in seconds since the Unix epoch.
-     */
-    public function startTime()
-    {
-        return $this->call->startTime();
-    }
-
-    /**
      * Get the return value.
      *
      * @return mixed The return value.
@@ -347,7 +348,7 @@ class CallVerifier implements CallVerifierInterface
             return null;
         }
 
-        return $endTime - $this->call->startTime();
+        return $endTime - $this->call->time();
     }
 
     /**
@@ -363,7 +364,7 @@ class CallVerifier implements CallVerifierInterface
             return null;
         }
 
-        return $responseTime - $this->call->startTime();
+        return $responseTime - $this->call->time();
     }
 
     /**
@@ -398,7 +399,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledWith()
     {
@@ -417,7 +419,7 @@ class CallVerifier implements CallVerifierInterface
             );
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder->createSuccess(array($this->call));
     }
 
     /**
@@ -441,7 +443,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledWithExactly()
     {
@@ -459,7 +462,7 @@ class CallVerifier implements CallVerifierInterface
             );
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder->createSuccess(array($this->call));
     }
 
     /**
@@ -485,7 +488,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertNotCalledWith()
     {
@@ -504,7 +508,7 @@ class CallVerifier implements CallVerifierInterface
             );
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder->createSuccess();
     }
 
     /**
@@ -528,7 +532,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertNotCalledWithExactly()
     {
@@ -546,7 +551,7 @@ class CallVerifier implements CallVerifierInterface
             );
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder->createSuccess();
     }
 
     /**
@@ -566,7 +571,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledBefore(CallInterface $call)
     {
@@ -575,7 +581,7 @@ class CallVerifier implements CallVerifierInterface
                 ->createFailure('Not called before supplied call.');
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder->createSuccess(array($this->call));
     }
 
     /**
@@ -595,7 +601,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledAfter(CallInterface $call)
     {
@@ -604,7 +611,7 @@ class CallVerifier implements CallVerifierInterface
                 ->createFailure('Not called after supplied call.');
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder->createSuccess(array($this->call));
     }
 
     /**
@@ -632,7 +639,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledOn($value)
     {
@@ -660,7 +668,7 @@ class CallVerifier implements CallVerifierInterface
             );
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder->createSuccess(array($this->call));
     }
 
     /**
@@ -681,7 +689,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $value The value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertReturned($value)
     {
@@ -698,7 +707,8 @@ class CallVerifier implements CallVerifierInterface
             );
         }
 
-        $this->assertionRecorder->recordSuccess();
+        return $this->assertionRecorder
+            ->createSuccess(array($this->call->responseEvent()));
     }
 
     /**
@@ -737,7 +747,8 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param Exception|string|null $type An exception like, the type of exception, or null for any exception.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertThrew($type = null)
     {
@@ -749,10 +760,12 @@ class CallVerifier implements CallVerifierInterface
                     ->createFailure('Nothing thrown.');
             }
 
-            return $this->assertionRecorder->recordSuccess();
+            return $this->assertionRecorder
+                ->createSuccess(array($this->call->responseEvent()));
         } elseif (is_string($type)) {
             if (is_a($exception, $type)) {
-                return $this->assertionRecorder->recordSuccess();
+                return $this->assertionRecorder
+                    ->createSuccess(array($this->call->responseEvent()));
             } elseif (null === $exception) {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
@@ -772,7 +785,8 @@ class CallVerifier implements CallVerifierInterface
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 if ($exception == $type) {
-                    return $this->assertionRecorder->recordSuccess();
+                    return $this->assertionRecorder
+                        ->createSuccess(array($this->call->responseEvent()));
                 } elseif (null === $exception) {
                     throw $this->assertionRecorder->createFailure(
                         sprintf(
@@ -793,7 +807,8 @@ class CallVerifier implements CallVerifierInterface
                 $type = $this->matcherFactory->adapt($type);
 
                 if ($type->matches($exception)) {
-                    return $this->assertionRecorder->recordSuccess();
+                    return $this->assertionRecorder
+                        ->createSuccess(array($this->call->responseEvent()));
                 }
 
                 throw $this->assertionRecorder->createFailure(

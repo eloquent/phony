@@ -65,6 +65,26 @@ class Call implements CallInterface
     }
 
     /**
+     * Get the sequence number.
+     *
+     * @return integer The sequence number.
+     */
+    public function sequenceNumber()
+    {
+        return $this->calledEvent->sequenceNumber();
+    }
+
+    /**
+     * Get the time at which the event occurred.
+     *
+     * @return float The time at which the event occurred, in seconds since the Unix epoch.
+     */
+    public function time()
+    {
+        return $this->calledEvent->time();
+    }
+
+    /**
      * Get the 'called' event.
      *
      * @return CalledEventInterface The 'called' event.
@@ -235,26 +255,6 @@ class Call implements CallInterface
     public function arguments()
     {
         return $this->calledEvent->arguments();
-    }
-
-    /**
-     * Get the sequence number.
-     *
-     * @return integer The sequence number.
-     */
-    public function sequenceNumber()
-    {
-        return $this->calledEvent->sequenceNumber();
-    }
-
-    /**
-     * Get the time at which the call was made.
-     *
-     * @return float The time at which the call was made, in seconds since the Unix epoch.
-     */
-    public function startTime()
-    {
-        return $this->calledEvent->time();
     }
 
     /**

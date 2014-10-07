@@ -15,13 +15,14 @@ use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
+use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use InvalidArgumentException;
 
 /**
  * The interface implemented by calls.
  */
-interface CallInterface
+interface CallInterface extends EventInterface
 {
     /**
      * Get the 'called' event.
@@ -119,20 +120,6 @@ interface CallInterface
      * @return array<integer,mixed> The received arguments.
      */
     public function arguments();
-
-    /**
-     * Get the sequence number.
-     *
-     * @return integer The sequence number.
-     */
-    public function sequenceNumber();
-
-    /**
-     * Get the time at which the call was made.
-     *
-     * @return float The time at which the call was made, in seconds since the Unix epoch.
-     */
-    public function startTime();
 
     /**
      * Get the returned value.

@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
+use Eloquent\Phony\Assertion\Result\AssertionResult;
+use Eloquent\Phony\Call\Event\ReturnedEvent;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_ExpectationFailedException;
 use PHPUnit_Framework_TestCase;
@@ -23,12 +25,26 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->subject = new PhpunitAssertionRecorder();
     }
 
-    public function testRecordSuccess()
+    public function testCreateSuccess()
     {
+        $events = array(new ReturnedEvent(0, 0.0), new ReturnedEvent(1, 1.0));
+        $expected = new AssertionResult($events);
         $beforeCount = PHPUnit_Framework_Assert::getCount();
-        $this->subject->recordSuccess();
+        $actual = $this->subject->createSuccess($events);
         $afterCount = PHPUnit_Framework_Assert::getCount();
 
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($beforeCount + 1, $afterCount);
+    }
+
+    public function testCreateSuccessDefaults()
+    {
+        $expected = new AssertionResult();
+        $beforeCount = PHPUnit_Framework_Assert::getCount();
+        $actual = $this->subject->createSuccess();
+        $afterCount = PHPUnit_Framework_Assert::getCount();
+
+        $this->assertEquals($expected, $actual);
         $this->assertSame($beforeCount + 1, $afterCount);
     }
 

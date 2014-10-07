@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Spy;
 
+use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Exception;
@@ -63,7 +64,8 @@ interface SpyVerifierInterface extends SpyInterface
     /**
      * Throws an exception unless called at least once.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalled();
 
@@ -77,7 +79,8 @@ interface SpyVerifierInterface extends SpyInterface
     /**
      * Throws an exception unless called only once.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledOnce();
 
@@ -95,7 +98,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param integer $times The expected number of calls.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledTimes($times);
 
@@ -113,7 +117,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param SpyInterface $spy Another spy.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledBefore(SpyInterface $spy);
 
@@ -131,7 +136,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param SpyInterface $spy Another spy.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledAfter(SpyInterface $spy);
 
@@ -151,7 +157,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledWith();
 
@@ -171,7 +178,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysCalledWith();
 
@@ -191,7 +199,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledWithExactly();
 
@@ -211,7 +220,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysCalledWithExactly();
 
@@ -231,7 +241,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertNeverCalledWith();
 
@@ -250,7 +261,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertNeverCalledWithExactly();
 
@@ -270,7 +282,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertCalledOn($value);
 
@@ -290,7 +303,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysCalledOn($value);
 
@@ -309,7 +323,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $value The value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertReturned($value);
 
@@ -327,7 +342,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $value The value.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysReturned($value);
 
@@ -347,7 +363,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertThrew($type = null);
 
@@ -366,7 +383,8 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @throws Exception If the assertion fails.
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysThrew($type = null);
 }

@@ -45,7 +45,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
+        $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertNull($this->subject->exception());
         $this->assertEquals($this->returnedEvent->time(), $this->subject->responseTime());
@@ -71,7 +71,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
+        $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertNull($this->subject->returnValue());
         $this->assertSame($exception, $this->subject->exception());
         $this->assertEquals($threwEvent->time(), $this->subject->responseTime());
@@ -95,7 +95,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertEquals($this->calledEvent->time(), $this->subject->startTime());
+        $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertNull($this->subject->returnValue());
         $this->assertNull($this->subject->exception());
         $this->assertNull($this->subject->responseTime());
