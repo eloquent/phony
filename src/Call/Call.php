@@ -44,7 +44,9 @@ class Call implements CallInterface
         array $generatorEvents = null,
         ResponseEventInterface $endEvent = null
     ) {
+        $calledEvent->setCall($this);
         $this->calledEvent = $calledEvent;
+
         $this->generatorEvents = array();
 
         if ($responseEvent) {
@@ -85,6 +87,7 @@ class Call implements CallInterface
             throw new InvalidArgumentException('Call already responded.');
         }
 
+        $responseEvent->setCall($this);
         $this->responseEvent = $responseEvent;
 
         if (!$this->isGenerator()) {
@@ -105,17 +108,18 @@ class Call implements CallInterface
     /**
      * Add a generator event.
      *
-     * @param GeneratorEventInterface $event The generator event.
+     * @param GeneratorEventInterface $generatorEvent The generator event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addGeneratorEvent(GeneratorEventInterface $event)
+    public function addGeneratorEvent(GeneratorEventInterface $generatorEvent)
     {
         if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
         }
 
-        $this->generatorEvents[] = $event;
+        $generatorEvent->setCall($this);
+        $this->generatorEvents[] = $generatorEvent;
     }
 
     /**
@@ -140,6 +144,8 @@ class Call implements CallInterface
         if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
         }
+
+        $endEvent->setCall($this);
 
         if (!$this->responseEvent) {
             $this->responseEvent = $endEvent;

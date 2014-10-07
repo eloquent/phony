@@ -49,11 +49,11 @@ interface CallInterface
     /**
      * Add a generator event.
      *
-     * @param GeneratorEventInterface $event The generator event.
+     * @param GeneratorEventInterface $generatorEvent The generator event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addGeneratorEvent(GeneratorEventInterface $event);
+    public function addGeneratorEvent(GeneratorEventInterface $generatorEvent);
 
     /**
      * Get the generator events.

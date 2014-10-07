@@ -173,13 +173,13 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Add a generator event.
      *
-     * @param GeneratorEventInterface $event The generator event.
+     * @param GeneratorEventInterface $generatorEvent The generator event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addGeneratorEvent(GeneratorEventInterface $event)
+    public function addGeneratorEvent(GeneratorEventInterface $generatorEvent)
     {
-        $this->call->addGeneratorEvent($event);
+        $this->call->addGeneratorEvent($generatorEvent);
     }
 
     /**

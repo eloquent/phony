@@ -79,7 +79,11 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             $this->callEventFactory->createYielded('c', 2),
             $this->callEventFactory->createSent('C'),
         );
+        foreach ($generatorEvents as $generatorEvent) {
+            $generatorEvent->setCall($this->call);
+        }
         $endEvent = $this->callEventFactory->createReturned();
+        $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());
@@ -123,7 +127,11 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             $this->callEventFactory->createYielded('c', 2),
             $this->callEventFactory->createSent('C'),
         );
+        foreach ($generatorEvents as $generatorEvent) {
+            $generatorEvent->setCall($this->call);
+        }
         $endEvent = $this->callEventFactory->createThrew($exception);
+        $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());
@@ -144,6 +152,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array();
         $endEvent = $this->callEventFactory->createReturned();
+        $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());
@@ -165,6 +174,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array();
         $endEvent = $this->callEventFactory->createThrew($exception);
+        $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->generatorEvents());

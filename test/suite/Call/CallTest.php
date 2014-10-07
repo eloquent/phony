@@ -34,6 +34,7 @@ class CallTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithReturnedEvent()
     {
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->generatorEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
@@ -59,6 +60,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->events = array($this->calledEvent, $threwEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertSame($threwEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->generatorEvents());
         $this->assertSame($threwEvent, $this->subject->endEvent());
@@ -82,6 +84,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->events = array($this->calledEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertNull($this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->generatorEvents());
         $this->assertNull($this->subject->endEvent());
@@ -105,7 +108,9 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($this->returnedEvent);
 
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
+        $this->assertSame($this->subject, $this->subject->responseEvent()->call());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->subject, $this->subject->endEvent()->call());
     }
 
     public function testSetResponseEventFailureAlreadySet()
@@ -120,7 +125,9 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->subject->setEndEvent($this->returnedEvent);
 
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertSame($this->subject, $this->subject->endEvent()->call());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
+        $this->assertSame($this->subject, $this->subject->responseEvent()->call());
     }
 
     public function testSetEndEventFailureAlreadySet()

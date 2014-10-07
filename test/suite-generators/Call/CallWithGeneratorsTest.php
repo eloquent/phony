@@ -45,6 +45,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
         $this->assertSame($generatorEvents, $this->subject->generatorEvents());
         $this->assertSame($endEvent, $this->subject->endEvent());
@@ -74,6 +75,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
         $this->assertSame($generatorEvents, $this->subject->generatorEvents());
         $this->assertSame($endEvent, $this->subject->endEvent());
@@ -101,6 +103,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
+        $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
         $this->assertSame($generatorEvents, $this->subject->generatorEvents());
         $this->assertNull($this->subject->endEvent());
@@ -125,6 +128,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($generatedEvent);
 
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
+        $this->assertSame($this->subject, $this->subject->responseEvent()->call());
         $this->assertNull($this->subject->endEvent());
     }
 
@@ -139,6 +143,8 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generatorEvents = array($generatorEventA, $generatorEventB);
 
         $this->assertSame($generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($this->subject, $generatorEventA->call());
+        $this->assertSame($this->subject, $generatorEventB->call());
     }
 
     public function testAddGeneratorEventFailureAlreadyCompleted()
