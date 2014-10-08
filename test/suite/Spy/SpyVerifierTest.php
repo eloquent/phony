@@ -1438,6 +1438,7 @@ EOD;
 
     public function testReturned()
     {
+        $this->assertFalse($this->subject->returned());
         $this->assertFalse($this->subject->returned(null));
         $this->assertFalse($this->subject->returned($this->returnValueA));
         $this->assertFalse($this->subject->returned($this->returnValueB));
@@ -1446,6 +1447,7 @@ EOD;
 
         $this->subject->setCalls($this->calls);
 
+        $this->assertTrue($this->subject->returned());
         $this->assertFalse($this->subject->returned(null));
         $this->assertTrue($this->subject->returned($this->returnValueA));
         $this->assertTrue($this->subject->returned($this->returnValueB));
@@ -1457,6 +1459,10 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
 
+        $this->assertEquals(
+            new AssertionResult(array($this->callAResponse, $this->callBResponse)),
+            $this->subject->assertReturned()
+        );
         $this->assertEquals(
             new AssertionResult(array($this->callAResponse)),
             $this->subject->assertReturned($this->returnValueA)
@@ -1476,28 +1482,43 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected return value like <'z'>. Actually returned:
-    - 'x'
-    - 'y'
-    - <none>
-    - <none>
+Expected return value like <'z'>. Actually responded:
+    - returned 'x'
+    - returned 'y'
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertReturned('z');
     }
 
+    public function testAssertReturnedFailureWithoutMatcher()
+    {
+        $this->subject->setCalls(array($this->callC, $this->callD));
+
+        $expected = <<<'EOD'
+Expected spy to return. Actually responded:
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertReturned();
+    }
+
     public function testAssertReturnedFailureWithNoCalls()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return value like <'x'>. Never called."
+            "Expected spy to return. Never called."
         );
         $this->subject->assertReturned($this->returnValueA);
     }
 
     public function testAlwaysReturned()
     {
+        $this->assertFalse($this->subject->alwaysReturned());
         $this->assertFalse($this->subject->alwaysReturned(null));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueA));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueB));
@@ -1506,6 +1527,7 @@ EOD;
 
         $this->subject->setCalls($this->calls);
 
+        $this->assertFalse($this->subject->alwaysReturned());
         $this->assertFalse($this->subject->alwaysReturned(null));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueA));
         $this->assertFalse($this->subject->alwaysReturned($this->returnValueB));
@@ -1514,6 +1536,7 @@ EOD;
 
         $this->subject->setCalls(array($this->callA, $this->callA));
 
+        $this->assertTrue($this->subject->alwaysReturned());
         $this->assertTrue($this->subject->alwaysReturned($this->returnValueA));
         $this->assertTrue($this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
         $this->assertFalse($this->subject->alwaysReturned(null));
@@ -1526,6 +1549,7 @@ EOD;
         $this->subject->setCalls(array($this->callA, $this->callA));
         $expected = new AssertionResult(array($this->callAResponse, $this->callAResponse));
 
+        $this->assertEquals($expected, $this->subject->assertAlwaysReturned());
         $this->assertEquals($expected, $this->subject->assertAlwaysReturned($this->returnValueA));
         $this->assertEquals($expected, $this->subject->assertAlwaysReturned(new EqualToMatcher($this->returnValueA)));
     }
@@ -1535,22 +1559,38 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected every call with return value like <'x'>. Actually returned:
-    - 'x'
-    - 'y'
-    - <none>
-    - <none>
+Expected every call with return value like <'x'>. Actually responded:
+    - returned 'x'
+    - returned 'y'
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->assertAlwaysReturned($this->returnValueA);
     }
 
+    public function testAssertAlwaysReturnedFailureWithNoMatcher()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected every call to return. Actually responded:
+    - returned 'x'
+    - returned 'y'
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->assertAlwaysReturned();
+    }
+
     public function testAssertAlwaysReturnedFailureWithNoCalls()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return value like <'x'>. Never called."
+            "Expected spy to return. Never called."
         );
         $this->subject->assertAlwaysReturned($this->returnValueA);
     }
@@ -1638,9 +1678,9 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually threw:
-    - RuntimeException('You done goofed.')
-    - RuntimeException('Consequences will never be the same.')
+Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually responded:
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1671,9 +1711,9 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected exception equal to RuntimeException(). Actually threw:
-    - RuntimeException('You done goofed.')
-    - RuntimeException('Consequences will never be the same.')
+Expected exception equal to RuntimeException(). Actually responded:
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1704,9 +1744,9 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected exception like <RuntimeException Object (...)>. Actually threw:
-    - RuntimeException('You done goofed.')
-    - RuntimeException('Consequences will never be the same.')
+Expected exception like <RuntimeException Object (...)>. Actually responded:
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1806,11 +1846,11 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected every call to throw. Actually threw:
-    - <none>
-    - <none>
-    - RuntimeException('You done goofed.')
-    - RuntimeException('Consequences will never be the same.')
+Expected every call to throw. Actually responded:
+    - returned 'x'
+    - returned 'y'
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1841,9 +1881,9 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually threw:
-    - RuntimeException('You done goofed.')
-    - RuntimeException('Consequences will never be the same.')
+Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually responded:
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1874,9 +1914,9 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected every call to throw exception equal to RuntimeException(). Actually threw:
-    - RuntimeException('You done goofed.')
-    - RuntimeException('Consequences will never be the same.')
+Expected every call to throw exception equal to RuntimeException(). Actually responded:
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1907,9 +1947,9 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected every call to throw exception like <RuntimeException Object (...)>. Actually threw:
-    - RuntimeException('You done goofed.')
-    - RuntimeException('Consequences will never be the same.')
+Expected every call to throw exception like <RuntimeException Object (...)>. Actually responded:
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

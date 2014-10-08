@@ -137,7 +137,30 @@ class AssertionRenderer implements AssertionRendererInterface
     }
 
     /**
-     * Render a only the arguments of a sequence of calls.
+     * Render the $this values of a sequence of calls.
+     *
+     * @param array<integer,CallInterface> $calls The calls.
+     *
+     * @return string The rendered call $this values.
+     */
+    public function renderThisValues(array $calls)
+    {
+        $rendered = array();
+        foreach ($calls as $call) {
+            $rendered[] = sprintf(
+                '    - %s',
+                $this->exporter->shortenedExport(
+                    $this->invocableInspector
+                        ->callbackThisValue($call->callback())
+                )
+            );
+        }
+
+        return implode("\n", $rendered);
+    }
+
+    /**
+     * Render the arguments of a sequence of calls.
      *
      * @param array<integer,CallInterface> $calls The calls.
      *
@@ -155,65 +178,29 @@ class AssertionRenderer implements AssertionRendererInterface
     }
 
     /**
-     * Render a only the return values of a sequence of calls.
+     * Render the responses of a sequence of calls.
      *
      * @param array<integer,CallInterface> $calls The calls.
      *
-     * @return string The rendered call return values.
+     * @return string The rendered call responses.
      */
-    public function renderReturnValues(array $calls)
+    public function renderResponses(array $calls)
     {
         $rendered = array();
         foreach ($calls as $call) {
-            if ($call->exception()) {
+            if (!$call->hasResponded()) {
                 $rendered[] = '    - <none>';
+            } elseif ($exception = $call->exception()) {
+                $rendered[] = sprintf(
+                    '    - threw %s',
+                    $this->renderException($exception)
+                );
             } else {
                 $rendered[] = sprintf(
-                    '    - %s',
+                    '    - returned %s',
                     $this->exporter->shortenedExport($call->returnValue())
                 );
             }
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render a only the thrown exceptions of a sequence of calls.
-     *
-     * @param array<integer,CallInterface> $calls The calls.
-     *
-     * @return string The rendered call exceptions.
-     */
-    public function renderThrownExceptions(array $calls)
-    {
-        $rendered = array();
-        foreach ($calls as $call) {
-            $rendered[] =
-                sprintf('    - %s', $this->renderException($call->exception()));
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render a only the $this values of a sequence of calls.
-     *
-     * @param array<integer,CallInterface> $calls The calls.
-     *
-     * @return string The rendered call $this values.
-     */
-    public function renderThisValues(array $calls)
-    {
-        $rendered = array();
-        foreach ($calls as $call) {
-            $rendered[] = sprintf(
-                '    - %s',
-                $this->exporter->shortenedExport(
-                    $this->invocableInspector
-                        ->callbackThisValue($call->callback())
-                )
-            );
         }
 
         return implode("\n", $rendered);

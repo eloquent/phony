@@ -39,6 +39,9 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
             $this->callEventFactory->createCalled('implode'),
             $this->callEventFactory->createThrew(new RuntimeException('You done goofed.'))
         );
+        $this->callC = $this->callFactory->create(
+            $this->callEventFactory->createCalled('implode')
+        );
     }
 
     public function testConstructor()
@@ -87,6 +90,17 @@ EOD;
         $this->assertSame($expected, $this->subject->renderCalls(array($this->callA, $this->callB)));
     }
 
+    public function testRenderThisValues()
+    {
+        $expected = <<<'EOD'
+    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest Object (...)
+    - null
+EOD;
+
+        $this->assertSame('', $this->subject->renderThisValues(array()));
+        $this->assertSame($expected, $this->subject->renderThisValues(array($this->callA, $this->callB)));
+    }
+
     public function testRenderCallsArguments()
     {
         $expected = <<<'EOD'
@@ -98,37 +112,16 @@ EOD;
         $this->assertSame($expected, $this->subject->renderCallsArguments(array($this->callA, $this->callB)));
     }
 
-    public function testRenderReturnValues()
+    public function testRenderResponses()
     {
         $expected = <<<'EOD'
-    - 'x'
+    - returned 'x'
+    - threw RuntimeException('You done goofed.')
     - <none>
 EOD;
 
-        $this->assertSame('', $this->subject->renderReturnValues(array()));
-        $this->assertSame($expected, $this->subject->renderReturnValues(array($this->callA, $this->callB)));
-    }
-
-    public function testRenderThrownExceptions()
-    {
-        $expected = <<<'EOD'
-    - <none>
-    - RuntimeException('You done goofed.')
-EOD;
-
-        $this->assertSame('', $this->subject->renderThrownExceptions(array()));
-        $this->assertSame($expected, $this->subject->renderThrownExceptions(array($this->callA, $this->callB)));
-    }
-
-    public function testRenderThisValues()
-    {
-        $expected = <<<'EOD'
-    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest Object (...)
-    - null
-EOD;
-
-        $this->assertSame('', $this->subject->renderThisValues(array()));
-        $this->assertSame($expected, $this->subject->renderThisValues(array($this->callA, $this->callB)));
+        $this->assertSame('', $this->subject->renderResponses(array()));
+        $this->assertSame($expected, $this->subject->renderResponses(array($this->callA, $this->callB, $this->callC)));
     }
 
     public function renderCallData()
@@ -170,6 +163,7 @@ EOD;
 
     public function testRenderException()
     {
+        $this->assertSame("<none>", $this->subject->renderException());
         $this->assertSame("Exception()", $this->subject->renderException(new Exception()));
         $this->assertSame("RuntimeException()", $this->subject->renderException(new RuntimeException()));
         $this->assertSame(

@@ -1594,7 +1594,7 @@ class SpyVerifier implements SpyVerifierInterface
      *
      * @return boolean True if this spy returned the supplied value at least once.
      */
-    public function returned($value)
+    public function returned($value = null)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -1603,9 +1603,13 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $value = $this->matcherFactory->adapt($value);
+        $anyReturn = 0 === func_num_args();
 
         foreach ($calls as $call) {
-            if (!$call->exception() && $value->matches($call->returnValue())) {
+            if (!$call->hasResponded() || $call->exception()) {
+                continue;
+            }
+            if ($anyReturn || $value->matches($call->returnValue())) {
                 return true;
             }
         }
@@ -1622,24 +1626,46 @@ class SpyVerifier implements SpyVerifierInterface
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
      */
-    public function assertReturned($value)
+    public function assertReturned($value = null)
     {
         $calls = $this->spy->recordedCalls();
-        $value = $this->matcherFactory->adapt($value);
 
         if (count($calls) < 1) {
+            throw $this->assertionRecorder
+                ->createFailure('Expected spy to return. Never called.');
+        }
+
+        if (0 === func_num_args()) {
+            $matchingEvents = array();
+
+            foreach ($calls as $call) {
+                if (!$call->hasResponded() || $call->exception()) {
+                    continue;
+                }
+
+                $matchingEvents[] = $call->responseEvent();
+            }
+
+            if ($matchingEvents) {
+                return $this->assertionRecorder->createSuccess($matchingEvents);
+            }
+
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'Expected return value like %s. Never called.',
-                    $value->describe()
+                    "Expected spy to return. Actually responded:\n%s",
+                    $this->assertionRenderer->renderResponses($calls)
                 )
             );
         }
 
+        $value = $this->matcherFactory->adapt($value);
         $matchingEvents = array();
 
         foreach ($calls as $call) {
-            if (!$call->exception() && $value->matches($call->returnValue())) {
+            if (!$call->hasResponded() || $call->exception()) {
+                continue;
+            }
+            if ($value->matches($call->returnValue())) {
                 $matchingEvents[] = $call->responseEvent();
             }
         }
@@ -1650,9 +1676,9 @@ class SpyVerifier implements SpyVerifierInterface
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                "Expected return value like %s. Actually returned:\n%s",
+                "Expected return value like %s. Actually responded:\n%s",
                 $value->describe(),
-                $this->assertionRenderer->renderReturnValues($calls)
+                $this->assertionRenderer->renderResponses($calls)
             )
         );
     }
@@ -1664,7 +1690,7 @@ class SpyVerifier implements SpyVerifierInterface
      *
      * @return boolean True if this spy always returned the supplied value.
      */
-    public function alwaysReturned($value)
+    public function alwaysReturned($value = null)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -1673,9 +1699,13 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $value = $this->matcherFactory->adapt($value);
+        $anyReturn = 0 === func_num_args();
 
         foreach ($calls as $call) {
-            if (!$value->matches($call->returnValue())) {
+            if (!$call->hasResponded() || $call->exception()) {
+                return false;
+            }
+            if (!$anyReturn && !$value->matches($call->returnValue())) {
                 return false;
             }
         }
@@ -1691,32 +1721,52 @@ class SpyVerifier implements SpyVerifierInterface
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
      */
-    public function assertAlwaysReturned($value)
+    public function assertAlwaysReturned($value = null)
     {
         $calls = $this->spy->recordedCalls();
-        $value = $this->matcherFactory->adapt($value);
 
         if (count($calls) < 1) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    'Expected return value like %s. Never called.',
-                    $value->describe()
-                )
-            );
+            throw $this->assertionRecorder
+                ->createFailure('Expected spy to return. Never called.');
         }
 
+        if (0 === func_num_args()) {
+            $matchingEvents = array();
+
+            foreach ($calls as $call) {
+                if ($call->hasResponded() && !$call->exception()) {
+                    $matchingEvents[] = $call->responseEvent();
+                } else {
+                    throw $this->assertionRecorder->createFailure(
+                        sprintf(
+                            "Expected every call to return. " .
+                                "Actually responded:\n%s",
+                            $this->assertionRenderer->renderResponses($calls)
+                        )
+                    );
+                }
+            }
+
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+
+        $value = $this->matcherFactory->adapt($value);
         $matchingEvents = array();
 
         foreach ($calls as $call) {
-            if ($value->matches($call->returnValue())) {
+            if (
+                $call->hasResponded() &&
+                !$call->exception() &&
+                $value->matches($call->returnValue())
+            ) {
                 $matchingEvents[] = $call->responseEvent();
             } else {
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
                         "Expected every call with return value like %s. " .
-                            "Actually returned:\n%s",
+                            "Actually responded:\n%s",
                         $value->describe(),
-                        $this->assertionRenderer->renderReturnValues($calls)
+                        $this->assertionRenderer->renderResponses($calls)
                     )
                 );
             }
@@ -1869,9 +1919,9 @@ class SpyVerifier implements SpyVerifierInterface
 
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected %s exception. Actually threw:\n%s",
+                    "Expected %s exception. Actually responded:\n%s",
                     $this->assertionRenderer->renderValue($type),
-                    $this->assertionRenderer->renderThrownExceptions($calls)
+                    $this->assertionRenderer->renderResponses($calls)
                 )
             );
         } elseif (is_object($type)) {
@@ -1923,9 +1973,9 @@ class SpyVerifier implements SpyVerifierInterface
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
                         "Expected exception equal to %s. " .
-                            "Actually threw:\n%s",
+                            "Actually responded:\n%s",
                         $this->assertionRenderer->renderException($type),
-                        $this->assertionRenderer->renderThrownExceptions($calls)
+                        $this->assertionRenderer->renderResponses($calls)
                     )
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -1977,9 +2027,9 @@ class SpyVerifier implements SpyVerifierInterface
 
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
-                        "Expected exception like %s. Actually threw:\n%s",
+                        "Expected exception like %s. Actually responded:\n%s",
                         $type->describe(),
-                        $this->assertionRenderer->renderThrownExceptions($calls)
+                        $this->assertionRenderer->renderResponses($calls)
                     )
                 );
             }
@@ -2101,8 +2151,8 @@ class SpyVerifier implements SpyVerifierInterface
 
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    "Expected every call to throw. Actually threw:\n%s",
-                    $this->assertionRenderer->renderThrownExceptions($calls)
+                    "Expected every call to throw. Actually responded:\n%s",
+                    $this->assertionRenderer->renderResponses($calls)
                 )
             );
         } elseif (is_string($type)) {
@@ -2150,9 +2200,9 @@ class SpyVerifier implements SpyVerifierInterface
             throw $this->assertionRecorder->createFailure(
                 sprintf(
                     "Expected every call to throw %s exception. " .
-                        "Actually threw:\n%s",
+                        "Actually responded:\n%s",
                     $this->assertionRenderer->renderValue($type),
-                    $this->assertionRenderer->renderThrownExceptions($calls)
+                    $this->assertionRenderer->renderResponses($calls)
                 )
             );
         } elseif (is_object($type)) {
@@ -2203,9 +2253,9 @@ class SpyVerifier implements SpyVerifierInterface
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
                         "Expected every call to throw exception equal to" .
-                            " %s. Actually threw:\n%s",
+                            " %s. Actually responded:\n%s",
                         $this->assertionRenderer->renderException($type),
-                        $this->assertionRenderer->renderThrownExceptions($calls)
+                        $this->assertionRenderer->renderResponses($calls)
                     )
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -2257,9 +2307,9 @@ class SpyVerifier implements SpyVerifierInterface
                 throw $this->assertionRecorder->createFailure(
                     sprintf(
                         "Expected every call to throw exception like %s. " .
-                            "Actually threw:\n%s",
+                            "Actually responded:\n%s",
                         $type->describe(),
-                        $this->assertionRenderer->renderThrownExceptions($calls)
+                        $this->assertionRenderer->renderResponses($calls)
                     )
                 );
             }

@@ -680,18 +680,13 @@ class CallVerifier implements CallVerifierInterface
      */
     public function returned($value = null)
     {
-        if (!$this->call->hasResponded()) {
+        if (!$this->call->hasResponded() || $this->call->exception()) {
             return false;
-        }
-        if ($this->call->exception()) {
-            return false;
-        }
-        if (0 === func_num_args()) {
-            return true;
         }
 
-        return $this->matcherFactory->adapt($value)
-            ->matches($this->call->returnValue());
+        return 0 === func_num_args() ||
+            $this->matcherFactory->adapt($value)
+                ->matches($this->call->returnValue());
     }
 
     /**

@@ -403,7 +403,7 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @return boolean True if this spy returned the supplied value at least once.
      */
-    public function returned($value);
+    public function returned($value = null);
 
     /**
      * Throws an exception unless this spy returned the supplied value at least
@@ -414,7 +414,7 @@ interface SpyVerifierInterface extends SpyInterface
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
      */
-    public function assertReturned($value);
+    public function assertReturned($value = null);
 
     /**
      * Returns true if this spy always returned the supplied value.
@@ -423,7 +423,7 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @return boolean True if this spy always returned the supplied value.
      */
-    public function alwaysReturned($value);
+    public function alwaysReturned($value = null);
 
     /**
      * Throws an exception unless this spy always returned the supplied value.
@@ -433,7 +433,7 @@ interface SpyVerifierInterface extends SpyInterface
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
      */
-    public function assertAlwaysReturned($value);
+    public function assertAlwaysReturned($value = null);
 
     /**
      * Returns true if an exception of the supplied type was thrown at least

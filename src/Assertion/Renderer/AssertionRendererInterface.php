@@ -48,7 +48,16 @@ interface AssertionRendererInterface
     public function renderCalls(array $calls);
 
     /**
-     * Render a only the arguments of a sequence of calls.
+     * Render the $this values of a sequence of calls.
+     *
+     * @param array<integer,CallInterface> $calls The calls.
+     *
+     * @return string The rendered call $this values.
+     */
+    public function renderThisValues(array $calls);
+
+    /**
+     * Render the arguments of a sequence of calls.
      *
      * @param array<integer,CallInterface> $calls The calls.
      *
@@ -57,31 +66,13 @@ interface AssertionRendererInterface
     public function renderCallsArguments(array $calls);
 
     /**
-     * Render a only the return values of a sequence of calls.
+     * Render the responses of a sequence of calls.
      *
      * @param array<integer,CallInterface> $calls The calls.
      *
-     * @return string The rendered call return values.
+     * @return string The rendered call responses.
      */
-    public function renderReturnValues(array $calls);
-
-    /**
-     * Render a only the thrown exceptions of a sequence of calls.
-     *
-     * @param array<integer,CallInterface> $calls The calls.
-     *
-     * @return string The rendered call exceptions.
-     */
-    public function renderThrownExceptions(array $calls);
-
-    /**
-     * Render a only the $this values of a sequence of calls.
-     *
-     * @param array<integer,CallInterface> $calls The calls.
-     *
-     * @return string The rendered call $this values.
-     */
-    public function renderThisValues(array $calls);
+    public function renderResponses(array $calls);
 
     /**
      * Render the supplied call.
