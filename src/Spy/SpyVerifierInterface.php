@@ -163,6 +163,50 @@ interface SpyVerifierInterface extends SpyInterface
     public function assertCalledWith();
 
     /**
+     * Returns true if called only once with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return boolean True if called only once with the supplied arguments.
+     */
+    public function calledOnceWith();
+
+    /**
+     * Returns true if called only once with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledOnceWith();
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and possibly others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return boolean True if called an exact amount of times with the supplied arguments.
+     */
+    public function calledTimesWith($times);
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and possibly others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledTimesWith($times);
+
+    /**
      * Returns true if always called with the supplied arguments (and possibly
      * others).
      *
@@ -203,6 +247,50 @@ interface SpyVerifierInterface extends SpyInterface
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledWithExactly();
+
+    /**
+     * Returns true if called only once with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return boolean True if called only once with the supplied arguments.
+     */
+    public function calledOnceWithExactly();
+
+    /**
+     * Returns true if called only once with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledOnceWithExactly();
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and no others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return boolean True if called an exact amount of times with the supplied arguments.
+     */
+    public function calledTimesWithExactly($times);
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and no others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledTimesWithExactly($times);
 
     /**
      * Returns true if always called with the supplied arguments (and no

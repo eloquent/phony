@@ -303,6 +303,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function callAt($index)
     {
         $calls = $this->spy->recordedCalls();
+
         if (!isset($calls[$index])) {
             throw new UndefinedCallException($index);
         }
@@ -319,6 +320,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function firstCall()
     {
         $calls = $this->spy->recordedCalls();
+
         if (!isset($calls[0])) {
             throw new UndefinedCallException(0);
         }
@@ -335,6 +337,7 @@ class SpyVerifier implements SpyVerifierInterface
     public function lastCall()
     {
         $callCount = count($this->spy->recordedCalls());
+
         if ($callCount > 0) {
             $index = $callCount - 1;
         } else {
@@ -342,6 +345,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $calls = $this->spy->recordedCalls();
+
         if (!isset($calls[$index])) {
             throw new UndefinedCallException($index);
         }
@@ -455,12 +459,14 @@ class SpyVerifier implements SpyVerifierInterface
     {
         $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
+
         if ($callCount < 1) {
             return false;
         }
 
         $otherCalls = $spy->recordedCalls();
         $otherCallCount = count($otherCalls);
+
         if ($otherCallCount < 1) {
             return false;
         }
@@ -533,12 +539,14 @@ class SpyVerifier implements SpyVerifierInterface
     {
         $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
+
         if ($callCount < 1) {
             return false;
         }
 
         $otherCalls = $spy->recordedCalls();
         $otherCallCount = count($otherCalls);
+
         if ($otherCallCount < 1) {
             return false;
         }
@@ -618,7 +626,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();;
+        $matchers[] = $this->matcherFactory->wildcard();
 
         foreach ($calls as $call) {
             if (
@@ -644,7 +652,7 @@ class SpyVerifier implements SpyVerifierInterface
     {
         $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();;
+        $matchers[] = $this->matcherFactory->wildcard();
 
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
@@ -656,6 +664,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchingCalls = array();
+
         foreach ($calls as $call) {
             if (
                 $this->matcherVerifier->matches($matchers, $call->arguments())
@@ -671,6 +680,169 @@ class SpyVerifier implements SpyVerifierInterface
         throw $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected arguments like:\n    %s\nActual calls:\n%s",
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderCallsArguments($calls)
+            )
+        );
+    }
+
+    /**
+     * Returns true if called only once with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return boolean True if called only once with the supplied arguments.
+     */
+    public function calledOnceWith()
+    {
+        $calls = $this->spy->recordedCalls();
+
+        if (count($calls) < 1) {
+            return false;
+        }
+
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = $this->matcherFactory->wildcard();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+            }
+        }
+
+        return 1 === $matchCount;
+    }
+
+    /**
+     * Returns true if called only once with the supplied arguments (and
+     * possibly others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledOnceWith()
+    {
+        $calls = $this->spy->recordedCalls();
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers[] = $this->matcherFactory->wildcard();
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected arguments like:\n    %s\nNever called.",
+                    $this->assertionRenderer->renderMatchers($matchers)
+                )
+            );
+        }
+
+        $matchCount = 0;
+        $matchingCalls = array();
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+                $matchingCalls[] = $call;
+            }
+        }
+
+        if (1 === $matchCount) {
+            return $this->assertionRecorder->createSuccess($matchingCalls);
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected 1 call with arguments like:\n    %s\n" .
+                    "Actual calls:\n%s",
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderCallsArguments($calls)
+            )
+        );
+    }
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and possibly others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return boolean True if called an exact amount of times with the supplied arguments.
+     */
+    public function calledTimesWith($times)
+    {
+        $arguments = func_get_args();
+        array_shift($arguments);
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+        $matchers[] = $this->matcherFactory->wildcard();
+        $matchCount = 0;
+
+        foreach ($this->spy->recordedCalls() as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+            }
+        }
+
+        return $times === $matchCount;
+    }
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and possibly others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledTimesWith($times)
+    {
+        $calls = $this->spy->recordedCalls();
+        $arguments = func_get_args();
+        array_shift($arguments);
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+        $matchers[] = $this->matcherFactory->wildcard();
+
+        if ($times > 0 && count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected arguments like:\n    %s\nNever called.",
+                    $this->assertionRenderer->renderMatchers($matchers)
+                )
+            );
+        }
+
+        $matchCount = 0;
+        $matchingCalls = array();
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+                $matchingCalls[] = $call;
+            }
+        }
+
+        if ($times === $matchCount) {
+            return $this->assertionRecorder->createSuccess($matchingCalls);
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected %d call(s) with arguments like:\n    %s\n" .
+                    "Actual calls:\n%s",
+                $times,
                 $this->assertionRenderer->renderMatchers($matchers),
                 $this->assertionRenderer->renderCallsArguments($calls)
             )
@@ -694,7 +866,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();;
+        $matchers[] = $this->matcherFactory->wildcard();
 
         foreach ($calls as $call) {
             if (
@@ -720,7 +892,7 @@ class SpyVerifier implements SpyVerifierInterface
     {
         $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();;
+        $matchers[] = $this->matcherFactory->wildcard();
 
         if (count($calls) < 1) {
             throw $this->assertionRecorder->createFailure(
@@ -825,6 +997,165 @@ class SpyVerifier implements SpyVerifierInterface
     }
 
     /**
+     * Returns true if called only once with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return boolean True if called only once with the supplied arguments.
+     */
+    public function calledOnceWithExactly()
+    {
+        $calls = $this->spy->recordedCalls();
+
+        if (count($calls) < 1) {
+            return false;
+        }
+
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+            }
+        }
+
+        return 1 === $matchCount;
+    }
+
+    /**
+     * Returns true if called only once with the supplied arguments (and
+     * no others).
+     *
+     * @param mixed $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledOnceWithExactly()
+    {
+        $calls = $this->spy->recordedCalls();
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+
+        if (count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected arguments like:\n    %s\nNever called.",
+                    $this->assertionRenderer->renderMatchers($matchers)
+                )
+            );
+        }
+
+        $matchCount = 0;
+        $matchingCalls = array();
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+                $matchingCalls[] = $call;
+            }
+        }
+
+        if (1 === $matchCount) {
+            return $this->assertionRecorder->createSuccess($matchingCalls);
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected 1 call with arguments like:\n    %s\n" .
+                    "Actual calls:\n%s",
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderCallsArguments($calls)
+            )
+        );
+    }
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and no others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return boolean True if called an exact amount of times with the supplied arguments.
+     */
+    public function calledTimesWithExactly($times)
+    {
+        $arguments = func_get_args();
+        array_shift($arguments);
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+        $matchCount = 0;
+
+        foreach ($this->spy->recordedCalls() as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+            }
+        }
+
+        return $times === $matchCount;
+    }
+
+    /**
+     * Returns true if called an exact amount of times with the supplied
+     * arguments (and no others).
+     *
+     * @param integer $times        The expected number of calls.
+     * @param mixed   $argument,... The arguments.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertCalledTimesWithExactly($times)
+    {
+        $calls = $this->spy->recordedCalls();
+        $arguments = func_get_args();
+        array_shift($arguments);
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+
+        if ($times > 0 && count($calls) < 1) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    "Expected arguments like:\n    %s\nNever called.",
+                    $this->assertionRenderer->renderMatchers($matchers)
+                )
+            );
+        }
+
+        $matchCount = 0;
+        $matchingCalls = array();
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchCount++;
+                $matchingCalls[] = $call;
+            }
+        }
+
+        if ($times === $matchCount) {
+            return $this->assertionRecorder->createSuccess($matchingCalls);
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected %d call(s) with arguments like:\n    %s\n" .
+                    "Actual calls:\n%s",
+                $times,
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderCallsArguments($calls)
+            )
+        );
+    }
+
+    /**
      * Returns true if always called with the supplied arguments (and no
      * others).
      *
@@ -912,7 +1243,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();;
+        $matchers[] = $this->matcherFactory->wildcard();
 
         foreach ($calls as $call) {
             if (
@@ -943,7 +1274,7 @@ class SpyVerifier implements SpyVerifierInterface
         }
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();;
+        $matchers[] = $this->matcherFactory->wildcard();
 
         foreach ($calls as $call) {
             if (
