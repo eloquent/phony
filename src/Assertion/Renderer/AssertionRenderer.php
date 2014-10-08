@@ -12,6 +12,9 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\SentEventInterface;
+use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
+use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
@@ -149,7 +152,7 @@ class AssertionRenderer implements AssertionRendererInterface
         foreach ($calls as $call) {
             $rendered[] = sprintf(
                 '    - %s',
-                $this->exporter->shortenedExport(
+                $this->renderValue(
                     $this->invocableInspector
                         ->callbackThisValue($call->callback())
                 )
@@ -198,7 +201,7 @@ class AssertionRenderer implements AssertionRendererInterface
             } else {
                 $rendered[] = sprintf(
                     '    - returned %s',
-                    $this->exporter->shortenedExport($call->returnValue())
+                    $this->renderValue($call->returnValue())
                 );
             }
         }
@@ -236,13 +239,46 @@ class AssertionRenderer implements AssertionRendererInterface
 
         $renderedArguments = array();
         foreach ($arguments as $argument) {
-            $renderedArguments[] = $this->exporter->shortenedExport($argument);
+            $renderedArguments[] = $this->renderValue($argument);
         }
 
         return sprintf(
             '%s(%s)',
             $renderedSubject, implode(', ', $renderedArguments)
         );
+    }
+
+    /**
+     * Render the generator events of a call.
+     *
+     * @param CallInterface $call The call.
+     *
+     * @return string The rendered generator events.
+     */
+    public function renderGenerated(CallInterface $call)
+    {
+        $rendered = array();
+        foreach ($call->generatorEvents() as $event) {
+            if ($event instanceof YieldedEventInterface) {
+                $rendered[] = sprintf(
+                    "    - yielded %s => %s",
+                    $this->renderValue($event->key()),
+                    $this->renderValue($event->value())
+                );
+            } elseif ($event instanceof SentEventInterface) {
+                $rendered[] = sprintf(
+                    "    - sent %s",
+                    $this->renderValue($event->value())
+                );
+            } elseif ($event instanceof SentExceptionEventInterface) {
+                $rendered[] = sprintf(
+                    "    - sent exception %s",
+                    $this->renderException($event->exception())
+                );
+            }
+        }
+
+        return implode("\n", $rendered);
     }
 
     /**
@@ -260,7 +296,7 @@ class AssertionRenderer implements AssertionRendererInterface
 
         $rendered = array();
         foreach ($arguments as $argument) {
-            $rendered[] = $this->exporter->shortenedExport($argument);
+            $rendered[] = $this->renderValue($argument);
         }
 
         return implode(', ', $rendered);

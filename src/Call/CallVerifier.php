@@ -20,6 +20,7 @@ use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
+use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -674,6 +675,9 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Returns true if this call returned the supplied value.
      *
+     * When called with no arguments, this method simply checks that the call
+     * returned.
+     *
      * @param mixed $value The value.
      *
      * @return boolean True if this call returned the supplied value.
@@ -691,6 +695,9 @@ class CallVerifier implements CallVerifierInterface
 
     /**
      * Throws an exception unless this call returned the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * returned.
      *
      * @param mixed $value The value.
      *
@@ -751,7 +758,10 @@ class CallVerifier implements CallVerifierInterface
     /**
      * Returns true if an exception of the supplied type was thrown.
      *
-     * @param Exception|string|null $type An exception like, the type of exception, or null for any exception.
+     * When called with no arguments, this method simply checks that the call
+     * threw.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return boolean True if a matching exception was thrown.
      */
@@ -782,7 +792,10 @@ class CallVerifier implements CallVerifierInterface
      * Throws an exception unless this call threw an exception of the supplied
      * type.
      *
-     * @param Exception|string|null $type An exception like, the type of exception, or null for any exception.
+     * When called with no arguments, this method simply checks that the call
+     * threw.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
@@ -864,6 +877,137 @@ class CallVerifier implements CallVerifierInterface
                 $this->assertionRenderer->renderValue($type)
             )
         );
+    }
+
+    /**
+     * Returns true if this call yielded the supplied values.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * yielded.
+     *
+     * With a single argument, it checks that a value matching the argument was
+     * yielded.
+     *
+     * With two arguments, it checks that a key and value matching the
+     * respective arguments were yielded together.
+     *
+     * @param mixed $keyOrValue The key or value.
+     * @param mixed $value      The value.
+     *
+     * @return boolean True if this call yielded the supplied values.
+     */
+    public function yielded($keyOrValue = null, $value = null)
+    {
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = false;
+        } elseif (1 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = true;
+            $value = $this->matcherFactory->adapt($keyOrValue);
+        } else {
+            $checkKey = true;
+            $checkValue = true;
+            $key = $this->matcherFactory->adapt($keyOrValue);
+            $value = $this->matcherFactory->adapt($value);
+        }
+
+        foreach ($this->call->events() as $event) {
+            if ($event instanceof YieldedEventInterface) {
+                if ($checkKey && !$key->matches($event->key())) {
+                    continue;
+                }
+                if ($checkValue && !$value->matches($event->value())) {
+                    continue;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Throws an exception unless this call yielded the supplied values.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * yielded.
+     *
+     * With a single argument, it checks that a value matching the argument was
+     * yielded.
+     *
+     * With two arguments, it checks that a key and value matching the
+     * respective arguments were yielded together.
+     *
+     * @param mixed $keyOrValue The key or value.
+     * @param mixed $value      The value.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertYielded($keyOrValue = null, $value = null)
+    {
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = false;
+        } elseif (1 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = true;
+            $value = $this->matcherFactory->adapt($keyOrValue);
+        } else {
+            $checkKey = true;
+            $checkValue = true;
+            $key = $this->matcherFactory->adapt($keyOrValue);
+            $value = $this->matcherFactory->adapt($value);
+        }
+
+        $matchingEvents = array();
+
+        foreach ($this->call->events() as $event) {
+            if ($event instanceof YieldedEventInterface) {
+                if ($checkKey && !$key->matches($event->key())) {
+                    continue;
+                }
+                if ($checkValue && !$value->matches($event->value())) {
+                    continue;
+                }
+
+                $matchingEvents[] = $event;
+            }
+        }
+
+        if ($matchingEvents) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+
+        if (0 === $argumentCount) {
+            $message = 'Expected yield.';
+        } elseif (1 === $argumentCount) {
+            $message =
+                sprintf('Expected yield like %s.', $value->describe());
+        } else {
+            $message = sprintf(
+                'Expected yield like %s => %s.',
+                $key->describe(),
+                $value->describe()
+            );
+        }
+
+        if ($this->call->generatorEvents()) {
+            $message .= sprintf(
+                " Generated:\n%s",
+                $this->assertionRenderer->renderGenerated($this->call)
+            );
+        } else {
+            $message .= ' Generated nothing.';
+        }
+
+        throw $this->assertionRecorder->createFailure($message);
     }
 
     private $call;

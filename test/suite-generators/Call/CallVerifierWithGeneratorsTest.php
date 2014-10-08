@@ -104,42 +104,71 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->returnedAssertionResult = new AssertionResult(array($this->call->responseEvent()));
         $this->threwAssertionResult = new AssertionResult(array($this->callWithException->responseEvent()));
         $this->emptyAssertionResult = new AssertionResult();
-    }
 
-    public function testProxyMethodsWithGeneratorEvents()
-    {
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createYielded();
-        $generatorEventB = $this->callEventFactory->createSent();
-        $generatorEvents = array($generatorEventA, $generatorEventB);
-        $endEvent = $this->callEventFactory->createReturned();
-        $this->call = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
-        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
-        $this->subject = new CallVerifier(
-            $this->call,
+        // additions for generators
+
+        $this->sentException = new RuntimeException('Consequences will never be the same.');
+        $this->generatedEvent = $this->callEventFactory->createGenerated();
+        $this->generatorEventA = $this->callEventFactory->createYielded('m', 'n');
+        $this->generatorEventB = $this->callEventFactory->createSent('o');
+        $this->generatorEventC = $this->callEventFactory->createYielded('p', 'q');
+        $this->generatorEventD = $this->callEventFactory->createSentException($this->sentException);
+        $this->generatorEventE = $this->callEventFactory->createYielded('r', 's');
+        $this->generatorEventF = $this->callEventFactory->createSent('t');
+        $this->generatorEvents = array(
+            $this->generatorEventA,
+            $this->generatorEventB,
+            $this->generatorEventC,
+            $this->generatorEventD,
+            $this->generatorEventE,
+            $this->generatorEventF,
+        );
+        $this->generatorEndEvent = $this->callEventFactory->createReturned();
+        $this->generatorCall = $this->callFactory->create(
+            $this->calledEvent,
+            $this->generatedEvent,
+            $this->generatorEvents,
+            $this->generatorEndEvent
+        );
+        $this->generatorCallEvents = array(
+            $this->calledEvent,
+            $this->generatedEvent,
+            $this->generatorEventA,
+            $this->generatorEventB,
+            $this->generatorEventC,
+            $this->generatorEventD,
+            $this->generatorEventE,
+            $this->generatorEventF,
+            $this->generatorEndEvent,
+        );
+        $this->generatorSubject = new CallVerifier(
+            $this->generatorCall,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
         );
+    }
 
-        $this->assertSame($this->calledEvent, $this->subject->calledEvent());
-        $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
-        $this->assertSame($endEvent, $this->subject->endEvent());
-        $this->assertSame($this->events, $this->subject->events());
-        $this->assertTrue($this->subject->hasResponded());
-        $this->assertTrue($this->subject->isGenerator());
-        $this->assertTrue($this->subject->hasCompleted());
-        $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->arguments, $this->subject->arguments());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
-        $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
-        $this->assertSame($this->calledEvent->time(), $this->subject->time());
-        $this->assertSame($generatedEvent->time(), $this->subject->responseTime());
-        $this->assertSame($endEvent->time(), $this->subject->endTime());
-        $this->assertNull($this->subject->exception());
+    public function testProxyMethodsWithGeneratorEvents()
+    {
+        $this->assertSame($this->calledEvent, $this->generatorSubject->calledEvent());
+        $this->assertSame($this->generatedEvent, $this->generatorSubject->responseEvent());
+        $this->assertSame($this->generatorEvents, $this->generatorSubject->generatorEvents());
+        $this->assertSame($this->generatorEndEvent, $this->generatorSubject->endEvent());
+        $this->assertSame($this->generatorCallEvents, $this->generatorSubject->events());
+        $this->assertTrue($this->generatorSubject->hasResponded());
+        $this->assertTrue($this->generatorSubject->isGenerator());
+        $this->assertTrue($this->generatorSubject->hasCompleted());
+        $this->assertSame($this->callback, $this->generatorSubject->callback());
+        $this->assertSame($this->arguments, $this->generatorSubject->arguments());
+        $this->assertInstanceOf('Generator', $this->generatorSubject->returnValue());
+        $this->assertSame($this->calledEvent->sequenceNumber(), $this->generatorSubject->sequenceNumber());
+        $this->assertSame($this->calledEvent->time(), $this->generatorSubject->time());
+        $this->assertSame($this->generatedEvent->time(), $this->generatorSubject->responseTime());
+        $this->assertSame($this->generatorEndEvent->time(), $this->generatorSubject->endTime());
+        $this->assertNull($this->generatorSubject->exception());
     }
 
     public function testAddGeneratorEvent()
@@ -165,19 +194,92 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testDurationMethodsWithGeneratorEvents()
     {
-        $this->calledEvent = $this->callEventFactory->createCalled();
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $this->call = new Call($this->calledEvent, $generatedEvent);
-        $this->subject = new CallVerifier(
-            $this->call,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
-        );
-
-        $this->assertEquals(1, $this->subject->responseDuration());
+        $this->assertEquals(7, $this->generatorSubject->responseDuration());
         $this->assertNull($this->subjectWithNoResponse->duration());
+    }
+
+    public function testYielded()
+    {
+        $this->assertTrue($this->generatorSubject->yielded());
+        $this->assertTrue($this->generatorSubject->yielded('n'));
+        $this->assertTrue($this->generatorSubject->yielded('m', 'n'));
+        $this->assertFalse($this->generatorSubject->yielded('m'));
+        $this->assertFalse($this->generatorSubject->yielded('m', 'o'));
+        $this->assertFalse($this->subject->yielded());
+    }
+
+    public function testAssertYielded()
+    {
+        $this->assertEquals(
+            new AssertionResult(array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE)),
+            $this->generatorSubject->assertYielded()
+        );
+        $this->assertEquals(
+            new AssertionResult(array($this->generatorEventA)),
+            $this->generatorSubject->assertYielded('n')
+        );
+        $this->assertEquals(
+            new AssertionResult(array($this->generatorEventA)),
+            $this->generatorSubject->assertYielded('m', 'n')
+        );
+    }
+
+    public function testAssertYieldedFailureWithNoMatchers()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected yield. Generated nothing."
+        );
+        $this->subject->assertYielded();
+    }
+
+    public function testAssertYieldedFailureWithValueOnly()
+    {
+        $expected = <<<'EOD'
+Expected yield like <'m'>. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->assertYielded('m');
+    }
+
+    public function testAssertYieldedFailureWithValueOnlyWithNoGeneratorEvents()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected yield like <'n'>. Generated nothing."
+        );
+        $this->subject->assertYielded('n');
+    }
+
+    public function testAssertYieldedFailureWithKeyAndValue()
+    {
+        $expected = <<<'EOD'
+Expected yield like <'m'> => <'o'>. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->assertYielded('m', 'o');
+    }
+
+    public function testAssertYieldedFailureWithKeyAndValueWithNoGeneratorEvents()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected yield like <'m'> => <'n'>. Generated nothing."
+        );
+        $this->subject->assertYielded('m', 'n');
     }
 }

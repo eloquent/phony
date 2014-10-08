@@ -74,7 +74,7 @@ abstract class GeneratorSpyFactoryDetail
             $sentException = null;
 
             $call->addGeneratorEvent(
-                $callEventFactory->createYielded($value, $key)
+                $callEventFactory->createYielded($key, $value)
             );
 
             try {

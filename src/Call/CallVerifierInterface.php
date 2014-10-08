@@ -182,6 +182,9 @@ interface CallVerifierInterface extends CallInterface
     /**
      * Returns true if this call returned the supplied value.
      *
+     * When called with no arguments, this method simply checks that the call
+     * returned.
+     *
      * @param mixed $value The value.
      *
      * @return boolean True if this call returned the supplied value.
@@ -190,6 +193,9 @@ interface CallVerifierInterface extends CallInterface
 
     /**
      * Throws an exception unless this call returned the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * returned.
      *
      * @param mixed $value The value.
      *
@@ -201,6 +207,9 @@ interface CallVerifierInterface extends CallInterface
     /**
      * Returns true if an exception of the supplied type was thrown.
      *
+     * When called with no arguments, this method simply checks that the call
+     * threw.
+     *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return boolean True if a matching exception was thrown.
@@ -211,10 +220,52 @@ interface CallVerifierInterface extends CallInterface
      * Throws an exception unless this call threw an exception of the supplied
      * type.
      *
+     * When called with no arguments, this method simply checks that the call
+     * threw.
+     *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
      */
     public function assertThrew($type = null);
+
+    /**
+     * Returns true if this call yielded the supplied values.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * yielded.
+     *
+     * With a single argument, it checks that a value matching the argument was
+     * yielded.
+     *
+     * With two arguments, it checks that a key and value matching the
+     * respective arguments were yielded together.
+     *
+     * @param mixed $keyOrValue The key or value.
+     * @param mixed $value      The value.
+     *
+     * @return boolean True if this call yielded the supplied values.
+     */
+    public function yielded($keyOrValue = null, $value = null);
+
+    /**
+     * Throws an exception unless this call yielded the supplied values.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * yielded.
+     *
+     * With a single argument, it checks that a value matching the argument was
+     * yielded.
+     *
+     * With two arguments, it checks that a key and value matching the
+     * respective arguments were yielded together.
+     *
+     * @param mixed $keyOrValue The key or value.
+     * @param mixed $value      The value.
+     *
+     * @return AssertionResultInterface If the assertion passes.
+     * @throws Exception                If the assertion fails.
+     */
+    public function assertYielded($keyOrValue = null, $value = null);
 }

@@ -79,12 +79,17 @@ interface CallEventFactoryInterface
     /**
      * Create a new 'yielded' event.
      *
-     * @param mixed $value The yielded value.
-     * @param mixed $key   The yielded key.
+     * If called with one argument, the argument is treated as the value.
+     *
+     * If called with two arguments, the first is treated as the key, and the
+     * second as the value.
+     *
+     * @param mixed $keyOrValue The yielded key or value.
+     * @param mixed $value      The yielded value.
      *
      * @return YieldedEventInterface The newly created event.
      */
-    public function createYielded($value = null, $key = null);
+    public function createYielded($keyOrValue = null, $value = null);
 
     /**
      * Create a new 'sent' event.

@@ -84,6 +84,15 @@ interface AssertionRendererInterface
     public function renderCall(CallInterface $call);
 
     /**
+     * Render the generator events of a call.
+     *
+     * @param CallInterface $call The call.
+     *
+     * @return string The rendered generator events.
+     */
+    public function renderGenerated(CallInterface $call);
+
+    /**
      * Render a sequence of arguments.
      *
      * @param array<integer,mixed> $arguments The arguments.

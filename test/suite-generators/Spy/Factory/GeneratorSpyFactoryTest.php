@@ -72,11 +72,11 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(0);
         $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array(
-            $this->callEventFactory->createYielded('a', 0),
+            $this->callEventFactory->createYielded(0, 'a'),
             $this->callEventFactory->createSent('A'),
-            $this->callEventFactory->createYielded('b', 1),
+            $this->callEventFactory->createYielded(1, 'b'),
             $this->callEventFactory->createSentException($sentException),
-            $this->callEventFactory->createYielded('c', 2),
+            $this->callEventFactory->createYielded(2, 'c'),
             $this->callEventFactory->createSent('C'),
         );
         foreach ($generatorEvents as $generatorEvent) {
@@ -120,11 +120,11 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(0);
         $this->callEventFactory->clock()->setTime(1.0);
         $generatorEvents = array(
-            $this->callEventFactory->createYielded('a', 0),
+            $this->callEventFactory->createYielded(0, 'a'),
             $this->callEventFactory->createSent('A'),
-            $this->callEventFactory->createYielded('b', 1),
+            $this->callEventFactory->createYielded(1, 'b'),
             $this->callEventFactory->createSentException($sentException),
-            $this->callEventFactory->createYielded('c', 2),
+            $this->callEventFactory->createYielded(2, 'c'),
             $this->callEventFactory->createSent('C'),
         );
         foreach ($generatorEvents as $generatorEvent) {

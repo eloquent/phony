@@ -20,9 +20,9 @@ class YieldedEventTest extends PHPUnit_Framework_TestCase
     {
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->value = 'x';
-        $this->key = 'y';
-        $this->subject = new YieldedEvent($this->sequenceNumber, $this->time, $this->value, $this->key);
+        $this->key = 'x';
+        $this->value = 'y';
+        $this->subject = new YieldedEvent($this->sequenceNumber, $this->time, $this->key, $this->value);
 
         $this->callFactory = new TestCallFactory();
     }
@@ -31,17 +31,25 @@ class YieldedEventTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
-        $this->assertSame($this->value, $this->subject->value());
         $this->assertSame($this->key, $this->subject->key());
+        $this->assertSame($this->value, $this->subject->value());
         $this->assertNull($this->subject->call());
+    }
+
+    public function testConstructorWithValueOnly()
+    {
+        $this->subject = new YieldedEvent($this->sequenceNumber, $this->time, $this->value);
+
+        $this->assertNull($this->subject->key());
+        $this->assertSame($this->value, $this->subject->value());
     }
 
     public function testConstructorDefaults()
     {
         $this->subject = new YieldedEvent($this->sequenceNumber, $this->time);
 
-        $this->assertNull($this->subject->value());
         $this->assertNull($this->subject->key());
+        $this->assertNull($this->subject->value());
     }
 
     public function testSetCall()

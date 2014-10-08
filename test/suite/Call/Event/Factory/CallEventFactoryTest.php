@@ -103,10 +103,15 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateYielded()
     {
-        $value = 'x';
-        $key = 'y';
+        $key = 'x';
+        $value = 'y';
         $expected = new YieldedEvent(0, 0.0, $key, $value);
         $actual = $this->subject->createYielded($key, $value);
+
+        $this->assertEquals($expected, $actual);
+
+        $expected = new YieldedEvent(1, 1.0, $value);
+        $actual = $this->subject->createYielded($value);
 
         $this->assertEquals($expected, $actual);
     }
