@@ -547,14 +547,19 @@ EOD;
 
     public function testReturned()
     {
+        $this->assertTrue($this->subject->returned());
         $this->assertTrue($this->subject->returned($this->returnValue));
         $this->assertTrue($this->subject->returned($this->matcherFactory->adapt($this->returnValue)));
+        $this->assertFalse($this->subject->returned(null));
         $this->assertFalse($this->subject->returned('y'));
         $this->assertFalse($this->subject->returned($this->matcherFactory->adapt('y')));
+        $this->assertFalse($this->subjectWithException->returned());
+        $this->assertFalse($this->subjectWithNoResponse->returned());
     }
 
     public function testAssertReturned()
     {
+        $this->assertEquals($this->returnedAssertionResult, $this->subject->assertReturned());
         $this->assertEquals($this->returnedAssertionResult, $this->subject->assertReturned($this->returnValue));
         $this->assertEquals(
             $this->returnedAssertionResult,
@@ -569,6 +574,42 @@ EOD;
             "Expected return value like <'x'>. Returned 'abc'."
         );
         $this->subject->assertReturned('x');
+    }
+
+    public function testAssertReturnedFailureWithException()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected return value like <'x'>. Threw RuntimeException('You done goofed.')."
+        );
+        $this->subjectWithException->assertReturned('x');
+    }
+
+    public function testAssertReturnedFailureWithExceptionWithoutMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected call to return. Threw RuntimeException('You done goofed.')."
+        );
+        $this->subjectWithException->assertReturned();
+    }
+
+    public function testAssertReturnedFailureNeverReturned()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected call to return. Never returned."
+        );
+        $this->subjectWithNoResponse->assertReturned('x');
+    }
+
+    public function testAssertReturnedFailureNeverReturnedWithNoMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected call to return. Never returned."
+        );
+        $this->subjectWithNoResponse->assertReturned();
     }
 
     public function testThrew()

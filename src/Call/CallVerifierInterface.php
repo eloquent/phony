@@ -186,7 +186,7 @@ interface CallVerifierInterface extends CallInterface
      *
      * @return boolean True if this call returned the supplied value.
      */
-    public function returned($value);
+    public function returned($value = null);
 
     /**
      * Throws an exception unless this call returned the supplied value.
@@ -196,7 +196,7 @@ interface CallVerifierInterface extends CallInterface
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
      */
-    public function assertReturned($value);
+    public function assertReturned($value = null);
 
     /**
      * Returns true if an exception of the supplied type was thrown.

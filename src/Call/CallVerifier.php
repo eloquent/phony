@@ -678,8 +678,18 @@ class CallVerifier implements CallVerifierInterface
      *
      * @return boolean True if this call returned the supplied value.
      */
-    public function returned($value)
+    public function returned($value = null)
     {
+        if (!$this->call->hasResponded()) {
+            return false;
+        }
+        if ($this->call->exception()) {
+            return false;
+        }
+        if (0 === func_num_args()) {
+            return true;
+        }
+
         return $this->matcherFactory->adapt($value)
             ->matches($this->call->returnValue());
     }
@@ -692,9 +702,41 @@ class CallVerifier implements CallVerifierInterface
      * @return AssertionResultInterface If the assertion passes.
      * @throws Exception                If the assertion fails.
      */
-    public function assertReturned($value)
+    public function assertReturned($value = null)
     {
+        if (!$this->call->hasResponded()) {
+            throw $this->assertionRecorder
+                ->createFailure('Expected call to return. Never returned.');
+        }
+
+        $exception = $this->call->exception();
+
+        if (0 === func_num_args()) {
+            if ($exception) {
+                throw $this->assertionRecorder->createFailure(
+                    sprintf(
+                        'Expected call to return. Threw %s.',
+                        $this->assertionRenderer->renderException($exception)
+                    )
+                );
+            }
+
+            return $this->assertionRecorder
+                ->createSuccess(array($this->call->responseEvent()));
+        }
+
         $value = $this->matcherFactory->adapt($value);
+
+        if ($exception) {
+            throw $this->assertionRecorder->createFailure(
+                sprintf(
+                    'Expected return value like %s. Threw %s.',
+                    $value->describe(),
+                    $this->assertionRenderer->renderException($exception)
+                )
+            );
+        }
+
         $returnValue = $this->call->returnValue();
 
         if (!$value->matches($returnValue)) {
