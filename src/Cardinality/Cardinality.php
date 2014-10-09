@@ -9,11 +9,11 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Verification\Cardinality;
+namespace Eloquent\Phony\Cardinality;
 
-use Eloquent\Phony\Verification\Exception\InvalidCardinalityException;
-use Eloquent\Phony\Verification\Exception\InvalidCardinalityExceptionInterface;
-use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
+use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException;
+use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
+use Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException;
 
 /**
  * The interface implemented by cardinalities.

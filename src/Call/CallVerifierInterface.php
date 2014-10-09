@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Call;
 
-use Eloquent\Phony\Verification\CardinalityVerifierInterface;
-use Eloquent\Phony\Verification\Exception\InvalidCardinalityExceptionInterface;
+use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
+use Eloquent\Phony\Cardinality\Verification\CardinalityVerifierInterface;
 use Exception;
 
 /**

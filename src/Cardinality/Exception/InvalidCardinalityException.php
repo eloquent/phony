@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Verification\Exception;
+namespace Eloquent\Phony\Cardinality\Exception;
 
 use Exception;
 

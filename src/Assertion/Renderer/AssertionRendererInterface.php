@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
-use Eloquent\Phony\Verification\Cardinality\CardinalityInterface;
 use Exception;
 
 /**

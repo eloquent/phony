@@ -17,12 +17,12 @@ use Eloquent\Phony\Assertion\Result\AssertionResult;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Verification\Cardinality\Cardinality;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -283,7 +283,7 @@ EOD;
 
     public function testCalledWithFailureInvalidCardinality()
     {
-        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException');
         $this->subject->times(2)->calledWith('a');
     }
 
@@ -366,7 +366,7 @@ EOD;
 
     public function testCalledWithExactlyFailureInvalidCardinality()
     {
-        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException');
         $this->subject->times(2)->calledWithExactly('a', 'b', 'c');
     }
 

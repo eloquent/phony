@@ -12,10 +12,10 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Verification\Cardinality\Cardinality;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
