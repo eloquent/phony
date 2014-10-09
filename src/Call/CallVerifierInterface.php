@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call;
 
-use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
 use Eloquent\Phony\Verification\CardinalityVerifierInterface;
 use Eloquent\Phony\Verification\Exception\InvalidCardinalityExceptionInterface;
 use Exception;
@@ -48,7 +47,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean                              The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkCalledWith();
@@ -59,7 +58,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface             The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails.
      */
@@ -70,7 +69,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean                              The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkCalledWithExactly();
@@ -81,7 +80,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface             The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails.
      */
@@ -92,7 +91,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param CallInterface $call Another call.
      *
-     * @return boolean                              The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkCalledBefore(CallInterface $call);
@@ -102,7 +101,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param CallInterface $call Another call.
      *
-     * @return AssertionResultInterface             The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails.
      */
@@ -113,7 +112,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param CallInterface $call Another call.
      *
-     * @return boolean                              The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkCalledAfter(CallInterface $call);
@@ -123,7 +122,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param CallInterface $call Another call.
      *
-     * @return AssertionResultInterface             The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails.
      */
@@ -134,7 +133,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param object|null $value The possible $this value.
      *
-     * @return boolean                              The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkCalledOn($value);
@@ -145,7 +144,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param object|null $value The possible $this value.
      *
-     * @return AssertionResultInterface             The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails.
      */
@@ -159,7 +158,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param mixed $value The value.
      *
-     * @return boolean                              The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkReturned($value = null);
@@ -172,7 +171,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param mixed $value The value.
      *
-     * @return AssertionResultInterface             The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails.
      */
@@ -186,7 +185,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean                              The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkThrew($type = null);
@@ -200,7 +199,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return AssertionResultInterface             The result.
+     * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails.
      */
@@ -221,7 +220,7 @@ interface CallVerifierInterface extends CallInterface,
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return boolean The result.
+     * @return mixed The result.
      */
     public function checkYielded($keyOrValue = null, $value = null);
 
@@ -240,8 +239,8 @@ interface CallVerifierInterface extends CallInterface,
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return AssertionResultInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
      */
     public function yielded($keyOrValue = null, $value = null);
 }

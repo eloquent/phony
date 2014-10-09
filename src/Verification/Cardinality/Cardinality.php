@@ -149,7 +149,7 @@ class Cardinality implements CardinalityInterface
      * @return CardinalityInterface                 This cardinality.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function assertSingluar()
+    public function assertSingular()
     {
         if ($this->minimum > 1 || $this->maximum > 1) {
             throw new InvalidSingularCardinalityException($this);

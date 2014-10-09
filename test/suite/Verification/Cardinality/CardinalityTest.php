@@ -129,7 +129,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Cardinality();
 
-        $this->assertSame($this->subject, $this->subject->assertSingluar());
+        $this->assertSame($this->subject, $this->subject->assertSingular());
     }
 
     public function testAssertSingularFailureMinimum()
@@ -137,7 +137,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
         $this->subject = new Cardinality(2);
 
         $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
-        $this->subject->assertSingluar();
+        $this->subject->assertSingular();
     }
 
     public function testAssertSingularFailureMaximum()
@@ -145,6 +145,6 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
         $this->subject = new Cardinality(null, 2);
 
         $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
-        $this->subject->assertSingluar();
+        $this->subject->assertSingular();
     }
 }

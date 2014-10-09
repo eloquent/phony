@@ -71,5 +71,5 @@ interface CardinalityInterface
      * @return CardinalityInterface                 This cardinality.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function assertSingluar();
+    public function assertSingular();
 }

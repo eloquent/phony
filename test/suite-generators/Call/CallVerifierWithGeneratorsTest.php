@@ -200,15 +200,15 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testCheckYielded()
     {
-        $this->assertTrue($this->generatorSubject->checkYielded());
-        $this->assertTrue($this->generatorSubject->checkYielded('n'));
-        $this->assertTrue($this->generatorSubject->checkYielded('m', 'n'));
-        $this->assertTrue($this->generatorSubject->times(3)->checkYielded());
-        $this->assertTrue($this->generatorSubject->once()->checkYielded('n'));
-        $this->assertTrue($this->generatorSubject->never()->checkYielded('m'));
-        $this->assertFalse($this->generatorSubject->checkYielded('m'));
-        $this->assertFalse($this->generatorSubject->checkYielded('m', 'o'));
-        $this->assertFalse($this->subject->checkYielded());
+        $this->assertTrue((boolean) $this->generatorSubject->checkYielded());
+        $this->assertTrue((boolean) $this->generatorSubject->checkYielded('n'));
+        $this->assertTrue((boolean) $this->generatorSubject->checkYielded('m', 'n'));
+        $this->assertTrue((boolean) $this->generatorSubject->times(3)->checkYielded());
+        $this->assertTrue((boolean) $this->generatorSubject->once()->checkYielded('n'));
+        $this->assertTrue((boolean) $this->generatorSubject->never()->checkYielded('m'));
+        $this->assertFalse((boolean) $this->generatorSubject->checkYielded('m'));
+        $this->assertFalse((boolean) $this->generatorSubject->checkYielded('m', 'o'));
+        $this->assertFalse((boolean) $this->subject->checkYielded());
     }
 
     public function testYielded()

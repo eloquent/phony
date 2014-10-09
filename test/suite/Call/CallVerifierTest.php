@@ -203,21 +203,27 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        $this->assertSame($calledWith, call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments));
         $this->assertSame(
-            !$calledWith,
-            call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+            $calledWith,
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
         );
-        $this->assertSame($calledWith, call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers));
+        $this->assertSame(
+            $calledWith,
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+        );
         $this->assertSame(
             !$calledWith,
-            call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
+            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+        );
+        $this->assertSame(
+            !$calledWith,
+            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
         );
     }
 
     public function testCheckCalledWithWithEmptyArguments()
     {
-        $this->assertTrue($this->subject->checkCalledWith());
+        $this->assertTrue((boolean) $this->subject->checkCalledWith());
     }
 
     public function testCalledWith()
@@ -290,25 +296,25 @@ EOD;
 
         $this->assertSame(
             $calledWithExactly,
-            call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            !$calledWithExactly,
-            call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $arguments)
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $arguments)
         );
         $this->assertSame(
             $calledWithExactly,
-            call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $matchers)
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $matchers)
         );
         $this->assertSame(
             !$calledWithExactly,
-            call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $matchers)
+            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $arguments)
+        );
+        $this->assertSame(
+            !$calledWithExactly,
+            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $matchers)
         );
     }
 
     public function testCheckCalledWithWithExactlyEmptyArguments()
     {
-        $this->assertFalse($this->subject->checkCalledWithExactly());
+        $this->assertFalse((boolean) $this->subject->checkCalledWithExactly());
     }
 
     public function testCalledWithExactly()
@@ -366,10 +372,10 @@ EOD;
 
     public function testCheckCalledBefore()
     {
-        $this->assertTrue($this->subject->checkCalledBefore($this->lateCall));
-        $this->assertTrue($this->subject->never()->checkCalledBefore($this->earlyCall));
-        $this->assertFalse($this->subject->checkCalledBefore($this->earlyCall));
-        $this->assertFalse($this->subject->never()->checkCalledBefore($this->lateCall));
+        $this->assertTrue((boolean) $this->subject->checkCalledBefore($this->lateCall));
+        $this->assertTrue((boolean) $this->subject->never()->checkCalledBefore($this->earlyCall));
+        $this->assertFalse((boolean) $this->subject->checkCalledBefore($this->earlyCall));
+        $this->assertFalse((boolean) $this->subject->never()->checkCalledBefore($this->lateCall));
     }
 
     public function testCalledBefore()
@@ -398,10 +404,10 @@ EOD;
 
     public function testCheckCalledAfter()
     {
-        $this->assertTrue($this->subject->checkCalledAfter($this->earlyCall));
-        $this->assertTrue($this->subject->never()->checkCalledAfter($this->lateCall));
-        $this->assertFalse($this->subject->checkCalledAfter($this->lateCall));
-        $this->assertFalse($this->subject->never()->checkCalledAfter($this->earlyCall));
+        $this->assertTrue((boolean) $this->subject->checkCalledAfter($this->earlyCall));
+        $this->assertTrue((boolean) $this->subject->never()->checkCalledAfter($this->lateCall));
+        $this->assertFalse((boolean) $this->subject->checkCalledAfter($this->lateCall));
+        $this->assertFalse((boolean) $this->subject->never()->checkCalledAfter($this->earlyCall));
     }
 
     public function testCalledAfter()
@@ -430,11 +436,11 @@ EOD;
 
     public function testCheckCalledOn()
     {
-        $this->assertTrue($this->subject->checkCalledOn($this->thisValue));
-        $this->assertTrue($this->subject->checkCalledOn(new EqualToMatcher($this->thisValue)));
-        $this->assertTrue($this->subject->never()->checkCalledOn((object) array('property' => 'value')));
-        $this->assertFalse($this->subject->checkCalledOn((object) array('property' => 'value')));
-        $this->assertFalse($this->subject->never()->checkCalledOn($this->thisValue));
+        $this->assertTrue((boolean) $this->subject->checkCalledOn($this->thisValue));
+        $this->assertTrue((boolean) $this->subject->checkCalledOn(new EqualToMatcher($this->thisValue)));
+        $this->assertTrue((boolean) $this->subject->never()->checkCalledOn((object) array('property' => 'value')));
+        $this->assertFalse((boolean) $this->subject->checkCalledOn((object) array('property' => 'value')));
+        $this->assertFalse((boolean) $this->subject->never()->checkCalledOn($this->thisValue));
     }
 
     public function testCalledOn()
@@ -485,19 +491,19 @@ EOD;
 
     public function testCheckReturned()
     {
-        $this->assertTrue($this->subject->checkReturned());
-        $this->assertTrue($this->subject->checkReturned($this->returnValue));
-        $this->assertTrue($this->subject->checkReturned($this->matcherFactory->adapt($this->returnValue)));
-        $this->assertTrue($this->subject->never()->checkReturned(null));
-        $this->assertTrue($this->subject->never()->checkReturned('y'));
-        $this->assertTrue($this->subject->never()->checkReturned($this->matcherFactory->adapt('y')));
-        $this->assertTrue($this->subjectWithException->never()->checkReturned());
-        $this->assertFalse($this->subject->never()->checkReturned());
-        $this->assertFalse($this->subject->checkReturned(null));
-        $this->assertFalse($this->subject->checkReturned('y'));
-        $this->assertFalse($this->subject->checkReturned($this->matcherFactory->adapt('y')));
-        $this->assertFalse($this->subjectWithException->checkReturned());
-        $this->assertFalse($this->subjectWithNoResponse->checkReturned());
+        $this->assertTrue((boolean) $this->subject->checkReturned());
+        $this->assertTrue((boolean) $this->subject->checkReturned($this->returnValue));
+        $this->assertTrue((boolean) $this->subject->checkReturned($this->matcherFactory->adapt($this->returnValue)));
+        $this->assertTrue((boolean) $this->subject->never()->checkReturned(null));
+        $this->assertTrue((boolean) $this->subject->never()->checkReturned('y'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReturned($this->matcherFactory->adapt('y')));
+        $this->assertTrue((boolean) $this->subjectWithException->never()->checkReturned());
+        $this->assertFalse((boolean) $this->subject->never()->checkReturned());
+        $this->assertFalse((boolean) $this->subject->checkReturned(null));
+        $this->assertFalse((boolean) $this->subject->checkReturned('y'));
+        $this->assertFalse((boolean) $this->subject->checkReturned($this->matcherFactory->adapt('y')));
+        $this->assertFalse((boolean) $this->subjectWithException->checkReturned());
+        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkReturned());
     }
 
     public function testReturned()
@@ -582,33 +588,37 @@ EOD;
 
     public function testCheckThrew()
     {
-        $this->assertTrue($this->subject->never()->checkThrew());
-        $this->assertFalse($this->subject->checkThrew());
-        $this->assertFalse($this->subject->checkThrew('Exception'));
-        $this->assertFalse($this->subject->checkThrew('RuntimeException'));
-        $this->assertFalse($this->subject->checkThrew($this->exception));
-        $this->assertFalse($this->subject->checkThrew(new EqualToMatcher($this->exception)));
-        $this->assertFalse($this->subject->checkThrew('InvalidArgumentException'));
-        $this->assertFalse($this->subject->checkThrew(new Exception()));
-        $this->assertFalse($this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse($this->subject->checkThrew(new EqualToMatcher(new RuntimeException())));
-        $this->assertFalse($this->subject->checkThrew(new EqualToMatcher(null)));
+        $this->assertTrue((boolean) $this->subject->never()->checkThrew());
+        $this->assertFalse((boolean) $this->subject->checkThrew());
+        $this->assertFalse((boolean) $this->subject->checkThrew('Exception'));
+        $this->assertFalse((boolean) $this->subject->checkThrew('RuntimeException'));
+        $this->assertFalse((boolean) $this->subject->checkThrew($this->exception));
+        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher($this->exception)));
+        $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
+        $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
+        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher(new RuntimeException())));
+        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher(null)));
 
-        $this->assertTrue($this->subjectWithException->checkThrew());
-        $this->assertTrue($this->subjectWithException->checkThrew('Exception'));
-        $this->assertTrue($this->subjectWithException->checkThrew('RuntimeException'));
-        $this->assertTrue($this->subjectWithException->checkThrew($this->exception));
-        $this->assertTrue($this->subjectWithException->checkThrew(new EqualToMatcher($this->exception)));
-        $this->assertFalse($this->subjectWithException->checkThrew('InvalidArgumentException'));
-        $this->assertFalse($this->subjectWithException->checkThrew(new Exception()));
-        $this->assertFalse($this->subjectWithException->checkThrew(new RuntimeException()));
-        $this->assertFalse($this->subjectWithException->checkThrew(new EqualToMatcher(new RuntimeException())));
-        $this->assertFalse($this->subjectWithException->checkThrew(new EqualToMatcher(null)));
-        $this->assertFalse($this->subjectWithException->never()->checkThrew());
-        $this->assertFalse($this->subjectWithException->never()->checkThrew('Exception'));
-        $this->assertFalse($this->subjectWithException->never()->checkThrew('RuntimeException'));
-        $this->assertFalse($this->subjectWithException->never()->checkThrew($this->exception));
-        $this->assertFalse($this->subjectWithException->never()->checkThrew(new EqualToMatcher($this->exception)));
+        $this->assertTrue((boolean) $this->subjectWithException->checkThrew());
+        $this->assertTrue((boolean) $this->subjectWithException->checkThrew('Exception'));
+        $this->assertTrue((boolean) $this->subjectWithException->checkThrew('RuntimeException'));
+        $this->assertTrue((boolean) $this->subjectWithException->checkThrew($this->exception));
+        $this->assertTrue((boolean) $this->subjectWithException->checkThrew(new EqualToMatcher($this->exception)));
+        $this->assertFalse((boolean) $this->subjectWithException->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new Exception()));
+        $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new RuntimeException()));
+        $this->assertFalse(
+            (boolean) $this->subjectWithException->checkThrew(new EqualToMatcher(new RuntimeException()))
+        );
+        $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew());
+        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew('Exception'));
+        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew('RuntimeException'));
+        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew($this->exception));
+        $this->assertFalse(
+            (boolean) $this->subjectWithException->never()->checkThrew(new EqualToMatcher($this->exception))
+        );
     }
 
     public function testCheckThrewFailureInvalidInput()
@@ -768,7 +778,7 @@ EOD;
         $this->assertEquals(new Cardinality(0, 0), $this->subject->never()->cardinality());
         $this->assertEquals(new Cardinality(1, 1), $this->subject->once()->cardinality());
         $this->assertEquals(new Cardinality(2, 2), $this->subject->times(2)->cardinality());
-        $this->assertEquals(new Cardinality(3, null), $this->subject->atLeast(3)->cardinality());
+        $this->assertEquals(new Cardinality(3), $this->subject->atLeast(3)->cardinality());
         $this->assertEquals(new Cardinality(null, 4), $this->subject->atMost(4)->cardinality());
         $this->assertEquals(new Cardinality(5, 6), $this->subject->between(5, 6)->cardinality());
         $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
