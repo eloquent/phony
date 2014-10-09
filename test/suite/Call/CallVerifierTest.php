@@ -487,6 +487,11 @@ EOD;
         $this->assertTrue($this->subject->checkReturned());
         $this->assertTrue($this->subject->checkReturned($this->returnValue));
         $this->assertTrue($this->subject->checkReturned($this->matcherFactory->adapt($this->returnValue)));
+        $this->assertTrue($this->subject->never()->checkReturned(null));
+        $this->assertTrue($this->subject->never()->checkReturned('y'));
+        $this->assertTrue($this->subject->never()->checkReturned($this->matcherFactory->adapt('y')));
+        $this->assertTrue($this->subjectWithException->never()->checkReturned());
+        $this->assertFalse($this->subject->never()->checkReturned());
         $this->assertFalse($this->subject->checkReturned(null));
         $this->assertFalse($this->subject->checkReturned('y'));
         $this->assertFalse($this->subject->checkReturned($this->matcherFactory->adapt('y')));
@@ -502,6 +507,13 @@ EOD;
             $this->returnedAssertionResult,
             $this->subject->returned($this->matcherFactory->adapt($this->returnValue))
         );
+
+        $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->returned(null));
+        $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->returned('y'));
+        $this->assertEquals(
+            $this->emptyAssertionResult,
+            $this->subject->never()->returned($this->matcherFactory->adapt('y'))
+        );
     }
 
     public function testReturnedFailure()
@@ -511,6 +523,24 @@ EOD;
             "Expected return like <'x'>. Returned 'abc'."
         );
         $this->subject->returned('x');
+    }
+
+    public function testReturnedFailureNever()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected no return like <'abc'>. Returned 'abc'."
+        );
+        $this->subject->never()->returned('abc');
+    }
+
+    public function testReturnedFailureNeverWithoutMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected no return. Returned 'abc'."
+        );
+        $this->subject->never()->returned();
     }
 
     public function testReturnedFailureWithException()
@@ -551,6 +581,7 @@ EOD;
 
     public function testCheckThrew()
     {
+        $this->assertTrue($this->subject->never()->checkThrew());
         $this->assertFalse($this->subject->checkThrew());
         $this->assertFalse($this->subject->checkThrew('Exception'));
         $this->assertFalse($this->subject->checkThrew('RuntimeException'));
@@ -572,9 +603,23 @@ EOD;
         $this->assertFalse($this->subjectWithException->checkThrew(new RuntimeException()));
         $this->assertFalse($this->subjectWithException->checkThrew(new EqualToMatcher(new RuntimeException())));
         $this->assertFalse($this->subjectWithException->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse($this->subjectWithException->never()->checkThrew());
+        $this->assertFalse($this->subjectWithException->never()->checkThrew('Exception'));
+        $this->assertFalse($this->subjectWithException->never()->checkThrew('RuntimeException'));
+        $this->assertFalse($this->subjectWithException->never()->checkThrew($this->exception));
+        $this->assertFalse($this->subjectWithException->never()->checkThrew(new EqualToMatcher($this->exception)));
     }
 
     public function testCheckThrewFailureInvalidInput()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            "Unable to match exceptions against 111."
+        );
+        $this->subjectWithException->checkThrew(111);
+    }
+
+    public function testCheckThrewFailureInvalidInputObject()
     {
         $this->setExpectedException(
             'InvalidArgumentException',
@@ -593,6 +638,8 @@ EOD;
             $this->threwAssertionResult,
             $this->subjectWithException->threw(new EqualToMatcher($this->exception))
         );
+
+        $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->threw());
     }
 
     public function testThrewFailureExpectingAnyNoneThrown()
@@ -604,6 +651,24 @@ EOD;
         $this->subject->threw();
     }
 
+    public function testThrewFailureExpectingAnyNoResponse()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected exception. Never responded."
+        );
+        $this->subjectWithNoResponse->threw();
+    }
+
+    public function testThrewFailureExpectingNeverAny()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected no exception. Threw RuntimeException('You done goofed.')."
+        );
+        $this->subjectWithException->never()->threw();
+    }
+
     public function testThrewFailureTypeMismatch()
     {
         $this->setExpectedException(
@@ -611,6 +676,15 @@ EOD;
             "Expected 'InvalidArgumentException' exception. Threw RuntimeException('You done goofed.')."
         );
         $this->subjectWithException->threw('InvalidArgumentException');
+    }
+
+    public function testThrewFailureTypeNever()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected no 'RuntimeException' exception. Threw RuntimeException('You done goofed.')."
+        );
+        $this->subjectWithException->never()->threw('RuntimeException');
     }
 
     public function testThrewFailureExpectingTypeNoneThrown()
@@ -631,6 +705,16 @@ EOD;
         $this->subjectWithException->threw(new RuntimeException());
     }
 
+    public function testThrewFailureExceptionNever()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected no exception equal to RuntimeException('You done goofed.'). " .
+                "Threw RuntimeException('You done goofed.')."
+        );
+        $this->subjectWithException->never()->threw($this->exception);
+    }
+
     public function testThrewFailureExpectingExceptionNoneThrown()
     {
         $this->setExpectedException(
@@ -649,7 +733,25 @@ EOD;
         $this->subjectWithException->threw(new EqualToMatcher(new RuntimeException()));
     }
 
+    public function testThrewFailureMatcherNever()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected no exception like <RuntimeException Object (...)>. Threw RuntimeException('You done goofed.')."
+        );
+        $this->subjectWithException->never()->threw(new EqualToMatcher($this->exception));
+    }
+
     public function testThrewFailureInvalidInput()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            "Unable to match exceptions against 111."
+        );
+        $this->subjectWithException->threw(111);
+    }
+
+    public function testThrewFailureInvalidInputObject()
     {
         $this->setExpectedException(
             'InvalidArgumentException',

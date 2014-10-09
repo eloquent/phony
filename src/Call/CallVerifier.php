@@ -671,9 +671,9 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             }
 
             if ($this->cardinalityIsNever($cardinality)) {
-                $message = 'Expected no return.';
+                $message = 'Expected no return. ';
             } else {
-                $message = 'Expected return.';
+                $message = 'Expected return. ';
             }
         } else {
             $value = $this->matcherFactory->adapt($value);
@@ -689,30 +689,16 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
             if ($this->cardinalityIsNever($cardinality)) {
                 $message =
-                    sprintf('Expected no return like %s.', $value->describe());
+                    sprintf('Expected no return like %s. ', $value->describe());
             } else {
                 $message =
-                    sprintf('Expected return like %s.', $value->describe());
+                    sprintf('Expected return like %s. ', $value->describe());
             }
         }
 
-        if ($responseEvent) {
-            if ($exception) {
-                $message .= sprintf(
-                    ' Threw %s.',
-                    $this->assertionRenderer->renderException($exception)
-                );
-            } else {
-                $message .= sprintf(
-                    ' Returned %s.',
-                    $this->assertionRenderer->renderValue($returnValue)
-                );
-            }
-        } else {
-            $message .= ' Never responded.';
-        }
-
-        throw $this->assertionRecorder->createFailure($message);
+        throw $this->assertionRecorder->createFailure(
+            $message . $this->assertionRenderer->renderResponse($this->call)
+        );
     }
 
     /**
@@ -793,9 +779,9 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             }
 
             if ($this->cardinalityIsNever($cardinality)) {
-                $message = 'Expected no exception.';
+                $message = 'Expected no exception. ';
             } else {
-                $message = 'Expected exception.';
+                $message = 'Expected exception. ';
             }
         } elseif (is_string($type)) {
             list($matchCount, $matchingEvents) =
@@ -807,12 +793,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
             if ($this->cardinalityIsNever($cardinality)) {
                 $message = sprintf(
-                    'Expected no %s exception.',
+                    'Expected no %s exception. ',
                     $this->assertionRenderer->renderValue($type)
                 );
             } else {
                 $message = sprintf(
-                    'Expected %s exception.',
+                    'Expected %s exception. ',
                     $this->assertionRenderer->renderValue($type)
                 );
             }
@@ -830,12 +816,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
                 if ($this->cardinalityIsNever($cardinality)) {
                     $message = sprintf(
-                        'Expected no exception equal to %s.',
+                        'Expected no exception equal to %s. ',
                         $this->assertionRenderer->renderException($type)
                     );
                 } else {
                     $message = sprintf(
-                        'Expected exception equal to %s.',
+                        'Expected exception equal to %s. ',
                         $this->assertionRenderer->renderException($type)
                     );
                 }
@@ -853,12 +839,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
                 if ($this->cardinalityIsNever($cardinality)) {
                     $message = sprintf(
-                        'Expected no exception like %s.',
+                        'Expected no exception like %s. ',
                         $type->describe()
                     );
                 } else {
                     $message = sprintf(
-                        'Expected exception like %s.',
+                        'Expected exception like %s. ',
                         $type->describe()
                     );
                 }
@@ -878,24 +864,9 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        if ($responseEvent) {
-            if ($exception) {
-                $message .= sprintf(
-                    ' Threw %s.',
-                    $this->assertionRenderer->renderException($exception)
-                );
-            } else {
-                $message .= sprintf(
-                    ' Returned %s.',
-                    $this->assertionRenderer
-                        ->renderValue($this->call->returnValue())
-                );
-            }
-        } else {
-            $message .= ' Never responded.';
-        }
-
-        throw $this->assertionRecorder->createFailure($message);
+        throw $this->assertionRecorder->createFailure(
+            $message . $this->assertionRenderer->renderResponse($this->call)
+        );
     }
 
     /**

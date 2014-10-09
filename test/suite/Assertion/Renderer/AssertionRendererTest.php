@@ -200,6 +200,38 @@ EOD;
         $this->assertSame($expected, $this->subject->renderCall($call));
     }
 
+    public function renderResponseData()
+    {
+        $callFactory = new TestCallFactory();
+        $callEventFactory = $callFactory->eventFactory();
+
+        return array(
+            'Returned' => array(
+                $callFactory->create($callEventFactory->createCalled(), $callEventFactory->createReturned('a')),
+                "Returned 'a'.",
+            ),
+            'Threw' => array(
+                $callFactory->create(
+                    $callEventFactory->createCalled(),
+                    $callEventFactory->createThrew(new RuntimeException('You done goofed.'))
+                ),
+                "Threw RuntimeException('You done goofed.').",
+            ),
+            'Never responded' => array(
+                $callFactory->create($callEventFactory->createCalled()),
+                "Never responded.",
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider renderResponseData
+     */
+    public function testRenderResponse($call, $expected)
+    {
+        $this->assertSame($expected, $this->subject->renderResponse($call));
+    }
+
     public function testRenderException()
     {
         $this->assertSame("<none>", $this->subject->renderException());

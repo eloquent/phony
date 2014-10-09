@@ -12,8 +12,10 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\SentEventInterface;
 use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
+use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
@@ -311,6 +313,34 @@ class AssertionRenderer implements AssertionRendererInterface
             '%s(%s)',
             $renderedSubject, implode(', ', $renderedArguments)
         );
+    }
+
+    /**
+     * Render the supplied call's response.
+     *
+     * @param CallInterface $call The call.
+     *
+     * @return string The rendered response.
+     */
+    public function renderResponse(CallInterface $call)
+    {
+        $responseEvent = $call->responseEvent();
+
+        if ($responseEvent instanceof ReturnedEventInterface) {
+            return sprintf(
+                'Returned %s.',
+                $this->renderValue($responseEvent->value())
+            );
+        }
+
+        if ($responseEvent instanceof ThrewEventInterface) {
+            return sprintf(
+                'Threw %s.',
+                $this->renderException($responseEvent->exception())
+            );
+        }
+
+        return 'Never responded.';
     }
 
     /**

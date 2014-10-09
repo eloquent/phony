@@ -245,6 +245,22 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->yielded();
     }
 
+    public function testYieldedFailureWithNoMatchersNever()
+    {
+        $expected = <<<'EOD'
+Expected 0 yields. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->never()->yielded();
+    }
+
     public function testYieldedFailureWithValueOnly()
     {
         $expected = <<<'EOD'
@@ -259,6 +275,22 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->generatorSubject->yielded('m');
+    }
+
+    public function testYieldedFailureWithValueOnlyNever()
+    {
+        $expected = <<<'EOD'
+Expected 0 yields like <'n'>. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->never()->yielded('n');
     }
 
     public function testYieldedFailureWithValueOnlyWithNoGeneratorEvents()
@@ -284,6 +316,22 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->generatorSubject->yielded('m', 'o');
+    }
+
+    public function testYieldedFailureWithKeyAndValueNever()
+    {
+        $expected = <<<'EOD'
+Expected 0 yields like <'m'> => <'n'>. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->never()->yielded('m', 'n');
     }
 
     public function testYieldedFailureWithKeyAndValueWithNoGeneratorEvents()
