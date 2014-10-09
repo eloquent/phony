@@ -12,12 +12,15 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
+use Eloquent\Phony\Verification\CardinalityVerifierInterface;
+use Eloquent\Phony\Verification\Exception\InvalidCardinalityExceptionInterface;
 use Exception;
 
 /**
  * The interface implemented by call verifiers.
  */
-interface CallVerifierInterface extends CallInterface
+interface CallVerifierInterface extends CallInterface,
+    CardinalityVerifierInterface
 {
     /**
      * Get the call duration.
@@ -45,9 +48,10 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called with the supplied arguments.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledWith();
+    public function checkCalledWith();
 
     /**
      * Throws an exception unless called with the supplied arguments (and
@@ -55,19 +59,21 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledWith();
+    public function calledWith();
 
     /**
      * Returns true if called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called with the supplied arguments.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledWithExactly();
+    public function checkCalledWithExactly();
 
     /**
      * Throws an exception unless called with the supplied arguments (and no
@@ -75,98 +81,63 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledWithExactly();
-
-    /**
-     * Returns true if not called with the supplied arguments (and possibly
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return boolean True if not called with the supplied arguments.
-     */
-    public function notCalledWith();
-
-    /**
-     * Throws an exception unless not called with the supplied arguments (and
-     * possibly others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
-     */
-    public function assertNotCalledWith();
-
-    /**
-     * Returns true if not called with the supplied arguments (and no others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return boolean True if not called with the supplied arguments.
-     */
-    public function notCalledWithExactly();
-
-    /**
-     * Throws an exception unless not called with the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
-     */
-    public function assertNotCalledWithExactly();
+    public function calledWithExactly();
 
     /**
      * Returns true if this call occurred before the supplied call.
      *
      * @param CallInterface $call Another call.
      *
-     * @return boolean True if this call occurred before the supplied call.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledBefore(CallInterface $call);
+    public function checkCalledBefore(CallInterface $call);
 
     /**
      * Throws an exception unless this call occurred before the supplied call.
      *
      * @param CallInterface $call Another call.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledBefore(CallInterface $call);
+    public function calledBefore(CallInterface $call);
 
     /**
      * Returns true if this call occurred after the supplied call.
      *
      * @param CallInterface $call Another call.
      *
-     * @return boolean True if this call occurred after the supplied call.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledAfter(CallInterface $call);
+    public function checkCalledAfter(CallInterface $call);
 
     /**
      * Throws an exception unless this call occurred after the supplied call.
      *
      * @param CallInterface $call Another call.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledAfter(CallInterface $call);
+    public function calledAfter(CallInterface $call);
 
     /**
      * Returns true if the $this value is equal to the supplied value.
      *
      * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is equal to the supplied value.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledOn($value);
+    public function checkCalledOn($value);
 
     /**
      * Throws an exception unless the $this value is equal to the supplied
@@ -174,10 +145,11 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledOn($value);
+    public function calledOn($value);
 
     /**
      * Returns true if this call returned the supplied value.
@@ -187,9 +159,10 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $value The value.
      *
-     * @return boolean True if this call returned the supplied value.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function returned($value = null);
+    public function checkReturned($value = null);
 
     /**
      * Throws an exception unless this call returned the supplied value.
@@ -199,10 +172,11 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param mixed $value The value.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertReturned($value = null);
+    public function returned($value = null);
 
     /**
      * Returns true if an exception of the supplied type was thrown.
@@ -212,9 +186,10 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean True if a matching exception was thrown.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function threw($type = null);
+    public function checkThrew($type = null);
 
     /**
      * Throws an exception unless this call threw an exception of the supplied
@@ -225,10 +200,11 @@ interface CallVerifierInterface extends CallInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertThrew($type = null);
+    public function threw($type = null);
 
     /**
      * Returns true if this call yielded the supplied values.
@@ -245,9 +221,9 @@ interface CallVerifierInterface extends CallInterface
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return boolean True if this call yielded the supplied values.
+     * @return boolean The result.
      */
-    public function yielded($keyOrValue = null, $value = null);
+    public function checkYielded($keyOrValue = null, $value = null);
 
     /**
      * Throws an exception unless this call yielded the supplied values.
@@ -264,8 +240,8 @@ interface CallVerifierInterface extends CallInterface
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return AssertionResultInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertYielded($keyOrValue = null, $value = null);
+    public function yielded($keyOrValue = null, $value = null);
 }

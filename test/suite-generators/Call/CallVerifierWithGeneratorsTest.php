@@ -198,42 +198,54 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subjectWithNoResponse->duration());
     }
 
-    public function testYielded()
+    public function testCheckYielded()
     {
-        $this->assertTrue($this->generatorSubject->yielded());
-        $this->assertTrue($this->generatorSubject->yielded('n'));
-        $this->assertTrue($this->generatorSubject->yielded('m', 'n'));
-        $this->assertFalse($this->generatorSubject->yielded('m'));
-        $this->assertFalse($this->generatorSubject->yielded('m', 'o'));
-        $this->assertFalse($this->subject->yielded());
+        $this->assertTrue($this->generatorSubject->checkYielded());
+        $this->assertTrue($this->generatorSubject->checkYielded('n'));
+        $this->assertTrue($this->generatorSubject->checkYielded('m', 'n'));
+        $this->assertTrue($this->generatorSubject->times(3)->checkYielded());
+        $this->assertTrue($this->generatorSubject->once()->checkYielded('n'));
+        $this->assertTrue($this->generatorSubject->never()->checkYielded('m'));
+        $this->assertFalse($this->generatorSubject->checkYielded('m'));
+        $this->assertFalse($this->generatorSubject->checkYielded('m', 'o'));
+        $this->assertFalse($this->subject->checkYielded());
     }
 
-    public function testAssertYielded()
+    public function testYielded()
     {
         $this->assertEquals(
             new AssertionResult(array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE)),
-            $this->generatorSubject->assertYielded()
+            $this->generatorSubject->yielded()
         );
         $this->assertEquals(
             new AssertionResult(array($this->generatorEventA)),
-            $this->generatorSubject->assertYielded('n')
+            $this->generatorSubject->yielded('n')
         );
         $this->assertEquals(
             new AssertionResult(array($this->generatorEventA)),
-            $this->generatorSubject->assertYielded('m', 'n')
+            $this->generatorSubject->yielded('m', 'n')
         );
+        $this->assertEquals(
+            new AssertionResult(array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE)),
+            $this->generatorSubject->times(3)->yielded()
+        );
+        $this->assertEquals(
+            new AssertionResult(array($this->generatorEventA)),
+            $this->generatorSubject->once()->yielded('n')
+        );
+        $this->assertEquals(new AssertionResult(), $this->generatorSubject->never()->yielded('m'));
     }
 
-    public function testAssertYieldedFailureWithNoMatchers()
+    public function testYieldedFailureWithNoMatchers()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected yield. Generated nothing."
         );
-        $this->subject->assertYielded();
+        $this->subject->yielded();
     }
 
-    public function testAssertYieldedFailureWithValueOnly()
+    public function testYieldedFailureWithValueOnly()
     {
         $expected = <<<'EOD'
 Expected yield like <'m'>. Generated:
@@ -246,19 +258,19 @@ Expected yield like <'m'>. Generated:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->assertYielded('m');
+        $this->generatorSubject->yielded('m');
     }
 
-    public function testAssertYieldedFailureWithValueOnlyWithNoGeneratorEvents()
+    public function testYieldedFailureWithValueOnlyWithNoGeneratorEvents()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected yield like <'n'>. Generated nothing."
         );
-        $this->subject->assertYielded('n');
+        $this->subject->yielded('n');
     }
 
-    public function testAssertYieldedFailureWithKeyAndValue()
+    public function testYieldedFailureWithKeyAndValue()
     {
         $expected = <<<'EOD'
 Expected yield like <'m'> => <'o'>. Generated:
@@ -271,15 +283,15 @@ Expected yield like <'m'> => <'o'>. Generated:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->assertYielded('m', 'o');
+        $this->generatorSubject->yielded('m', 'o');
     }
 
-    public function testAssertYieldedFailureWithKeyAndValueWithNoGeneratorEvents()
+    public function testYieldedFailureWithKeyAndValueWithNoGeneratorEvents()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected yield like <'m'> => <'n'>. Generated nothing."
         );
-        $this->subject->assertYielded('m', 'n');
+        $this->subject->yielded('m', 'n');
     }
 }

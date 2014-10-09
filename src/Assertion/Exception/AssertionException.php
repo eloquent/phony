@@ -22,7 +22,7 @@ final class AssertionException extends Exception implements
     AssertionExceptionInterface
 {
     /**
-     * Construct a assertion exception.
+     * Construct an assertion exception.
      *
      * @param string         $description The failure description.
      * @param Exception|null $cause       The cause, if available.

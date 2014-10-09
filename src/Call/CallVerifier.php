@@ -27,14 +27,17 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Verification\AbstractCardinalityVerifier;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * Provides convenience methods for verifying the details of a call.
  *
  * @internal
  */
-class CallVerifier implements CallVerifierInterface
+class CallVerifier extends AbstractCardinalityVerifier implements
+    CallVerifierInterface
 {
     /**
      * Construct a new call verifier.
@@ -69,6 +72,8 @@ class CallVerifier implements CallVerifierInterface
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
+
+        parent::__construct();
 
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
@@ -383,15 +388,15 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called with the supplied arguments.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledWith()
+    public function checkCalledWith()
     {
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $matchers[] = $this->matcherFactory->wildcard();
 
-        return $this->matcherVerifier
-            ->matches($matchers, $this->call->arguments());
+        return $this->doCheckCalledWith($matchers);
     }
 
     /**
@@ -400,27 +405,16 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledWith()
+    public function calledWith()
     {
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $matchers[] = $this->matcherFactory->wildcard();
-        $arguments = $this->call->arguments();
 
-        if (!$this->matcherVerifier->matches($matchers, $arguments)) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected arguments like:\n    %s\n" .
-                        "Actual arguments:\n    %s",
-                    $this->assertionRenderer->renderMatchers($matchers),
-                    $this->assertionRenderer->renderArguments($arguments)
-                )
-            );
-        }
-
-        return $this->assertionRecorder->createSuccess(array($this->call));
+        return $this->doCalledWith($matchers);
     }
 
     /**
@@ -428,13 +422,13 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called with the supplied arguments.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledWithExactly()
+    public function checkCalledWithExactly()
     {
-        return $this->matcherVerifier->matches(
-            $this->matcherFactory->adaptAll(func_get_args()),
-            $this->call->arguments()
+        return $this->doCheckCalledWith(
+            $this->matcherFactory->adaptAll(func_get_args())
         );
     }
 
@@ -444,115 +438,14 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledWithExactly()
+    public function calledWithExactly()
     {
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $arguments = $this->call->arguments();
-
-        if (!$this->matcherVerifier->matches($matchers, $arguments)) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected arguments like:\n    %s\n" .
-                        "Actual arguments:\n    %s",
-                    $this->assertionRenderer->renderMatchers($matchers),
-                    $this->assertionRenderer->renderArguments($arguments)
-                )
-            );
-        }
-
-        return $this->assertionRecorder->createSuccess(array($this->call));
-    }
-
-    /**
-     * Returns true if not called with the supplied arguments (and possibly
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return boolean True if not called with the supplied arguments.
-     */
-    public function notCalledWith()
-    {
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();
-
-        return !$this->matcherVerifier
-            ->matches($matchers, $this->call->arguments());
-    }
-
-    /**
-     * Throws an exception unless not called with the supplied arguments (and
-     * possibly others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
-     */
-    public function assertNotCalledWith()
-    {
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();
-        $arguments = $this->call->arguments();
-
-        if ($this->matcherVerifier->matches($matchers, $arguments)) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected arguments unlike:\n    %s\n" .
-                        "Actual arguments:\n    %s",
-                    $this->assertionRenderer->renderMatchers($matchers),
-                    $this->assertionRenderer->renderArguments($arguments)
-                )
-            );
-        }
-
-        return $this->assertionRecorder->createSuccess();
-    }
-
-    /**
-     * Returns true if not called with the supplied arguments (and no others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return boolean True if not called with the supplied arguments.
-     */
-    public function notCalledWithExactly()
-    {
-        return !$this->matcherVerifier->matches(
-            $this->matcherFactory->adaptAll(func_get_args()),
-            $this->call->arguments()
-        );
-    }
-
-    /**
-     * Throws an exception unless not called with the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
-     */
-    public function assertNotCalledWithExactly()
-    {
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $arguments = $this->call->arguments();
-
-        if ($this->matcherVerifier->matches($matchers, $arguments)) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected arguments unlike:\n    %s\n" .
-                        "Actual arguments:\n    %s",
-                    $this->assertionRenderer->renderMatchers($matchers),
-                    $this->assertionRenderer->renderArguments($arguments)
-                )
-            );
-        }
-
-        return $this->assertionRecorder->createSuccess();
+        return $this
+            ->doCalledWith($this->matcherFactory->adaptAll(func_get_args()));
     }
 
     /**
@@ -560,11 +453,14 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @return boolean True if this call occurred before the supplied call.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledBefore(CallInterface $call)
+    public function checkCalledBefore(CallInterface $call)
     {
-        return $call->sequenceNumber() > $this->call->sequenceNumber();
+        return $this->matchesSingularCardinality(
+            $call->sequenceNumber() > $this->call->sequenceNumber()
+        );
     }
 
     /**
@@ -572,17 +468,29 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledBefore(CallInterface $call)
+    public function calledBefore(CallInterface $call)
     {
-        if ($call->sequenceNumber() <= $this->call->sequenceNumber()) {
+        $cardinality = $this->resetSingularCardinality();
+        list($matchCount, $matchingEvents) = $this->matchIf(
+            $this->call,
+            $call->sequenceNumber() > $this->call->sequenceNumber()
+        );
+
+        if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+
+        if ($this->cardinalityIsNever($cardinality)) {
+            throw $this->assertionRecorder
+                ->createFailure('Called before supplied call.');
+        } else {
             throw $this->assertionRecorder
                 ->createFailure('Not called before supplied call.');
         }
-
-        return $this->assertionRecorder->createSuccess(array($this->call));
     }
 
     /**
@@ -590,11 +498,14 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @return boolean True if this call occurred after the supplied call.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledAfter(CallInterface $call)
+    public function checkCalledAfter(CallInterface $call)
     {
-        return $call->sequenceNumber() < $this->call->sequenceNumber();
+        return $this->matchesSingularCardinality(
+            $call->sequenceNumber() < $this->call->sequenceNumber()
+        );
     }
 
     /**
@@ -602,17 +513,29 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param CallInterface $call Another call.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledAfter(CallInterface $call)
+    public function calledAfter(CallInterface $call)
     {
-        if ($call->sequenceNumber() >= $this->call->sequenceNumber()) {
+        $cardinality = $this->resetSingularCardinality();
+        list($matchCount, $matchingEvents) = $this->matchIf(
+            $this->call,
+            $call->sequenceNumber() < $this->call->sequenceNumber()
+        );
+
+        if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+
+        if ($this->cardinalityIsNever($cardinality)) {
+            throw $this->assertionRecorder
+                ->createFailure('Called after supplied call.');
+        } else {
             throw $this->assertionRecorder
                 ->createFailure('Not called after supplied call.');
         }
-
-        return $this->assertionRecorder->createSuccess(array($this->call));
     }
 
     /**
@@ -620,18 +543,21 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is equal to the supplied value.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function calledOn($value)
+    public function checkCalledOn($value)
     {
         $thisValue = $this->invocableInspector
             ->callbackThisValue($this->call->callback());
 
         if ($this->matcherFactory->isMatcher($value)) {
-            return $this->matcherFactory->adapt($value)->matches($thisValue);
+            return $this->matchesSingularCardinality(
+                $this->matcherFactory->adapt($value)->matches($thisValue)
+            );
         }
 
-        return $thisValue === $value;
+        return $this->matchesSingularCardinality($thisValue === $value);
     }
 
     /**
@@ -640,36 +566,57 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertCalledOn($value)
+    public function calledOn($value)
     {
+        $cardinality = $this->resetSingularCardinality();
         $thisValue = $this->invocableInspector
             ->callbackThisValue($this->call->callback());
 
         if ($this->matcherFactory->isMatcher($value)) {
             $value = $this->matcherFactory->adapt($value);
 
-            if (!$value->matches($thisValue)) {
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Not called on object like %s. Actual object was %s.',
-                        $value->describe(),
-                        $this->assertionRenderer->renderValue($thisValue)
-                    )
-                );
+            list($matchCount, $matchingEvents) =
+                $this->matchIf($this->call, $value->matches($thisValue));
+
+            if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+                return $this->assertionRecorder->createSuccess($matchingEvents);
             }
-        } elseif ($thisValue !== $value) {
+
+            if ($this->cardinalityIsNever($cardinality)) {
+                $message = 'Called on object like %s. Object was %s.';
+            } else {
+                $message = 'Not called on object like %s. Object was %s.';
+            }
+
             throw $this->assertionRecorder->createFailure(
                 sprintf(
-                    'Not called on expected object. Actual object was %s.',
+                    $message,
+                    $value->describe(),
                     $this->assertionRenderer->renderValue($thisValue)
                 )
             );
         }
 
-        return $this->assertionRecorder->createSuccess(array($this->call));
+        list($matchCount, $matchingEvents) =
+            $this->matchIf($this->call, $thisValue === $value);
+
+        if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+
+        if ($this->cardinalityIsNever($cardinality)) {
+            $message = 'Called on unexpected object. Object was %s.';
+        } else {
+            $message = 'Not called on expected object. Object was %s.';
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf($message, $this->assertionRenderer->renderValue($thisValue))
+        );
     }
 
     /**
@@ -680,17 +627,20 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $value The value.
      *
-     * @return boolean True if this call returned the supplied value.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
-    public function returned($value = null)
+    public function checkReturned($value = null)
     {
         if (!$this->call->hasResponded() || $this->call->exception()) {
-            return false;
+            $isMatch = false;
+        } else {
+            $isMatch = 0 === func_num_args() ||
+                $this->matcherFactory->adapt($value)
+                    ->matches($this->call->returnValue());
         }
 
-        return 0 === func_num_args() ||
-            $this->matcherFactory->adapt($value)
-                ->matches($this->call->returnValue());
+        return $this->matchesSingularCardinality($isMatch);
     }
 
     /**
@@ -701,58 +651,68 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param mixed $value The value.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertReturned($value = null)
+    public function returned($value = null)
     {
-        if (!$this->call->hasResponded()) {
-            throw $this->assertionRecorder
-                ->createFailure('Expected call to return. Never returned.');
-        }
-
+        $cardinality = $this->resetSingularCardinality();
+        $responseEvent = $this->call->responseEvent();
+        $returnValue = $this->call->returnValue();
         $exception = $this->call->exception();
 
         if (0 === func_num_args()) {
-            if ($exception) {
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Expected call to return. Threw %s.',
-                        $this->assertionRenderer->renderException($exception)
-                    )
-                );
+            list($matchCount, $matchingEvents) =
+                $this->matchIf($responseEvent, $responseEvent && !$exception);
+
+            if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+                return $this->assertionRecorder->createSuccess($matchingEvents);
             }
 
-            return $this->assertionRecorder
-                ->createSuccess(array($this->call->responseEvent()));
+            if ($this->cardinalityIsNever($cardinality)) {
+                $message = 'Expected no return.';
+            } else {
+                $message = 'Expected return.';
+            }
+        } else {
+            $value = $this->matcherFactory->adapt($value);
+
+            list($matchCount, $matchingEvents) = $this->matchIf(
+                $responseEvent,
+                $responseEvent && !$exception && $value->matches($returnValue)
+            );
+
+            if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+                return $this->assertionRecorder->createSuccess($matchingEvents);
+            }
+
+            if ($this->cardinalityIsNever($cardinality)) {
+                $message =
+                    sprintf('Expected no return like %s.', $value->describe());
+            } else {
+                $message =
+                    sprintf('Expected return like %s.', $value->describe());
+            }
         }
 
-        $value = $this->matcherFactory->adapt($value);
-
-        if ($exception) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    'Expected return value like %s. Threw %s.',
-                    $value->describe(),
+        if ($responseEvent) {
+            if ($exception) {
+                $message .= sprintf(
+                    ' Threw %s.',
                     $this->assertionRenderer->renderException($exception)
-                )
-            );
-        }
-
-        $returnValue = $this->call->returnValue();
-
-        if (!$value->matches($returnValue)) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    'Expected return value like %s. Returned %s.',
-                    $value->describe(),
+                );
+            } else {
+                $message .= sprintf(
+                    ' Returned %s.',
                     $this->assertionRenderer->renderValue($returnValue)
-                )
-            );
+                );
+            }
+        } else {
+            $message .= ' Never responded.';
         }
 
-        return $this->assertionRecorder
-            ->createSuccess(array($this->call->responseEvent()));
+        throw $this->assertionRecorder->createFailure($message);
     }
 
     /**
@@ -763,29 +723,44 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean True if a matching exception was thrown.
+     * @return boolean                              The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws InvalidArgumentException             If the type is invalid.
      */
-    public function threw($type = null)
+    public function checkThrew($type = null)
     {
         $exception = $this->call->exception();
+        $isTypeSupported = true;
 
-        if (is_object($type) && $this->matcherFactory->isMatcher($type)) {
-            return $this->matcherFactory->adapt($type)->matches($exception);
+        if (!$exception) {
+            $isMatch = false;
+        } elseif (null === $type) {
+            $isMatch = true;
+        } elseif (is_string($type)) {
+            $isMatch = is_a($exception, $type);
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                $isMatch = $exception == $type;
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $isMatch = $this->matcherFactory->adapt($type)
+                    ->matches($exception);
+            } else {
+                $isTypeSupported = false;
+            }
+        } else {
+            $isTypeSupported = false;
         }
 
-        if (null === $exception) {
-            return false;
+        if (!$isTypeSupported) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unable to match exceptions against %s.',
+                    $this->assertionRenderer->renderValue($type)
+                )
+            );
         }
 
-        if (null === $type) {
-            return true;
-        }
-
-        if (is_string($type)) {
-            return is_a($exception, $type);
-        }
-
-        return $type instanceof Exception && $exception == $type;
+        return $this->matchesSingularCardinality($isMatch);
     }
 
     /**
@@ -797,86 +772,130 @@ class CallVerifier implements CallVerifierInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
+     * @return AssertionResultInterface             The result.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws InvalidArgumentException             If the type is invalid.
+     * @throws Exception                            If the assertion fails.
      */
-    public function assertThrew($type = null)
+    public function threw($type = null)
     {
+        $cardinality = $this->resetSingularCardinality();
+        $responseEvent = $this->call->responseEvent();
         $exception = $this->call->exception();
+        $isTypeSupported = true;
 
         if (null === $type) {
-            if (null === $exception) {
-                throw $this->assertionRecorder
-                    ->createFailure('Nothing thrown.');
+            list($matchCount, $matchingEvents) =
+                $this->matchIf($responseEvent, $exception);
+
+            if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+                return $this->assertionRecorder->createSuccess($matchingEvents);
             }
 
-            return $this->assertionRecorder
-                ->createSuccess(array($this->call->responseEvent()));
+            if ($this->cardinalityIsNever($cardinality)) {
+                $message = 'Expected no exception.';
+            } else {
+                $message = 'Expected exception.';
+            }
         } elseif (is_string($type)) {
-            if (is_a($exception, $type)) {
-                return $this->assertionRecorder
-                    ->createSuccess(array($this->call->responseEvent()));
-            } elseif (null === $exception) {
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Expected %s exception. Nothing thrown.',
-                        $this->assertionRenderer->renderValue($type)
-                    )
+            list($matchCount, $matchingEvents) =
+                $this->matchIf($responseEvent, is_a($exception, $type));
+
+            if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+                return $this->assertionRecorder->createSuccess($matchingEvents);
+            }
+
+            if ($this->cardinalityIsNever($cardinality)) {
+                $message = sprintf(
+                    'Expected no %s exception.',
+                    $this->assertionRenderer->renderValue($type)
+                );
+            } else {
+                $message = sprintf(
+                    'Expected %s exception.',
+                    $this->assertionRenderer->renderValue($type)
                 );
             }
-
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    'Expected %s exception. Threw %s.',
-                    $this->assertionRenderer->renderValue($type),
-                    $this->assertionRenderer->renderException($exception)
-                )
-            );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
-                if ($exception == $type) {
+                list($matchCount, $matchingEvents) =
+                    $this->matchIf($responseEvent, $exception == $type);
+
+                if (
+                    $this->matchesSingularCardinality($matchCount, $cardinality)
+                ) {
                     return $this->assertionRecorder
-                        ->createSuccess(array($this->call->responseEvent()));
-                } elseif (null === $exception) {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            'Expected exception equal to %s. Nothing thrown.',
-                            $this->assertionRenderer->renderException($type)
-                        )
+                        ->createSuccess($matchingEvents);
+                }
+
+                if ($this->cardinalityIsNever($cardinality)) {
+                    $message = sprintf(
+                        'Expected no exception equal to %s.',
+                        $this->assertionRenderer->renderException($type)
+                    );
+                } else {
+                    $message = sprintf(
+                        'Expected exception equal to %s.',
+                        $this->assertionRenderer->renderException($type)
                     );
                 }
-
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Expected exception equal to %s. Threw %s.',
-                        $this->assertionRenderer->renderException($type),
-                        $this->assertionRenderer->renderException($exception)
-                    )
-                );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $type = $this->matcherFactory->adapt($type);
+                list($matchCount, $matchingEvents) =
+                    $this->matchIf($responseEvent, $type->matches($exception));
 
-                if ($type->matches($exception)) {
+                if (
+                    $this->matchesSingularCardinality($matchCount, $cardinality)
+                ) {
                     return $this->assertionRecorder
-                        ->createSuccess(array($this->call->responseEvent()));
+                        ->createSuccess($matchingEvents);
                 }
 
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Expected exception like %s. Threw %s.',
-                        $type->describe(),
-                        $this->assertionRenderer->renderException($exception)
-                    )
-                );
+                if ($this->cardinalityIsNever($cardinality)) {
+                    $message = sprintf(
+                        'Expected no exception like %s.',
+                        $type->describe()
+                    );
+                } else {
+                    $message = sprintf(
+                        'Expected exception like %s.',
+                        $type->describe()
+                    );
+                }
+            } else {
+                $isTypeSupported = false;
             }
+        } else {
+            $isTypeSupported = false;
         }
 
-        throw $this->assertionRecorder->createFailure(
-            sprintf(
-                'Unable to match exceptions against %s.',
-                $this->assertionRenderer->renderValue($type)
-            )
-        );
+        if (!$isTypeSupported) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unable to match exceptions against %s.',
+                    $this->assertionRenderer->renderValue($type)
+                )
+            );
+        }
+
+        if ($responseEvent) {
+            if ($exception) {
+                $message .= sprintf(
+                    ' Threw %s.',
+                    $this->assertionRenderer->renderException($exception)
+                );
+            } else {
+                $message .= sprintf(
+                    ' Returned %s.',
+                    $this->assertionRenderer
+                        ->renderValue($this->call->returnValue())
+                );
+            }
+        } else {
+            $message .= ' Never responded.';
+        }
+
+        throw $this->assertionRecorder->createFailure($message);
     }
 
     /**
@@ -894,7 +913,61 @@ class CallVerifier implements CallVerifierInterface
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return boolean True if this call yielded the supplied values.
+     * @return boolean The result.
+     */
+    public function checkYielded($keyOrValue = null, $value = null)
+    {
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = false;
+        } elseif (1 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = true;
+            $value = $this->matcherFactory->adapt($keyOrValue);
+        } else {
+            $checkKey = true;
+            $checkValue = true;
+            $key = $this->matcherFactory->adapt($keyOrValue);
+            $value = $this->matcherFactory->adapt($value);
+        }
+
+        $matchCount = 0;
+
+        foreach ($this->call->events() as $event) {
+            if ($event instanceof YieldedEventInterface) {
+                if ($checkKey && !$key->matches($event->key())) {
+                    continue;
+                }
+                if ($checkValue && !$value->matches($event->value())) {
+                    continue;
+                }
+
+                $matchCount++;
+            }
+        }
+
+        return $this->matchesCardinality($matchCount);
+    }
+
+    /**
+     * Throws an exception unless this call yielded the supplied values.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * yielded.
+     *
+     * With a single argument, it checks that a value matching the argument was
+     * yielded.
+     *
+     * With two arguments, it checks that a key and value matching the
+     * respective arguments were yielded together.
+     *
+     * @param mixed $keyOrValue The key or value.
+     * @param mixed $value      The value.
+     *
+     * @return AssertionResultInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function yielded($keyOrValue = null, $value = null)
     {
@@ -914,59 +987,8 @@ class CallVerifier implements CallVerifierInterface
             $value = $this->matcherFactory->adapt($value);
         }
 
-        foreach ($this->call->events() as $event) {
-            if ($event instanceof YieldedEventInterface) {
-                if ($checkKey && !$key->matches($event->key())) {
-                    continue;
-                }
-                if ($checkValue && !$value->matches($event->value())) {
-                    continue;
-                }
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Throws an exception unless this call yielded the supplied values.
-     *
-     * When called with no arguments, this method simply checks that the call
-     * yielded.
-     *
-     * With a single argument, it checks that a value matching the argument was
-     * yielded.
-     *
-     * With two arguments, it checks that a key and value matching the
-     * respective arguments were yielded together.
-     *
-     * @param mixed $keyOrValue The key or value.
-     * @param mixed $value      The value.
-     *
-     * @return AssertionResultInterface If the assertion passes.
-     * @throws Exception                If the assertion fails.
-     */
-    public function assertYielded($keyOrValue = null, $value = null)
-    {
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = false;
-        } elseif (1 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = true;
-            $value = $this->matcherFactory->adapt($keyOrValue);
-        } else {
-            $checkKey = true;
-            $checkValue = true;
-            $key = $this->matcherFactory->adapt($keyOrValue);
-            $value = $this->matcherFactory->adapt($value);
-        }
-
         $matchingEvents = array();
+        $matchCount = 0;
 
         foreach ($this->call->events() as $event) {
             if ($event instanceof YieldedEventInterface) {
@@ -978,21 +1000,31 @@ class CallVerifier implements CallVerifierInterface
                 }
 
                 $matchingEvents[] = $event;
+                $matchCount++;
             }
         }
 
-        if ($matchingEvents) {
+        $cardinality = $this->resetCardinality();
+
+        if ($this->matchesCardinality($matchCount, $cardinality)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
 
+        $renderedCardinality =
+            $this->assertionRenderer->renderCardinality($cardinality, 'yield');
+
         if (0 === $argumentCount) {
-            $message = 'Expected yield.';
+            $message = sprintf('Expected %s.', $renderedCardinality);
         } elseif (1 === $argumentCount) {
-            $message =
-                sprintf('Expected yield like %s.', $value->describe());
+            $message = sprintf(
+                'Expected %s like %s.',
+                $renderedCardinality,
+                $value->describe()
+            );
         } else {
             $message = sprintf(
-                'Expected yield like %s => %s.',
+                'Expected %s like %s => %s.',
+                $renderedCardinality,
                 $key->describe(),
                 $value->describe()
             );
@@ -1008,6 +1040,50 @@ class CallVerifier implements CallVerifierInterface
         }
 
         throw $this->assertionRecorder->createFailure($message);
+    }
+
+    private function matchIf($event, $checkResult)
+    {
+        if ($checkResult) {
+            $matchCount = 1;
+            $matchingEvents = array($event);
+        } else {
+            $matchCount = 0;
+            $matchingEvents = array();
+        }
+
+        return array($matchCount, $matchingEvents);
+    }
+
+    private function doCheckCalledWith(array $matchers)
+    {
+        return $this->matchesSingularCardinality(
+            $this->matcherVerifier->matches($matchers, $this->call->arguments())
+        );
+    }
+
+    private function doCalledWith(array $matchers)
+    {
+        list($matchCount, $matchingEvents) = $this->matchIf(
+            $this->call,
+            $this->matcherVerifier->matches($matchers, $this->call->arguments())
+        );
+        $cardinality = $this->resetSingularCardinality();
+
+        if ($this->matchesSingularCardinality($matchCount, $cardinality)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected %s with arguments like:\n    %s\nArguments:\n    %s",
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, 'call'),
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer
+                    ->renderArguments($this->call->arguments())
+            )
+        );
     }
 
     private $call;

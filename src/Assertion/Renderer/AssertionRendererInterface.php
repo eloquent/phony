@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Assertion\Renderer;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * The interface implemented by assertion renderers.
@@ -37,6 +38,22 @@ interface AssertionRendererInterface
      * @return string The rendered matchers.
      */
     public function renderMatchers(array $matchers);
+
+    /**
+     * Render a cardinality.
+     *
+     * @param tuple<integer|null,integer|null> $cardinality The cardinality.
+     * @param string                           $singular    The singluar.
+     * @param string|null                      $plural      The plural.
+     *
+     * @return string                   The rendered cardinality.
+     * @throws InvalidArgumentException If the cardinality is invalid.
+     */
+    public function renderCardinality(
+        array $cardinality,
+        $singular,
+        $plural = null
+    );
 
     /**
      * Render a sequence of calls.

@@ -79,6 +79,45 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->assertSame("<'a'>, <111>", $this->subject->renderMatchers(array($matcherA, $matcherB)));
     }
 
+    public function renderCardinalityData()
+    {
+        //                                        minimum maximum singular plural   expected
+        return array(
+            'Null minimum, null maximum' => array(null,   null,   'thing', null,    'any amount of things'),
+            'Zero minimum, null maximum' => array(0,      null,   'thing', null,    'any amount of things'),
+            'One minimum, null maximum'  => array(1,      null,   'thing', null,    'thing'),
+            'Two minimum, null maximum'  => array(2,      null,   'thing', null,    '2 things'),
+
+            'Null minimum, zero maximum' => array(null,   0,      'thing', null,    '0 things'),
+            'Zero minimum, zero maximum' => array(0,      0,      'thing', null,    '0 things'),
+
+            'Null minimum, one maximum'  => array(null,   1,      'thing', null,    'up to 1 thing'),
+            'Zero minimum, one maximum'  => array(0,      1,      'thing', null,    'up to 1 thing'),
+            'One minimum, one maximum'   => array(1,      1,      'thing', null,    'exactly 1 thing'),
+
+            'Null minimum, two maximum'  => array(null,   2,      'thing', null,    'up to 2 things'),
+            'Zero minimum, two maximum'  => array(0,      2,      'thing', null,    'up to 2 things'),
+            'One minimum, two maximum'   => array(1,      2,      'thing', null,    'between 1 and 2 things'),
+            'Two minimum, two maximum'   => array(2,      2,      'thing', null,    'exactly 2 things'),
+
+            'Custom plural'              => array(2,      null,   'sheep', 'sheep', '2 sheep'),
+        );
+    }
+
+    /**
+     * @dataProvider renderCardinalityData
+     */
+    public function testRenderCardinality($minimum, $maximum, $singular, $plural, $expected)
+    {
+        $this->assertSame($expected, $this->subject->renderCardinality(array($minimum, $maximum), $singular, $plural));
+    }
+
+    public function testRenderCardinalityFailure()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Invalid cardinality.');
+        $this->subject->renderCardinality(array(1, 0), 'thing');
+    }
+
     public function testRenderCalls()
     {
         $expected = <<<'EOD'

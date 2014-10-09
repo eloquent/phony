@@ -19,6 +19,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Exception;
+use InvalidArgumentException;
 use ReflectionMethod;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -119,6 +120,70 @@ class AssertionRenderer implements AssertionRendererInterface
         }
 
         return implode(', ', $rendered);
+    }
+
+    /**
+     * Render a cardinality.
+     *
+     * @param tuple<integer|null,integer|null> $cardinality The cardinality.
+     * @param string                           $singular    The singluar.
+     * @param string|null                      $plural      The plural.
+     *
+     * @return string                   The rendered cardinality.
+     * @throws InvalidArgumentException If the cardinality is invalid.
+     */
+    public function renderCardinality(
+        array $cardinality,
+        $singular,
+        $plural = null
+    ) {
+        if (null === $plural) {
+            $plural = $singular . 's';
+        }
+
+        list($minimum, $maximum) = $cardinality;
+
+        if (!$minimum) {
+            if (null === $maximum) {
+                return sprintf('any amount of %s', $plural);
+            }
+
+            if (0 === $maximum) {
+                return sprintf('0 %s', $plural);
+            }
+
+            $template = 'up to %d %s';
+
+            if (1 === $maximum) {
+                return sprintf($template, $maximum, $singular);
+            }
+
+            return sprintf($template, $maximum, $plural);
+        }
+
+        if (null === $maximum) {
+            if (1 === $minimum) {
+                return $singular;
+            }
+
+            return sprintf('%d %s', $minimum, $plural);
+        }
+
+        if ($minimum === $maximum) {
+            $template = 'exactly %d %s';
+
+            if (1 === $minimum) {
+                return sprintf($template, $minimum, $singular);
+            }
+
+            return sprintf($template, $minimum, $plural);
+        }
+
+        if ($minimum > $maximum) {
+            throw new InvalidArgumentException('Invalid cardinality.');
+        }
+
+        return sprintf('between %d and %d %s', $minimum, $maximum, $plural);
     }
 
     /**

@@ -26,8 +26,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy->assertCalledWith();
         $spy->assertCalledWith(111);
         $spy->assertCalledWith($this->identicalTo('a'), $this->anything());
-        $spy->callAt(0)->assertCalledWith('a', 'b', 'c');
-        $spy->callAt(1)->assertCalledWith(111);
+        $spy->callAt(0)->calledWith('a', 'b', 'c');
+        $spy->callAt(1)->calledWith(111);
     }
 
     public function testSpyFunction()
@@ -42,8 +42,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy->assertCalledWith();
         $spy->assertCalledWith(111);
         $spy->assertCalledWith($this->identicalTo('a'), $this->anything());
-        $spy->callAt(0)->assertCalledWith('a', 'b', 'c');
-        $spy->callAt(1)->assertCalledWith(111);
+        $spy->callAt(0)->calledWith('a', 'b', 'c');
+        $spy->callAt(1)->calledWith(111);
     }
 
     public function testStub()
@@ -60,8 +60,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->assertCalledWith();
         $stub->assertCalledWith(111);
         $stub->assertCalledWith($this->identicalTo('a'), $this->anything());
-        $stub->callAt(0)->assertCalledWith('a', 'b', 'c');
-        $stub->callAt(1)->assertCalledWith(111);
+        $stub->callAt(0)->calledWith('a', 'b', 'c');
+        $stub->callAt(1)->calledWith(111);
         $stub->assertReturned('x');
         $stub->assertReturned('y');
     }
@@ -80,8 +80,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->assertCalledWith();
         $stub->assertCalledWith(111);
         $stub->assertCalledWith($this->identicalTo('a'), $this->anything());
-        $stub->callAt(0)->assertCalledWith('a', 'b', 'c');
-        $stub->callAt(1)->assertCalledWith(111);
+        $stub->callAt(0)->calledWith('a', 'b', 'c');
+        $stub->callAt(1)->calledWith(111);
         $stub->assertReturned('x');
         $stub->assertReturned('y');
     }
