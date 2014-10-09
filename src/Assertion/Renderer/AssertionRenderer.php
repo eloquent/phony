@@ -20,8 +20,8 @@ use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Verification\Cardinality\CardinalityInterface;
 use Exception;
-use InvalidArgumentException;
 use ReflectionMethod;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -127,65 +127,60 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a cardinality.
      *
-     * @param tuple<integer|null,integer|null> $cardinality The cardinality.
-     * @param string                           $singular    The singluar.
-     * @param string|null                      $plural      The plural.
+     * @param CardinalityInterface $cardinality The cardinality.
+     * @param string               $verb        The verb.
      *
-     * @return string                   The rendered cardinality.
-     * @throws InvalidArgumentException If the cardinality is invalid.
+     * @return string The rendered cardinality.
      */
     public function renderCardinality(
-        array $cardinality,
-        $singular,
-        $plural = null
+        CardinalityInterface $cardinality,
+        $verb
     ) {
-        if (null === $plural) {
-            $plural = $singular . 's';
+        if ($cardinality->isNever()) {
+            return sprintf('no %s', $verb);
         }
 
-        list($minimum, $maximum) = $cardinality;
+        $isAlways = $cardinality->isAlways();
+
+        if ($isAlways) {
+            $rendered = sprintf('all to %s', $verb);
+        } else {
+            $rendered = $verb;
+        }
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
 
         if (!$minimum) {
             if (null === $maximum) {
-                return sprintf('any amount of %s', $plural);
+                return $rendered . ', any number of times';
             }
-
-            if (0 === $maximum) {
-                return sprintf('0 %s', $plural);
-            }
-
-            $template = 'up to %d %s';
 
             if (1 === $maximum) {
-                return sprintf($template, $maximum, $singular);
+                return $rendered . ', up to 1 time';
             }
 
-            return sprintf($template, $maximum, $plural);
+            return $rendered . sprintf(', up to %d times', $maximum);
         }
 
         if (null === $maximum) {
             if (1 === $minimum) {
-                return $singular;
+                return $rendered;
             }
 
-            return sprintf('%d %s', $minimum, $plural);
+            return $rendered . sprintf(', %d times', $minimum);
         }
 
         if ($minimum === $maximum) {
-            $template = 'exactly %d %s';
-
             if (1 === $minimum) {
-                return sprintf($template, $minimum, $singular);
+                return $rendered . ', exactly 1 time';
             }
 
-            return sprintf($template, $minimum, $plural);
+            return $rendered . sprintf(', exactly %d times', $minimum);
         }
 
-        if ($minimum > $maximum) {
-            throw new InvalidArgumentException('Invalid cardinality.');
-        }
-
-        return sprintf('between %d and %d %s', $minimum, $maximum, $plural);
+        return $rendered .
+            sprintf(', between %d and %d times', $minimum, $maximum);
     }
 
     /**

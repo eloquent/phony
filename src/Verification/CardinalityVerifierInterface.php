@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Verification;
 
+use Eloquent\Phony\Verification\Cardinality\CardinalityInterface;
+use Eloquent\Phony\Verification\Exception\InvalidCardinalityExceptionInterface;
+
 /**
  * The interface implemented by cardinality verifiers.
  */
@@ -66,14 +69,29 @@ interface CardinalityVerifierInterface
      * @param integer|null $minimum The minimum match count, or null for no minimum.
      * @param integer|null $maximum The maximum match count, or null for no maximum.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return CardinalityVerifierInterface         This verifier.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function between($minimum, $maximum);
 
     /**
+     * Requires that the next verification matches for all possible items.
+     *
+     * @return CardinalityVerifierInterface This verifier.
+     */
+    public function always();
+
+    /**
+     * Reset the cardinality to its default value.
+     *
+     * @return CardinalityInterface The current cardinality.
+     */
+    public function resetCardinality();
+
+    /**
      * Get the cardinality.
      *
-     * @return tuple<integer|null,integer|null> The cardinality.
+     * @return CardinalityInterface The cardinality.
      */
     public function cardinality();
 }

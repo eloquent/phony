@@ -13,8 +13,8 @@ namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Verification\Cardinality\CardinalityInterface;
 use Exception;
-use InvalidArgumentException;
 
 /**
  * The interface implemented by assertion renderers.
@@ -42,17 +42,14 @@ interface AssertionRendererInterface
     /**
      * Render a cardinality.
      *
-     * @param tuple<integer|null,integer|null> $cardinality The cardinality.
-     * @param string                           $singular    The singluar.
-     * @param string|null                      $plural      The plural.
+     * @param CardinalityInterface $cardinality The cardinality.
+     * @param string               $verb        The verb.
      *
-     * @return string                   The rendered cardinality.
-     * @throws InvalidArgumentException If the cardinality is invalid.
+     * @return string The rendered cardinality.
      */
     public function renderCardinality(
-        array $cardinality,
-        $singular,
-        $plural = null
+        CardinalityInterface $cardinality,
+        $verb
     );
 
     /**

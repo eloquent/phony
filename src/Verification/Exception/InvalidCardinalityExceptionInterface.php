@@ -12,14 +12,8 @@
 namespace Eloquent\Phony\Verification\Exception;
 
 /**
- * The interface implemented by invalid cardinality exceptions.
+ * The interface used to identify invalid cardinality exceptions.
  */
 interface InvalidCardinalityExceptionInterface
 {
-    /**
-     * Get the cardinality.
-     *
-     * @return tuple<integer|null,integer|null> The cardinality.
-     */
-    public function cardinality();
 }

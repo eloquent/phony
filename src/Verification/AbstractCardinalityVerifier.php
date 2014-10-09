@@ -11,8 +11,9 @@
 
 namespace Eloquent\Phony\Verification;
 
+use Eloquent\Phony\Verification\Cardinality\Cardinality;
+use Eloquent\Phony\Verification\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Verification\Exception\InvalidCardinalityExceptionInterface;
-use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
 
 /**
  * An abstract base class for implementing cardinality verifiers.
@@ -95,75 +96,34 @@ abstract class AbstractCardinalityVerifier implements
      * @param integer|null $minimum The minimum match count, or null for no minimum.
      * @param integer|null $maximum The maximum match count, or null for no maximum.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return CardinalityVerifierInterface         This verifier.
+     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function between($minimum, $maximum)
     {
-        if (null !== $minimum && null !== $maximum && $minimum > $maximum) {
-            $temp = $minimum;
-            $minimum = $maximum;
-            $maximum = $temp;
-        }
-
-        $this->cardinality = array($minimum, $maximum);
+        $this->cardinality = new Cardinality($minimum, $maximum);
 
         return $this;
     }
 
     /**
-     * Get the cardinality.
+     * Requires that the next verification matches for all possible items.
      *
-     * @return tuple<integer|null,integer|null> The cardinality.
+     * @return CardinalityVerifierInterface This verifier.
      */
-    public function cardinality()
+    public function always()
     {
-        return $this->cardinality;
-    }
+        $this->cardinality->setIsAlways(true);
 
-    /**
-     * Returns true if the cardinality is 'never'.
-     *
-     * @param tuple<integer|null,integer|null>|null $cardinality The cardinality, or null to check the current cardinality.
-     *
-     * @return boolean True if the cardinality is 'never'.
-     */
-    protected function cardinalityIsNever(array $cardinality = null)
-    {
-        if (null === $cardinality) {
-            $cardinality = $this->cardinality;
-        }
-
-        return 0 === $cardinality[1];
-    }
-
-    /**
-     * Get the cardinality, and assert that it is suitable for events that can
-     * only happen once or not at all.
-     *
-     * @param tuple<integer|null,integer|null>|null $cardinality The cardinality, or null to check the current cardinality.
-     *
-     * @return tuple<integer|null,integer|null>     The current cardinality.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    protected function singularCardinality(array $cardinality = null)
-    {
-        if (null === $cardinality) {
-            $cardinality = $this->cardinality();
-        }
-
-        if ($cardinality[0] > 1) {
-            throw new InvalidSingularCardinalityException($cardinality);
-        }
-
-        return $cardinality;
+        return $this;
     }
 
     /**
      * Reset the cardinality to its default value.
      *
-     * @return tuple<integer|null,integer|null> The current cardinality.
+     * @return CardinalityInterface The current cardinality.
      */
-    protected function resetCardinality()
+    public function resetCardinality()
     {
         $cardinality = $this->cardinality;
         $this->atLeast(1);
@@ -172,79 +132,13 @@ abstract class AbstractCardinalityVerifier implements
     }
 
     /**
-     * Reset the cardinality to its default value, and assert that it is
-     * suitable for events that can only happen once or not at all.
+     * Get the cardinality.
      *
-     * @return tuple<integer|null,integer|null>     The current cardinality.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @return CardinalityInterface The cardinality.
      */
-    protected function resetSingularCardinality()
+    public function cardinality()
     {
-        $cardinality = $this->singularCardinality();
-        $this->resetCardinality();
-
-        return $cardinality;
-    }
-
-    /**
-     * Returns true if the supplied match count matches the supplied
-     * cardinality.
-     *
-     * @param integer                               $matchCount  The match count.
-     * @param tuple<integer|null,integer|null>|null $cardinality The cardinality, or null to use and reset the current cardinality.
-     *
-     * @return boolean True if the supplied match count matches the cardinality.
-     */
-    protected function matchesCardinality(
-        $matchCount,
-        array $cardinality = null
-    ) {
-        if (null === $cardinality) {
-            $cardinality = $this->resetCardinality();
-        }
-
-        list($minimum, $maximum) = $cardinality;
-        $result = true;
-
-        if (null !== $minimum && $matchCount < $minimum) {
-            $result = false;
-        }
-
-        if (null !== $maximum && $matchCount > $maximum) {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns true if the supplied match count matches the supplied
-     * cardinality, and asserts that the cardinality is suitable for events that
-     * can only happen once or not at all.
-     *
-     * @param integer|boolean                       $matchCount  The match count.
-     * @param tuple<integer|null,integer|null>|null $cardinality The cardinality, or null to use and reset the current cardinality.
-     *
-     * @return boolean                              True if the supplied match count matches the cardinality.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    protected function matchesSingularCardinality(
-        $matchCount,
-        array $cardinality = null
-    ) {
-        if ($matchCount) {
-            $matchCount = 1;
-        } else {
-            $matchCount = 0;
-        }
-
-        if (null === $cardinality) {
-            $cardinality = $this->resetSingularCardinality();
-        } else {
-            $this->singularCardinality($cardinality);
-        }
-
-        return $this->matchesCardinality($matchCount, $cardinality);
+        return $this->cardinality;
     }
 
     protected $cardinality;

@@ -248,7 +248,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testYieldedFailureWithNoMatchersNever()
     {
         $expected = <<<'EOD'
-Expected 0 yields. Generated:
+Expected no yield. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -280,7 +280,7 @@ EOD;
     public function testYieldedFailureWithValueOnlyNever()
     {
         $expected = <<<'EOD'
-Expected 0 yields like <'n'>. Generated:
+Expected no yield like <'n'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -291,6 +291,22 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->generatorSubject->never()->yielded('n');
+    }
+
+    public function testYieldedFailureWithValueOnlyAlways()
+    {
+        $expected = <<<'EOD'
+Expected all to yield like <'n'>. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->always()->yielded('n');
     }
 
     public function testYieldedFailureWithValueOnlyWithNoGeneratorEvents()
@@ -321,7 +337,7 @@ EOD;
     public function testYieldedFailureWithKeyAndValueNever()
     {
         $expected = <<<'EOD'
-Expected 0 yields like <'m'> => <'n'>. Generated:
+Expected no yield like <'m'> => <'n'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'

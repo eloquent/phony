@@ -22,6 +22,7 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Verification\Cardinality\Cardinality;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -117,7 +118,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame(array(1, null), $this->subject->cardinality());
+        $this->assertEquals(new Cardinality(1, null), $this->subject->cardinality());
     }
 
     public function testConstructorDefaults()
@@ -253,7 +254,7 @@ EOD;
     public function testCalledWithFailureNever()
     {
         $expected = <<<'EOD'
-Expected 0 calls with arguments like:
+Expected no call with arguments like:
     <'a'>, <any>*
 Arguments:
     'a', 'b', 'c'
@@ -336,7 +337,7 @@ EOD;
     public function testCalledWithExactlyFailureNever()
     {
         $expected = <<<'EOD'
-Expected 0 calls with arguments like:
+Expected no call with arguments like:
     <'a'>, <'b'>, <'c'>
 Arguments:
     'a', 'b', 'c'
@@ -764,12 +765,12 @@ EOD;
     {
         $this->subject->never();
 
-        $this->assertSame(array(0, 0), $this->subject->never()->cardinality());
-        $this->assertSame(array(1, 1), $this->subject->once()->cardinality());
-        $this->assertSame(array(2, 2), $this->subject->times(2)->cardinality());
-        $this->assertSame(array(3, null), $this->subject->atLeast(3)->cardinality());
-        $this->assertSame(array(null, 4), $this->subject->atMost(4)->cardinality());
-        $this->assertSame(array(5, 6), $this->subject->between(5, 6)->cardinality());
-        $this->assertSame(array(5, 6), $this->subject->between(6, 5)->cardinality());
+        $this->assertEquals(new Cardinality(0, 0), $this->subject->never()->cardinality());
+        $this->assertEquals(new Cardinality(1, 1), $this->subject->once()->cardinality());
+        $this->assertEquals(new Cardinality(2, 2), $this->subject->times(2)->cardinality());
+        $this->assertEquals(new Cardinality(3, null), $this->subject->atLeast(3)->cardinality());
+        $this->assertEquals(new Cardinality(null, 4), $this->subject->atMost(4)->cardinality());
+        $this->assertEquals(new Cardinality(5, 6), $this->subject->between(5, 6)->cardinality());
+        $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
     }
 }
