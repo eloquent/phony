@@ -893,12 +893,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'yield';
+            $renderedType = 'call to yield';
         } elseif (1 === $argumentCount) {
-            $renderedType = sprintf('yield like %s', $value->describe());
+            $renderedType = sprintf('yield to be like %s', $value->describe());
         } else {
             $renderedType = sprintf(
-                'yield like %s => %s',
+                'yield to be like %s => %s',
                 $key->describe(),
                 $value->describe()
             );

@@ -101,19 +101,19 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
             'One minimum, two maximum'           => array(1,      2,      false,   'return', 'return, between 1 and 2 times'),
             'Two minimum, two maximum'           => array(2,      2,      false,   'return', 'return, exactly 2 times'),
 
-            'Null minimum, null maximum, always' => array(null,   null,   true,    'return', 'all to return, any number of times'),
-            'Zero minimum, null maximum, always' => array(0,      null,   true,    'return', 'all to return, any number of times'),
-            'One minimum, null maximum, always'  => array(1,      null,   true,    'return', 'all to return'),
-            'Two minimum, null maximum, always'  => array(2,      null,   true,    'return', 'all to return, 2 times'),
+            'Null minimum, null maximum, always' => array(null,   null,   true,    'return', 'every return, any number of times'),
+            'Zero minimum, null maximum, always' => array(0,      null,   true,    'return', 'every return, any number of times'),
+            'One minimum, null maximum, always'  => array(1,      null,   true,    'return', 'every return'),
+            'Two minimum, null maximum, always'  => array(2,      null,   true,    'return', 'every return, 2 times'),
 
-            'Null minimum, one maximum, always'  => array(null,   1,      true,    'return', 'all to return, up to 1 time'),
-            'Zero minimum, one maximum, always'  => array(0,      1,      true,    'return', 'all to return, up to 1 time'),
-            'One minimum, one maximum, always'   => array(1,      1,      true,    'return', 'all to return, exactly 1 time'),
+            'Null minimum, one maximum, always'  => array(null,   1,      true,    'return', 'every return, up to 1 time'),
+            'Zero minimum, one maximum, always'  => array(0,      1,      true,    'return', 'every return, up to 1 time'),
+            'One minimum, one maximum, always'   => array(1,      1,      true,    'return', 'every return, exactly 1 time'),
 
-            'Null minimum, two maximum, always'  => array(null,   2,      true,    'return', 'all to return, up to 2 times'),
-            'Zero minimum, two maximum, always'  => array(0,      2,      true,    'return', 'all to return, up to 2 times'),
-            'One minimum, two maximum, always'   => array(1,      2,      true,    'return', 'all to return, between 1 and 2 times'),
-            'Two minimum, two maximum, always'   => array(2,      2,      true,    'return', 'all to return, exactly 2 times'),
+            'Null minimum, two maximum, always'  => array(null,   2,      true,    'return', 'every return, up to 2 times'),
+            'Zero minimum, two maximum, always'  => array(0,      2,      true,    'return', 'every return, up to 2 times'),
+            'One minimum, two maximum, always'   => array(1,      2,      true,    'return', 'every return, between 1 and 2 times'),
+            'Two minimum, two maximum, always'   => array(2,      2,      true,    'return', 'every return, exactly 2 times'),
         );
     }
 

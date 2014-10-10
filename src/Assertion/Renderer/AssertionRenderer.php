@@ -143,7 +143,7 @@ class AssertionRenderer implements AssertionRendererInterface
         $isAlways = $cardinality->isAlways();
 
         if ($isAlways) {
-            $rendered = sprintf('all to %s', $verb);
+            $rendered = sprintf('every %s', $verb);
         } else {
             $rendered = $verb;
         }

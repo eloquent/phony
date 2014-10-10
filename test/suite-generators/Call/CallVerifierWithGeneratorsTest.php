@@ -240,7 +240,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected yield. Generated nothing."
+            "Expected call to yield. Generated nothing."
         );
         $this->subject->yielded();
     }
@@ -248,7 +248,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testYieldedFailureWithNoMatchersNever()
     {
         $expected = <<<'EOD'
-Expected no yield. Generated:
+Expected no call to yield. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -264,7 +264,7 @@ EOD;
     public function testYieldedFailureWithValueOnly()
     {
         $expected = <<<'EOD'
-Expected yield like <'m'>. Generated:
+Expected yield to be like <'m'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -280,7 +280,7 @@ EOD;
     public function testYieldedFailureWithValueOnlyNever()
     {
         $expected = <<<'EOD'
-Expected no yield like <'n'>. Generated:
+Expected no yield to be like <'n'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -296,7 +296,7 @@ EOD;
     public function testYieldedFailureWithValueOnlyAlways()
     {
         $expected = <<<'EOD'
-Expected all to yield like <'n'>. Generated:
+Expected every yield to be like <'n'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -313,7 +313,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected yield like <'n'>. Generated nothing."
+            "Expected yield to be like <'n'>. Generated nothing."
         );
         $this->subject->yielded('n');
     }
@@ -321,7 +321,7 @@ EOD;
     public function testYieldedFailureWithKeyAndValue()
     {
         $expected = <<<'EOD'
-Expected yield like <'m'> => <'o'>. Generated:
+Expected yield to be like <'m'> => <'o'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -337,7 +337,7 @@ EOD;
     public function testYieldedFailureWithKeyAndValueNever()
     {
         $expected = <<<'EOD'
-Expected no yield like <'m'> => <'n'>. Generated:
+Expected no yield to be like <'m'> => <'n'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -354,7 +354,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected yield like <'m'> => <'n'>. Generated nothing."
+            "Expected yield to be like <'m'> => <'n'>. Generated nothing."
         );
         $this->subject->yielded('m', 'n');
     }

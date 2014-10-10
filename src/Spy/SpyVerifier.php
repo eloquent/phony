@@ -389,21 +389,22 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
-        $callCount = count($this->spy->recordedCalls());
+        $calls = $this->spy->recordedCalls();
         $renderedCardinality = $this->assertionRenderer
             ->renderCardinality($cardinality, 'call');
 
-        if (0 === $callCount) {
-            $renderedActual = 'Never called';
-        } elseif (1 === $callCount) {
-            $renderedActual = 'Called once';
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
         } else {
-            $renderedActual = sprintf('Called %d times', $callCount);
+            $renderedActual = sprintf(
+                "Calls:\n%s",
+                $this->assertionRenderer->renderCalls($calls)
+            );
         }
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                'Expected %s. %s.',
+                'Expected %s. %s',
                 $renderedCardinality,
                 $renderedActual
             )
@@ -535,12 +536,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         if ($this->matcherFactory->isMatcher($value)) {
             $value = $this->matcherFactory->adapt($value);
-            $renderedCardinality = $this->assertionRenderer->renderCardinality(
-                $cardinality,
-                sprintf('call on object like %s', $value->describe())
-            );
+            $renderedType =
+                sprintf('call on object like %s', $value->describe());
         } else {
-            $renderedCardinality = 'call on supplied object';
+            $renderedType = 'call on supplied object';
         }
 
         $calls = $this->spy->recordedCalls();
@@ -555,7 +554,12 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         }
 
         throw $this->assertionRecorder->createFailure(
-            sprintf("Expected %s. %s", $renderedCardinality, $renderedActual)
+            sprintf(
+                "Expected %s. %s",
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
         );
     }
 
@@ -635,9 +639,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'return';
+            $renderedType = 'call to return';
         } else {
-            $renderedType = sprintf('return like %s', $value->describe());
+            $renderedType =
+                sprintf('call to return like %s', $value->describe());
         }
 
         $calls = $this->spy->recordedCalls();
@@ -754,21 +759,21 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         }
 
         if (null === $type) {
-            $renderedType = 'exception';
+            $renderedType = 'call to throw';
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                '%s exception',
+                'call to throw %s exception',
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'exception equal to %s',
+                    'call to throw exception equal to %s',
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'exception like %s',
+                    'call to throw exception like %s',
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }
