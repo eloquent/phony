@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -100,6 +101,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
+        $this->assertEquals(new Cardinality(1, null), $this->subject->cardinality());
     }
 
     public function testConstructorDefaults()
@@ -2013,6 +2015,19 @@ EOD;
 //         );
 //         $this->subject->assertAlwaysThrew((object) array());
 //     }
+
+    public function testCardinalityMethods()
+    {
+        $this->subject->never();
+
+        $this->assertEquals(new Cardinality(0, 0), $this->subject->never()->cardinality());
+        $this->assertEquals(new Cardinality(1, 1), $this->subject->once()->cardinality());
+        $this->assertEquals(new Cardinality(2, 2), $this->subject->times(2)->cardinality());
+        $this->assertEquals(new Cardinality(3), $this->subject->atLeast(3)->cardinality());
+        $this->assertEquals(new Cardinality(null, 4), $this->subject->atMost(4)->cardinality());
+        $this->assertEquals(new Cardinality(5, 6), $this->subject->between(5, 6)->cardinality());
+        $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
+    }
 
     public function testMergeCalls()
     {

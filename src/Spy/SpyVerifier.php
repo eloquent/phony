@@ -19,6 +19,7 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
@@ -34,7 +35,8 @@ use Exception;
  *
  * @internal
  */
-class SpyVerifier implements SpyVerifierInterface
+class SpyVerifier extends AbstractCardinalityVerifier implements
+    SpyVerifierInterface
 {
     /**
      * Merge all calls made on the supplied spies, and sort them by sequence.
@@ -120,6 +122,8 @@ class SpyVerifier implements SpyVerifierInterface
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
+
+        parent::__construct();
 
         $this->spy = $spy;
         $this->matcherFactory = $matcherFactory;

@@ -13,13 +13,15 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Cardinality\Verification\CardinalityVerifierInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Exception;
 
 /**
  * The interface implemented by spy verifiers.
  */
-interface SpyVerifierInterface extends SpyInterface
+interface SpyVerifierInterface extends SpyInterface,
+    CardinalityVerifierInterface
 {
     /**
      * Get the number of calls.
