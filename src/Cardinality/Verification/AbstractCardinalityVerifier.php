@@ -52,6 +52,26 @@ abstract class AbstractCardinalityVerifier implements
     }
 
     /**
+     * Requires that the next verification matches exactly two times.
+     *
+     * @return CardinalityVerifierInterface This verifier.
+     */
+    public function twice()
+    {
+        return $this->times(2);
+    }
+
+    /**
+     * Requires that the next verification matches exactly three times.
+     *
+     * @return CardinalityVerifierInterface This verifier.
+     */
+    public function thrice()
+    {
+        return $this->times(3);
+    }
+
+    /**
      * Requires that the next verification matches an exact number of times.
      *
      * @param integer|null $times The match count, or null to remove all cardinality requirements.

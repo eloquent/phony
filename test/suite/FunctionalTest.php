@@ -20,6 +20,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('a', 'b', 'c');
         $spy(111);
 
+        $spy->twice()->called();
         $spy->calledWith('a', 'b', 'c');
         $spy->calledWith('a', 'b');
         $spy->calledWith('a');
@@ -36,6 +37,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('a', 'b', 'c');
         $spy(111);
 
+        $spy->twice()->called();
         $spy->calledWith('a', 'b', 'c');
         $spy->calledWith('a', 'b');
         $spy->calledWith('a');

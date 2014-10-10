@@ -34,6 +34,20 @@ interface CardinalityVerifierInterface
     public function once();
 
     /**
+     * Requires that the next verification matches exactly two times.
+     *
+     * @return CardinalityVerifierInterface This verifier.
+     */
+    public function twice();
+
+    /**
+     * Requires that the next verification matches exactly three times.
+     *
+     * @return CardinalityVerifierInterface This verifier.
+     */
+    public function thrice();
+
+    /**
      * Requires that the next verification matches an exact number of times.
      *
      * @param integer|null $times The match count, or null to remove all cardinality requirements.
