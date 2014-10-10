@@ -91,24 +91,24 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     {
         //                                         minimum maximum isAlways count  maximumCount expected
         return array(
-            'Less than minimum'           => array(1,      null,   false,   0,     null,        false),
-            'Equal to minimum'            => array(1,      null,   false,   1,     null,        true),
-            'Greater than minimum'        => array(1,      null,   false,   2,     null,        true),
+            'Less than minimum'           => array(1,      null,   false,   0,     1,           false),
+            'Equal to minimum'            => array(1,      null,   false,   1,     1,           true),
+            'Greater than minimum'        => array(1,      null,   false,   2,     1,           true),
 
-            'Less than maximum'           => array(null,   1,      false,   0,     null,        true),
-            'Equal to maximum'            => array(null,   1,      false,   1,     null,        true),
-            'Greater than maximum'        => array(null,   1,      false,   2,     null,        false),
+            'Less than maximum'           => array(null,   1,      false,   0,     1,           true),
+            'Equal to maximum'            => array(null,   1,      false,   1,     1,           true),
+            'Greater than maximum'        => array(null,   1,      false,   2,     1,           false),
 
-            'Less than bounds minimum'    => array(1,      3,      false,   0,     null,        false),
-            'Equal to bounds minimum'     => array(1,      3,      false,   1,     null,        true),
-            'Within bounds'               => array(1,      3,      false,   2,     null,        true),
-            'Equal to bounds maximum'     => array(1,      3,      false,   3,     null,        true),
-            'Greater than bounds maximum' => array(1,      3,      false,   4,     null,        false),
+            'Less than bounds minimum'    => array(1,      3,      false,   0,     1,           false),
+            'Equal to bounds minimum'     => array(1,      3,      false,   1,     1,           true),
+            'Within bounds'               => array(1,      3,      false,   2,     1,           true),
+            'Equal to bounds maximum'     => array(1,      3,      false,   3,     1,           true),
+            'Greater than bounds maximum' => array(1,      3,      false,   4,     1,           false),
 
-            'Boolean true'                => array(1,      null,   false,   true,  null,        true),
-            'Boolean false'               => array(1,      null,   false,   false, null,        false),
-            'Boolean true with never'     => array(null,   0,      false,   true,  null,        false),
-            'Boolean false with never'    => array(null,   0,      false,   false, null,        true),
+            'Boolean true'                => array(1,      null,   false,   true,  1,           true),
+            'Boolean false'               => array(1,      null,   false,   false, 1,           false),
+            'Boolean true with never'     => array(null,   0,      false,   true,  1,           false),
+            'Boolean false with never'    => array(null,   0,      false,   false, 1,           true),
 
             'Always'                      => array(null,   3,      true,    2,     2,           true),
             'Not always'                  => array(null,   3,      true,    2,     3,           false),

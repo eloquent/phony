@@ -499,7 +499,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             list($matchCount, $matchingEvents) =
                 $this->matchIf($this->call, $value->matches($thisValue));
 
-            if ($cardinality->matches($matchCount)) {
+            if ($cardinality->matches($matchCount, 1)) {
                 return $this->assertionRecorder->createSuccess($matchingEvents);
             }
 
@@ -509,7 +509,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         list($matchCount, $matchingEvents) =
             $this->matchIf($this->call, $thisValue === $value);
 
-        if ($cardinality->matches($matchCount)) {
+        if ($cardinality->matches($matchCount, 1)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
     }
@@ -589,7 +589,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             list($matchCount, $matchingEvents) =
                 $this->matchIf($responseEvent, $responseEvent && !$exception);
 
-            if ($cardinality->matches($matchCount)) {
+            if ($cardinality->matches($matchCount, 1)) {
                 return $this->assertionRecorder->createSuccess($matchingEvents);
             }
 
@@ -603,7 +603,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $responseEvent && !$exception && $value->matches($returnValue)
         );
 
-        if ($cardinality->matches($matchCount)) {
+        if ($cardinality->matches($matchCount, 1)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
     }
@@ -682,7 +682,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             list($matchCount, $matchingEvents) =
                 $this->matchIf($responseEvent, $exception);
 
-            if ($cardinality->matches($matchCount)) {
+            if ($cardinality->matches($matchCount, 1)) {
                 return $this->assertionRecorder->createSuccess($matchingEvents);
             }
         } elseif (is_string($type)) {
@@ -691,7 +691,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             list($matchCount, $matchingEvents) =
                 $this->matchIf($responseEvent, is_a($exception, $type));
 
-            if ($cardinality->matches($matchCount)) {
+            if ($cardinality->matches($matchCount, 1)) {
                 return $this->assertionRecorder->createSuccess($matchingEvents);
             }
         } elseif (is_object($type)) {
@@ -702,7 +702,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                     $this->matchIf($responseEvent, $exception == $type);
 
                 if (
-                    $cardinality->matches($matchCount)
+                    $cardinality->matches($matchCount, 1)
                 ) {
                     return $this->assertionRecorder
                         ->createSuccess($matchingEvents);
@@ -717,7 +717,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 );
 
                 if (
-                    $cardinality->matches($matchCount)
+                    $cardinality->matches($matchCount, 1)
                 ) {
                     return $this->assertionRecorder
                         ->createSuccess($matchingEvents);
@@ -955,7 +955,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $this->matcherVerifier->matches($matchers, $this->call->arguments())
         );
 
-        if ($cardinality->matches($matchCount)) {
+        if ($cardinality->matches($matchCount, 1)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
     }

@@ -58,11 +58,11 @@ interface CardinalityInterface
      * Returns true if the supplied count matches this cardinality.
      *
      * @param integer|boolean $count        The count or result to check.
-     * @param integer|null    $maximumCount The maximum possible count, defaults to 1.
+     * @param integer         $maximumCount The maximum possible count.
      *
      * @return boolean True if the supplied count matches this cardinality.
      */
-    public function matches($count, $maximumCount = null);
+    public function matches($count, $maximumCount);
 
     /**
      * Asserts that this cardinality is suitable for events that can only happen
