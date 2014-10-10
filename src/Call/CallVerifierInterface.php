@@ -44,7 +44,7 @@ interface CallVerifierInterface extends CallInterface,
     public function argumentCount();
 
     /**
-     * Checks if called with the supplied arguments (and possibly others).
+     * Checks if called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -54,8 +54,7 @@ interface CallVerifierInterface extends CallInterface,
     public function checkCalledWith();
 
     /**
-     * Throws an exception unless called with the supplied arguments (and
-     * possibly others).
+     * Throws an exception unless called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -64,28 +63,6 @@ interface CallVerifierInterface extends CallInterface,
      * @throws Exception                            If the assertion fails.
      */
     public function calledWith();
-
-    /**
-     * Checks if called with the supplied arguments (and no others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return EventCollectionInterface|null        The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    public function checkCalledWithExactly();
-
-    /**
-     * Throws an exception unless called with the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return mixed                                The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
-     */
-    public function calledWithExactly();
 
     /**
      * Checks if the $this value is equal to the supplied value.

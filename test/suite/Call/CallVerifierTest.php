@@ -185,11 +185,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function calledWithData()
     {
-        //                                    arguments                  calledWith calledWithExactly
+        //                                    arguments                  calledWith calledWithWildcard
         return array(
             'Exact arguments'        => array(array('a', 'b', 'c'),      true,      true),
-            'First arguments'        => array(array('a', 'b'),           true,      false),
-            'Single argument'        => array(array('a'),                true,      false),
+            'First arguments'        => array(array('a', 'b'),           false,     true),
+            'Single argument'        => array(array('a'),                false,     true),
             'Last arguments'         => array(array('b', 'c'),           false,     false),
             'Last argument'          => array(array('c'),                false,     false),
             'Extra arguments'        => array(array('a', 'b', 'c', 'd'), false,     false),
@@ -202,7 +202,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider calledWithData
      */
-    public function testCheckCalledWith(array $arguments, $calledWith, $calledWithExactly)
+    public function testCheckCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
@@ -222,11 +222,31 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             !$calledWith,
             (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
         );
+
+        $arguments[] = $this->matcherFactory->wildcard();
+        $matchers[] = $this->matcherFactory->wildcard();
+
+        $this->assertSame(
+            $calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+        );
+        $this->assertSame(
+            $calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+        );
+        $this->assertSame(
+            !$calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+        );
+        $this->assertSame(
+            !$calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
+        );
     }
 
-    public function testCheckCalledWithWithEmptyArguments()
+    public function testCheckCalledWithWithWildcardOnly()
     {
-        $this->assertTrue((boolean) $this->subject->checkCalledWith());
+        $this->assertTrue((boolean) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledWith()
@@ -236,14 +256,20 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->assertionResult,
             $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertEquals($this->assertionResult, $this->subject->calledWith('a', 'b'));
         $this->assertEquals(
             $this->assertionResult,
-            $this->subject->calledWith($this->matchers[0], $this->matchers[1])
+            $this->subject->calledWith('a', 'b', $this->matcherFactory->wildcard())
         );
-        $this->assertEquals($this->assertionResult, $this->subject->calledWith('a'));
-        $this->assertEquals($this->assertionResult, $this->subject->calledWith($this->matchers[0]));
-        $this->assertEquals($this->assertionResult, $this->subject->calledWith());
+        $this->assertEquals(
+            $this->assertionResult,
+            $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matcherFactory->wildcard())
+        );
+        $this->assertEquals($this->assertionResult, $this->subject->calledWith('a', $this->matcherFactory->wildcard()));
+        $this->assertEquals(
+            $this->assertionResult,
+            $this->subject->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
+        );
+        $this->assertEquals($this->assertionResult, $this->subject->calledWith($this->matcherFactory->wildcard()));
 
         $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->calledWith('b', 'c'));
     }
@@ -252,7 +278,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $expected = <<<'EOD'
 Expected call with arguments like:
-    <'b'>, <'c'>, <any>*
+    <'b'>, <'c'>
 Arguments:
     'a', 'b', 'c'
 EOD;
@@ -269,14 +295,14 @@ Arguments:
     'a', 'b', 'c'
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->calledWith('a');
+        $this->subject->never()->calledWith('a', $this->matcherFactory->wildcard());
     }
 
     public function testCalledWithFailureWithNoArguments()
     {
         $expected = <<<'EOD'
 Expected call with arguments like:
-    <'b'>, <'c'>, <any>*
+    <'b'>, <'c'>
 Arguments:
     <none>
 EOD;
@@ -288,89 +314,6 @@ EOD;
     {
         $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException');
         $this->subject->times(2)->calledWith('a');
-    }
-
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testCheckCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $matchers = $this->matcherFactory->adaptAll($arguments);
-
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $matchers)
-        );
-        $this->assertSame(
-            !$calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            !$calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $matchers)
-        );
-    }
-
-    public function testCheckCalledWithWithExactlyEmptyArguments()
-    {
-        $this->assertFalse((boolean) $this->subject->checkCalledWithExactly());
-    }
-
-    public function testCalledWithExactly()
-    {
-        $this->assertEquals($this->assertionResult, $this->subject->calledWithExactly('a', 'b', 'c'));
-        $this->assertEquals(
-            $this->assertionResult,
-            $this->subject->calledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-
-        $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->calledWithExactly('a'));
-    }
-
-    public function testCalledWithExactlyFailure()
-    {
-        $expected = <<<'EOD'
-Expected call with arguments like:
-    <'a'>, <'b'>
-Arguments:
-    'a', 'b', 'c'
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->calledWithExactly('a', 'b');
-    }
-
-    public function testCalledWithExactlyFailureNever()
-    {
-        $expected = <<<'EOD'
-Expected no call with arguments like:
-    <'a'>, <'b'>, <'c'>
-Arguments:
-    'a', 'b', 'c'
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->calledWithExactly('a', 'b', 'c');
-    }
-
-    public function testCalledWithExactlyFailureWithNoArguments()
-    {
-        $expected = <<<'EOD'
-Expected call with arguments like:
-    <'a'>, <'b'>
-Arguments:
-    <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subjectWithNoArguments->calledWithExactly('a', 'b');
-    }
-
-    public function testCalledWithExactlyFailureInvalidCardinality()
-    {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException');
-        $this->subject->times(2)->calledWithExactly('a', 'b', 'c');
     }
 
     public function testCheckCalledOn()

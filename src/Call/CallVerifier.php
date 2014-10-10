@@ -414,7 +414,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Checks if called with the supplied arguments (and possibly others).
+     * Checks if called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -423,15 +423,22 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      */
     public function checkCalledWith()
     {
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();
+        $cardinality = $this->resetCardinality()->assertSingular();
 
-        return $this->doCheckCalledWith($matchers);
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+
+        list($matchCount, $matchingEvents) = $this->matchIf(
+            $this->call,
+            $this->matcherVerifier->matches($matchers, $this->call->arguments())
+        );
+
+        if ($cardinality->matches($matchCount, 1)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
     }
 
     /**
-     * Throws an exception unless called with the supplied arguments (and
-     * possibly others).
+     * Throws an exception unless called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -441,41 +448,27 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      */
     public function calledWith()
     {
+        $cardinality = $this->cardinality;
+
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();
 
-        return $this->doCalledWith($matchers);
-    }
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkCalledWith'), $matchers)
+        ) {
+            return $result;
+        }
 
-    /**
-     * Checks if called with the supplied arguments (and no others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return EventCollectionInterface|null        The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    public function checkCalledWithExactly()
-    {
-        return $this->doCheckCalledWith(
-            $this->matcherFactory->adaptAll(func_get_args())
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected %s with arguments like:\n    %s\nArguments:\n    %s",
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, 'call'),
+                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer
+                    ->renderArguments($this->call->arguments())
+            )
         );
-    }
-
-    /**
-     * Throws an exception unless called with the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return mixed                                The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
-     */
-    public function calledWithExactly()
-    {
-        return $this
-            ->doCalledWith($this->matcherFactory->adaptAll(func_get_args()));
     }
 
     /**
@@ -944,40 +937,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         }
 
         return array($matchCount, $matchingEvents);
-    }
-
-    private function doCheckCalledWith(array $matchers)
-    {
-        $cardinality = $this->resetCardinality()->assertSingular();
-
-        list($matchCount, $matchingEvents) = $this->matchIf(
-            $this->call,
-            $this->matcherVerifier->matches($matchers, $this->call->arguments())
-        );
-
-        if ($cardinality->matches($matchCount, 1)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    private function doCalledWith(array $matchers)
-    {
-        $cardinality = $this->cardinality;
-
-        if ($result = $this->doCheckCalledWith($matchers)) {
-            return $result;
-        }
-
-        throw $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected %s with arguments like:\n    %s\nArguments:\n    %s",
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'call'),
-                $this->assertionRenderer->renderMatchers($matchers),
-                $this->assertionRenderer
-                    ->renderArguments($this->call->arguments())
-            )
-        );
     }
 
     private $call;

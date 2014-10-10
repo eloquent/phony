@@ -165,7 +165,10 @@ class MatcherFactory implements MatcherFactoryInterface
      */
     public function adapt($value)
     {
-        if ($value instanceof MatcherInterface) {
+        if (
+            $value instanceof MatcherInterface ||
+            $value instanceof WildcardMatcherInterface
+        ) {
             return $value;
         }
 
