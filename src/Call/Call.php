@@ -17,6 +17,7 @@ use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
+use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use Generator;
 use InvalidArgumentException;
@@ -82,6 +83,48 @@ class Call implements CallInterface
     public function time()
     {
         return $this->calledEvent->time();
+    }
+
+    /**
+     * Returns true if this collection contains any events.
+     *
+     * @return boolean True if this collection contains any events.
+     */
+    public function hasEvents()
+    {
+        return true;
+    }
+
+    /**
+     * Get the first event.
+     *
+     * @return EventInterface|null The first event, or null if there are no events.
+     */
+    public function firstEvent()
+    {
+        return $this;
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface|null The last event, or null if there are no events.
+     */
+    public function lastEvent()
+    {
+        if ($this->endEvent) {
+            return $this->endEvent;
+        }
+
+        if ($this->generatorEvents) {
+            return $this->generatorEvents[count($this->generatorEvents) - 1];
+        }
+
+        if ($this->responseEvent) {
+            return $this->responseEvent;
+        }
+
+        return $this;
     }
 
     /**

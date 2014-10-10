@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call;
 
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
@@ -78,13 +77,6 @@ interface CallInterface extends EventInterface
      * @return ResponseEventInterface|null The end event, or null if the call has not yet completed.
      */
     public function endEvent();
-
-    /**
-     * Get the events.
-     *
-     * @return array<integer,CallEventInterface> The events.
-     */
-    public function events();
 
     /**
      * Returns true if this call has responded.

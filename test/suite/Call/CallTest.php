@@ -35,9 +35,12 @@ class CallTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
+        $this->assertSame($this->subject, $this->subject->firstEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->generatorEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
+        $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertFalse($this->subject->isGenerator());
@@ -61,9 +64,12 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
+        $this->assertSame($this->subject, $this->subject->firstEvent());
+        $this->assertSame($threwEvent, $this->subject->lastEvent());
         $this->assertSame($threwEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->generatorEvents());
         $this->assertSame($threwEvent, $this->subject->endEvent());
+        $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertFalse($this->subject->isGenerator());
@@ -85,9 +91,12 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
+        $this->assertSame($this->subject, $this->subject->firstEvent());
+        $this->assertSame($this->subject, $this->subject->lastEvent());
         $this->assertNull($this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->generatorEvents());
         $this->assertNull($this->subject->endEvent());
+        $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertFalse($this->subject->hasResponded());
         $this->assertFalse($this->subject->isGenerator());

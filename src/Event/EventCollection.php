@@ -12,42 +12,24 @@
 namespace Eloquent\Phony\Event;
 
 /**
- * An abstract base class for implementing events.
+ * Represents a collection of events.
  *
  * @internal
  */
-abstract class AbstractEvent implements EventInterface
+class EventCollection implements EventCollectionInterface
 {
     /**
-     * Construct a new event.
+     * Construct a new event collection.
      *
-     * @param integer $sequenceNumber The sequence number.
-     * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param array<integer,EventInterface>|null $events The events.
      */
-    public function __construct($sequenceNumber, $time)
+    public function __construct(array $events = null)
     {
-        $this->sequenceNumber = $sequenceNumber;
-        $this->time = $time;
-    }
+        if (null === $events) {
+            $events = array();
+        }
 
-    /**
-     * Get the sequence number.
-     *
-     * @return integer The sequence number.
-     */
-    public function sequenceNumber()
-    {
-        return $this->sequenceNumber;
-    }
-
-    /**
-     * Get the time at which the event occurred.
-     *
-     * @return float The time at which the event occurred, in seconds since the Unix epoch.
-     */
-    public function time()
-    {
-        return $this->time;
+        $this->events = $events;
     }
 
     /**
@@ -57,7 +39,7 @@ abstract class AbstractEvent implements EventInterface
      */
     public function hasEvents()
     {
-        return true;
+        return $this->events && true;
     }
 
     /**
@@ -67,7 +49,7 @@ abstract class AbstractEvent implements EventInterface
      */
     public function events()
     {
-        return array($this);
+        return $this->events;
     }
 
     /**
@@ -77,7 +59,9 @@ abstract class AbstractEvent implements EventInterface
      */
     public function firstEvent()
     {
-        return $this;
+        if ($this->events) {
+            return $this->events[0];
+        }
     }
 
     /**
@@ -87,9 +71,10 @@ abstract class AbstractEvent implements EventInterface
      */
     public function lastEvent()
     {
-        return $this;
+        if ($this->events) {
+            return $this->events[count($this->events) - 1];
+        }
     }
 
-    private $sequenceNumber;
-    private $time;
+    private $events;
 }

@@ -34,6 +34,10 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertNull($this->subject->call());
+        $this->assertTrue($this->subject->hasEvents());
+        $this->assertSame(array($this->subject), $this->subject->events());
+        $this->assertSame($this->subject, $this->subject->firstEvent());
+        $this->assertSame($this->subject, $this->subject->lastEvent());
     }
 
     public function testConstructorDefaults()

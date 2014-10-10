@@ -34,6 +34,10 @@ class YieldedEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->key, $this->subject->key());
         $this->assertSame($this->value, $this->subject->value());
         $this->assertNull($this->subject->call());
+        $this->assertTrue($this->subject->hasEvents());
+        $this->assertSame(array($this->subject), $this->subject->events());
+        $this->assertSame($this->subject, $this->subject->firstEvent());
+        $this->assertSame($this->subject, $this->subject->lastEvent());
     }
 
     public function testConstructorWithValueOnly()

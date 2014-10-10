@@ -166,6 +166,36 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Returns true if this collection contains any events.
+     *
+     * @return boolean True if this collection contains any events.
+     */
+    public function hasEvents()
+    {
+        return $this->call->hasEvents();
+    }
+
+    /**
+     * Get the first event.
+     *
+     * @return EventInterface|null The first event, or null if there are no events.
+     */
+    public function firstEvent()
+    {
+        return $this->call->firstEvent();
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface|null The last event, or null if there are no events.
+     */
+    public function lastEvent()
+    {
+        return $this->call->lastEvent();
+    }
+
+    /**
      * Get the 'called' event.
      *
      * @return CalledEventInterface The 'called' event.
