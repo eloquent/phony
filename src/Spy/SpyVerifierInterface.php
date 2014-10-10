@@ -61,7 +61,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function called();
+    public function checkCalled();
 
     /**
      * Throws an exception unless called.
@@ -69,7 +69,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalled();
+    public function called();
 
     /**
      * Checks if this spy was called before the supplied spy.
@@ -78,7 +78,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledBefore(SpyInterface $spy);
+    public function checkCalledBefore(SpyInterface $spy);
 
     /**
      * Throws an exception unless this spy was called before the supplied spy.
@@ -88,7 +88,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledBefore(SpyInterface $spy);
+    public function calledBefore(SpyInterface $spy);
 
     /**
      * Checks if this spy was called after the supplied spy.
@@ -97,7 +97,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledAfter(SpyInterface $spy);
+    public function checkCalledAfter(SpyInterface $spy);
 
     /**
      * Throws an exception unless this spy was called after the supplied spy.
@@ -107,7 +107,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledAfter(SpyInterface $spy);
+    public function calledAfter(SpyInterface $spy);
 
     /**
      * Checks if called with the supplied arguments (and possibly others).
@@ -116,7 +116,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledWith();
+    public function checkCalledWith();
 
     /**
      * Throws an exception unless called with the supplied arguments (and
@@ -127,7 +127,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledWith();
+    public function calledWith();
 
     /**
      * Checks if called with the supplied arguments (and no others).
@@ -136,7 +136,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledWithExactly();
+    public function checkCalledWithExactly();
 
     /**
      * Throws an exception unless called with the supplied arguments (and no
@@ -147,7 +147,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledWithExactly();
+    public function calledWithExactly();
 
     /**
      * Checks if the $this value is the same as the supplied value.
@@ -156,7 +156,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledOn($value);
+    public function checkCalledOn($value);
 
     /**
      * Throws an exception unless the $this value is the same as the supplied
@@ -167,7 +167,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledOn($value);
+    public function calledOn($value);
 
     /**
      * Checks if this spy returned the supplied value.
@@ -176,7 +176,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function returned($value = null);
+    public function checkReturned($value = null);
 
     /**
      * Throws an exception unless this spy returned the supplied value.
@@ -186,7 +186,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertReturned($value = null);
+    public function returned($value = null);
 
     /**
      * Checks if an exception of the supplied type was thrown.
@@ -195,7 +195,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function threw($type = null);
+    public function checkThrew($type = null);
 
     /**
      * Throws an exception unless an exception of the supplied type was thrown.
@@ -205,5 +205,5 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertThrew($type = null);
+    public function threw($type = null);
 }

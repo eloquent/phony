@@ -362,7 +362,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function called()
+    public function checkCalled()
     {
         return count($this->spy->recordedCalls()) > 0;
     }
@@ -373,7 +373,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalled()
+    public function called()
     {
         $calls = $this->spy->recordedCalls();
 
@@ -391,7 +391,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledBefore(SpyInterface $spy)
+    public function checkCalledBefore(SpyInterface $spy)
     {
         $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
@@ -421,7 +421,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledBefore(SpyInterface $spy)
+    public function calledBefore(SpyInterface $spy)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -471,7 +471,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledAfter(SpyInterface $spy)
+    public function checkCalledAfter(SpyInterface $spy)
     {
         $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
@@ -502,7 +502,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledAfter(SpyInterface $spy)
+    public function calledAfter(SpyInterface $spy)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -552,7 +552,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledWith()
+    public function checkCalledWith()
     {
         $calls = $this->spy->recordedCalls();
 
@@ -583,7 +583,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledWith()
+    public function calledWith()
     {
         $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
@@ -628,7 +628,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledWithExactly()
+    public function checkCalledWithExactly()
     {
         $calls = $this->spy->recordedCalls();
 
@@ -658,7 +658,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledWithExactly()
+    public function calledWithExactly()
     {
         $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
@@ -701,7 +701,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function calledOn($value)
+    public function checkCalledOn($value)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -741,7 +741,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertCalledOn($value)
+    public function calledOn($value)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -816,7 +816,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function returned($value = null)
+    public function checkReturned($value = null)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -847,7 +847,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertReturned($value = null)
+    public function returned($value = null)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -911,7 +911,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function threw($type = null)
+    public function checkThrew($type = null)
     {
         $calls = $this->spy->recordedCalls();
 
@@ -975,7 +975,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
-    public function assertThrew($type = null)
+    public function threw($type = null)
     {
         $calls = $this->spy->recordedCalls();
         $callCount = count($calls);
