@@ -13,9 +13,9 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Assertion\Result\AssertionResult;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -318,7 +318,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAssertCalled()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new AssertionResult($this->calls);
+        $expected = new EventCollection($this->calls);
 
         $this->assertEquals($expected, $this->subject->assertCalled());
     }
@@ -345,7 +345,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAssertCalledOnce()
     {
         $this->subject->addCall($this->callA);
-        $expected = new AssertionResult(array($this->callA));
+        $expected = new EventCollection(array($this->callA));
 
         $this->assertEquals($expected, $this->subject->assertCalledOnce());
     }
@@ -384,7 +384,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAssertCalledTimes()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new AssertionResult($this->calls);
+        $expected = new EventCollection($this->calls);
 
         $this->assertEquals($expected, $this->subject->assertCalledTimes(4));
     }
@@ -424,7 +424,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls(array($this->callB, $this->callD));
         $spy = new Spy();
         $spy->setCalls(array($this->callA, $this->callC));
-        $expected = new AssertionResult(array($this->callB));
+        $expected = new EventCollection(array($this->callB));
 
         $this->assertEquals($expected, $this->subject->assertCalledBefore($spy));
     }
@@ -496,7 +496,7 @@ EOD;
         $this->subject->setCalls(array($this->callA, $this->callD));
         $spy = new Spy();
         $spy->setCalls(array($this->callB, $this->callC));
-        $expected = new AssertionResult(array($this->callD));
+        $expected = new EventCollection(array($this->callD));
 
         $this->assertEquals($expected, $this->subject->assertCalledAfter($spy));
     }
@@ -587,7 +587,7 @@ EOD;
     public function testAssertCalledWith()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new AssertionResult(array($this->callA, $this->callC));
+        $expected = new EventCollection(array($this->callA, $this->callC));
 
         $this->assertEquals($expected, $this->subject->assertCalledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -598,7 +598,7 @@ EOD;
         $this->assertEquals($expected, $this->subject->assertCalledWith($this->matchers[0], $this->matchers[1]));
         $this->assertEquals($expected, $this->subject->assertCalledWith('a'));
         $this->assertEquals($expected, $this->subject->assertCalledWith($this->matchers[0]));
-        $this->assertEquals(new AssertionResult($this->calls), $this->subject->assertCalledWith());
+        $this->assertEquals(new EventCollection($this->calls), $this->subject->assertCalledWith());
     }
 
     public function testAssertCalledWithFailure()
@@ -648,7 +648,7 @@ EOD;
     public function testAssertCalledOnceWith()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new AssertionResult(array($this->callA));
+        $expected = new EventCollection(array($this->callA));
 
         $this->assertEquals($expected, $this->subject->assertCalledOnceWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -713,7 +713,7 @@ EOD;
     public function testAssertCalledTimesWith()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new AssertionResult(array($this->callA, $this->callC));
+        $expected = new EventCollection(array($this->callA, $this->callC));
 
         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, 'a', 'b', 'c'));
         $this->assertEquals(
@@ -723,7 +723,7 @@ EOD;
         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, 'a'));
         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, $this->matchers[0]));
 
-        $expected = new AssertionResult($this->calls);
+        $expected = new EventCollection($this->calls);
 
         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(4));
         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(4));
@@ -803,7 +803,7 @@ EOD;
     public function testAssertAlwaysCalledWith()
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new AssertionResult(array($this->callA, $this->callA));
+        $expected = new EventCollection(array($this->callA, $this->callA));
 
         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -878,7 +878,7 @@ EOD;
     public function testAssertCalledWithExactly()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new AssertionResult(array($this->callA, $this->callC));
+        $expected = new EventCollection(array($this->callA, $this->callC));
 
         $this->assertEquals($expected, $this->subject->assertCalledWithExactly('a', 'b', 'c'));
         $this->assertEquals(
@@ -932,7 +932,7 @@ EOD;
     public function testAssertCalledOnceWithExactly()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new AssertionResult(array($this->callA));
+        $expected = new EventCollection(array($this->callA));
 
         $this->assertEquals($expected, $this->subject->assertCalledOnceWithExactly('a', 'b', 'c'));
         $this->assertEquals(
@@ -995,7 +995,7 @@ EOD;
     public function testAssertCalledTimesWithExactly()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new AssertionResult(array($this->callA, $this->callC));
+        $expected = new EventCollection(array($this->callA, $this->callC));
 
         $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2, 'a', 'b', 'c'));
         $this->assertEquals(
@@ -1003,7 +1003,7 @@ EOD;
             $this->subject->assertCalledTimesWithExactly(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
 
-        $expected = new AssertionResult(array($this->callB, $this->callD));
+        $expected = new EventCollection(array($this->callB, $this->callD));
 
         $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2));
         $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2));
@@ -1085,7 +1085,7 @@ EOD;
     public function testAssertAlwaysCalledWithExactly()
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new AssertionResult(array($this->callA, $this->callA));
+        $expected = new EventCollection(array($this->callA, $this->callA));
 
         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c'));
         $this->assertEquals(
@@ -1154,7 +1154,7 @@ EOD;
 
     public function testAssertNeverCalledWith()
     {
-        $expected = new AssertionResult();
+        $expected = new EventCollection();
 
         $this->assertEquals($expected, $this->subject->assertNeverCalledWith());
 
@@ -1237,7 +1237,7 @@ EOD;
 
     public function testAssertNeverCalledWithExactly()
     {
-        $expected = new AssertionResult();
+        $expected = new EventCollection();
 
         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly());
 
@@ -1319,17 +1319,17 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals(new AssertionResult(array($this->callD)), $this->subject->assertCalledOn(null));
+        $this->assertEquals(new EventCollection(array($this->callD)), $this->subject->assertCalledOn(null));
         $this->assertEquals(
-            new AssertionResult(array($this->callA, $this->callC)),
+            new EventCollection(array($this->callA, $this->callC)),
             $this->subject->assertCalledOn($this->thisValueA)
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callB)),
+            new EventCollection(array($this->callB)),
             $this->subject->assertCalledOn($this->thisValueB)
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callA, $this->callB, $this->callC)),
+            new EventCollection(array($this->callA, $this->callB, $this->callC)),
             $this->subject->assertCalledOn(new EqualToMatcher($this->thisValueA))
         );
     }
@@ -1410,7 +1410,7 @@ EOD;
     public function testAssertAlwaysCalledOn()
     {
         $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new AssertionResult(array($this->callC, $this->callC));
+        $expected = new EventCollection(array($this->callC, $this->callC));
 
         $this->assertEquals($expected, $this->subject->assertAlwaysCalledOn($this->thisValueA));
         $this->assertEquals($expected, $this->subject->assertAlwaysCalledOn(new EqualToMatcher($this->thisValueA)));
@@ -1488,19 +1488,19 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals(
-            new AssertionResult(array($this->callAResponse, $this->callBResponse)),
+            new EventCollection(array($this->callAResponse, $this->callBResponse)),
             $this->subject->assertReturned()
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callAResponse)),
+            new EventCollection(array($this->callAResponse)),
             $this->subject->assertReturned($this->returnValueA)
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callBResponse)),
+            new EventCollection(array($this->callBResponse)),
             $this->subject->assertReturned($this->returnValueB)
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callAResponse)),
+            new EventCollection(array($this->callAResponse)),
             $this->subject->assertReturned(new EqualToMatcher($this->returnValueA))
         );
     }
@@ -1575,7 +1575,7 @@ EOD;
     public function testAssertAlwaysReturned()
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new AssertionResult(array($this->callAResponse, $this->callAResponse));
+        $expected = new EventCollection(array($this->callAResponse, $this->callAResponse));
 
         $this->assertEquals($expected, $this->subject->assertAlwaysReturned());
         $this->assertEquals($expected, $this->subject->assertAlwaysReturned($this->returnValueA));
@@ -1657,27 +1657,27 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals(
-            new AssertionResult(array($this->callCResponse, $this->callDResponse)),
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
             $this->subject->assertThrew()
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callCResponse, $this->callDResponse)),
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
             $this->subject->assertThrew('Exception')
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callCResponse, $this->callDResponse)),
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
             $this->subject->assertThrew('RuntimeException')
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callCResponse)),
+            new EventCollection(array($this->callCResponse)),
             $this->subject->assertThrew($this->exceptionA)
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callDResponse)),
+            new EventCollection(array($this->callDResponse)),
             $this->subject->assertThrew($this->exceptionB)
         );
         $this->assertEquals(
-            new AssertionResult(array($this->callCResponse)),
+            new EventCollection(array($this->callCResponse)),
             $this->subject->assertThrew(new EqualToMatcher($this->exceptionA))
         );
     }
@@ -1861,7 +1861,7 @@ EOD;
     public function testAssertAlwaysThrew()
     {
         $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new AssertionResult(array($this->callCResponse, $this->callCResponse));
+        $expected = new EventCollection(array($this->callCResponse, $this->callCResponse));
 
         $this->assertEquals($expected, $this->subject->assertAlwaysThrew());
         $this->assertEquals($expected, $this->subject->assertAlwaysThrew('Exception'));

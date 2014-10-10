@@ -13,10 +13,10 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Assertion\Result\AssertionResult;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -100,10 +100,10 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
 
-        $this->assertionResult = new AssertionResult(array($this->call));
-        $this->returnedAssertionResult = new AssertionResult(array($this->call->responseEvent()));
-        $this->threwAssertionResult = new AssertionResult(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new AssertionResult();
+        $this->assertionResult = new EventCollection(array($this->call));
+        $this->returnedAssertionResult = new EventCollection(array($this->call->responseEvent()));
+        $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
+        $this->emptyAssertionResult = new EventCollection();
 
         // additions for generators
 
@@ -214,26 +214,26 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testYielded()
     {
         $this->assertEquals(
-            new AssertionResult(array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE)),
+            new EventCollection(array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE)),
             $this->generatorSubject->yielded()
         );
         $this->assertEquals(
-            new AssertionResult(array($this->generatorEventA)),
+            new EventCollection(array($this->generatorEventA)),
             $this->generatorSubject->yielded('n')
         );
         $this->assertEquals(
-            new AssertionResult(array($this->generatorEventA)),
+            new EventCollection(array($this->generatorEventA)),
             $this->generatorSubject->yielded('m', 'n')
         );
         $this->assertEquals(
-            new AssertionResult(array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE)),
+            new EventCollection(array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE)),
             $this->generatorSubject->times(3)->yielded()
         );
         $this->assertEquals(
-            new AssertionResult(array($this->generatorEventA)),
+            new EventCollection(array($this->generatorEventA)),
             $this->generatorSubject->once()->yielded('n')
         );
-        $this->assertEquals(new AssertionResult(), $this->generatorSubject->never()->yielded('m'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->yielded('m'));
     }
 
     public function testYieldedFailureWithNoMatchers()

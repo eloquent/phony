@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Exception;
 
 /**
@@ -55,41 +55,41 @@ interface SpyVerifierInterface extends SpyInterface
     public function lastCall();
 
     /**
-     * Returns true if called at least once.
+     * Checks if called at least once.
      *
-     * @return boolean True if called at least once.
+     * @return EventCollectionInterface|null The result.
      */
     public function called();
 
     /**
      * Throws an exception unless called at least once.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalled();
 
     /**
-     * Returns true if called only once.
+     * Checks if called only once.
      *
-     * @return boolean True if called only once.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledOnce();
 
     /**
      * Throws an exception unless called only once.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledOnce();
 
     /**
-     * Returns true if called an exact amount of times.
+     * Checks if called an exact amount of times.
      *
      * @param integer $times The expected number of calls.
      *
-     * @return boolean True if called an exact amount of times.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledTimes($times);
 
@@ -98,17 +98,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param integer $times The expected number of calls.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledTimes($times);
 
     /**
-     * Returns true if this spy was called before the supplied spy.
+     * Checks if this spy was called before the supplied spy.
      *
      * @param SpyInterface $spy Another spy.
      *
-     * @return boolean True if this spy was called before the supplied spy.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledBefore(SpyInterface $spy);
 
@@ -117,17 +117,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param SpyInterface $spy Another spy.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledBefore(SpyInterface $spy);
 
     /**
-     * Returns true if this spy was called after the supplied spy.
+     * Checks if this spy was called after the supplied spy.
      *
      * @param SpyInterface $spy Another spy.
      *
-     * @return boolean True if this spy was called after the supplied spy.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledAfter(SpyInterface $spy);
 
@@ -136,18 +136,18 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param SpyInterface $spy Another spy.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledAfter(SpyInterface $spy);
 
     /**
-     * Returns true if called with the supplied arguments (and possibly others)
-     * at least once.
+     * Checks if called with the supplied arguments (and possibly others) at
+     * least once.
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called with the supplied arguments at least once.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledWith();
 
@@ -157,62 +157,62 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledWith();
 
     /**
-     * Returns true if called only once with the supplied arguments (and
-     * possibly others).
+     * Checks if called only once with the supplied arguments (and possibly
+     * others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called only once with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledOnceWith();
 
     /**
-     * Returns true if called only once with the supplied arguments (and
-     * possibly others).
+     * Throws an exception unless called only once with the supplied arguments
+     * (and possibly others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledOnceWith();
 
     /**
-     * Returns true if called an exact amount of times with the supplied
-     * arguments (and possibly others).
+     * Checks if called an exact amount of times with the supplied arguments
+     * (and possibly others).
      *
      * @param integer $times        The expected number of calls.
      * @param mixed   $argument,... The arguments.
      *
-     * @return boolean True if called an exact amount of times with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledTimesWith($times);
 
     /**
-     * Returns true if called an exact amount of times with the supplied
-     * arguments (and possibly others).
+     * Throws an exception unless called an exact amount of times with the
+     * supplied arguments (and possibly others).
      *
      * @param integer $times        The expected number of calls.
      * @param mixed   $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledTimesWith($times);
 
     /**
-     * Returns true if always called with the supplied arguments (and possibly
+     * Checks if always called with the supplied arguments (and possibly
      * others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if always called with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function alwaysCalledWith();
 
@@ -222,18 +222,18 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysCalledWith();
 
     /**
-     * Returns true if called with the supplied arguments (and no others) at
-     * least once.
+     * Checks if called with the supplied arguments (and no others) at least
+     * once.
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called with the supplied arguments at least once.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledWithExactly();
 
@@ -243,62 +243,60 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledWithExactly();
 
     /**
-     * Returns true if called only once with the supplied arguments (and
-     * no others).
+     * Checks if called only once with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if called only once with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledOnceWithExactly();
 
     /**
-     * Returns true if called only once with the supplied arguments (and
-     * no others).
+     * Throws an exception unless called only once with the supplied arguments
+     * (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledOnceWithExactly();
 
     /**
-     * Returns true if called an exact amount of times with the supplied
-     * arguments (and no others).
+     * Checks if called an exact amount of times with the supplied arguments
+     * (and no others).
      *
      * @param integer $times        The expected number of calls.
      * @param mixed   $argument,... The arguments.
      *
-     * @return boolean True if called an exact amount of times with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledTimesWithExactly($times);
 
     /**
-     * Returns true if called an exact amount of times with the supplied
-     * arguments (and no others).
+     * Throws an exception unless called an exact amount of times with the
+     * supplied arguments (and no others).
      *
      * @param integer $times        The expected number of calls.
      * @param mixed   $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledTimesWithExactly($times);
 
     /**
-     * Returns true if always called with the supplied arguments (and no
-     * others).
+     * Checks if always called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if always called with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function alwaysCalledWithExactly();
 
@@ -308,18 +306,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysCalledWithExactly();
 
     /**
-     * Returns true if never called with the supplied arguments (and possibly
-     * others).
+     * Checks if never called with the supplied arguments (and possibly others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if never called with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function neverCalledWith();
 
@@ -329,17 +326,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertNeverCalledWith();
 
     /**
-     * Returns true if never called with the supplied arguments (and no others).
+     * Checks if never called with the supplied arguments (and no others).
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return boolean True if never called with the supplied arguments.
+     * @return EventCollectionInterface|null The result.
      */
     public function neverCalledWithExactly();
 
@@ -349,18 +346,18 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertNeverCalledWithExactly();
 
     /**
-     * Returns true if the $this value is the same as the supplied value for at
-     * least one call.
+     * Checks if the $this value is the same as the supplied value for at least
+     * one call.
      *
      * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is the same as the supplied value for at least one call.
+     * @return EventCollectionInterface|null The result.
      */
     public function calledOn($value);
 
@@ -370,18 +367,18 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertCalledOn($value);
 
     /**
-     * Returns true if the $this value is the same as the supplied value for
-     * all calls.
+     * Checks if the $this value is the same as the supplied value for all
+     * calls.
      *
      * @param object|null $value The possible $this value.
      *
-     * @return boolean True if the $this value is the same as the supplied value for all calls.
+     * @return EventCollectionInterface|null The result.
      */
     public function alwaysCalledOn($value);
 
@@ -391,17 +388,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param object|null $value The possible $this value.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysCalledOn($value);
 
     /**
-     * Returns true if this spy returned the supplied value at least once.
+     * Checks if this spy returned the supplied value at least once.
      *
      * @param mixed $value The value.
      *
-     * @return boolean True if this spy returned the supplied value at least once.
+     * @return EventCollectionInterface|null The result.
      */
     public function returned($value = null);
 
@@ -411,17 +408,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $value The value.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertReturned($value = null);
 
     /**
-     * Returns true if this spy always returned the supplied value.
+     * Checks if this spy always returned the supplied value.
      *
      * @param mixed $value The value.
      *
-     * @return boolean True if this spy always returned the supplied value.
+     * @return EventCollectionInterface|null The result.
      */
     public function alwaysReturned($value = null);
 
@@ -430,18 +427,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param mixed $value The value.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysReturned($value = null);
 
     /**
-     * Returns true if an exception of the supplied type was thrown at least
-     * once.
+     * Checks if an exception of the supplied type was thrown at least once.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean True if a matching exception was thrown at least once.
+     * @return EventCollectionInterface|null The result.
      */
     public function threw($type = null);
 
@@ -451,17 +447,17 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertThrew($type = null);
 
     /**
-     * Returns true if an exception of the supplied type was always thrown.
+     * Checks if an exception of the supplied type was always thrown.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return boolean True if a matching exception was always thrown.
+     * @return EventCollectionInterface|null The result.
      */
     public function alwaysThrew($type = null);
 
@@ -471,7 +467,7 @@ interface SpyVerifierInterface extends SpyInterface
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return AssertionResultInterface If the assertion passes.
+     * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails.
      */
     public function assertAlwaysThrew($type = null);

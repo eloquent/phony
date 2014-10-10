@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Assertion\Recorder;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\Result\AssertionResult;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Event\EventCollection;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -27,14 +27,14 @@ class AssertionRecorderTest extends PHPUnit_Framework_TestCase
     public function testCreateSuccess()
     {
         $events = array(new ReturnedEvent(0, 0.0), new ReturnedEvent(1, 1.0));
-        $expected = new AssertionResult($events);
+        $expected = new EventCollection($events);
 
         $this->assertEquals($expected, $this->subject->createSuccess($events));
     }
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new AssertionResult();
+        $expected = new EventCollection();
 
         $this->assertEquals($expected, $this->subject->createSuccess());
     }

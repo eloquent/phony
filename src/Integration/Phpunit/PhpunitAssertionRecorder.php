@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Integration\Phpunit;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use PHPUnit_Framework_Assert;
@@ -46,7 +46,7 @@ class PhpunitAssertionRecorder extends AssertionRecorder
      *
      * @param array<integer,EventInterface>|null $events The events.
      *
-     * @return AssertionResultInterface An assertion result.
+     * @return EventCollectionInterface The result.
      */
     public function createSuccess(array $events = null)
     {

@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Assertion\Recorder;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\Result\AssertionResult;
-use Eloquent\Phony\Assertion\Result\AssertionResultInterface;
+use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
 
@@ -43,11 +43,11 @@ class AssertionRecorder implements AssertionRecorderInterface
      *
      * @param array<integer,EventInterface>|null $events The events.
      *
-     * @return AssertionResultInterface An assertion result.
+     * @return EventCollectionInterface The result.
      */
     public function createSuccess(array $events = null)
     {
-        return new AssertionResult($events);
+        return new EventCollection($events);
     }
 
     /**
