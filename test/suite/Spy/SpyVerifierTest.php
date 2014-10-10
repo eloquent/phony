@@ -412,11 +412,11 @@ EOD;
 
     public function calledWithData()
     {
-        //                                    arguments                  calledWith calledWithExactly
+        //                                    arguments                  calledWith calledWithWildcard
         return array(
             'Exact arguments'        => array(array('a', 'b', 'c'),      true,      true),
-            'First arguments'        => array(array('a', 'b'),           true,      false),
-            'Single argument'        => array(array('a'),                true,      false),
+            'First arguments'        => array(array('a', 'b'),           false,      true),
+            'Single argument'        => array(array('a'),                false,      true),
             'Last arguments'         => array(array('b', 'c'),           false,     false),
             'Last argument'          => array(array('c'),                false,     false),
             'Extra arguments'        => array(array('a', 'b', 'c', 'd'), false,     false),
@@ -429,7 +429,7 @@ EOD;
     /**
      * @dataProvider calledWithData
      */
-    public function testCheckCalledWith(array $arguments, $calledWith, $calledWithExactly)
+    public function testCheckCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls($this->calls);
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -442,18 +442,30 @@ EOD;
             $calledWith,
             (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
         );
+
+        $arguments[] = $this->matcherFactory->wildcard();
+        $matchers[] = $this->matcherFactory->wildcard();
+
+        $this->assertSame(
+            $calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+        );
+        $this->assertSame(
+            $calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+        );
     }
 
-    public function testCheckCalledWithWithEmptyArguments()
+    public function testCheckCalledWithWithWildcardOnly()
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkCalledWith());
+        $this->assertTrue((boolean) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
-    public function testCheckCalledWithWithNoCalls()
+    public function testCheckCalledWithWithWildcardOnlyWithNoCalls()
     {
-        $this->assertFalse((boolean) $this->subject->checkCalledWith());
+        $this->assertFalse((boolean) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledWith()
@@ -466,11 +478,20 @@ EOD;
             $expected,
             $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertEquals($expected, $this->subject->calledWith('a', 'b'));
-        $this->assertEquals($expected, $this->subject->calledWith($this->matchers[0], $this->matchers[1]));
-        $this->assertEquals($expected, $this->subject->calledWith('a'));
-        $this->assertEquals($expected, $this->subject->calledWith($this->matchers[0]));
-        $this->assertEquals(new EventCollection($this->calls), $this->subject->calledWith());
+        $this->assertEquals($expected, $this->subject->calledWith('a', 'b', $this->matcherFactory->wildcard()));
+        $this->assertEquals(
+            $expected,
+            $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matcherFactory->wildcard())
+        );
+        $this->assertEquals($expected, $this->subject->calledWith('a', $this->matcherFactory->wildcard()));
+        $this->assertEquals(
+            $expected,
+            $this->subject->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
+        );
+        $this->assertEquals(
+            new EventCollection($this->calls),
+            $this->subject->calledWith($this->matcherFactory->wildcard())
+        );
     }
 
     public function testCalledWithFailure()
@@ -478,7 +499,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call with arguments like:
-    <'b'>, <'c'>, <any>*
+    <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
     - <none>
@@ -494,7 +515,7 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call with arguments like:
-    <'b'>, <'c'>, <any>*
+    <'b'>, <'c'>
 Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -512,10 +533,8 @@ EOD;
             (boolean) $this->subject->once()
                 ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertTrue((boolean) $this->subject->once()->checkCalledWith('a'));
-        $this->assertTrue((boolean) $this->subject->once()->checkCalledWith($this->matchers[0]));
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWith());
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWith());
+        $this->assertFalse((boolean) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((boolean) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledOnceWith()
@@ -528,8 +547,6 @@ EOD;
             $expected,
             $this->subject->once()->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertEquals($expected, $this->subject->once()->calledWith('a'));
-        $this->assertEquals($expected, $this->subject->once()->calledWith($this->matchers[0]));
     }
 
     public function testCalledOnceWithFailure()
@@ -537,7 +554,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call, exactly 1 time with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
+    <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
     - <none>
@@ -553,7 +570,7 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call, exactly 1 time with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
+    <'a'>, <'b'>, <'c'>
 Never called.
 EOD;
 
@@ -570,10 +587,11 @@ EOD;
             (boolean) $this->subject->times(2)
                 ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWith('a'));
-        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWith($this->matchers[0]));
-        $this->assertTrue((boolean) $this->subject->times(4)->checkCalledWith());
-        $this->assertTrue((boolean) $this->subject->times(4)->checkCalledWith());
+        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWith('a', $this->matcherFactory->wildcard()));
+        $this->assertTrue(
+            (boolean) $this->subject->times(2)->checkCalledWith($this->matchers[0], $this->matcherFactory->wildcard())
+        );
+        $this->assertTrue((boolean) $this->subject->times(4)->checkCalledWith($this->matcherFactory->wildcard()));
         $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith('a', 'b', 'c'));
         $this->assertFalse(
             (boolean) $this->subject->times(1)
@@ -581,8 +599,8 @@ EOD;
         );
         $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith('a'));
         $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith($this->matchers[0]));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith());
+        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledTimesWith()
@@ -595,13 +613,16 @@ EOD;
             $expected,
             $this->subject->times(2)->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertEquals($expected, $this->subject->times(2)->calledWith('a'));
-        $this->assertEquals($expected, $this->subject->times(2)->calledWith($this->matchers[0]));
+        $this->assertEquals($expected, $this->subject->times(2)->calledWith('a', $this->matcherFactory->wildcard()));
+        $this->assertEquals(
+            $expected,
+            $this->subject->times(2)->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
+        );
 
         $expected = new EventCollection($this->calls);
 
-        $this->assertEquals($expected, $this->subject->times(4)->calledWith());
-        $this->assertEquals($expected, $this->subject->times(4)->calledWith());
+        $this->assertEquals($expected, $this->subject->times(4)->calledWith($this->matcherFactory->wildcard()));
+        $this->assertEquals($expected, $this->subject->times(4)->calledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledTimesWithFailure()
@@ -609,7 +630,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call, exactly 4 times with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
+    <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
     - <none>
@@ -625,7 +646,7 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call, exactly 4 times with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
+    <'a'>, <'b'>, <'c'>
 Never called.
 EOD;
 
@@ -636,7 +657,7 @@ EOD;
     /**
      * @dataProvider calledWithData
      */
-    public function testCheckAlwaysCalledWith(array $arguments, $calledWith, $calledWithExactly)
+    public function testCheckAlwaysCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -649,15 +670,29 @@ EOD;
             $calledWith,
             (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
         );
+
+        $arguments[] = $this->matcherFactory->wildcard();
+        $matchers[] = $this->matcherFactory->wildcard();
+
+        $this->assertSame(
+            $calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
+        );
+        $this->assertSame(
+            $calledWithWildcard,
+            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
+        );
     }
 
     /**
      * @dataProvider calledWithData
      */
-    public function testCheckAlwaysCalledWithWithDifferingCalls(array $arguments, $calledWith, $calledWithExactly)
+    public function testCheckAlwaysCalledWithWithDifferingCalls(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $matchers = $this->matcherFactory->adaptAll($arguments);
+        $arguments[] = $this->matcherFactory->wildcard();
+        $matchers[] = $this->matcherFactory->wildcard();
 
         $this->assertFalse(
             (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
@@ -667,16 +702,16 @@ EOD;
         );
     }
 
-    public function testCheckAlwaysCalledWithWithEmptyArguments()
+    public function testCheckAlwaysCalledWithWithWildcardOnly()
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->always()->checkCalledWith());
+        $this->assertTrue((boolean) $this->subject->always()->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
-    public function testCheckAlwaysCalledWithWithNoCalls()
+    public function testCheckAlwaysCalledWithWithWildcardOnlyWithNoCalls()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkCalledWith());
+        $this->assertFalse((boolean) $this->subject->always()->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testAlwaysCalledWith()
@@ -689,11 +724,21 @@ EOD;
             $expected,
             $this->subject->always()->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertEquals($expected, $this->subject->always()->calledWith('a', 'b'));
-        $this->assertEquals($expected, $this->subject->always()->calledWith($this->matchers[0], $this->matchers[1]));
-        $this->assertEquals($expected, $this->subject->always()->calledWith('a'));
-        $this->assertEquals($expected, $this->subject->always()->calledWith($this->matchers[0]));
-        $this->assertEquals($expected, $this->subject->always()->calledWith());
+        $this->assertEquals(
+            $expected,
+            $this->subject->always()->calledWith('a', 'b', $this->matcherFactory->wildcard())
+        );
+        $this->assertEquals(
+            $expected,
+            $this->subject->always()
+                ->calledWith($this->matchers[0], $this->matchers[1], $this->matcherFactory->wildcard())
+        );
+        $this->assertEquals($expected, $this->subject->always()->calledWith('a', $this->matcherFactory->wildcard()));
+        $this->assertEquals(
+            $expected,
+            $this->subject->always()->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
+        );
+        $this->assertEquals($expected, $this->subject->always()->calledWith($this->matcherFactory->wildcard()));
     }
 
     public function testAlwaysCalledWithFailure()
@@ -702,7 +747,7 @@ EOD;
 
         $expected = <<<'EOD'
 Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
+    <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
     - <none>
@@ -717,7 +762,7 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
+    <'a'>, <'b'>, <'c'>
 Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -727,290 +772,7 @@ EOD;
     /**
      * @dataProvider calledWithData
      */
-    public function testCheckCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls($this->calls);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
-
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWithExactly'), $matchers)
-        );
-    }
-
-    public function testCheckCalledWithExactlyWithEmptyArguments()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $this->assertTrue((boolean) $this->subject->checkCalledWithExactly());
-    }
-
-    public function testCheckCalledWithExactlyWithNoCalls()
-    {
-        $this->assertFalse((boolean) $this->subject->checkCalledWithExactly());
-    }
-
-    public function testCalledWithExactly()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = new EventCollection(array($this->callA, $this->callC));
-
-        $this->assertEquals($expected, $this->subject->calledWithExactly('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->calledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-    }
-
-    public function testCalledWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected call with arguments like:
-    <'b'>, <'c'>
-Calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->calledWithExactly('b', 'c');
-    }
-
-    public function testCalledWithExactlyFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected call with arguments like:
-    <'b'>, <'c'>
-Never called.
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->calledWithExactly('b', 'c');
-    }
-
-    public function testCheckCalledOnceWithExactly()
-    {
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWithExactly());
-
-        $this->subject->setCalls(array($this->callA, $this->callB, $this->callD));
-
-        $this->assertTrue((boolean) $this->subject->once()->checkCalledWithExactly('a', 'b', 'c'));
-        $this->assertTrue(
-            (boolean) $this->subject->once()
-                ->checkCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWithExactly());
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWithExactly());
-    }
-
-    public function testCalledOnceWithExactly()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new EventCollection(array($this->callA));
-
-        $this->assertEquals($expected, $this->subject->once()->calledWithExactly('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->once()->calledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-    }
-
-    public function testCalledOnceWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call, exactly 1 time with arguments like:
-    <'a'>, <'b'>, <'c'>
-Calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->once()->calledWithExactly('a', 'b', 'c');
-    }
-
-    public function testCalledOnceWithExactlyFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected call, exactly 1 time with arguments like:
-    <'a'>, <'b'>, <'c'>
-Never called.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->once()->calledWithExactly('a', 'b', 'c');
-    }
-
-    public function testCheckCalledTimesWithExactly()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWithExactly('a', 'b', 'c'));
-        $this->assertTrue(
-            (boolean) $this->subject
-                ->times(2)->checkCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWithExactly());
-        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWithExactly());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWithExactly('a', 'b', 'c'));
-        $this->assertFalse(
-            (boolean) $this->subject
-                ->times(1)->checkCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWithExactly('a'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWithExactly($this->matchers[0]));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWithExactly());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWithExactly());
-    }
-
-    public function testCalledTimesWithExactly()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = new EventCollection(array($this->callA, $this->callC));
-
-        $this->assertEquals($expected, $this->subject->times(2)->calledWithExactly('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->times(2)->calledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-
-        $expected = new EventCollection(array($this->callB, $this->callD));
-
-        $this->assertEquals($expected, $this->subject->times(2)->calledWithExactly());
-        $this->assertEquals($expected, $this->subject->times(2)->calledWithExactly());
-    }
-
-    public function testCalledTimesWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call, exactly 4 times with arguments like:
-    <'a'>, <'b'>, <'c'>
-Calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->times(4)->calledWithExactly('a', 'b', 'c');
-    }
-
-    public function testCalledTimesWithExactlyFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected call, exactly 4 times with arguments like:
-    <'a'>, <'b'>, <'c'>
-Never called.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->times(4)->calledWithExactly('a', 'b', 'c');
-    }
-
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testCheckAlwaysCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls(array($this->callA, $this->callA));
-        $matchers = $this->matcherFactory->adaptAll($arguments);
-
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWithExactly'), $matchers)
-        );
-    }
-
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testCheckAlwaysCalledWithExactlyWithDifferingCalls(
-        array $arguments,
-        $calledWith,
-        $calledWithExactly
-    ) {
-        $this->subject->setCalls(array($this->callA, $this->callB));
-        $matchers = $this->matcherFactory->adaptAll($arguments);
-
-        $this->assertFalse(
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWithExactly'), $arguments)
-        );
-        $this->assertFalse(
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWithExactly'), $matchers)
-        );
-    }
-
-    public function testAlwaysCalledWithExactlyWithEmptyArguments()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $this->assertFalse((boolean) $this->subject->always()->checkCalledWithExactly());
-    }
-
-    public function testAlwaysCalledWithExactlyWithNoCalls()
-    {
-        $this->assertFalse((boolean) $this->subject->always()->checkCalledWithExactly());
-    }
-
-    public function testAlwaysCalledWithExactly()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new EventCollection(array($this->callA, $this->callA));
-
-        $this->assertEquals($expected, $this->subject->always()->calledWithExactly('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->always()->calledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-    }
-
-    public function testAlwaysCalledWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>
-Calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->calledWithExactly('a', 'b', 'c');
-    }
-
-    public function testAlwaysCalledWithExactlyFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>
-Never called.
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->calledWithExactly('a', 'b', 'c');
-    }
-
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testCheckNeverCalledWith(array $arguments, $calledWith, $calledWithExactly)
+    public function testCheckNeverCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls($this->calls);
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -1075,95 +837,6 @@ EOD;
 
         $expected = <<<'EOD'
 Expected no call with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->calledWith('a', 'b', 'c');
-    }
-
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testCheckNeverCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls($this->calls);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
-
-        $this->assertSame(
-            !$calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            !$calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWithExactly'), $matchers)
-        );
-    }
-
-    public function testCheckNeverCalledWithExactlyWithEmptyArguments()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $this->assertFalse((boolean) $this->subject->never()->checkCalledWithExactly());
-    }
-
-    public function testCheckNeverCalledWithExactlyWithNoCalls()
-    {
-        $this->assertTrue((boolean) $this->subject->never()->checkCalledWithExactly());
-    }
-
-    public function testNeverCalledWithExactly()
-    {
-        $expected = new EventCollection();
-
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly());
-
-        $this->subject->setCalls($this->calls);
-
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('a', 'b'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()->calledWithExactly($this->matchers[0], $this->matchers[1])
-        );
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('a'));
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly($this->matchers[0]));
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()->calledWithExactly($this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('c'));
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly($this->matchers[2]));
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('a', 'b', 'c', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()
-                ->calledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2], $this->otherMatcher)
-        );
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('d', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()->calledWithExactly($this->otherMatcher, $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('a', 'b', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()->calledWithExactly($this->matchers[0], $this->matchers[1], $this->otherMatcher)
-        );
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly('d'));
-        $this->assertEquals($expected, $this->subject->never()->calledWithExactly($this->otherMatcher));
-    }
-
-    public function testNeverCalledWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected no call with arguments like:
     <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
@@ -1172,7 +845,7 @@ Calls:
     - <none>
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->calledWithExactly('a', 'b', 'c');
+        $this->subject->never()->calledWith('a', 'b', 'c');
     }
 
     public function testCheckCalledOn()

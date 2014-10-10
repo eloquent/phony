@@ -73,7 +73,7 @@ interface SpyVerifierInterface extends SpyInterface,
     public function called();
 
     /**
-     * Checks if called with the supplied arguments (and possibly others).
+     * Checks if called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -82,8 +82,7 @@ interface SpyVerifierInterface extends SpyInterface,
     public function checkCalledWith();
 
     /**
-     * Throws an exception unless called with the supplied arguments (and
-     * possibly others).
+     * Throws an exception unless called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -91,26 +90,6 @@ interface SpyVerifierInterface extends SpyInterface,
      * @throws Exception                If the assertion fails.
      */
     public function calledWith();
-
-    /**
-     * Checks if called with the supplied arguments (and no others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return EventCollectionInterface|null The result.
-     */
-    public function checkCalledWithExactly();
-
-    /**
-     * Throws an exception unless called with the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
-     */
-    public function calledWithExactly();
 
     /**
      * Checks if the $this value is the same as the supplied value.

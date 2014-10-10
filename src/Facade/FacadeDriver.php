@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Facade;
 
+use Eloquent\Phony\Matcher\Factory\MatcherFactory;
+use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -42,10 +44,12 @@ class FacadeDriver implements FacadeDriverInterface
      *
      * @param SpyVerifierFactoryInterface|null  $spyVerifierFactory  The spy verifier factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
      */
     public function __construct(
         SpyVerifierFactoryInterface $spyVerifierFactory = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null
+        StubVerifierFactoryInterface $stubVerifierFactory = null,
+        MatcherFactoryInterface $matcherFactory = null
     ) {
         if (null === $spyVerifierFactory) {
             $spyVerifierFactory = SpyVerifierFactory::instance();
@@ -53,9 +57,13 @@ class FacadeDriver implements FacadeDriverInterface
         if (null === $stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
+        if (null === $matcherFactory) {
+            $matcherFactory = MatcherFactory::instance();
+        }
 
         $this->spyVerifierFactory = $spyVerifierFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->matcherFactory = $matcherFactory;
     }
 
     /**
@@ -78,7 +86,18 @@ class FacadeDriver implements FacadeDriverInterface
         return $this->stubVerifierFactory;
     }
 
+    /**
+     * Get the matcher factory.
+     *
+     * @return MatcherFactoryInterface The matcher factory.
+     */
+    public function matcherFactory()
+    {
+        return $this->matcherFactory;
+    }
+
     private static $instance;
     private $spyVerifierFactory;
     private $stubVerifierFactory;
+    private $matcherFactory;
 }

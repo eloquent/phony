@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Facade;
 
+use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
@@ -46,5 +47,23 @@ abstract class AbstractFacade
     {
         return static::driver()->stubVerifierFactory()
             ->createFromCallback($callback, $thisValue);
+    }
+
+    /**
+     * Create a new matcher that matches multiple arguments.
+     *
+     * @param mixed        $value            The value to check for each argument.
+     * @param integer|null $minimumArguments The minimum number of arguments.
+     * @param integer|null $maximumArguments The maximum number of arguments.
+     *
+     * @return WildcardMatcherInterface The newly created wildcard matcher.
+     */
+    public static function wildcard(
+        $value = null,
+        $minimumArguments = null,
+        $maximumArguments = null
+    ) {
+        return static::driver()->matcherFactory()
+            ->wildcard($value, $minimumArguments, $maximumArguments);
     }
 }

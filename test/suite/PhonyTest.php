@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony;
 
+use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\Stub;
@@ -59,5 +61,21 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
         $this->assertSame($callback, $actual->stub()->callback());
         $this->assertSame($actual->stub(), $actual->spy()->callback());
+    }
+
+    public function testWildcard()
+    {
+        $expected = new WildcardMatcher(new EqualToMatcher('a'), 1, 2);
+        $actual = Phony::wildcard('a', 1, 2);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWildcardFunction()
+    {
+        $expected = new WildcardMatcher(new EqualToMatcher('a'), 1, 2);
+        $actual = wildcard('a', 1, 2);
+
+        $this->assertEquals($expected, $actual);
     }
 }

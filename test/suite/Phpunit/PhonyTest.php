@@ -12,6 +12,8 @@
 namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Integration\Phpunit\PhpunitAssertionRecorder;
+use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use PHPUnit_Framework_TestCase;
 
 class PhonyTest extends PHPUnit_Framework_TestCase
@@ -56,5 +58,21 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($callback, $actual->stub()->callback());
         $this->assertSame($actual->stub(), $actual->spy()->callback());
         $this->assertEquals(new PhpunitAssertionRecorder(), $actual->callVerifierFactory()->assertionRecorder());
+    }
+
+    public function testWildcard()
+    {
+        $expected = new WildcardMatcher(new EqualToMatcher('a'), 1, 2);
+        $actual = Phony::wildcard('a', 1, 2);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWildcardFunction()
+    {
+        $expected = new WildcardMatcher(new EqualToMatcher('a'), 1, 2);
+        $actual = wildcard('a', 1, 2);
+
+        $this->assertEquals($expected, $actual);
     }
 }

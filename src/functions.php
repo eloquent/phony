@@ -41,3 +41,21 @@ function stub($callback = null, $thisValue = null)
     return FacadeDriver::instance()->stubVerifierFactory()
         ->createFromCallback($callback, $thisValue);
 }
+
+/**
+ * Create a new matcher that matches multiple arguments.
+ *
+ * @param mixed        $value            The value to check for each argument.
+ * @param integer|null $minimumArguments The minimum number of arguments.
+ * @param integer|null $maximumArguments The maximum number of arguments.
+ *
+ * @return WildcardMatcherInterface The newly created wildcard matcher.
+ */
+function wildcard(
+    $value = null,
+    $minimumArguments = null,
+    $maximumArguments = null
+) {
+    return FacadeDriver::instance()->matcherFactory()
+        ->wildcard($value, $minimumArguments, $maximumArguments);
+}

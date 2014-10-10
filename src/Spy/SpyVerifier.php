@@ -420,10 +420,26 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function checkCalledWith()
     {
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();
+        $cardinality = $this->resetCardinality();
 
-        return $this->doCheckCalledWith($matchers);
+        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchingEvents[] = $call;
+                $matchCount++;
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
     }
 
     /**
@@ -437,39 +453,38 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function calledWith()
     {
+        $cardinality = $this->cardinality;
+
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();
 
-        return $this->doCalledWith($matchers);
-    }
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkCalledWith'), $matchers)
+        ) {
+            return $result;
+        }
 
-    /**
-     * Checks if called with the supplied arguments (and no others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return EventCollectionInterface|null The result.
-     */
-    public function checkCalledWithExactly()
-    {
-        return $this->doCheckCalledWith(
-            $this->matcherFactory->adaptAll(func_get_args())
+        $calls = $this->spy->recordedCalls();
+        $callCount = count($calls);
+
+        if (0 === $callCount) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Calls:\n%s",
+                $this->assertionRenderer->renderCallsArguments($calls)
+            );
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected %s with arguments like:\n    %s\n%s",
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, 'call'),
+                $this->assertionRenderer->renderMatchers($matchers),
+                $renderedActual
+            )
         );
-    }
-
-    /**
-     * Throws an exception unless called with the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
-     */
-    public function calledWithExactly()
-    {
-        return $this
-            ->doCalledWith($this->matcherFactory->adaptAll(func_get_args()));
     }
 
     /**
@@ -795,60 +810,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                 'Expected %s. %s',
                 $this->assertionRenderer
                     ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
-        );
-    }
-
-    private function doCheckCalledWith(array $matchers)
-    {
-        $cardinality = $this->resetCardinality();
-
-        $calls = $this->spy->recordedCalls();
-        $matchingEvents = array();
-        $totalCount = count($calls);
-        $matchCount = 0;
-
-        foreach ($calls as $call) {
-            if (
-                $this->matcherVerifier->matches($matchers, $call->arguments())
-            ) {
-                $matchingEvents[] = $call;
-                $matchCount++;
-            }
-        }
-
-        if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    private function doCalledWith(array $matchers)
-    {
-        $cardinality = $this->cardinality;
-
-        if ($result = $this->doCheckCalledWith($matchers)) {
-            return $result;
-        }
-
-        $calls = $this->spy->recordedCalls();
-        $callCount = count($calls);
-
-        if (0 === $callCount) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Calls:\n%s",
-                $this->assertionRenderer->renderCallsArguments($calls)
-            );
-        }
-
-        throw $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected %s with arguments like:\n    %s\n%s",
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'call'),
-                $this->assertionRenderer->renderMatchers($matchers),
                 $renderedActual
             )
         );
