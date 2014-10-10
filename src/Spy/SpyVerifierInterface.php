@@ -16,6 +16,7 @@ use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Cardinality\Verification\CardinalityVerifierInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * The interface implemented by spy verifiers.
@@ -70,44 +71,6 @@ interface SpyVerifierInterface extends SpyInterface,
      * @throws Exception                If the assertion fails.
      */
     public function called();
-
-    /**
-     * Checks if this spy was called before the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface|null The result.
-     */
-    public function checkCalledBefore(SpyInterface $spy);
-
-    /**
-     * Throws an exception unless this spy was called before the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
-     */
-    public function calledBefore(SpyInterface $spy);
-
-    /**
-     * Checks if this spy was called after the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface|null The result.
-     */
-    public function checkCalledAfter(SpyInterface $spy);
-
-    /**
-     * Throws an exception unless this spy was called after the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
-     */
-    public function calledAfter(SpyInterface $spy);
 
     /**
      * Checks if called with the supplied arguments (and possibly others).
@@ -194,6 +157,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If the type is invalid.
      */
     public function checkThrew($type = null);
 
@@ -203,6 +167,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails.
      */
     public function threw($type = null);

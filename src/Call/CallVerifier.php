@@ -479,102 +479,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Checks if this call occurred before the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return EventCollectionInterface|null        The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    public function checkCalledBefore(CallInterface $call)
-    {
-        $cardinality = $this->resetCardinality()->assertSingular();
-
-        list($matchCount, $matchingEvents) = $this->matchIf(
-            $this->call,
-            $call->sequenceNumber() > $this->call->sequenceNumber()
-        );
-
-        if ($cardinality->matches($matchCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    /**
-     * Throws an exception unless this call occurred before the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return mixed                                The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
-     */
-    public function calledBefore(CallInterface $call)
-    {
-        $cardinality = $this->cardinality();
-
-        if ($result = $this->checkCalledBefore($call)) {
-            return $result;
-        }
-
-        if ($cardinality->isNever()) {
-            throw $this->assertionRecorder
-                ->createFailure('Called before supplied call.');
-        }
-
-        throw $this->assertionRecorder
-            ->createFailure('Not called before supplied call.');
-    }
-
-    /**
-     * Checks if this call occurred after the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return EventCollectionInterface|null        The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    public function checkCalledAfter(CallInterface $call)
-    {
-        $cardinality = $this->resetCardinality()->assertSingular();
-
-        list($matchCount, $matchingEvents) = $this->matchIf(
-            $this->call,
-            $call->sequenceNumber() < $this->call->sequenceNumber()
-        );
-
-        if ($cardinality->matches($matchCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    /**
-     * Throws an exception unless this call occurred after the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return mixed                                The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
-     */
-    public function calledAfter(CallInterface $call)
-    {
-        $cardinality = $this->cardinality();
-
-        if ($result = $this->checkCalledAfter($call)) {
-            return $result;
-        }
-
-        if ($cardinality->isNever()) {
-            throw $this->assertionRecorder
-                ->createFailure('Called after supplied call.');
-        } else {
-            throw $this->assertionRecorder
-                ->createFailure('Not called after supplied call.');
-        }
-    }
-
-    /**
      * Checks if the $this value is equal to the supplied value.
      *
      * @param object|null $value The possible $this value.
@@ -622,7 +526,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      */
     public function calledOn($value)
     {
-        $cardinality = $this->cardinality();
+        $cardinality = $this->cardinality;
 
         if ($this->matcherFactory->isMatcher($value)) {
             $isMatcher = true;
@@ -653,9 +557,9 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         }
 
         if ($cardinality->isNever()) {
-            $message = 'Called on unexpected object. Object was %s.';
+            $message = 'Called on supplied object. Object was %s.';
         } else {
-            $message = 'Not called on expected object. Object was %s.';
+            $message = 'Not called on supplied object. Object was %s.';
         }
 
         throw $this->assertionRecorder
@@ -718,7 +622,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      */
     public function returned($value = null)
     {
-        $cardinality = $this->cardinality();
+        $cardinality = $this->cardinality;
 
         $argumentCount = func_num_args();
 
@@ -847,7 +751,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      */
     public function threw($type = null)
     {
-        $cardinality = $this->cardinality();
+        $cardinality = $this->cardinality;
 
         if ($result = $this->checkThrew($type)) {
             return $result;
@@ -966,7 +870,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      */
     public function yielded($keyOrValue = null, $value = null)
     {
-        $cardinality = $this->cardinality();
+        $cardinality = $this->cardinality;
 
         $argumentCount = func_num_args();
 
@@ -1058,7 +962,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
     private function doCalledWith(array $matchers)
     {
-        $cardinality = $this->cardinality();
+        $cardinality = $this->cardinality;
 
         if ($result = $this->doCheckCalledWith($matchers)) {
             return $result;

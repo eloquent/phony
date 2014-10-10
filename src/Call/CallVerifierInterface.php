@@ -88,48 +88,6 @@ interface CallVerifierInterface extends CallInterface,
     public function calledWithExactly();
 
     /**
-     * Checks if this call occurred before the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return EventCollectionInterface|null        The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    public function checkCalledBefore(CallInterface $call);
-
-    /**
-     * Throws an exception unless this call occurred before the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return mixed                                The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
-     */
-    public function calledBefore(CallInterface $call);
-
-    /**
-     * Checks if this call occurred after the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return EventCollectionInterface|null        The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     */
-    public function checkCalledAfter(CallInterface $call);
-
-    /**
-     * Throws an exception unless this call occurred after the supplied call.
-     *
-     * @param CallInterface $call Another call.
-     *
-     * @return mixed                                The result.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
-     */
-    public function calledAfter(CallInterface $call);
-
-    /**
      * Checks if the $this value is equal to the supplied value.
      *
      * @param object|null $value The possible $this value.

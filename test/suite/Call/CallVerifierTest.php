@@ -373,70 +373,6 @@ EOD;
         $this->subject->times(2)->calledWithExactly('a', 'b', 'c');
     }
 
-    public function testCheckCalledBefore()
-    {
-        $this->assertTrue((boolean) $this->subject->checkCalledBefore($this->lateCall));
-        $this->assertTrue((boolean) $this->subject->never()->checkCalledBefore($this->earlyCall));
-        $this->assertFalse((boolean) $this->subject->checkCalledBefore($this->earlyCall));
-        $this->assertFalse((boolean) $this->subject->never()->checkCalledBefore($this->lateCall));
-    }
-
-    public function testCalledBefore()
-    {
-        $this->assertEquals($this->assertionResult, $this->subject->calledBefore($this->lateCall));
-        $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->calledBefore($this->earlyCall));
-    }
-
-    public function testCalledBeforeFailure()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Not called before supplied call.'
-        );
-        $this->subject->calledBefore($this->earlyCall);
-    }
-
-    public function testCalledBeforeFailureNever()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Called before supplied call.'
-        );
-        $this->subject->never()->calledBefore($this->lateCall);
-    }
-
-    public function testCheckCalledAfter()
-    {
-        $this->assertTrue((boolean) $this->subject->checkCalledAfter($this->earlyCall));
-        $this->assertTrue((boolean) $this->subject->never()->checkCalledAfter($this->lateCall));
-        $this->assertFalse((boolean) $this->subject->checkCalledAfter($this->lateCall));
-        $this->assertFalse((boolean) $this->subject->never()->checkCalledAfter($this->earlyCall));
-    }
-
-    public function testCalledAfter()
-    {
-        $this->assertEquals($this->assertionResult, $this->subject->calledAfter($this->earlyCall));
-        $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->calledAfter($this->lateCall));
-    }
-
-    public function testCalledAfterFailure()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Not called after supplied call.'
-        );
-        $this->subject->calledAfter($this->lateCall);
-    }
-
-    public function testCalledAfterFailureNever()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Called after supplied call.'
-        );
-        $this->subject->never()->calledAfter($this->earlyCall);
-    }
-
     public function testCheckCalledOn()
     {
         $this->assertTrue((boolean) $this->subject->checkCalledOn($this->thisValue));
@@ -460,7 +396,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Not called on expected object. Object was stdClass Object ()."
+            "Not called on supplied object. Object was stdClass Object ()."
         );
         $this->subject->calledOn((object) array());
     }
@@ -469,7 +405,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Called on unexpected object. Object was stdClass Object ()."
+            "Called on supplied object. Object was stdClass Object ()."
         );
         $this->subject->never()->calledOn($this->thisValue);
     }

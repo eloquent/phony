@@ -29,6 +29,7 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Spy\Exception\UndefinedCallException;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * Provides convenience methods for verifying interactions with a spy.
@@ -364,7 +365,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function checkCalled()
     {
-        return count($this->spy->recordedCalls()) > 0;
+        $cardinality = $this->resetCardinality();
+
+        $calls = $this->spy->recordedCalls();
+        $callCount = count($calls);
+
+        if ($cardinality->matches($callCount, $callCount)) {
+            return $this->assertionRecorder->createSuccess($calls);
+        }
     }
 
     /**
@@ -375,172 +383,29 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function called()
     {
-        $calls = $this->spy->recordedCalls();
+        $cardinality = $this->cardinality;
 
-        if (count($calls) < 1) {
-            throw $this->assertionRecorder->createFailure('Never called.');
+        if ($result = $this->checkCalled()) {
+            return $result;
         }
 
-        return $this->assertionRecorder->createSuccess($calls);
-    }
+        $callCount = count($this->spy->recordedCalls());
+        $renderedCardinality = $this->assertionRenderer
+            ->renderCardinality($cardinality, 'call');
 
-    /**
-     * Checks if this spy was called before the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface|null The result.
-     */
-    public function checkCalledBefore(SpyInterface $spy)
-    {
-        $calls = $this->spy->recordedCalls();
-        $callCount = count($calls);
-
-        if ($callCount < 1) {
-            return false;
-        }
-
-        $otherCalls = $spy->recordedCalls();
-        $otherCallCount = count($otherCalls);
-
-        if ($otherCallCount < 1) {
-            return false;
-        }
-
-        $firstCall = $calls[0];
-        $otherLastCall = $otherCalls[$otherCallCount - 1];
-
-        return $firstCall->sequenceNumber() < $otherLastCall->sequenceNumber();
-    }
-
-    /**
-     * Throws an exception unless this spy was called before the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
-     */
-    public function calledBefore(SpyInterface $spy)
-    {
-        $calls = $this->spy->recordedCalls();
-
-        if (count($calls) < 1) {
-            throw $this->assertionRecorder
-                ->createFailure("Not called before supplied spy. Never called.");
-        }
-
-        $otherCalls = $spy->recordedCalls();
-        $otherCallCount = count($otherCalls);
-
-        if ($otherCallCount < 1) {
-            throw $this->assertionRecorder->createFailure(
-                "Not called before supplied spy. Supplied spy never called."
-            );
-        }
-
-        $matchingCalls = array();
-
-        if ($otherCallCount > 0) {
-            $lastCall = $otherCalls[$otherCallCount - 1];
-
-            foreach ($calls as $call) {
-                if ($call->sequenceNumber() < $lastCall->sequenceNumber()) {
-                    $matchingCalls[] = $call;
-                }
-            }
-        }
-
-        if ($matchingCalls) {
-            return $this->assertionRecorder->createSuccess($matchingCalls);
+        if (0 === $callCount) {
+            $renderedActual = 'Never called';
+        } elseif (1 === $callCount) {
+            $renderedActual = 'Called once';
+        } else {
+            $renderedActual = sprintf('Called %d times', $callCount);
         }
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                "Not called before supplied spy. Actual calls:\n%s",
-                $this->assertionRenderer
-                    ->renderCalls(static::mergeCalls(array($this->spy, $spy)))
-            )
-        );
-    }
-
-    /**
-     * Checks if this spy was called after the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface|null The result.
-     */
-    public function checkCalledAfter(SpyInterface $spy)
-    {
-        $calls = $this->spy->recordedCalls();
-        $callCount = count($calls);
-
-        if ($callCount < 1) {
-            return false;
-        }
-
-        $otherCalls = $spy->recordedCalls();
-        $otherCallCount = count($otherCalls);
-
-        if ($otherCallCount < 1) {
-            return false;
-        }
-
-        $lastCall = $calls[$callCount - 1];
-        $otherFirstCall = $otherCalls[0];
-
-        return $lastCall->sequenceNumber() > $otherFirstCall->sequenceNumber();
-
-    }
-
-    /**
-     * Throws an exception unless this spy was called after the supplied spy.
-     *
-     * @param SpyInterface $spy Another spy.
-     *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
-     */
-    public function calledAfter(SpyInterface $spy)
-    {
-        $calls = $this->spy->recordedCalls();
-
-        if (count($calls) < 1) {
-            throw $this->assertionRecorder
-                ->createFailure("Not called after supplied spy. Never called.");
-        }
-
-        $otherCalls = $spy->recordedCalls();
-        $otherCallCount = count($otherCalls);
-
-        if ($otherCallCount < 1) {
-            throw $this->assertionRecorder->createFailure(
-                "Not called after supplied spy. Supplied spy never called."
-            );
-        }
-
-        $matchingCalls = array();
-
-        if ($otherCallCount > 0) {
-            $firstCall = $otherCalls[0];
-
-            foreach ($calls as $call) {
-                if ($call->sequenceNumber() > $firstCall->sequenceNumber()) {
-                    $matchingCalls[] = $call;
-                }
-            }
-        }
-
-        if ($matchingCalls) {
-            return $this->assertionRecorder->createSuccess($matchingCalls);
-        }
-
-        throw $this->assertionRecorder->createFailure(
-            sprintf(
-                "Not called after supplied spy. Actual calls:\n%s",
-                $this->assertionRenderer
-                    ->renderCalls(static::mergeCalls(array($this->spy, $spy)))
+                'Expected %s. %s.',
+                $renderedCardinality,
+                $renderedActual
             )
         );
     }
@@ -554,24 +419,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function checkCalledWith()
     {
-        $calls = $this->spy->recordedCalls();
-
-        if (count($calls) < 1) {
-            return false;
-        }
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $matchers[] = $this->matcherFactory->wildcard();
 
-        foreach ($calls as $call) {
-            if (
-                $this->matcherVerifier->matches($matchers, $call->arguments())
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->doCheckCalledWith($matchers);
     }
 
     /**
@@ -585,40 +436,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function calledWith()
     {
-        $calls = $this->spy->recordedCalls();
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $matchers[] = $this->matcherFactory->wildcard();
 
-        if (count($calls) < 1) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected arguments like:\n    %s\nNever called.",
-                    $this->assertionRenderer->renderMatchers($matchers)
-                )
-            );
-        }
-
-        $matchingCalls = array();
-
-        foreach ($calls as $call) {
-            if (
-                $this->matcherVerifier->matches($matchers, $call->arguments())
-            ) {
-                $matchingCalls[] = $call;
-            }
-        }
-
-        if ($matchingCalls) {
-            return $this->assertionRecorder->createSuccess($matchingCalls);
-        }
-
-        throw $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected arguments like:\n    %s\nActual calls:\n%s",
-                $this->assertionRenderer->renderMatchers($matchers),
-                $this->assertionRenderer->renderCallsArguments($calls)
-            )
-        );
+        return $this->doCalledWith($matchers);
     }
 
     /**
@@ -630,23 +451,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function checkCalledWithExactly()
     {
-        $calls = $this->spy->recordedCalls();
-
-        if (count($calls) < 1) {
-            return false;
-        }
-
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-
-        foreach ($calls as $call) {
-            if (
-                $this->matcherVerifier->matches($matchers, $call->arguments())
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->doCheckCalledWith(
+            $this->matcherFactory->adaptAll(func_get_args())
+        );
     }
 
     /**
@@ -660,38 +467,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function calledWithExactly()
     {
-        $calls = $this->spy->recordedCalls();
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-
-        if (count($calls) < 1) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected arguments like:\n    %s\nNever called.",
-                    $this->assertionRenderer->renderMatchers($matchers)
-                )
-            );
-        }
-
-        $matchingCalls = array();
-        foreach ($calls as $call) {
-            if (
-                $this->matcherVerifier->matches($matchers, $call->arguments())
-            ) {
-                $matchingCalls[] = $call;
-            }
-        }
-
-        if ($matchingCalls) {
-            return $this->assertionRecorder->createSuccess($matchingCalls);
-        }
-
-        throw $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected arguments like:\n    %s\nActual calls:\n%s",
-                $this->assertionRenderer->renderMatchers($matchers),
-                $this->assertionRenderer->renderCallsArguments($calls)
-            )
-        );
+        return $this
+            ->doCalledWith($this->matcherFactory->adaptAll(func_get_args()));
     }
 
     /**
@@ -703,33 +480,40 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function checkCalledOn($value)
     {
-        $calls = $this->spy->recordedCalls();
+        $cardinality = $this->resetCardinality();
 
-        if (count($calls) < 1) {
-            return false;
-        }
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
 
         if ($this->matcherFactory->isMatcher($value)) {
-            $isMatcher = true;
             $value = $this->matcherFactory->adapt($value);
-        } else {
-            $isMatcher = false;
-        }
 
-        foreach ($calls as $call) {
-            $thisValue =
-                $this->invocableInspector->callbackThisValue($call->callback());
+            foreach ($calls as $call) {
+                $thisValue = $this->invocableInspector
+                    ->callbackThisValue($call->callback());
 
-            if ($isMatcher) {
                 if ($value->matches($thisValue)) {
-                    return true;
+                    $matchingEvents[] = $call;
+                    $matchCount++;
                 }
-            } elseif ($thisValue === $value) {
-                return true;
+            }
+        } else {
+            foreach ($calls as $call) {
+                $thisValue = $this->invocableInspector
+                    ->callbackThisValue($call->callback());
+
+                if ($thisValue === $value) {
+                    $matchingEvents[] = $call;
+                    $matchCount++;
+                }
             }
         }
 
-        return false;
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
     }
 
     /**
@@ -743,69 +527,35 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function calledOn($value)
     {
-        $calls = $this->spy->recordedCalls();
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkCalledOn($value)) {
+            return $result;
+        }
 
         if ($this->matcherFactory->isMatcher($value)) {
             $value = $this->matcherFactory->adapt($value);
+            $renderedCardinality = $this->assertionRenderer->renderCardinality(
+                $cardinality,
+                sprintf('call on object like %s', $value->describe())
+            );
+        } else {
+            $renderedCardinality = 'call on supplied object';
+        }
 
-            if (count($calls) < 1) {
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Not called on object like %s. Never called.',
-                        $value->describe()
-                    )
-                );
-            }
+        $calls = $this->spy->recordedCalls();
 
-            $matchingCalls = array();
-            foreach ($calls as $call) {
-                if (
-                    $value->matches(
-                        $this->invocableInspector
-                            ->callbackThisValue($call->callback())
-                    )
-                ) {
-                    $matchingCalls[] = $call;
-                }
-            }
-
-            if ($matchingCalls) {
-                return $this->assertionRecorder->createSuccess($matchingCalls);
-            }
-
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Not called on object like %s. Actual objects:\n%s",
-                    $value->describe(),
-                    $this->assertionRenderer->renderThisValues($calls)
-                )
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Called on:\n%s",
+                $this->assertionRenderer->renderThisValues($calls)
             );
         }
 
-        if (count($calls) < 1) {
-            throw $this->assertionRecorder
-                ->createFailure('Not called on expected object. Never called.');
-        }
-
-        $matchingCalls = array();
-        foreach ($calls as $call) {
-            if (
-                $this->invocableInspector
-                    ->callbackThisValue($call->callback()) === $value
-            ) {
-                $matchingCalls[] = $call;
-            }
-        }
-
-        if ($matchingCalls) {
-            return $this->assertionRecorder->createSuccess($matchingCalls);
-        }
-
         throw $this->assertionRecorder->createFailure(
-            sprintf(
-                "Not called on expected object. Actual objects:\n%s",
-                $this->assertionRenderer->renderThisValues($calls)
-            )
+            sprintf("Expected %s. %s", $renderedCardinality, $renderedActual)
         );
     }
 
@@ -818,25 +568,42 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function checkReturned($value = null)
     {
+        $cardinality = $this->resetCardinality();
+
         $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
 
-        if (count($calls) < 1) {
-            return false;
+        if (0 === func_num_args()) {
+            foreach ($calls as $call) {
+                $response = $call->responseEvent();
+
+                if ($response && !$call->exception()) {
+                    $matchingEvents[] = $response;
+                    $matchCount++;
+                }
+            }
+        } else {
+            $value = $this->matcherFactory->adapt($value);
+
+            foreach ($calls as $call) {
+                $response = $call->responseEvent();
+
+                if (
+                    $response &&
+                    !$call->exception() &&
+                    $value->matches($call->returnValue())
+                ) {
+                    $matchingEvents[] = $response;
+                    $matchCount++;
+                }
+            }
         }
 
-        $value = $this->matcherFactory->adapt($value);
-        $anyReturn = 0 === func_num_args();
-
-        foreach ($calls as $call) {
-            if (!$call->hasResponded() || $call->exception()) {
-                continue;
-            }
-            if ($anyReturn || $value->matches($call->returnValue())) {
-                return true;
-            }
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
         }
-
-        return false;
     }
 
     /**
@@ -849,57 +616,47 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function returned($value = null)
     {
+        $cardinality = $this->cardinality;
+
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $arguments = array();
+        } else {
+            $value = $this->matcherFactory->adapt($value);
+            $arguments = array($value);
+        }
+
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkReturned'), $arguments)
+        ) {
+            return $result;
+        }
+
+        if (0 === $argumentCount) {
+            $renderedType = 'return';
+        } else {
+            $renderedType = sprintf('return like %s', $value->describe());
+        }
+
         $calls = $this->spy->recordedCalls();
 
-        if (count($calls) < 1) {
-            throw $this->assertionRecorder
-                ->createFailure('Expected spy to return. Never called.');
-        }
-
-        if (0 === func_num_args()) {
-            $matchingEvents = array();
-
-            foreach ($calls as $call) {
-                if (!$call->hasResponded() || $call->exception()) {
-                    continue;
-                }
-
-                $matchingEvents[] = $call->responseEvent();
-            }
-
-            if ($matchingEvents) {
-                return $this->assertionRecorder->createSuccess($matchingEvents);
-            }
-
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected spy to return. Actually responded:\n%s",
-                    $this->assertionRenderer->renderResponses($calls)
-                )
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls)
             );
-        }
-
-        $value = $this->matcherFactory->adapt($value);
-        $matchingEvents = array();
-
-        foreach ($calls as $call) {
-            if (!$call->hasResponded() || $call->exception()) {
-                continue;
-            }
-            if ($value->matches($call->returnValue())) {
-                $matchingEvents[] = $call->responseEvent();
-            }
-        }
-
-        if ($matchingEvents) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
         }
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                "Expected return value like %s. Actually responded:\n%s",
-                $value->describe(),
-                $this->assertionRenderer->renderResponses($calls)
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
             )
         );
     }
@@ -910,61 +667,73 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If the type is invalid.
      */
     public function checkThrew($type = null)
     {
-        $calls = $this->spy->recordedCalls();
+        $cardinality = $this->resetCardinality();
 
-        if (count($calls) < 1) {
-            return false;
-        }
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+        $isTypeSupported = false;
 
         if (null === $type) {
-            $typeType = 'null';
+            $isTypeSupported = true;
+
+            foreach ($calls as $call) {
+                if ($call->exception()) {
+                    $matchingEvents[] = $call->responseEvent();
+                    $matchCount++;
+                }
+            }
         } elseif (is_string($type)) {
-            $typeType = 'string';
-        } elseif (is_object($type) && $this->matcherFactory->isMatcher($type)) {
-            $typeType = 'matcher';
-            $type = $this->matcherFactory->adapt($type);
-        } elseif ($type instanceof Exception) {
-            $typeType = 'exception';
-        } else {
-            $typeType = 'unknown';
-        }
+            $isTypeSupported = true;
 
-        foreach ($calls as $call) {
-            $exception = $call->exception();
-
-            if (!$exception) {
-                continue;
+            foreach ($calls as $call) {
+                if (is_a($call->exception(), $type)) {
+                    $matchingEvents[] = $call->responseEvent();
+                    $matchCount++;
+                }
             }
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                $isTypeSupported = true;
 
-            switch ($typeType) {
-                case 'null':
-                    return true;
-
-                case 'string':
-                    if (is_a($exception, $type)) {
-                        return true;
+                foreach ($calls as $call) {
+                    if ($call->exception() == $type) {
+                        $matchingEvents[] = $call->responseEvent();
+                        $matchCount++;
                     }
+                }
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $isTypeSupported = true;
+                $type = $this->matcherFactory->adapt($type);
 
-                    continue 2;
+                foreach ($calls as $call) {
+                    $exception = $call->exception();
 
-                case 'matcher':
-                    if ($type->matches($exception)) {
-                        return true;
+                    if ($exception && $type->matches($exception)) {
+                        $matchingEvents[] = $call->responseEvent();
+                        $matchCount++;
                     }
-
-                    continue 2;
-
-                case 'exception':
-                    if ($exception == $type) {
-                        return true;
-                    }
+                }
             }
         }
 
-        return false;
+        if (!$isTypeSupported) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unable to match exceptions against %s.',
+                    $this->assertionRenderer->renderValue($type)
+                )
+            );
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
     }
 
     /**
@@ -973,199 +742,109 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails.
      */
     public function threw($type = null)
     {
-        $calls = $this->spy->recordedCalls();
-        $callCount = count($calls);
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkThrew($type)) {
+            return $result;
+        }
 
         if (null === $type) {
-            if ($callCount < 1) {
-                throw $this->assertionRecorder
-                    ->createFailure('Nothing thrown. Never called.');
-            }
-
-            $matchingEvents = array();
-
-            foreach ($calls as $call) {
-                if ($call->exception()) {
-                    $matchingEvents[] = $call->responseEvent();
-                }
-            }
-
-            if ($matchingEvents) {
-                return $this->assertionRecorder->createSuccess($matchingEvents);
-            }
-
-            throw $this->assertionRecorder->createFailure(
-                sprintf('Nothing thrown in %d call(s).', $callCount)
-            );
+            $renderedType = 'exception';
         } elseif (is_string($type)) {
-            if ($callCount < 1) {
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Expected %s exception. Never called.',
-                        $this->assertionRenderer->renderValue($type)
-                    )
-                );
-            }
-
-            $isAnyExceptions = false;
-            $matchingEvents = array();
-
-            foreach ($calls as $call) {
-                $exception = $call->exception();
-
-                if (!$exception) {
-                    continue;
-                }
-
-                if (is_a($exception, $type)) {
-                    $matchingEvents[] = $call->responseEvent();
-                }
-
-                if ($exception) {
-                    $isAnyExceptions = true;
-                }
-            }
-
-            if (!$isAnyExceptions) {
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        'Expected %s exception. Nothing thrown in %d call(s).',
-                        $this->assertionRenderer->renderValue($type),
-                        $callCount
-                    )
-                );
-            }
-
-            if ($matchingEvents) {
-                return $this->assertionRecorder->createSuccess($matchingEvents);
-            }
-
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Expected %s exception. Actually responded:\n%s",
-                    $this->assertionRenderer->renderValue($type),
-                    $this->assertionRenderer->renderResponses($calls)
-                )
+            $renderedType = sprintf(
+                '%s exception',
+                $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
-                if ($callCount < 1) {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            'Expected exception equal to %s. Never called.',
-                            $this->assertionRenderer->renderException($type)
-                        )
-                    );
-                }
-
-                $isAnyExceptions = false;
-                $matchingEvents = array();
-
-                foreach ($calls as $call) {
-                    $exception = $call->exception();
-
-                    if (!$exception) {
-                        continue;
-                    }
-
-                    if ($exception == $type) {
-                        $matchingEvents[] = $call->responseEvent();
-                    }
-
-                    if ($exception) {
-                        $isAnyExceptions = true;
-                    }
-                }
-
-                if (!$isAnyExceptions) {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            'Expected exception equal to %s. ' .
-                                'Nothing thrown in %d call(s).',
-                            $this->assertionRenderer->renderException($type),
-                            $callCount
-                        )
-                    );
-                }
-
-                if ($matchingEvents) {
-                    return $this->assertionRecorder
-                        ->createSuccess($matchingEvents);
-                }
-
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        "Expected exception equal to %s. " .
-                            "Actually responded:\n%s",
-                        $this->assertionRenderer->renderException($type),
-                        $this->assertionRenderer->renderResponses($calls)
-                    )
+                $renderedType = sprintf(
+                    'exception equal to %s',
+                    $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
-                $type = $this->matcherFactory->adapt($type);
-
-                if ($callCount < 1) {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            'Expected exception like %s. Never called.',
-                            $type->describe()
-                        )
-                    );
-                }
-
-                $isAnyExceptions = false;
-                $matchingEvents = array();
-
-                foreach ($calls as $call) {
-                    $exception = $call->exception();
-
-                    if (!$exception) {
-                        continue;
-                    }
-
-                    if ($type->matches($call->exception())) {
-                        $matchingEvents[] = $call->responseEvent();
-                    }
-
-                    if ($exception) {
-                        $isAnyExceptions = true;
-                    }
-                }
-
-                if (!$isAnyExceptions) {
-                    throw $this->assertionRecorder->createFailure(
-                        sprintf(
-                            'Expected exception like %s. ' .
-                                'Nothing thrown in %d call(s).',
-                            $type->describe(),
-                            $callCount
-                        )
-                    );
-                }
-
-                if ($matchingEvents) {
-                    return $this->assertionRecorder
-                        ->createSuccess($matchingEvents);
-                }
-
-                throw $this->assertionRecorder->createFailure(
-                    sprintf(
-                        "Expected exception like %s. Actually responded:\n%s",
-                        $type->describe(),
-                        $this->assertionRenderer->renderResponses($calls)
-                    )
+                $renderedType = sprintf(
+                    'exception like %s',
+                    $this->matcherFactory->adapt($type)->describe()
                 );
             }
         }
 
+        $calls = $this->spy->recordedCalls();
+
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls)
+            );
+        }
+
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                'Unable to match exceptions against %s.',
-                $this->assertionRenderer->renderValue($type)
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
+        );
+    }
+
+    private function doCheckCalledWith(array $matchers)
+    {
+        $cardinality = $this->resetCardinality();
+
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if (
+                $this->matcherVerifier->matches($matchers, $call->arguments())
+            ) {
+                $matchingEvents[] = $call;
+                $matchCount++;
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    private function doCalledWith(array $matchers)
+    {
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->doCheckCalledWith($matchers)) {
+            return $result;
+        }
+
+        $calls = $this->spy->recordedCalls();
+        $callCount = count($calls);
+
+        if (0 === $callCount) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Calls:\n%s",
+                $this->assertionRenderer->renderCallsArguments($calls)
+            );
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected %s with arguments like:\n    %s\n%s",
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, 'call'),
+                $this->assertionRenderer->renderMatchers($matchers),
+                $renderedActual
             )
         );
     }
