@@ -56,6 +56,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $stub('a', 'b', 'c'));
         $this->assertSame('y', $stub(111));
+        $stub->twice()->called();
         $stub->calledWith('a', 'b', 'c');
         $stub->calledWith('a', 'b', Phony::wildcard());
         $stub->calledWith('a', Phony::wildcard());
@@ -76,6 +77,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $stub('a', 'b', 'c'));
         $this->assertSame('y', $stub(111));
+        $stub->twice()->called();
         $stub->calledWith('a', 'b', 'c');
         $stub->calledWith('a', 'b', a\wildcard());
         $stub->calledWith('a', a\wildcard());
