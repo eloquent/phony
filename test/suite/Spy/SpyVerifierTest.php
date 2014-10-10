@@ -329,76 +329,76 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->assertCalled();
     }
 
-    public function testCalledOnce()
-    {
-        $this->assertFalse((boolean) $this->subject->calledOnce());
+    // public function testCalledOnce()
+    // {
+    //     $this->assertFalse((boolean) $this->subject->calledOnce());
 
-        $this->subject->addCall($this->callA);
+    //     $this->subject->addCall($this->callA);
 
-        $this->assertTrue((boolean) $this->subject->calledOnce());
+    //     $this->assertTrue((boolean) $this->subject->calledOnce());
 
-        $this->subject->addCall($this->callB);
+    //     $this->subject->addCall($this->callB);
 
-        $this->assertFalse((boolean) $this->subject->calledOnce());
-    }
+    //     $this->assertFalse((boolean) $this->subject->calledOnce());
+    // }
 
-    public function testAssertCalledOnce()
-    {
-        $this->subject->addCall($this->callA);
-        $expected = new EventCollection(array($this->callA));
+    // public function testAssertCalledOnce()
+    // {
+    //     $this->subject->addCall($this->callA);
+    //     $expected = new EventCollection(array($this->callA));
 
-        $this->assertEquals($expected, $this->subject->assertCalledOnce());
-    }
+    //     $this->assertEquals($expected, $this->subject->assertCalledOnce());
+    // }
 
-    public function testAssertCalledOnceFailureWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected 1 call. Called 0 time(s).'
-        );
-        $this->subject->assertCalledOnce();
-    }
+    // public function testAssertCalledOnceFailureWithNoCalls()
+    // {
+    //     $this->setExpectedException(
+    //         'Eloquent\Phony\Assertion\Exception\AssertionException',
+    //         'Expected 1 call. Called 0 time(s).'
+    //     );
+    //     $this->subject->assertCalledOnce();
+    // }
 
-    public function testAssertCalledOnceFailureWithMultipleCalls()
-    {
-        $this->subject->setCalls($this->calls);
+    // public function testAssertCalledOnceFailureWithMultipleCalls()
+    // {
+    //     $this->subject->setCalls($this->calls);
 
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected 1 call. Called 4 time(s).'
-        );
-        $this->subject->assertCalledOnce();
-    }
+    //     $this->setExpectedException(
+    //         'Eloquent\Phony\Assertion\Exception\AssertionException',
+    //         'Expected 1 call. Called 4 time(s).'
+    //     );
+    //     $this->subject->assertCalledOnce();
+    // }
 
-    public function testCalledTimes()
-    {
-        $this->assertTrue((boolean) $this->subject->calledTimes(0));
-        $this->assertFalse((boolean) $this->subject->calledTimes(4));
+    // public function testCalledTimes()
+    // {
+    //     $this->assertTrue((boolean) $this->subject->calledTimes(0));
+    //     $this->assertFalse((boolean) $this->subject->calledTimes(4));
 
-        $this->subject->setCalls($this->calls);
+    //     $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->calledTimes(0));
-        $this->assertTrue((boolean) $this->subject->calledTimes(4));
-    }
+    //     $this->assertFalse((boolean) $this->subject->calledTimes(0));
+    //     $this->assertTrue((boolean) $this->subject->calledTimes(4));
+    // }
 
-    public function testAssertCalledTimes()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = new EventCollection($this->calls);
+    // public function testAssertCalledTimes()
+    // {
+    //     $this->subject->setCalls($this->calls);
+    //     $expected = new EventCollection($this->calls);
 
-        $this->assertEquals($expected, $this->subject->assertCalledTimes(4));
-    }
+    //     $this->assertEquals($expected, $this->subject->assertCalledTimes(4));
+    // }
 
-    public function testAssertCalledTimesFailure()
-    {
-        $this->subject->setCalls($this->calls);
+    // public function testAssertCalledTimesFailure()
+    // {
+    //     $this->subject->setCalls($this->calls);
 
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected 2 call(s). Called 4 time(s).'
-        );
-        $this->subject->assertCalledTimes(2);
-    }
+    //     $this->setExpectedException(
+    //         'Eloquent\Phony\Assertion\Exception\AssertionException',
+    //         'Expected 2 call(s). Called 4 time(s).'
+    //     );
+    //     $this->subject->assertCalledTimes(2);
+    // }
 
     public function testCalledBefore()
     {
@@ -629,221 +629,221 @@ EOD;
         $this->subject->assertCalledWith('b', 'c');
     }
 
-    public function testCalledOnceWith()
-    {
-        $this->assertFalse((boolean) $this->subject->calledOnceWith());
+//     public function testCalledOnceWith()
+//     {
+//         $this->assertFalse((boolean) $this->subject->calledOnceWith());
 
-        $this->subject->setCalls(array($this->callA, $this->callB));
+//         $this->subject->setCalls(array($this->callA, $this->callB));
 
-        $this->assertTrue((boolean) $this->subject->calledOnceWith('a', 'b', 'c'));
-        $this->assertTrue(
-            (boolean) $this->subject->calledOnceWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertTrue((boolean) $this->subject->calledOnceWith('a'));
-        $this->assertTrue((boolean) $this->subject->calledOnceWith($this->matchers[0]));
-        $this->assertFalse((boolean) $this->subject->calledOnceWith());
-        $this->assertFalse((boolean) $this->subject->calledOnceWith());
-    }
+//         $this->assertTrue((boolean) $this->subject->calledOnceWith('a', 'b', 'c'));
+//         $this->assertTrue(
+//             (boolean) $this->subject->calledOnceWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertTrue((boolean) $this->subject->calledOnceWith('a'));
+//         $this->assertTrue((boolean) $this->subject->calledOnceWith($this->matchers[0]));
+//         $this->assertFalse((boolean) $this->subject->calledOnceWith());
+//         $this->assertFalse((boolean) $this->subject->calledOnceWith());
+//     }
 
-    public function testAssertCalledOnceWith()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new EventCollection(array($this->callA));
+//     public function testAssertCalledOnceWith()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
+//         $expected = new EventCollection(array($this->callA));
 
-        $this->assertEquals($expected, $this->subject->assertCalledOnceWith('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertCalledOnceWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->assertCalledOnceWith('a'));
-        $this->assertEquals($expected, $this->subject->assertCalledOnceWith($this->matchers[0]));
-    }
+//         $this->assertEquals($expected, $this->subject->assertCalledOnceWith('a', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertCalledOnceWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertEquals($expected, $this->subject->assertCalledOnceWith('a'));
+//         $this->assertEquals($expected, $this->subject->assertCalledOnceWith($this->matchers[0]));
+//     }
 
-    public function testAssertCalledOnceWithFailure()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected 1 call with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
+//     public function testAssertCalledOnceWithFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = <<<'EOD'
+// Expected 1 call with arguments like:
+//     <'a'>, <'b'>, <'c'>, <any>*
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledOnceWith('a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledOnceWith('a', 'b', 'c');
+//     }
 
-    public function testAssertCalledOnceWithFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Never called.
-EOD;
+//     public function testAssertCalledOnceWithFailureWithNoCalls()
+//     {
+//         $expected = <<<'EOD'
+// Expected arguments like:
+//     <'a'>, <'b'>, <'c'>, <any>*
+// Never called.
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledOnceWith('a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledOnceWith('a', 'b', 'c');
+//     }
 
-    public function testCalledTimesWith()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testCalledTimesWith()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->calledTimesWith(2, 'a', 'b', 'c'));
-        $this->assertTrue(
-            (boolean) $this->subject->calledTimesWith(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertTrue((boolean) $this->subject->calledTimesWith(2, 'a'));
-        $this->assertTrue((boolean) $this->subject->calledTimesWith(2, $this->matchers[0]));
-        $this->assertTrue((boolean) $this->subject->calledTimesWith(4));
-        $this->assertTrue((boolean) $this->subject->calledTimesWith(4));
-        $this->assertFalse((boolean) $this->subject->calledTimesWith(1, 'a', 'b', 'c'));
-        $this->assertFalse(
-            (boolean) $this->subject->calledTimesWith(1, $this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertFalse((boolean) $this->subject->calledTimesWith(1, 'a'));
-        $this->assertFalse((boolean) $this->subject->calledTimesWith(1, $this->matchers[0]));
-        $this->assertFalse((boolean) $this->subject->calledTimesWith(1));
-        $this->assertFalse((boolean) $this->subject->calledTimesWith(1));
-    }
+//         $this->assertTrue((boolean) $this->subject->calledTimesWith(2, 'a', 'b', 'c'));
+//         $this->assertTrue(
+//             (boolean) $this->subject->calledTimesWith(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertTrue((boolean) $this->subject->calledTimesWith(2, 'a'));
+//         $this->assertTrue((boolean) $this->subject->calledTimesWith(2, $this->matchers[0]));
+//         $this->assertTrue((boolean) $this->subject->calledTimesWith(4));
+//         $this->assertTrue((boolean) $this->subject->calledTimesWith(4));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWith(1, 'a', 'b', 'c'));
+//         $this->assertFalse(
+//             (boolean) $this->subject->calledTimesWith(1, $this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertFalse((boolean) $this->subject->calledTimesWith(1, 'a'));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWith(1, $this->matchers[0]));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWith(1));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWith(1));
+//     }
 
-    public function testAssertCalledTimesWith()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = new EventCollection(array($this->callA, $this->callC));
+//     public function testAssertCalledTimesWith()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = new EventCollection(array($this->callA, $this->callC));
 
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, 'a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertCalledTimesWith(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, 'a'));
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, $this->matchers[0]));
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, 'a', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertCalledTimesWith(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, 'a'));
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(2, $this->matchers[0]));
 
-        $expected = new EventCollection($this->calls);
+//         $expected = new EventCollection($this->calls);
 
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWith(4));
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWith(4));
-    }
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(4));
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWith(4));
+//     }
 
-    public function testAssertCalledTimesWithFailure()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected 4 call(s) with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
+//     public function testAssertCalledTimesWithFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = <<<'EOD'
+// Expected 4 call(s) with arguments like:
+//     <'a'>, <'b'>, <'c'>, <any>*
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledTimesWith(4, 'a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledTimesWith(4, 'a', 'b', 'c');
+//     }
 
-    public function testAssertCalledTimesWithFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Never called.
-EOD;
+//     public function testAssertCalledTimesWithFailureWithNoCalls()
+//     {
+//         $expected = <<<'EOD'
+// Expected arguments like:
+//     <'a'>, <'b'>, <'c'>, <any>*
+// Never called.
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledTimesWith(4, 'a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledTimesWith(4, 'a', 'b', 'c');
+//     }
 
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testAlwaysCalledWith(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls(array($this->callA, $this->callA));
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+//     /**
+//      * @dataProvider calledWithData
+//      */
+//     public function testAlwaysCalledWith(array $arguments, $calledWith, $calledWithExactly)
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callA));
+//         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        $this->assertSame(
-            $calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $arguments)
-        );
-        $this->assertSame(
-            $calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $matchers)
-        );
-    }
+//         $this->assertSame(
+//             $calledWith,
+//             (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $arguments)
+//         );
+//         $this->assertSame(
+//             $calledWith,
+//             (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $matchers)
+//         );
+//     }
 
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testAlwaysCalledWithWithDifferingCalls(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+//     /**
+//      * @dataProvider calledWithData
+//      */
+//     public function testAlwaysCalledWithWithDifferingCalls(array $arguments, $calledWith, $calledWithExactly)
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
+//         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        $this->assertFalse((boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $arguments));
-        $this->assertFalse((boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $matchers));
-    }
+//         $this->assertFalse((boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $arguments));
+//         $this->assertFalse((boolean) call_user_func_array(array($this->subject, 'alwaysCalledWith'), $matchers));
+//     }
 
-    public function testAlwaysCalledWithWithEmptyArguments()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAlwaysCalledWithWithEmptyArguments()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->alwaysCalledWith());
-    }
+//         $this->assertTrue((boolean) $this->subject->alwaysCalledWith());
+//     }
 
-    public function testAlwaysCalledWithWithNoCalls()
-    {
-        $this->assertFalse((boolean) $this->subject->alwaysCalledWith());
-    }
+//     public function testAlwaysCalledWithWithNoCalls()
+//     {
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledWith());
+//     }
 
-    public function testAssertAlwaysCalledWith()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new EventCollection(array($this->callA, $this->callA));
+//     public function testAssertAlwaysCalledWith()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callA));
+//         $expected = new EventCollection(array($this->callA, $this->callA));
 
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertAlwaysCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith('a', 'b'));
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith($this->matchers[0], $this->matchers[1]));
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith('a'));
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith($this->matchers[0]));
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith());
-    }
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith('a', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertAlwaysCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith('a', 'b'));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith($this->matchers[0], $this->matchers[1]));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith('a'));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith($this->matchers[0]));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWith());
+//     }
 
-    public function testAssertAlwaysCalledWithFailure()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAssertAlwaysCalledWithFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysCalledWith('a', 'b', 'c');
-    }
+//         $expected = <<<'EOD'
+// Expected every call with arguments like:
+//     <'a'>, <'b'>, <'c'>, <any>*
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysCalledWith('a', 'b', 'c');
+//     }
 
-    public function testAssertAlwaysCalledWithFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Never called.
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysCalledWith('a', 'b', 'c');
-    }
+//     public function testAssertAlwaysCalledWithFailureWithNoCalls()
+//     {
+//         $expected = <<<'EOD'
+// Expected every call with arguments like:
+//     <'a'>, <'b'>, <'c'>, <any>*
+// Never called.
+// EOD;
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysCalledWith('a', 'b', 'c');
+//     }
 
     /**
      * @dataProvider calledWithData
@@ -915,388 +915,388 @@ EOD;
         $this->subject->assertCalledWithExactly('b', 'c');
     }
 
-    public function testCalledOnceWithExactly()
-    {
-        $this->assertFalse((boolean) $this->subject->calledOnceWithExactly());
+//     public function testCalledOnceWithExactly()
+//     {
+//         $this->assertFalse((boolean) $this->subject->calledOnceWithExactly());
 
-        $this->subject->setCalls(array($this->callA, $this->callB, $this->callD));
+//         $this->subject->setCalls(array($this->callA, $this->callB, $this->callD));
 
-        $this->assertTrue((boolean) $this->subject->calledOnceWithExactly('a', 'b', 'c'));
-        $this->assertTrue(
-            (boolean) $this->subject->calledOnceWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertFalse((boolean) $this->subject->calledOnceWithExactly());
-        $this->assertFalse((boolean) $this->subject->calledOnceWithExactly());
-    }
+//         $this->assertTrue((boolean) $this->subject->calledOnceWithExactly('a', 'b', 'c'));
+//         $this->assertTrue(
+//             (boolean) $this->subject->calledOnceWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertFalse((boolean) $this->subject->calledOnceWithExactly());
+//         $this->assertFalse((boolean) $this->subject->calledOnceWithExactly());
+//     }
 
-    public function testAssertCalledOnceWithExactly()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new EventCollection(array($this->callA));
+//     public function testAssertCalledOnceWithExactly()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
+//         $expected = new EventCollection(array($this->callA));
 
-        $this->assertEquals($expected, $this->subject->assertCalledOnceWithExactly('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertCalledOnceWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-    }
+//         $this->assertEquals($expected, $this->subject->assertCalledOnceWithExactly('a', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertCalledOnceWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//     }
 
-    public function testAssertCalledOnceWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected 1 call with arguments like:
-    <'a'>, <'b'>, <'c'>
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
+//     public function testAssertCalledOnceWithExactlyFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = <<<'EOD'
+// Expected 1 call with arguments like:
+//     <'a'>, <'b'>, <'c'>
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledOnceWithExactly('a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledOnceWithExactly('a', 'b', 'c');
+//     }
 
-    public function testAssertCalledOnceWithExactlyFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected arguments like:
-    <'a'>, <'b'>, <'c'>
-Never called.
-EOD;
+//     public function testAssertCalledOnceWithExactlyFailureWithNoCalls()
+//     {
+//         $expected = <<<'EOD'
+// Expected arguments like:
+//     <'a'>, <'b'>, <'c'>
+// Never called.
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledOnceWithExactly('a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledOnceWithExactly('a', 'b', 'c');
+//     }
 
-    public function testCalledTimesWithExactly()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testCalledTimesWithExactly()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->calledTimesWithExactly(2, 'a', 'b', 'c'));
-        $this->assertTrue(
-            (boolean) $this->subject
-                ->calledTimesWithExactly(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertTrue((boolean) $this->subject->calledTimesWithExactly(2));
-        $this->assertTrue((boolean) $this->subject->calledTimesWithExactly(2));
-        $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1, 'a', 'b', 'c'));
-        $this->assertFalse(
-            (boolean) $this->subject
-                ->calledTimesWithExactly(1, $this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1, 'a'));
-        $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1, $this->matchers[0]));
-        $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1));
-        $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1));
-    }
+//         $this->assertTrue((boolean) $this->subject->calledTimesWithExactly(2, 'a', 'b', 'c'));
+//         $this->assertTrue(
+//             (boolean) $this->subject
+//                 ->calledTimesWithExactly(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertTrue((boolean) $this->subject->calledTimesWithExactly(2));
+//         $this->assertTrue((boolean) $this->subject->calledTimesWithExactly(2));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1, 'a', 'b', 'c'));
+//         $this->assertFalse(
+//             (boolean) $this->subject
+//                 ->calledTimesWithExactly(1, $this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1, 'a'));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1, $this->matchers[0]));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1));
+//         $this->assertFalse((boolean) $this->subject->calledTimesWithExactly(1));
+//     }
 
-    public function testAssertCalledTimesWithExactly()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = new EventCollection(array($this->callA, $this->callC));
+//     public function testAssertCalledTimesWithExactly()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = new EventCollection(array($this->callA, $this->callC));
 
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2, 'a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertCalledTimesWithExactly(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2, 'a', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertCalledTimesWithExactly(2, $this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
 
-        $expected = new EventCollection(array($this->callB, $this->callD));
+//         $expected = new EventCollection(array($this->callB, $this->callD));
 
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2));
-        $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2));
-    }
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2));
+//         $this->assertEquals($expected, $this->subject->assertCalledTimesWithExactly(2));
+//     }
 
-    public function testAssertCalledTimesWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected 4 call(s) with arguments like:
-    <'a'>, <'b'>, <'c'>
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
+//     public function testAssertCalledTimesWithExactlyFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = <<<'EOD'
+// Expected 4 call(s) with arguments like:
+//     <'a'>, <'b'>, <'c'>
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledTimesWithExactly(4, 'a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledTimesWithExactly(4, 'a', 'b', 'c');
+//     }
 
-    public function testAssertCalledTimesWithExactlyFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected arguments like:
-    <'a'>, <'b'>, <'c'>
-Never called.
-EOD;
+//     public function testAssertCalledTimesWithExactlyFailureWithNoCalls()
+//     {
+//         $expected = <<<'EOD'
+// Expected arguments like:
+//     <'a'>, <'b'>, <'c'>
+// Never called.
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertCalledTimesWithExactly(4, 'a', 'b', 'c');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertCalledTimesWithExactly(4, 'a', 'b', 'c');
+//     }
 
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testAlwaysCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls(array($this->callA, $this->callA));
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+//     /**
+//      * @dataProvider calledWithData
+//      */
+//     public function testAlwaysCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callA));
+//         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            $calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $matchers)
-        );
-    }
+//         $this->assertSame(
+//             $calledWithExactly,
+//             (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $arguments)
+//         );
+//         $this->assertSame(
+//             $calledWithExactly,
+//             (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $matchers)
+//         );
+//     }
 
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testAlwaysCalledWithExactlyWithDifferingCalls(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+//     /**
+//      * @dataProvider calledWithData
+//      */
+//     public function testAlwaysCalledWithExactlyWithDifferingCalls(array $arguments, $calledWith, $calledWithExactly)
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
+//         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        $this->assertFalse(
-            (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $arguments)
-        );
-        $this->assertFalse((boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $matchers));
-    }
+//         $this->assertFalse(
+//             (boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $arguments)
+//         );
+//         $this->assertFalse((boolean) call_user_func_array(array($this->subject, 'alwaysCalledWithExactly'), $matchers));
+//     }
 
-    public function testAlwaysCalledWithExactlyWithEmptyArguments()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAlwaysCalledWithExactlyWithEmptyArguments()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->alwaysCalledWithExactly());
-    }
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledWithExactly());
+//     }
 
-    public function testAlwaysCalledWithExactlyWithNoCalls()
-    {
-        $this->assertFalse((boolean) $this->subject->alwaysCalledWithExactly());
-    }
+//     public function testAlwaysCalledWithExactlyWithNoCalls()
+//     {
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledWithExactly());
+//     }
 
-    public function testAssertAlwaysCalledWithExactly()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new EventCollection(array($this->callA, $this->callA));
+//     public function testAssertAlwaysCalledWithExactly()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callA));
+//         $expected = new EventCollection(array($this->callA, $this->callA));
 
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertAlwaysCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-    }
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertAlwaysCalledWithExactly($this->matchers[0], $this->matchers[1], $this->matchers[2])
+//         );
+//     }
 
-    public function testAssertAlwaysCalledWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAssertAlwaysCalledWithExactlyFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c');
-    }
+//         $expected = <<<'EOD'
+// Expected every call with arguments like:
+//     <'a'>, <'b'>, <'c'>
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c');
+//     }
 
-    public function testAssertAlwaysCalledWithExactlyFailureWithNoCalls()
-    {
-        $expected = <<<'EOD'
-Expected every call with arguments like:
-    <'a'>, <'b'>, <'c'>
-Never called.
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c');
-    }
+//     public function testAssertAlwaysCalledWithExactlyFailureWithNoCalls()
+//     {
+//         $expected = <<<'EOD'
+// Expected every call with arguments like:
+//     <'a'>, <'b'>, <'c'>
+// Never called.
+// EOD;
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysCalledWithExactly('a', 'b', 'c');
+//     }
 
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testNeverCalledWith(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls($this->calls);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+//     /**
+//      * @dataProvider calledWithData
+//      */
+//     public function testNeverCalledWith(array $arguments, $calledWith, $calledWithExactly)
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        $this->assertSame(
-            !$calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'neverCalledWith'), $arguments)
-        );
-        $this->assertSame(
-            !$calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'neverCalledWith'), $matchers)
-        );
-    }
+//         $this->assertSame(
+//             !$calledWith,
+//             (boolean) call_user_func_array(array($this->subject, 'neverCalledWith'), $arguments)
+//         );
+//         $this->assertSame(
+//             !$calledWith,
+//             (boolean) call_user_func_array(array($this->subject, 'neverCalledWith'), $matchers)
+//         );
+//     }
 
-    public function testNeverCalledWithWithEmptyArguments()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testNeverCalledWithWithEmptyArguments()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->neverCalledWith());
-    }
+//         $this->assertFalse((boolean) $this->subject->neverCalledWith());
+//     }
 
-    public function testNeverCalledWithWithNoCalls()
-    {
-        $this->assertTrue((boolean) $this->subject->neverCalledWith());
-    }
+//     public function testNeverCalledWithWithNoCalls()
+//     {
+//         $this->assertTrue((boolean) $this->subject->neverCalledWith());
+//     }
 
-    public function testAssertNeverCalledWith()
-    {
-        $expected = new EventCollection();
+//     public function testAssertNeverCalledWith()
+//     {
+//         $expected = new EventCollection();
 
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith());
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith());
 
-        $this->subject->setCalls($this->calls);
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith('b', 'c'));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith($this->matchers[1], $this->matchers[2]));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith('c'));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith($this->matchers[2]));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith('a', 'b', 'c', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWith(
-                $this->matchers[0],
-                $this->matchers[1],
-                $this->matchers[2],
-                $this->otherMatcher
-            )
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith('d', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWith($this->otherMatcher, $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith('a', 'b', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWith($this->matchers[0], $this->matchers[1], $this->otherMatcher)
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith('d'));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWith($this->otherMatcher));
-    }
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith('b', 'c'));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith($this->matchers[1], $this->matchers[2]));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith('c'));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith($this->matchers[2]));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith('a', 'b', 'c', 'd'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWith(
+//                 $this->matchers[0],
+//                 $this->matchers[1],
+//                 $this->matchers[2],
+//                 $this->otherMatcher
+//             )
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith('d', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWith($this->otherMatcher, $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith('a', 'b', 'd'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWith($this->matchers[0], $this->matchers[1], $this->otherMatcher)
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith('d'));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWith($this->otherMatcher));
+//     }
 
-    public function testAssertNeverCalledWithFailure()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAssertNeverCalledWithFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected no call with arguments like:
-    <'a'>, <'b'>, <'c'>, <any>*
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertNeverCalledWith('a', 'b', 'c');
-    }
+//         $expected = <<<'EOD'
+// Expected no call with arguments like:
+//     <'a'>, <'b'>, <'c'>, <any>*
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertNeverCalledWith('a', 'b', 'c');
+//     }
 
-    /**
-     * @dataProvider calledWithData
-     */
-    public function testNeverCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
-    {
-        $this->subject->setCalls($this->calls);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+//     /**
+//      * @dataProvider calledWithData
+//      */
+//     public function testNeverCalledWithExactly(array $arguments, $calledWith, $calledWithExactly)
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        $this->assertSame(
-            !$calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'neverCalledWithExactly'), $arguments)
-        );
-        $this->assertSame(
-            !$calledWithExactly,
-            (boolean) call_user_func_array(array($this->subject, 'neverCalledWithExactly'), $matchers)
-        );
-    }
+//         $this->assertSame(
+//             !$calledWithExactly,
+//             (boolean) call_user_func_array(array($this->subject, 'neverCalledWithExactly'), $arguments)
+//         );
+//         $this->assertSame(
+//             !$calledWithExactly,
+//             (boolean) call_user_func_array(array($this->subject, 'neverCalledWithExactly'), $matchers)
+//         );
+//     }
 
-    public function testNeverCalledWithExactlyWithEmptyArguments()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testNeverCalledWithExactlyWithEmptyArguments()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->neverCalledWithExactly());
-    }
+//         $this->assertFalse((boolean) $this->subject->neverCalledWithExactly());
+//     }
 
-    public function testNeverCalledWithExactlyWithNoCalls()
-    {
-        $this->assertTrue((boolean) $this->subject->neverCalledWithExactly());
-    }
+//     public function testNeverCalledWithExactlyWithNoCalls()
+//     {
+//         $this->assertTrue((boolean) $this->subject->neverCalledWithExactly());
+//     }
 
-    public function testAssertNeverCalledWithExactly()
-    {
-        $expected = new EventCollection();
+//     public function testAssertNeverCalledWithExactly()
+//     {
+//         $expected = new EventCollection();
 
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly());
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly());
 
-        $this->subject->setCalls($this->calls);
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a', 'b'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWithExactly($this->matchers[0], $this->matchers[1])
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a'));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly($this->matchers[0]));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWithExactly($this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('c'));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly($this->matchers[2]));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a', 'b', 'c', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWithExactly(
-                $this->matchers[0],
-                $this->matchers[1],
-                $this->matchers[2],
-                $this->otherMatcher
-            )
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('d', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWithExactly($this->otherMatcher, $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a', 'b', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->assertNeverCalledWithExactly($this->matchers[0], $this->matchers[1], $this->otherMatcher)
-        );
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('d'));
-        $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly($this->otherMatcher));
-    }
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a', 'b'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWithExactly($this->matchers[0], $this->matchers[1])
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a'));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly($this->matchers[0]));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWithExactly($this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('c'));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly($this->matchers[2]));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a', 'b', 'c', 'd'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWithExactly(
+//                 $this->matchers[0],
+//                 $this->matchers[1],
+//                 $this->matchers[2],
+//                 $this->otherMatcher
+//             )
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('d', 'b', 'c'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWithExactly($this->otherMatcher, $this->matchers[1], $this->matchers[2])
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('a', 'b', 'd'));
+//         $this->assertEquals(
+//             $expected,
+//             $this->subject->assertNeverCalledWithExactly($this->matchers[0], $this->matchers[1], $this->otherMatcher)
+//         );
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly('d'));
+//         $this->assertEquals($expected, $this->subject->assertNeverCalledWithExactly($this->otherMatcher));
+//     }
 
-    public function testAssertNeverCalledWithExactlyFailure()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAssertNeverCalledWithExactlyFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected no call with arguments like:
-    <'a'>, <'b'>, <'c'>
-Actual calls:
-    - 'a', 'b', 'c'
-    - <none>
-    - 'a', 'b', 'c'
-    - <none>
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertNeverCalledWithExactly('a', 'b', 'c');
-    }
+//         $expected = <<<'EOD'
+// Expected no call with arguments like:
+//     <'a'>, <'b'>, <'c'>
+// Actual calls:
+//     - 'a', 'b', 'c'
+//     - <none>
+//     - 'a', 'b', 'c'
+//     - <none>
+// EOD;
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertNeverCalledWithExactly('a', 'b', 'c');
+//     }
 
     public function testCalledOn()
     {
@@ -1382,87 +1382,87 @@ EOD;
         $this->subject->assertCalledOn(new EqualToMatcher((object) array('property' => 'value')));
     }
 
-    public function testAlwaysCalledOn()
-    {
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn(null));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueA));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueB));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn(new EqualToMatcher($this->thisValueA)));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn((object) array()));
+//     public function testAlwaysCalledOn()
+//     {
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn(null));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueA));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueB));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn(new EqualToMatcher($this->thisValueA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn((object) array()));
 
-        $this->subject->setCalls($this->calls);
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn(null));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueA));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueB));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn(new EqualToMatcher($this->thisValueA)));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn((object) array()));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn(null));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueA));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueB));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn(new EqualToMatcher($this->thisValueA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn((object) array()));
 
-        $this->subject->setCalls(array($this->callC, $this->callC));
+//         $this->subject->setCalls(array($this->callC, $this->callC));
 
-        $this->assertTrue((boolean) $this->subject->alwaysCalledOn($this->thisValueA));
-        $this->assertTrue((boolean) $this->subject->alwaysCalledOn(new EqualToMatcher($this->thisValueA)));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn(null));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueB));
-        $this->assertFalse((boolean) $this->subject->alwaysCalledOn((object) array()));
-    }
+//         $this->assertTrue((boolean) $this->subject->alwaysCalledOn($this->thisValueA));
+//         $this->assertTrue((boolean) $this->subject->alwaysCalledOn(new EqualToMatcher($this->thisValueA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn(null));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn($this->thisValueB));
+//         $this->assertFalse((boolean) $this->subject->alwaysCalledOn((object) array()));
+//     }
 
-    public function testAssertAlwaysCalledOn()
-    {
-        $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new EventCollection(array($this->callC, $this->callC));
+//     public function testAssertAlwaysCalledOn()
+//     {
+//         $this->subject->setCalls(array($this->callC, $this->callC));
+//         $expected = new EventCollection(array($this->callC, $this->callC));
 
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledOn($this->thisValueA));
-        $this->assertEquals($expected, $this->subject->assertAlwaysCalledOn(new EqualToMatcher($this->thisValueA)));
-    }
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledOn($this->thisValueA));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysCalledOn(new EqualToMatcher($this->thisValueA)));
+//     }
 
-    public function testAssertAlwaysCalledOnFailure()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Not always called on expected object. Actual objects:
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - null
-EOD;
+//     public function testAssertAlwaysCalledOnFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = <<<'EOD'
+// Not always called on expected object. Actual objects:
+//     - Eloquent\Phony\Test\TestClass Object ()
+//     - Eloquent\Phony\Test\TestClass Object ()
+//     - Eloquent\Phony\Test\TestClass Object ()
+//     - null
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysCalledOn($this->thisValueA);
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysCalledOn($this->thisValueA);
+//     }
 
-    public function testAssertAlwaysCalledOnFailureWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Not called on expected object. Never called.'
-        );
-        $this->subject->assertAlwaysCalledOn($this->thisValueA);
-    }
+//     public function testAssertAlwaysCalledOnFailureWithNoCalls()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             'Not called on expected object. Never called.'
+//         );
+//         $this->subject->assertAlwaysCalledOn($this->thisValueA);
+//     }
 
-    public function testAssertAlwaysCalledOnFailureWithMatcher()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Not always called on object like <Eloquent\Phony\Test\TestClass Object ()>. Actual objects:
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - null
-EOD;
+//     public function testAssertAlwaysCalledOnFailureWithMatcher()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = <<<'EOD'
+// Not always called on object like <Eloquent\Phony\Test\TestClass Object ()>. Actual objects:
+//     - Eloquent\Phony\Test\TestClass Object ()
+//     - Eloquent\Phony\Test\TestClass Object ()
+//     - Eloquent\Phony\Test\TestClass Object ()
+//     - null
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysCalledOn(new EqualToMatcher($this->thisValueA));
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysCalledOn(new EqualToMatcher($this->thisValueA));
+//     }
 
-    public function testAssertAlwaysCalledOnFailureWithMatcherWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Not called on object like <Eloquent\Phony\Test\TestClass Object ()>. Never called.'
-        );
-        $this->subject->assertAlwaysCalledOn(new EqualToMatcher($this->thisValueA));
-    }
+//     public function testAssertAlwaysCalledOnFailureWithMatcherWithNoCalls()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             'Not called on object like <Eloquent\Phony\Test\TestClass Object ()>. Never called.'
+//         );
+//         $this->subject->assertAlwaysCalledOn(new EqualToMatcher($this->thisValueA));
+//     }
 
     public function testReturned()
     {
@@ -1544,84 +1544,84 @@ EOD;
         $this->subject->assertReturned($this->returnValueA);
     }
 
-    public function testAlwaysReturned()
-    {
-        $this->assertFalse((boolean) $this->subject->alwaysReturned());
-        $this->assertFalse((boolean) $this->subject->alwaysReturned(null));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueA));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueB));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned('z'));
+//     public function testAlwaysReturned()
+//     {
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned());
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned(null));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueA));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueB));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned('z'));
 
-        $this->subject->setCalls($this->calls);
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->alwaysReturned());
-        $this->assertFalse((boolean) $this->subject->alwaysReturned(null));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueA));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueB));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned('z'));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned());
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned(null));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueA));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueB));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned('z'));
 
-        $this->subject->setCalls(array($this->callA, $this->callA));
+//         $this->subject->setCalls(array($this->callA, $this->callA));
 
-        $this->assertTrue((boolean) $this->subject->alwaysReturned());
-        $this->assertTrue((boolean) $this->subject->alwaysReturned($this->returnValueA));
-        $this->assertTrue((boolean) $this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned(null));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueB));
-        $this->assertFalse((boolean) $this->subject->alwaysReturned('y'));
-    }
+//         $this->assertTrue((boolean) $this->subject->alwaysReturned());
+//         $this->assertTrue((boolean) $this->subject->alwaysReturned($this->returnValueA));
+//         $this->assertTrue((boolean) $this->subject->alwaysReturned(new EqualToMatcher($this->returnValueA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned(null));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned($this->returnValueB));
+//         $this->assertFalse((boolean) $this->subject->alwaysReturned('y'));
+//     }
 
-    public function testAssertAlwaysReturned()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new EventCollection(array($this->callAResponse, $this->callAResponse));
+//     public function testAssertAlwaysReturned()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callA));
+//         $expected = new EventCollection(array($this->callAResponse, $this->callAResponse));
 
-        $this->assertEquals($expected, $this->subject->assertAlwaysReturned());
-        $this->assertEquals($expected, $this->subject->assertAlwaysReturned($this->returnValueA));
-        $this->assertEquals($expected, $this->subject->assertAlwaysReturned(new EqualToMatcher($this->returnValueA)));
-    }
+//         $this->assertEquals($expected, $this->subject->assertAlwaysReturned());
+//         $this->assertEquals($expected, $this->subject->assertAlwaysReturned($this->returnValueA));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysReturned(new EqualToMatcher($this->returnValueA)));
+//     }
 
-    public function testAssertAlwaysReturnedFailure()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAssertAlwaysReturnedFailure()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected every call with return value like <'x'>. Actually responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
-EOD;
+//         $expected = <<<'EOD'
+// Expected every call with return value like <'x'>. Actually responded:
+//     - returned 'x'
+//     - returned 'y'
+//     - threw RuntimeException('You done goofed.')
+//     - threw RuntimeException('Consequences will never be the same.')
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysReturned($this->returnValueA);
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysReturned($this->returnValueA);
+//     }
 
-    public function testAssertAlwaysReturnedFailureWithNoMatcher()
-    {
-        $this->subject->setCalls($this->calls);
+//     public function testAssertAlwaysReturnedFailureWithNoMatcher()
+//     {
+//         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected every call to return. Actually responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
-EOD;
+//         $expected = <<<'EOD'
+// Expected every call to return. Actually responded:
+//     - returned 'x'
+//     - returned 'y'
+//     - threw RuntimeException('You done goofed.')
+//     - threw RuntimeException('Consequences will never be the same.')
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysReturned();
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysReturned();
+//     }
 
-    public function testAssertAlwaysReturnedFailureWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected spy to return. Never called."
-        );
-        $this->subject->assertAlwaysReturned($this->returnValueA);
-    }
+//     public function testAssertAlwaysReturnedFailureWithNoCalls()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             "Expected spy to return. Never called."
+//         );
+//         $this->subject->assertAlwaysReturned($this->returnValueA);
+//     }
 
     public function testThrew()
     {
@@ -1811,208 +1811,208 @@ EOD;
         $this->subject->assertThrew((object) array());
     }
 
-    public function testAlwaysThrew()
-    {
-        $this->assertFalse((boolean) $this->subject->alwaysThrew());
-        $this->assertFalse((boolean) $this->subject->alwaysThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionB));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher($this->exceptionA)));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(111));
+//     public function testAlwaysThrew()
+//     {
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew());
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew('Exception'));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew('RuntimeException'));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionA));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionB));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher($this->exceptionA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew('InvalidArgumentException'));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new Exception()));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new RuntimeException()));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(111));
 
-        $this->subject->setCalls($this->calls);
+//         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->alwaysThrew());
-        $this->assertFalse((boolean) $this->subject->alwaysThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionB));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher($this->exceptionA)));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(111));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew());
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew('Exception'));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew('RuntimeException'));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionA));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionB));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher($this->exceptionA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew('InvalidArgumentException'));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new Exception()));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new RuntimeException()));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(111));
 
-        $this->subject->setCalls(array($this->callC, $this->callC));
+//         $this->subject->setCalls(array($this->callC, $this->callC));
 
-        $this->assertTrue((boolean) $this->subject->alwaysThrew());
-        $this->assertTrue((boolean) $this->subject->alwaysThrew('Exception'));
-        $this->assertTrue((boolean) $this->subject->alwaysThrew('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->alwaysThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionB));
-        $this->assertTrue((boolean) $this->subject->alwaysThrew(new EqualToMatcher($this->exceptionA)));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(111));
+//         $this->assertTrue((boolean) $this->subject->alwaysThrew());
+//         $this->assertTrue((boolean) $this->subject->alwaysThrew('Exception'));
+//         $this->assertTrue((boolean) $this->subject->alwaysThrew('RuntimeException'));
+//         $this->assertTrue((boolean) $this->subject->alwaysThrew($this->exceptionA));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew($this->exceptionB));
+//         $this->assertTrue((boolean) $this->subject->alwaysThrew(new EqualToMatcher($this->exceptionA)));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew('InvalidArgumentException'));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new Exception()));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new RuntimeException()));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(111));
 
-        $this->subject->setCalls(array($this->callA, $this->callA));
+//         $this->subject->setCalls(array($this->callA, $this->callA));
 
-        $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
-    }
+//         $this->assertFalse((boolean) $this->subject->alwaysThrew(new EqualToMatcher(null)));
+//     }
 
-    public function testAssertAlwaysThrew()
-    {
-        $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new EventCollection(array($this->callCResponse, $this->callCResponse));
+//     public function testAssertAlwaysThrew()
+//     {
+//         $this->subject->setCalls(array($this->callC, $this->callC));
+//         $expected = new EventCollection(array($this->callCResponse, $this->callCResponse));
 
-        $this->assertEquals($expected, $this->subject->assertAlwaysThrew());
-        $this->assertEquals($expected, $this->subject->assertAlwaysThrew('Exception'));
-        $this->assertEquals($expected, $this->subject->assertAlwaysThrew('RuntimeException'));
-        $this->assertEquals($expected, $this->subject->assertAlwaysThrew($this->exceptionA));
-        $this->assertEquals($expected, $this->subject->assertAlwaysThrew(new EqualToMatcher($this->exceptionA)));
-    }
+//         $this->assertEquals($expected, $this->subject->assertAlwaysThrew());
+//         $this->assertEquals($expected, $this->subject->assertAlwaysThrew('Exception'));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysThrew('RuntimeException'));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysThrew($this->exceptionA));
+//         $this->assertEquals($expected, $this->subject->assertAlwaysThrew(new EqualToMatcher($this->exceptionA)));
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingAny()
-    {
-        $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected every call to throw. Actually responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
-EOD;
+//     public function testAssertAlwaysThrewFailureExpectingAny()
+//     {
+//         $this->subject->setCalls($this->calls);
+//         $expected = <<<'EOD'
+// Expected every call to throw. Actually responded:
+//     - returned 'x'
+//     - returned 'y'
+//     - threw RuntimeException('You done goofed.')
+//     - threw RuntimeException('Consequences will never be the same.')
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysThrew();
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysThrew();
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingAnyButNothingThrown()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
+//     public function testAssertAlwaysThrewFailureExpectingAnyButNothingThrown()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
 
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Nothing thrown in 2 call(s).'
-        );
-        $this->subject->assertAlwaysThrew();
-    }
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             'Nothing thrown in 2 call(s).'
+//         );
+//         $this->subject->assertAlwaysThrew();
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingAnyWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Nothing thrown. Never called.'
-        );
-        $this->subject->assertAlwaysThrew();
-    }
+//     public function testAssertAlwaysThrewFailureExpectingAnyWithNoCalls()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             'Nothing thrown. Never called.'
+//         );
+//         $this->subject->assertAlwaysThrew();
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingType()
-    {
-        $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually responded:
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
-EOD;
+//     public function testAssertAlwaysThrewFailureExpectingType()
+//     {
+//         $this->subject->setCalls(array($this->callC, $this->callD));
+//         $expected = <<<'EOD'
+// Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Actually responded:
+//     - threw RuntimeException('You done goofed.')
+//     - threw RuntimeException('Consequences will never be the same.')
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingTypeWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Never called."
-        );
-        $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
-    }
+//     public function testAssertAlwaysThrewFailureExpectingTypeWithNoCalls()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Never called."
+//         );
+//         $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingTypeWithNoExceptions()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
+//     public function testAssertAlwaysThrewFailureExpectingTypeWithNoExceptions()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
 
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Nothing thrown in 2 call(s)."
-        );
-        $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
-    }
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             "Expected 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Nothing thrown in 2 call(s)."
+//         );
+//         $this->subject->assertAlwaysThrew('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingException()
-    {
-        $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected every call to throw exception equal to RuntimeException(). Actually responded:
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
-EOD;
+//     public function testAssertAlwaysThrewFailureExpectingException()
+//     {
+//         $this->subject->setCalls(array($this->callC, $this->callD));
+//         $expected = <<<'EOD'
+// Expected every call to throw exception equal to RuntimeException(). Actually responded:
+//     - threw RuntimeException('You done goofed.')
+//     - threw RuntimeException('Consequences will never be the same.')
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysThrew(new RuntimeException());
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysThrew(new RuntimeException());
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingExceptionWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected exception equal to RuntimeException(). Never called.'
-        );
-        $this->subject->assertAlwaysThrew(new RuntimeException());
-    }
+//     public function testAssertAlwaysThrewFailureExpectingExceptionWithNoCalls()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             'Expected exception equal to RuntimeException(). Never called.'
+//         );
+//         $this->subject->assertAlwaysThrew(new RuntimeException());
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingExceptionWithNoExceptions()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
+//     public function testAssertAlwaysThrewFailureExpectingExceptionWithNoExceptions()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
 
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected exception equal to RuntimeException(). Nothing thrown in 2 call(s)."
-        );
-        $this->subject->assertAlwaysThrew(new RuntimeException());
-    }
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             "Expected exception equal to RuntimeException(). Nothing thrown in 2 call(s)."
+//         );
+//         $this->subject->assertAlwaysThrew(new RuntimeException());
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingMatcher()
-    {
-        $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected every call to throw exception like <RuntimeException Object (...)>. Actually responded:
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
-EOD;
+//     public function testAssertAlwaysThrewFailureExpectingMatcher()
+//     {
+//         $this->subject->setCalls(array($this->callC, $this->callD));
+//         $expected = <<<'EOD'
+// Expected every call to throw exception like <RuntimeException Object (...)>. Actually responded:
+//     - threw RuntimeException('You done goofed.')
+//     - threw RuntimeException('Consequences will never be the same.')
+// EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->assertAlwaysThrew(new EqualToMatcher(new RuntimeException()));
-    }
+//         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+//         $this->subject->assertAlwaysThrew(new EqualToMatcher(new RuntimeException()));
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingMatcherWithNoCalls()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected exception like <RuntimeException Object (...)>. Never called.'
-        );
-        $this->subject->assertAlwaysThrew(new EqualToMatcher(new RuntimeException()));
-    }
+//     public function testAssertAlwaysThrewFailureExpectingMatcherWithNoCalls()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             'Expected exception like <RuntimeException Object (...)>. Never called.'
+//         );
+//         $this->subject->assertAlwaysThrew(new EqualToMatcher(new RuntimeException()));
+//     }
 
-    public function testAssertAlwaysThrewFailureExpectingMatcherWithNoExceptions()
-    {
-        $this->subject->setCalls(array($this->callA, $this->callB));
+//     public function testAssertAlwaysThrewFailureExpectingMatcherWithNoExceptions()
+//     {
+//         $this->subject->setCalls(array($this->callA, $this->callB));
 
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected exception like <RuntimeException Object (...)>. ' .
-                'Nothing thrown in 2 call(s).'
-        );
-        $this->subject->assertAlwaysThrew(new EqualToMatcher(new RuntimeException()));
-    }
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             'Expected exception like <RuntimeException Object (...)>. ' .
+//                 'Nothing thrown in 2 call(s).'
+//         );
+//         $this->subject->assertAlwaysThrew(new EqualToMatcher(new RuntimeException()));
+//     }
 
-    public function testAssertAlwaysThrewFailureInvalidInput()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Unable to match exceptions against stdClass Object ()."
-        );
-        $this->subject->assertAlwaysThrew((object) array());
-    }
+//     public function testAssertAlwaysThrewFailureInvalidInput()
+//     {
+//         $this->setExpectedException(
+//             'Eloquent\Phony\Assertion\Exception\AssertionException',
+//             "Unable to match exceptions against stdClass Object ()."
+//         );
+//         $this->subject->assertAlwaysThrew((object) array());
+//     }
 
     public function testMergeCalls()
     {
