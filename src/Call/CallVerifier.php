@@ -19,6 +19,8 @@ use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
+use Eloquent\Phony\Call\Event\SentEventInterface;
+use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
 use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Event\EventInterface;
@@ -563,7 +565,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * Checks if this call returned the supplied value.
      *
      * When called with no arguments, this method simply checks that the call
-     * returned.
+     * returned any value.
      *
      * @param mixed $value The value.
      *
@@ -605,7 +607,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * Throws an exception unless this call returned the supplied value.
      *
      * When called with no arguments, this method simply checks that the call
-     * returned.
+     * returned any value.
      *
      * @param mixed $value The value.
      *
@@ -653,7 +655,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * Checks if an exception of the supplied type was thrown.
      *
      * When called with no arguments, this method simply checks that the call
-     * threw.
+     * threw any exception.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
@@ -733,7 +735,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * type.
      *
      * When called with no arguments, this method simply checks that the call
-     * threw.
+     * threw any exception.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
@@ -785,7 +787,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * Checks if this call yielded the supplied values.
      *
      * When called with no arguments, this method simply checks that the call
-     * yielded.
+     * yielded any value.
      *
      * With a single argument, it checks that a value matching the argument was
      * yielded.
@@ -822,7 +824,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         $matchCount = 0;
         $totalCount = 0;
 
-        foreach ($this->call->events() as $event) {
+        foreach ($this->call->generatorEvents() as $event) {
             if ($event instanceof YieldedEventInterface) {
                 $totalCount++;
 
@@ -847,7 +849,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * Throws an exception unless this call yielded the supplied values.
      *
      * When called with no arguments, this method simply checks that the call
-     * yielded.
+     * yielded any value.
      *
      * With a single argument, it checks that a value matching the argument was
      * yielded.
@@ -895,6 +897,107 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 $key->describe(),
                 $value->describe()
             );
+        }
+
+        if ($this->call->generatorEvents()) {
+            $renderedGenerated = sprintf(
+                ":\n%s",
+                $this->assertionRenderer->renderGenerated($this->call)
+            );
+        } else {
+            $renderedGenerated = ' nothing.';
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. Generated%s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedGenerated
+            )
+        );
+    }
+
+    /**
+     * Checks if this call was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * was sent any value.
+     *
+     * @param mixed $value THe value.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkSent($value = null)
+    {
+        $cardinality = $this->resetCardinality();
+
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $checkValue = false;
+        } else {
+            $checkValue = true;
+            $value = $this->matcherFactory->adapt($value);
+        }
+
+        $matchingEvents = array();
+        $matchCount = 0;
+        $totalCount = 0;
+
+        foreach ($this->call->generatorEvents() as $event) {
+            if ($event instanceof SentEventInterface) {
+                $totalCount++;
+
+                if (!$checkValue || $value->matches($event->value())) {
+                    $matchingEvents[] = $event;
+                    $matchCount++;
+                }
+            } elseif ($event instanceof SentExceptionEventInterface) {
+                $totalCount++;
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this call was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * was sent any value.
+     *
+     * @param mixed $value THe value.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function sent($value = null)
+    {
+        $cardinality = $this->cardinality;
+
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $arguments = array();
+        } else {
+            $value = $this->matcherFactory->adapt($value);
+            $arguments = array($value);
+        }
+
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkSent'), $arguments)
+        ) {
+            return $result;
+        }
+
+        if (0 === $argumentCount) {
+            $renderedType = 'sent value';
+        } else {
+            $renderedType = sprintf('sent value like %s', $value->describe());
         }
 
         if ($this->call->generatorEvents()) {

@@ -15,6 +15,7 @@ use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
 use Eloquent\Phony\Cardinality\Verification\CardinalityVerifierInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * The interface implemented by call verifiers.
@@ -90,7 +91,7 @@ interface CallVerifierInterface extends CallInterface,
      * Checks if this call returned the supplied value.
      *
      * When called with no arguments, this method simply checks that the call
-     * returned.
+     * returned any value.
      *
      * @param mixed $value The value.
      *
@@ -103,7 +104,7 @@ interface CallVerifierInterface extends CallInterface,
      * Throws an exception unless this call returned the supplied value.
      *
      * When called with no arguments, this method simply checks that the call
-     * returned.
+     * returned any value.
      *
      * @param mixed $value The value.
      *
@@ -117,12 +118,13 @@ interface CallVerifierInterface extends CallInterface,
      * Checks if an exception of the supplied type was thrown.
      *
      * When called with no arguments, this method simply checks that the call
-     * threw.
+     * threw any exception.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null        The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws InvalidArgumentException             If the type is invalid.
      */
     public function checkThrew($type = null);
 
@@ -131,12 +133,13 @@ interface CallVerifierInterface extends CallInterface,
      * type.
      *
      * When called with no arguments, this method simply checks that the call
-     * threw.
+     * threw any exception.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return mixed                                The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws InvalidArgumentException             If the type is invalid.
      * @throws Exception                            If the assertion fails.
      */
     public function threw($type = null);
@@ -145,7 +148,7 @@ interface CallVerifierInterface extends CallInterface,
      * Checks if this call yielded the supplied values.
      *
      * When called with no arguments, this method simply checks that the call
-     * yielded.
+     * yielded any value.
      *
      * With a single argument, it checks that a value matching the argument was
      * yielded.
@@ -164,7 +167,7 @@ interface CallVerifierInterface extends CallInterface,
      * Throws an exception unless this call yielded the supplied values.
      *
      * When called with no arguments, this method simply checks that the call
-     * yielded.
+     * yielded any value.
      *
      * With a single argument, it checks that a value matching the argument was
      * yielded.
@@ -179,4 +182,29 @@ interface CallVerifierInterface extends CallInterface,
      * @throws Exception If the assertion fails.
      */
     public function yielded($keyOrValue = null, $value = null);
+
+    /**
+     * Checks if this call was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * was sent any value.
+     *
+     * @param mixed $value THe value.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkSent($value = null);
+
+    /**
+     * Throws an exception unless this call was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the call
+     * was sent any value.
+     *
+     * @param mixed $value THe value.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function sent($value = null);
 }

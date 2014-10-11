@@ -358,4 +358,102 @@ EOD;
         );
         $this->subject->yielded('m', 'n');
     }
+
+    public function testCheckSent()
+    {
+        $this->assertTrue((boolean) $this->generatorSubject->checkSent());
+        $this->assertTrue((boolean) $this->generatorSubject->checkSent('o'));
+        $this->assertTrue((boolean) $this->generatorSubject->times(2)->checkSent());
+        $this->assertTrue((boolean) $this->generatorSubject->once()->checkSent('o'));
+        $this->assertTrue((boolean) $this->generatorSubject->never()->checkSent('x'));
+        $this->assertFalse((boolean) $this->generatorSubject->checkSent('x'));
+        $this->assertFalse((boolean) $this->subject->checkSent());
+    }
+
+    public function testSent()
+    {
+        $this->assertEquals(
+            new EventCollection(array($this->generatorEventB, $this->generatorEventF)),
+            $this->generatorSubject->sent()
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->generatorEventB)),
+            $this->generatorSubject->sent('o')
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->generatorEventB, $this->generatorEventF)),
+            $this->generatorSubject->times(2)->sent()
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->generatorEventB)),
+            $this->generatorSubject->once()->sent('o')
+        );
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->sent('x'));
+    }
+
+    public function testSentFailureNoMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected sent value. Generated nothing."
+        );
+        $this->subject->sent();
+    }
+
+    public function testSentFailureWithMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected sent value like <'x'>. Generated nothing."
+        );
+        $this->subject->sent('x');
+    }
+
+    public function testSentFailureWithNoMatchersNever()
+    {
+        $expected = <<<'EOD'
+Expected no sent value. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->never()->sent();
+    }
+
+    public function testSentFailureWithMatcherNever()
+    {
+        $expected = <<<'EOD'
+Expected no sent value like <'o'>. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->never()->sent('o');
+    }
+
+    public function testSentFailureWithMatcherAlways()
+    {
+        $expected = <<<'EOD'
+Expected every sent value like <'o'>. Generated:
+    - yielded 'm' => 'n'
+    - sent 'o'
+    - yielded 'p' => 'q'
+    - sent exception RuntimeException('Consequences will never be the same.')
+    - yielded 'r' => 's'
+    - sent 't'
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->always()->sent('o');
+    }
 }
