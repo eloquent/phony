@@ -117,9 +117,6 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Checks if an exception of the supplied type was thrown.
      *
-     * When called with no arguments, this method simply checks that the call
-     * threw any exception.
-     *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null        The result.
@@ -131,9 +128,6 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Throws an exception unless this call threw an exception of the supplied
      * type.
-     *
-     * When called with no arguments, this method simply checks that the call
-     * threw any exception.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
@@ -189,7 +183,7 @@ interface CallVerifierInterface extends CallInterface,
      * When called with no arguments, this method simply checks that the call
      * was sent any value.
      *
-     * @param mixed $value THe value.
+     * @param mixed $value The value.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -201,10 +195,32 @@ interface CallVerifierInterface extends CallInterface,
      * When called with no arguments, this method simply checks that the call
      * was sent any value.
      *
-     * @param mixed $value THe value.
+     * @param mixed $value The value.
      *
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
     public function sent($value = null);
+
+    /**
+     * Checks if this call was sent an exception of the supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If the type is invalid.
+     */
+    public function checkSentException($type = null);
+
+    /**
+     * Throws an exception unless this call was sent an exception of the
+     * supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return mixed                    The result.
+     * @throws InvalidArgumentException If the type is invalid.
+     * @throws Exception                If the assertion fails.
+     */
+    public function sentException($type = null);
 }

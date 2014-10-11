@@ -654,9 +654,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Checks if an exception of the supplied type was thrown.
      *
-     * When called with no arguments, this method simply checks that the call
-     * threw any exception.
-     *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null        The result.
@@ -733,9 +730,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Throws an exception unless this call threw an exception of the supplied
      * type.
-     *
-     * When called with no arguments, this method simply checks that the call
-     * threw any exception.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
@@ -924,7 +918,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * When called with no arguments, this method simply checks that the call
      * was sent any value.
      *
-     * @param mixed $value THe value.
+     * @param mixed $value The value.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -969,7 +963,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * When called with no arguments, this method simply checks that the call
      * was sent any value.
      *
-     * @param mixed $value THe value.
+     * @param mixed $value The value.
      *
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
@@ -995,9 +989,160 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'sent value';
+            $renderedType = 'yield to be sent value';
         } else {
-            $renderedType = sprintf('sent value like %s', $value->describe());
+            $renderedType =
+                sprintf('yield to be sent value like %s', $value->describe());
+        }
+
+        if ($this->call->generatorEvents()) {
+            $renderedGenerated = sprintf(
+                ":\n%s",
+                $this->assertionRenderer->renderGenerated($this->call)
+            );
+        } else {
+            $renderedGenerated = ' nothing.';
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. Generated%s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedGenerated
+            )
+        );
+    }
+
+    /**
+     * Checks if this call was sent an exception of the supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkSentException($type = null)
+    {
+        $cardinality = $this->resetCardinality();
+
+        $generatorEvents = $this->call->generatorEvents();
+        $matchingEvents = array();
+        $matchCount = 0;
+        $totalCount = 0;
+        $isTypeSupported = false;
+
+        if (null === $type) {
+            $isTypeSupported = true;
+
+            foreach ($generatorEvents as $event) {
+                if ($event instanceof SentExceptionEventInterface) {
+                    $totalCount++;
+                    $matchingEvents[] = $event;
+                    $matchCount++;
+                } elseif ($event instanceof SentEventInterface) {
+                    $totalCount++;
+                }
+            }
+        } elseif (is_string($type)) {
+            $isTypeSupported = true;
+
+            foreach ($generatorEvents as $event) {
+                if ($event instanceof SentExceptionEventInterface) {
+                    $totalCount++;
+
+                    if (is_a($event->exception(), $type)) {
+                        $matchingEvents[] = $event;
+                        $matchCount++;
+                    }
+                } elseif ($event instanceof SentEventInterface) {
+                    $totalCount++;
+                }
+            }
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                $isTypeSupported = true;
+
+                foreach ($generatorEvents as $event) {
+                    if ($event instanceof SentExceptionEventInterface) {
+                        $totalCount++;
+
+                        if ($event->exception() == $type) {
+                            $matchingEvents[] = $event;
+                            $matchCount++;
+                        }
+                    } elseif ($event instanceof SentEventInterface) {
+                        $totalCount++;
+                    }
+                }
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $isTypeSupported = true;
+                $type = $this->matcherFactory->adapt($type);
+
+                foreach ($generatorEvents as $event) {
+                    if ($event instanceof SentExceptionEventInterface) {
+                        $totalCount++;
+
+                        if ($type->matches($event->exception())) {
+                            $matchingEvents[] = $event;
+                            $matchCount++;
+                        }
+                    } elseif ($event instanceof SentEventInterface) {
+                        $totalCount++;
+                    }
+                }
+            }
+        }
+
+        if (!$isTypeSupported) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unable to match exceptions against %s.',
+                    $this->assertionRenderer->renderValue($type)
+                )
+            );
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this call was sent an exception of the
+     * supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function sentException($type = null)
+    {
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkSentException($type)) {
+            return $result;
+        }
+
+        if (null === $type) {
+            $renderedType = 'yield to be sent exception';
+        } elseif (is_string($type)) {
+            $renderedType = sprintf(
+                'yield to be sent %s exception',
+                $this->assertionRenderer->renderValue($type)
+            );
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                $renderedType = sprintf(
+                    'yield to be sent exception equal to %s',
+                    $this->assertionRenderer->renderException($type)
+                );
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $renderedType = sprintf(
+                    'yield to be sent exception like %s',
+                    $this->matcherFactory->adapt($type)->describe()
+                );
+            }
         }
 
         if ($this->call->generatorEvents()) {
