@@ -1597,23 +1597,4 @@ EOD;
         $this->assertEquals(new Cardinality(5, 6), $this->subject->between(5, 6)->cardinality());
         $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
     }
-
-    public function testMergeCalls()
-    {
-        $spyA = new Spy();
-        $spyA->setCalls(array($this->callC));
-        $spyB = new Spy();
-        $spyB->setCalls(array($this->callB, $this->callD));
-        $spyC = new Spy();
-        $spyC->setCalls(array($this->callA, $this->callB));
-
-        $this->assertSame($this->calls, SpyVerifier::mergeCalls(array($spyA, $spyB, $spyC)));
-    }
-
-    public function testCompareCallOrder()
-    {
-        $this->assertSame(0, SpyVerifier::compareCallOrder($this->callA, $this->callA));
-        $this->assertLessThan(0, SpyVerifier::compareCallOrder($this->callA, $this->callB));
-        $this->assertGreaterThan(0, SpyVerifier::compareCallOrder($this->callB, $this->callA));
-    }
 }

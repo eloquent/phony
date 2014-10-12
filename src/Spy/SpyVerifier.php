@@ -43,49 +43,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     SpyVerifierInterface
 {
     /**
-     * Merge all calls made on the supplied spies, and sort them by sequence.
-     *
-     * @param array<SpyInterface> $spies The spies.
-     *
-     * @return array<integer,CallInterface> The calls.
-     */
-    public static function mergeCalls(array $spies)
-    {
-        $calls = array();
-
-        foreach ($spies as $spy) {
-            foreach ($spy->recordedCalls() as $call) {
-                if (!in_array($call, $calls, true)) {
-                    $calls[] = $call;
-                }
-            }
-        }
-
-        usort($calls, get_class() . '::compareCallOrder');
-
-        return $calls;
-    }
-
-    /**
-     * Compare the supplied calls by call order.
-     *
-     * Returns typical comparator values, similar to strcmp().
-     *
-     * @see strcmp()
-     *
-     * @param CallInterface $left  The left call.
-     * @param CallInterface $right The right call.
-     *
-     * @return integer The comparison result.
-     */
-    public static function compareCallOrder(
-        CallInterface $left,
-        CallInterface $right
-    ) {
-        return $left->sequenceNumber() - $right->sequenceNumber();
-    }
-
-    /**
      * Construct a new spy verifier.
      *
      * @param SpyInterface|null                 $spy                 The spy.
