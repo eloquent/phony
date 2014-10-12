@@ -17,6 +17,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
+use Eloquent\Phony\Call\Event\SentEventInterface;
 use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
@@ -932,6 +933,113 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $renderedType = sprintf(
                 'call to yield like %s => %s',
                 $key->describe(),
+                $value->describe()
+            );
+        }
+
+        $calls = $this->spy->recordedCalls();
+
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls, true)
+            );
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
+        );
+    }
+
+    /**
+     * Checks if this spy was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the spy was
+     * sent any value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkSent($value = null)
+    {
+        $cardinality = $this->resetCardinality();
+
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $checkValue = false;
+        } else {
+            $checkValue = true;
+            $value = $this->matcherFactory->adapt($value);
+        }
+
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            foreach ($call->generatorEvents() as $event) {
+                if ($event instanceof SentEventInterface) {
+                    if (!$checkValue || $value->matches($event->value())) {
+                        $matchingEvents[] = $event;
+                        $matchCount++;
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this spy was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the spy was
+     * sent any value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function sent($value = null)
+    {
+        $cardinality = $this->cardinality;
+
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $arguments = array();
+        } else {
+            $value = $this->matcherFactory->adapt($value);
+            $arguments = array($value);
+        }
+
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkSent'), $arguments)
+        ) {
+            return $result;
+        }
+
+        if (0 === $argumentCount) {
+            $renderedType = 'generator to be sent value';
+        } else {
+            $renderedType = sprintf(
+                'generator to be sent value like %s',
                 $value->describe()
             );
         }

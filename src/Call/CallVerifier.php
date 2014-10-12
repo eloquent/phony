@@ -991,8 +991,10 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         if (0 === $argumentCount) {
             $renderedType = 'generator to be sent value';
         } else {
-            $renderedType =
-                sprintf('generator to be sent value like %s', $value->describe());
+            $renderedType = sprintf(
+                'generator to be sent value like %s',
+                $value->describe()
+            );
         }
 
         if ($this->call->generatorEvents()) {

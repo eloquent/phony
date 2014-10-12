@@ -195,4 +195,29 @@ interface SpyVerifierInterface extends SpyInterface,
      * @throws Exception If the assertion fails.
      */
     public function yielded($keyOrValue = null, $value = null);
+
+    /**
+     * Checks if this spy was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the spy was
+     * sent any value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkSent($value = null);
+
+    /**
+     * Throws an exception unless this spy was sent the supplied value.
+     *
+     * When called with no arguments, this method simply checks that the spy was
+     * sent any value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function sent($value = null);
 }

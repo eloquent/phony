@@ -357,4 +357,120 @@ EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->never()->yielded('n');
     }
+
+    public function testCheckSent()
+    {
+        $this->assertFalse((boolean) $this->subject->checkSent());
+        $this->assertFalse((boolean) $this->subject->checkSent('o'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkSent());
+        $this->assertFalse((boolean) $this->subject->once()->checkSent('o'));
+        $this->assertTrue((boolean) $this->subject->never()->checkSent('x'));
+        $this->assertFalse((boolean) $this->subject->always()->checkSent());
+        $this->assertFalse((boolean) $this->subject->checkSent('x'));
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertFalse((boolean) $this->subject->checkSent());
+        $this->assertFalse((boolean) $this->subject->checkSent('o'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkSent());
+        $this->assertFalse((boolean) $this->subject->once()->checkSent('o'));
+        $this->assertTrue((boolean) $this->subject->never()->checkSent('x'));
+        $this->assertFalse((boolean) $this->subject->always()->checkSent());
+        $this->assertFalse((boolean) $this->subject->checkSent('x'));
+
+        $this->subject->addCall($this->generatorCall);
+
+        $this->assertTrue((boolean) $this->subject->checkSent());
+        $this->assertTrue((boolean) $this->subject->checkSent('o'));
+        $this->assertTrue((boolean) $this->subject->times(1)->checkSent());
+        $this->assertTrue((boolean) $this->subject->once()->checkSent('o'));
+        $this->assertTrue((boolean) $this->subject->never()->checkSent('x'));
+        $this->assertFalse((boolean) $this->subject->always()->checkSent());
+        $this->assertFalse((boolean) $this->subject->checkSent('x'));
+    }
+
+    public function testSent()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->generatorCall);
+
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->sent());
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->sent('o'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->times(1)->sent());
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->once()->sent('o'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->sent('x'));
+    }
+
+    public function testSentFailureNoCallsNoMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected generator to be sent value. Never called."
+        );
+        $this->subject->sent();
+    }
+
+    public function testSentFailureNoCallsWithMatcher()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            "Expected generator to be sent value like <'x'>. Never called."
+        );
+        $this->subject->sent('x');
+    }
+
+    public function testSentFailureNoGeneratorsNoMatcher()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+Expected generator to be sent value. Responded:
+    - returned 'x'
+    - returned 'y'
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->sent();
+    }
+
+    public function testSentFailureNoGeneratorsWithMatcher()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+Expected generator to be sent value like <'x'>. Responded:
+    - returned 'x'
+    - returned 'y'
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->sent('x');
+    }
+
+    public function testSentFailureMatcherMismatch()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->generatorCall);
+        $expected = <<<'EOD'
+Expected generator to be sent value like <'x'>. Responded:
+    - returned 'x'
+    - returned 'y'
+    - threw RuntimeException('You done goofed.')
+    - threw RuntimeException('Consequences will never be the same.')
+    - generated:
+        - yielded 'm' => 'n'
+        - sent 'o'
+        - yielded 'p' => 'q'
+        - sent exception RuntimeException('Consequences will never be the same.')
+        - yielded 'r' => 's'
+        - sent 't'
+        - yielded 'u' => 'v'
+        - sent exception RuntimeException('Because I backtraced it.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->sent('x');
+    }
 }
