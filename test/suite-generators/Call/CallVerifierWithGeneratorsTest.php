@@ -252,7 +252,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to yield. Generated nothing."
+            "Expected generator to yield. Generated nothing."
         );
         $this->subject->yielded();
     }
@@ -260,7 +260,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testYieldedFailureWithNoMatchersNever()
     {
         $expected = <<<'EOD'
-Expected no call to yield. Generated:
+Expected no generator to yield. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -420,7 +420,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected yield to be sent value. Generated nothing."
+            "Expected generator to be sent value. Generated nothing."
         );
         $this->subject->sent();
     }
@@ -429,7 +429,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected yield to be sent value like <'x'>. Generated nothing."
+            "Expected generator to be sent value like <'x'>. Generated nothing."
         );
         $this->subject->sent('x');
     }
@@ -437,7 +437,7 @@ EOD;
     public function testSentFailureWithNoMatchersNever()
     {
         $expected = <<<'EOD'
-Expected no yield to be sent value. Generated:
+Expected no generator to be sent value. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -455,7 +455,7 @@ EOD;
     public function testSentFailureWithMatcherNever()
     {
         $expected = <<<'EOD'
-Expected no yield to be sent value like <'o'>. Generated:
+Expected no generator to be sent value like <'o'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -473,7 +473,7 @@ EOD;
     public function testSentFailureWithNoMatcherAlways()
     {
         $expected = <<<'EOD'
-Expected every yield to be sent value. Generated:
+Expected every generator to be sent value. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -491,7 +491,7 @@ EOD;
     public function testSentFailureWithMatcherAlways()
     {
         $expected = <<<'EOD'
-Expected every yield to be sent value like <'o'>. Generated:
+Expected every generator to be sent value like <'o'>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -582,7 +582,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected yield to be sent exception. Generated nothing."
+            "Expected generator to be sent exception. Generated nothing."
         );
         $this->subject->sentException();
     }
@@ -591,7 +591,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected yield to be sent exception. Generated nothing."
+            "Expected generator to be sent exception. Generated nothing."
         );
         $this->subject->sentException();
     }
@@ -599,7 +599,7 @@ EOD;
     public function testSentExceptionFailureExpectingNeverAny()
     {
         $expected = <<<'EOD'
-Expected no yield to be sent exception. Generated:
+Expected no generator to be sent exception. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -617,7 +617,7 @@ EOD;
     public function testSentExceptionFailureExpectingAlwaysAny()
     {
         $expected = <<<'EOD'
-Expected every yield to be sent exception. Generated:
+Expected every generator to be sent exception. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -635,7 +635,7 @@ EOD;
     public function testSentExceptionFailureTypeMismatch()
     {
         $expected = <<<'EOD'
-Expected yield to be sent 'InvalidArgumentException' exception. Generated:
+Expected generator to be sent 'InvalidArgumentException' exception. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -653,7 +653,7 @@ EOD;
     public function testSentExceptionFailureTypeNever()
     {
         $expected = <<<'EOD'
-Expected no yield to be sent 'RuntimeException' exception. Generated:
+Expected no generator to be sent 'RuntimeException' exception. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -671,7 +671,7 @@ EOD;
     public function testSentExceptionFailureExpectingTypeNoneSent()
     {
         $expected = <<<'EOD'
-Expected yield to be sent 'InvalidArgumentException' exception. Generated:
+Expected generator to be sent 'InvalidArgumentException' exception. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -689,7 +689,7 @@ EOD;
     public function testSentExceptionFailureExceptionMismatch()
     {
         $expected = <<<'EOD'
-Expected yield to be sent exception equal to RuntimeException(). Generated:
+Expected generator to be sent exception equal to RuntimeException(). Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -707,7 +707,7 @@ EOD;
     public function testSentExceptionFailureExceptionNever()
     {
         $expected = <<<'EOD'
-Expected no yield to be sent exception equal to RuntimeException('Consequences will never be the same.'). Generated:
+Expected no generator to be sent exception equal to RuntimeException('Consequences will never be the same.'). Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -725,7 +725,7 @@ EOD;
     public function testSentExceptionFailureExpectingExceptionNoneSent()
     {
         $expected = <<<'EOD'
-Expected yield to be sent exception equal to RuntimeException(). Generated:
+Expected generator to be sent exception equal to RuntimeException(). Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -743,7 +743,7 @@ EOD;
     public function testSentExceptionFailureMatcherMismatch()
     {
         $expected = <<<'EOD'
-Expected yield to be sent exception like <RuntimeException Object (...)>. Generated:
+Expected generator to be sent exception like <RuntimeException Object (...)>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'
@@ -761,7 +761,7 @@ EOD;
     public function testSentExceptionFailureMatcherNever()
     {
         $expected = <<<'EOD'
-Expected no yield to be sent exception like <RuntimeException Object (...)>. Generated:
+Expected no generator to be sent exception like <RuntimeException Object (...)>. Generated:
     - yielded 'm' => 'n'
     - sent 'o'
     - yielded 'p' => 'q'

@@ -882,7 +882,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'call to yield';
+            $renderedType = 'generator to yield';
         } elseif (1 === $argumentCount) {
             $renderedType = sprintf('yield to be like %s', $value->describe());
         } else {
@@ -989,10 +989,10 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'yield to be sent value';
+            $renderedType = 'generator to be sent value';
         } else {
             $renderedType =
-                sprintf('yield to be sent value like %s', $value->describe());
+                sprintf('generator to be sent value like %s', $value->describe());
         }
 
         if ($this->call->generatorEvents()) {
@@ -1125,21 +1125,21 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         }
 
         if (null === $type) {
-            $renderedType = 'yield to be sent exception';
+            $renderedType = 'generator to be sent exception';
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                'yield to be sent %s exception',
+                'generator to be sent %s exception',
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'yield to be sent exception equal to %s',
+                    'generator to be sent exception equal to %s',
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'yield to be sent exception like %s',
+                    'generator to be sent exception like %s',
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }
