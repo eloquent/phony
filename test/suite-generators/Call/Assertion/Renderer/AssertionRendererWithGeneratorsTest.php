@@ -39,11 +39,10 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callC = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode')
         );
-    }
 
-    public function testRenderGenerated()
-    {
-        $generatorCall = $this->callFactory->create(
+        // additions for generators
+
+        $this->generatorCall = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
             $this->callEventFactory->createGenerated(),
             array(
@@ -57,6 +56,44 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
             ),
             $this->callEventFactory->createReturned()
         );
+    }
+
+    public function testRenderResponsesWithGenerators()
+    {
+        $expected = <<<'EOD'
+    - returned 'x'
+    - returned generator
+    - threw RuntimeException('You done goofed.')
+EOD;
+
+        $this->assertSame(
+            $expected,
+            $this->subject->renderResponses(array($this->callA, $this->generatorCall, $this->callB))
+        );
+    }
+
+    public function testRenderResponsesWithGeneratorsExpanded()
+    {
+        $expected = <<<'EOD'
+    - returned 'x'
+    - generated:
+        - yielded 'm' => 'n'
+        - sent 'o'
+        - yielded 'p' => 'q'
+        - sent exception RuntimeException('Consequences will never be the same.')
+        - yielded 'r' => 's'
+        - sent 't'
+    - threw RuntimeException('You done goofed.')
+EOD;
+
+        $this->assertSame(
+            $expected,
+            $this->subject->renderResponses(array($this->callA, $this->generatorCall, $this->callB), true)
+        );
+    }
+
+    public function testRenderGenerated()
+    {
         $expected = <<<'EOD'
     - yielded 'm' => 'n'
     - sent 'o'
@@ -66,6 +103,6 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
     - sent 't'
 EOD;
 
-        $this->assertSame($expected, $this->subject->renderGenerated($generatorCall));
+        $this->assertSame($expected, $this->subject->renderGenerated($this->generatorCall));
     }
 }

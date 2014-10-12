@@ -17,6 +17,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
+use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
@@ -802,6 +803,147 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $renderedActual = sprintf(
                 "Responded:\n%s",
                 $this->assertionRenderer->renderResponses($calls)
+            );
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
+        );
+    }
+
+    /**
+     * Checks if this spy yielded the supplied values.
+     *
+     * When called with no arguments, this method simply checks that the spy
+     * yielded any value.
+     *
+     * With a single argument, it checks that a value matching the argument was
+     * yielded.
+     *
+     * With two arguments, it checks that a key and value matching the
+     * respective arguments were yielded together.
+     *
+     * @param mixed $keyOrValue The key or value.
+     * @param mixed $value      The value.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkYielded($keyOrValue = null, $value = null)
+    {
+        $cardinality = $this->resetCardinality();
+
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = false;
+        } elseif (1 === $argumentCount) {
+            $checkKey = false;
+            $checkValue = true;
+            $value = $this->matcherFactory->adapt($keyOrValue);
+        } else {
+            $checkKey = true;
+            $checkValue = true;
+            $key = $this->matcherFactory->adapt($keyOrValue);
+            $value = $this->matcherFactory->adapt($value);
+        }
+
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            foreach ($call->generatorEvents() as $event) {
+                if ($event instanceof YieldedEventInterface) {
+                    if ($checkKey && !$key->matches($event->key())) {
+                        continue;
+                    }
+                    if ($checkValue && !$value->matches($event->value())) {
+                        continue;
+                    }
+
+                    $matchingEvents[] = $event;
+                    $matchCount++;
+
+                    break;
+                }
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this spy yielded the supplied values.
+     *
+     * When called with no arguments, this method simply checks that the spy
+     * yielded any value.
+     *
+     * With a single argument, it checks that a value matching the argument was
+     * yielded.
+     *
+     * With two arguments, it checks that a key and value matching the
+     * respective arguments were yielded together.
+     *
+     * @param mixed $keyOrValue The key or value.
+     * @param mixed $value      The value.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function yielded($keyOrValue = null, $value = null)
+    {
+        $cardinality = $this->cardinality;
+
+        $argumentCount = func_num_args();
+
+        if (0 === $argumentCount) {
+            $arguments = array();
+        } elseif (1 === $argumentCount) {
+            $value = $this->matcherFactory->adapt($keyOrValue);
+            $arguments = array($value);
+        } else {
+            $key = $this->matcherFactory->adapt($keyOrValue);
+            $value = $this->matcherFactory->adapt($value);
+            $arguments = array($key, $value);
+        }
+
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkYielded'), $arguments)
+        ) {
+            return $result;
+        }
+
+        if (0 === $argumentCount) {
+            $renderedType = 'call to yield';
+        } elseif (1 === $argumentCount) {
+            $renderedType =
+                sprintf('call to yield like %s', $value->describe());
+        } else {
+            $renderedType = sprintf(
+                'call to yield like %s => %s',
+                $key->describe(),
+                $value->describe()
+            );
+        }
+
+        $calls = $this->spy->recordedCalls();
+
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls, true)
             );
         }
 

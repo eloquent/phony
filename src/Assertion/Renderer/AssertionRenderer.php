@@ -245,12 +245,17 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the responses of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<integer,CallInterface> $calls            The calls.
+     * @param boolean|null                 $expandGenerators True if generator events should be rendered.
      *
      * @return string The rendered call responses.
      */
-    public function renderResponses(array $calls)
+    public function renderResponses(array $calls, $expandGenerators = null)
     {
+        if (null === $expandGenerators) {
+            $expandGenerators = false;
+        }
+
         $rendered = array();
         foreach ($calls as $call) {
             if (!$call->hasResponded()) {
@@ -260,6 +265,15 @@ class AssertionRenderer implements AssertionRendererInterface
                     '    - threw %s',
                     $this->renderException($exception)
                 );
+            } elseif ($call->isGenerator()) {
+                if ($expandGenerators) {
+                    $rendered[] = sprintf(
+                        "    - generated:\n%s",
+                        $this->indent($this->renderGenerated($call))
+                    );
+                } else {
+                    $rendered[] = '    - returned generator';
+                }
             } else {
                 $rendered[] = sprintf(
                     '    - returned %s',
@@ -413,6 +427,20 @@ class AssertionRenderer implements AssertionRendererInterface
         }
 
         return sprintf('%s(%s)', get_class($exception), $renderedMessage);
+    }
+
+    /**
+     * Indent the supplied string.
+     *
+     * @param string $string The string to indent.
+     *
+     * @return string The indented string.
+     */
+    protected function indent($string)
+    {
+        $lines = preg_split('/\R/', $string);
+
+        return '    ' . implode("\n    ", $lines);
     }
 
     private static $instance;

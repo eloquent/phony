@@ -82,11 +82,12 @@ interface AssertionRendererInterface
     /**
      * Render the responses of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<integer,CallInterface> $calls            The calls.
+     * @param boolean|null                 $expandGenerators True if generator events should be rendered.
      *
      * @return string The rendered call responses.
      */
-    public function renderResponses(array $calls);
+    public function renderResponses(array $calls, $expandGenerators = null);
 
     /**
      * Render the supplied call.
