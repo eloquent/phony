@@ -15,14 +15,14 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
-class SentExceptionEventTest extends PHPUnit_Framework_TestCase
+class ReceivedExceptionEventTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         $this->sequenceNumber = 111;
         $this->time = 1.11;
         $this->exception = new Exception();
-        $this->subject = new SentExceptionEvent($this->sequenceNumber, $this->time, $this->exception);
+        $this->subject = new ReceivedExceptionEvent($this->sequenceNumber, $this->time, $this->exception);
 
         $this->callFactory = new TestCallFactory();
     }
@@ -41,7 +41,7 @@ class SentExceptionEventTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new SentExceptionEvent($this->sequenceNumber, $this->time);
+        $this->subject = new ReceivedExceptionEvent($this->sequenceNumber, $this->time);
 
         $this->assertEquals($this->exception, $this->subject->exception());
     }

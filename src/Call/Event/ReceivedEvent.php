@@ -12,18 +12,18 @@
 namespace Eloquent\Phony\Call\Event;
 
 /**
- * Represents a value sent to a generator.
+ * Represents a value received by a generator.
  *
  * @internal
  */
-class SentEvent extends AbstractCallEvent implements SentEventInterface
+class ReceivedEvent extends AbstractCallEvent implements ReceivedEventInterface
 {
     /**
-     * Construct a 'sent value' event.
+     * Construct a 'received' event.
      *
      * @param integer $sequenceNumber The sequence number.
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $value          The sent value.
+     * @param mixed   $value          The received value.
      */
     public function __construct($sequenceNumber, $time, $value = null)
     {
@@ -33,9 +33,9 @@ class SentEvent extends AbstractCallEvent implements SentEventInterface
     }
 
     /**
-     * Get the sent value.
+     * Get the received value.
      *
-     * @return mixed The sent value.
+     * @return mixed The received value.
      */
     public function value()
     {

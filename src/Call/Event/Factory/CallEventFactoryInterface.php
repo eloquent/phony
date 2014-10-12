@@ -14,10 +14,7 @@ namespace Eloquent\Phony\Call\Event\Factory;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
-use Eloquent\Phony\Call\Event\SentEventInterface;
-use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
-use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Exception;
 use Generator;
 
@@ -77,35 +74,35 @@ interface CallEventFactoryInterface
     public function createThrew(Exception $exception = null);
 
     /**
-     * Create a new 'yielded' event.
+     * Create a new 'produced' event.
      *
      * If called with one argument, the argument is treated as the value.
      *
      * If called with two arguments, the first is treated as the key, and the
      * second as the value.
      *
-     * @param mixed $keyOrValue The yielded key or value.
-     * @param mixed $value      The yielded value.
+     * @param mixed $keyOrValue The produced key or value.
+     * @param mixed $value      The produced value.
      *
-     * @return YieldedEventInterface The newly created event.
+     * @return ProducedEventInterface The newly created event.
      */
-    public function createYielded($keyOrValue = null, $value = null);
+    public function createProduced($keyOrValue = null, $value = null);
 
     /**
-     * Create a new 'sent' event.
+     * Create a new 'received' event.
      *
-     * @param mixed $value The sent value.
+     * @param mixed $value The received value.
      *
-     * @return SentEventInterface The newly created event.
+     * @return ReceivedEventInterface The newly created event.
      */
-    public function createSent($value = null);
+    public function createReceived($value = null);
 
     /**
-     * Create a new 'sent exception' event.
+     * Create a new 'received exception' event.
      *
-     * @param Exception|null $exception The sent exception.
+     * @param Exception|null $exception The received exception.
      *
-     * @return SentExceptionEventInterface The newly created event.
+     * @return ReceivedExceptionEventInterface The newly created event.
      */
-    public function createSentException(Exception $exception = null);
+    public function createReceivedException(Exception $exception = null);
 }

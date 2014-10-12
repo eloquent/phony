@@ -64,7 +64,7 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $calledEvent = $this->eventFactory->createCalled();
         $generatedEvent = $this->eventFactory->createGenerated();
-        $generatorEvents = array($this->eventFactory->createSent());
+        $generatorEvents = array($this->eventFactory->createReceived());
         $expected = new Call($calledEvent, $generatedEvent, $generatorEvents);
         $actual = $this->subject->create($calledEvent, $generatedEvent, $generatorEvents);
 

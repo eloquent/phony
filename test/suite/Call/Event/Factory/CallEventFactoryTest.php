@@ -12,11 +12,11 @@
 namespace Eloquent\Phony\Call\Event\Factory;
 
 use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\ProducedEvent;
+use Eloquent\Phony\Call\Event\ReceivedEvent;
+use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\SentEvent;
-use Eloquent\Phony\Call\Event\SentExceptionEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
-use Eloquent\Phony\Call\Event\YieldedEvent;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;
@@ -61,9 +61,9 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateResponseWithNoException()
     {
-        $returnValue = 'x';
-        $expected = new ReturnedEvent(0, 0.0, $returnValue);
-        $actual = $this->subject->createResponse($returnValue);
+        $value = 'x';
+        $expected = new ReturnedEvent(0, 0.0, $value);
+        $actual = $this->subject->createResponse($value);
 
         $this->assertEquals($expected, $actual);
     }
@@ -86,9 +86,9 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateReturned()
     {
-        $returnValue = 'x';
-        $expected = new ReturnedEvent(0, 0.0, $returnValue);
-        $actual = $this->subject->createReturned($returnValue);
+        $value = 'x';
+        $expected = new ReturnedEvent(0, 0.0, $value);
+        $actual = $this->subject->createReturned($value);
 
         $this->assertEquals($expected, $actual);
     }
@@ -101,34 +101,34 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateYielded()
+    public function testCreateProduced()
     {
         $key = 'x';
         $value = 'y';
-        $expected = new YieldedEvent(0, 0.0, $key, $value);
-        $actual = $this->subject->createYielded($key, $value);
+        $expected = new ProducedEvent(0, 0.0, $key, $value);
+        $actual = $this->subject->createProduced($key, $value);
 
         $this->assertEquals($expected, $actual);
 
-        $expected = new YieldedEvent(1, 1.0, $value);
-        $actual = $this->subject->createYielded($value);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateSent()
-    {
-        $sentValue = 'x';
-        $expected = new SentEvent(0, 0.0, $sentValue);
-        $actual = $this->subject->createSent($sentValue);
+        $expected = new ProducedEvent(1, 1.0, $value);
+        $actual = $this->subject->createProduced($value);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateSentException()
+    public function testCreateReceived()
     {
-        $expected = new SentExceptionEvent(0, 0.0, $this->exception);
-        $actual = $this->subject->createSentException($this->exception);
+        $value = 'x';
+        $expected = new ReceivedEvent(0, 0.0, $value);
+        $actual = $this->subject->createReceived($value);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateReceivedException()
+    {
+        $expected = new ReceivedExceptionEvent(0, 0.0, $this->exception);
+        $actual = $this->subject->createReceivedException($this->exception);
 
         $this->assertEquals($expected, $actual);
     }

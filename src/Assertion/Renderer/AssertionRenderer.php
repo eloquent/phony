@@ -12,11 +12,11 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\ProducedEventInterface;
+use Eloquent\Phony\Call\Event\ReceivedEventInterface;
+use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
-use Eloquent\Phony\Call\Event\SentEventInterface;
-use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
-use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
@@ -245,15 +245,15 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the responses of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls            The calls.
-     * @param boolean|null                 $expandGenerators True if generator events should be rendered.
+     * @param array<integer,CallInterface> $calls              The calls.
+     * @param boolean|null                 $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered call responses.
      */
-    public function renderResponses(array $calls, $expandGenerators = null)
+    public function renderResponses(array $calls, $expandTraversables = null)
     {
-        if (null === $expandGenerators) {
-            $expandGenerators = false;
+        if (null === $expandTraversables) {
+            $expandTraversables = false;
         }
 
         $rendered = array();
@@ -265,15 +265,11 @@ class AssertionRenderer implements AssertionRendererInterface
                     '    - threw %s',
                     $this->renderException($exception)
                 );
-            } elseif ($call->isGenerator()) {
-                if ($expandGenerators) {
-                    $rendered[] = sprintf(
-                        "    - generated:\n%s",
-                        $this->indent($this->renderGenerated($call))
-                    );
-                } else {
-                    $rendered[] = '    - returned generator';
-                }
+            } elseif ($expandTraversables && $call->isTraversable()) {
+                $rendered[] = sprintf(
+                    "    - produced:\n%s",
+                    $this->indent($this->renderProduced($call))
+                );
             } else {
                 $rendered[] = sprintf(
                     '    - returned %s',
@@ -353,30 +349,30 @@ class AssertionRenderer implements AssertionRendererInterface
     }
 
     /**
-     * Render the generator events of a call.
+     * Render the traversable events of a call.
      *
      * @param CallInterface $call The call.
      *
-     * @return string The rendered generator events.
+     * @return string The rendered traversable events.
      */
-    public function renderGenerated(CallInterface $call)
+    public function renderProduced(CallInterface $call)
     {
         $rendered = array();
-        foreach ($call->generatorEvents() as $event) {
-            if ($event instanceof YieldedEventInterface) {
+        foreach ($call->traversableEvents() as $event) {
+            if ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
-                    "    - yielded %s => %s",
+                    "    - produced %s => %s",
                     $this->renderValue($event->key()),
                     $this->renderValue($event->value())
                 );
-            } elseif ($event instanceof SentEventInterface) {
+            } elseif ($event instanceof ReceivedEventInterface) {
                 $rendered[] = sprintf(
-                    "    - sent %s",
+                    "    - received %s",
                     $this->renderValue($event->value())
                 );
-            } elseif ($event instanceof SentExceptionEventInterface) {
+            } elseif ($event instanceof ReceivedExceptionEventInterface) {
                 $rendered[] = sprintf(
-                    "    - sent exception %s",
+                    "    - received exception %s",
                     $this->renderException($event->exception())
                 );
             }

@@ -138,11 +138,12 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame(array(), $this->subject->generatorEvents());
+        $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
+        $this->assertFalse($this->subject->isTraversable());
         $this->assertFalse($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());

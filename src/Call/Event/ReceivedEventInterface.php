@@ -12,8 +12,14 @@
 namespace Eloquent\Phony\Call\Event;
 
 /**
- * The interface used to identify generator events.
+ * The interface implemented by 'received' events.
  */
-interface GeneratorEventInterface extends CallEventInterface
+interface ReceivedEventInterface extends TraversableEventInterface
 {
+    /**
+     * Get the received value.
+     *
+     * @return mixed The received value.
+     */
+    public function value();
 }

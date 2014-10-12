@@ -11,16 +11,17 @@
 
 namespace Eloquent\Phony\Call;
 
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\GeneratorEventInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
+use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use Generator;
 use InvalidArgumentException;
+use Traversable;
 
 /**
  * Represents a single call.
@@ -32,31 +33,31 @@ class Call implements CallInterface
     /**
      * Construct a new call.
      *
-     * @param CalledEventInterface                        $calledEvent     The 'called' event.
-     * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet responded.
-     * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
-     * @param ResponseEventInterface|null                 $endEvent        The end event, or null if the call has not yet completed.
+     * @param CalledEventInterface                          $calledEvent       The 'called' event.
+     * @param ResponseEventInterface|null                   $responseEvent     The response event, or null if the call has not yet responded.
+     * @param array<integer,TraversableEventInterface>|null $traversableEvents The traversable events.
+     * @param ResponseEventInterface|null                   $endEvent          The end event, or null if the call has not yet completed.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
     public function __construct(
         CalledEventInterface $calledEvent,
         ResponseEventInterface $responseEvent = null,
-        array $generatorEvents = null,
+        array $traversableEvents = null,
         ResponseEventInterface $endEvent = null
     ) {
         $calledEvent->setCall($this);
         $this->calledEvent = $calledEvent;
 
-        $this->generatorEvents = array();
+        $this->traversableEvents = array();
 
         if ($responseEvent) {
             $this->setResponseEvent($responseEvent);
         }
 
-        if (null !== $generatorEvents) {
-            foreach ($generatorEvents as $generatorEvent) {
-                $this->addGeneratorEvent($generatorEvent);
+        if (null !== $traversableEvents) {
+            foreach ($traversableEvents as $traversableEvent) {
+                $this->addTraversableEvent($traversableEvent);
             }
         }
 
@@ -116,8 +117,9 @@ class Call implements CallInterface
             return $this->endEvent;
         }
 
-        if ($this->generatorEvents) {
-            return $this->generatorEvents[count($this->generatorEvents) - 1];
+        if ($this->traversableEvents) {
+            return
+                $this->traversableEvents[count($this->traversableEvents) - 1];
         }
 
         if ($this->responseEvent) {
@@ -169,30 +171,31 @@ class Call implements CallInterface
     }
 
     /**
-     * Add a generator event.
+     * Add a traversable event.
      *
-     * @param GeneratorEventInterface $generatorEvent The generator event.
+     * @param TraversableEventInterface $traversableEvent The traversable event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addGeneratorEvent(GeneratorEventInterface $generatorEvent)
-    {
+    public function addTraversableEvent(
+        TraversableEventInterface $traversableEvent
+    ) {
         if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
         }
 
-        $generatorEvent->setCall($this);
-        $this->generatorEvents[] = $generatorEvent;
+        $traversableEvent->setCall($this);
+        $this->traversableEvents[] = $traversableEvent;
     }
 
     /**
-     * Get the generator events.
+     * Get the traversable events.
      *
-     * @return array<integer,GeneratorEventInterface> The generator events.
+     * @return array<integer,TraversableEventInterface> The traversable events.
      */
-    public function generatorEvents()
+    public function traversableEvents()
     {
-        return $this->generatorEvents;
+        return $this->traversableEvents;
     }
 
     /**
@@ -234,7 +237,7 @@ class Call implements CallInterface
      */
     public function events()
     {
-        $events = $this->generatorEvents();
+        $events = $this->traversableEvents();
 
         if ($this->responseEvent) {
             if ($this->endEvent && $this->isGenerator()) {
@@ -257,6 +260,22 @@ class Call implements CallInterface
     public function hasResponded()
     {
         return $this->responseEvent && true;
+    }
+
+    /**
+     * Returns true if this call has responded with a traversable.
+     *
+     * @return boolean True if this call has responded with a traversable.
+     */
+    public function isTraversable()
+    {
+        if (!$this->responseEvent instanceof ReturnedEventInterface) {
+            return false;
+        }
+
+        $returnValue = $this->responseEvent->value();
+
+        return is_array($returnValue) || $returnValue instanceof Traversable;
     }
 
     /**
@@ -350,6 +369,6 @@ class Call implements CallInterface
 
     private $calledEvent;
     private $responseEvent;
-    private $generatorEvents;
+    private $traversableEvents;
     private $endEvent;
 }

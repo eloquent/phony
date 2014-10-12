@@ -17,11 +17,11 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\GeneratorEventInterface;
+use Eloquent\Phony\Call\Event\ProducedEventInterface;
+use Eloquent\Phony\Call\Event\ReceivedEventInterface;
+use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
-use Eloquent\Phony\Call\Event\SentEventInterface;
-use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
-use Eloquent\Phony\Call\Event\YieldedEventInterface;
+use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -230,25 +230,26 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Add a generator event.
+     * Add a traversable event.
      *
-     * @param GeneratorEventInterface $generatorEvent The generator event.
+     * @param TraversableEventInterface $traversableEvent The traversable event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addGeneratorEvent(GeneratorEventInterface $generatorEvent)
-    {
-        $this->call->addGeneratorEvent($generatorEvent);
+    public function addTraversableEvent(
+        TraversableEventInterface $traversableEvent
+    ) {
+        $this->call->addTraversableEvent($traversableEvent);
     }
 
     /**
-     * Get the generator events.
+     * Get the traversable events.
      *
-     * @return array<integer,GeneratorEventInterface> The generator events.
+     * @return array<integer,TraversableEventInterface> The traversable events.
      */
-    public function generatorEvents()
+    public function traversableEvents()
     {
-        return $this->call->generatorEvents();
+        return $this->call->traversableEvents();
     }
 
     /**
@@ -291,6 +292,16 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     public function hasResponded()
     {
         return $this->call->hasResponded();
+    }
+
+    /**
+     * Returns true if this call has responded with a traversable.
+     *
+     * @return boolean True if this call has responded with a traversable.
+     */
+    public function isTraversable()
+    {
+        return $this->call->isTraversable();
     }
 
     /**
@@ -778,23 +789,23 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Checks if this call yielded the supplied values.
+     * Checks if this call produced the supplied values.
      *
      * When called with no arguments, this method simply checks that the call
-     * yielded any value.
+     * produced any value.
      *
      * With a single argument, it checks that a value matching the argument was
-     * yielded.
+     * produced.
      *
      * With two arguments, it checks that a key and value matching the
-     * respective arguments were yielded together.
+     * respective arguments were produced together.
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function checkYielded($keyOrValue = null, $value = null)
+    public function checkProduced($keyOrValue = null, $value = null)
     {
         $cardinality = $this->resetCardinality();
 
@@ -818,8 +829,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         $matchCount = 0;
         $totalCount = 0;
 
-        foreach ($this->call->generatorEvents() as $event) {
-            if ($event instanceof YieldedEventInterface) {
+        foreach ($this->call->traversableEvents() as $event) {
+            if ($event instanceof ProducedEventInterface) {
                 $totalCount++;
 
                 if ($checkKey && !$key->matches($event->key())) {
@@ -840,16 +851,16 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Throws an exception unless this call yielded the supplied values.
+     * Throws an exception unless this call produced the supplied values.
      *
      * When called with no arguments, this method simply checks that the call
-     * yielded any value.
+     * produced any value.
      *
      * With a single argument, it checks that a value matching the argument was
-     * yielded.
+     * produced.
      *
      * With two arguments, it checks that a key and value matching the
-     * respective arguments were yielded together.
+     * respective arguments were produced together.
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
@@ -857,7 +868,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
-    public function yielded($keyOrValue = null, $value = null)
+    public function produced($keyOrValue = null, $value = null)
     {
         $cardinality = $this->cardinality;
 
@@ -876,53 +887,54 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkYielded'), $arguments)
+                call_user_func_array(array($this, 'checkProduced'), $arguments)
         ) {
             return $result;
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'generator to yield';
+            $renderedType = 'call to produce';
         } elseif (1 === $argumentCount) {
-            $renderedType = sprintf('yield to be like %s', $value->describe());
+            $renderedType =
+                sprintf('call to produce like %s', $value->describe());
         } else {
             $renderedType = sprintf(
-                'yield to be like %s => %s',
+                'call to produce like %s => %s',
                 $key->describe(),
                 $value->describe()
             );
         }
 
-        if ($this->call->generatorEvents()) {
-            $renderedGenerated = sprintf(
+        if ($this->call->traversableEvents()) {
+            $renderedProduced = sprintf(
                 ":\n%s",
-                $this->assertionRenderer->renderGenerated($this->call)
+                $this->assertionRenderer->renderProduced($this->call)
             );
         } else {
-            $renderedGenerated = ' nothing.';
+            $renderedProduced = ' nothing.';
         }
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                'Expected %s. Generated%s',
+                'Expected %s. Produced%s',
                 $this->assertionRenderer
                     ->renderCardinality($cardinality, $renderedType),
-                $renderedGenerated
+                $renderedProduced
             )
         );
     }
 
     /**
-     * Checks if this call was sent the supplied value.
+     * Checks if this call received the supplied value.
      *
      * When called with no arguments, this method simply checks that the call
-     * was sent any value.
+     * received any value.
      *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function checkSent($value = null)
+    public function checkReceived($value = null)
     {
         $cardinality = $this->resetCardinality();
 
@@ -939,15 +951,15 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         $matchCount = 0;
         $totalCount = 0;
 
-        foreach ($this->call->generatorEvents() as $event) {
-            if ($event instanceof SentEventInterface) {
+        foreach ($this->call->traversableEvents() as $event) {
+            if ($event instanceof ReceivedEventInterface) {
                 $totalCount++;
 
                 if (!$checkValue || $value->matches($event->value())) {
                     $matchingEvents[] = $event;
                     $matchCount++;
                 }
-            } elseif ($event instanceof SentExceptionEventInterface) {
+            } elseif ($event instanceof ReceivedExceptionEventInterface) {
                 $totalCount++;
             }
         }
@@ -958,17 +970,17 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Throws an exception unless this call was sent the supplied value.
+     * Throws an exception unless this call received the supplied value.
      *
      * When called with no arguments, this method simply checks that the call
-     * was sent any value.
+     * received any value.
      *
      * @param mixed $value The value.
      *
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
-    public function sent($value = null)
+    public function received($value = null)
     {
         $cardinality = $this->cardinality;
 
@@ -983,51 +995,51 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkSent'), $arguments)
+                call_user_func_array(array($this, 'checkReceived'), $arguments)
         ) {
             return $result;
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'generator to be sent value';
+            $renderedType = 'generator to receive value';
         } else {
             $renderedType = sprintf(
-                'generator to be sent value like %s',
+                'generator to receive value like %s',
                 $value->describe()
             );
         }
 
-        if ($this->call->generatorEvents()) {
-            $renderedGenerated = sprintf(
+        if ($this->call->traversableEvents()) {
+            $renderedProduced = sprintf(
                 ":\n%s",
-                $this->assertionRenderer->renderGenerated($this->call)
+                $this->assertionRenderer->renderProduced($this->call)
             );
         } else {
-            $renderedGenerated = ' nothing.';
+            $renderedProduced = ' nothing.';
         }
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                'Expected %s. Generated%s',
+                'Expected %s. Produced%s',
                 $this->assertionRenderer
                     ->renderCardinality($cardinality, $renderedType),
-                $renderedGenerated
+                $renderedProduced
             )
         );
     }
 
     /**
-     * Checks if this call was sent an exception of the supplied type.
+     * Checks if this call received an exception of the supplied type.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function checkSentException($type = null)
+    public function checkReceivedException($type = null)
     {
         $cardinality = $this->resetCardinality();
 
-        $generatorEvents = $this->call->generatorEvents();
+        $traversableEvents = $this->call->traversableEvents();
         $matchingEvents = array();
         $matchCount = 0;
         $totalCount = 0;
@@ -1036,27 +1048,27 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         if (null === $type) {
             $isTypeSupported = true;
 
-            foreach ($generatorEvents as $event) {
-                if ($event instanceof SentExceptionEventInterface) {
+            foreach ($traversableEvents as $event) {
+                if ($event instanceof ReceivedExceptionEventInterface) {
                     $totalCount++;
                     $matchingEvents[] = $event;
                     $matchCount++;
-                } elseif ($event instanceof SentEventInterface) {
+                } elseif ($event instanceof ReceivedEventInterface) {
                     $totalCount++;
                 }
             }
         } elseif (is_string($type)) {
             $isTypeSupported = true;
 
-            foreach ($generatorEvents as $event) {
-                if ($event instanceof SentExceptionEventInterface) {
+            foreach ($traversableEvents as $event) {
+                if ($event instanceof ReceivedExceptionEventInterface) {
                     $totalCount++;
 
                     if (is_a($event->exception(), $type)) {
                         $matchingEvents[] = $event;
                         $matchCount++;
                     }
-                } elseif ($event instanceof SentEventInterface) {
+                } elseif ($event instanceof ReceivedEventInterface) {
                     $totalCount++;
                 }
             }
@@ -1064,15 +1076,15 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             if ($type instanceof Exception) {
                 $isTypeSupported = true;
 
-                foreach ($generatorEvents as $event) {
-                    if ($event instanceof SentExceptionEventInterface) {
+                foreach ($traversableEvents as $event) {
+                    if ($event instanceof ReceivedExceptionEventInterface) {
                         $totalCount++;
 
                         if ($event->exception() == $type) {
                             $matchingEvents[] = $event;
                             $matchCount++;
                         }
-                    } elseif ($event instanceof SentEventInterface) {
+                    } elseif ($event instanceof ReceivedEventInterface) {
                         $totalCount++;
                     }
                 }
@@ -1080,15 +1092,15 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->adapt($type);
 
-                foreach ($generatorEvents as $event) {
-                    if ($event instanceof SentExceptionEventInterface) {
+                foreach ($traversableEvents as $event) {
+                    if ($event instanceof ReceivedExceptionEventInterface) {
                         $totalCount++;
 
                         if ($type->matches($event->exception())) {
                             $matchingEvents[] = $event;
                             $matchCount++;
                         }
-                    } elseif ($event instanceof SentEventInterface) {
+                    } elseif ($event instanceof ReceivedEventInterface) {
                         $totalCount++;
                     }
                 }
@@ -1110,7 +1122,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Throws an exception unless this call was sent an exception of the
+     * Throws an exception unless this call received an exception of the
      * supplied type.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
@@ -1118,50 +1130,50 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
-    public function sentException($type = null)
+    public function receivedException($type = null)
     {
         $cardinality = $this->cardinality;
 
-        if ($result = $this->checkSentException($type)) {
+        if ($result = $this->checkReceivedException($type)) {
             return $result;
         }
 
         if (null === $type) {
-            $renderedType = 'generator to be sent exception';
+            $renderedType = 'generator to receive exception';
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                'generator to be sent %s exception',
+                'generator to receive %s exception',
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'generator to be sent exception equal to %s',
+                    'generator to receive exception equal to %s',
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'generator to be sent exception like %s',
+                    'generator to receive exception like %s',
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }
         }
 
-        if ($this->call->generatorEvents()) {
-            $renderedGenerated = sprintf(
+        if ($this->call->traversableEvents()) {
+            $renderedProduced = sprintf(
                 ":\n%s",
-                $this->assertionRenderer->renderGenerated($this->call)
+                $this->assertionRenderer->renderProduced($this->call)
             );
         } else {
-            $renderedGenerated = ' nothing.';
+            $renderedProduced = ' nothing.';
         }
 
         throw $this->assertionRecorder->createFailure(
             sprintf(
-                'Expected %s. Generated%s',
+                'Expected %s. Produced%s',
                 $this->assertionRenderer
                     ->renderCardinality($cardinality, $renderedType),
-                $renderedGenerated
+                $renderedProduced
             )
         );
     }

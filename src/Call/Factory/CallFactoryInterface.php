@@ -13,8 +13,8 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
+use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use InvalidArgumentException;
 
@@ -41,10 +41,10 @@ interface CallFactoryInterface
     /**
      * Create a new call.
      *
-     * @param CalledEventInterface|null                   $calledEvent     The 'called' event.
-     * @param ResponseEventInterface|null                 $responseEvent   The response event, or null if the call has not yet responded.
-     * @param array<integer,GeneratorEventInterface>|null $generatorEvents The generator events.
-     * @param ResponseEventInterface|null                 $endEvent        The end event, or null if the call has not yet completed.
+     * @param CalledEventInterface|null                     $calledEvent       The 'called' event.
+     * @param ResponseEventInterface|null                   $responseEvent     The response event, or null if the call has not yet responded.
+     * @param array<integer,TraversableEventInterface>|null $traversableEvents The traversable events.
+     * @param ResponseEventInterface|null                   $endEvent          The end event, or null if the call has not yet completed.
      *
      * @return CallInterface            The newly created call.
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
@@ -52,7 +52,7 @@ interface CallFactoryInterface
     public function create(
         CalledEventInterface $calledEvent = null,
         ResponseEventInterface $responseEvent = null,
-        array $generatorEvents = null,
+        array $traversableEvents = null,
         ResponseEventInterface $endEvent = null
     );
 }

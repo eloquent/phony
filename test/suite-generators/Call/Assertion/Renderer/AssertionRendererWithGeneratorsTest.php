@@ -46,13 +46,13 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callEventFactory->createCalled(),
             $this->callEventFactory->createGenerated(),
             array(
-                $this->callEventFactory->createYielded('m', 'n'),
-                $this->callEventFactory->createSent('o'),
-                $this->callEventFactory->createYielded('p', 'q'),
+                $this->callEventFactory->createProduced('m', 'n'),
+                $this->callEventFactory->createReceived('o'),
+                $this->callEventFactory->createProduced('p', 'q'),
                 $this->callEventFactory
-                    ->createSentException(new RuntimeException('Consequences will never be the same.')),
-                $this->callEventFactory->createYielded('r', 's'),
-                $this->callEventFactory->createSent('t'),
+                    ->createReceivedException(new RuntimeException('Consequences will never be the same.')),
+                $this->callEventFactory->createProduced('r', 's'),
+                $this->callEventFactory->createReceived('t'),
             ),
             $this->callEventFactory->createReturned()
         );
@@ -62,7 +62,7 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $expected = <<<'EOD'
     - returned 'x'
-    - returned generator
+    - returned Generator Object ()
     - threw RuntimeException('You done goofed.')
 EOD;
 
@@ -76,13 +76,13 @@ EOD;
     {
         $expected = <<<'EOD'
     - returned 'x'
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
     - threw RuntimeException('You done goofed.')
 EOD;
 
@@ -92,17 +92,17 @@ EOD;
         );
     }
 
-    public function testRenderGenerated()
+    public function testRenderProduced()
     {
         $expected = <<<'EOD'
-    - yielded 'm' => 'n'
-    - sent 'o'
-    - yielded 'p' => 'q'
-    - sent exception RuntimeException('Consequences will never be the same.')
-    - yielded 'r' => 's'
-    - sent 't'
+    - produced 'm' => 'n'
+    - received 'o'
+    - produced 'p' => 'q'
+    - received exception RuntimeException('Consequences will never be the same.')
+    - produced 'r' => 's'
+    - received 't'
 EOD;
 
-        $this->assertSame($expected, $this->subject->renderGenerated($this->generatorCall));
+        $this->assertSame($expected, $this->subject->renderProduced($this->generatorCall));
     }
 }

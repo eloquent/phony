@@ -14,19 +14,19 @@ namespace Eloquent\Phony\Call\Event;
 use Exception;
 
 /**
- * Represents an exception sent to a generator.
+ * Represents an exception received by a generator.
  *
  * @internal
  */
-class SentExceptionEvent extends AbstractCallEvent implements
-    SentExceptionEventInterface
+class ReceivedExceptionEvent extends AbstractCallEvent implements
+    ReceivedExceptionEventInterface
 {
     /**
-     * Construct a 'sent exception' event.
+     * Construct a 'received exception' event.
      *
      * @param integer        $sequenceNumber The sequence number.
      * @param float          $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param Exception|null $exception      The sent exception.
+     * @param Exception|null $exception      The received exception.
      */
     public function __construct(
         $sequenceNumber,
@@ -43,9 +43,9 @@ class SentExceptionEvent extends AbstractCallEvent implements
     }
 
     /**
-     * Get the sent exception.
+     * Get the received exception.
      *
-     * @return Exception The sent exception.
+     * @return Exception The received exception.
      */
     public function exception()
     {

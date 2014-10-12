@@ -12,14 +12,21 @@
 namespace Eloquent\Phony\Call\Event;
 
 /**
- * The interface implemented by 'sent' events.
+ * The interface implemented by 'produced' events.
  */
-interface SentEventInterface extends GeneratorEventInterface
+interface ProducedEventInterface extends TraversableEventInterface
 {
     /**
-     * Get the sent value.
+     * Get the produced key.
      *
-     * @return mixed The sent value.
+     * @return mixed The produced key.
+     */
+    public function key();
+
+    /**
+     * Get the produced value.
+     *
+     * @return mixed The produced value.
      */
     public function value();
 }

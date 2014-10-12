@@ -17,9 +17,9 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
-use Eloquent\Phony\Call\Event\SentEventInterface;
-use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
-use Eloquent\Phony\Call\Event\YieldedEventInterface;
+use Eloquent\Phony\Call\Event\ProducedEventInterface;
+use Eloquent\Phony\Call\Event\ReceivedEventInterface;
+use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
@@ -776,23 +776,23 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Checks if this spy yielded the supplied values.
+     * Checks if this spy produced the supplied values.
      *
      * When called with no arguments, this method simply checks that the spy
-     * yielded any value.
+     * produced any value.
      *
      * With a single argument, it checks that a value matching the argument was
-     * yielded.
+     * produced.
      *
      * With two arguments, it checks that a key and value matching the
-     * respective arguments were yielded together.
+     * respective arguments were produced together.
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function checkYielded($keyOrValue = null, $value = null)
+    public function checkProduced($keyOrValue = null, $value = null)
     {
         $cardinality = $this->resetCardinality();
 
@@ -818,8 +818,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         $matchCount = 0;
 
         foreach ($calls as $call) {
-            foreach ($call->generatorEvents() as $event) {
-                if ($event instanceof YieldedEventInterface) {
+            foreach ($call->traversableEvents() as $event) {
+                if ($event instanceof ProducedEventInterface) {
                     if ($checkKey && !$key->matches($event->key())) {
                         continue;
                     }
@@ -841,16 +841,16 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Throws an exception unless this spy yielded the supplied values.
+     * Throws an exception unless this spy produced the supplied values.
      *
      * When called with no arguments, this method simply checks that the spy
-     * yielded any value.
+     * produced any value.
      *
      * With a single argument, it checks that a value matching the argument was
-     * yielded.
+     * produced.
      *
      * With two arguments, it checks that a key and value matching the
-     * respective arguments were yielded together.
+     * respective arguments were produced together.
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
@@ -858,7 +858,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
-    public function yielded($keyOrValue = null, $value = null)
+    public function produced($keyOrValue = null, $value = null)
     {
         $cardinality = $this->cardinality;
 
@@ -877,19 +877,19 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkYielded'), $arguments)
+                call_user_func_array(array($this, 'checkProduced'), $arguments)
         ) {
             return $result;
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'call to yield';
+            $renderedType = 'call to produce';
         } elseif (1 === $argumentCount) {
             $renderedType =
-                sprintf('call to yield like %s', $value->describe());
+                sprintf('call to produce like %s', $value->describe());
         } else {
             $renderedType = sprintf(
-                'call to yield like %s => %s',
+                'call to produce like %s => %s',
                 $key->describe(),
                 $value->describe()
             );
@@ -917,16 +917,16 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Checks if this spy was sent the supplied value.
+     * Checks if this spy received the supplied value.
      *
-     * When called with no arguments, this method simply checks that the spy was
-     * sent any value.
+     * When called with no arguments, this method simply checks that the spy
+     * received any value.
      *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function checkSent($value = null)
+    public function checkReceived($value = null)
     {
         $cardinality = $this->resetCardinality();
 
@@ -945,8 +945,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         $matchCount = 0;
 
         foreach ($calls as $call) {
-            foreach ($call->generatorEvents() as $event) {
-                if ($event instanceof SentEventInterface) {
+            foreach ($call->traversableEvents() as $event) {
+                if ($event instanceof ReceivedEventInterface) {
                     if (!$checkValue || $value->matches($event->value())) {
                         $matchingEvents[] = $event;
                         $matchCount++;
@@ -963,17 +963,17 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Throws an exception unless this spy was sent the supplied value.
+     * Throws an exception unless this spy received the supplied value.
      *
-     * When called with no arguments, this method simply checks that the spy was
-     * sent any value.
+     * When called with no arguments, this method simply checks that the spy
+     * received any value.
      *
      * @param mixed $value The value.
      *
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
-    public function sent($value = null)
+    public function received($value = null)
     {
         $cardinality = $this->cardinality;
 
@@ -988,16 +988,16 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkSent'), $arguments)
+                call_user_func_array(array($this, 'checkReceived'), $arguments)
         ) {
             return $result;
         }
 
         if (0 === $argumentCount) {
-            $renderedType = 'generator to be sent value';
+            $renderedType = 'generator to receive value';
         } else {
             $renderedType = sprintf(
-                'generator to be sent value like %s',
+                'generator to receive value like %s',
                 $value->describe()
             );
         }
@@ -1024,14 +1024,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Checks if this spy was sent an exception of the supplied type.
+     * Checks if this spy received an exception of the supplied type.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If the type is invalid.
      */
-    public function checkSentException($type = null)
+    public function checkReceivedException($type = null)
     {
         $cardinality = $this->resetCardinality();
 
@@ -1045,8 +1045,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $isTypeSupported = true;
 
             foreach ($calls as $call) {
-                foreach ($call->generatorEvents() as $event) {
-                    if ($event instanceof SentExceptionEventInterface) {
+                foreach ($call->traversableEvents() as $event) {
+                    if ($event instanceof ReceivedExceptionEventInterface) {
                         $matchingEvents[] = $event;
                         $matchCount++;
 
@@ -1058,8 +1058,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $isTypeSupported = true;
 
             foreach ($calls as $call) {
-                foreach ($call->generatorEvents() as $event) {
-                    if ($event instanceof SentExceptionEventInterface) {
+                foreach ($call->traversableEvents() as $event) {
+                    if ($event instanceof ReceivedExceptionEventInterface) {
                         if (is_a($event->exception(), $type)) {
                             $matchingEvents[] = $event;
                             $matchCount++;
@@ -1074,8 +1074,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                 $isTypeSupported = true;
 
                 foreach ($calls as $call) {
-                    foreach ($call->generatorEvents() as $event) {
-                        if ($event instanceof SentExceptionEventInterface) {
+                    foreach ($call->traversableEvents() as $event) {
+                        if ($event instanceof ReceivedExceptionEventInterface) {
                             if ($event->exception() == $type) {
                                 $matchingEvents[] = $event;
                                 $matchCount++;
@@ -1090,8 +1090,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                 $type = $this->matcherFactory->adapt($type);
 
                 foreach ($calls as $call) {
-                    foreach ($call->generatorEvents() as $event) {
-                        if ($event instanceof SentExceptionEventInterface) {
+                    foreach ($call->traversableEvents() as $event) {
+                        if ($event instanceof ReceivedExceptionEventInterface) {
                             if ($type->matches($event->exception())) {
                                 $matchingEvents[] = $event;
                                 $matchCount++;
@@ -1119,7 +1119,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Throws an exception unless this spy was sent an exception of the
+     * Throws an exception unless this spy received an exception of the
      * supplied type.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
@@ -1128,30 +1128,30 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails.
      */
-    public function sentException($type = null)
+    public function receivedException($type = null)
     {
         $cardinality = $this->cardinality;
 
-        if ($result = $this->checkSentException($type)) {
+        if ($result = $this->checkReceivedException($type)) {
             return $result;
         }
 
         if (null === $type) {
-            $renderedType = 'generator to be sent exception';
+            $renderedType = 'generator to receive exception';
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                'generator to be sent %s exception',
+                'generator to receive %s exception',
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'generator to be sent exception equal to %s',
+                    'generator to receive exception equal to %s',
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'generator to be sent exception like %s',
+                    'generator to receive exception like %s',
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }

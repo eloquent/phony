@@ -12,19 +12,19 @@
 namespace Eloquent\Phony\Call\Event;
 
 /**
- * Represents a yielded key-value pair.
+ * Represents a produced key-value pair.
  *
  * @internal
  */
-class YieldedEvent extends AbstractCallEvent implements YieldedEventInterface
+class ProducedEvent extends AbstractCallEvent implements ProducedEventInterface
 {
     /**
-     * Construct a 'yielded' event.
+     * Construct a 'produced' event.
      *
      * @param integer $sequenceNumber The sequence number.
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $keyOrValue     The yielded key or value.
-     * @param mixed   $value          The yielded value.
+     * @param mixed   $keyOrValue     The produced key or value.
+     * @param mixed   $value          The produced value.
      */
     public function __construct(
         $sequenceNumber,
@@ -43,9 +43,9 @@ class YieldedEvent extends AbstractCallEvent implements YieldedEventInterface
     }
 
     /**
-     * Get the yielded key.
+     * Get the produced key.
      *
-     * @return mixed The yielded key.
+     * @return mixed The produced key.
      */
     public function key()
     {
@@ -53,9 +53,9 @@ class YieldedEvent extends AbstractCallEvent implements YieldedEventInterface
     }
 
     /**
-     * Get the yielded value.
+     * Get the produced value.
      *
-     * @return mixed The yielded value.
+     * @return mixed The produced value.
      */
     public function value()
     {

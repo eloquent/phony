@@ -37,8 +37,8 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithGeneratedEventWithReturnEnd()
     {
         $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createYielded();
-        $generatorEventB = $this->callEventFactory->createSent();
+        $generatorEventA = $this->callEventFactory->createProduced();
+        $generatorEventB = $this->callEventFactory->createReceived();
         $generatorEvents = array($generatorEventA, $generatorEventB);
         $endEvent = $this->callEventFactory->createReturned();
         $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
@@ -49,11 +49,12 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->firstEvent());
         $this->assertSame($endEvent, $this->subject->lastEvent());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($generatorEvents, $this->subject->traversableEvents());
         $this->assertSame($endEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
+        $this->assertTrue($this->subject->isTraversable());
         $this->assertTrue($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
@@ -69,8 +70,8 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithGeneratedEventWithThrowEnd()
     {
         $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createYielded();
-        $generatorEventB = $this->callEventFactory->createSent();
+        $generatorEventA = $this->callEventFactory->createProduced();
+        $generatorEventB = $this->callEventFactory->createReceived();
         $generatorEvents = array($generatorEventA, $generatorEventB);
         $exception = new RuntimeException('You done goofed.');
         $endEvent = $this->callEventFactory->createThrew($exception);
@@ -82,11 +83,12 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->firstEvent());
         $this->assertSame($endEvent, $this->subject->lastEvent());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($generatorEvents, $this->subject->traversableEvents());
         $this->assertSame($endEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
+        $this->assertTrue($this->subject->isTraversable());
         $this->assertTrue($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
@@ -102,8 +104,8 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithGeneratedEventWithoutEnd()
     {
         $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createYielded();
-        $generatorEventB = $this->callEventFactory->createSent();
+        $generatorEventA = $this->callEventFactory->createProduced();
+        $generatorEventB = $this->callEventFactory->createReceived();
         $generatorEvents = array($generatorEventA, $generatorEventB);
         $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents);
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB);
@@ -113,11 +115,12 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->firstEvent());
         $this->assertSame($generatorEventB, $this->subject->lastEvent());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($generatorEvents, $this->subject->traversableEvents());
         $this->assertNull($this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
+        $this->assertTrue($this->subject->isTraversable());
         $this->assertTrue($this->subject->isGenerator());
         $this->assertFalse($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
@@ -141,11 +144,12 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->firstEvent());
         $this->assertSame($generatedEvent, $this->subject->lastEvent());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame(array(), $this->subject->generatorEvents());
+        $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertNull($this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->events());
         $this->assertTrue($this->subject->hasResponded());
+        $this->assertTrue($this->subject->isTraversable());
         $this->assertTrue($this->subject->isGenerator());
         $this->assertFalse($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
@@ -172,14 +176,14 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testAddGeneratorEvent()
     {
         $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createYielded();
-        $generatorEventB = $this->callEventFactory->createSent();
+        $generatorEventA = $this->callEventFactory->createProduced();
+        $generatorEventB = $this->callEventFactory->createReceived();
         $this->subject = new Call($this->calledEvent, $generatedEvent);
-        $this->subject->addGeneratorEvent($generatorEventA);
-        $this->subject->addGeneratorEvent($generatorEventB);
+        $this->subject->addTraversableEvent($generatorEventA);
+        $this->subject->addTraversableEvent($generatorEventB);
         $generatorEvents = array($generatorEventA, $generatorEventB);
 
-        $this->assertSame($generatorEvents, $this->subject->generatorEvents());
+        $this->assertSame($generatorEvents, $this->subject->traversableEvents());
         $this->assertSame($this->subject, $generatorEventA->call());
         $this->assertSame($this->subject, $generatorEventB->call());
     }
@@ -187,6 +191,6 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testAddGeneratorEventFailureAlreadyCompleted()
     {
         $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
-        $this->subject->addGeneratorEvent($this->callEventFactory->createSent('e'));
+        $this->subject->addTraversableEvent($this->callEventFactory->createReceived('e'));
     }
 }

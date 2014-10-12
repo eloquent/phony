@@ -38,8 +38,8 @@ abstract class GeneratorSpyFactoryDetail
         CallEventFactoryInterface $callEventFactory
     ) {
         $isFirst = true;
-        $sent = null;
-        $sentException = null;
+        $received = null;
+        $receivedException = null;
 
         while (true) {
             $thrown = null;
@@ -48,10 +48,10 @@ abstract class GeneratorSpyFactoryDetail
 
             try {
                 if (!$isFirst) {
-                    if ($sentException) {
-                        $generator->throw($sentException);
+                    if ($receivedException) {
+                        $generator->throw($receivedException);
                     } else {
-                        $generator->send($sent);
+                        $generator->send($received);
                     }
                 }
 
@@ -70,20 +70,22 @@ abstract class GeneratorSpyFactoryDetail
 
             $key = $generator->key();
             $value = $generator->current();
-            $sent = null;
-            $sentException = null;
+            $received = null;
+            $receivedException = null;
 
-            $call->addGeneratorEvent(
-                $callEventFactory->createYielded($key, $value)
+            $call->addTraversableEvent(
+                $callEventFactory->createProduced($key, $value)
             );
 
             try {
-                $sent = (yield $key => $value);
+                $received = (yield $key => $value);
 
-                $call->addGeneratorEvent($callEventFactory->createSent($sent));
-            } catch (Exception $sentException) {
-                $call->addGeneratorEvent(
-                    $callEventFactory->createSentException($sentException)
+                $call->addTraversableEvent(
+                    $callEventFactory->createReceived($received)
+                );
+            } catch (Exception $receivedException) {
+                $call->addTraversableEvent(
+                    $callEventFactory->createReceivedException($receivedException)
                 );
             }
 

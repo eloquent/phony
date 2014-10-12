@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\GeneratorEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
+use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use InvalidArgumentException;
@@ -47,20 +47,22 @@ interface CallInterface extends EventInterface
     public function responseEvent();
 
     /**
-     * Add a generator event.
+     * Add a traversable event.
      *
-     * @param GeneratorEventInterface $generatorEvent The generator event.
+     * @param TraversableEventInterface $traversableEvent The traversable event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addGeneratorEvent(GeneratorEventInterface $generatorEvent);
+    public function addTraversableEvent(
+        TraversableEventInterface $traversableEvent
+    );
 
     /**
-     * Get the generator events.
+     * Get the traversable events.
      *
-     * @return array<integer,GeneratorEventInterface> The generator events.
+     * @return array<integer,TraversableEventInterface> The traversable events.
      */
-    public function generatorEvents();
+    public function traversableEvents();
 
     /**
      * Set the end event.
@@ -84,6 +86,13 @@ interface CallInterface extends EventInterface
      * @return boolean True if this call has responded.
      */
     public function hasResponded();
+
+    /**
+     * Returns true if this call has responded with a traversable.
+     *
+     * @return boolean True if this call has responded with a traversable.
+     */
+    public function isTraversable();
 
     /**
      * Returns true if this call has responded with a generator.

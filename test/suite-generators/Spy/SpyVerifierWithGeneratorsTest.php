@@ -92,18 +92,18 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         // additions for generators
 
-        $this->sentExceptionA = new RuntimeException('Consequences will never be the same.');
-        $this->sentExceptionB = new RuntimeException('Because I backtraced it.');
+        $this->receivedExceptionA = new RuntimeException('Consequences will never be the same.');
+        $this->receivedExceptionB = new RuntimeException('Because I backtraced it.');
         $this->generatorCalledEvent = $this->callEventFactory->createCalled();
         $this->generatedEvent = $this->callEventFactory->createGenerated();
-        $this->generatorEventA = $this->callEventFactory->createYielded('m', 'n');
-        $this->generatorEventB = $this->callEventFactory->createSent('o');
-        $this->generatorEventC = $this->callEventFactory->createYielded('p', 'q');
-        $this->generatorEventD = $this->callEventFactory->createSentException($this->sentExceptionA);
-        $this->generatorEventE = $this->callEventFactory->createYielded('r', 's');
-        $this->generatorEventF = $this->callEventFactory->createSent('t');
-        $this->generatorEventG = $this->callEventFactory->createYielded('u', 'v');
-        $this->generatorEventH = $this->callEventFactory->createSentException($this->sentExceptionB);
+        $this->generatorEventA = $this->callEventFactory->createProduced('m', 'n');
+        $this->generatorEventB = $this->callEventFactory->createReceived('o');
+        $this->generatorEventC = $this->callEventFactory->createProduced('p', 'q');
+        $this->generatorEventD = $this->callEventFactory->createReceivedException($this->receivedExceptionA);
+        $this->generatorEventE = $this->callEventFactory->createProduced('r', 's');
+        $this->generatorEventF = $this->callEventFactory->createReceived('t');
+        $this->generatorEventG = $this->callEventFactory->createProduced('u', 'v');
+        $this->generatorEventH = $this->callEventFactory->createReceivedException($this->receivedExceptionB);
         $this->generatorEvents = array(
             $this->generatorEventA,
             $this->generatorEventB,
@@ -123,103 +123,103 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testCheckYielded()
+    public function testCheckProduced()
     {
-        $this->assertFalse((boolean) $this->subject->checkYielded());
-        $this->assertFalse((boolean) $this->subject->checkYielded('n'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m', 'n'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkYielded());
-        $this->assertFalse((boolean) $this->subject->once()->checkYielded('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkYielded('m'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m', 'o'));
+        $this->assertFalse((boolean) $this->subject->checkProduced());
+        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->checkYielded());
-        $this->assertFalse((boolean) $this->subject->checkYielded('n'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m', 'n'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkYielded());
-        $this->assertFalse((boolean) $this->subject->once()->checkYielded('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkYielded('m'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m', 'o'));
+        $this->assertFalse((boolean) $this->subject->checkProduced());
+        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
 
         $this->subject->addCall($this->generatorCall);
 
-        $this->assertTrue((boolean) $this->subject->checkYielded());
-        $this->assertTrue((boolean) $this->subject->checkYielded('n'));
-        $this->assertTrue((boolean) $this->subject->checkYielded('m', 'n'));
-        $this->assertTrue((boolean) $this->subject->times(1)->checkYielded());
-        $this->assertTrue((boolean) $this->subject->once()->checkYielded('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkYielded('m'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m'));
-        $this->assertFalse((boolean) $this->subject->checkYielded('m', 'o'));
-        $this->assertFalse((boolean) $this->subject->always()->checkYielded());
+        $this->assertTrue((boolean) $this->subject->checkProduced());
+        $this->assertTrue((boolean) $this->subject->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->checkProduced('m', 'n'));
+        $this->assertTrue((boolean) $this->subject->times(1)->checkProduced());
+        $this->assertTrue((boolean) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((boolean) $this->subject->always()->checkProduced());
 
         $this->subject->setCalls(array($this->generatorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkYielded());
+        $this->assertTrue((boolean) $this->subject->always()->checkProduced());
     }
 
-    public function testYielded()
+    public function testProduced()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
 
-        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->yielded());
-        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->yielded('n'));
-        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->yielded('m', 'n'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->produced());
+        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->produced('n'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->produced('m', 'n'));
         $this->assertEquals(
             new EventCollection(array($this->generatorEventA)),
-            $this->subject->times(1)->yielded()
+            $this->subject->times(1)->produced()
         );
         $this->assertEquals(
             new EventCollection(array($this->generatorEventA)),
-            $this->subject->once()->yielded('n')
+            $this->subject->once()->produced('n')
         );
-        $this->assertEquals(new EventCollection(), $this->subject->never()->yielded('m'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->produced('m'));
 
         $this->subject->setCalls(array($this->generatorCall));
 
         $this->assertEquals(
             new EventCollection(array($this->generatorEventA)),
-            $this->subject->always()->yielded()
+            $this->subject->always()->produced()
         );
     }
 
-    public function testYieldedFailureNoCallsNoMatchers()
+    public function testProducedFailureNoCallsNoMatchers()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to yield. Never called."
+            "Expected call to produce. Never called."
         );
-        $this->subject->yielded();
+        $this->subject->produced();
     }
 
-    public function testYieldedFailureNoCallsValueOnly()
+    public function testProducedFailureNoCallsValueOnly()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to yield like <'x'>. Never called."
+            "Expected call to produce like <'x'>. Never called."
         );
-        $this->subject->yielded('x');
+        $this->subject->produced('x');
     }
 
-    public function testYieldedFailureNoCallsKeyAndValue()
+    public function testProducedFailureNoCallsKeyAndValue()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to yield like <'x'> => <'y'>. Never called."
+            "Expected call to produce like <'x'> => <'y'>. Never called."
         );
-        $this->subject->yielded('x', 'y');
+        $this->subject->produced('x', 'y');
     }
 
-    public function testYieldedFailureNoGeneratorsNoMatchers()
+    public function testProducedFailureNoGeneratorsNoMatchers()
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call to yield. Responded:
+Expected call to produce. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -227,14 +227,14 @@ Expected call to yield. Responded:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->yielded();
+        $this->subject->produced();
     }
 
-    public function testYieldedFailureNoGeneratorsValueOnly()
+    public function testProducedFailureNoGeneratorsValueOnly()
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call to yield like <'x'>. Responded:
+Expected call to produce like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -242,14 +242,14 @@ Expected call to yield like <'x'>. Responded:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->yielded('x');
+        $this->subject->produced('x');
     }
 
-    public function testYieldedFailureNoGeneratorsKeyAndValue()
+    public function testProducedFailureNoGeneratorsKeyAndValue()
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call to yield like <'x'> => <'y'>. Responded:
+Expected call to produce like <'x'> => <'y'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -257,175 +257,175 @@ Expected call to yield like <'x'> => <'y'>. Responded:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->yielded('x', 'y');
+        $this->subject->produced('x', 'y');
     }
 
-    public function testYieldedFailureValueMismatch()
+    public function testProducedFailureValueMismatch()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call to yield like <'x'>. Responded:
+Expected call to produce like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->yielded('x');
+        $this->subject->produced('x');
     }
 
-    public function testYieldedFailureKeyValueMismatch()
+    public function testProducedFailureKeyValueMismatch()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call to yield like <'x'> => <'y'>. Responded:
+Expected call to produce like <'x'> => <'y'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->yielded('x', 'y');
+        $this->subject->produced('x', 'y');
     }
 
-    public function testYieldedFailureAlways()
+    public function testProducedFailureAlways()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected every call to yield like <'n'>. Responded:
+Expected every call to produce like <'n'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->yielded('n');
+        $this->subject->always()->produced('n');
     }
 
-    public function testYieldedFailureNever()
+    public function testProducedFailureNever()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no call to yield like <'n'>. Responded:
+Expected no call to produce like <'n'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->yielded('n');
+        $this->subject->never()->produced('n');
     }
 
-    public function testCheckSent()
+    public function testCheckReceived()
     {
-        $this->assertFalse((boolean) $this->subject->checkSent());
-        $this->assertFalse((boolean) $this->subject->checkSent('o'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkSent());
-        $this->assertFalse((boolean) $this->subject->once()->checkSent('o'));
-        $this->assertTrue((boolean) $this->subject->never()->checkSent('x'));
-        $this->assertFalse((boolean) $this->subject->always()->checkSent());
-        $this->assertFalse((boolean) $this->subject->checkSent('x'));
+        $this->assertFalse((boolean) $this->subject->checkReceived());
+        $this->assertFalse((boolean) $this->subject->checkReceived('o'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkReceived());
+        $this->assertFalse((boolean) $this->subject->once()->checkReceived('o'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceived('x'));
+        $this->assertFalse((boolean) $this->subject->always()->checkReceived());
+        $this->assertFalse((boolean) $this->subject->checkReceived('x'));
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->checkSent());
-        $this->assertFalse((boolean) $this->subject->checkSent('o'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkSent());
-        $this->assertFalse((boolean) $this->subject->once()->checkSent('o'));
-        $this->assertTrue((boolean) $this->subject->never()->checkSent('x'));
-        $this->assertFalse((boolean) $this->subject->always()->checkSent());
-        $this->assertFalse((boolean) $this->subject->checkSent('x'));
+        $this->assertFalse((boolean) $this->subject->checkReceived());
+        $this->assertFalse((boolean) $this->subject->checkReceived('o'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkReceived());
+        $this->assertFalse((boolean) $this->subject->once()->checkReceived('o'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceived('x'));
+        $this->assertFalse((boolean) $this->subject->always()->checkReceived());
+        $this->assertFalse((boolean) $this->subject->checkReceived('x'));
 
         $this->subject->addCall($this->generatorCall);
 
-        $this->assertTrue((boolean) $this->subject->checkSent());
-        $this->assertTrue((boolean) $this->subject->checkSent('o'));
-        $this->assertTrue((boolean) $this->subject->times(1)->checkSent());
-        $this->assertTrue((boolean) $this->subject->once()->checkSent('o'));
-        $this->assertTrue((boolean) $this->subject->never()->checkSent('x'));
-        $this->assertFalse((boolean) $this->subject->always()->checkSent());
-        $this->assertFalse((boolean) $this->subject->checkSent('x'));
+        $this->assertTrue((boolean) $this->subject->checkReceived());
+        $this->assertTrue((boolean) $this->subject->checkReceived('o'));
+        $this->assertTrue((boolean) $this->subject->times(1)->checkReceived());
+        $this->assertTrue((boolean) $this->subject->once()->checkReceived('o'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceived('x'));
+        $this->assertFalse((boolean) $this->subject->always()->checkReceived());
+        $this->assertFalse((boolean) $this->subject->checkReceived('x'));
     }
 
-    public function testSent()
+    public function testReceived()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
 
-        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->sent());
-        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->sent('o'));
-        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->times(1)->sent());
-        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->once()->sent('o'));
-        $this->assertEquals(new EventCollection(), $this->subject->never()->sent('x'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->received());
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->received('o'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->times(1)->received());
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->once()->received('o'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->received('x'));
     }
 
-    public function testSentFailureNoCallsNoMatcher()
+    public function testReceivedFailureNoCallsNoMatcher()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to be sent value. Never called."
+            "Expected generator to receive value. Never called."
         );
-        $this->subject->sent();
+        $this->subject->received();
     }
 
-    public function testSentFailureNoCallsWithMatcher()
+    public function testReceivedFailureNoCallsWithMatcher()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to be sent value like <'x'>. Never called."
+            "Expected generator to receive value like <'x'>. Never called."
         );
-        $this->subject->sent('x');
+        $this->subject->received('x');
     }
 
-    public function testSentFailureNoGeneratorsNoMatcher()
+    public function testReceivedFailureNoGeneratorsNoMatcher()
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected generator to be sent value. Responded:
+Expected generator to receive value. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -433,14 +433,14 @@ Expected generator to be sent value. Responded:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sent();
+        $this->subject->received();
     }
 
-    public function testSentFailureNoGeneratorsWithMatcher()
+    public function testReceivedFailureNoGeneratorsWithMatcher()
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected generator to be sent value like <'x'>. Responded:
+Expected generator to receive value like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -448,428 +448,443 @@ Expected generator to be sent value like <'x'>. Responded:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sent('x');
+        $this->subject->received('x');
     }
 
-    public function testSentFailureMatcherMismatch()
+    public function testReceivedFailureMatcherMismatch()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to be sent value like <'x'>. Responded:
+Expected generator to receive value like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sent('x');
+        $this->subject->received('x');
     }
 
-    public function testCheckSentException()
+    public function testCheckReceivedException()
     {
-        $this->assertFalse((boolean) $this->subject->checkSentException());
-        $this->assertFalse((boolean) $this->subject->checkSentException('Exception'));
-        $this->assertFalse((boolean) $this->subject->checkSentException('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->checkSentException($this->sentExceptionA));
-        $this->assertFalse((boolean) $this->subject->checkSentException($this->sentExceptionB));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher($this->sentExceptionA)));
-        $this->assertFalse((boolean) $this->subject->checkSentException('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher(new RuntimeException())));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher(null)));
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException());
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException('Exception'));
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException($this->sentExceptionA));
-        $this->assertTrue(
-            (boolean) $this->subject->never()->checkSentException(new EqualToMatcher($this->sentExceptionA))
-        );
-
-        $this->subject->setCalls($this->calls);
-
-        $this->assertFalse((boolean) $this->subject->checkSentException());
-        $this->assertFalse((boolean) $this->subject->checkSentException('Exception'));
-        $this->assertFalse((boolean) $this->subject->checkSentException('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->checkSentException($this->sentExceptionA));
-        $this->assertFalse((boolean) $this->subject->checkSentException($this->sentExceptionB));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher($this->sentExceptionA)));
-        $this->assertFalse((boolean) $this->subject->checkSentException('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher(new RuntimeException())));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher(null)));
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException());
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException('Exception'));
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->never()->checkSentException($this->sentExceptionA));
-        $this->assertTrue(
-            (boolean) $this->subject->never()->checkSentException(new EqualToMatcher($this->sentExceptionA))
-        );
-
-        $this->subject->addCall($this->generatorCall);
-
-        $this->assertTrue((boolean) $this->subject->checkSentException());
-        $this->assertTrue((boolean) $this->subject->checkSentException('Exception'));
-        $this->assertTrue((boolean) $this->subject->checkSentException('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->checkSentException($this->sentExceptionA));
-        $this->assertTrue((boolean) $this->subject->checkSentException($this->sentExceptionB));
-        $this->assertTrue((boolean) $this->subject->checkSentException(new EqualToMatcher($this->sentExceptionA)));
-        $this->assertFalse((boolean) $this->subject->checkSentException('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher(new RuntimeException())));
-        $this->assertFalse((boolean) $this->subject->checkSentException(new EqualToMatcher(null)));
-        $this->assertFalse((boolean) $this->subject->never()->checkSentException());
-        $this->assertFalse((boolean) $this->subject->never()->checkSentException('Exception'));
-        $this->assertFalse((boolean) $this->subject->never()->checkSentException('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->never()->checkSentException($this->sentExceptionA));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException());
+        $this->assertFalse((boolean) $this->subject->checkReceivedException('Exception'));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException('RuntimeException'));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionB));
         $this->assertFalse(
-            (boolean) $this->subject->never()->checkSentException(new EqualToMatcher($this->sentExceptionA))
+            (boolean) $this->subject->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
+        );
+        $this->assertFalse((boolean) $this->subject->checkReceivedException('InvalidArgumentException'));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new Exception()));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new RuntimeException()));
+        $this->assertFalse(
+            (boolean) $this->subject->checkReceivedException(new EqualToMatcher(new RuntimeException()))
+        );
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new EqualToMatcher(null)));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException());
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('Exception'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('RuntimeException'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
+        $this->assertTrue(
+            (boolean) $this->subject->never()->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
+        );
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertFalse((boolean) $this->subject->checkReceivedException());
+        $this->assertFalse((boolean) $this->subject->checkReceivedException('Exception'));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException('RuntimeException'));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionB));
+        $this->assertFalse(
+            (boolean) $this->subject->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
+        );
+        $this->assertFalse((boolean) $this->subject->checkReceivedException('InvalidArgumentException'));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new Exception()));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new RuntimeException()));
+        $this->assertFalse(
+            (boolean) $this->subject->checkReceivedException(new EqualToMatcher(new RuntimeException()))
+        );
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new EqualToMatcher(null)));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException());
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('Exception'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('RuntimeException'));
+        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
+        $this->assertTrue(
+            (boolean) $this->subject->never()->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
+        );
+
+        $this->subject->addCall($this->generatorCall);
+
+        $this->assertTrue((boolean) $this->subject->checkReceivedException());
+        $this->assertTrue((boolean) $this->subject->checkReceivedException('Exception'));
+        $this->assertTrue((boolean) $this->subject->checkReceivedException('RuntimeException'));
+        $this->assertTrue((boolean) $this->subject->checkReceivedException($this->receivedExceptionA));
+        $this->assertTrue((boolean) $this->subject->checkReceivedException($this->receivedExceptionB));
+        $this->assertTrue(
+            (boolean) $this->subject->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
+        );
+        $this->assertFalse((boolean) $this->subject->checkReceivedException('InvalidArgumentException'));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new Exception()));
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new RuntimeException()));
+        $this->assertFalse(
+            (boolean) $this->subject->checkReceivedException(new EqualToMatcher(new RuntimeException()))
+        );
+        $this->assertFalse((boolean) $this->subject->checkReceivedException(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException());
+        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException('Exception'));
+        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException('RuntimeException'));
+        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse(
+            (boolean) $this->subject->never()->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
         );
     }
 
-    public function testSentException()
+    public function testReceivedException()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
 
-        $this->assertEquals(new EventCollection(array($this->generatorEventD)), $this->subject->sentException());
+        $this->assertEquals(new EventCollection(array($this->generatorEventD)), $this->subject->receivedException());
         $this->assertEquals(
             new EventCollection(array($this->generatorEventD)),
-            $this->subject->sentException('Exception')
+            $this->subject->receivedException('Exception')
         );
         $this->assertEquals(
             new EventCollection(array($this->generatorEventD)),
-            $this->subject->sentException('RuntimeException')
+            $this->subject->receivedException('RuntimeException')
         );
         $this->assertEquals(
             new EventCollection(array($this->generatorEventD)),
-            $this->subject->sentException($this->sentExceptionA)
+            $this->subject->receivedException($this->receivedExceptionA)
         );
         $this->assertEquals(
             new EventCollection(array($this->generatorEventH)),
-            $this->subject->sentException($this->sentExceptionB)
+            $this->subject->receivedException($this->receivedExceptionB)
         );
         $this->assertEquals(
             new EventCollection(array($this->generatorEventD)),
-            $this->subject->sentException(new EqualToMatcher($this->sentExceptionA))
+            $this->subject->receivedException(new EqualToMatcher($this->receivedExceptionA))
         );
-        $this->assertEquals(new EventCollection(), $this->subject->never()->sentException('InvalidArgumentException'));
+        $this->assertEquals(
+            new EventCollection(),
+            $this->subject->never()->receivedException('InvalidArgumentException')
+        );
     }
 
-    public function testSentExceptionFailureNoCallsNoType()
+    public function testReceivedExceptionFailureNoCallsNoType()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to be sent exception. Never called."
+            "Expected generator to receive exception. Never called."
         );
-        $this->subject->sentException();
+        $this->subject->receivedException();
     }
 
-    public function testSentExceptionFailureNoCallsWithType()
+    public function testReceivedExceptionFailureNoCallsWithType()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to be sent 'InvalidArgumentException' exception. Never called."
+            "Expected generator to receive 'InvalidArgumentException' exception. Never called."
         );
-        $this->subject->sentException('InvalidArgumentException');
+        $this->subject->receivedException('InvalidArgumentException');
     }
 
-    public function testSentExceptionFailureNoCallsWithException()
+    public function testReceivedExceptionFailureNoCallsWithException()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to be sent exception equal to RuntimeException(). Never called."
+            "Expected generator to receive exception equal to RuntimeException(). Never called."
         );
-        $this->subject->sentException(new RuntimeException());
+        $this->subject->receivedException(new RuntimeException());
     }
 
-    public function testSentExceptionFailureNoCallsWithMatcher()
+    public function testReceivedExceptionFailureNoCallsWithMatcher()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to be sent exception like <RuntimeException Object (...)>. Never called."
+            "Expected generator to receive exception like <RuntimeException Object (...)>. Never called."
         );
-        $this->subject->sentException(new EqualToMatcher(new RuntimeException()));
+        $this->subject->receivedException(new EqualToMatcher(new RuntimeException()));
     }
 
-    public function testSentExceptionFailureExpectingNeverAny()
+    public function testReceivedExceptionFailureExpectingNeverAny()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to be sent exception. Responded:
+Expected no generator to receive exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->sentException();
+        $this->subject->never()->receivedException();
     }
 
-    public function testSentExceptionFailureExpectingAlwaysAny()
+    public function testReceivedExceptionFailureExpectingAlwaysAny()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected every generator to be sent exception. Responded:
+Expected every generator to receive exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->sentException();
+        $this->subject->always()->receivedException();
     }
 
-    public function testSentExceptionFailureTypeMismatch()
+    public function testReceivedExceptionFailureTypeMismatch()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to be sent 'InvalidArgumentException' exception. Responded:
+Expected generator to receive 'InvalidArgumentException' exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sentException('InvalidArgumentException');
+        $this->subject->receivedException('InvalidArgumentException');
     }
 
-    public function testSentExceptionFailureTypeNever()
+    public function testReceivedExceptionFailureTypeNever()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to be sent 'RuntimeException' exception. Responded:
+Expected no generator to receive 'RuntimeException' exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->sentException('RuntimeException');
+        $this->subject->never()->receivedException('RuntimeException');
     }
 
-    public function testSentExceptionFailureExpectingTypeNoneSent()
+    public function testReceivedExceptionFailureExpectingTypeNoneReceived()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to be sent 'InvalidArgumentException' exception. Responded:
+Expected generator to receive 'InvalidArgumentException' exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sentException('InvalidArgumentException');
+        $this->subject->receivedException('InvalidArgumentException');
     }
 
-    public function testSentExceptionFailureExceptionMismatch()
+    public function testReceivedExceptionFailureExceptionMismatch()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to be sent exception equal to RuntimeException(). Responded:
+Expected generator to receive exception equal to RuntimeException(). Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sentException(new RuntimeException());
+        $this->subject->receivedException(new RuntimeException());
     }
 
-    public function testSentExceptionFailureExceptionNever()
+    public function testReceivedExceptionFailureExceptionNever()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to be sent exception equal to RuntimeException('Consequences will never be the same.'). Responded:
+Expected no generator to receive exception equal to RuntimeException('Consequences will never be the same.'). Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->sentException($this->sentExceptionA);
+        $this->subject->never()->receivedException($this->receivedExceptionA);
     }
 
-    public function testSentExceptionFailureExpectingExceptionNoneSent()
+    public function testReceivedExceptionFailureExpectingExceptionNoneReceived()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to be sent exception equal to RuntimeException(). Responded:
+Expected generator to receive exception equal to RuntimeException(). Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sentException(new RuntimeException());
+        $this->subject->receivedException(new RuntimeException());
     }
 
-    public function testSentExceptionFailureMatcherMismatch()
+    public function testReceivedExceptionFailureMatcherMismatch()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to be sent exception like <RuntimeException Object (...)>. Responded:
+Expected generator to receive exception like <RuntimeException Object (...)>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->sentException(new EqualToMatcher(new RuntimeException()));
+        $this->subject->receivedException(new EqualToMatcher(new RuntimeException()));
     }
 
-    public function testSentExceptionFailureMatcherNever()
+    public function testReceivedExceptionFailureMatcherNever()
     {
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to be sent exception like <RuntimeException Object (...)>. Responded:
+Expected no generator to receive exception like <RuntimeException Object (...)>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - generated:
-        - yielded 'm' => 'n'
-        - sent 'o'
-        - yielded 'p' => 'q'
-        - sent exception RuntimeException('Consequences will never be the same.')
-        - yielded 'r' => 's'
-        - sent 't'
-        - yielded 'u' => 'v'
-        - sent exception RuntimeException('Because I backtraced it.')
+    - produced:
+        - produced 'm' => 'n'
+        - received 'o'
+        - produced 'p' => 'q'
+        - received exception RuntimeException('Consequences will never be the same.')
+        - produced 'r' => 's'
+        - received 't'
+        - produced 'u' => 'v'
+        - received exception RuntimeException('Because I backtraced it.')
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->never()->sentException(new EqualToMatcher($this->sentExceptionA));
+        $this->subject->never()->receivedException(new EqualToMatcher($this->receivedExceptionA));
     }
 
-    public function testSentExceptionFailureInvalidInput()
+    public function testReceivedExceptionFailureInvalidInput()
     {
         $this->setExpectedException(
             'InvalidArgumentException',
             "Unable to match exceptions against 111."
         );
-        $this->subject->sentException(111);
+        $this->subject->receivedException(111);
     }
 
-    public function testSentExceptionFailureInvalidInputObject()
+    public function testReceivedExceptionFailureInvalidInputObject()
     {
         $this->setExpectedException(
             'InvalidArgumentException',
             "Unable to match exceptions against stdClass Object ()."
         );
-        $this->subject->sentException((object) array());
+        $this->subject->receivedException((object) array());
     }
 }

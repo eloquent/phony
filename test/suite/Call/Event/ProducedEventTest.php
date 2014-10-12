@@ -14,14 +14,15 @@ namespace Eloquent\Phony\Call\Event;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
-class SentEventTest extends PHPUnit_Framework_TestCase
+class ProducedEventTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         $this->sequenceNumber = 111;
         $this->time = 1.11;
-        $this->value = 'x';
-        $this->subject = new SentEvent($this->sequenceNumber, $this->time, $this->value);
+        $this->key = 'x';
+        $this->value = 'y';
+        $this->subject = new ProducedEvent($this->sequenceNumber, $this->time, $this->key, $this->value);
 
         $this->callFactory = new TestCallFactory();
     }
@@ -30,6 +31,7 @@ class SentEventTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
+        $this->assertSame($this->key, $this->subject->key());
         $this->assertSame($this->value, $this->subject->value());
         $this->assertNull($this->subject->call());
         $this->assertTrue($this->subject->hasEvents());
@@ -38,10 +40,19 @@ class SentEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->lastEvent());
     }
 
+    public function testConstructorWithValueOnly()
+    {
+        $this->subject = new ProducedEvent($this->sequenceNumber, $this->time, $this->value);
+
+        $this->assertNull($this->subject->key());
+        $this->assertSame($this->value, $this->subject->value());
+    }
+
     public function testConstructorDefaults()
     {
-        $this->subject = new SentEvent($this->sequenceNumber, $this->time);
+        $this->subject = new ProducedEvent($this->sequenceNumber, $this->time);
 
+        $this->assertNull($this->subject->key());
         $this->assertNull($this->subject->value());
     }
 

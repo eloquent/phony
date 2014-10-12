@@ -158,35 +158,35 @@ interface SpyVerifierInterface extends SpyInterface,
     public function threw($type = null);
 
     /**
-     * Checks if this spy yielded the supplied values.
+     * Checks if this spy produced the supplied values.
      *
      * When called with no arguments, this method simply checks that the spy
-     * yielded any value.
+     * produced any value.
      *
      * With a single argument, it checks that a value matching the argument was
-     * yielded.
+     * produced.
      *
      * With two arguments, it checks that a key and value matching the
-     * respective arguments were yielded together.
+     * respective arguments were produced together.
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function checkYielded($keyOrValue = null, $value = null);
+    public function checkProduced($keyOrValue = null, $value = null);
 
     /**
-     * Throws an exception unless this spy yielded the supplied values.
+     * Throws an exception unless this spy produced the supplied values.
      *
      * When called with no arguments, this method simply checks that the spy
-     * yielded any value.
+     * produced any value.
      *
      * With a single argument, it checks that a value matching the argument was
-     * yielded.
+     * produced.
      *
      * With two arguments, it checks that a key and value matching the
-     * respective arguments were yielded together.
+     * respective arguments were produced together.
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
@@ -194,45 +194,45 @@ interface SpyVerifierInterface extends SpyInterface,
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
-    public function yielded($keyOrValue = null, $value = null);
+    public function produced($keyOrValue = null, $value = null);
 
     /**
-     * Checks if this spy was sent the supplied value.
+     * Checks if this spy received the supplied value.
      *
-     * When called with no arguments, this method simply checks that the spy was
-     * sent any value.
+     * When called with no arguments, this method simply checks that the spy
+     * received any value.
      *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface|null The result.
      */
-    public function checkSent($value = null);
+    public function checkReceived($value = null);
 
     /**
-     * Throws an exception unless this spy was sent the supplied value.
+     * Throws an exception unless this spy received the supplied value.
      *
-     * When called with no arguments, this method simply checks that the spy was
-     * sent any value.
+     * When called with no arguments, this method simply checks that the spy
+     * received any value.
      *
      * @param mixed $value The value.
      *
      * @return mixed     The result.
      * @throws Exception If the assertion fails.
      */
-    public function sent($value = null);
+    public function received($value = null);
 
     /**
-     * Checks if this spy was sent an exception of the supplied type.
+     * Checks if this spy received an exception of the supplied type.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If the type is invalid.
      */
-    public function checkSentException($type = null);
+    public function checkReceivedException($type = null);
 
     /**
-     * Throws an exception unless this spy was sent an exception of the
+     * Throws an exception unless this spy received an exception of the
      * supplied type.
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
@@ -241,5 +241,5 @@ interface SpyVerifierInterface extends SpyInterface,
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails.
      */
-    public function sentException($type = null);
+    public function receivedException($type = null);
 }

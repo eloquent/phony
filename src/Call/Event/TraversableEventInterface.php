@@ -11,17 +11,9 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Exception;
-
 /**
- * The interface implemented by 'sent exception' events.
+ * The interface used to identify traversable events.
  */
-interface SentExceptionEventInterface extends GeneratorEventInterface
+interface TraversableEventInterface extends CallEventInterface
 {
-    /**
-     * Get the sent exception.
-     *
-     * @return Exception The sent exception.
-     */
-    public function exception();
 }
