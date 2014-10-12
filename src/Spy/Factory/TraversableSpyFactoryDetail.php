@@ -21,7 +21,7 @@ use Generator;
  *
  * @internal
  */
-abstract class GeneratorSpyFactoryDetail
+abstract class TraversableSpyFactoryDetail
 {
     /**
      * Create a new generator spy.
@@ -32,7 +32,7 @@ abstract class GeneratorSpyFactoryDetail
      *
      * @return Generator The newly created generator spy.
      */
-    public static function create(
+    public static function createGeneratorSpy(
         CallInterface $call,
         Generator $generator,
         CallEventFactoryInterface $callEventFactory

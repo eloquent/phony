@@ -180,7 +180,10 @@ class Call implements CallInterface
     public function addTraversableEvent(
         TraversableEventInterface $traversableEvent
     ) {
-        if ($this->endEvent) {
+        if (!$this->isTraversable()) {
+            throw new InvalidArgumentException('Not a traversable call.');
+        }
+        if ($this->endEvent && $this->isGenerator()) {
             throw new InvalidArgumentException('Call already completed.');
         }
 

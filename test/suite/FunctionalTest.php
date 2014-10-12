@@ -14,7 +14,7 @@ use Eloquent\Phony\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
-    public function testSpy()
+    public function testSpyStatic()
     {
         $spy = Phony::spy();
         $spy('a', 'b', 'c');
@@ -48,7 +48,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy->callAt(1)->calledWith(111);
     }
 
-    public function testStub()
+    public function testStubStatic()
     {
         $stub = Phony::stub()
             ->returns('x')
@@ -88,5 +88,31 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->callAt(1)->calledWith(111);
         $stub->returned('x');
         $stub->returned('y');
+    }
+
+    public function testTraversableSpyingStatic()
+    {
+        $stub = Phony::stub(null, null, true);
+        $stub->returns(array('a' => 'b', 'c' => 'd'));
+        iterator_to_array($stub());
+
+        $stub->produced();
+        $stub->produced('b');
+        $stub->produced('d');
+        $stub->produced('a', 'b');
+        $stub->produced('c', 'd');
+    }
+
+    public function testTraversableSpyingFunction()
+    {
+        $stub = a\stub(null, null, true);
+        $stub->returns(array('a' => 'b', 'c' => 'd'));
+        iterator_to_array($stub());
+
+        $stub->produced();
+        $stub->produced('b');
+        $stub->produced('d');
+        $stub->produced('a', 'b');
+        $stub->produced('c', 'd');
     }
 }

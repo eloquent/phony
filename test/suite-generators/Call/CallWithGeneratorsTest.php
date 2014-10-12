@@ -173,7 +173,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->endEvent());
     }
 
-    public function testAddGeneratorEvent()
+    public function testAddTraversableEvent()
     {
         $generatedEvent = $this->callEventFactory->createGenerated();
         $generatorEventA = $this->callEventFactory->createProduced();
@@ -188,8 +188,12 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $generatorEventB->call());
     }
 
-    public function testAddGeneratorEventFailureAlreadyCompleted()
+    public function testAddTraversableEventFailureAlreadyCompleted()
     {
+        $generatedEvent = $this->callEventFactory->createGenerated();
+        $endEvent = $this->callEventFactory->createReturned();
+        $this->subject = new Call($this->calledEvent, $generatedEvent, array(), $endEvent);
+
         $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
         $this->subject->addTraversableEvent($this->callEventFactory->createReceived('e'));
     }

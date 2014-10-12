@@ -40,22 +40,22 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param CallFactoryInterface|null         $callFactory         The call factory to use.
-     * @param GeneratorSpyFactoryInterface|null $generatorSpyFactory The generator spy factory to use.
+     * @param CallFactoryInterface|null           $callFactory           The call factory to use.
+     * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
         CallFactoryInterface $callFactory = null,
-        GeneratorSpyFactoryInterface $generatorSpyFactory = null
+        TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
-        if (null === $generatorSpyFactory) {
-            $generatorSpyFactory = GeneratorSpyFactory::instance();
+        if (null === $traversableSpyFactory) {
+            $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
         $this->callFactory = $callFactory;
-        $this->generatorSpyFactory = $generatorSpyFactory;
+        $this->traversableSpyFactory = $traversableSpyFactory;
     }
 
     /**
@@ -69,34 +69,39 @@ class SpyFactory implements SpyFactoryInterface
     }
 
     /**
-     * Get the generator spy factory.
+     * Get the traversable spy factory.
      *
-     * @return GeneratorSpyFactoryInterface The generator spy factory.
+     * @return TraversableSpyFactoryInterface The traversable spy factory.
      */
-    public function generatorSpyFactory()
+    public function traversableSpyFactory()
     {
-        return $this->generatorSpyFactory;
+        return $this->traversableSpyFactory;
     }
 
     /**
      * Create a new spy.
      *
-     * @param callable|null $callback          The callback, or null to create an unbound spy.
-     * @param boolean|null  $useGeneratorSpies True if generator spies should be used.
+     * @param callable|null $callback            The callback, or null to create an unbound spy.
+     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
+     * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
      *
      * @return SpyInterface The newly created spy.
      */
-    public function create($callback = null, $useGeneratorSpies = null)
-    {
+    public function create(
+        $callback = null,
+        $useTraversableSpies = null,
+        $useGeneratorSpies = null
+    ) {
         return new Spy(
             $callback,
+            $useTraversableSpies,
             $useGeneratorSpies,
             $this->callFactory,
-            $this->generatorSpyFactory
+            $this->traversableSpyFactory
         );
     }
 
     private static $instance;
     private $callFactory;
-    private $generatorSpyFactory;
+    private $traversableSpyFactory;
 }

@@ -103,12 +103,14 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $spy = new Spy($callback);
+        $spy = new Spy($callback, true, false);
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
-        $actual = $this->subject->createFromCallback($callback);
+        $actual = $this->subject->createFromCallback($callback, true, false);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
+        $this->assertTrue($actual->useTraversableSpies());
+        $this->assertFalse($actual->useGeneratorSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
@@ -125,6 +127,8 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
+        $this->assertFalse($actual->useTraversableSpies());
+        $this->assertSame(!defined('HHVM_VERSION'), $actual->useGeneratorSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());

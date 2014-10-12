@@ -15,10 +15,9 @@ use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
 use RuntimeException;
 
-class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
+class TraversableSpyFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -28,21 +27,29 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->subject = new GeneratorSpyFactory($this->callEventFactory);
+        $this->subject = new TraversableSpyFactory($this->callEventFactory);
 
         $this->call = $this->callFactory->create();
+
+        // additions for generators
+
+        $this->call = $this->callFactory->create(
+            $this->callEventFactory->createCalled(),
+            $this->callEventFactory->createGenerated()
+        );
+        $this->callFactory->reset();
     }
 
-    public function testConstructor()
+    public function testIsTraversable()
     {
-        $this->assertSame($this->callEventFactory, $this->subject->callEventFactory());
-    }
+        $generator = call_user_func(
+            function () {
+                return;
+                yield null;
+            }
+        );
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new GeneratorSpyFactory();
-
-        $this->assertSame(CallEventFactory::instance(), $this->subject->callEventFactory());
+        $this->assertTrue($this->subject->isTraversable($generator));
     }
 
     public function testCreateWithReturnedEnd()
@@ -59,7 +66,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 yield 'c';
             }
         );
-        $spy = $this->subject->create($this->call, $generator);
+        $spy = $this->subject->create($this->call, $generator, true);
         try {
             while ($spy->valid()) {
                 if (1 === $spy->key()) {
@@ -69,8 +76,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 }
             }
         } catch (RuntimeException $caughtException) {}
-        $this->callEventFactory->sequencer()->set(0);
-        $this->callEventFactory->clock()->setTime(1.0);
+        $this->callFactory->reset();
         $generatorEvents = array(
             $this->callEventFactory->createProduced(0, 'a'),
             $this->callEventFactory->createReceived('A'),
@@ -107,7 +113,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 throw $exception;
             }
         );
-        $spy = $this->subject->create($this->call, $generator);
+        $spy = $this->subject->create($this->call, $generator, true);
         try {
             while ($spy->valid()) {
                 if (1 === $spy->key()) {
@@ -117,8 +123,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 }
             }
         } catch (RuntimeException $caughtException) {}
-        $this->callEventFactory->sequencer()->set(0);
-        $this->callEventFactory->clock()->setTime(1.0);
+        $this->callFactory->reset();
         $generatorEvents = array(
             $this->callEventFactory->createProduced(0, 'a'),
             $this->callEventFactory->createReceived('A'),
@@ -146,10 +151,9 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 yield null;
             }
         );
-        $spy = $this->subject->create($this->call, $generator);
+        $spy = $this->subject->create($this->call, $generator, true);
         foreach ($spy as $value) {}
-        $this->callEventFactory->sequencer()->set(0);
-        $this->callEventFactory->clock()->setTime(1.0);
+        $this->callFactory->reset();
         $generatorEvents = array();
         $endEvent = $this->callEventFactory->createReturned();
         $endEvent->setCall($this->call);
@@ -168,10 +172,9 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
                 yield null;
             }
         );
-        $spy = $this->subject->create($this->call, $generator);
+        $spy = $this->subject->create($this->call, $generator, true);
         foreach ($spy as $value) {}
-        $this->callEventFactory->sequencer()->set(0);
-        $this->callEventFactory->clock()->setTime(1.0);
+        $this->callFactory->reset();
         $generatorEvents = array();
         $endEvent = $this->callEventFactory->createThrew($exception);
         $endEvent->setCall($this->call);
@@ -179,18 +182,5 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->traversableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

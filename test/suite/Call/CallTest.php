@@ -177,6 +177,27 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->endTime());
     }
 
+    public function testAddTraversableEvent()
+    {
+        $returnedEvent = $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd'));
+        $traversableEventA = $this->callEventFactory->createProduced('a', 'b');
+        $traversableEventB = $this->callEventFactory->createProduced('c', 'd');
+        $this->subject = new Call($this->calledEvent, $returnedEvent);
+        $this->subject->addTraversableEvent($traversableEventA);
+        $this->subject->addTraversableEvent($traversableEventB);
+        $traversableEvents = array($traversableEventA, $traversableEventB);
+
+        $this->assertSame($traversableEvents, $this->subject->traversableEvents());
+        $this->assertSame($this->subject, $traversableEventA->call());
+        $this->assertSame($this->subject, $traversableEventB->call());
+    }
+
+    public function testAddTraversableEventFailureNotTraversable()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Not a traversable call.');
+        $this->subject->addTraversableEvent($this->callEventFactory->createReceived('e'));
+    }
+
     public function testSetResponseEventWithReturnedEvent()
     {
         $this->subject = new Call($this->calledEvent);

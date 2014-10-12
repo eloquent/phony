@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
+use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
@@ -21,12 +21,18 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
+        $this->useTraversableSpies = false;
         $this->useGeneratorSpies = false;
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory);
-        $this->subject =
-            new Spy($this->callback, $this->useGeneratorSpies, $this->callFactory, $this->generatorSpyFactory);
+        $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
+        $this->subject = new Spy(
+            $this->callback,
+            $this->useTraversableSpies,
+            $this->useGeneratorSpies,
+            $this->callFactory,
+            $this->traversableSpyFactory
+        );
 
         $this->callA = $this->callFactory->create();
         $this->callB = $this->callFactory->create();
@@ -47,7 +53,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             }
         };
         $generator = call_user_func($this->callback);
-        $spy = new Spy($this->callback, true, $this->callFactory, $this->generatorSpyFactory);
+        $spy = new Spy($this->callback, true, true, $this->callFactory, $this->traversableSpyFactory);
         foreach ($spy->invoke('a', 'b') as $value) {}
         foreach ($spy->invoke('c') as $value) {}
         $this->callFactory->reset();

@@ -21,14 +21,14 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callFactory = new CallFactory();
-        $this->generatorSpyFactory = new GeneratorSpyFactory();
-        $this->subject = new SpyFactory($this->callFactory, $this->generatorSpyFactory);
+        $this->traversableSpyFactory = new TraversableSpyFactory();
+        $this->subject = new SpyFactory($this->callFactory, $this->traversableSpyFactory);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->callFactory, $this->subject->callFactory());
-        $this->assertSame($this->generatorSpyFactory, $this->subject->generatorSpyFactory());
+        $this->assertSame($this->traversableSpyFactory, $this->subject->traversableSpyFactory());
     }
 
     public function testConstructorDefaults()
@@ -36,20 +36,29 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject = new SpyFactory();
 
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
-        $this->assertSame(GeneratorSpyFactory::instance(), $this->subject->generatorSpyFactory());
+        $this->assertSame(TraversableSpyFactory::instance(), $this->subject->traversableSpyFactory());
     }
 
     public function testCreate()
     {
         $callback = function () {};
+        $useTraversableSpies = false;
         $useGeneratorSpies = false;
-        $expected = new Spy($callback, $useGeneratorSpies, $this->callFactory);
-        $actual = $this->subject->create($callback, false);
+        $expected = new Spy(
+            $callback,
+            $useTraversableSpies,
+            $useGeneratorSpies,
+            $this->callFactory,
+            $this->traversableSpyFactory
+        );
+        $actual = $this->subject->create($callback, $useTraversableSpies, $useGeneratorSpies);
 
         $this->assertEquals($expected, $actual);
+        $this->assertSame($useTraversableSpies, $actual->useTraversableSpies());
         $this->assertSame($useGeneratorSpies, $actual->useGeneratorSpies());
         $this->assertSame($callback, $actual->callback());
         $this->assertSame($this->callFactory, $actual->callFactory());
+        $this->assertSame($this->traversableSpyFactory, $actual->traversableSpyFactory());
     }
 
     public function testInstance()
