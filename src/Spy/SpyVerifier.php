@@ -18,6 +18,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Event\SentEventInterface;
+use Eloquent\Phony\Call\Event\SentExceptionEventInterface;
 use Eloquent\Phony\Call\Event\YieldedEventInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
@@ -1042,6 +1043,161 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                 'generator to be sent value like %s',
                 $value->describe()
             );
+        }
+
+        $calls = $this->spy->recordedCalls();
+
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls, true)
+            );
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
+        );
+    }
+
+    /**
+     * Checks if this spy was sent an exception of the supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If the type is invalid.
+     */
+    public function checkSentException($type = null)
+    {
+        $cardinality = $this->resetCardinality();
+
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+        $isTypeSupported = false;
+
+        if (null === $type) {
+            $isTypeSupported = true;
+
+            foreach ($calls as $call) {
+                foreach ($call->generatorEvents() as $event) {
+                    if ($event instanceof SentExceptionEventInterface) {
+                        $matchingEvents[] = $event;
+                        $matchCount++;
+
+                        break;
+                    }
+                }
+            }
+        } elseif (is_string($type)) {
+            $isTypeSupported = true;
+
+            foreach ($calls as $call) {
+                foreach ($call->generatorEvents() as $event) {
+                    if ($event instanceof SentExceptionEventInterface) {
+                        if (is_a($event->exception(), $type)) {
+                            $matchingEvents[] = $event;
+                            $matchCount++;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                $isTypeSupported = true;
+
+                foreach ($calls as $call) {
+                    foreach ($call->generatorEvents() as $event) {
+                        if ($event instanceof SentExceptionEventInterface) {
+                            if ($event->exception() == $type) {
+                                $matchingEvents[] = $event;
+                                $matchCount++;
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $isTypeSupported = true;
+                $type = $this->matcherFactory->adapt($type);
+
+                foreach ($calls as $call) {
+                    foreach ($call->generatorEvents() as $event) {
+                        if ($event instanceof SentExceptionEventInterface) {
+                            if ($type->matches($event->exception())) {
+                                $matchingEvents[] = $event;
+                                $matchCount++;
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$isTypeSupported) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Unable to match exceptions against %s.',
+                    $this->assertionRenderer->renderValue($type)
+                )
+            );
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this spy was sent an exception of the
+     * supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return mixed                    The result.
+     * @throws InvalidArgumentException If the type is invalid.
+     * @throws Exception                If the assertion fails.
+     */
+    public function sentException($type = null)
+    {
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkSentException($type)) {
+            return $result;
+        }
+
+        if (null === $type) {
+            $renderedType = 'generator to be sent exception';
+        } elseif (is_string($type)) {
+            $renderedType = sprintf(
+                'generator to be sent %s exception',
+                $this->assertionRenderer->renderValue($type)
+            );
+        } elseif (is_object($type)) {
+            if ($type instanceof Exception) {
+                $renderedType = sprintf(
+                    'generator to be sent exception equal to %s',
+                    $this->assertionRenderer->renderException($type)
+                );
+            } elseif ($this->matcherFactory->isMatcher($type)) {
+                $renderedType = sprintf(
+                    'generator to be sent exception like %s',
+                    $this->matcherFactory->adapt($type)->describe()
+                );
+            }
         }
 
         $calls = $this->spy->recordedCalls();

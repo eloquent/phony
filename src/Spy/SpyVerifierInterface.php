@@ -220,4 +220,26 @@ interface SpyVerifierInterface extends SpyInterface,
      * @throws Exception If the assertion fails.
      */
     public function sent($value = null);
+
+    /**
+     * Checks if this spy was sent an exception of the supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If the type is invalid.
+     */
+    public function checkSentException($type = null);
+
+    /**
+     * Throws an exception unless this spy was sent an exception of the
+     * supplied type.
+     *
+     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     *
+     * @return mixed                    The result.
+     * @throws InvalidArgumentException If the type is invalid.
+     * @throws Exception                If the assertion fails.
+     */
+    public function sentException($type = null);
 }
