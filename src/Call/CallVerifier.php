@@ -925,6 +925,141 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Checks if this call produced all of the supplied key-value pairs, in the
+     * supplied order.
+     *
+     * @param mixed $pairs,... The key-value pairs.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkProducedAll()
+    {
+        $cardinality = $this->resetCardinality()->assertSingular();
+
+        $pairCount = func_num_args();
+        $producedEvents = array();
+        $lastEvent = $this->call->responseEvent();
+
+        foreach ($this->call->traversableEvents() as $event) {
+            if ($event instanceof ProducedEventInterface) {
+                $producedEvents[] = $event;
+                $lastEvent = $event;
+            }
+        }
+
+        if (count($producedEvents) === $pairCount) {
+            $isMatch = true;
+
+            foreach (func_get_args() as $index => $pair) {
+                if (is_array($pair)) {
+                    $checkKey = true;
+                    $key = $this->matcherFactory->adapt($pair[0]);
+                    $value = $this->matcherFactory->adapt($pair[1]);
+                } else {
+                    $checkKey = false;
+                    $value = $this->matcherFactory->adapt($pair);
+                }
+
+                if (!$value->matches($producedEvents[$index]->value())) {
+                    $isMatch = false;
+
+                    break;
+                }
+
+                if (
+                    $checkKey &&
+                    !$key->matches($producedEvents[$index]->key())
+                ) {
+                    $isMatch = false;
+
+                    break;
+                }
+            }
+        } else {
+            $isMatch = false;
+        }
+
+        list($matchCount, $matchingEvents) =
+            $this->matchIf($lastEvent, $isMatch);
+
+        if ($cardinality->matches($matchCount, 1)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this call produced all of the supplied
+     * key-value pairs, in the supplied order.
+     *
+     * @param mixed $pairs,... The key-value pairs.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function producedAll()
+    {
+        $cardinality = $this->cardinality;
+
+        $pairs = array();
+
+        foreach (func_get_args() as $pair) {
+            if (is_array($pair)) {
+                $pairs[] = array(
+                    $this->matcherFactory->adapt($pair[0]),
+                    $this->matcherFactory->adapt($pair[1]),
+                );
+            } else {
+                $pairs[] = $this->matcherFactory->adapt($pair);
+            }
+        }
+
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkProducedAll'), $pairs)
+        ) {
+            return $result;
+        }
+
+        if (0 === func_num_args()) {
+            $renderedType = 'call to produce nothing. ';
+        } else {
+            $renderedType = 'call to produce like:';
+
+            foreach ($pairs as $pair) {
+                if (is_array($pair)) {
+                    $renderedType .= sprintf(
+                        "\n    - %s => %s",
+                        $pair[0]->describe(),
+                        $pair[1]->describe()
+                    );
+                } else {
+                    $renderedType .= sprintf("\n    - %s", $pair->describe());
+                }
+            }
+
+            $renderedType .= "\n";
+        }
+
+        if ($this->call->traversableEvents()) {
+            $renderedProduced = sprintf(
+                ":\n%s",
+                $this->assertionRenderer->renderProduced($this->call)
+            );
+        } else {
+            $renderedProduced = ' nothing.';
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %sProduced%s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedProduced
+            )
+        );
+    }
+
+    /**
      * Checks if this call received the supplied value.
      *
      * When called with no arguments, this method simply checks that the call

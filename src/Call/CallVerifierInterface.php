@@ -178,6 +178,27 @@ interface CallVerifierInterface extends CallInterface,
     public function produced($keyOrValue = null, $value = null);
 
     /**
+     * Checks if this call produced all of the supplied key-value pairs, in the
+     * supplied order.
+     *
+     * @param mixed $pairs,... The key-value pairs.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkProducedAll();
+
+    /**
+     * Throws an exception unless this call produced all of the supplied
+     * key-value pairs, in the supplied order.
+     *
+     * @param mixed $pairs,... The key-value pairs.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function producedAll();
+
+    /**
      * Checks if this call received the supplied value.
      *
      * When called with no arguments, this method simply checks that the call

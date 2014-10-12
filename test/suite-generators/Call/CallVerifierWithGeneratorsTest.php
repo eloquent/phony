@@ -383,6 +383,123 @@ EOD;
         $this->subject->produced('m', 'n');
     }
 
+    public function testCheckProducedAll()
+    {
+        $this->assertTrue((boolean) $this->subject->checkProducedAll());
+        $this->assertTrue((boolean) $this->generatorSubject->checkProducedAll('n', 'q', 's', 'v'));
+        $this->assertTrue(
+            (boolean) $this->generatorSubject
+                ->checkProducedAll('n', array('p', 'q'), 's', array('u', 'v'))
+        );
+        $this->assertTrue(
+            (boolean) $this->generatorSubject
+                ->checkProducedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
+        );
+        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('x', 'q', 's', 'v'));
+        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('n', 'q', 's', array('x', 'v')));
+        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('q', 's', 'v'));
+        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('n', 's', 'v'));
+        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('n', 'q', 's'));
+        $this->assertFalse((boolean) $this->subject->never()->checkProducedAll());
+        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll());
+        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll('q', 's', 'v'));
+        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll('n', 's', 'v'));
+        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll('n', 'q', 's'));
+    }
+
+    public function testProducedAll()
+    {
+        $expected = new EventCollection(array($this->generatorEventG));
+
+        $this->assertEquals($expected, $this->generatorSubject->producedAll('n', 'q', 's', 'v'));
+        $this->assertEquals(
+            $expected,
+            $this->generatorSubject->producedAll('n', array('p', 'q'), 's', array('u', 'v'))
+        );
+        $this->assertEquals(
+            $expected,
+            $this->generatorSubject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
+        );
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->producedAll('q', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->producedAll('n', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->producedAll('n', 'q', 's'));
+    }
+
+    public function testProducedAllFailureNothingProduced()
+    {
+        $expected = <<<'EOD'
+Expected call to produce like:
+    - <'a'>
+    - <'b'> => <'c'>
+Produced nothing.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->producedAll('a', array('b', 'c'));
+    }
+
+    public function testProducedAllFailureMismatch()
+    {
+        $expected = <<<'EOD'
+Expected call to produce like:
+    - <'a'>
+    - <'b'> => <'c'>
+Produced:
+    - produced 'm' => 'n'
+    - received 'o'
+    - produced 'p' => 'q'
+    - received exception RuntimeException('Consequences will never be the same.')
+    - produced 'r' => 's'
+    - received 't'
+    - produced 'u' => 'v'
+    - received exception RuntimeException('Because I backtraced it.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->producedAll('a', array('b', 'c'));
+    }
+
+    public function testProducedAllFailureMismatchNever()
+    {
+        $expected = <<<'EOD'
+Expected no call to produce like:
+    - <'n'>
+    - <'q'>
+    - <'s'>
+    - <'v'>
+Produced:
+    - produced 'm' => 'n'
+    - received 'o'
+    - produced 'p' => 'q'
+    - received exception RuntimeException('Consequences will never be the same.')
+    - produced 'r' => 's'
+    - received 't'
+    - produced 'u' => 'v'
+    - received exception RuntimeException('Because I backtraced it.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->never()->producedAll('n', 'q', 's', 'v');
+    }
+
+    public function testProducedAllFailureExpectedNothing()
+    {
+        $expected = <<<'EOD'
+Expected call to produce nothing. Produced:
+    - produced 'm' => 'n'
+    - received 'o'
+    - produced 'p' => 'q'
+    - received exception RuntimeException('Consequences will never be the same.')
+    - produced 'r' => 's'
+    - received 't'
+    - produced 'u' => 'v'
+    - received exception RuntimeException('Because I backtraced it.')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->generatorSubject->producedAll();
+    }
+
     public function testCheckReceived()
     {
         $this->assertTrue((boolean) $this->generatorSubject->checkReceived());
