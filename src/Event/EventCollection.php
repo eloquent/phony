@@ -89,5 +89,15 @@ class EventCollection implements EventCollectionInterface
         return new ArrayIterator($this->events);
     }
 
+    /**
+     * Get the event count.
+     *
+     * @return integer The event count.
+     */
+    public function count()
+    {
+        return count($this->events);
+    }
+
     private $events;
 }

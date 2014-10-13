@@ -103,6 +103,16 @@ abstract class AbstractEvent implements EventInterface
         return new ArrayIterator(array($this));
     }
 
+    /**
+     * Get the event count.
+     *
+     * @return integer The event count.
+     */
+    public function count()
+    {
+        return 1;
+    }
+
     private $sequenceNumber;
     private $time;
 }

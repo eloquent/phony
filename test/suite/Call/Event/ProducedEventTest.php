@@ -38,6 +38,7 @@ class ProducedEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array($this->subject), $this->subject->events());
         $this->assertSame($this->subject, $this->subject->firstEvent());
         $this->assertSame($this->subject, $this->subject->lastEvent());
+        $this->assertSame(1, count($this->subject));
     }
 
     public function testConstructorWithValueOnly()

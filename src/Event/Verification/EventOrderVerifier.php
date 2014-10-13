@@ -18,6 +18,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Event\NullEvent;
 
 /**
  * Checks and asserts the order of events.
@@ -90,7 +91,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      */
     public function checkInOrderSequence($events)
     {
-        if (!$events) {
+        if (!count($events)) {
             return $this->assertionRecorder->createSuccess();
         }
 
@@ -105,14 +106,13 @@ class EventOrderVerifier implements EventOrderVerifierInterface
                 break;
             }
 
-            if (null === $earliestEvent) {
-                $matchingEvents[] = $earliestEvent =
-                    $eventCollection->firstEvent();
-
-                continue;
-            }
-
             if ($eventCollection instanceof EventInterface) {
+                if (null === $earliestEvent) {
+                    $matchingEvents[] = $earliestEvent = $eventCollection;
+
+                    continue;
+                }
+
                 if (
                     $eventCollection->sequenceNumber() >
                     $earliestEvent->sequenceNumber()
@@ -122,6 +122,13 @@ class EventOrderVerifier implements EventOrderVerifierInterface
                     continue;
                 }
             } else {
+                if (null === $earliestEvent) {
+                    $matchingEvents[] = $earliestEvent =
+                        $eventCollection->firstEvent();
+
+                    continue;
+                }
+
                 foreach ($eventCollection->events() as $event) {
                     if (
                         $event->sequenceNumber() >
@@ -159,19 +166,68 @@ class EventOrderVerifier implements EventOrderVerifierInterface
             return $result;
         }
 
-        $events = $this->mergeEvents($events);
+        $mergedEvents = $this->mergeEvents($events);
 
-        if ($events->hasEvents()) {
-            throw $this->assertionRecorder->createFailure(
-                sprintf(
-                    "Unexpected event order. Order:\n%s",
-                    $this->assertionRenderer->renderEvents($events)
-                )
+        if ($mergedEvents->hasEvents()) {
+            $renderedActual = sprintf(
+                "Order:\n%s",
+                $this->assertionRenderer->renderEvents($mergedEvents)
             );
+        } else {
+            $renderedActual = 'No events recorded.';
         }
 
-        throw $this->assertionRecorder
-            ->createFailure('Unexpected event order. No events recorded.');
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected events in order:\n%s\n%s",
+                $this->assertionRenderer
+                    ->renderEvents($this->expectedEvents($events)),
+                $renderedActual
+            )
+        );
+    }
+
+    /**
+     * Attempts to normalize the supplied event order expectation into a
+     * meaningful sequence of singular events.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface The normalized events.
+     */
+    protected function expectedEvents($events)
+    {
+        $expected = array();
+        $earliestEvent = null;
+
+        foreach ($events as $eventCollection) {
+            if ($eventCollection instanceof EventInterface) {
+                $expected[] = $earliestEvent = $eventCollection;
+            } else {
+                $event = null;
+
+                if (null === $earliestEvent) {
+                    $event = $eventCollection->firstEvent();
+                } else {
+                    foreach ($eventCollection->events() as $event) {
+                        if (
+                            $event->sequenceNumber() >
+                            $earliestEvent->sequenceNumber()
+                        ) {
+                            break;
+                        }
+                    }
+                }
+
+                if (null === $event) {
+                    $event = NullEvent::instance();
+                }
+
+                $expected[] = $earliestEvent = $event;
+            }
+        }
+
+        return new EventCollection($expected);
     }
 
     /**

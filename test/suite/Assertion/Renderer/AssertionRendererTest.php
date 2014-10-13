@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Assertion\Renderer;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Event\NullEvent;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -294,6 +295,7 @@ EOD;
                 $this->callEventFactory->createReceived('z'),
                 $this->callEventFactory
                     ->createReceivedException(new RuntimeException('Consequences will never be the same.')),
+                NullEvent::instance(),
                 new TestEvent(0, 0.0),
             )
         );
@@ -305,6 +307,7 @@ EOD;
     - produced 'x' => 'y'
     - received 'z'
     - received exception RuntimeException('Consequences will never be the same.')
+    - <none>
     - 'Eloquent\Phony\Test\TestEvent' event
 EOD;
 

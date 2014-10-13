@@ -209,6 +209,16 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Get the event count.
+     *
+     * @return integer The event count.
+     */
+    public function count()
+    {
+        return $this->call->count();
+    }
+
+    /**
      * Get the 'called' event.
      *
      * @return CalledEventInterface The 'called' event.

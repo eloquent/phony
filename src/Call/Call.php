@@ -142,6 +142,16 @@ class Call implements CallInterface
     }
 
     /**
+     * Get the event count.
+     *
+     * @return integer The event count.
+     */
+    public function count()
+    {
+        return 1;
+    }
+
+    /**
      * Get the 'called' event.
      *
      * @return CalledEventInterface The 'called' event.

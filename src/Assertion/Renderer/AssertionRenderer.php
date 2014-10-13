@@ -20,6 +20,7 @@ use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Event\NullEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
@@ -490,6 +491,8 @@ class AssertionRenderer implements AssertionRendererInterface
                     '    - received exception %s',
                     $this->renderException($event->exception())
                 );
+            } elseif ($event instanceof NullEventInterface) {
+                $rendered[] = '    - <none>';
             } else {
                 $rendered[] = sprintf(
                     '    - %s event',

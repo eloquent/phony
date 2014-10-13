@@ -31,6 +31,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->events, $this->subject->events());
         $this->assertSame($this->eventA, $this->subject->firstEvent());
         $this->assertSame($this->eventC, $this->subject->lastEvent());
+        $this->assertSame(3, count($this->subject));
     }
 
     public function testConstructorDefaults()
@@ -41,6 +42,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->events());
         $this->assertNull($this->subject->firstEvent());
         $this->assertNull($this->subject->lastEvent());
+        $this->assertSame(0, count($this->subject));
     }
 
     public function testIteration()

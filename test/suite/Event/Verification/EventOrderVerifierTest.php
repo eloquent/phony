@@ -173,7 +173,11 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
     public function testInOrderSequenceFailure()
     {
         $expected = <<<'EOD'
-Unexpected event order. Order:
+Expected events in order:
+    - implode('a')
+    - implode('c')
+    - implode('b')
+Order:
     - implode('a')
     - implode('b')
     - implode('c')
@@ -186,7 +190,10 @@ EOD;
     public function testInOrderSequenceFailureOnlySuppliedEvents()
     {
         $expected = <<<'EOD'
-Unexpected event order. Order:
+Expected events in order:
+    - implode('b')
+    - implode('a')
+Order:
     - implode('a')
     - implode('b')
 EOD;
@@ -195,10 +202,13 @@ EOD;
         $this->subject->inOrderSequence(array($this->callB, $this->callA));
     }
 
-    public function testInOrderSequenceFailureEventMerging()
+    public function testInOrderSequenceFailureEventMergingExampleA()
     {
         $expected = <<<'EOD'
-Unexpected event order. Order:
+Expected events in order:
+    - implode('b')
+    - implode('a')
+Order:
     - implode('a')
     - implode('b')
     - implode('c')
@@ -213,10 +223,58 @@ EOD;
         );
     }
 
-    public function testInOrderSequenceFailureNoEvents()
+    public function testInOrderSequenceFailureEventMergingExampleB()
     {
         $expected = <<<'EOD'
-Unexpected event order. No events recorded.
+Expected events in order:
+    - implode('c')
+    - implode('b')
+Order:
+    - implode('a')
+    - implode('b')
+    - implode('c')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->inOrderSequence(
+            array(
+                new EventCollection(array($this->callC)),
+                new EventCollection(array($this->callA, $this->callB)),
+            )
+        );
+    }
+
+    public function testInOrderSequenceFailureEventMergingExampleC()
+    {
+        $expected = <<<'EOD'
+Expected events in order:
+    - implode('c')
+    - implode('a')
+    - implode('c')
+    - <none>
+Order:
+    - implode('a')
+    - implode('b')
+    - implode('c')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->inOrderSequence(
+            array(
+                new EventCollection(array($this->callC)),
+                new EventCollection(array($this->callB, $this->callA)),
+                new EventCollection(array($this->callC)),
+                new EventCollection(),
+            )
+        );
+    }
+
+    public function testInOrderSequenceFailureWithEmptyMatch()
+    {
+        $expected = <<<'EOD'
+Expected events in order:
+    - <none>
+No events recorded.
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

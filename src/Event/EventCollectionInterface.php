@@ -11,12 +11,13 @@
 
 namespace Eloquent\Phony\Event;
 
+use Countable;
 use IteratorAggregate;
 
 /**
  * The interface implemented by event collections.
  */
-interface EventCollectionInterface extends IteratorAggregate
+interface EventCollectionInterface extends IteratorAggregate, Countable
 {
     /**
      * Returns true if this collection contains any events.
