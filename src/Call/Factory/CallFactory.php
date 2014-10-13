@@ -107,12 +107,14 @@ class CallFactory implements CallFactoryInterface
             $arguments = array();
         }
 
-        $call = $this->create(
-            $this->eventFactory->createCalled($callback, $arguments)
-        );
-
         if ($spy) {
+            $call = $this
+                ->create($this->eventFactory->createCalled($spy, $arguments));
             $spy->addCall($call);
+        } else {
+            $call = $this->create(
+                $this->eventFactory->createCalled($callback, $arguments)
+            );
         }
 
         $returnValue = null;

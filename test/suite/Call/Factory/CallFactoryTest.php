@@ -52,16 +52,31 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $callback = 'implode';
         $arguments = array(array('a', 'b'));
         $returnValue = 'ab';
+        $spy = new Spy();
+        $expected = $this->subject->create(
+            $this->eventFactory->createCalled($spy, $arguments),
+            $this->eventFactory->createReturned($returnValue)
+        );
+        $this->eventFactory->reset();
+        $actual = $this->subject->record($callback, $arguments, $spy);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertEquals(array($expected), $spy->recordedCalls());
+    }
+
+    public function testRecordWithoutSpy()
+    {
+        $callback = 'implode';
+        $arguments = array(array('a', 'b'));
+        $returnValue = 'ab';
         $expected = $this->subject->create(
             $this->eventFactory->createCalled($callback, $arguments),
             $this->eventFactory->createReturned($returnValue)
         );
         $this->eventFactory->reset();
-        $spy = new Spy();
-        $actual = $this->subject->record($callback, $arguments, $spy);
+        $actual = $this->subject->record($callback, $arguments);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(array($expected), $spy->recordedCalls());
     }
 
     public function testRecordDefaults()

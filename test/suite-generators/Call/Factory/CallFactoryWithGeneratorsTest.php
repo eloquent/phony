@@ -38,12 +38,12 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $callback = function () { return; yield null; };
         $arguments = array(array('a', 'b'));
         $generator = call_user_func($callback);
+        $spy = new Spy();
         $expected = $this->subject->create(
-            $this->eventFactory->createCalled($callback, $arguments),
+            $this->eventFactory->createCalled($spy, $arguments),
             $this->eventFactory->createGenerated($generator)
         );
         $this->eventFactory->reset();
-        $spy = new Spy();
         $actual = $this->subject->record($callback, $arguments, $spy, true);
 
         $this->assertEquals($expected, $actual);

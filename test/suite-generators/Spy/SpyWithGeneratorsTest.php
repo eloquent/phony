@@ -61,7 +61,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory->reset();
         $expected = array(
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy->callback(), array('a', 'b')),
+                $this->callEventFactory->createCalled($spy, array('a', 'b')),
                 $this->callEventFactory->createGenerated($generator),
                 array(
                     $this->callEventFactory->createProduced(0, 'A'),
@@ -72,7 +72,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
                 $this->callEventFactory->createReturned()
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy->callback(), array('c')),
+                $this->callEventFactory->createCalled($spy, array('c')),
                 $this->callEventFactory->createGenerated($generator),
                 array(
                     $this->callEventFactory->createProduced(0, 'C'),
