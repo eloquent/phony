@@ -177,6 +177,11 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->endTime());
     }
 
+    public function testIteration()
+    {
+        $this->assertSame(array($this->subject), iterator_to_array($this->subject));
+    }
+
     public function testAddTraversableEvent()
     {
         $returnedEvent = $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd'));

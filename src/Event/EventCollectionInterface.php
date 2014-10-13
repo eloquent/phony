@@ -11,10 +11,12 @@
 
 namespace Eloquent\Phony\Event;
 
+use IteratorAggregate;
+
 /**
  * The interface implemented by event collections.
  */
-interface EventCollectionInterface
+interface EventCollectionInterface extends IteratorAggregate
 {
     /**
      * Returns true if this collection contains any events.

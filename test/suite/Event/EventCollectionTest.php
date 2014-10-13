@@ -42,4 +42,9 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->firstEvent());
         $this->assertNull($this->subject->lastEvent());
     }
+
+    public function testIteration()
+    {
+        $this->assertSame($this->events, iterator_to_array($this->subject));
+    }
 }

@@ -12,7 +12,9 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Exception;
 
@@ -99,6 +101,15 @@ interface AssertionRendererInterface
     public function renderCall(CallInterface $call);
 
     /**
+     * Render the supplied 'called' event.
+     *
+     * @param CalledEventInterface $event The 'called' event.
+     *
+     * @return string The rendered event.
+     */
+    public function renderCalledEvent(CalledEventInterface $event);
+
+    /**
      * Render the supplied call's response.
      *
      * @param CallInterface $call The call.
@@ -133,4 +144,13 @@ interface AssertionRendererInterface
      * @return string The rendered exception.
      */
     public function renderException(Exception $exception = null);
+
+    /**
+     * Render an arbitrary sequence of events.
+     *
+     * @param EventCollectionInterface $events The events.
+     *
+     * @return string The rendered events.
+     */
+    public function renderEvents(EventCollectionInterface $events);
 }

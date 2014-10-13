@@ -15,8 +15,8 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
@@ -32,6 +32,7 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Exception;
 use InvalidArgumentException;
+use Iterator;
 
 /**
  * Provides convenience methods for verifying the details of a call.
@@ -195,6 +196,16 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     public function lastEvent()
     {
         return $this->call->lastEvent();
+    }
+
+    /**
+     * Get an iterator for this collection.
+     *
+     * @return Iterator The iterator.
+     */
+    public function getIterator()
+    {
+        return $this->call->getIterator();
     }
 
     /**

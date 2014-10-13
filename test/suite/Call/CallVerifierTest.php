@@ -156,6 +156,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->exception());
     }
 
+    public function testIteration()
+    {
+        $this->assertSame(array($this->call), iterator_to_array($this->subject));
+    }
+
     public function testSetResponseEvent()
     {
         $this->subjectWithNoResponse->setResponseEvent($this->returnedEvent);

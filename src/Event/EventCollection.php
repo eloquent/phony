@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Event;
 
+use ArrayIterator;
+use Iterator;
+
 /**
  * Represents a collection of events.
  *
@@ -74,6 +77,16 @@ class EventCollection implements EventCollectionInterface
         if ($this->events) {
             return $this->events[count($this->events) - 1];
         }
+    }
+
+    /**
+     * Get an iterator for this collection.
+     *
+     * @return Iterator The iterator.
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->events);
     }
 
     private $events;

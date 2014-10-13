@@ -12,12 +12,14 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
@@ -298,8 +300,20 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderCall(CallInterface $call)
     {
+        return $this->renderCalledEvent($call->calledEvent());
+    }
+
+    /**
+     * Render the supplied 'called' event.
+     *
+     * @param CalledEventInterface $event The 'called' event.
+     *
+     * @return string The rendered event.
+     */
+    public function renderCalledEvent(CalledEventInterface $event)
+    {
         $reflector = $this->invocableInspector
-            ->callbackReflector($call->callback());
+            ->callbackReflector($event->callback());
 
         if ($reflector instanceof ReflectionMethod) {
             if ($reflector->isStatic()) {
@@ -315,7 +329,7 @@ class AssertionRenderer implements AssertionRendererInterface
             $renderedSubject = $reflector->getName();
         }
 
-        $arguments = $call->arguments();
+        $arguments = $event->arguments();
 
         $renderedArguments = array();
         foreach ($arguments as $argument) {
@@ -431,6 +445,60 @@ class AssertionRenderer implements AssertionRendererInterface
         }
 
         return sprintf('%s(%s)', get_class($exception), $renderedMessage);
+    }
+
+    /**
+     * Render an arbitrary sequence of events.
+     *
+     * @param EventCollectionInterface $events The events.
+     *
+     * @return string The rendered events.
+     */
+    public function renderEvents(EventCollectionInterface $events)
+    {
+        $rendered = array();
+
+        foreach ($events->events() as $event) {
+            if ($event instanceof CallInterface) {
+                $rendered[] = sprintf('    - %s', $this->renderCall($event));
+            } elseif ($event instanceof CalledEventInterface) {
+                $rendered[] =
+                    sprintf('    - %s', $this->renderCalledEvent($event));
+            } elseif ($event instanceof ReturnedEventInterface) {
+                $rendered[] = sprintf(
+                    '    - returned %s',
+                    $this->renderValue($event->value())
+                );
+            } elseif ($event instanceof ThrewEventInterface) {
+                $rendered[] = sprintf(
+                    '    - threw %s',
+                    $this->renderException($event->exception())
+                );
+            } elseif ($event instanceof ProducedEventInterface) {
+                $rendered[] = sprintf(
+                    '    - produced %s => %s',
+                    $this->renderValue($event->key()),
+                    $this->renderValue($event->value())
+                );
+            } elseif ($event instanceof ReceivedEventInterface) {
+                $rendered[] = sprintf(
+                    '    - received %s',
+                    $this->renderValue($event->value())
+                );
+            } elseif ($event instanceof ReceivedExceptionEventInterface) {
+                $rendered[] = sprintf(
+                    '    - received exception %s',
+                    $this->renderException($event->exception())
+                );
+            } else {
+                $rendered[] = sprintf(
+                    '    - %s event',
+                    $this->renderValue(get_class($event))
+                );
+            }
+        }
+
+        return implode("\n", $rendered);
     }
 
     /**

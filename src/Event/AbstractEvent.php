@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Event;
 
+use ArrayIterator;
+use Iterator;
+
 /**
  * An abstract base class for implementing events.
  *
@@ -88,6 +91,16 @@ abstract class AbstractEvent implements EventInterface
     public function lastEvent()
     {
         return $this;
+    }
+
+    /**
+     * Get an iterator for this collection.
+     *
+     * @return Iterator The iterator.
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator(array($this));
     }
 
     private $sequenceNumber;

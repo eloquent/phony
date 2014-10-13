@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call;
 
+use ArrayIterator;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
@@ -21,6 +22,7 @@ use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use Generator;
 use InvalidArgumentException;
+use Iterator;
 use Traversable;
 
 /**
@@ -127,6 +129,16 @@ class Call implements CallInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Get an iterator for this collection.
+     *
+     * @return Iterator The iterator.
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator(array($this));
     }
 
     /**

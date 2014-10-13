@@ -45,6 +45,11 @@ class ReceivedEventTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->value());
     }
 
+    public function testIteration()
+    {
+        $this->assertSame(array($this->subject), iterator_to_array($this->subject));
+    }
+
     public function testSetCall()
     {
         $call = $this->callFactory->create();

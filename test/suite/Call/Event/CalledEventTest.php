@@ -49,6 +49,11 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->arguments());
     }
 
+    public function testIteration()
+    {
+        $this->assertSame(array($this->subject), iterator_to_array($this->subject));
+    }
+
     public function testSetCall()
     {
         $call = $this->callFactory->create();

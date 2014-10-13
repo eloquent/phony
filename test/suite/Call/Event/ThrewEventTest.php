@@ -46,6 +46,11 @@ class ThrewEventTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->exception, $this->subject->exception());
     }
 
+    public function testIteration()
+    {
+        $this->assertSame(array($this->subject), iterator_to_array($this->subject));
+    }
+
     public function testSetCall()
     {
         $call = $this->callFactory->create();

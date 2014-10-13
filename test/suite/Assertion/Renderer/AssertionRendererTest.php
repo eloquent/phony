@@ -13,9 +13,11 @@ namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Cardinality\Cardinality;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\TestEvent;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -278,6 +280,35 @@ EOD;
             "Exception('You done goofed.')",
             $this->subject->renderException(new Exception('You done goofed.'))
         );
+    }
+
+    public function testRenderEvents()
+    {
+        $events = new EventCollection(
+            array(
+                $this->callA,
+                $this->callA->calledEvent(),
+                $this->callA->responseEvent(),
+                $this->callB->responseEvent(),
+                $this->callEventFactory->createProduced('x', 'y'),
+                $this->callEventFactory->createReceived('z'),
+                $this->callEventFactory
+                    ->createReceivedException(new RuntimeException('Consequences will never be the same.')),
+                new TestEvent(0, 0.0),
+            )
+        );
+        $expected = <<<'EOD'
+    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
+    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
+    - returned 'x'
+    - threw RuntimeException('You done goofed.')
+    - produced 'x' => 'y'
+    - received 'z'
+    - received exception RuntimeException('Consequences will never be the same.')
+    - 'Eloquent\Phony\Test\TestEvent' event
+EOD;
+
+        $this->assertSame($expected, $this->subject->renderEvents($events));
     }
 
     public function testInstance()
