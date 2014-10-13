@@ -96,6 +96,7 @@ class SpyFactory implements SpyFactoryInterface
             $callback,
             $useTraversableSpies,
             $useGeneratorSpies,
+            null,
             $this->callFactory,
             $this->traversableSpyFactory
         );

@@ -23,6 +23,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->useTraversableSpies = false;
         $this->useGeneratorSpies = false;
+        $this->id = 111;
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
@@ -30,6 +31,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callback,
             $this->useTraversableSpies,
             $this->useGeneratorSpies,
+            $this->id,
             $this->callFactory,
             $this->traversableSpyFactory
         );
@@ -53,7 +55,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             }
         };
         $generator = call_user_func($this->callback);
-        $spy = new Spy($this->callback, true, true, $this->callFactory, $this->traversableSpyFactory);
+        $spy = new Spy($this->callback, true, true, null, $this->callFactory, $this->traversableSpyFactory);
         foreach ($spy->invoke('a', 'b') as $value) {}
         foreach ($spy->invoke('c') as $value) {}
         $this->callFactory->reset();

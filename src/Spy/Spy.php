@@ -33,6 +33,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * @param callable|null                       $callback              The callback, or null to create an unbound spy.
      * @param boolean|null                        $useTraversableSpies   True if traversable spies should be used.
      * @param boolean|null                        $useGeneratorSpies     True if generator spies should be used.
+     * @param integer|null                        $id                    The identifier.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
@@ -40,6 +41,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         $callback = null,
         $useTraversableSpies = null,
         $useGeneratorSpies = null,
+        $id = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
@@ -60,6 +62,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
         $this->useTraversableSpies = $useTraversableSpies;
         $this->useGeneratorSpies = $useGeneratorSpies;
+        $this->id = $id;
         $this->callFactory = $callFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
         $this->calls = array();
@@ -103,6 +106,16 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function useGeneratorSpies()
     {
         return $this->useGeneratorSpies;
+    }
+
+    /**
+     * Get the identifier.
+     *
+     * @return integer|null The identifier.
+     */
+    public function id()
+    {
+        return $this->id;
     }
 
     /**
@@ -189,6 +202,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
     private $useTraversableSpies;
     private $useGeneratorSpies;
+    private $id;
     private $callFactory;
     private $traversableSpyFactory;
     private $calls;

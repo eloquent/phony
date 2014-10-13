@@ -48,6 +48,7 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
             $callback,
             $useTraversableSpies,
             $useGeneratorSpies,
+            null,
             $this->callFactory,
             $this->traversableSpyFactory
         );

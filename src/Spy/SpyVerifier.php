@@ -226,6 +226,16 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Get the identifier.
+     *
+     * @return integer|null The identifier.
+     */
+    public function id()
+    {
+        return $this->spy->id();
+    }
+
+    /**
      * Set the calls.
      *
      * @param array<CallInterface> $calls The calls.
