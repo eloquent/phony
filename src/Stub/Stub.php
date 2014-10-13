@@ -55,10 +55,9 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $invoker = Invoker::instance();
         }
 
-        parent::__construct($callback);
+        parent::__construct($callback, $id);
 
         $this->thisValue = $thisValue;
-        $this->id = $id;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
@@ -127,16 +126,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         return $this;
-    }
-
-    /**
-     * Get the identifier.
-     *
-     * @return integer|null The identifier.
-     */
-    public function id()
-    {
-        return $this->id;
     }
 
     /**
@@ -588,7 +577,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     private $thisValue;
-    private $id;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;

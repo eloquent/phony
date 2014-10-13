@@ -58,11 +58,10 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
-        parent::__construct($callback);
+        parent::__construct($callback, $id);
 
         $this->useTraversableSpies = $useTraversableSpies;
         $this->useGeneratorSpies = $useGeneratorSpies;
-        $this->id = $id;
         $this->callFactory = $callFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
         $this->calls = array();
@@ -106,16 +105,6 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function useGeneratorSpies()
     {
         return $this->useGeneratorSpies;
-    }
-
-    /**
-     * Get the identifier.
-     *
-     * @return integer|null The identifier.
-     */
-    public function id()
-    {
-        return $this->id;
     }
 
     /**
@@ -202,7 +191,6 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
     private $useTraversableSpies;
     private $useGeneratorSpies;
-    private $id;
     private $callFactory;
     private $traversableSpyFactory;
     private $calls;

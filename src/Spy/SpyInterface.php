@@ -48,13 +48,6 @@ interface SpyInterface extends WrappedInvocableInterface
     public function useGeneratorSpies();
 
     /**
-     * Get the identifier.
-     *
-     * @return integer|null The identifier.
-     */
-    public function id();
-
-    /**
      * Set the calls.
      *
      * @param array<CallInterface> $calls The calls.

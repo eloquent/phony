@@ -36,13 +36,6 @@ interface StubInterface extends WrappedInvocableInterface
     public function thisValue();
 
     /**
-     * Get the identifier.
-     *
-     * @return integer|null The identifier.
-     */
-    public function id();
-
-    /**
      * Modify the current criteria to match the supplied arguments (and possibly
      * others).
      *

@@ -23,8 +23,9 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      * Construct a new wrapped invocable.
      *
      * @param callable|null $callback The callback.
+     * @param integer|null  $id       The identifier.
      */
-    public function __construct($callback = null)
+    public function __construct($callback = null, $id = null)
     {
         if (null === $callback) {
             $this->isAnonymous = true;
@@ -33,6 +34,8 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
             $this->isAnonymous = false;
             $this->callback = $callback;
         }
+
+        $this->id = $id;
     }
 
     /**
@@ -55,6 +58,17 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
         return $this->callback;
     }
 
+    /**
+     * Get the identifier.
+     *
+     * @return integer|null The identifier.
+     */
+    public function id()
+    {
+        return $this->id;
+    }
+
     protected $isAnonymous;
     protected $callback;
+    protected $id;
 }

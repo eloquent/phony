@@ -29,4 +29,11 @@ interface WrappedInvocableInterface extends InvocableInterface
      * @return callable The callback.
      */
     public function callback();
+
+    /**
+     * Get the identifier.
+     *
+     * @return integer|null The identifier.
+     */
+    public function id();
 }
