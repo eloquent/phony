@@ -101,6 +101,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->produced('d');
         $stub->produced('a', 'b');
         $stub->produced('c', 'd');
+        $stub->producedAll('b', 'd');
+        $stub->producedAll(array('a', 'b'), array('c', 'd'));
     }
 
     public function testTraversableSpyingFunction()
@@ -114,5 +116,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->produced('d');
         $stub->produced('a', 'b');
         $stub->produced('c', 'd');
+        $stub->producedAll('b', 'd');
+        $stub->producedAll(array('a', 'b'), array('c', 'd'));
     }
 }

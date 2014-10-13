@@ -957,6 +957,158 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Checks if this spy produced all of the supplied key-value pairs, in the
+     * supplied order.
+     *
+     * @param mixed $pairs,... The key-value pairs.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkProducedAll()
+    {
+        $cardinality = $this->resetCardinality();
+
+        $calls = $this->spy->recordedCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+        $pairs = array();
+        $pairCount = func_num_args();
+
+        foreach (func_get_args() as $pair) {
+            if (is_array($pair)) {
+                $pairs[] = array(
+                    $this->matcherFactory->adapt($pair[0]),
+                    $this->matcherFactory->adapt($pair[1]),
+                );
+            } else {
+                $pairs[] = $this->matcherFactory->adapt($pair);
+            }
+        }
+
+        foreach ($calls as $call) {
+            $producedEvents = array();
+            $lastEvent = $call->responseEvent();
+
+            foreach ($call->traversableEvents() as $event) {
+                if ($event instanceof ProducedEventInterface) {
+                    $producedEvents[] = $event;
+                    $lastEvent = $event;
+                }
+            }
+
+            if (count($producedEvents) === $pairCount) {
+                $isMatch = true;
+
+                foreach ($pairs as $index => $pair) {
+                    if (is_array($pair)) {
+                        if (
+                            !$pair[0]->matches($producedEvents[$index]->key())
+                        ) {
+                            $isMatch = false;
+
+                            break;
+                        }
+
+                        $value = $pair[1];
+                    } else {
+                        $value = $pair;
+                    }
+
+                    if (!$value->matches($producedEvents[$index]->value())) {
+                        $isMatch = false;
+
+                        break;
+                    }
+                }
+
+                if ($isMatch) {
+                    $matchingEvents[] = $lastEvent;
+                    $matchCount++;
+                }
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this spy produced all of the supplied
+     * key-value pairs, in the supplied order.
+     *
+     * @param mixed $pairs,... The key-value pairs.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function producedAll()
+    {
+        $cardinality = $this->cardinality;
+
+        $pairs = array();
+
+        foreach (func_get_args() as $pair) {
+            if (is_array($pair)) {
+                $pairs[] = array(
+                    $this->matcherFactory->adapt($pair[0]),
+                    $this->matcherFactory->adapt($pair[1]),
+                );
+            } else {
+                $pairs[] = $this->matcherFactory->adapt($pair);
+            }
+        }
+
+        if (
+            $result =
+                call_user_func_array(array($this, 'checkProducedAll'), $pairs)
+        ) {
+            return $result;
+        }
+
+        if (0 === func_num_args()) {
+            $renderedType = 'call to produce nothing. ';
+        } else {
+            $renderedType = 'call to produce like:';
+
+            foreach ($pairs as $pair) {
+                if (is_array($pair)) {
+                    $renderedType .= sprintf(
+                        "\n    - %s => %s",
+                        $pair[0]->describe(),
+                        $pair[1]->describe()
+                    );
+                } else {
+                    $renderedType .= sprintf("\n    - %s", $pair->describe());
+                }
+            }
+
+            $renderedType .= "\n";
+        }
+
+        $calls = $this->spy->recordedCalls();
+
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls, true)
+            );
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s%s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
+        );
+    }
+
+    /**
      * Checks if this spy received the supplied value.
      *
      * When called with no arguments, this method simply checks that the spy
