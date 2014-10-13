@@ -77,6 +77,8 @@ class InvocableInspector implements InvocableInspectorInterface
             if (method_exists($callback, '__invoke')) {
                 return new ReflectionMethod($callback, '__invoke');
             }
+
+            throw new ReflectionException('Invalid callback.');
         }
 
         return new ReflectionFunction($callback);

@@ -42,6 +42,7 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->thisValue, $this->subject->thisValue());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
@@ -53,6 +54,7 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Stub();
 
+        $this->assertTrue($this->subject->isAnonymous());
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertSame($this->subject, $this->subject->thisValue());

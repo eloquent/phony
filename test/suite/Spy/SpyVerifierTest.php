@@ -119,6 +119,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testProxyMethods()
     {
+        $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
     }
 

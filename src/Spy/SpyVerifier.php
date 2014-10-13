@@ -166,6 +166,16 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Returns true if anonymous.
+     *
+     * @return boolean True if anonymous.
+     */
+    public function isAnonymous()
+    {
+        return $this->spy->isAnonymous();
+    }
+
+    /**
      * Get the callback.
      *
      * @return callable The callback.

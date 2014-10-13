@@ -61,6 +61,12 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
         $this->subject->callbackReflector(111);
     }
 
+    public function testCallbackReflectorFailureObject()
+    {
+        $this->setExpectedException('ReflectionException', 'Invalid callback.');
+        $this->subject->callbackReflector((object) array());
+    }
+
     public function testCallbackThisValue()
     {
         $this->assertSame($this, $this->subject->callbackThisValue(array($this, 'a')));

@@ -17,6 +17,8 @@ use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\NullEvent;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestEvent;
 use Exception;
@@ -224,6 +226,14 @@ EOD;
             'Closure' => array(
                 $callFactory->create($callEventFactory->createCalled(function () {})),
                 "Eloquent\Phony\Assertion\Renderer\{closure}()",
+            ),
+            'Spy' => array(
+                $callFactory->create($callEventFactory->createCalled(new Spy())),
+                "{spy}()",
+            ),
+            'Stub' => array(
+                $callFactory->create($callEventFactory->createCalled(new Stub())),
+                "{stub}()",
             ),
             'With arguments' => array(
                 $callFactory->create($callEventFactory->createCalled('implode', array('a', 111))),

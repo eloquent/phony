@@ -44,6 +44,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->useTraversableSpies, $this->subject->useTraversableSpies());
         $this->assertSame($this->useGeneratorSpies, $this->subject->useGeneratorSpies());
@@ -56,6 +57,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Spy();
 
+        $this->assertTrue($this->subject->isAnonymous());
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertFalse($this->subject->useTraversableSpies());
         $this->assertSame(!defined('HHVM_VERSION'), $this->subject->useGeneratorSpies());

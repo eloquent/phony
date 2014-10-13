@@ -17,6 +17,13 @@ namespace Eloquent\Phony\Invocation;
 interface WrappedInvocableInterface extends InvocableInterface
 {
     /**
+     * Returns true if anonymous.
+     *
+     * @return boolean True if anonymous.
+     */
+    public function isAnonymous();
+
+    /**
      * Get the callback.
      *
      * @return callable The callback.

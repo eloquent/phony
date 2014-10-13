@@ -23,7 +23,10 @@ use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\NullEventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
+use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Stub\StubInterface;
 use Exception;
 use ReflectionMethod;
 use SebastianBergmann\Exporter\Exporter;
@@ -313,21 +316,41 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderCalledEvent(CalledEventInterface $event)
     {
-        $reflector = $this->invocableInspector
-            ->callbackReflector($event->callback());
+        $callback = $event->callback();
+        $wrappedCallback = null;
 
-        if ($reflector instanceof ReflectionMethod) {
-            if ($reflector->isStatic()) {
-                $callOperator = '::';
-            } else {
-                $callOperator = '->';
+        while ($callback instanceof WrappedInvocableInterface) {
+            $wrappedCallback = $callback;
+            $callback = $callback->callback();
+        }
+
+        $renderedSubject = null;
+
+        if ($wrappedCallback && $wrappedCallback->isAnonymous()) {
+            if ($wrappedCallback instanceof SpyInterface) {
+                $renderedSubject = '{spy}';
+            } elseif ($wrappedCallback instanceof StubInterface) {
+                $renderedSubject = '{stub}';
             }
+        }
 
-            $renderedSubject = $reflector->getDeclaringClass()->getName() .
-                $callOperator .
-                $reflector->getName();
-        } else {
-            $renderedSubject = $reflector->getName();
+        if (!$renderedSubject) {
+            $reflector = $this->invocableInspector
+                ->callbackReflector($callback);
+
+            if ($reflector instanceof ReflectionMethod) {
+                if ($reflector->isStatic()) {
+                    $callOperator = '::';
+                } else {
+                    $callOperator = '->';
+                }
+
+                $renderedSubject = $reflector->getDeclaringClass()->getName() .
+                    $callOperator .
+                    $reflector->getName();
+            } else {
+                $renderedSubject = $reflector->getName();
+            }
         }
 
         $arguments = $event->arguments();
