@@ -72,11 +72,11 @@ EOD;
         );
     }
 
-    public function testRenderResponsesWithGeneratorsExpanded()
+    public function testRenderResponsesWithGeneratorsExpandedTraversables()
     {
         $expected = <<<'EOD'
     - returned 'x'
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'

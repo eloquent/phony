@@ -173,6 +173,33 @@ EOD;
         $this->assertSame($expected, $this->subject->renderResponses(array($this->callA, $this->callB, $this->callC)));
     }
 
+    public function testRenderResponsesExpandedTraversables()
+    {
+        $traversableCall = $this->callFactory->create(
+            $this->callEventFactory->createCalled(),
+            $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd')),
+            array(
+                $this->callEventFactory->createProduced('a', 'b'),
+                $this->callEventFactory->createProduced('c', 'd'),
+            )
+        );
+        $expected = <<<'EOD'
+    - returned 'x'
+    - returned Array (...) producing:
+        - produced 'a' => 'b'
+        - produced 'c' => 'd'
+    - threw RuntimeException('You done goofed.')
+    - <none>
+EOD;
+
+        $this->assertSame('', $this->subject->renderResponses(array(), true));
+        $this->assertSame(
+            $expected,
+            $this->subject
+                ->renderResponses(array($this->callA, $traversableCall, $this->callB, $this->callC), true)
+        );
+    }
+
     public function renderCallData()
     {
         $callFactory = new TestCallFactory();

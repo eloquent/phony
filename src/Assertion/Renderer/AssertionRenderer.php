@@ -266,10 +266,18 @@ class AssertionRenderer implements AssertionRendererInterface
                     $this->renderException($exception)
                 );
             } elseif ($expandTraversables && $call->isTraversable()) {
-                $rendered[] = sprintf(
-                    "    - produced:\n%s",
-                    $this->indent($this->renderProduced($call))
-                );
+                if ($call->isGenerator()) {
+                    $rendered[] = sprintf(
+                        "    - generated:\n%s",
+                        $this->indent($this->renderProduced($call))
+                    );
+                } else {
+                    $rendered[] = sprintf(
+                        "    - returned %s producing:\n%s",
+                        $this->renderValue($call->returnValue()),
+                        $this->indent($this->renderProduced($call))
+                    );
+                }
             } else {
                 $rendered[] = sprintf(
                     '    - returned %s',

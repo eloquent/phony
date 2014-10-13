@@ -270,7 +270,7 @@ Expected call to produce like <'x'>. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -295,7 +295,7 @@ Expected call to produce like <'x'> => <'y'>. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -320,7 +320,7 @@ Expected every call to produce like <'n'>. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -345,7 +345,7 @@ Expected no call to produce like <'n'>. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -499,7 +499,7 @@ Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -529,7 +529,7 @@ Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -549,7 +549,7 @@ EOD;
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
 Expected call to produce nothing. Responded:
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -665,7 +665,7 @@ Expected generator to receive value like <'x'>. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -834,7 +834,7 @@ Expected no generator to receive exception. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -859,7 +859,7 @@ Expected every generator to receive exception. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -884,7 +884,7 @@ Expected generator to receive 'InvalidArgumentException' exception. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -909,7 +909,7 @@ Expected no generator to receive 'RuntimeException' exception. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -934,7 +934,7 @@ Expected generator to receive 'InvalidArgumentException' exception. Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -959,7 +959,7 @@ Expected generator to receive exception equal to RuntimeException(). Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -984,7 +984,7 @@ Expected no generator to receive exception equal to RuntimeException('Consequenc
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -1009,7 +1009,7 @@ Expected generator to receive exception equal to RuntimeException(). Responded:
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -1034,7 +1034,7 @@ Expected generator to receive exception like <RuntimeException Object (...)>. Re
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
@@ -1059,7 +1059,7 @@ Expected no generator to receive exception like <RuntimeException Object (...)>.
     - returned 'y'
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
-    - produced:
+    - generated:
         - produced 'm' => 'n'
         - received 'o'
         - produced 'p' => 'q'
