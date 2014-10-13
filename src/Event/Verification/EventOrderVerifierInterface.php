@@ -20,6 +20,26 @@ use Exception;
 interface EventOrderVerifierInterface
 {
     /**
+     * Checks if the supplied events happened in chronological order.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkInOrder();
+
+    /**
+     * Throws an exception unless the supplied events happened in chronological
+     * order.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return mixed     The result.
+     * @throws Exception If the assertion fails.
+     */
+    public function inOrder();
+
+    /**
      * Checks if the supplied event sequence happened in chronological order.
      *
      * @param mixed<EventCollectionInterface> $events The event sequence.
