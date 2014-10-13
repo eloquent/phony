@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
+use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyInterface;
 
@@ -40,13 +42,18 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
+     * @param SequencerInterface|null             $spyIdSequencer        The spy identifier sequencer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
+        SequencerInterface $spyIdSequencer = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
+        if (null === $spyIdSequencer) {
+            $spyIdSequencer = new Sequencer();
+        }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
@@ -54,8 +61,19 @@ class SpyFactory implements SpyFactoryInterface
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
+        $this->spyIdSequencer = $spyIdSequencer;
         $this->callFactory = $callFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
+    }
+
+    /**
+     * Get the spy identifier sequencer.
+     *
+     * @return SequencerInterface The spy identifier sequencer.
+     */
+    public function spyIdSequencer()
+    {
+        return $this->spyIdSequencer;
     }
 
     /**
@@ -96,13 +114,14 @@ class SpyFactory implements SpyFactoryInterface
             $callback,
             $useTraversableSpies,
             $useGeneratorSpies,
-            null,
+            $this->spyIdSequencer->next(),
             $this->callFactory,
             $this->traversableSpyFactory
         );
     }
 
     private static $instance;
+    private $spyIdSequencer;
     private $callFactory;
     private $traversableSpyFactory;
 }

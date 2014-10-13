@@ -30,7 +30,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callFactory = new TestCallFactory();
-        $this->spyFactory = new SpyFactory($this->callFactory);
+        $this->spyFactory = new SpyFactory(null, $this->callFactory);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->stubFactory = new StubFactory($this->matcherFactory, $this->matcherVerifier);

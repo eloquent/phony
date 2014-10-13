@@ -328,7 +328,12 @@ class AssertionRenderer implements AssertionRendererInterface
 
         if ($wrappedCallback && $wrappedCallback->isAnonymous()) {
             if ($wrappedCallback instanceof SpyInterface) {
-                $renderedSubject = '{spy}';
+                if (null === $wrappedCallback->id()) {
+                    $renderedSubject = '{spy}';
+                } else {
+                    $renderedSubject =
+                        sprintf('{spy %s}', $wrappedCallback->id());
+                }
             } elseif ($wrappedCallback instanceof StubInterface) {
                 $renderedSubject = '{stub}';
             }

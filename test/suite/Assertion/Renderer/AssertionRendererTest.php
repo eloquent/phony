@@ -231,6 +231,10 @@ EOD;
                 $callFactory->create($callEventFactory->createCalled(new Spy())),
                 "{spy}()",
             ),
+            'Spy with identifier' => array(
+                $callFactory->create($callEventFactory->createCalled(new Spy(null, null, null, 111))),
+                "{spy 111}()",
+            ),
             'Stub' => array(
                 $callFactory->create($callEventFactory->createCalled(new Stub())),
                 "{stub}()",

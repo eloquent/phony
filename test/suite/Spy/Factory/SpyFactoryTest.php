@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\Spy;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -20,13 +21,15 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->spyIdSequencer = new Sequencer();
         $this->callFactory = new CallFactory();
         $this->traversableSpyFactory = new TraversableSpyFactory();
-        $this->subject = new SpyFactory($this->callFactory, $this->traversableSpyFactory);
+        $this->subject = new SpyFactory($this->spyIdSequencer, $this->callFactory, $this->traversableSpyFactory);
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->spyIdSequencer, $this->subject->spyIdSequencer());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
         $this->assertSame($this->traversableSpyFactory, $this->subject->traversableSpyFactory());
     }
@@ -35,6 +38,7 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new SpyFactory();
 
+        $this->assertEquals($this->spyIdSequencer, $this->subject->spyIdSequencer());
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
         $this->assertSame(TraversableSpyFactory::instance(), $this->subject->traversableSpyFactory());
     }
@@ -48,7 +52,7 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
             $callback,
             $useTraversableSpies,
             $useGeneratorSpies,
-            null,
+            0,
             $this->callFactory,
             $this->traversableSpyFactory
         );
