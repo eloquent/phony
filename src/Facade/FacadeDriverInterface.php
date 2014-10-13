@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Facade;
 
+use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
@@ -33,6 +34,13 @@ interface FacadeDriverInterface
      * @return StubVerifierFactoryInterface The stub verifier factory.
      */
     public function stubVerifierFactory();
+
+    /**
+     * Get the event order verifier.
+     *
+     * @return EventOrderVerifierInterface The event order verifier.
+     */
+    public function eventOrderVerifier();
 
     /**
      * Get the matcher factory.

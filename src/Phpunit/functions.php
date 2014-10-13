@@ -11,9 +11,11 @@
 
 namespace Eloquent\Phony\Phpunit;
 
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
+use Exception;
 
 /**
  * Create a new spy verifier for the supplied callback.
@@ -60,6 +62,62 @@ function stub(
             $useTraversableSpies,
             $useGeneratorSpies
         );
+}
+
+/**
+ * Checks if the supplied events happened in chronological order.
+ *
+ * @param EventCollectionInterface $events,... The events.
+ *
+ * @return EventCollectionInterface|null The result.
+ */
+function checkInOrder()
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->checkInOrderSequence(func_get_args());
+}
+
+/**
+ * Throws an exception unless the supplied events happened in chronological
+ * order.
+ *
+ * @param EventCollectionInterface $events,... The events.
+ *
+ * @return EventCollectionInterface The result.
+ * @throws Exception If the assertion fails.
+ */
+function inOrder()
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->inOrderSequence(func_get_args());
+}
+
+/**
+ * Checks if the supplied event sequence happened in chronological order.
+ *
+ * @param mixed<EventCollectionInterface> $events The event sequence.
+ *
+ * @return EventCollectionInterface|null The result.
+ */
+function checkInOrderSequence($events)
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->checkInOrderSequence($events);
+}
+
+/**
+ * Throws an exception unless the supplied event sequence happened in
+ * chronological order.
+ *
+ * @param mixed<EventCollectionInterface> $events The event sequence.
+ *
+ * @return EventCollectionInterface The result.
+ * @throws Exception If the assertion fails.
+ */
+function inOrderSequence($events)
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->inOrderSequence($events);
 }
 
 /**

@@ -59,6 +59,10 @@ class InvocableInspector implements InvocableInspectorInterface
      */
     public function callbackReflector($callback)
     {
+        while ($callback instanceof WrappedInvocableInterface) {
+            $callback = $callback->callback();
+        }
+
         if (is_array($callback)) {
             return new ReflectionMethod($callback[0], $callback[1]);
         }
@@ -67,6 +71,12 @@ class InvocableInspector implements InvocableInspectorInterface
             list($className, $methodName) = explode('::', $callback);
 
             return new ReflectionMethod($className, $methodName);
+        }
+
+        if (is_object($callback) && !$callback instanceof Closure) {
+            if (method_exists($callback, '__invoke')) {
+                return new ReflectionMethod($callback, '__invoke');
+            }
         }
 
         return new ReflectionFunction($callback);

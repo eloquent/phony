@@ -100,8 +100,8 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      *
      * @param EventCollectionInterface $events,... The events.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function inOrder()
     {
@@ -183,8 +183,8 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      *
      * @param mixed<EventCollectionInterface> $events The event sequence.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function inOrderSequence($events)
     {

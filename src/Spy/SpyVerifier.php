@@ -895,8 +895,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -1040,8 +1040,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function producedAll()
     {
@@ -1162,8 +1162,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function received($value = null)
     {
@@ -1316,7 +1316,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return mixed                    The result.
+     * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails.
      */

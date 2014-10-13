@@ -11,9 +11,11 @@
 
 namespace Eloquent\Phony\Facade;
 
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
+use Exception;
 
 /**
  * An abstract base class for implementing facades.
@@ -65,6 +67,61 @@ abstract class AbstractFacade
             $useTraversableSpies,
             $useGeneratorSpies
         );
+    }
+
+    /**
+     * Checks if the supplied events happened in chronological order.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public static function checkInOrder()
+    {
+        return static::driver()->eventOrderVerifier()
+            ->checkInOrderSequence(func_get_args());
+    }
+
+    /**
+     * Throws an exception unless the supplied events happened in chronological
+     * order.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
+     */
+    public static function inOrder()
+    {
+        return static::driver()->eventOrderVerifier()
+            ->inOrderSequence(func_get_args());
+    }
+
+    /**
+     * Checks if the supplied event sequence happened in chronological order.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public static function checkInOrderSequence($events)
+    {
+        return static::driver()->eventOrderVerifier()
+            ->checkInOrderSequence($events);
+    }
+
+    /**
+     * Throws an exception unless the supplied event sequence happened in
+     * chronological order.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
+     */
+    public static function inOrderSequence($events)
+    {
+        return static::driver()->eventOrderVerifier()->inOrderSequence($events);
     }
 
     /**

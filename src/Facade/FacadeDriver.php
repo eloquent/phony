@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Facade;
 
+use Eloquent\Phony\Event\Verification\EventOrderVerifier;
+use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
@@ -44,11 +46,13 @@ class FacadeDriver implements FacadeDriverInterface
      *
      * @param SpyVerifierFactoryInterface|null  $spyVerifierFactory  The spy verifier factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param EventOrderVerifierInterface|null  $eventOrderVerifier  The event order verifier to use.
      * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
      */
     public function __construct(
         SpyVerifierFactoryInterface $spyVerifierFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
+        EventOrderVerifierInterface $eventOrderVerifier = null,
         MatcherFactoryInterface $matcherFactory = null
     ) {
         if (null === $spyVerifierFactory) {
@@ -57,12 +61,16 @@ class FacadeDriver implements FacadeDriverInterface
         if (null === $stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
+        if (null === $eventOrderVerifier) {
+            $eventOrderVerifier = EventOrderVerifier::instance();
+        }
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
 
         $this->spyVerifierFactory = $spyVerifierFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->eventOrderVerifier = $eventOrderVerifier;
         $this->matcherFactory = $matcherFactory;
     }
 
@@ -87,6 +95,16 @@ class FacadeDriver implements FacadeDriverInterface
     }
 
     /**
+     * Get the event order verifier.
+     *
+     * @return EventOrderVerifierInterface The event order verifier.
+     */
+    public function eventOrderVerifier()
+    {
+        return $this->eventOrderVerifier;
+    }
+
+    /**
      * Get the matcher factory.
      *
      * @return MatcherFactoryInterface The matcher factory.
@@ -99,5 +117,6 @@ class FacadeDriver implements FacadeDriverInterface
     private static $instance;
     private $spyVerifierFactory;
     private $stubVerifierFactory;
+    private $eventOrderVerifier;
     private $matcherFactory;
 }

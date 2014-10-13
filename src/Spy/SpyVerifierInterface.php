@@ -191,8 +191,8 @@ interface SpyVerifierInterface extends SpyInterface,
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function produced($keyOrValue = null, $value = null);
 
@@ -212,8 +212,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function producedAll();
 
@@ -237,8 +237,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $value The value.
      *
-     * @return mixed     The result.
-     * @throws Exception If the assertion fails.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails.
      */
     public function received($value = null);
 
@@ -258,7 +258,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return mixed                    The result.
+     * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails.
      */

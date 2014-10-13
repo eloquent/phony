@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Integration\Phpunit;
 
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Event\Verification\EventOrderVerifier;
 use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Facade\FacadeDriverInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
@@ -62,7 +63,8 @@ class PhpunitFacadeDriver extends FacadeDriver
                 null,
                 $callVerifierFactory,
                 $assertionRecorder
-            )
+            ),
+            new EventOrderVerifier($assertionRecorder)
         );
     }
 

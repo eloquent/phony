@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Test\TestInvocable;
+use Eloquent\Phony\Test\TestWrappedInvocable;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionFunction;
@@ -25,6 +26,7 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
 
         $this->callback = function () {};
         $this->invocable = new TestInvocable();
+        $this->wrappedInvocable = new TestWrappedInvocable($this->callback);
     }
 
     public function testCallbackReflector()
@@ -42,6 +44,14 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             new ReflectionFunction($this->callback),
             $this->subject->callbackReflector($this->callback)
+        );
+        $this->assertEquals(
+            new ReflectionMethod($this->invocable, '__invoke'),
+            $this->subject->callbackReflector($this->invocable)
+        );
+        $this->assertEquals(
+            new ReflectionFunction($this->callback),
+            $this->subject->callbackReflector($this->wrappedInvocable)
         );
     }
 
