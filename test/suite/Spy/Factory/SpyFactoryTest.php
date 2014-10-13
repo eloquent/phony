@@ -21,15 +21,15 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->spyIdSequencer = new Sequencer();
+        $this->idSequencer = new Sequencer();
         $this->callFactory = new CallFactory();
         $this->traversableSpyFactory = new TraversableSpyFactory();
-        $this->subject = new SpyFactory($this->spyIdSequencer, $this->callFactory, $this->traversableSpyFactory);
+        $this->subject = new SpyFactory($this->idSequencer, $this->callFactory, $this->traversableSpyFactory);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->spyIdSequencer, $this->subject->spyIdSequencer());
+        $this->assertSame($this->idSequencer, $this->subject->idSequencer());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
         $this->assertSame($this->traversableSpyFactory, $this->subject->traversableSpyFactory());
     }
@@ -38,7 +38,7 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new SpyFactory();
 
-        $this->assertEquals($this->spyIdSequencer, $this->subject->spyIdSequencer());
+        $this->assertEquals($this->idSequencer, $this->subject->idSequencer());
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
         $this->assertSame(TraversableSpyFactory::instance(), $this->subject->traversableSpyFactory());
     }

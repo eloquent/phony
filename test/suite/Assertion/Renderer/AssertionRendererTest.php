@@ -239,6 +239,10 @@ EOD;
                 $callFactory->create($callEventFactory->createCalled(new Stub())),
                 "{stub}()",
             ),
+            'Stub with identifier' => array(
+                $callFactory->create($callEventFactory->createCalled(new Stub(null, null, 111))),
+                "{stub 111}()",
+            ),
             'With arguments' => array(
                 $callFactory->create($callEventFactory->createCalled('implode', array('a', 111))),
                 "implode('a', 111)",

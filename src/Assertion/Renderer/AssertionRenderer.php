@@ -335,7 +335,12 @@ class AssertionRenderer implements AssertionRendererInterface
                         sprintf('{spy %s}', $wrappedCallback->id());
                 }
             } elseif ($wrappedCallback instanceof StubInterface) {
-                $renderedSubject = '{stub}';
+                if (null === $wrappedCallback->id()) {
+                    $renderedSubject = '{stub}';
+                } else {
+                    $renderedSubject =
+                        sprintf('{stub %s}', $wrappedCallback->id());
+                }
             }
         }
 

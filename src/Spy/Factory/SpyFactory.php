@@ -42,17 +42,17 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param SequencerInterface|null             $spyIdSequencer        The spy identifier sequencer to use.
+     * @param SequencerInterface|null             $idSequencer           The identifier sequencer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
-        SequencerInterface $spyIdSequencer = null,
+        SequencerInterface $idSequencer = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
-        if (null === $spyIdSequencer) {
-            $spyIdSequencer = new Sequencer();
+        if (null === $idSequencer) {
+            $idSequencer = new Sequencer();
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
@@ -61,19 +61,19 @@ class SpyFactory implements SpyFactoryInterface
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
-        $this->spyIdSequencer = $spyIdSequencer;
+        $this->idSequencer = $idSequencer;
         $this->callFactory = $callFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
     }
 
     /**
-     * Get the spy identifier sequencer.
+     * Get the identifier sequencer.
      *
-     * @return SequencerInterface The spy identifier sequencer.
+     * @return SequencerInterface The identifier sequencer.
      */
-    public function spyIdSequencer()
+    public function idSequencer()
     {
-        return $this->spyIdSequencer;
+        return $this->idSequencer;
     }
 
     /**
@@ -114,14 +114,14 @@ class SpyFactory implements SpyFactoryInterface
             $callback,
             $useTraversableSpies,
             $useGeneratorSpies,
-            $this->spyIdSequencer->next(),
+            $this->idSequencer->next(),
             $this->callFactory,
             $this->traversableSpyFactory
         );
     }
 
     private static $instance;
-    private $spyIdSequencer;
+    private $idSequencer;
     private $callFactory;
     private $traversableSpyFactory;
 }

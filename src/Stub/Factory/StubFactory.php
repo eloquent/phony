@@ -17,6 +17,8 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Stub\Stub;
 
 /**
@@ -43,15 +45,20 @@ class StubFactory implements StubFactoryInterface
     /**
      * Construct a new stub factory.
      *
+     * @param SequencerInterface|null       $idSequencer     The identifier sequencer to use.
      * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
      * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
      * @param InvokerInterface|null         $invoker         The invoker to use.
      */
     public function __construct(
+        SequencerInterface $idSequencer = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null
     ) {
+        if (null === $idSequencer) {
+            $idSequencer = new Sequencer();
+        }
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
@@ -62,9 +69,20 @@ class StubFactory implements StubFactoryInterface
             $invoker = Invoker::instance();
         }
 
+        $this->idSequencer = $idSequencer;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
+    }
+
+    /**
+     * Get the identifier sequencer.
+     *
+     * @return SequencerInterface The identifier sequencer.
+     */
+    public function idSequencer()
+    {
+        return $this->idSequencer;
     }
 
     /**
@@ -110,6 +128,7 @@ class StubFactory implements StubFactoryInterface
         return new Stub(
             $callback,
             $thisValue,
+            $this->idSequencer->next(),
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker
@@ -117,6 +136,7 @@ class StubFactory implements StubFactoryInterface
     }
 
     private static $instance;
+    private $idSequencer;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;

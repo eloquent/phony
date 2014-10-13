@@ -119,6 +119,16 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
+     * Get the identifier.
+     *
+     * @return integer|null The identifier.
+     */
+    public function id()
+    {
+        return $this->stub->id();
+    }
+
+    /**
      * Modify the current criteria to match the supplied arguments (and possibly
      * others).
      *
