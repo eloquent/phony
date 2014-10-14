@@ -7,6 +7,8 @@
  * @uses Iterator
  * @uses Countable
  * @uses ArrayAccess
+ * @uses Eloquent\Phony\Test\TestTraitA
+ * @uses Eloquent\Phony\Test\TestTraitB
  *
  * This file is part of the Phony package.
  *
@@ -17,13 +19,16 @@
  *
  * @link https://github.com/eloquent/phony
  */
-class MockGeneratorTypical
+class MockGeneratorTypicalTraits
 extends stdClass
 implements Eloquent\Phony\Mock\MockInterface,
            Iterator,
            Countable,
            ArrayAccess
 {
+    use Eloquent\Phony\Test\TestTraitA;
+    use Eloquent\Phony\Test\TestTraitB;
+
     const CONSTANT_A = 'constantValueA';
     const CONSTANT_B = 444;
 
@@ -47,13 +52,15 @@ implements Eloquent\Phony\Mock\MockInterface,
      * @param mixed $a2 Originally named 'third'.
      * @param mixed $a3 Originally named 'fourth'.
      * @param mixed $a4 Originally named 'fifth'.
+     * @param mixed $a5 Originally named 'sixth'.
      */
     public static function methodB(
         $a0 = null,
         $a1 = 111,
         $a2 = array(),
         $a3 = array('valueA', 'valueB'),
-        $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB')
+        $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB'),
+        $a5 = 256
     ) {
     }
 
@@ -136,7 +143,7 @@ implements Eloquent\Phony\Mock\MockInterface,
      *
      * @uses ArrayAccess::offsetExists()
      *
-     * @param mixed $a0 Originally named 'offset'.
+     * @param mixed $a0 Originally named 'index'.
      */
     public function offsetExists(
         $a0
@@ -148,7 +155,7 @@ implements Eloquent\Phony\Mock\MockInterface,
      *
      * @uses ArrayAccess::offsetGet()
      *
-     * @param mixed $a0 Originally named 'offset'.
+     * @param mixed $a0 Originally named 'index'.
      */
     public function offsetGet(
         $a0
@@ -160,8 +167,8 @@ implements Eloquent\Phony\Mock\MockInterface,
      *
      * @uses ArrayAccess::offsetSet()
      *
-     * @param mixed $a0 Originally named 'offset'.
-     * @param mixed $a1 Originally named 'value'.
+     * @param mixed $a0 Originally named 'index'.
+     * @param mixed $a1 Originally named 'newvalue'.
      */
     public function offsetSet(
         $a0,
@@ -174,7 +181,7 @@ implements Eloquent\Phony\Mock\MockInterface,
      *
      * @uses ArrayAccess::offsetUnset()
      *
-     * @param mixed $a0 Originally named 'offset'.
+     * @param mixed $a0 Originally named 'index'.
      */
     public function offsetUnset(
         $a0

@@ -10,13 +10,7 @@ if (!version_compare(PHP_VERSION, '5.4.0-dev', '>=')) {
 return new Eloquent\Phony\Mock\Builder\MockBuilder(
     null,
     array(
-        'methodA' =>
-            function (
-                $self,
-                $first = ReflectionMethod::IS_PUBLIC
-            ) {
-                return 'methodB';
-            },
+        'methodA' => function ($self, $first = ReflectionMethod::IS_PUBLIC) {},
     ),
     'MockGeneratorParameterConstant',
     111

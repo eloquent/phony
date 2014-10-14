@@ -23,15 +23,42 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function generateData()
     {
-        $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
+        $fixturePath = __DIR__ . '/../../../fixture';
         $data = array();
 
-        foreach (scandir($fixturePath) as $testName) {
+        foreach (scandir($fixturePath . '/mock-generator') as $testName) {
             if ('.' === $testName[0]) {
                 continue;
             }
 
+            $testName = 'mock-generator/' . $testName;
             $data[$testName] = array($testName);
+        }
+
+        if (version_compare(PHP_VERSION, '5.4.0-dev', '>=')) {
+            foreach (
+                scandir($fixturePath . '/mock-generator-traits') as $testName
+            ) {
+                if ('.' === $testName[0]) {
+                    continue;
+                }
+
+                $testName = 'mock-generator-traits/' . $testName;
+                $data[$testName] = array($testName);
+            }
+        }
+
+        if (defined('HHVM_VERSION')) {
+            foreach (
+                scandir($fixturePath . '/mock-generator-hhvm') as $testName
+            ) {
+                if ('.' === $testName[0]) {
+                    continue;
+                }
+
+                $testName = 'mock-generator-hhvm/' . $testName;
+                $data[$testName] = array($testName);
+            }
         }
 
         return $data;
@@ -42,41 +69,7 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testGenerate($testName)
     {
-        $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
-        $builder = require $fixturePath . '/' . $testName . '/builder.php';
-        $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
-        $actual = $this->subject->generate($builder);
-
-        $this->assertSame($expected, "<?php\n\n" . $actual);
-
-        eval($actual);
-
-        $this->assertTrue(class_exists($builder->className()));
-    }
-
-    public function generateWithTraitsData()
-    {
-        $fixturePath = __DIR__ . '/../../../fixture/mock-generator-traits';
-        $data = array();
-
-        foreach (scandir($fixturePath) as $testName) {
-            if ('.' === $testName[0]) {
-                continue;
-            }
-
-            $data[$testName] = array($testName);
-        }
-
-        return $data;
-    }
-
-    /**
-     * @dataProvider generateWithTraitsData
-     * @requires PHP 5.4.0-dev
-     */
-    public function testGenerateWithTraits($testName)
-    {
-        $fixturePath = __DIR__ . '/../../../fixture/mock-generator-traits';
+        $fixturePath = __DIR__ . '/../../../fixture';
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
         $actual = $this->subject->generate($builder);

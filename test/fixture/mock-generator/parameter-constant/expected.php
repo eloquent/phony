@@ -31,13 +31,10 @@ implements Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Call the parent constructor.
+     * Custom method 'methodA'.
+     *
+     * @param mixed $a0 Originally named 'first'.
      */
-    public function _constructParent()
-    {
-        parent::__construct();
-    }
-
     public function methodA(
         $a0 = ReflectionMethod::IS_PUBLIC
     ) {

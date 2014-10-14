@@ -1,9 +1,5 @@
 <?php
 
-if (defined('HHVM_VERSION')) {
-    $this->markTestSkipped('Not supported under HHVM.');
-}
-
 $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'stdClass',
@@ -22,7 +18,8 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
                 $second = 111,
                 $third = array(),
                 $fourth = array('valueA', 'valueB'),
-                $fifth = array('keyA' => 'valueA', 'keyB' => 'valueB')
+                $fifth = array('keyA' => 'valueA', 'keyB' => 'valueB'),
+                $sixth = ReflectionMethod::IS_PUBLIC
             ) {},
         'static propertyA' => 'valueA',
         'static propertyB' => 222,

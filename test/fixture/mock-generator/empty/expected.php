@@ -30,13 +30,5 @@ implements Eloquent\Phony\Mock\MockInterface
         $this->_stubs = $stubs;
     }
 
-    /**
-     * Call the parent constructor.
-     */
-    public function _constructParent()
-    {
-        parent::__construct();
-    }
-
     private $_stubs;
 }
