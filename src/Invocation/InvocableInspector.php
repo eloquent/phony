@@ -122,6 +122,6 @@ class InvocableInspector implements InvocableInspectorInterface
         return $this->isBoundClosureSupported;
     }
 
+    protected $isBoundClosureSupported;
     private static $instance;
-    private $isBoundClosureSupported;
 }

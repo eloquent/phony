@@ -502,14 +502,57 @@ class MockBuilder implements MockBuilderInterface
         $this->interfaceNames = $interfaceNames;
         $this->traitNames = $traitNames;
 
-        if (null === $this->id) {
-            $this->generatedClassName =
-                sprintf('PhonyMock_%s', substr(md5(uniqid()), 0, 6));
-        } else {
-            $this->generatedClassName = sprintf('PhonyMock_%d', $this->id);
-        }
+        $this->generatedClassName = $this->generateClassName(
+            $parentClassName,
+            $interfaceNames,
+            $traitNames,
+            $this->id
+        );
     }
 
+    /**
+     * Generate a mock class name.
+     *
+     * @param string|null                $parentClassName The parent class name.
+     * @param array<integer,string>|null $interfaceNames  The interface names.
+     * @param array<integer,string>|null $traitNames      The trait names.
+     * @param integer|null               $id              The identifier.
+     *
+     * @return string The generated class name.
+     */
+    protected function generateClassName(
+        $parentClassName = null,
+        array $interfaceNames = null,
+        array $traitNames = null,
+        $id = null
+    ) {
+        $className = 'PhonyMock';
+
+        if (null !== $parentClassName) {
+            $subject = $parentClassName;
+        } elseif ($interfaceNames) {
+            $subject = $interfaceNames[0];
+        } elseif ($traitNames) {
+            $subject = $traitNames[0];
+        } else {
+            $subject = null;
+        }
+
+        if ($subject) {
+            $subjectAtoms = preg_split('/[_\\\\]/', $subject);
+            $className .= '_' . array_pop($subjectAtoms);
+        }
+
+        if (null === $id) {
+            $className .= '_' . substr(md5(uniqid()), 0, 6);
+        } else {
+            $className .= '_' . $id;
+        }
+
+        return $className;
+    }
+
+    protected $isTraitSupported;
     private $types;
     private $reflectors;
     private $methods;
@@ -523,5 +566,4 @@ class MockBuilder implements MockBuilderInterface
     private $interfaceNames;
     private $traitNames;
     private $isFinalized;
-    private $isTraitSupported;
 }

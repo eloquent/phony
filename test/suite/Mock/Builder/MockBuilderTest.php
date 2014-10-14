@@ -17,7 +17,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->types = array('stdClass', 'Iterator', 'Countable');
+        $this->inputTypes = array('stdClass', 'Iterator', 'Countable');
         $this->callbackA = function () {};
         $this->callbackB = function () {};
         $this->callbackC = function () {};
@@ -34,7 +34,9 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         );
         $this->className = 'ClassName';
         $this->id = 111;
-        $this->subject = new MockBuilder($this->types, $this->definition, $this->className, $this->id);
+        $this->subject = new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id);
+
+        $this->types = $this->inputTypes;
     }
 
     public function testConstructor()
@@ -77,7 +79,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorWithTraits()
     {
-        $inputTypes = array(
+        $this->inputTypes = array(
             'stdClass',
             'Iterator',
             'Countable',
@@ -96,7 +98,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
         );
-        $this->subject = new MockBuilder($inputTypes, $this->definition, $this->className, $this->id);
+        $this->subject = new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id);
 
         $this->assertSame($this->types, $this->subject->types());
         $this->assertSame($this->className, $this->subject->className());
@@ -327,7 +329,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->named($this->className));
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->subject, $this->subject->named());
-        $this->assertSame('PhonyMock_111', $this->subject->className());
+        $this->assertSame('PhonyMock_stdClass_111', $this->subject->className());
     }
 
     public function testNamedFailureInvalid()
