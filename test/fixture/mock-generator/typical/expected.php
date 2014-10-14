@@ -12,7 +12,7 @@
  *
  * @link https://github.com/eloquent/phony
  */
-class PhonyMock_stdClass_111
+class MockGeneratorTypical
 extends stdClass
 implements Eloquent\Phony\Mock\MockInterface,
            Iterator,
@@ -21,9 +21,6 @@ implements Eloquent\Phony\Mock\MockInterface,
 {
     const CONSTANT_A = 'constantValueA';
     const CONSTANT_B = 444;
-    const CONSTANT_C = array();
-    const CONSTANT_D = array('valueA', 'valueB');
-    const CONSTANT_E = array('keyA' => 'valueA', 'keyB' => 'valueB');
 
     public static function methodA(
         $a0,

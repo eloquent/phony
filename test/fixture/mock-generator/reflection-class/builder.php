@@ -10,6 +10,6 @@ if (!version_compare(PHP_VERSION, '5.4.0-dev', '>=')) {
 return new Eloquent\Phony\Mock\Builder\MockBuilder(
     'ReflectionClass',
     null,
-    null,
+    'MockGeneratorReflectionClass',
     111
 );

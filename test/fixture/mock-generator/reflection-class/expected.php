@@ -12,7 +12,7 @@
  *
  * @link https://github.com/eloquent/phony
  */
-class PhonyMock_ReflectionClass_111
+class MockGeneratorReflectionClass
 extends ReflectionClass
 implements Eloquent\Phony\Mock\MockInterface
 {

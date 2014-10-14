@@ -45,8 +45,13 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
         $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
+        $actual = $this->subject->generate($builder);
 
-        $this->assertSame($expected, "<?php\n\n" . $this->subject->generate($builder));
+        $this->assertSame($expected, "<?php\n\n" . $actual);
+
+        eval($actual);
+
+        $this->assertTrue(class_exists($builder->className()));
     }
 
     public function generateWithTraitsData()
@@ -74,8 +79,13 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
         $fixturePath = __DIR__ . '/../../../fixture/mock-generator-traits';
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
+        $actual = $this->subject->generate($builder);
 
-        $this->assertSame($expected, "<?php\n\n" . $this->subject->generate($builder));
+        $this->assertSame($expected, "<?php\n\n" . $actual);
+
+        eval($actual);
+
+        $this->assertTrue(class_exists($builder->className()));
     }
 
     public function testInstance()

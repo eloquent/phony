@@ -42,14 +42,11 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
         'propertyC' => 'valueC',
         'propertyD' => 333,
     ),
-    null,
+    'MockGeneratorTypicalTraits',
     111
 );
 $builder
     ->addConstant('CONSTANT_A', 'constantValueA')
-    ->addConstant('CONSTANT_B', 444)
-    ->addConstant('CONSTANT_C', array())
-    ->addConstant('CONSTANT_D', array('valueA', 'valueB'))
-    ->addConstant('CONSTANT_E', array('keyA' => 'valueA', 'keyB' => 'valueB'));
+    ->addConstant('CONSTANT_B', 444);
 
 return $builder;

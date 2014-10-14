@@ -18,6 +18,6 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
                 return 'methodB';
             },
     ),
-    null,
+    'MockGeneratorParameterConstant',
     111
 );
