@@ -38,6 +38,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function methodA(
         $a0 = ReflectionMethod::IS_PUBLIC
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     private $_stubs;

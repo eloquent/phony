@@ -66,6 +66,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function __toString()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -78,6 +84,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function getConstant(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -87,6 +99,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getConstants()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -96,6 +114,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getConstructor()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -105,6 +129,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getDefaultProperties()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -114,6 +144,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getDocComment()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -123,6 +159,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getEndLine()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -132,6 +174,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getExtension()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -141,6 +189,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getExtensionName()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -150,6 +204,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getFileName()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -159,6 +219,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getInterfaceNames()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -168,6 +234,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getInterfaces()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -180,6 +252,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function getMethod(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -192,6 +270,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function getMethods(
         $a0 = null
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -201,6 +285,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getModifiers()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -210,6 +300,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getName()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -219,6 +315,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getNamespaceName()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -228,6 +330,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getParentClass()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -240,6 +348,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function getProperties(
         $a0 = null
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -252,6 +366,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function getProperty(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -261,6 +381,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getShortName()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -270,6 +396,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getStartLine()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -279,6 +411,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getStaticProperties()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -293,6 +431,12 @@ implements Eloquent\Phony\Mock\MockInterface
         $a0,
         $a1 = null
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -302,6 +446,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getTraitAliases()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -311,6 +461,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getTraitNames()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -320,6 +476,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function getTraits()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -332,6 +494,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function hasConstant(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -344,6 +512,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function hasMethod(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -356,6 +530,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function hasProperty(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -368,6 +548,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function implementsInterface(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -377,6 +563,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function inNamespace()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -386,6 +578,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isAbstract()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -395,6 +593,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isCloneable()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -404,6 +608,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isFinal()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -416,6 +626,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function isInstance(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -425,6 +641,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isInstantiable()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -434,6 +656,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isInterface()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -443,6 +671,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isInternal()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -452,6 +686,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isIterateable()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -464,6 +704,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function isSubclassOf(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -473,6 +719,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isTrait()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -482,6 +734,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function isUserDefined()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -494,6 +752,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function newInstance(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -506,6 +770,12 @@ implements Eloquent\Phony\Mock\MockInterface
     public function newInstanceArgs(
         array $a0 = null
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -515,6 +785,12 @@ implements Eloquent\Phony\Mock\MockInterface
      */
     public function newInstanceWithoutConstructor()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -529,6 +805,12 @@ implements Eloquent\Phony\Mock\MockInterface
         $a0,
         $a1
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     private $_stubs;

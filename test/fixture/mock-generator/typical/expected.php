@@ -79,6 +79,12 @@ implements Eloquent\Phony\Mock\MockInterface,
      */
     public function count()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -88,6 +94,12 @@ implements Eloquent\Phony\Mock\MockInterface,
      */
     public function current()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -97,6 +109,12 @@ implements Eloquent\Phony\Mock\MockInterface,
      */
     public function key()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -113,6 +131,12 @@ implements Eloquent\Phony\Mock\MockInterface,
         array $a2 = array(),
         array $a3 = null
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -120,6 +144,12 @@ implements Eloquent\Phony\Mock\MockInterface,
      */
     public function methodD()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -129,6 +159,12 @@ implements Eloquent\Phony\Mock\MockInterface,
      */
     public function next()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -141,6 +177,12 @@ implements Eloquent\Phony\Mock\MockInterface,
     public function offsetExists(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -153,6 +195,12 @@ implements Eloquent\Phony\Mock\MockInterface,
     public function offsetGet(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -167,6 +215,12 @@ implements Eloquent\Phony\Mock\MockInterface,
         $a0,
         $a1
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -179,6 +233,12 @@ implements Eloquent\Phony\Mock\MockInterface,
     public function offsetUnset(
         $a0
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -188,6 +248,12 @@ implements Eloquent\Phony\Mock\MockInterface,
      */
     public function rewind()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -197,6 +263,12 @@ implements Eloquent\Phony\Mock\MockInterface,
      */
     public function valid()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     public static $propertyA = 'valueA';

@@ -332,37 +332,47 @@ EOD;
 
         foreach ($this->methodReflectors($builder) as $name => $method) {
             if ($method[1]) {
-                $template = <<<'EOD'
+                $commentTemplate = <<<'EOD'
     /**
      * Custom method '%s'.%s
      */
 EOD;
             } else {
-                $template = <<<'EOD'
+                $commentTemplate = <<<'EOD'
     /**
      * Inherited method '%%s'.
      *
      * @uses %s::%s()%%s
      */
 EOD;
-                $template = sprintf(
-                    $template,
+                $commentTemplate = sprintf(
+                    $commentTemplate,
                     $method[0]->getDeclaringClass()->getName(),
                     $method[0]->getName()
                 );
             }
 
             $comment = sprintf(
-                $template,
+                $commentTemplate,
                 $name,
                 $this->renderParametersDocumentation($method[0], $method[1])
             );
 
+            $body = <<<'EOD'
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+EOD;
+
             $source .= sprintf(
-                "\n%s\n    public function %s%s    }\n",
+                "\n%s\n    public function %s%s%s\n    }\n",
                 $comment,
                 $name,
-                $this->renderParameters($method[0], $method[1])
+                $this->renderParameters($method[0], $method[1]),
+                $body
             );
         }
 
