@@ -86,7 +86,7 @@ interface MockBuilderInterface
      * @return MockBuilderInterface   This builder.
      * @throws FinalizedMockException If this builder is already finalized.
      */
-    public function named($className);
+    public function named($className = null);
 
     /**
      * Finalize the mock builder, generate the mock class, and return a new
@@ -99,13 +99,20 @@ interface MockBuilderInterface
     public function get($createNew = null);
 
     /**
-     * Finalize the mock builder, and generate the mock class.
+     * Finalize the mock builder, generate the mock class, and return the class
+     * name.
      *
-     * If the mock class is already built, this method does nothing.
-     *
-     * @return MockBuilderInterface This builder.
+     * @return string The class name.
      */
     public function build();
+
+    /**
+     * Finalize the mock builder, generate the mock class, and return the source
+     * code.
+     *
+     * @return string The source code.
+     */
+    public function source();
 
     /**
      * Finalize the mock builder.

@@ -217,7 +217,7 @@ class MockBuilder implements MockBuilderInterface
      * @return MockBuilderInterface          This builder.
      * @throws MockBuilderExceptionInterface If this builder is already finalized.
      */
-    public function named($className)
+    public function named($className = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -254,15 +254,29 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Finalize the mock builder, and generate the mock class.
+     * Finalize the mock builder, generate the mock class, and return the class
+     * name.
      *
-     * If the mock class is already built, this method does nothing.
-     *
-     * @return MockBuilderInterface This builder.
+     * @return string The class name.
      */
     public function build()
     {
-        return $this->finalize();
+        $this->finalize();
+
+        return '';
+    }
+
+    /**
+     * Finalize the mock builder, generate the mock class, and return the source
+     * code.
+     *
+     * @return string The source code.
+     */
+    public function source()
+    {
+        $this->finalize();
+
+        return '';
     }
 
     /**

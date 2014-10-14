@@ -276,6 +276,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->subject, $this->subject->named($this->className));
         $this->assertSame($this->className, $this->subject->className());
+        $this->assertSame($this->subject, $this->subject->named());
+        $this->assertSame('PhonyMock_111', $this->subject->className());
     }
 
     public function testNamedFailureInvalid()
