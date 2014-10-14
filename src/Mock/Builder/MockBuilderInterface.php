@@ -31,13 +31,13 @@ interface MockBuilderInterface
     public function like($type);
 
     /**
-     * Add custom methods and properties via a prototype definition.
+     * Add custom methods and properties via a definition.
      *
      * @param array|object $definition The definition.
      *
      * @return MockBuilderInterface This builder.
      */
-    public function prototype($definition);
+    public function define($definition);
 
     /**
      * Add a custom method.
@@ -78,6 +78,14 @@ interface MockBuilderInterface
      * @return MockBuilderInterface This builder.
      */
     public function addStaticProperty($name, $value = null);
+
+    /**
+     * Add a custom class constant.
+     *
+     * @param string $name  The name.
+     * @param mixed  $value The value.
+     */
+    public function addConstant($name, $value);
 
     /**
      * Set the class name.
@@ -191,6 +199,13 @@ interface MockBuilderInterface
      * @return array<string,mixed> The custom static properties.
      */
     public function staticProperties();
+
+    /**
+     * Get the custom constants.
+     *
+     * @return array<string,mixed> The custom constants.
+     */
+    public function constants();
 
     /**
      * Returns true if this builder is finalized.

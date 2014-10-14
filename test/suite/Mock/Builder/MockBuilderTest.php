@@ -18,9 +18,23 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->types = array('stdClass', 'Iterator', 'Countable');
+        $this->callbackA = function () {};
+        $this->callbackB = function () {};
+        $this->callbackC = function () {};
+        $this->callbackD = function () {};
+        $this->definition = array(
+            'static methodA' => $this->callbackA,
+            'static methodB' => $this->callbackB,
+            'static propertyA' => 'valueA',
+            'static propertyB' => 'valueB',
+            'methodC' => $this->callbackC,
+            'methodD' => $this->callbackD,
+            'propertyC' => 'valueC',
+            'propertyD' => 'valueD',
+        );
         $this->className = 'ClassName';
         $this->id = 111;
-        $this->subject = new MockBuilder($this->types, $this->className, $this->id);
+        $this->subject = new MockBuilder($this->types, $this->definition, $this->className, $this->id);
     }
 
     public function testConstructor()
@@ -30,15 +44,22 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->id, $this->subject->id());
         $this->assertSame('stdClass', $this->subject->parentClassName());
         $this->assertSame(array('Iterator', 'Countable'), $this->subject->interfaceNames());
-        $this->assertSame(array(), $this->subject->methods());
-        $this->assertSame(array(), $this->subject->staticMethods());
-        $this->assertSame(array(), $this->subject->properties());
-        $this->assertSame(array(), $this->subject->staticProperties());
+        $this->assertSame(array(), $this->subject->traitNames());
+        $this->assertSame(
+            array('methodA' => $this->callbackA, 'methodB' => $this->callbackB),
+            $this->subject->staticMethods());
+        $this->assertSame(
+            array('methodC' => $this->callbackC, 'methodD' => $this->callbackD),
+            $this->subject->methods()
+        );
+        $this->assertSame(array('propertyA' => 'valueA', 'propertyB' => 'valueB'), $this->subject->staticProperties());
+        $this->assertSame(array('propertyC' => 'valueC', 'propertyD' => 'valueD'), $this->subject->properties());
+        $this->assertSame(array(), $this->subject->constants());
     }
 
     public function testConstructorWithoutClassName()
     {
-        $this->subject = new MockBuilder($this->types, null, $this->id);
+        $this->subject = new MockBuilder(null, null, null, $this->id);
 
         $this->assertSame('PhonyMock_111', $this->subject->className());
     }
@@ -75,7 +96,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
         );
-        $this->subject = new MockBuilder($inputTypes, $this->className, $this->id);
+        $this->subject = new MockBuilder($inputTypes, $this->definition, $this->className, $this->id);
 
         $this->assertSame($this->types, $this->subject->types());
         $this->assertSame($this->className, $this->subject->className());
@@ -86,6 +107,16 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestTraitB'),
             $this->subject->traitNames()
         );
+        $this->assertSame(
+            array('methodA' => $this->callbackA, 'methodB' => $this->callbackB),
+            $this->subject->staticMethods());
+        $this->assertSame(
+            array('methodC' => $this->callbackC, 'methodD' => $this->callbackD),
+            $this->subject->methods()
+        );
+        $this->assertSame(array('propertyA' => 'valueA', 'propertyB' => 'valueB'), $this->subject->staticProperties());
+        $this->assertSame(array('propertyC' => 'valueC', 'propertyD' => 'valueD'), $this->subject->properties());
+        $this->assertSame(array(), $this->subject->constants());
     }
 
     public function testConstructorDefaults()
@@ -95,12 +126,20 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->types());
         $this->assertRegExp('/^PhonyMock_[[:xdigit:]]{6}$/', $this->subject->className());
         $this->assertNull($this->subject->id());
+        $this->assertNull($this->subject->parentClassName());
+        $this->assertSame(array(), $this->subject->interfaceNames());
+        $this->assertSame(array(), $this->subject->traitNames());
+        $this->assertSame(array(), $this->subject->methods());
+        $this->assertSame(array(), $this->subject->staticMethods());
+        $this->assertSame(array(), $this->subject->properties());
+        $this->assertSame(array(), $this->subject->staticProperties());
+        $this->assertSame(array(), $this->subject->constants());
     }
 
     public function testConstructorFailureInvalidClassName()
     {
         $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException');
-        new MockBuilder(null, '1');
+        new MockBuilder(null, null, '1');
     }
 
     public function testConstructorFailureUndefinedClass()
@@ -185,7 +224,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject->like('ClassName');
     }
 
-    public function testPrototype()
+    public function testDefine()
     {
         $callbackA = function () {};
         $callbackB = function () {};
@@ -202,7 +241,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'propertyD' => 'valueD',
         );
 
-        $this->assertSame($this->subject, $this->subject->prototype($definition));
+        $this->assertSame($this->subject, $this->subject->define($definition));
         $this->assertSame(array('methodA' => $callbackA, 'methodB' => $callbackB), $this->subject->staticMethods());
         $this->assertSame(array('methodC' => $callbackC, 'methodD' => $callbackD), $this->subject->methods());
         $this->assertSame(array('propertyA' => 'valueA', 'propertyB' => 'valueB'), $this->subject->staticProperties());
@@ -226,7 +265,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'propertyD' => 'valueD',
         );
 
-        $this->assertSame($this->subject, $this->subject->prototype($definition));
+        $this->assertSame($this->subject, $this->subject->define($definition));
         $this->assertSame(array('methodA' => $callbackA, 'methodB' => $callbackB), $this->subject->staticMethods());
         $this->assertSame(array('methodC' => $callbackC, 'methodD' => $callbackD), $this->subject->methods());
         $this->assertSame(array('propertyA' => 'valueA', 'propertyB' => 'valueB'), $this->subject->staticProperties());
@@ -235,6 +274,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testAddMethod()
     {
+        $this->subject = new MockBuilder();
         $callback = function () {};
 
         $this->assertSame($this->subject, $this->subject->addMethod('methodA', $callback));
@@ -244,6 +284,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testAddStaticMethod()
     {
+        $this->subject = new MockBuilder();
         $callback = function () {};
 
         $this->assertSame($this->subject, $this->subject->addStaticMethod('methodA', $callback));
@@ -253,6 +294,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testAddProperty()
     {
+        $this->subject = new MockBuilder();
         $value = 'value';
 
         $this->assertSame($this->subject, $this->subject->addProperty('propertyA', $value));
@@ -262,11 +304,20 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testAddStaticProperty()
     {
+        $this->subject = new MockBuilder();
         $value = 'value';
 
         $this->assertSame($this->subject, $this->subject->addStaticProperty('propertyA', $value));
         $this->assertSame($this->subject, $this->subject->addStaticProperty('propertyB'));
         $this->assertSame(array('propertyA' => $value, 'propertyB' => null), $this->subject->staticProperties());
+    }
+
+    public function testAddConstant()
+    {
+        $value = 'value';
+
+        $this->assertSame($this->subject, $this->subject->addConstant('CONSTANT_NAME', $value));
+        $this->assertSame(array('CONSTANT_NAME' => $value), $this->subject->constants());
     }
 
     public function testNamed()

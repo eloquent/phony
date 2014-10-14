@@ -36,14 +36,16 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * @param array<string|object>|string|object|null $types     Types to add.
-     * @param string|null                             $className The class name.
-     * @param integer|null                            $id        The identifier.
+     * @param array<string|object>|string|object|null $types      Types to add.
+     * @param array|object|null                       $definition The definition.
+     * @param string|null                             $className  The class name.
+     * @param integer|null                            $id         The identifier.
      *
      * @throws MockBuilderExceptionInterface If invalid input is supplied.
      */
     public function __construct(
         $types = null,
+        $definition = null,
         $className = null,
         $id = null
     ) {
@@ -53,6 +55,7 @@ class MockBuilder implements MockBuilderInterface
         $this->staticMethods = array();
         $this->properties = array();
         $this->staticProperties = array();
+        $this->constants = array();
         $this->id = $id;
         $this->isFinalized = false;
 
@@ -63,6 +66,10 @@ class MockBuilder implements MockBuilderInterface
             $this->normalize();
         } else {
             $this->like($types);
+        }
+
+        if (null !== $definition) {
+            $this->define($definition);
         }
 
         $this->named($className);
@@ -115,13 +122,13 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Add custom methods and properties via a prototype definition.
+     * Add custom methods and properties via a definition.
      *
      * @param array|object $definition The definition.
      *
      * @return MockBuilderInterface This builder.
      */
-    public function prototype($definition)
+    public function define($definition)
     {
         if (is_object($definition)) {
             $definition = get_object_vars($definition);
@@ -206,6 +213,19 @@ class MockBuilder implements MockBuilderInterface
     public function addStaticProperty($name, $value = null)
     {
         $this->staticProperties[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Add a custom class constant.
+     *
+     * @param string $name  The name.
+     * @param mixed  $value The value.
+     */
+    public function addConstant($name, $value)
+    {
+        $this->constants[$name] = $value;
 
         return $this;
     }
@@ -397,6 +417,16 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Get the custom constants.
+     *
+     * @return array<string,mixed> The custom constants.
+     */
+    public function constants()
+    {
+        return $this->constants;
+    }
+
+    /**
      * Returns true if this builder is finalized.
      *
      * @return boolean True if finalized.
@@ -486,6 +516,7 @@ class MockBuilder implements MockBuilderInterface
     private $staticMethods;
     private $properties;
     private $staticProperties;
+    private $constants;
     private $className;
     private $generatedClassName;
     private $parentClassName;
