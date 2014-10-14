@@ -279,7 +279,8 @@ EOD;
                 if (
                     !isset($methods[$name]) &&
                     !$method->isStatic() &&
-                    !$method->isFinal()
+                    !$method->isFinal() &&
+                    !$method->isConstructor()
                 ) {
                     $methods[$name] = array($method, false);
                 }
@@ -346,7 +347,10 @@ EOD;
         }
 
         $parameters = $function->getParameters();
-        array_shift($parameters);
+
+        if ($stripFirstParameter) {
+            array_shift($parameters);
+        }
 
         foreach ($parameters as $index => $parameter) {
             $renderedParameters[] =
@@ -392,8 +396,10 @@ EOD;
             $reference = '';
         }
 
-        if ($parameter->isDefaultValueAvailable()) {
-            if (
+        if ($parameter->isOptional()) {
+            if (!$parameter->isDefaultValueAvailable()) {
+                $defaultValue = 'null';
+            } elseif (
                 $this->isParameterConstantSupported &&
                 $parameter->isDefaultValueConstant()
             ) {

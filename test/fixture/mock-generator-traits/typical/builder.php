@@ -31,7 +31,7 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
                 Eloquent\Phony\Mock\MockInterface $self,
                 Eloquent\Phony\Test\TestClass $first,
                 Eloquent\Phony\Test\TestClass $second = null,
-                array $third,
+                array $third = array(),
                 array $fourth = null
             ) {
                 return 'methodC';

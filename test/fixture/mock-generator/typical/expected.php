@@ -78,7 +78,7 @@ implements Eloquent\Phony\Mock\MockInterface,
     public function methodC(
         Eloquent\Phony\Test\TestClass $a0,
         Eloquent\Phony\Test\TestClass $a1 = null,
-        array $a2,
+        array $a2 = array(),
         array $a3 = null
     ) {
     }
@@ -91,21 +91,25 @@ implements Eloquent\Phony\Mock\MockInterface,
     {
     }
 
-    public function offsetExists()
-    {
-    }
-
-    public function offsetGet()
-    {
-    }
-
-    public function offsetSet(
+    public function offsetExists(
         $a0
     ) {
     }
 
-    public function offsetUnset()
-    {
+    public function offsetGet(
+        $a0
+    ) {
+    }
+
+    public function offsetSet(
+        $a0,
+        $a1
+    ) {
+    }
+
+    public function offsetUnset(
+        $a0
+    ) {
     }
 
     public function rewind()

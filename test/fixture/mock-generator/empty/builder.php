@@ -1,3 +1,8 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(null, null, null, 111);
+return new Eloquent\Phony\Mock\Builder\MockBuilder(
+    null,
+    null,
+    'MockGeneratorEmpty',
+    111
+);
