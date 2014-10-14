@@ -19,9 +19,6 @@ implements Eloquent\Phony\Mock\MockInterface,
            Countable,
            ArrayAccess
 {
-    use Eloquent\Phony\Test\TestTraitA;
-    use Eloquent\Phony\Test\TestTraitB;
-
     const CONSTANT_A = 'constantValueA';
     const CONSTANT_B = 444;
     const CONSTANT_C = array();

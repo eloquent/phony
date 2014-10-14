@@ -199,6 +199,8 @@ EOD;
             $methods[$name] = new ReflectionFunction($callback);
         }
 
+        ksort($methods, SORT_STRING);
+
         return $methods;
     }
 
@@ -291,6 +293,8 @@ EOD;
         foreach ($builder->methods() as $name => $callback) {
             $methods[$name] = new ReflectionFunction($callback);
         }
+
+        ksort($methods, SORT_STRING);
 
         return $methods;
     }
