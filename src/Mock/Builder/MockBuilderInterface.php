@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Builder;
 
 use Eloquent\Phony\Mock\Builder\Exception\MockBuilderExceptionInterface;
+use Eloquent\Phony\Mock\MockInterface;
 
 /**
  * The interface implemented by mock builders.
@@ -94,7 +95,7 @@ interface MockBuilderInterface
      *
      * @param boolean|null $createNew True if a new instance should be created.
      *
-     * @return object The newly created mock instance.
+     * @return MockInterface The newly created mock instance.
      */
     public function get($createNew = null);
 

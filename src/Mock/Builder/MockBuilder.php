@@ -17,6 +17,7 @@ use Eloquent\Phony\Mock\Builder\Exception\FinalizedMockException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
+use Eloquent\Phony\Mock\MockInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -240,7 +241,7 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param boolean|null $createNew True if a new instance should be created.
      *
-     * @return object The newly created mock instance.
+     * @return MockInterface The newly created mock instance.
      */
     public function get($createNew = null)
     {

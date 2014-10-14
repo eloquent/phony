@@ -51,12 +51,11 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->types, $this->subject->types());
     }
 
+    /**
+     * @requires PHP 5.4.0-dev
+     */
     public function testConstructorWithTraits()
     {
-        if (!function_exists('trait_exists')) {
-            $this->markTestSkipped('Trait support required.');
-        }
-
         $inputTypes = array(
             'stdClass',
             'Iterator',
