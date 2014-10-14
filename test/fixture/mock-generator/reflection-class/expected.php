@@ -40,8 +40,9 @@ implements Eloquent\Phony\Mock\MockInterface
     /**
      * Call the parent constructor.
      */
-    public function _constructParent()
-    {
+    public function _constructParent(
+        $a0
+    ) {
         parent::__construct();
     }
 
