@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Builder;
 
 use Eloquent\Phony\Mock\Builder\Exception\MockBuilderExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
+use ReflectionClass;
 
 /**
  * The interface implemented by mock builders.
@@ -171,6 +172,13 @@ interface MockBuilderInterface
      * @return array<string> The types.
      */
     public function types();
+
+    /**
+     * Get the type reflectors.
+     *
+     * @return array<string,ReflectionClass> The type reflectors.
+     */
+    public function reflectors();
 
     /**
      * Get the custom methods.

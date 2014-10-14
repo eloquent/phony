@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Builder;
 
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 
 class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
@@ -37,11 +38,16 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject = new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id);
 
         $this->types = $this->inputTypes;
+        $this->reflectors = array();
+        foreach ($this->types as $type) {
+            $this->reflectors[$type] = new ReflectionClass($type);
+        }
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->types, $this->subject->types());
+        $this->assertEquals($this->reflectors, $this->subject->reflectors());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->id, $this->subject->id());
         $this->assertSame('stdClass', $this->subject->parentClassName());
@@ -72,6 +78,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             new MockBuilder(array('stdClass', 'Iterator', 'Countable', 'stdClass', 'Iterator', 'Countable'));
 
         $this->assertSame($this->types, $this->subject->types());
+        $this->assertEquals($this->reflectors, $this->subject->reflectors());
     }
 
     /**
@@ -98,9 +105,14 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
         );
+        $this->reflectors = array();
+        foreach ($this->types as $type) {
+            $this->reflectors[$type] = new ReflectionClass($type);
+        }
         $this->subject = new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id);
 
         $this->assertSame($this->types, $this->subject->types());
+        $this->assertEquals($this->reflectors, $this->subject->reflectors());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->id, $this->subject->id());
         $this->assertSame('stdClass', $this->subject->parentClassName());
@@ -126,6 +138,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject = new MockBuilder();
 
         $this->assertSame(array(), $this->subject->types());
+        $this->assertSame(array(), $this->subject->reflectors());
         $this->assertRegExp('/^PhonyMock_[[:xdigit:]]{6}$/', $this->subject->className());
         $this->assertNull($this->subject->id());
         $this->assertNull($this->subject->parentClassName());

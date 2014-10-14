@@ -377,6 +377,16 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Get the type reflectors.
+     *
+     * @return array<string,ReflectionClass> The type reflectors.
+     */
+    public function reflectors()
+    {
+        return $this->reflectors;
+    }
+
+    /**
      * Get the custom methods.
      *
      * @return array<string,callable|null> The custom methods.
@@ -459,7 +469,7 @@ class MockBuilder implements MockBuilderInterface
 
         foreach ($toAdd as $type) {
             try {
-                $reflectors[] = $reflector = new ReflectionClass($type);
+                $reflectors[$type] = $reflector = new ReflectionClass($type);
             } catch (ReflectionException $e) {
                 throw new InvalidTypeException($type, $e);
             }

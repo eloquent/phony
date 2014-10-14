@@ -5,6 +5,7 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
         'stdClass',
         'Iterator',
         'Countable',
+        'ArrayAccess',
         'Eloquent\Phony\Test\TestTraitA',
         'Eloquent\Phony\Test\TestTraitB'
     ),

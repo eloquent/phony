@@ -157,9 +157,8 @@ EOD;
     {
         $source = '';
 
-        foreach ($builder->staticMethods() as $name => $callback) {
-            $parameters = $this
-                ->renderParameters(new ReflectionFunction($callback), true);
+        foreach ($this->staticMethodReflectors($builder) as $name => $method) {
+            $parameters = $this->renderParameters($method, true);
 
             $source .= sprintf(
                 "\n    public static function %s%s    }\n",
@@ -169,6 +168,38 @@ EOD;
         }
 
         return $source;
+    }
+
+    /**
+     * Get a list of static method reflectors for the supplied builder.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return array<string,ReflectionFunctionAbstract> The reflectors.
+     */
+    protected function staticMethodReflectors(MockBuilderInterface $builder)
+    {
+        $methods = array();
+
+        foreach ($builder->reflectors() as $class) {
+            foreach ($class->getMethods() as $method) {
+                $name = $method->getName();
+
+                if (
+                    !isset($methods[$name]) &&
+                    $method->isStatic() &&
+                    !$method->isFinal()
+                ) {
+                    $methods[$name] = $method;
+                }
+            }
+        }
+
+        foreach ($builder->staticMethods() as $name => $callback) {
+            $methods[$name] = new ReflectionFunction($callback);
+        }
+
+        return $methods;
     }
 
     /**
@@ -219,9 +250,8 @@ EOD;
     {
         $source = '';
 
-        foreach ($builder->methods() as $name => $callback) {
-            $parameters = $this
-                ->renderParameters(new ReflectionFunction($callback), true);
+        foreach ($this->methodReflectors($builder) as $name => $method) {
+            $parameters = $this->renderParameters($method, true);
 
             $source .= sprintf(
                 "\n    public function %s%s    }\n",
@@ -231,6 +261,38 @@ EOD;
         }
 
         return $source;
+    }
+
+    /**
+     * Get a list of method reflectors for the supplied builder.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return array<string,ReflectionFunctionAbstract> The reflectors.
+     */
+    protected function methodReflectors(MockBuilderInterface $builder)
+    {
+        $methods = array();
+
+        foreach ($builder->reflectors() as $class) {
+            foreach ($class->getMethods() as $method) {
+                $name = $method->getName();
+
+                if (
+                    !isset($methods[$name]) &&
+                    !$method->isStatic() &&
+                    !$method->isFinal()
+                ) {
+                    $methods[$name] = $method;
+                }
+            }
+        }
+
+        foreach ($builder->methods() as $name => $callback) {
+            $methods[$name] = new ReflectionFunction($callback);
+        }
+
+        return $methods;
     }
 
     /**

@@ -16,7 +16,8 @@ class PhonyMock_stdClass_111
 extends stdClass
 implements Eloquent\Phony\Mock\MockInterface,
            Iterator,
-           Countable
+           Countable,
+           ArrayAccess
 {
     use Eloquent\Phony\Test\TestTraitA;
     use Eloquent\Phony\Test\TestTraitB;
@@ -63,6 +64,47 @@ implements Eloquent\Phony\Mock\MockInterface,
     public function _constructParent()
     {
         parent::__construct();
+    }
+
+    public function current()
+    {
+    }
+
+    public function next()
+    {
+    }
+
+    public function key()
+    {
+    }
+
+    public function valid()
+    {
+    }
+
+    public function rewind()
+    {
+    }
+
+    public function count()
+    {
+    }
+
+    public function offsetExists()
+    {
+    }
+
+    public function offsetGet()
+    {
+    }
+
+    public function offsetSet(
+        $a0
+    ) {
+    }
+
+    public function offsetUnset()
+    {
     }
 
     public function methodC(
