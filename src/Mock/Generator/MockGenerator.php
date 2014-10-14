@@ -158,12 +158,10 @@ EOD;
         $source = '';
 
         foreach ($this->staticMethodReflectors($builder) as $name => $method) {
-            $parameters = $this->renderParameters($method, true);
-
             $source .= sprintf(
                 "\n    public static function %s%s    }\n",
                 $name,
-                $parameters
+                $this->renderParameters($method[0], $method[1])
             );
         }
 
@@ -175,7 +173,7 @@ EOD;
      *
      * @param MockBuilderInterface $builder The builder.
      *
-     * @return array<string,ReflectionFunctionAbstract> The reflectors.
+     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
      */
     protected function staticMethodReflectors(MockBuilderInterface $builder)
     {
@@ -190,13 +188,13 @@ EOD;
                     $method->isStatic() &&
                     !$method->isFinal()
                 ) {
-                    $methods[$name] = $method;
+                    $methods[$name] = array($method, false);
                 }
             }
         }
 
         foreach ($builder->staticMethods() as $name => $callback) {
-            $methods[$name] = new ReflectionFunction($callback);
+            $methods[$name] = array(new ReflectionFunction($callback), true);
         }
 
         ksort($methods, SORT_STRING);
@@ -253,12 +251,10 @@ EOD;
         $source = '';
 
         foreach ($this->methodReflectors($builder) as $name => $method) {
-            $parameters = $this->renderParameters($method, true);
-
             $source .= sprintf(
                 "\n    public function %s%s    }\n",
                 $name,
-                $parameters
+                $this->renderParameters($method[0], $method[1])
             );
         }
 
@@ -270,7 +266,7 @@ EOD;
      *
      * @param MockBuilderInterface $builder The builder.
      *
-     * @return array<string,ReflectionFunctionAbstract> The reflectors.
+     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
      */
     protected function methodReflectors(MockBuilderInterface $builder)
     {
@@ -285,13 +281,13 @@ EOD;
                     !$method->isStatic() &&
                     !$method->isFinal()
                 ) {
-                    $methods[$name] = $method;
+                    $methods[$name] = array($method, false);
                 }
             }
         }
 
         foreach ($builder->methods() as $name => $callback) {
-            $methods[$name] = new ReflectionFunction($callback);
+            $methods[$name] = array(new ReflectionFunction($callback), true);
         }
 
         ksort($methods, SORT_STRING);
