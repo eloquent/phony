@@ -21,10 +21,10 @@ interface StubFactoryInterface
     /**
      * Create a new stub.
      *
-     * @param callable|null $callback  The callback, or null to create an unbound stub.
-     * @param object|null   $thisValue The $this value.
+     * @param callable|null $callback The callback, or null to create an unbound stub.
+     * @param mixed         $self     The self value.
      *
      * @return StubInterface The newly created stub.
      */
-    public function create($callback = null, $thisValue = null);
+    public function create($callback = null, $self = null);
 }

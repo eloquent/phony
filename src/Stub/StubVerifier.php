@@ -97,25 +97,25 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
-     * Set the $this value of this stub.
+     * Set the self value of this stub.
      *
      * This value is used by returnsThis().
      *
-     * @param object $thisValue The $this value.
+     * @param object $self The self value.
      */
-    public function setThisValue($thisValue)
+    public function setSelf($self)
     {
-        $this->stub->setThisValue($thisValue);
+        $this->stub->setSelf($self);
     }
 
     /**
-     * Get the $this value of this stub.
+     * Get the self value of this stub.
      *
-     * @return object The $this value.
+     * @return object The self value.
      */
-    public function thisValue()
+    public function self()
     {
-        return $this->stub->thisValue();
+        return $this->stub->self();
     }
 
     /**
@@ -335,13 +335,13 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
-     * Add an answer that returns the $this value.
+     * Add an answer that returns the self value.
      *
      * @return StubInterface This stub.
      */
-    public function returnsThis()
+    public function returnsSelf()
     {
-        $this->stub->returnsThis();
+        $this->stub->returnsSelf();
 
         return $this;
     }

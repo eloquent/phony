@@ -24,14 +24,14 @@ class StubTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->thisValue = (object) array();
+        $this->self = (object) array();
         $this->id = 111;
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->subject = new Stub(
             $this->callback,
-            $this->thisValue,
+            $this->self,
             $this->id,
             $this->matcherFactory,
             $this->matcherVerifier,
@@ -51,7 +51,7 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
+        $this->assertSame($this->self, $this->subject->self());
         $this->assertSame($this->id, $this->subject->id());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
@@ -65,22 +65,22 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isAnonymous());
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
-        $this->assertSame($this->subject, $this->subject->thisValue());
+        $this->assertInstanceOf('Closure', $this->subject->self());
         $this->assertNull($this->subject->id());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
-    public function testSetThisValue()
+    public function testSetSelf()
     {
-        $this->subject->setThisValue($this->subject);
+        $this->subject->setSelf($this->subject);
 
-        $this->assertSame($this->subject, $this->subject->thisValue());
+        $this->assertSame($this->subject, $this->subject->self());
 
-        $this->subject->setThisValue($this->thisValue);
+        $this->subject->setSelf($this->self);
 
-        $this->assertSame($this->thisValue, $this->subject->thisValue());
+        $this->assertSame($this->self, $this->subject->self());
     }
 
     public function testWith()
@@ -130,7 +130,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
+                array($this->self, 'first'),
             ),
             $callsA
         );
@@ -138,8 +138,8 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
-                array($this->thisValue, 'second'),
+                array($this->self, 'first'),
+                array($this->self, 'second'),
             ),
             $callsA
         );
@@ -147,9 +147,9 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
-                array($this->thisValue, 'second'),
-                array($this->thisValue, 'second'),
+                array($this->self, 'first'),
+                array($this->self, 'second'),
+                array($this->self, 'second'),
             ),
             $callsA
         );
@@ -176,7 +176,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
+                array($this->self, 'first'),
             ),
             $callsA
         );
@@ -184,8 +184,8 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
-                array($this->thisValue, 'second', 'a', 'b'),
+                array($this->self, 'first'),
+                array($this->self, 'second', 'a', 'b'),
             ),
             $callsA
         );
@@ -193,9 +193,9 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
-                array($this->thisValue, 'second', 'a', 'b'),
-                array($this->thisValue, 'second'),
+                array($this->self, 'first'),
+                array($this->self, 'second', 'a', 'b'),
+                array($this->self, 'second'),
             ),
             $callsA
         );
@@ -237,7 +237,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'x'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
+                array($this->self, 'first'),
             ),
             $callsA
         );
@@ -245,30 +245,30 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'x'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
-                array($this->thisValue),
+                array($this->self, 'first'),
+                array($this->self),
             ),
             $callsA
         );
         $this->assertSame(
             array(
-                array($this->thisValue, 'second'),
+                array($this->self, 'second'),
             ),
             $callsB
         );
         $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'x'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first'),
-                array($this->thisValue),
-                array($this->thisValue),
+                array($this->self, 'first'),
+                array($this->self),
+                array($this->self),
             ),
             $callsA
         );
         $this->assertSame(
             array(
-                array($this->thisValue, 'second'),
-                array($this->thisValue, 'second'),
+                array($this->self, 'second'),
+                array($this->self, 'second'),
             ),
             $callsB
         );
@@ -294,7 +294,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'x'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first', $callbackA, $callbackB, 'x'),
+                array($this->self, 'first', $callbackA, $callbackB, 'x'),
             ),
             $callsA
         );
@@ -302,30 +302,30 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'x'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first', $callbackA, $callbackB, 'x'),
-                array($this->thisValue),
+                array($this->self, 'first', $callbackA, $callbackB, 'x'),
+                array($this->self),
             ),
             $callsA
         );
         $this->assertSame(
             array(
-                array($this->thisValue, 'second'),
+                array($this->self, 'second'),
             ),
             $callsB
         );
         $this->assertNull(call_user_func($this->subject, $callbackA, $callbackB, 'x'));
         $this->assertSame(
             array(
-                array($this->thisValue, 'first', $callbackA, $callbackB, 'x'),
-                array($this->thisValue),
-                array($this->thisValue),
+                array($this->self, 'first', $callbackA, $callbackB, 'x'),
+                array($this->self),
+                array($this->self),
             ),
             $callsA
         );
         $this->assertSame(
             array(
-                array($this->thisValue, 'second'),
-                array($this->thisValue, 'second'),
+                array($this->self, 'second'),
+                array($this->self, 'second'),
             ),
             $callsB
         );
@@ -420,12 +420,12 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
     }
 
-    public function testReturnsThis()
+    public function testReturnsSelf()
     {
-        $this->assertSame($this->subject, $this->subject->returnsThis());
-        $this->assertSame($this->thisValue, call_user_func($this->subject));
+        $this->assertSame($this->subject, $this->subject->returnsSelf());
+        $this->assertSame($this->self, call_user_func($this->subject));
 
-        $this->subject->setThisValue($this);
+        $this->subject->setSelf($this);
 
         $this->assertSame($this, call_user_func($this->subject));
     }

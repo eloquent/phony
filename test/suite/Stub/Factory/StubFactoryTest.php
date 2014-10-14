@@ -52,13 +52,13 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $callback = function () {};
-        $thisValue = (object) array();
-        $expected = new Stub($callback, $thisValue, 0, $this->matcherFactory, $this->matcherVerifier);
-        $actual = $this->subject->create($callback, $thisValue);
+        $self = (object) array();
+        $expected = new Stub($callback, $self, 0, $this->matcherFactory, $this->matcherVerifier);
+        $actual = $this->subject->create($callback, $self);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertSame($thisValue, $actual->thisValue());
+        $this->assertSame($self, $actual->self());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->invoker, $actual->invoker());

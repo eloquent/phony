@@ -20,20 +20,20 @@ use Exception;
 interface StubInterface extends WrappedInvocableInterface
 {
     /**
-     * Set the $this value of this stub.
+     * Set the self value of this stub.
      *
-     * This value is used by returnsThis().
+     * This value is used by returnsSelf().
      *
-     * @param object $thisValue The $this value.
+     * @param object $self The self value.
      */
-    public function setThisValue($thisValue);
+    public function setSelf($self);
 
     /**
-     * Get the $this value of this stub.
+     * Get the self value of this stub.
      *
-     * @return object The $this value.
+     * @return object The self value.
      */
-    public function thisValue();
+    public function self();
 
     /**
      * Modify the current criteria to match the supplied arguments (and possibly
@@ -171,11 +171,11 @@ interface StubInterface extends WrappedInvocableInterface
     public function returnsArgument($index = null);
 
     /**
-     * Add an answer that returns the $this value.
+     * Add an answer that returns the self value.
      *
      * @return StubInterface This stub.
      */
-    public function returnsThis();
+    public function returnsSelf();
 
     /**
      * Add an answer that throws an exception.

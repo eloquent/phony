@@ -31,7 +31,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      * Construct a new stub.
      *
      * @param callable|null                 $callback        The callback, or null to create an unbound stub.
-     * @param object|null                   $thisValue       The $this value.
+     * @param mixed                         $self            The self value.
      * @param integer|null                  $id              The identifier.
      * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
      * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
@@ -39,7 +39,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function __construct(
         $callback = null,
-        $thisValue = null,
+        $self = null,
         $id = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
@@ -57,7 +57,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         parent::__construct($callback, $id);
 
-        $this->thisValue = $thisValue;
+        if (null === $self) {
+            $self = $this->callback;
+        }
+
+        $this->self = $self;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
@@ -99,30 +103,30 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
-     * Set the $this value of this stub.
+     * Set the self value of this stub.
      *
      * This value is used by returnsThis().
      *
-     * @param object $thisValue The $this value.
+     * @param object $self The self value.
      */
-    public function setThisValue($thisValue)
+    public function setSelf($self)
     {
-        if ($thisValue === $this) {
-            $thisValue = null;
+        if ($self === $this) {
+            $self = null;
         }
 
-        $this->thisValue = $thisValue;
+        $this->self = $self;
     }
 
     /**
-     * Get the $this value of this stub.
+     * Get the self value of this stub.
      *
-     * @return object The $this value.
+     * @return object The self value.
      */
-    public function thisValue()
+    public function self()
     {
-        if ($this->thisValue) {
-            return $this->thisValue;
+        if ($this->self) {
+            return $this->self;
         }
 
         return $this;
@@ -410,11 +414,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
-     * Add an answer that returns the $this value.
+     * Add an answer that returns the self value.
      *
      * @return StubInterface This stub.
      */
-    public function returnsThis()
+    public function returnsSelf()
     {
         return $this->does(
             function ($self) {
@@ -517,14 +521,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         foreach ($answer[1] as $callDetails) {
             // get the actual callback, because it could be an argument
             $argumentsWithSelf = $arguments;
-            array_unshift($argumentsWithSelf, $this->thisValue);
+            array_unshift($argumentsWithSelf, $this->self);
             $callback =
                 $this->invoker->callWith($callDetails[0], $argumentsWithSelf);
 
             // only call the callback if it's sane to do so
             if (is_callable($callback)) {
                 $callbackArguments = $callDetails[1];
-                array_unshift($callbackArguments, $this->thisValue);
+                array_unshift($callbackArguments, $this->self);
 
                 if ($callDetails[2]) {
                     $callbackArguments =
@@ -540,7 +544,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             }
         }
 
-        array_unshift($arguments, $this->thisValue);
+        array_unshift($arguments, $this->self);
 
         // invoke primary callback
         return $this->invoker->callWith($answer[0], $arguments);
@@ -592,7 +596,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         };
     }
 
-    private $thisValue;
+    private $self;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;
