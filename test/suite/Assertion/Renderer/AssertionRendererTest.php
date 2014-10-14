@@ -318,13 +318,13 @@ EOD;
             )
         );
         $expected = <<<'EOD'
-    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
-    - Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
-    - returned 'x'
-    - threw RuntimeException('You done goofed.')
-    - produced 'x' => 'y'
-    - received 'z'
-    - received exception RuntimeException('Consequences will never be the same.')
+    - called Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
+    - called Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
+    - returned 'x' from Eloquent\Phony\Assertion\Renderer\AssertionRendererTest->setUp('a', 'b')
+    - threw RuntimeException('You done goofed.') in implode()
+    - produced 'x' => 'y' from unknown call
+    - received 'z' in unknown call
+    - received exception RuntimeException('Consequences will never be the same.') in unknown call
     - <none>
     - 'Eloquent\Phony\Test\TestEvent' event
 EOD;

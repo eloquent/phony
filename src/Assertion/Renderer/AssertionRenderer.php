@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Assertion\Renderer;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
@@ -493,36 +494,52 @@ class AssertionRenderer implements AssertionRendererInterface
         $rendered = array();
 
         foreach ($events->events() as $event) {
+            if ($event instanceof CallEventInterface) {
+                if ($call = $event->call()) {
+                    $call = $this->renderCall($call);
+                } else {
+                    $call = 'unknown call';
+                }
+            }
+
             if ($event instanceof CallInterface) {
-                $rendered[] = sprintf('    - %s', $this->renderCall($event));
-            } elseif ($event instanceof CalledEventInterface) {
                 $rendered[] =
-                    sprintf('    - %s', $this->renderCalledEvent($event));
+                    sprintf('    - called %s', $this->renderCall($event));
+            } elseif ($event instanceof CalledEventInterface) {
+                $rendered[] = sprintf(
+                    '    - called %s',
+                    $this->renderCalledEvent($event)
+                );
             } elseif ($event instanceof ReturnedEventInterface) {
                 $rendered[] = sprintf(
-                    '    - returned %s',
-                    $this->renderValue($event->value())
+                    '    - returned %s from %s',
+                    $this->renderValue($event->value()),
+                    $call
                 );
             } elseif ($event instanceof ThrewEventInterface) {
                 $rendered[] = sprintf(
-                    '    - threw %s',
-                    $this->renderException($event->exception())
+                    '    - threw %s in %s',
+                    $this->renderException($event->exception()),
+                    $call
                 );
             } elseif ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
-                    '    - produced %s => %s',
+                    '    - produced %s => %s from %s',
                     $this->renderValue($event->key()),
-                    $this->renderValue($event->value())
+                    $this->renderValue($event->value()),
+                    $call
                 );
             } elseif ($event instanceof ReceivedEventInterface) {
                 $rendered[] = sprintf(
-                    '    - received %s',
-                    $this->renderValue($event->value())
+                    '    - received %s in %s',
+                    $this->renderValue($event->value()),
+                    $call
                 );
             } elseif ($event instanceof ReceivedExceptionEventInterface) {
                 $rendered[] = sprintf(
-                    '    - received exception %s',
-                    $this->renderException($event->exception())
+                    '    - received exception %s in %s',
+                    $this->renderException($event->exception()),
+                    $call
                 );
             } elseif ($event instanceof NullEventInterface) {
                 $rendered[] = '    - <none>';
