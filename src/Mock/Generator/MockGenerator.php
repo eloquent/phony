@@ -217,17 +217,22 @@ EOD;
     protected function staticMethodReflectors(MockBuilderInterface $builder)
     {
         $methods = array();
+        $parameterCounts = array();
 
         foreach ($builder->reflectors() as $class) {
             foreach ($class->getMethods() as $method) {
                 $name = $method->getName();
 
-                if (
-                    !isset($methods[$name]) &&
-                    $method->isStatic() &&
-                    !$method->isFinal()
-                ) {
-                    $methods[$name] = array($method, false);
+                if ($method->isStatic() && !$method->isFinal()) {
+                    $parameterCount = $method->getNumberOfParameters();
+
+                    if (
+                        !isset($methods[$name]) ||
+                        $parameterCount > $parameterCounts[$name]
+                    ) {
+                        $methods[$name] = array($method, false);
+                        $parameterCounts[$name] = $parameterCount;
+                    }
                 }
             }
         }
@@ -374,18 +379,26 @@ EOD;
     protected function methodReflectors(MockBuilderInterface $builder)
     {
         $methods = array();
+        $parameterCounts = array();
 
         foreach ($builder->reflectors() as $class) {
             foreach ($class->getMethods() as $method) {
                 $name = $method->getName();
 
                 if (
-                    !isset($methods[$name]) &&
                     !$method->isStatic() &&
                     !$method->isFinal() &&
                     !$method->isConstructor()
                 ) {
-                    $methods[$name] = array($method, false);
+                    $parameterCount = $method->getNumberOfParameters();
+
+                    if (
+                        !isset($methods[$name]) ||
+                        $parameterCount > $parameterCounts[$name]
+                    ) {
+                        $methods[$name] = array($method, false);
+                        $parameterCounts[$name] = $parameterCount;
+                    }
                 }
             }
         }
