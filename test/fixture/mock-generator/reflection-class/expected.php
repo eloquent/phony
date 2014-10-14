@@ -19,6 +19,16 @@ extends ReflectionClass
 implements Eloquent\Phony\Mock\MockInterface
 {
     /**
+     * Set the static stubs.
+     *
+     * @param array<string,Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
+     */
+    public static function _setStaticStubs(array $staticStubs)
+    {
+        self::$_staticStubs = $staticStubs;
+    }
+
+    /**
      * Inherited static method 'export'.
      *
      * @uses ReflectionClass::export()
@@ -30,6 +40,12 @@ implements Eloquent\Phony\Mock\MockInterface
         $a0,
         $a1 = null
     ) {
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -813,5 +829,6 @@ implements Eloquent\Phony\Mock\MockInterface
         }
     }
 
+    private static $_staticStubs = array();
     private $_stubs;
 }

@@ -33,6 +33,16 @@ implements Eloquent\Phony\Mock\MockInterface,
     const CONSTANT_B = 444;
 
     /**
+     * Set the static stubs.
+     *
+     * @param array<string,Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
+     */
+    public static function _setStaticStubs(array $staticStubs)
+    {
+        self::$_staticStubs = $staticStubs;
+    }
+
+    /**
      * Custom static method 'methodA'.
      *
      * @param mixed $a0  Originally named 'first'.
@@ -42,6 +52,12 @@ implements Eloquent\Phony\Mock\MockInterface,
         $a0,
         &$a1
     ) {
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -60,6 +76,12 @@ implements Eloquent\Phony\Mock\MockInterface,
         $a3 = array('valueA', 'valueB'),
         $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB')
     ) {
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -280,5 +302,6 @@ implements Eloquent\Phony\Mock\MockInterface,
     public static $propertyB = 222;
     public $propertyC = 'valueC';
     public $propertyD = 333;
+    private static $_staticStubs = array();
     private $_stubs;
 }

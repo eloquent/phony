@@ -166,7 +166,19 @@ EOD;
      */
     protected function generateStaticMethods(MockBuilderInterface $builder)
     {
-        $source = '';
+        $source = <<<'EOD'
+
+    /**
+     * Set the static stubs.
+     *
+     * @param array<string,Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
+     */
+    public static function _setStaticStubs(array $staticStubs)
+    {
+        self::$_staticStubs = $staticStubs;
+    }
+
+EOD;
 
         foreach ($this->staticMethodReflectors($builder) as $name => $method) {
             if ($method[1]) {
@@ -196,11 +208,21 @@ EOD;
                 $this->renderParametersDocumentation($method[0], $method[1])
             );
 
+            $body = <<<'EOD'
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+EOD;
+
             $source .= sprintf(
-                "\n%s\n    public static function %s%s    }\n",
+                "\n%s\n    public static function %s%s%s\n    }\n",
                 $comment,
                 $name,
-                $this->renderParameters($method[0], $method[1])
+                $this->renderParameters($method[0], $method[1]),
+                $body
             );
         }
 
@@ -451,7 +473,11 @@ EOD;
             );
         }
 
-        $source .= "\n    private \$_stubs;";
+        $source .= <<<'EOD'
+
+    private static $_staticStubs = array();
+    private $_stubs;
+EOD;
 
         return $source;
     }
