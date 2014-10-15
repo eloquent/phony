@@ -38,8 +38,7 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
         'propertyC' => 'valueC',
         'propertyD' => 333,
     ),
-    'MockGeneratorTypicalTraits',
-    111
+    'MockGeneratorTypicalTraits'
 );
 $builder
     ->addConstant('CONSTANT_A', 'constantValueA')

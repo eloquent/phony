@@ -12,6 +12,5 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'methodA' => function ($self, $first = ReflectionMethod::IS_PUBLIC) {},
     ),
-    'MockGeneratorParameterConstant',
-    111
+    'MockGeneratorParameterConstant'
 );

@@ -3,6 +3,5 @@
 return new Eloquent\Phony\Mock\Builder\MockBuilder(
     null,
     null,
-    'MockGeneratorEmpty',
-    111
+    'MockGeneratorEmpty'
 );
