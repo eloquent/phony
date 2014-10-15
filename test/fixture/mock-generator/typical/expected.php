@@ -494,12 +494,12 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \Eloquent\Phony\Test\TestClassA::testClassAMethodD()
      *
-     * @param mixed $a0 Originally named 'first'.
-     * @param mixed $a1 Originally named 'second'.
+     * @param mixed &$a0 Originally named 'first'.
+     * @param mixed &$a1 Originally named 'second'.
      */
     protected function testClassAMethodD(
-        $a0,
-        $a1
+        &$a0,
+        &$a1
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
