@@ -15,12 +15,13 @@ use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionParameter;
 
 /**
  * Generates mock classes.
+ *
+ * @internal
  */
 class MockGenerator implements MockGeneratorInterface
 {
@@ -192,7 +193,7 @@ EOD;
 
 EOD;
 
-        foreach ($this->staticMethodReflectors($builder) as $name => $method) {
+        foreach ($builder->staticMethodReflectors() as $name => $method) {
             if ($method[1]) {
                 $template = <<<'EOD'
     /**
@@ -239,45 +240,6 @@ EOD;
         }
 
         return $source;
-    }
-
-    /**
-     * Get a list of static method reflectors for the supplied builder.
-     *
-     * @param MockBuilderInterface $builder The builder.
-     *
-     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
-     */
-    protected function staticMethodReflectors(MockBuilderInterface $builder)
-    {
-        $methods = array();
-        $parameterCounts = array();
-
-        foreach ($builder->reflectors() as $class) {
-            foreach ($class->getMethods() as $method) {
-                $name = $method->getName();
-
-                if ($method->isStatic() && !$method->isFinal()) {
-                    $parameterCount = $method->getNumberOfParameters();
-
-                    if (
-                        !isset($methods[$name]) ||
-                        $parameterCount > $parameterCounts[$name]
-                    ) {
-                        $methods[$name] = array($method, false);
-                        $parameterCounts[$name] = $parameterCount;
-                    }
-                }
-            }
-        }
-
-        foreach ($builder->staticMethods() as $name => $callback) {
-            $methods[$name] = array(new ReflectionFunction($callback), true);
-        }
-
-        ksort($methods, SORT_STRING);
-
-        return $methods;
     }
 
     /**
@@ -364,7 +326,7 @@ EOD;
     {
         $source = '';
 
-        foreach ($this->methodReflectors($builder) as $name => $method) {
+        foreach ($builder->methodReflectors() as $name => $method) {
             if ($method[1]) {
                 $commentTemplate = <<<'EOD'
     /**
@@ -411,49 +373,6 @@ EOD;
         }
 
         return $source;
-    }
-
-    /**
-     * Get a list of method reflectors for the supplied builder.
-     *
-     * @param MockBuilderInterface $builder The builder.
-     *
-     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
-     */
-    protected function methodReflectors(MockBuilderInterface $builder)
-    {
-        $methods = array();
-        $parameterCounts = array();
-
-        foreach ($builder->reflectors() as $class) {
-            foreach ($class->getMethods() as $method) {
-                $name = $method->getName();
-
-                if (
-                    !$method->isStatic() &&
-                    !$method->isFinal() &&
-                    !$method->isConstructor()
-                ) {
-                    $parameterCount = $method->getNumberOfParameters();
-
-                    if (
-                        !isset($methods[$name]) ||
-                        $parameterCount > $parameterCounts[$name]
-                    ) {
-                        $methods[$name] = array($method, false);
-                        $parameterCounts[$name] = $parameterCount;
-                    }
-                }
-            }
-        }
-
-        foreach ($builder->methods() as $name => $callback) {
-            $methods[$name] = array(new ReflectionFunction($callback), true);
-        }
-
-        ksort($methods, SORT_STRING);
-
-        return $methods;
     }
 
     /**

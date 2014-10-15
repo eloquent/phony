@@ -21,7 +21,7 @@ class NullEvent extends AbstractEvent implements NullEventInterface
     /**
      * Get the static instance of this event.
      *
-     * @return EventOrderVerifierInterface The static event.
+     * @return NullEventInterface The static event.
      */
     public static function instance()
     {

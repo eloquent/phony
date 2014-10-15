@@ -20,6 +20,8 @@ use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
 use Eloquent\Phony\Mock\MockInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionFunction;
+use ReflectionFunctionAbstract;
 
 /**
  * Builds mock classes.
@@ -412,6 +414,50 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Get reflectors for all non-static methods.
+     *
+     * Each array item is a 2-tuple of reflector, and a boolean indicating
+     * whether the method is a custom method.
+     *
+     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
+     */
+    public function methodReflectors()
+    {
+        $methods = array();
+        $parameterCounts = array();
+
+        foreach ($this->reflectors as $type) {
+            foreach ($type->getMethods() as $method) {
+                $name = $method->getName();
+
+                if (
+                    !$method->isStatic() &&
+                    !$method->isFinal() &&
+                    !$method->isConstructor()
+                ) {
+                    $parameterCount = $method->getNumberOfParameters();
+
+                    if (
+                        !isset($methods[$name]) ||
+                        $parameterCount > $parameterCounts[$name]
+                    ) {
+                        $methods[$name] = array($method, false);
+                        $parameterCounts[$name] = $parameterCount;
+                    }
+                }
+            }
+        }
+
+        foreach ($this->methods as $name => $callback) {
+            $methods[$name] = array(new ReflectionFunction($callback), true);
+        }
+
+        ksort($methods, SORT_STRING);
+
+        return $methods;
+    }
+
+    /**
      * Get the custom static methods.
      *
      * @return array<string,callable|null> The custom static methods.
@@ -419,6 +465,46 @@ class MockBuilder implements MockBuilderInterface
     public function staticMethods()
     {
         return $this->staticMethods;
+    }
+
+    /**
+     * Get reflectors for all static methods.
+     *
+     * Each array item is a 2-tuple of reflector, and a boolean indicating
+     * whether the method is a custom method.
+     *
+     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
+     */
+    public function staticMethodReflectors()
+    {
+        $methods = array();
+        $parameterCounts = array();
+
+        foreach ($this->reflectors as $type) {
+            foreach ($type->getMethods() as $method) {
+                $name = $method->getName();
+
+                if ($method->isStatic() && !$method->isFinal()) {
+                    $parameterCount = $method->getNumberOfParameters();
+
+                    if (
+                        !isset($methods[$name]) ||
+                        $parameterCount > $parameterCounts[$name]
+                    ) {
+                        $methods[$name] = array($method, false);
+                        $parameterCounts[$name] = $parameterCount;
+                    }
+                }
+            }
+        }
+
+        foreach ($this->staticMethods as $name => $callback) {
+            $methods[$name] = array(new ReflectionFunction($callback), true);
+        }
+
+        ksort($methods, SORT_STRING);
+
+        return $methods;
     }
 
     /**

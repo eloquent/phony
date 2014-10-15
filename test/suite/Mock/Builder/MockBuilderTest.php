@@ -13,12 +13,14 @@ namespace Eloquent\Phony\Mock\Builder;
 
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
+use ReflectionFunction;
+use ReflectionMethod;
 
 class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->inputTypes = array('stdClass', 'Iterator', 'Countable');
+        $this->inputTypes = array('Eloquent\Phony\Test\TestClassB', 'Iterator', 'Countable');
         $this->callbackA = function () {};
         $this->callbackB = function () {};
         $this->callbackC = function () {};
@@ -53,12 +55,13 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->id, $this->subject->id());
-        $this->assertSame('stdClass', $this->subject->parentClassName());
+        $this->assertSame('Eloquent\Phony\Test\TestClassB', $this->subject->parentClassName());
         $this->assertSame(array('Iterator', 'Countable'), $this->subject->interfaceNames());
         $this->assertSame(array(), $this->subject->traitNames());
         $this->assertSame(
             array('methodA' => $this->callbackA, 'methodB' => $this->callbackB),
-            $this->subject->staticMethods());
+            $this->subject->staticMethods()
+        );
         $this->assertSame(
             array('methodC' => $this->callbackC, 'methodD' => $this->callbackD),
             $this->subject->methods()
@@ -83,8 +86,16 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithDuplicateTypes()
     {
-        $this->subject =
-            new MockBuilder(array('stdClass', 'Iterator', 'Countable', 'stdClass', 'Iterator', 'Countable'));
+        $this->subject = new MockBuilder(
+            array(
+                'Eloquent\Phony\Test\TestClassB',
+                'Iterator',
+                'Countable',
+                'Eloquent\Phony\Test\TestClassB',
+                'Iterator',
+                'Countable',
+            )
+        );
 
         $this->assertSame($this->types, $this->subject->types());
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
@@ -96,19 +107,19 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithTraits()
     {
         $this->inputTypes = array(
-            'stdClass',
+            'Eloquent\Phony\Test\TestClassB',
             'Iterator',
             'Countable',
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
-            'stdClass',
+            'Eloquent\Phony\Test\TestClassB',
             'Iterator',
             'Countable',
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
         );
         $this->types = array(
-            'stdClass',
+            'Eloquent\Phony\Test\TestClassB',
             'Iterator',
             'Countable',
             'Eloquent\Phony\Test\TestTraitA',
@@ -124,7 +135,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->id, $this->subject->id());
-        $this->assertSame('stdClass', $this->subject->parentClassName());
+        $this->assertSame('Eloquent\Phony\Test\TestClassB', $this->subject->parentClassName());
         $this->assertSame(array('Iterator', 'Countable'), $this->subject->interfaceNames());
         $this->assertSame(
             array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestTraitB'),
@@ -132,7 +143,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame(
             array('methodA' => $this->callbackA, 'methodB' => $this->callbackB),
-            $this->subject->staticMethods());
+            $this->subject->staticMethods()
+        );
         $this->assertSame(
             array('methodC' => $this->callbackC, 'methodD' => $this->callbackD),
             $this->subject->methods()
@@ -187,7 +199,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testConstructorFailureMultipleInheritance()
     {
         $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException');
-        new MockBuilder(array('stdClass', 'ArrayIterator'));
+        new MockBuilder(array('Eloquent\Phony\Test\TestClassB', 'ArrayIterator'));
     }
 
     public function testConstructorFailureInvalidType()
@@ -237,7 +249,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testLikeFailureMultipleInheritance()
     {
         $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException');
-        $this->subject->like('stdClass', 'ArrayIterator');
+        $this->subject->like('Eloquent\Phony\Test\TestClassB', 'ArrayIterator');
     }
 
     public function testLikeFailureInvalidType()
@@ -261,7 +273,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->define($this->definition));
         $this->assertSame(
             array('methodA' => $this->callbackA, 'methodB' => $this->callbackB),
-            $this->subject->staticMethods());
+            $this->subject->staticMethods()
+        );
         $this->assertSame(
             array('methodC' => $this->callbackC, 'methodD' => $this->callbackD),
             $this->subject->methods()
@@ -284,7 +297,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->define((object) $this->definition));
         $this->assertSame(
             array('methodA' => $this->callbackA, 'methodB' => $this->callbackB),
-            $this->subject->staticMethods());
+            $this->subject->staticMethods()
+        );
         $this->assertSame(
             array('methodC' => $this->callbackC, 'methodD' => $this->callbackD),
             $this->subject->methods()
@@ -356,7 +370,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->named($this->className));
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->subject, $this->subject->named());
-        $this->assertSame('PhonyMock_stdClass_111', $this->subject->className());
+        $this->assertSame('PhonyMock_TestClassB_111', $this->subject->className());
     }
 
     public function testNamedFailureInvalid()
@@ -388,7 +402,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         return array(
             'Anonymous'                => array(null,                             'PhonyMock_111'),
             'Extends class'            => array('stdClass',                       'PhonyMock_stdClass_111'),
-            'Extends namespaced class' => array('Eloquent\Phony\Test\TestClassA', 'PhonyMock_TestClassA_111'),
+            'Extends namespaced class' => array('Eloquent\Phony\Test\TestClassB', 'PhonyMock_TestClassB_111'),
             'Inherits interface'       => array(array('Iterator', 'Countable'),   'PhonyMock_Iterator_111'),
         );
     }
@@ -416,5 +430,49 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame('PhonyMock_TestTraitA_111', $this->subject->className());
+    }
+
+    public function testMethodReflectors()
+    {
+        $this->assertEquals(
+            array(
+                'count' => array(new ReflectionMethod('Countable::count'), false),
+                'current' => array(new ReflectionMethod('Iterator::current'), false),
+                'key' => array(new ReflectionMethod('Iterator::key'), false),
+                'methodC' => array(new ReflectionFunction($this->callbackC), true),
+                'methodD' => array(new ReflectionFunction($this->callbackD), true),
+                'next' => array(new ReflectionMethod('Iterator::next'), false),
+                'rewind' => array(new ReflectionMethod('Iterator::rewind'), false),
+                'testClassAMethodA' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'), false),
+                'testClassAMethodB' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'), false),
+                'testClassBMethodA' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'), false),
+                'testClassBMethodB' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'), false),
+                'valid' => array(new ReflectionMethod('Iterator::valid'), false),
+            ),
+            $this->subject->methodReflectors()
+        );
+    }
+
+    public function testStaticMethodReflectors()
+    {
+        $this->assertEquals(
+            array(
+                'methodA' => array(new ReflectionFunction($this->callbackA), true),
+                'methodB' => array(new ReflectionFunction($this->callbackB), true),
+                'testClassAStaticMethodA' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'), false),
+                'testClassAStaticMethodB' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'), false),
+                'testClassBStaticMethodA' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'), false),
+                'testClassBStaticMethodB' =>
+                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'), false),
+            ),
+            $this->subject->staticMethodReflectors()
+        );
     }
 }
