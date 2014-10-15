@@ -22,7 +22,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $spy->twice()->called();
         $spy->calledWith('a', 'b', 'c');
-        $spy->calledWith('a', 'b', '*');
+        $spy->calledWith('a', 'b', '~');
         $spy->calledWith('a', '*');
         $spy->calledWith('*');
         $spy->calledWith(111);
@@ -44,7 +44,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $spy->twice()->called();
         $spy->calledWith('a', 'b', 'c');
-        $spy->calledWith('a', 'b', '*');
+        $spy->calledWith('a', 'b', '~');
         $spy->calledWith('a', '*');
         $spy->calledWith('*');
         $spy->calledWith(111);
@@ -68,7 +68,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('y', $stub(111));
         $stub->twice()->called();
         $stub->calledWith('a', 'b', 'c');
-        $stub->calledWith('a', 'b', '*');
+        $stub->calledWith('a', 'b', '~');
         $stub->calledWith('a', '*');
         $stub->calledWith('*');
         $stub->calledWith(111);
@@ -96,7 +96,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('y', $stub(111));
         $stub->twice()->called();
         $stub->calledWith('a', 'b', 'c');
-        $stub->calledWith('a', 'b', '*');
+        $stub->calledWith('a', 'b', '~');
         $stub->calledWith('a', '*');
         $stub->calledWith('*');
         $stub->calledWith(111);

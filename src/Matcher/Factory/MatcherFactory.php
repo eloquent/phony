@@ -184,7 +184,7 @@ class MatcherFactory implements MatcherFactoryInterface
             case '*':
                 return $this->wildcard();
 
-            case '.':
+            case '~':
                 return $this->any();
         }
 
