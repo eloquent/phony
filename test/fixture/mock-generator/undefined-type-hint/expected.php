@@ -13,12 +13,12 @@
  * @link https://github.com/eloquent/phony
  */
 class MockGeneratorUndefinedTypeHint
-implements Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\MockInterface
 {
     /**
      * Set the static stubs.
      *
-     * @param array<string,Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
+     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
      */
     public static function _setStaticStubs(array $staticStubs)
     {
@@ -28,7 +28,7 @@ implements Eloquent\Phony\Mock\MockInterface
     /**
      * Construct a mock.
      *
-     * @param array<string,Eloquent\Phony\Stub\StubInterface>|null $stubs The stubs to use.
+     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $stubs The stubs to use.
      */
     public function __construct(
         array $stubs = null
@@ -43,12 +43,12 @@ implements Eloquent\Phony\Mock\MockInterface
     /**
      * Custom method 'methodA'.
      *
-     * @param Non\Existent      $a0 Originally named 'first'.
-     * @param Non\Existent|null $a1 Originally named 'second'.
+     * @param \Non\Existent      $a0 Originally named 'first'.
+     * @param \Non\Existent|null $a1 Originally named 'second'.
      */
     public function methodA(
-        Non\Existent $a0,
-        Non\Existent $a1 = null
+        \Non\Existent $a0,
+        \Non\Existent $a1 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(

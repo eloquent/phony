@@ -13,12 +13,12 @@
  * @link https://github.com/eloquent/phony
  */
 class MockGeneratorCallableTypeHint
-implements Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\MockInterface
 {
     /**
      * Set the static stubs.
      *
-     * @param array<string,Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
+     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
      */
     public static function _setStaticStubs(array $staticStubs)
     {
@@ -28,7 +28,7 @@ implements Eloquent\Phony\Mock\MockInterface
     /**
      * Construct a mock.
      *
-     * @param array<string,Eloquent\Phony\Stub\StubInterface>|null $stubs The stubs to use.
+     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $stubs The stubs to use.
      */
     public function __construct(
         array $stubs = null
