@@ -26,7 +26,12 @@ class AccessibleMethodTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertEquals($this->method, $this->subject->method());
+        $this->assertInstanceOf('ReflectionMethod', $this->subject->method());
+        $this->assertSame(
+            $this->method->getDeclaringClass()->getName(),
+            $this->subject->method()->getDeclaringClass()->getName()
+        );
+        $this->assertSame($this->method->getName(), $this->subject->method()->getName());
         $this->assertSame($this->instance, $this->subject->instance());
     }
 
