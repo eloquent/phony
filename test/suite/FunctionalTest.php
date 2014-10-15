@@ -22,9 +22,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $spy->twice()->called();
         $spy->calledWith('a', 'b', 'c');
-        $spy->calledWith('a', 'b', Phony::wildcard());
-        $spy->calledWith('a', Phony::wildcard());
-        $spy->calledWith(Phony::wildcard());
+        $spy->calledWith('a', 'b', '*');
+        $spy->calledWith('a', '*');
+        $spy->calledWith('*');
         $spy->calledWith(111);
         $spy->calledWith($this->identicalTo('a'), Phony::wildcard($this->anything()));
         $spy->callAt(0)->calledWith('a', 'b', 'c');
@@ -44,9 +44,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $spy->twice()->called();
         $spy->calledWith('a', 'b', 'c');
-        $spy->calledWith('a', 'b', x\wildcard());
-        $spy->calledWith('a', x\wildcard());
-        $spy->calledWith(x\wildcard());
+        $spy->calledWith('a', 'b', '*');
+        $spy->calledWith('a', '*');
+        $spy->calledWith('*');
         $spy->calledWith(111);
         $spy->calledWith($this->identicalTo('a'), x\wildcard($this->anything()));
         $spy->callAt(0)->calledWith('a', 'b', 'c');
@@ -68,9 +68,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('y', $stub(111));
         $stub->twice()->called();
         $stub->calledWith('a', 'b', 'c');
-        $stub->calledWith('a', 'b', Phony::wildcard());
-        $stub->calledWith('a', Phony::wildcard());
-        $stub->calledWith(Phony::wildcard());
+        $stub->calledWith('a', 'b', '*');
+        $stub->calledWith('a', '*');
+        $stub->calledWith('*');
         $stub->calledWith(111);
         $stub->calledWith($this->identicalTo('a'), Phony::wildcard($this->anything()));
         $stub->callAt(0)->calledWith('a', 'b', 'c');
@@ -96,9 +96,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('y', $stub(111));
         $stub->twice()->called();
         $stub->calledWith('a', 'b', 'c');
-        $stub->calledWith('a', 'b', x\wildcard());
-        $stub->calledWith('a', x\wildcard());
-        $stub->calledWith(x\wildcard());
+        $stub->calledWith('a', 'b', '*');
+        $stub->calledWith('a', '*');
+        $stub->calledWith('*');
         $stub->calledWith(111);
         $stub->calledWith($this->identicalTo('a'), x\wildcard($this->anything()));
         $stub->callAt(0)->calledWith('a', 'b', 'c');

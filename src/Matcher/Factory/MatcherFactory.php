@@ -180,6 +180,14 @@ class MatcherFactory implements MatcherFactoryInterface
             }
         }
 
+        switch ($value) {
+            case '*':
+                return $this->wildcard();
+
+            case '.':
+                return $this->any();
+        }
+
         return $this->equalTo($value);
     }
 

@@ -152,6 +152,12 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testAdaptSpecialCases()
+    {
+        $this->assertSame($this->wildcardAnyMatcher, $this->subject->adapt('*'));
+        $this->assertSame($this->anyMatcher, $this->subject->adapt('.'));
+    }
+
     public function testWildcard()
     {
         $expected = new WildcardMatcher(new EqualToMatcher('x'), 111, 222);
