@@ -1,9 +1,5 @@
 <?php
 
-if (defined('HHVM_VERSION')) {
-    $this->markTestSkipped('Not supported under HHVM.');
-}
-
 $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'stdClass',

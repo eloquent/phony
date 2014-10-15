@@ -18,8 +18,7 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
                 $second = 111,
                 $third = array(),
                 $fourth = array('valueA', 'valueB'),
-                $fifth = array('keyA' => 'valueA', 'keyB' => 'valueB'),
-                $sixth = ReflectionMethod::IS_PUBLIC
+                $fifth = array('keyA' => 'valueA', 'keyB' => 'valueB')
             ) {},
         'static propertyA' => 'valueA',
         'static propertyB' => 222,

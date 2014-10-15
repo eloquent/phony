@@ -68,15 +68,13 @@ implements Eloquent\Phony\Mock\MockInterface,
      * @param mixed $a2 Originally named 'third'.
      * @param mixed $a3 Originally named 'fourth'.
      * @param mixed $a4 Originally named 'fifth'.
-     * @param mixed $a5 Originally named 'sixth'.
      */
     public static function methodB(
         $a0 = null,
         $a1 = 111,
         $a2 = array(),
         $a3 = array('valueA', 'valueB'),
-        $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB'),
-        $a5 = 256
+        $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB')
     ) {
         if (isset(self::$_staticStubs[__FUNCTION__])) {
             return call_user_func_array(

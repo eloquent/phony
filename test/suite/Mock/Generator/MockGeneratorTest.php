@@ -23,40 +23,19 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function generateData()
     {
-        $fixturePath = __DIR__ . '/../../../fixture';
+        $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
         $data = array();
 
-        foreach (scandir($fixturePath . '/mock-generator') as $testName) {
+        foreach (scandir($fixturePath) as $testName) {
             if ('.' === $testName[0]) {
                 continue;
             }
 
-            $testName = 'mock-generator/' . $testName;
-            $data[$testName] = array($testName);
-        }
+            $isSupported =
+                require $fixturePath . '/' . $testName . '/supported.php';
 
-        if (version_compare(PHP_VERSION, '5.4.0-dev', '>=')) {
-            foreach (
-                scandir($fixturePath . '/mock-generator-traits') as $testName
-            ) {
-                if ('.' === $testName[0]) {
-                    continue;
-                }
-
-                $testName = 'mock-generator-traits/' . $testName;
-                $data[$testName] = array($testName);
-            }
-        }
-
-        if (defined('HHVM_VERSION')) {
-            foreach (
-                scandir($fixturePath . '/mock-generator-hhvm') as $testName
-            ) {
-                if ('.' === $testName[0]) {
-                    continue;
-                }
-
-                $testName = 'mock-generator-hhvm/' . $testName;
+            if ($isSupported) {
+                $testName = $testName;
                 $data[$testName] = array($testName);
             }
         }
@@ -69,7 +48,7 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testGenerate($testName)
     {
-        $fixturePath = __DIR__ . '/../../../fixture';
+        $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
         $actual = $this->subject->generate($builder);
