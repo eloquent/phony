@@ -22,6 +22,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
 
 /**
  * Builds mock classes.
@@ -34,6 +35,45 @@ class MockBuilder implements MockBuilderInterface
      * The regular expression used to validate symbol names.
      */
     const SYMBOL_PATTERN = '[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*';
+
+    /**
+     * A comparator for sorting function reflectors by access and name.
+     *
+     * @param tuple<string,ReflectionFunctionAbstract,boolean> $left  The left function.
+     * @param tuple<string,ReflectionFunctionAbstract,boolean> $right The right function.
+     *
+     * @return integer The result.
+     */
+    public static function compareFunctions(
+        array $left,
+        array $right
+    ) {
+        if ($left[1] instanceof ReflectionMethod) {
+            if ($left[1]->isPublic()) {
+                $leftAccess = 1;
+            } else {
+                $leftAccess = 2;
+            }
+        } else {
+            $leftAccess = 0;
+        }
+
+        if ($right[1] instanceof ReflectionMethod) {
+            if ($right[1]->isPublic()) {
+                $rightAccess = 1;
+            } else {
+                $rightAccess = 2;
+            }
+        } else {
+            $rightAccess = 0;
+        }
+
+        if ($leftAccess !== $rightAccess) {
+            return $leftAccess < $rightAccess ? -1 : 1;
+        }
+
+        return strcmp($left[0], $right[0]);
+    }
 
     /**
      * Construct a new mock builder.
@@ -416,10 +456,10 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Get reflectors for all non-static methods.
      *
-     * Each array item is a 2-tuple of reflector, and a boolean indicating
+     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
      * whether the method is a custom method.
      *
-     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
+     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
      */
     public function methodReflectors()
     {
@@ -433,6 +473,7 @@ class MockBuilder implements MockBuilderInterface
                 if (
                     !$method->isStatic() &&
                     !$method->isFinal() &&
+                    !$method->isPrivate() &&
                     !$method->isConstructor()
                 ) {
                     $parameterCount = $method->getNumberOfParameters();
@@ -441,7 +482,7 @@ class MockBuilder implements MockBuilderInterface
                         !isset($methods[$name]) ||
                         $parameterCount > $parameterCounts[$name]
                     ) {
-                        $methods[$name] = array($method, false);
+                        $methods[$name] = array($name, $method, false);
                         $parameterCounts[$name] = $parameterCount;
                     }
                 }
@@ -449,10 +490,11 @@ class MockBuilder implements MockBuilderInterface
         }
 
         foreach ($this->methods as $name => $callback) {
-            $methods[$name] = array(new ReflectionFunction($callback), true);
+            $methods[$name] =
+                array($name, new ReflectionFunction($callback), true);
         }
 
-        ksort($methods, SORT_STRING);
+        uasort($methods, get_class() . '::compareFunctions');
 
         return $methods;
     }
@@ -470,10 +512,10 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Get reflectors for all static methods.
      *
-     * Each array item is a 2-tuple of reflector, and a boolean indicating
+     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
      * whether the method is a custom method.
      *
-     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
+     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
      */
     public function staticMethodReflectors()
     {
@@ -484,14 +526,18 @@ class MockBuilder implements MockBuilderInterface
             foreach ($type->getMethods() as $method) {
                 $name = $method->getName();
 
-                if ($method->isStatic() && !$method->isFinal()) {
+                if (
+                    $method->isStatic() &&
+                    !$method->isFinal() &&
+                    !$method->isPrivate()
+                ) {
                     $parameterCount = $method->getNumberOfParameters();
 
                     if (
                         !isset($methods[$name]) ||
                         $parameterCount > $parameterCounts[$name]
                     ) {
-                        $methods[$name] = array($method, false);
+                        $methods[$name] = array($name, $method, false);
                         $parameterCounts[$name] = $parameterCount;
                     }
                 }
@@ -499,10 +545,11 @@ class MockBuilder implements MockBuilderInterface
         }
 
         foreach ($this->staticMethods as $name => $callback) {
-            $methods[$name] = array(new ReflectionFunction($callback), true);
+            $methods[$name] =
+                array($name, new ReflectionFunction($callback), true);
         }
 
-        ksort($methods, SORT_STRING);
+        uasort($methods, get_class() . '::compareFunctions');
 
         return $methods;
     }

@@ -16,6 +16,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
 use ReflectionParameter;
 
 /**
@@ -193,8 +194,8 @@ EOD;
 
 EOD;
 
-        foreach ($builder->staticMethodReflectors() as $name => $method) {
-            if ($method[1]) {
+        foreach ($builder->staticMethodReflectors() as $method) {
+            if ($method[2]) {
                 $template = <<<'EOD'
     /**
      * Custom static method '%s'.%s
@@ -210,16 +211,24 @@ EOD;
 EOD;
                 $template = sprintf(
                     $template,
-                    $method[0]->getDeclaringClass()->getName(),
-                    $method[0]->getName()
+                    $method[1]->getDeclaringClass()->getName(),
+                    $method[1]->getName()
                 );
             }
 
             $comment = sprintf(
                 $template,
-                $name,
-                $this->renderParametersDocumentation($method[0], $method[1])
+                $method[0],
+                $this->renderParametersDocumentation($method[1], $method[2])
             );
+
+            $access = 'public';
+
+            if ($method[1] instanceof ReflectionMethod) {
+                if (!$method[1]->isPublic()) {
+                    $access = 'protected';
+                }
+            }
 
             $body = <<<'EOD'
         if (isset(self::$_staticStubs[__FUNCTION__])) {
@@ -231,10 +240,11 @@ EOD;
 EOD;
 
             $source .= sprintf(
-                "\n%s\n    public static function %s%s%s\n    }\n",
+                "\n%s\n    %s static function %s%s%s\n    }\n",
                 $comment,
-                $name,
-                $this->renderParameters($method[0], $method[1]),
+                $access,
+                $method[0],
+                $this->renderParameters($method[1], $method[2]),
                 $body
             );
         }
@@ -326,8 +336,8 @@ EOD;
     {
         $source = '';
 
-        foreach ($builder->methodReflectors() as $name => $method) {
-            if ($method[1]) {
+        foreach ($builder->methodReflectors() as $method) {
+            if ($method[2]) {
                 $commentTemplate = <<<'EOD'
     /**
      * Custom method '%s'.%s
@@ -343,16 +353,24 @@ EOD;
 EOD;
                 $commentTemplate = sprintf(
                     $commentTemplate,
-                    $method[0]->getDeclaringClass()->getName(),
-                    $method[0]->getName()
+                    $method[1]->getDeclaringClass()->getName(),
+                    $method[1]->getName()
                 );
             }
 
             $comment = sprintf(
                 $commentTemplate,
-                $name,
-                $this->renderParametersDocumentation($method[0], $method[1])
+                $method[0],
+                $this->renderParametersDocumentation($method[1], $method[2])
             );
+
+            $access = 'public';
+
+            if ($method[1] instanceof ReflectionMethod) {
+                if (!$method[1]->isPublic()) {
+                    $access = 'protected';
+                }
+            }
 
             $body = <<<'EOD'
         if (isset($this->_stubs[__FUNCTION__])) {
@@ -364,10 +382,11 @@ EOD;
 EOD;
 
             $source .= sprintf(
-                "\n%s\n    public function %s%s%s\n    }\n",
+                "\n%s\n    %s function %s%s%s\n    }\n",
                 $comment,
-                $name,
-                $this->renderParameters($method[0], $method[1]),
+                $access,
+                $method[0],
+                $this->renderParameters($method[1], $method[2]),
                 $body
             );
         }

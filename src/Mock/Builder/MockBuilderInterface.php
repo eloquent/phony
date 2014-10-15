@@ -191,10 +191,10 @@ interface MockBuilderInterface
     /**
      * Get reflectors for all non-static methods.
      *
-     * Each array item is a 2-tuple of reflector, and a boolean indicating
+     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
      * whether the method is a custom method.
      *
-     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
+     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
      */
     public function methodReflectors();
 
@@ -208,10 +208,10 @@ interface MockBuilderInterface
     /**
      * Get reflectors for all static methods.
      *
-     * Each array item is a 2-tuple of reflector, and a boolean indicating
+     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
      * whether the method is a custom method.
      *
-     * @return array<string,tuple<ReflectionFunctionAbstract,boolean>> The reflectors.
+     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
      */
     public function staticMethodReflectors();
 

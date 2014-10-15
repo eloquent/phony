@@ -434,45 +434,91 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testMethodReflectors()
     {
-        $this->assertEquals(
-            array(
-                'count' => array(new ReflectionMethod('Countable::count'), false),
-                'current' => array(new ReflectionMethod('Iterator::current'), false),
-                'key' => array(new ReflectionMethod('Iterator::key'), false),
-                'methodC' => array(new ReflectionFunction($this->callbackC), true),
-                'methodD' => array(new ReflectionFunction($this->callbackD), true),
-                'next' => array(new ReflectionMethod('Iterator::next'), false),
-                'rewind' => array(new ReflectionMethod('Iterator::rewind'), false),
-                'testClassAMethodA' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'), false),
-                'testClassAMethodB' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'), false),
-                'testClassBMethodA' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'), false),
-                'testClassBMethodB' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'), false),
-                'valid' => array(new ReflectionMethod('Iterator::valid'), false),
+        $actual = $this->subject->methodReflectors();
+        $expected = array(
+            'methodC' => array('methodC', new ReflectionFunction($this->callbackC), true),
+            'methodD' => array('methodD', new ReflectionFunction($this->callbackD), true),
+            'count' => array('count', new ReflectionMethod('Countable::count'), false),
+            'current' => array('current', new ReflectionMethod('Iterator::current'), false),
+            'key' => array('key', new ReflectionMethod('Iterator::key'), false),
+            'next' => array('next', new ReflectionMethod('Iterator::next'), false),
+            'rewind' => array('rewind', new ReflectionMethod('Iterator::rewind'), false),
+            'testClassAMethodA' => array(
+                'testClassAMethodA',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'),
+                false,
             ),
-            $this->subject->methodReflectors()
+            'testClassAMethodB' => array(
+                'testClassAMethodB',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'),
+                false,
+            ),
+            'testClassBMethodA' => array(
+                'testClassBMethodA',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'),
+                false,
+            ),
+            'testClassBMethodB' => array(
+                'testClassBMethodB',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'),
+                false,
+            ),
+            'valid' => array('valid', new ReflectionMethod('Iterator::valid'), false),
+            'testClassAMethodC' => array(
+                'testClassAMethodC',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC'),
+                false,
+            ),
+            'testClassAMethodD' => array(
+                'testClassAMethodD',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD'),
+                false,
+            ),
         );
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame(array_keys($expected), array_keys($actual));
     }
 
     public function testStaticMethodReflectors()
     {
-        $this->assertEquals(
-            array(
-                'methodA' => array(new ReflectionFunction($this->callbackA), true),
-                'methodB' => array(new ReflectionFunction($this->callbackB), true),
-                'testClassAStaticMethodA' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'), false),
-                'testClassAStaticMethodB' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'), false),
-                'testClassBStaticMethodA' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'), false),
-                'testClassBStaticMethodB' =>
-                    array(new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'), false),
+        $actual = $this->subject->staticMethodReflectors();
+        $expected = array(
+            'methodA' => array('methodA', new ReflectionFunction($this->callbackA), true),
+            'methodB' => array('methodB', new ReflectionFunction($this->callbackB), true),
+            'testClassAStaticMethodA' => array(
+                'testClassAStaticMethodA',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'),
+                false,
             ),
-            $this->subject->staticMethodReflectors()
+            'testClassAStaticMethodB' => array(
+                'testClassAStaticMethodB',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'),
+                false,
+            ),
+            'testClassBStaticMethodA' => array(
+                'testClassBStaticMethodA',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'),
+                false,
+            ),
+            'testClassBStaticMethodB' => array(
+                'testClassBStaticMethodB',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'),
+                false,
+            ),
+            'testClassAStaticMethodC' => array(
+                'testClassAStaticMethodC',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC'),
+                false,
+            ),
+            'testClassAStaticMethodD' => array(
+                'testClassAStaticMethodD',
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD'),
+                false,
+            ),
         );
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame(array_keys($expected), array_keys($actual));
     }
 }

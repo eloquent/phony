@@ -32,4 +32,34 @@ class TestClassA implements TestInterfaceA
     {
         return implode(func_get_args());
     }
+
+    protected static function testClassAStaticMethodC()
+    {
+        return implode(func_get_args());
+    }
+
+    protected static function testClassAStaticMethodD($first, $second)
+    {
+        return implode(func_get_args());
+    }
+
+    protected function testClassAMethodC()
+    {
+        return implode(func_get_args());
+    }
+
+    protected function testClassAMethodD($first, $second)
+    {
+        return implode(func_get_args());
+    }
+
+    private static function testClassAStaticMethodE()
+    {
+        return implode(func_get_args());
+    }
+
+    private function testClassAMethodE()
+    {
+        return implode(func_get_args());
+    }
 }

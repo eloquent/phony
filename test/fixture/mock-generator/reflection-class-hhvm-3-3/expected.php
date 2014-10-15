@@ -76,24 +76,6 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited method '__init'.
-     *
-     * @uses \ReflectionClass::__init()
-     *
-     * @param mixed $a0 Originally named 'name'.
-     */
-    public function __init(
-        $a0
-    ) {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
      * Inherited method '__toString'.
      *
      * @uses \ReflectionClass::__toString()
@@ -175,21 +157,6 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited method 'getClassPropertyInfo'.
-     *
-     * @uses \ReflectionClass::getClassPropertyInfo()
-     */
-    public function getClassPropertyInfo()
-    {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
      * Inherited method 'getConstant'.
      *
      * @uses \ReflectionClass::getConstant()
@@ -238,21 +205,6 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited method 'getConstructorName'.
-     *
-     * @uses \ReflectionClass::getConstructorName()
-     */
-    public function getConstructorName()
-    {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
      * Inherited method 'getDefaultProperties'.
      *
      * @uses \ReflectionClass::getDefaultProperties()
@@ -274,24 +226,6 @@ implements \Eloquent\Phony\Mock\MockInterface
      */
     public function getDocComment()
     {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited method 'getDynamicPropertyInfos'.
-     *
-     * @uses \ReflectionClass::getDynamicPropertyInfos()
-     *
-     * @param mixed $a0 Originally named 'obj'.
-     */
-    public function getDynamicPropertyInfos(
-        $a0
-    ) {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
                 $this->_stubs[__FUNCTION__],
@@ -409,42 +343,6 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited method 'getMethodOrder'.
-     *
-     * @uses \ReflectionClass::getMethodOrder()
-     *
-     * @param mixed $a0 Originally named 'filter'.
-     */
-    public function getMethodOrder(
-        $a0
-    ) {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited method 'getMethodOrderWithCaching'.
-     *
-     * @uses \ReflectionClass::getMethodOrderWithCaching()
-     *
-     * @param mixed $a0 Originally named 'filter'.
-     */
-    public function getMethodOrderWithCaching(
-        $a0
-    ) {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
      * Inherited method 'getMethods'.
      *
      * @uses \ReflectionClass::getMethods()
@@ -508,56 +406,11 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited method 'getOrderedConstants'.
-     *
-     * @uses \ReflectionClass::getOrderedConstants()
-     */
-    public function getOrderedConstants()
-    {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited method 'getOrderedPropertyInfos'.
-     *
-     * @uses \ReflectionClass::getOrderedPropertyInfos()
-     */
-    public function getOrderedPropertyInfos()
-    {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
      * Inherited method 'getParentClass'.
      *
      * @uses \ReflectionClass::getParentClass()
      */
     public function getParentClass()
-    {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited method 'getParentName'.
-     *
-     * @uses \ReflectionClass::getParentName()
-     */
-    public function getParentName()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
@@ -594,24 +447,6 @@ implements \Eloquent\Phony\Mock\MockInterface
      */
     public function getProperty(
         $a0
-    ) {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited method 'getReflectionClassesFromNames'.
-     *
-     * @uses \ReflectionClass::getReflectionClassesFromNames()
-     *
-     * @param array $a0 Originally named 'names'.
-     */
-    public function getReflectionClassesFromNames(
-        array $a0
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
@@ -1011,26 +846,6 @@ implements \Eloquent\Phony\Mock\MockInterface
      */
     public function isUserDefined()
     {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited method 'makeReflectionProperty'.
-     *
-     * @uses \ReflectionClass::makeReflectionProperty()
-     *
-     * @param mixed $a0 Originally named 'name'.
-     * @param array $a1 Originally named 'prop_info'.
-     */
-    public function makeReflectionProperty(
-        $a0,
-        array $a1
-    ) {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
                 $this->_stubs[__FUNCTION__],

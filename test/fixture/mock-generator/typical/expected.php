@@ -154,6 +154,41 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
+     * Inherited static method 'testClassAStaticMethodC'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC()
+     */
+    protected static function testClassAStaticMethodC()
+    {
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited static method 'testClassAStaticMethodD'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassA::testClassAStaticMethodD()
+     *
+     * @param mixed $a0 Originally named 'first'.
+     * @param mixed $a1 Originally named 'second'.
+     */
+    protected static function testClassAStaticMethodD(
+        $a0,
+        $a1
+    ) {
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
      * Construct a mock.
      *
      * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $stubs The stubs to use.
@@ -166,6 +201,41 @@ implements \Eloquent\Phony\Mock\MockInterface,
         }
 
         $this->_stubs = $stubs;
+    }
+
+    /**
+     * Custom method 'methodC'.
+     *
+     * @param \Eloquent\Phony\Test\TestClassA      $a0 Originally named 'first'.
+     * @param \Eloquent\Phony\Test\TestClassA|null $a1 Originally named 'second'.
+     * @param array                                $a2 Originally named 'third'.
+     * @param array|null                           $a3 Originally named 'fourth'.
+     */
+    public function methodC(
+        \Eloquent\Phony\Test\TestClassA $a0,
+        \Eloquent\Phony\Test\TestClassA $a1 = null,
+        array $a2 = array(),
+        array $a3 = null
+    ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Custom method 'methodD'.
+     */
+    public function methodD()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
     }
 
     /**
@@ -204,41 +274,6 @@ implements \Eloquent\Phony\Mock\MockInterface,
      * @uses \Iterator::key()
      */
     public function key()
-    {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Custom method 'methodC'.
-     *
-     * @param \Eloquent\Phony\Test\TestClassA      $a0 Originally named 'first'.
-     * @param \Eloquent\Phony\Test\TestClassA|null $a1 Originally named 'second'.
-     * @param array                                $a2 Originally named 'third'.
-     * @param array|null                           $a3 Originally named 'fourth'.
-     */
-    public function methodC(
-        \Eloquent\Phony\Test\TestClassA $a0,
-        \Eloquent\Phony\Test\TestClassA $a1 = null,
-        array $a2 = array(),
-        array $a3 = null
-    ) {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Custom method 'methodD'.
-     */
-    public function methodD()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
@@ -431,6 +466,41 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function valid()
     {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'testClassAMethodC'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassA::testClassAMethodC()
+     */
+    protected function testClassAMethodC()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'testClassAMethodD'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassA::testClassAMethodD()
+     *
+     * @param mixed $a0 Originally named 'first'.
+     * @param mixed $a1 Originally named 'second'.
+     */
+    protected function testClassAMethodD(
+        $a0,
+        $a1
+    ) {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
                 $this->_stubs[__FUNCTION__],
