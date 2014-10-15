@@ -19,7 +19,7 @@
  *
  * @link https://github.com/eloquent/phony
  */
-class MockGeneratorTypicalTraits
+class MockGeneratorTypicalHhvm
 extends stdClass
 implements Eloquent\Phony\Mock\MockInterface,
            Iterator,

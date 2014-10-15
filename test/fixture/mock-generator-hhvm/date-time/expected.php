@@ -14,7 +14,7 @@
  *
  * @link https://github.com/eloquent/phony
  */
-class MockGeneratorDateTime
+class MockGeneratorDateTimeHhvm
 extends DateTime
 implements Eloquent\Phony\Mock\MockInterface
 {
