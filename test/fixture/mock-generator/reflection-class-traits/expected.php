@@ -14,7 +14,7 @@
  *
  * @link https://github.com/eloquent/phony
  */
-class MockGeneratorReflectionClass
+class MockGeneratorReflectionClassTraits
 extends ReflectionClass
 implements Eloquent\Phony\Mock\MockInterface
 {
@@ -456,6 +456,51 @@ implements Eloquent\Phony\Mock\MockInterface
     }
 
     /**
+     * Inherited method 'getTraitAliases'.
+     *
+     * @uses ReflectionClass::getTraitAliases()
+     */
+    public function getTraitAliases()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'getTraitNames'.
+     *
+     * @uses ReflectionClass::getTraitNames()
+     */
+    public function getTraitNames()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'getTraits'.
+     *
+     * @uses ReflectionClass::getTraits()
+     */
+    public function getTraits()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
      * Inherited method 'hasConstant'.
      *
      * @uses ReflectionClass::hasConstant()
@@ -548,6 +593,21 @@ implements Eloquent\Phony\Mock\MockInterface
      * @uses ReflectionClass::isAbstract()
      */
     public function isAbstract()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'isCloneable'.
+     *
+     * @uses ReflectionClass::isCloneable()
+     */
+    public function isCloneable()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
@@ -669,6 +729,21 @@ implements Eloquent\Phony\Mock\MockInterface
     }
 
     /**
+     * Inherited method 'isTrait'.
+     *
+     * @uses ReflectionClass::isTrait()
+     */
+    public function isTrait()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
      * Inherited method 'isUserDefined'.
      *
      * @uses ReflectionClass::isUserDefined()
@@ -711,6 +786,21 @@ implements Eloquent\Phony\Mock\MockInterface
     public function newInstanceArgs(
         array $a0 = null
     ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'newInstanceWithoutConstructor'.
+     *
+     * @uses ReflectionClass::newInstanceWithoutConstructor()
+     */
+    public function newInstanceWithoutConstructor()
+    {
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
                 $this->_stubs[__FUNCTION__],

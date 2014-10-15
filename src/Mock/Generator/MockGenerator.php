@@ -11,8 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Generator;
 
+use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionParameter;
@@ -536,10 +538,27 @@ EOD;
             $this->isCallableTypeHintSupported && $parameter->isCallable()
         ) {
             $typeHint = 'callable ';
-        } elseif ($class = $parameter->getClass()) {
-            $typeHint = $class->getName() . ' ';
         } else {
             $typeHint = '';
+
+            try {
+                if ($class = $parameter->getClass()) {
+                    $typeHint = $class->getName() . ' ';
+                }
+            } catch (ReflectionException $e) {
+                if (
+                    preg_match(
+                        sprintf(
+                            '/Class (%s) does not exist/',
+                            MockBuilder::CLASS_NAME_PATTERN
+                        ),
+                        $e->getMessage(),
+                        $matches
+                    )
+                ) {
+                    $typeHint = $matches[1] . ' ';
+                }
+            }
         }
 
         if ($parameter->isPassedByReference()) {
@@ -646,10 +665,27 @@ EOD;
             $this->isCallableTypeHintSupported && $parameter->isCallable()
         ) {
             $typeHint = 'callable';
-        } elseif ($class = $parameter->getClass()) {
-            $typeHint = $class->getName();
         } else {
             $typeHint = 'mixed';
+
+            try {
+                if ($class = $parameter->getClass()) {
+                    $typeHint = $class->getName();
+                }
+            } catch (ReflectionException $e) {
+                if (
+                    preg_match(
+                        sprintf(
+                            '/Class (%s) does not exist/',
+                            MockBuilder::CLASS_NAME_PATTERN
+                        ),
+                        $e->getMessage(),
+                        $matches
+                    )
+                ) {
+                    $typeHint = $matches[1];
+                }
+            }
         }
 
         if ('mixed' !== $typeHint && $parameter->allowsNull()) {
