@@ -216,14 +216,14 @@ implements \Eloquent\Phony\Mock\MockInterface,
     /**
      * Custom method 'methodC'.
      *
-     * @param \Eloquent\Phony\Test\TestClass      $a0 Originally named 'first'.
-     * @param \Eloquent\Phony\Test\TestClass|null $a1 Originally named 'second'.
-     * @param array                               $a2 Originally named 'third'.
-     * @param array|null                          $a3 Originally named 'fourth'.
+     * @param \Eloquent\Phony\Test\TestClassA      $a0 Originally named 'first'.
+     * @param \Eloquent\Phony\Test\TestClassA|null $a1 Originally named 'second'.
+     * @param array                                $a2 Originally named 'third'.
+     * @param array|null                           $a3 Originally named 'fourth'.
      */
     public function methodC(
-        \Eloquent\Phony\Test\TestClass $a0,
-        \Eloquent\Phony\Test\TestClass $a1 = null,
+        \Eloquent\Phony\Test\TestClassA $a0,
+        \Eloquent\Phony\Test\TestClassA $a1 = null,
         array $a2 = array(),
         array $a3 = null
     ) {

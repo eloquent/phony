@@ -23,8 +23,8 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
         'methodC' =>
             function (
                 Eloquent\Phony\Mock\MockInterface $self,
-                Eloquent\Phony\Test\TestClass $first,
-                Eloquent\Phony\Test\TestClass $second = null,
+                Eloquent\Phony\Test\TestClassA $first,
+                Eloquent\Phony\Test\TestClassA $second = null,
                 array $third = array(),
                 array $fourth = null
             ) {},
