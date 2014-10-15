@@ -1,13 +1,11 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+return new Eloquent\Phony\Mock\Builder\MockBuilder(
     null,
-    null,
+    array(
+        'const CONSTANT_A' => array(),
+        'const CONSTANT_B' => array('a', 'b'),
+        'const CONSTANT_C' => array('a' => 'b', 'c' => 'd'),
+    ),
     'MockGeneratorArrayConstant'
 );
-$builder
-    ->addConstant('CONSTANT_A', array())
-    ->addConstant('CONSTANT_B', array('a', 'b'))
-    ->addConstant('CONSTANT_C', array('a' => 'b', 'c' => 'd'));
-
-return $builder;

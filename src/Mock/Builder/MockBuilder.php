@@ -138,13 +138,26 @@ class MockBuilder implements MockBuilderInterface
             $nameParts = explode(' ', $name);
             $name = array_pop($nameParts);
             $isStatic = in_array('static', $nameParts);
+            $isFunction = in_array('function', $nameParts);
+            $isProperty = in_array('var', $nameParts);
+            $isConstant = in_array('const', $nameParts);
 
-            if ($value instanceof Closure) {
+            if (!$isFunction && !$isProperty && !$isConstant) {
+                if ($value instanceof Closure) {
+                    $isFunction = true;
+                } else {
+                    $isProperty = true;
+                }
+            }
+
+            if ($isFunction) {
                 if ($isStatic) {
                     $this->addStaticMethod($name, $value);
                 } else {
                     $this->addMethod($name, $value);
                 }
+            } elseif ($isConstant) {
+                $this->addConstant($name, $value);
             } else {
                 if ($isStatic) {
                     $this->addStaticProperty($name, $value);

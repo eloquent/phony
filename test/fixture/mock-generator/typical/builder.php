@@ -1,6 +1,6 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+return new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'Eloquent\Phony\Test\TestClassB',
         'Iterator',
@@ -8,6 +8,8 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
         'ArrayAccess'
     ),
     array(
+        'const CONSTANT_A' => 'constantValueA',
+        'const CONSTANT_B' => 444,
         'static methodA' => function ($className, $first, &$second) {},
         'static methodB' =>
             function (
@@ -34,8 +36,3 @@ $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     ),
     'Example\MockGeneratorTypical'
 );
-$builder
-    ->addConstant('CONSTANT_A', 'constantValueA')
-    ->addConstant('CONSTANT_B', 444);
-
-return $builder;
