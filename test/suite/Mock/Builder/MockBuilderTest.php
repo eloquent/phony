@@ -367,4 +367,40 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->finalize());
         $this->assertTrue($this->subject->isFinalized());
     }
+
+    public function classNameGenerationData()
+    {
+        //                                      like                             expected
+        return array(
+            'Anonymous'                => array(null,                            'PhonyMock_111'),
+            'Extends class'            => array('stdClass',                      'PhonyMock_stdClass_111'),
+            'Extends namespaced class' => array('Eloquent\Phony\Test\TestClass', 'PhonyMock_TestClass_111'),
+            'Inherits interface'       => array(array('Iterator', 'Countable'),  'PhonyMock_Iterator_111'),
+        );
+    }
+
+    /**
+     * @dataProvider classNameGenerationData
+     */
+    public function testClassNameGeneration($like, $expected)
+    {
+        $this->subject = new MockBuilder($like, null, null, 111);
+
+        $this->assertSame($expected, $this->subject->className());
+    }
+
+    /**
+     * @requires PHP 5.4.0-dev
+     */
+    public function testClassNameGenerationWithTraits()
+    {
+        $this->subject = new MockBuilder(
+            array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestTraitB'),
+            null,
+            null,
+            111
+        );
+
+        $this->assertSame('PhonyMock_TestTraitA_111', $this->subject->className());
+    }
 }
