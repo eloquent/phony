@@ -550,7 +550,7 @@ EOD;
                     preg_match(
                         sprintf(
                             '/Class (%s) does not exist/',
-                            MockBuilder::CLASS_NAME_PATTERN
+                            MockBuilder::SYMBOL_PATTERN
                         ),
                         $e->getMessage(),
                         $matches
@@ -673,7 +673,7 @@ EOD;
                     preg_match(
                         sprintf(
                             '/Class (%s) does not exist/',
-                            MockBuilder::CLASS_NAME_PATTERN
+                            MockBuilder::SYMBOL_PATTERN
                         ),
                         $e->getMessage(),
                         $matches

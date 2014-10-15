@@ -29,9 +29,9 @@ use ReflectionException;
 class MockBuilder implements MockBuilderInterface
 {
     /**
-     * The regular expression used to validate class names.
+     * The regular expression used to validate symbol names.
      */
-    const CLASS_NAME_PATTERN = '[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*';
+    const SYMBOL_PATTERN = '[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*';
 
     /**
      * Construct a new mock builder.
@@ -246,10 +246,7 @@ class MockBuilder implements MockBuilderInterface
 
         if (null !== $className) {
             if (
-                !preg_match(
-                    '/^' . static::CLASS_NAME_PATTERN . '$/S',
-                    $className
-                )
+                !preg_match('/^' . static::SYMBOL_PATTERN . '$/S', $className)
             ) {
                 throw new InvalidClassNameException($className);
             }
