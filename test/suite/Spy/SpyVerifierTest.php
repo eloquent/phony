@@ -22,7 +22,7 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Test\TestClass;
+use Eloquent\Phony\Test\TestClassA;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -58,23 +58,23 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->returnValueB = 'y';
         $this->exceptionA = new RuntimeException('You done goofed.');
         $this->exceptionB = new RuntimeException('Consequences will never be the same.');
-        $this->thisValueA = new TestClass();
-        $this->thisValueB = new TestClass();
+        $this->thisValueA = new TestClassA();
+        $this->thisValueB = new TestClassA();
         $this->arguments = array('a', 'b', 'c');
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueA, 'methodA'), $this->arguments),
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
             $this->callEventFactory->createReturned($this->returnValueA)
         );
         $this->callAResponse = $this->callA->responseEvent();
         $this->callB = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueB, 'methodA')),
+            $this->callEventFactory->createCalled(array($this->thisValueB, 'testClassAMethodA')),
             $this->callEventFactory->createReturned($this->returnValueB)
         );
         $this->callBResponse = $this->callB->responseEvent();
         $this->callC = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueA, 'methodA'), $this->arguments),
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
             $this->callEventFactory->createThrew($this->exceptionA)
         );
         $this->callCResponse = $this->callC->responseEvent();
@@ -383,9 +383,9 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call, exactly 1 time. Calls:
-    - Eloquent\Phony\Test\TestClass->methodA('a', 'b', 'c')
-    - Eloquent\Phony\Test\TestClass->methodA()
-    - Eloquent\Phony\Test\TestClass->methodA('a', 'b', 'c')
+    - Eloquent\Phony\Test\TestClassA->testClassAMethodA('a', 'b', 'c')
+    - Eloquent\Phony\Test\TestClassA->testClassAMethodA()
+    - Eloquent\Phony\Test\TestClassA->testClassAMethodA('a', 'b', 'c')
     - implode()
 EOD;
 
@@ -417,9 +417,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call, exactly 2 times. Calls:
-    - Eloquent\Phony\Test\TestClass->methodA('a', 'b', 'c')
-    - Eloquent\Phony\Test\TestClass->methodA()
-    - Eloquent\Phony\Test\TestClass->methodA('a', 'b', 'c')
+    - Eloquent\Phony\Test\TestClassA->testClassAMethodA('a', 'b', 'c')
+    - Eloquent\Phony\Test\TestClassA->testClassAMethodA()
+    - Eloquent\Phony\Test\TestClassA->testClassAMethodA('a', 'b', 'c')
     - implode()
 EOD;
 
@@ -903,9 +903,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on supplied object. Called on:
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
     - null
 EOD;
 
@@ -927,9 +927,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on object like <stdClass Object (...)>. Called on:
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
     - null
 EOD;
 
@@ -985,9 +985,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected every call on supplied object. Called on:
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
     - null
 EOD;
 
@@ -1008,10 +1008,10 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected every call on object like <Eloquent\Phony\Test\TestClass Object ()>. Called on:
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
-    - Eloquent\Phony\Test\TestClass Object ()
+Expected every call on object like <Eloquent\Phony\Test\TestClassA Object ()>. Called on:
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object ()
     - null
 EOD;
 
@@ -1023,7 +1023,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on object like <Eloquent\Phony\Test\TestClass Object ()>. Never called.'
+            'Expected every call on object like <Eloquent\Phony\Test\TestClassA Object ()>. Never called.'
         );
         $this->subject->always()->calledOn(new EqualToMatcher($this->thisValueA));
     }

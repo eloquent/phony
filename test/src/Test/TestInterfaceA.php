@@ -11,10 +11,13 @@
 
 namespace Eloquent\Phony\Test;
 
-class TestClass
+interface TestInterfaceA
 {
-    public function methodA()
-    {
-        return implode(func_get_args());
-    }
+    public static function testClassAStaticMethodA();
+
+    public static function testClassAStaticMethodB($first, $second);
+
+    public function testClassAMethodA();
+
+    public function testClassAMethodB($first, $second);
 }

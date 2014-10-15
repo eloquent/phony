@@ -21,7 +21,7 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Test\TestClass;
+use Eloquent\Phony\Test\TestClassA;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -56,23 +56,23 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->returnValueB = 'y';
         $this->exceptionA = new RuntimeException('You done goofed.');
         $this->exceptionB = new RuntimeException('Consequences will never be the same.');
-        $this->thisValueA = new TestClass();
-        $this->thisValueB = new TestClass();
+        $this->thisValueA = new TestClassA();
+        $this->thisValueB = new TestClassA();
         $this->arguments = array('a', 'b', 'c');
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueA, 'methodA'), $this->arguments),
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
             $this->callEventFactory->createReturned($this->returnValueA)
         );
         $this->callAResponse = $this->callA->responseEvent();
         $this->callB = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueB, 'methodA')),
+            $this->callEventFactory->createCalled(array($this->thisValueB, 'testClassAMethodA')),
             $this->callEventFactory->createReturned($this->returnValueB)
         );
         $this->callBResponse = $this->callB->responseEvent();
         $this->callC = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueA, 'methodA'), $this->arguments),
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
             $this->callEventFactory->createThrew($this->exceptionA)
         );
         $this->callCResponse = $this->callC->responseEvent();

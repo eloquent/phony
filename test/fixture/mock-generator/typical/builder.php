@@ -2,7 +2,7 @@
 
 $builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
-        'stdClass',
+        'Eloquent\Phony\Test\TestClassB',
         'Iterator',
         'Countable',
         'ArrayAccess'

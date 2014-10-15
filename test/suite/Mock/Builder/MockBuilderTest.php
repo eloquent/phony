@@ -370,12 +370,12 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function classNameGenerationData()
     {
-        //                                      like                             expected
+        //                                      like                              expected
         return array(
-            'Anonymous'                => array(null,                            'PhonyMock_111'),
-            'Extends class'            => array('stdClass',                      'PhonyMock_stdClass_111'),
-            'Extends namespaced class' => array('Eloquent\Phony\Test\TestClass', 'PhonyMock_TestClass_111'),
-            'Inherits interface'       => array(array('Iterator', 'Countable'),  'PhonyMock_Iterator_111'),
+            'Anonymous'                => array(null,                             'PhonyMock_111'),
+            'Extends class'            => array('stdClass',                       'PhonyMock_stdClass_111'),
+            'Extends namespaced class' => array('Eloquent\Phony\Test\TestClassA', 'PhonyMock_TestClassA_111'),
+            'Inherits interface'       => array(array('Iterator', 'Countable'),   'PhonyMock_Iterator_111'),
         );
     }
 
