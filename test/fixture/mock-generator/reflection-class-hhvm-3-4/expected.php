@@ -14,7 +14,7 @@
  *
  * @link https://github.com/eloquent/phony
  */
-class MockGeneratorReflectionClassHhvm
+class MockGeneratorReflectionClassHhvm3_4
 extends ReflectionClass
 implements Eloquent\Phony\Mock\MockInterface
 {

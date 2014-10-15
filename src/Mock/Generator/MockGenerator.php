@@ -593,18 +593,14 @@ EOD;
      * Render documentation for a parameter list.
      *
      * @param ReflectionFunctionAbstract $function            The reflector.
-     * @param boolean|null               $stripFirstParameter True if the first parameter should be removed.
+     * @param boolean                    $stripFirstParameter True if the first parameter should be removed.
      *
      * @return string The rendered parameter list documentation.
      */
     protected function renderParametersDocumentation(
         ReflectionFunctionAbstract $function,
-        $stripFirstParameter = null
+        $stripFirstParameter
     ) {
-        if (null === $stripFirstParameter) {
-            $stripFirstParameter = false;
-        }
-
         $parameters = $function->getParameters();
 
         if ($stripFirstParameter) {

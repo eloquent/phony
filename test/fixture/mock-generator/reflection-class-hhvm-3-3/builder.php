@@ -3,5 +3,5 @@
 return new Eloquent\Phony\Mock\Builder\MockBuilder(
     'ReflectionClass',
     null,
-    'MockGeneratorReflectionClassHhvm'
+    'MockGeneratorReflectionClassHhvm3_3'
 );
