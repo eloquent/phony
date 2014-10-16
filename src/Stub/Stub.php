@@ -280,6 +280,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
+        if (null === $prefixSelf) {
+            $prefixSelf = false;
+        }
+        if (null === $suffixArgumentsArray) {
+            $suffixArgumentsArray = false;
+        }
+        if (null === $suffixArguments) {
+            $suffixArguments = false;
+        }
+
         $indexNormalizer = $this->indexNormalizer();
         $invoker = $this->invoker;
 
@@ -300,6 +310,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 }
 
                 $callback = $incoming[$index];
+
+                if (!is_callable($callback)) {
+                    return;
+                }
+
                 $request = new CallRequest(
                     $callback,
                     $arguments,
@@ -424,7 +439,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $invoker = $this->invoker;
         $callback = $this->callback;
 
-        return $this->callsWith(
+        return $this->doesWith(
             function ($self, array $incoming) use (
                 $invoker,
                 $callback,
