@@ -43,8 +43,8 @@ implements \Eloquent\Phony\Mock\MockInterface
     /**
      * Custom method 'methodA'.
      *
-     * @param callable      $a0 Originally named 'first'.
-     * @param callable|null $a1 Originally named 'second'.
+     * @param callable      $a0 Was 'first'.
+     * @param callable|null $a1 Was 'second'.
      */
     public function methodA(
         callable $a0,

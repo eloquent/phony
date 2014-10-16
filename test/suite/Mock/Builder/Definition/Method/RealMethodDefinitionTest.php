@@ -24,10 +24,10 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
-        $this->assertSame(RealMethodDefinition::ACCESS_LEVEL_PUBLIC, $this->subject->accessLevel());
+        $this->assertSame('public', $this->subject->accessLevel());
         $this->assertSame($this->name, $this->subject->name());
         $this->assertSame($this->method, $this->subject->method());
-        $this->assertNull($this->subject->closure());
+        $this->assertNull($this->subject->callback());
     }
 
     public function testConstructorWithPublicNonStatic()
@@ -38,10 +38,10 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
-        $this->assertSame(RealMethodDefinition::ACCESS_LEVEL_PUBLIC, $this->subject->accessLevel());
+        $this->assertSame('public', $this->subject->accessLevel());
         $this->assertSame($this->name, $this->subject->name());
         $this->assertSame($this->method, $this->subject->method());
-        $this->assertNull($this->subject->closure());
+        $this->assertNull($this->subject->callback());
     }
 
     public function testConstructorWithProtectedStatic()
@@ -52,10 +52,10 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
-        $this->assertSame(RealMethodDefinition::ACCESS_LEVEL_PROTECTED, $this->subject->accessLevel());
+        $this->assertSame('protected', $this->subject->accessLevel());
         $this->assertSame($this->name, $this->subject->name());
         $this->assertSame($this->method, $this->subject->method());
-        $this->assertNull($this->subject->closure());
+        $this->assertNull($this->subject->callback());
     }
 
     public function testConstructorWithProtectedNonStatic()
@@ -66,10 +66,10 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
-        $this->assertSame(RealMethodDefinition::ACCESS_LEVEL_PROTECTED, $this->subject->accessLevel());
+        $this->assertSame('protected', $this->subject->accessLevel());
         $this->assertSame($this->name, $this->subject->name());
         $this->assertSame($this->method, $this->subject->method());
-        $this->assertNull($this->subject->closure());
+        $this->assertNull($this->subject->callback());
     }
 
     public function testConstructorDefaults()
@@ -79,9 +79,9 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
-        $this->assertSame(RealMethodDefinition::ACCESS_LEVEL_PUBLIC, $this->subject->accessLevel());
+        $this->assertSame('public', $this->subject->accessLevel());
         $this->assertSame('testClassAStaticMethodA', $this->subject->name());
         $this->assertSame($this->method, $this->subject->method());
-        $this->assertNull($this->subject->closure());
+        $this->assertNull($this->subject->callback());
     }
 }

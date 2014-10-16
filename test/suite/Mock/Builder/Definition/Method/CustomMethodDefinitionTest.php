@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
 use PHPUnit_Framework_TestCase;
+use ReflectionFunction;
 
 class CustomMethodDefinitionTest extends PHPUnit_Framework_TestCase
 {
@@ -19,25 +20,25 @@ class CustomMethodDefinitionTest extends PHPUnit_Framework_TestCase
     {
         $this->isStatic = false;
         $this->name = 'name';
-        $this->closure = function () {};
-        $this->subject = new CustomMethodDefinition($this->isStatic, $this->name, $this->closure);
+        $this->callback = function () {};
+        $this->subject = new CustomMethodDefinition($this->isStatic, $this->name, $this->callback);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->isStatic, $this->subject->isStatic());
         $this->assertTrue($this->subject->isCustom());
-        $this->assertSame(RealMethodDefinition::ACCESS_LEVEL_PUBLIC, $this->subject->accessLevel());
+        $this->assertSame('public', $this->subject->accessLevel());
         $this->assertSame($this->name, $this->subject->name());
-        $this->assertNull($this->subject->method());
-        $this->assertSame($this->closure, $this->subject->closure());
+        $this->assertEquals(new ReflectionFunction($this->callback), $this->subject->method());
+        $this->assertSame($this->callback, $this->subject->callback());
     }
 
     public function testConstructorDefaults()
     {
         $this->subject = new CustomMethodDefinition($this->isStatic, $this->name);
 
-        $this->assertInstanceOf('Closure', $this->subject->closure());
-        $this->assertNull(call_user_func($this->subject->closure()));
+        $this->assertInstanceOf('Closure', $this->subject->callback());
+        $this->assertNull(call_user_func($this->subject->callback()));
     }
 }

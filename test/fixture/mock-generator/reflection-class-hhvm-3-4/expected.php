@@ -29,12 +29,12 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited static method 'export'.
+     * Inherited method 'export'.
      *
      * @uses \ReflectionClass::export()
      *
-     * @param mixed $a0 Originally named 'name'.
-     * @param mixed $a1 Originally named 'ret'.
+     * @param mixed $a0 Was 'name'.
+     * @param mixed $a1 Was 'ret'.
      */
     public static function export(
         $a0,
@@ -65,6 +65,10 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     /**
      * Call the parent constructor.
+     *
+     * @uses ReflectionClass::__construct
+     *
+     * @param mixed $a0 Was 'name_or_obj'.
      */
     public function _constructParent(
         $a0
@@ -95,7 +99,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getAttribute()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function getAttribute(
         $a0
@@ -113,7 +117,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getAttributeRecursive()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function getAttributeRecursive(
         $a0
@@ -161,7 +165,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getConstant()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function getConstant(
         $a0
@@ -329,7 +333,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getMethod()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function getMethod(
         $a0
@@ -347,7 +351,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getMethods()
      *
-     * @param mixed $a0 Originally named 'filter'.
+     * @param mixed $a0 Was 'filter'.
      */
     public function getMethods(
         $a0 = null
@@ -425,7 +429,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getProperties()
      *
-     * @param mixed $a0 Originally named 'filter'.
+     * @param mixed $a0 Was 'filter'.
      */
     public function getProperties(
         $a0 = 65535
@@ -443,7 +447,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getProperty()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function getProperty(
         $a0
@@ -536,7 +540,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::getStaticPropertyValue()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function getStaticPropertyValue(
         $a0
@@ -599,7 +603,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::hasConstant()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function hasConstant(
         $a0
@@ -617,7 +621,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::hasMethod()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function hasMethod(
         $a0
@@ -635,7 +639,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::hasProperty()
      *
-     * @param mixed $a0 Originally named 'name'.
+     * @param mixed $a0 Was 'name'.
      */
     public function hasProperty(
         $a0
@@ -653,7 +657,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::implementsInterface()
      *
-     * @param mixed $a0 Originally named 'cls'.
+     * @param mixed $a0 Was 'cls'.
      */
     public function implementsInterface(
         $a0
@@ -731,7 +735,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::isInstance()
      *
-     * @param mixed $a0 Originally named 'obj'.
+     * @param mixed $a0 Was 'obj'.
      */
     public function isInstance(
         $a0
@@ -809,7 +813,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::isSubclassOf()
      *
-     * @param mixed $a0 Originally named 'cls'.
+     * @param mixed $a0 Was 'cls'.
      */
     public function isSubclassOf(
         $a0
@@ -857,7 +861,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::newInstance()
      *
-     * @param mixed $a0 Originally named 'args'.
+     * @param mixed $a0 Was 'args'.
      */
     public function newInstance(
         $a0
@@ -875,7 +879,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::newInstanceArgs()
      *
-     * @param mixed $a0 Originally named 'args'.
+     * @param mixed $a0 Was 'args'.
      */
     public function newInstanceArgs(
         $a0 = array()
@@ -923,8 +927,8 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::setStaticPropertyValue()
      *
-     * @param mixed $a0 Originally named 'name'.
-     * @param mixed $a1 Originally named 'value'.
+     * @param mixed $a0 Was 'name'.
+     * @param mixed $a1 Was 'value'.
      */
     public function setStaticPropertyValue(
         $a0,
@@ -943,7 +947,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::unserialize()
      *
-     * @param mixed $a0 Originally named 'string'.
+     * @param mixed $a0 Was 'string'.
      */
     public function unserialize(
         $a0

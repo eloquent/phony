@@ -11,12 +11,12 @@
 
 namespace Eloquent\Phony\Mock\Generator;
 
+use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunctionAbstract;
-use ReflectionMethod;
 use ReflectionParameter;
 
 /**
@@ -61,11 +61,24 @@ class MockGenerator implements MockGeneratorInterface
      */
     public function generate(MockBuilderInterface $builder)
     {
+        $builder->finalize();
+
         return $this->generateHeader($builder) .
             $this->generateConstants($builder) .
-            $this->generateStaticMethods($builder) .
+            $this->generateStaticStubSetter($builder) .
+            $this->generateMethods(
+                $builder->methodDefinitions()->publicStaticMethods()
+            ) .
             $this->generateConstructors($builder) .
-            $this->generateMethods($builder) .
+            $this->generateMethods(
+                $builder->methodDefinitions()->publicMethods()
+            ) .
+            $this->generateMethods(
+                $builder->methodDefinitions()->protectedStaticMethods()
+            ) .
+            $this->generateMethods(
+                $builder->methodDefinitions()->protectedMethods()
+            ) .
             $this->generateProperties($builder) .
             "\n}\n";
     }
@@ -172,15 +185,15 @@ EOD;
     }
 
     /**
-     * Generate the static methods.
+     * Generate the static stub setter.
      *
      * @param MockBuilderInterface $builder The builder.
      *
      * @return string The source code.
      */
-    protected function generateStaticMethods(MockBuilderInterface $builder)
+    protected function generateStaticStubSetter(MockBuilderInterface $builder)
     {
-        $source = <<<'EOD'
+        return <<<'EOD'
 
     /**
      * Set the static stubs.
@@ -193,63 +206,6 @@ EOD;
     }
 
 EOD;
-
-        foreach ($builder->staticMethodReflectors() as $method) {
-            if ($method[2]) {
-                $template = <<<'EOD'
-    /**
-     * Custom static method '%s'.%s
-     */
-EOD;
-            } else {
-                $template = <<<'EOD'
-    /**
-     * Inherited static method '%%s'.
-     *
-     * @uses \%s::%s()%%s
-     */
-EOD;
-                $template = sprintf(
-                    $template,
-                    $method[1]->getDeclaringClass()->getName(),
-                    $method[1]->getName()
-                );
-            }
-
-            $comment = sprintf(
-                $template,
-                $method[0],
-                $this->renderParametersDocumentation($method[1], $method[2])
-            );
-
-            $access = 'public';
-
-            if ($method[1] instanceof ReflectionMethod) {
-                if (!$method[1]->isPublic()) {
-                    $access = 'protected';
-                }
-            }
-
-            $body = <<<'EOD'
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return call_user_func_array(
-                self::$_staticStubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-EOD;
-
-            $source .= sprintf(
-                "\n%s\n    %s static function %s%s%s\n    }\n",
-                $comment,
-                $access,
-                $method[0],
-                $this->renderParameters($method[1], $method[2]),
-                $body
-            );
-        }
-
-        return $source;
     }
 
     /**
@@ -309,6 +265,8 @@ EOD;
 
     /**
      * Call the parent constructor.
+     *
+     * @uses %s::%s%s
      */
     public function _constructParent%s        call_user_func_array(
             array($this, 'parent::%s'),
@@ -318,26 +276,31 @@ EOD;
 
 EOD;
 
+        $name = $constructor->getName();
+
         return sprintf(
             $template,
-            $this->renderParameters($constructor),
-            $constructor->getName()
+            $constructor->getDeclaringClass()->getName(),
+            $name,
+            $this->renderParametersDocumentation($constructor, false),
+            $this->renderParameters($constructor, false),
+            $name
         );
     }
 
     /**
-     * Generate the methods.
+     * Generate the supplied methods
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param array<string,MethodDefinitionInterface> The methods.
      *
      * @return string The source code.
      */
-    protected function generateMethods(MockBuilderInterface $builder)
+    protected function generateMethods(array $methods)
     {
         $source = '';
 
-        foreach ($builder->methodReflectors() as $method) {
-            if ($method[2]) {
+        foreach ($methods as $method) {
+            if ($method->isCustom()) {
                 $commentTemplate = <<<'EOD'
     /**
      * Custom method '%s'.%s
@@ -353,26 +316,33 @@ EOD;
 EOD;
                 $commentTemplate = sprintf(
                     $commentTemplate,
-                    $method[1]->getDeclaringClass()->getName(),
-                    $method[1]->getName()
+                    $method->method()->getDeclaringClass()->getName(),
+                    $method->method()->getName()
                 );
             }
 
             $comment = sprintf(
                 $commentTemplate,
-                $method[0],
-                $this->renderParametersDocumentation($method[1], $method[2])
+                $method->name(),
+                $this->renderParametersDocumentation(
+                    $method->method(),
+                    $method->isCustom()
+                )
             );
 
-            $access = 'public';
-
-            if ($method[1] instanceof ReflectionMethod) {
-                if (!$method[1]->isPublic()) {
-                    $access = 'protected';
-                }
-            }
-
-            $body = <<<'EOD'
+            if ($method->isStatic()) {
+                $scope = 'static ';
+                $body = <<<'EOD'
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+EOD;
+            } else {
+                $scope = '';
+                $body = <<<'EOD'
         if (isset($this->_stubs[__FUNCTION__])) {
             return call_user_func_array(
                 $this->_stubs[__FUNCTION__],
@@ -380,13 +350,15 @@ EOD;
             );
         }
 EOD;
+            }
 
             $source .= sprintf(
-                "\n%s\n    %s function %s%s%s\n    }\n",
+                "\n%s\n    %s %sfunction %s%s%s\n    }\n",
                 $comment,
-                $access,
-                $method[0],
-                $this->renderParameters($method[1], $method[2]),
+                $method->accessLevel(),
+                $scope,
+                $method->name(),
+                $this->renderParameters($method->method(), $method->isCustom()),
                 $body
             );
         }
@@ -435,19 +407,15 @@ EOD;
     /**
      * Render a parameter list compatible with the supplied function reflector.
      *
-     * @param ReflectionFunctionAbstract $function            The reflector.
-     * @param boolean|null               $stripFirstParameter True if the first parameter should be removed.
+     * @param ReflectionFunctionAbstract $function            The function.
+     * @param boolean                    $stripFirstParameter True if the first parameter should not be rendered.
      *
      * @return string The rendered parameter list.
      */
     protected function renderParameters(
         ReflectionFunctionAbstract $function,
-        $stripFirstParameter = null
+        $stripFirstParameter
     ) {
-        if (null === $stripFirstParameter) {
-            $stripFirstParameter = false;
-        }
-
         $parameters = $function->getParameters();
 
         if ($stripFirstParameter) {
@@ -518,12 +486,12 @@ EOD;
     }
 
     /**
-     * Render documentation for a parameter list.
+     * Render parameter documentation for a function reflector.
      *
-     * @param ReflectionFunctionAbstract $function            The reflector.
-     * @param boolean                    $stripFirstParameter True if the first parameter should be removed.
+     * @param ReflectionFunctionAbstract $function            The function.
+     * @param boolean                    $stripFirstParameter True if the first parameter should not be rendered.
      *
-     * @return string The rendered parameter list documentation.
+     * @return string The rendered documentation.
      */
     protected function renderParametersDocumentation(
         ReflectionFunctionAbstract $function,
@@ -596,7 +564,7 @@ EOD;
         }
 
         $description = sprintf(
-            'Originally named %s.',
+            'Was %s.',
             var_export($parameter->getName(), true)
         );
 

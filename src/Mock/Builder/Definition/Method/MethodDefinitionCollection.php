@@ -19,44 +19,12 @@ namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
 {
     /**
-     * A comparator for sorting method definitions.
-     *
-     * @param MethodDefinitionInterface $left  The left definition.
-     * @param MethodDefinitionInterface $right The right definition.
-     *
-     * @return integer The result.
-     */
-    public static function compareDefinitions(
-        MethodDefinitionInterface $left,
-        MethodDefinitionInterface $right
-    ) {
-        $leftAccess = $left->accessLevel();
-        $rightAccess = $right->accessLevel();
-
-        if ($leftAccess !== $rightAccess) {
-            return $leftAccess - $rightAccess;
-        }
-
-        if ($left->isStatic()) {
-            if (!$right->isStatic()) {
-                return -1;
-            }
-        } elseif ($right->isStatic()) {
-            return 1;
-        }
-
-        return strcmp($left->name(), $right->name());
-    }
-
-    /**
      * Construct a new custom method definition.
      *
      * @param array<string,MethodDefinitionInterface> $methods The methods.
      */
     public function __construct(array $methods)
     {
-        uasort($methods, get_class() . '::compareDefinitions');
-
         $this->methods = $methods;
     }
 
@@ -80,7 +48,8 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         return array_filter(
             $this->methods,
             function ($method) {
-                return $method->isStatic() && 0 === $method->accessLevel();
+                return $method->isStatic() &&
+                    'public' === $method->accessLevel();
             }
         );
     }
@@ -95,7 +64,8 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         return array_filter(
             $this->methods,
             function ($method) {
-                return !$method->isStatic() && 0 === $method->accessLevel();
+                return !$method->isStatic() &&
+                    'public' === $method->accessLevel();
             }
         );
     }
@@ -110,7 +80,8 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         return array_filter(
             $this->methods,
             function ($method) {
-                return $method->isStatic() && 1 === $method->accessLevel();
+                return $method->isStatic() &&
+                    'protected' === $method->accessLevel();
             }
         );
     }
@@ -125,7 +96,8 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         return array_filter(
             $this->methods,
             function ($method) {
-                return !$method->isStatic() && 1 === $method->accessLevel();
+                return !$method->isStatic() &&
+                    'protected' === $method->accessLevel();
             }
         );
     }

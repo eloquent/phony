@@ -11,9 +11,11 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
+use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
-use ReflectionFunction;
 use ReflectionMethod;
 
 class MockBuilderTest extends PHPUnit_Framework_TestCase
@@ -75,6 +77,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             array('constantA' => 'constantValueA', 'constantB' => 'constantValueB'),
             $this->subject->constants()
         );
+        $this->assertNull($this->subject->methodDefinitions());
     }
 
     public function testConstructorWithoutClassName()
@@ -158,6 +161,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             array('constantA' => 'constantValueA', 'constantB' => 'constantValueB'),
             $this->subject->constants()
         );
+        $this->assertNull($this->subject->methodDefinitions());
     }
 
     public function testConstructorDefaults()
@@ -389,11 +393,63 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testFinalize()
     {
+        $expected = new MethodDefinitionCollection(
+            array(
+                'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count')),
+                'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current')),
+                'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key')),
+                'methodA' => new CustomMethodDefinition(true, 'methodA', $this->callbackA),
+                'methodB' => new CustomMethodDefinition(true, 'methodB', $this->callbackB),
+                'methodC' => new CustomMethodDefinition(false, 'methodC', $this->callbackC),
+                'methodD' => new CustomMethodDefinition(false, 'methodD', $this->callbackD),
+                'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next')),
+                'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind')),
+                'testClassAMethodA' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA')
+                ),
+                'testClassAMethodB' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB')
+                ),
+                'testClassAMethodC' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC')
+                ),
+                'testClassAMethodD' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD')
+                ),
+                'testClassAStaticMethodA' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA')
+                ),
+                'testClassAStaticMethodB' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB')
+                ),
+                'testClassAStaticMethodC' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC')
+                ),
+                'testClassAStaticMethodD' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD')
+                ),
+                'testClassBMethodA' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA')
+                ),
+                'testClassBMethodB' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB')
+                ),
+                'testClassBStaticMethodA' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA')
+                ),
+                'testClassBStaticMethodB' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB')
+                ),
+                'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid')),
+            )
+        );
+
         $this->assertFalse($this->subject->isFinalized());
         $this->assertSame($this->subject, $this->subject->finalize());
         $this->assertTrue($this->subject->isFinalized());
         $this->assertSame($this->subject, $this->subject->finalize());
         $this->assertTrue($this->subject->isFinalized());
+        $this->assertEquals($expected, $this->subject->methodDefinitions());
     }
 
     public function classNameGenerationData()
@@ -430,95 +486,5 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame('PhonyMock_TestTraitA_111', $this->subject->className());
-    }
-
-    public function testMethodReflectors()
-    {
-        $actual = $this->subject->methodReflectors();
-        $expected = array(
-            'methodC' => array('methodC', new ReflectionFunction($this->callbackC), true),
-            'methodD' => array('methodD', new ReflectionFunction($this->callbackD), true),
-            'count' => array('count', new ReflectionMethod('Countable::count'), false),
-            'current' => array('current', new ReflectionMethod('Iterator::current'), false),
-            'key' => array('key', new ReflectionMethod('Iterator::key'), false),
-            'next' => array('next', new ReflectionMethod('Iterator::next'), false),
-            'rewind' => array('rewind', new ReflectionMethod('Iterator::rewind'), false),
-            'testClassAMethodA' => array(
-                'testClassAMethodA',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'),
-                false,
-            ),
-            'testClassAMethodB' => array(
-                'testClassAMethodB',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'),
-                false,
-            ),
-            'testClassBMethodA' => array(
-                'testClassBMethodA',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'),
-                false,
-            ),
-            'testClassBMethodB' => array(
-                'testClassBMethodB',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'),
-                false,
-            ),
-            'valid' => array('valid', new ReflectionMethod('Iterator::valid'), false),
-            'testClassAMethodC' => array(
-                'testClassAMethodC',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC'),
-                false,
-            ),
-            'testClassAMethodD' => array(
-                'testClassAMethodD',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD'),
-                false,
-            ),
-        );
-
-        $this->assertEquals($expected, $actual);
-        $this->assertSame(array_keys($expected), array_keys($actual));
-    }
-
-    public function testStaticMethodReflectors()
-    {
-        $actual = $this->subject->staticMethodReflectors();
-        $expected = array(
-            'methodA' => array('methodA', new ReflectionFunction($this->callbackA), true),
-            'methodB' => array('methodB', new ReflectionFunction($this->callbackB), true),
-            'testClassAStaticMethodA' => array(
-                'testClassAStaticMethodA',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'),
-                false,
-            ),
-            'testClassAStaticMethodB' => array(
-                'testClassAStaticMethodB',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'),
-                false,
-            ),
-            'testClassBStaticMethodA' => array(
-                'testClassBStaticMethodA',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'),
-                false,
-            ),
-            'testClassBStaticMethodB' => array(
-                'testClassBStaticMethodB',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'),
-                false,
-            ),
-            'testClassAStaticMethodC' => array(
-                'testClassAStaticMethodC',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC'),
-                false,
-            ),
-            'testClassAStaticMethodD' => array(
-                'testClassAStaticMethodD',
-                new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD'),
-                false,
-            ),
-        );
-
-        $this->assertEquals($expected, $actual);
-        $this->assertSame(array_keys($expected), array_keys($actual));
     }
 }

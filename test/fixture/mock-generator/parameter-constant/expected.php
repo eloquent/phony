@@ -43,7 +43,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     /**
      * Custom method 'methodA'.
      *
-     * @param mixed $a0 Originally named 'first'.
+     * @param mixed $a0 Was 'first'.
      */
     public function methodA(
         $a0 = \ReflectionMethod::IS_PUBLIC

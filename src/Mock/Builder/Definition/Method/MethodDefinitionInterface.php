@@ -11,8 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
-use Closure;
-use ReflectionMethod;
+use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by method definitions.
@@ -36,7 +35,7 @@ interface MethodDefinitionInterface
     /**
      * Get the access level.
      *
-     * @return integer The access level.
+     * @return string The access level.
      */
     public function accessLevel();
 
@@ -50,14 +49,14 @@ interface MethodDefinitionInterface
     /**
      * Get the method.
      *
-     * @return ReflectionMethod|null The method, or null if this definition is custom.
+     * @return ReflectionFunctionAbstract The method.
      */
     public function method();
 
     /**
-     * Get the closure.
+     * Get the callback.
      *
-     * @return Closure|null The closure, or null if this definition is a real method.
+     * @return callable|null The callback, or null if this is a real method.
      */
-    public function closure();
+    public function callback();
 }

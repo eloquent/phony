@@ -29,13 +29,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited static method 'createFromFormat'.
+     * Inherited method 'createFromFormat'.
      *
      * @uses \DateTime::createFromFormat()
      *
-     * @param mixed $a0 Originally named 'format'.
-     * @param mixed $a1 Originally named 'time'.
-     * @param mixed $a2 Originally named 'timezone'.
+     * @param mixed $a0 Was 'format'.
+     * @param mixed $a1 Was 'time'.
+     * @param mixed $a2 Was 'timezone'.
      */
     public static function createFromFormat(
         $a0,
@@ -51,7 +51,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Inherited static method 'getLastErrors'.
+     * Inherited method 'getLastErrors'.
      *
      * @uses \DateTime::getLastErrors()
      */
@@ -82,6 +82,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     /**
      * Call the parent constructor.
+     *
+     * @uses DateTime::__construct
+     *
+     * @param mixed $a0 Was 'time'.
+     * @param mixed $a1 Was 'timezone'.
      */
     public function _constructParent(
         $a0 = 'now',
@@ -143,7 +148,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::add()
      *
-     * @param mixed $a0 Originally named 'interval'.
+     * @param mixed $a0 Was 'interval'.
      */
     public function add(
         $a0
@@ -161,8 +166,8 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::diff()
      *
-     * @param mixed $a0 Originally named 'datetime2'.
-     * @param mixed $a1 Originally named 'absolute'.
+     * @param mixed $a0 Was 'datetime2'.
+     * @param mixed $a1 Was 'absolute'.
      */
     public function diff(
         $a0,
@@ -181,7 +186,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::format()
      *
-     * @param mixed $a0 Originally named 'format'.
+     * @param mixed $a0 Was 'format'.
      */
     public function format(
         $a0
@@ -244,7 +249,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::modify()
      *
-     * @param mixed $a0 Originally named 'modify'.
+     * @param mixed $a0 Was 'modify'.
      */
     public function modify(
         $a0
@@ -262,9 +267,9 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::setDate()
      *
-     * @param mixed $a0 Originally named 'year'.
-     * @param mixed $a1 Originally named 'month'.
-     * @param mixed $a2 Originally named 'day'.
+     * @param mixed $a0 Was 'year'.
+     * @param mixed $a1 Was 'month'.
+     * @param mixed $a2 Was 'day'.
      */
     public function setDate(
         $a0,
@@ -284,9 +289,9 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::setISODate()
      *
-     * @param mixed $a0 Originally named 'year'.
-     * @param mixed $a1 Originally named 'week'.
-     * @param mixed $a2 Originally named 'day'.
+     * @param mixed $a0 Was 'year'.
+     * @param mixed $a1 Was 'week'.
+     * @param mixed $a2 Was 'day'.
      */
     public function setISODate(
         $a0,
@@ -306,9 +311,9 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::setTime()
      *
-     * @param mixed $a0 Originally named 'hour'.
-     * @param mixed $a1 Originally named 'minute'.
-     * @param mixed $a2 Originally named 'second'.
+     * @param mixed $a0 Was 'hour'.
+     * @param mixed $a1 Was 'minute'.
+     * @param mixed $a2 Was 'second'.
      */
     public function setTime(
         $a0,
@@ -328,7 +333,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::setTimestamp()
      *
-     * @param mixed $a0 Originally named 'unixtimestamp'.
+     * @param mixed $a0 Was 'unixtimestamp'.
      */
     public function setTimestamp(
         $a0
@@ -346,7 +351,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::setTimezone()
      *
-     * @param mixed $a0 Originally named 'timezone'.
+     * @param mixed $a0 Was 'timezone'.
      */
     public function setTimezone(
         $a0
@@ -364,7 +369,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \DateTime::sub()
      *
-     * @param mixed $a0 Originally named 'interval'.
+     * @param mixed $a0 Was 'interval'.
      */
     public function sub(
         $a0

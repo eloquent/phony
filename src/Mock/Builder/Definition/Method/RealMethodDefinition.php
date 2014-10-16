@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
-use Closure;
+use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 /**
@@ -21,9 +21,6 @@ use ReflectionMethod;
  */
 class RealMethodDefinition implements MethodDefinitionInterface
 {
-    const ACCESS_LEVEL_PUBLIC = 0;
-    const ACCESS_LEVEL_PROTECTED = 1;
-
     /**
      * Construct a new real method definition.
      *
@@ -63,15 +60,15 @@ class RealMethodDefinition implements MethodDefinitionInterface
     /**
      * Get the access level.
      *
-     * @return integer The access level.
+     * @return string The access level.
      */
     public function accessLevel()
     {
         if ($this->method->isPublic()) {
-            return self::ACCESS_LEVEL_PUBLIC;
+            return 'public';
         }
 
-        return self::ACCESS_LEVEL_PROTECTED;
+        return 'protected';
     }
 
     /**
@@ -87,7 +84,7 @@ class RealMethodDefinition implements MethodDefinitionInterface
     /**
      * Get the method.
      *
-     * @return ReflectionMethod|null The method, or null if this definition is custom.
+     * @return ReflectionFunctionAbstract The method.
      */
     public function method()
     {
@@ -95,11 +92,11 @@ class RealMethodDefinition implements MethodDefinitionInterface
     }
 
     /**
-     * Get the closure.
+     * Get the callback.
      *
-     * @return Closure|null The closure, or null if this definition is a real method.
+     * @return callable|null The callback, or null if this is a real method.
      */
-    public function closure()
+    public function callback()
     {
         return null;
     }

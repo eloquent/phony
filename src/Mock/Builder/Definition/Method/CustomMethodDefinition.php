@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
-use Closure;
-use ReflectionMethod;
+use ReflectionFunction;
+use ReflectionFunctionAbstract;
 
 /**
  * Represents a custom method definition.
@@ -24,19 +24,20 @@ class CustomMethodDefinition implements MethodDefinitionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param boolean      $isStatic True if this method is static.
-     * @param string       $name     The name.
-     * @param Closure|null $closure  The closure.
+     * @param boolean       $isStatic True if this method is static.
+     * @param string        $name     The name.
+     * @param callable|null $callback The callback.
      */
-    public function __construct($isStatic, $name, Closure $closure = null)
+    public function __construct($isStatic, $name, $callback = null)
     {
-        if (null === $closure) {
-            $closure = function () {};
+        if (null === $callback) {
+            $callback = function () {};
         }
 
         $this->isStatic = $isStatic;
         $this->name = $name;
-        $this->closure = $closure;
+        $this->method = new ReflectionFunction($callback);
+        $this->callback = $callback;
     }
 
     /**
@@ -62,11 +63,11 @@ class CustomMethodDefinition implements MethodDefinitionInterface
     /**
      * Get the access level.
      *
-     * @return integer The access level.
+     * @return string The access level.
      */
     public function accessLevel()
     {
-        return RealMethodDefinition::ACCESS_LEVEL_PUBLIC;
+        return 'public';
     }
 
     /**
@@ -82,24 +83,25 @@ class CustomMethodDefinition implements MethodDefinitionInterface
     /**
      * Get the method.
      *
-     * @return ReflectionMethod|null The method, or null if this definition is custom.
+     * @return ReflectionFunctionAbstract The method.
      */
     public function method()
     {
-        return null;
+        return $this->method;
     }
 
     /**
-     * Get the closure.
+     * Get the callback.
      *
-     * @return Closure|null The closure, or null if this definition is a real method.
+     * @return callable|null The callback, or null if this is a real method.
      */
-    public function closure()
+    public function callback()
     {
-        return $this->closure;
+        return $this->callback;
     }
 
     private $isStatic;
     private $name;
-    private $closure;
+    private $method;
+    private $callback;
 }

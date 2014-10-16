@@ -12,6 +12,9 @@
 namespace Eloquent\Phony\Mock\Builder;
 
 use Closure;
+use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
+use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Builder\Exception\FinalizedMockException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException;
@@ -20,9 +23,6 @@ use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
 use Eloquent\Phony\Mock\MockInterface;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionFunction;
-use ReflectionFunctionAbstract;
-use ReflectionMethod;
 
 /**
  * Builds mock classes.
@@ -35,45 +35,6 @@ class MockBuilder implements MockBuilderInterface
      * The regular expression used to validate symbol names.
      */
     const SYMBOL_PATTERN = '[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*';
-
-    /**
-     * A comparator for sorting function reflectors by access and name.
-     *
-     * @param tuple<string,ReflectionFunctionAbstract,boolean> $left  The left function.
-     * @param tuple<string,ReflectionFunctionAbstract,boolean> $right The right function.
-     *
-     * @return integer The result.
-     */
-    public static function compareFunctions(
-        array $left,
-        array $right
-    ) {
-        if ($left[1] instanceof ReflectionMethod) {
-            if ($left[1]->isPublic()) {
-                $leftAccess = 1;
-            } else {
-                $leftAccess = 2;
-            }
-        } else {
-            $leftAccess = 0;
-        }
-
-        if ($right[1] instanceof ReflectionMethod) {
-            if ($right[1]->isPublic()) {
-                $rightAccess = 1;
-            } else {
-                $rightAccess = 2;
-            }
-        } else {
-            $rightAccess = 0;
-        }
-
-        if ($leftAccess !== $rightAccess) {
-            return $leftAccess < $rightAccess ? -1 : 1;
-        }
-
-        return strcmp($left[0], $right[0]);
-    }
 
     /**
      * Construct a new mock builder.
@@ -365,6 +326,7 @@ class MockBuilder implements MockBuilderInterface
     public function finalize()
     {
         $this->isFinalized = true;
+        $this->methodDefinitions = $this->buildMethodDefinitions();
 
         return $this;
     }
@@ -454,49 +416,13 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get reflectors for all non-static methods.
+     * Get the method definitions.
      *
-     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
-     * whether the method is a custom method.
-     *
-     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
+     * @return MethodDefinitionCollectionInterface|null The definitions, or null if the builder is not yet finalized.
      */
-    public function methodReflectors()
+    public function methodDefinitions()
     {
-        $methods = array();
-        $parameterCounts = array();
-
-        foreach ($this->reflectors as $type) {
-            foreach ($type->getMethods() as $method) {
-                $name = $method->getName();
-
-                if (
-                    !$method->isStatic() &&
-                    !$method->isFinal() &&
-                    !$method->isPrivate() &&
-                    !$method->isConstructor()
-                ) {
-                    $parameterCount = $method->getNumberOfParameters();
-
-                    if (
-                        !isset($methods[$name]) ||
-                        $parameterCount > $parameterCounts[$name]
-                    ) {
-                        $methods[$name] = array($name, $method, false);
-                        $parameterCounts[$name] = $parameterCount;
-                    }
-                }
-            }
-        }
-
-        foreach ($this->methods as $name => $callback) {
-            $methods[$name] =
-                array($name, new ReflectionFunction($callback), true);
-        }
-
-        uasort($methods, get_class() . '::compareFunctions');
-
-        return $methods;
+        return $this->methodDefinitions;
     }
 
     /**
@@ -507,51 +433,6 @@ class MockBuilder implements MockBuilderInterface
     public function staticMethods()
     {
         return $this->staticMethods;
-    }
-
-    /**
-     * Get reflectors for all static methods.
-     *
-     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
-     * whether the method is a custom method.
-     *
-     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
-     */
-    public function staticMethodReflectors()
-    {
-        $methods = array();
-        $parameterCounts = array();
-
-        foreach ($this->reflectors as $type) {
-            foreach ($type->getMethods() as $method) {
-                $name = $method->getName();
-
-                if (
-                    $method->isStatic() &&
-                    !$method->isFinal() &&
-                    !$method->isPrivate()
-                ) {
-                    $parameterCount = $method->getNumberOfParameters();
-
-                    if (
-                        !isset($methods[$name]) ||
-                        $parameterCount > $parameterCounts[$name]
-                    ) {
-                        $methods[$name] = array($name, $method, false);
-                        $parameterCounts[$name] = $parameterCount;
-                    }
-                }
-            }
-        }
-
-        foreach ($this->staticMethods as $name => $callback) {
-            $methods[$name] =
-                array($name, new ReflectionFunction($callback), true);
-        }
-
-        uasort($methods, get_class() . '::compareFunctions');
-
-        return $methods;
     }
 
     /**
@@ -669,6 +550,53 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Build the method definitions.
+     *
+     * @return MethodDefinitionCollectionInterface The method definitions.
+     */
+    protected function buildMethodDefinitions()
+    {
+        $methods = array();
+        $parameterCounts = array();
+
+        foreach ($this->reflectors as $type) {
+            foreach ($type->getMethods() as $method) {
+                $name = $method->getName();
+
+                if (
+                    !$method->isFinal() &&
+                    !$method->isPrivate() &&
+                    !$method->isConstructor()
+                ) {
+                    $parameterCount = $method->getNumberOfParameters();
+
+                    if (
+                        !isset($methods[$name]) ||
+                        $parameterCount > $parameterCounts[$name]
+                    ) {
+                        $methods[$name] = new RealMethodDefinition($method);
+                        $parameterCounts[$name] = $parameterCount;
+                    }
+                }
+            }
+        }
+
+        foreach ($this->staticMethods as $name => $closure) {
+            $methods[$name] =
+                new CustomMethodDefinition(true, $name, $closure);
+        }
+
+        foreach ($this->methods as $name => $closure) {
+            $methods[$name] =
+                new CustomMethodDefinition(false, $name, $closure);
+        }
+
+        ksort($methods, SORT_STRING);
+
+        return new MethodDefinitionCollection($methods);
+    }
+
+    /**
      * Generate a mock class name.
      *
      * @param string|null                $parentClassName The parent class name.
@@ -724,4 +652,5 @@ class MockBuilder implements MockBuilderInterface
     private $interfaceNames;
     private $traitNames;
     private $isFinalized;
+    private $methodDefinitions;
 }

@@ -45,10 +45,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
-     * Custom static method 'methodA'.
+     * Custom method 'methodA'.
      *
-     * @param mixed $a0  Originally named 'first'.
-     * @param mixed &$a1 Originally named 'second'.
+     * @param mixed $a0  Was 'first'.
+     * @param mixed &$a1 Was 'second'.
      */
     public static function methodA(
         $a0,
@@ -63,13 +63,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
-     * Custom static method 'methodB'.
+     * Custom method 'methodB'.
      *
-     * @param mixed $a0 Originally named 'first'.
-     * @param mixed $a1 Originally named 'second'.
-     * @param mixed $a2 Originally named 'third'.
-     * @param mixed $a3 Originally named 'fourth'.
-     * @param mixed $a4 Originally named 'fifth'.
+     * @param mixed $a0 Was 'first'.
+     * @param mixed $a1 Was 'second'.
+     * @param mixed $a2 Was 'third'.
+     * @param mixed $a3 Was 'fourth'.
+     * @param mixed $a4 Was 'fifth'.
      */
     public static function methodB(
         $a0 = null,
@@ -87,11 +87,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
-     * Inherited static method 'testClassAStaticMethodA'.
+     * Inherited method 'testClassAStaticMethodA'.
      *
      * @uses \Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA()
      *
-     * @param mixed &$a0 Originally named 'first'.
+     * @param mixed &$a0 Was 'first'.
      */
     public static function testClassAStaticMethodA(
         &$a0 = null
@@ -105,13 +105,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
-     * Inherited static method 'testClassAStaticMethodB'.
+     * Inherited method 'testClassAStaticMethodB'.
      *
      * @uses \Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB()
      *
-     * @param mixed $a0  Originally named 'first'.
-     * @param mixed $a1  Originally named 'second'.
-     * @param mixed &$a2 Originally named 'third'.
+     * @param mixed $a0  Was 'first'.
+     * @param mixed $a1  Was 'second'.
+     * @param mixed &$a2 Was 'third'.
      */
     public static function testClassAStaticMethodB(
         $a0,
@@ -127,7 +127,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
-     * Inherited static method 'testClassBStaticMethodA'.
+     * Inherited method 'testClassBStaticMethodA'.
      *
      * @uses \Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA()
      */
@@ -142,49 +142,14 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
-     * Inherited static method 'testClassBStaticMethodB'.
+     * Inherited method 'testClassBStaticMethodB'.
      *
      * @uses \Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB()
      *
-     * @param mixed $a0 Originally named 'first'.
-     * @param mixed $a1 Originally named 'second'.
+     * @param mixed $a0 Was 'first'.
+     * @param mixed $a1 Was 'second'.
      */
     public static function testClassBStaticMethodB(
-        $a0,
-        $a1
-    ) {
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return call_user_func_array(
-                self::$_staticStubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited static method 'testClassAStaticMethodC'.
-     *
-     * @uses \Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC()
-     */
-    protected static function testClassAStaticMethodC()
-    {
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return call_user_func_array(
-                self::$_staticStubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Inherited static method 'testClassAStaticMethodD'.
-     *
-     * @uses \Eloquent\Phony\Test\TestClassA::testClassAStaticMethodD()
-     *
-     * @param mixed $a0 Originally named 'first'.
-     * @param mixed $a1 Originally named 'second'.
-     */
-    protected static function testClassAStaticMethodD(
         $a0,
         $a1
     ) {
@@ -209,41 +174,6 @@ implements \Eloquent\Phony\Mock\MockInterface,
         }
 
         $this->_stubs = $stubs;
-    }
-
-    /**
-     * Custom method 'methodC'.
-     *
-     * @param \Eloquent\Phony\Test\TestClassA      $a0 Originally named 'first'.
-     * @param \Eloquent\Phony\Test\TestClassA|null $a1 Originally named 'second'.
-     * @param array                                $a2 Originally named 'third'.
-     * @param array|null                           $a3 Originally named 'fourth'.
-     */
-    public function methodC(
-        \Eloquent\Phony\Test\TestClassA $a0,
-        \Eloquent\Phony\Test\TestClassA $a1 = null,
-        array $a2 = array(),
-        array $a3 = null
-    ) {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
-    }
-
-    /**
-     * Custom method 'methodD'.
-     */
-    public function methodD()
-    {
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
-        }
     }
 
     /**
@@ -292,6 +222,41 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
+     * Custom method 'methodC'.
+     *
+     * @param \Eloquent\Phony\Test\TestClassA      $a0 Was 'first'.
+     * @param \Eloquent\Phony\Test\TestClassA|null $a1 Was 'second'.
+     * @param array                                $a2 Was 'third'.
+     * @param array|null                           $a3 Was 'fourth'.
+     */
+    public function methodC(
+        \Eloquent\Phony\Test\TestClassA $a0,
+        \Eloquent\Phony\Test\TestClassA $a1 = null,
+        array $a2 = array(),
+        array $a3 = null
+    ) {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Custom method 'methodD'.
+     */
+    public function methodD()
+    {
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return call_user_func_array(
+                $this->_stubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
      * Inherited method 'next'.
      *
      * @uses \Iterator::next()
@@ -311,7 +276,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \ArrayAccess::offsetExists()
      *
-     * @param mixed $a0 Originally named 'offset'.
+     * @param mixed $a0 Was 'offset'.
      */
     public function offsetExists(
         $a0
@@ -329,7 +294,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \ArrayAccess::offsetGet()
      *
-     * @param mixed $a0 Originally named 'offset'.
+     * @param mixed $a0 Was 'offset'.
      */
     public function offsetGet(
         $a0
@@ -347,8 +312,8 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \ArrayAccess::offsetSet()
      *
-     * @param mixed $a0 Originally named 'offset'.
-     * @param mixed $a1 Originally named 'value'.
+     * @param mixed $a0 Was 'offset'.
+     * @param mixed $a1 Was 'value'.
      */
     public function offsetSet(
         $a0,
@@ -367,7 +332,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \ArrayAccess::offsetUnset()
      *
-     * @param mixed $a0 Originally named 'offset'.
+     * @param mixed $a0 Was 'offset'.
      */
     public function offsetUnset(
         $a0
@@ -415,11 +380,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \Eloquent\Phony\Test\TestTraitB::testClassAMethodB()
      *
-     * @param mixed $a0  Originally named 'first'.
-     * @param mixed $a1  Originally named 'second'.
-     * @param mixed &$a2 Originally named 'third'.
-     * @param mixed &$a3 Originally named 'fourth'.
-     * @param mixed &$a4 Originally named 'fifth'.
+     * @param mixed $a0  Was 'first'.
+     * @param mixed $a1  Was 'second'.
+     * @param mixed &$a2 Was 'third'.
+     * @param mixed &$a3 Was 'fourth'.
+     * @param mixed &$a4 Was 'fifth'.
      */
     public function testClassAMethodB(
         $a0,
@@ -456,8 +421,8 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \Eloquent\Phony\Test\TestClassB::testClassBMethodB()
      *
-     * @param mixed $a0 Originally named 'first'.
-     * @param mixed $a1 Originally named 'second'.
+     * @param mixed $a0 Was 'first'.
+     * @param mixed $a1 Was 'second'.
      */
     public function testClassBMethodB(
         $a0,
@@ -487,6 +452,41 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
+     * Inherited method 'testClassAStaticMethodC'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC()
+     */
+    protected static function testClassAStaticMethodC()
+    {
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'testClassAStaticMethodD'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassA::testClassAStaticMethodD()
+     *
+     * @param mixed $a0 Was 'first'.
+     * @param mixed $a1 Was 'second'.
+     */
+    protected static function testClassAStaticMethodD(
+        $a0,
+        $a1
+    ) {
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return call_user_func_array(
+                self::$_staticStubs[__FUNCTION__],
+                func_get_args()
+            );
+        }
+    }
+
+    /**
      * Inherited method 'testClassAMethodC'.
      *
      * @uses \Eloquent\Phony\Test\TestClassA::testClassAMethodC()
@@ -506,8 +506,8 @@ implements \Eloquent\Phony\Mock\MockInterface,
      *
      * @uses \Eloquent\Phony\Test\TestClassA::testClassAMethodD()
      *
-     * @param mixed &$a0 Originally named 'first'.
-     * @param mixed &$a1 Originally named 'second'.
+     * @param mixed &$a0 Was 'first'.
+     * @param mixed &$a1 Was 'second'.
      */
     protected function testClassAMethodD(
         &$a0,

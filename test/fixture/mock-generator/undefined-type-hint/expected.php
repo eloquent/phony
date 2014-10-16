@@ -43,8 +43,8 @@ implements \Eloquent\Phony\Mock\MockInterface
     /**
      * Custom method 'methodA'.
      *
-     * @param \Non\Existent      $a0 Originally named 'first'.
-     * @param \Non\Existent|null $a1 Originally named 'second'.
+     * @param \Non\Existent      $a0 Was 'first'.
+     * @param \Non\Existent|null $a1 Was 'second'.
      */
     public function methodA(
         \Non\Existent $a0,

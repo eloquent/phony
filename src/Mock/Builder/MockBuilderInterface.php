@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Builder\Exception\MockBuilderExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use ReflectionClass;
-use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by mock builders.
@@ -189,16 +189,6 @@ interface MockBuilderInterface
     public function methods();
 
     /**
-     * Get reflectors for all non-static methods.
-     *
-     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
-     * whether the method is a custom method.
-     *
-     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
-     */
-    public function methodReflectors();
-
-    /**
      * Get the custom static methods.
      *
      * @return array<string,callable|null> The custom static methods.
@@ -206,14 +196,11 @@ interface MockBuilderInterface
     public function staticMethods();
 
     /**
-     * Get reflectors for all static methods.
+     * Get the method definitions.
      *
-     * Each array item is a 3-tuple of name, reflector, and a boolean indicating
-     * whether the method is a custom method.
-     *
-     * @return array<string,tuple<string,ReflectionFunctionAbstract,boolean>> The reflectors.
+     * @return MethodDefinitionCollectionInterface|null The definitions, or null if the builder is not yet finalized.
      */
-    public function staticMethodReflectors();
+    public function methodDefinitions();
 
     /**
      * Get the custom properties.
