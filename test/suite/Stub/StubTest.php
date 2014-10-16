@@ -382,7 +382,8 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testDoes()
     {
-        $this->assertSame($this->subject, $this->subject->does($this->callbackA, $this->callbackB));
+        $this->assertSame($this->subject, $this->subject->does($this->callbackA));
+        $this->assertSame($this->subject, $this->subject->does($this->callbackB));
         $this->assertSame('a', call_user_func($this->subject));
         $this->assertSame('b', call_user_func($this->subject));
         $this->assertSame('b', call_user_func($this->subject));
@@ -392,6 +393,19 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->subject, $this->subject->forwards());
         $this->assertSame('a, b', call_user_func($this->subject, ', ', array('a', 'b')));
+    }
+
+    public function testForwardsWithReferenceParameters()
+    {
+        $this->callback = function (&$a) {
+            $a = 'a';
+        };
+        $this->subject = new Stub($this->callback);
+        $this->subject->forwards();
+        $argument = null;
+        $this->subject->invokeWith(array(&$argument));
+
+        $this->assertSame('a', $argument);
     }
 
     public function testReturns()

@@ -135,8 +135,8 @@ interface StubInterface extends WrappedInvocableInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks for subsequent invocations.
+     * @param callable $callback      The callback.
+     * @param mixed    $arguments,... The arguments to call the callback with.
      *
      * @return StubInterface This stub.
      */

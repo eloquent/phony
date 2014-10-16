@@ -218,6 +218,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->callbacks[] = array(
             $this->returnsCallbackCallback($callback),
             $arguments,
+            true,
             $appendArguments,
             false,
         );
@@ -280,6 +281,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->callbacks[] = array(
             $this->returnsArgumentCallback($index),
             $arguments,
+            true,
             $appendArguments,
             false,
         );
@@ -322,6 +324,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 }
             ),
             array(),
+            true,
             false,
             true,
         );
@@ -332,13 +335,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks for subsequent invocations.
+     * @param callable $callback      The callback.
+     * @param mixed    $arguments,... The arguments to call the callback with.
      *
      * @return StubInterface This stub.
      */
     public function does($callback)
     {
+        $arguments = func_get_args();
+        array_shift($arguments);
+
         if ($this->isNewRule) {
             $this->isNewRule = false;
 
@@ -346,10 +352,15 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             array_unshift($this->ruleCounts, 0);
         }
 
-        foreach (func_get_args() as $callback) {
-            $this->rules[0][1][] = array($callback, $this->callbacks);
-            $this->callbacks = array();
-        }
+        $this->rules[0][1][] = array(
+            $callback,
+            $arguments,
+            true,
+            true,
+            false,
+            $this->callbacks
+        );
+        $this->callbacks = array();
 
         return $this;
     }
@@ -364,14 +375,26 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $invoker = $this->invoker;
         $callback = $this->callback;
 
-        return $this->does(
-            function () use ($invoker, $callback) {
-                $arguments = func_get_args();
-                array_shift($arguments);
+        if ($this->isNewRule) {
+            $this->isNewRule = false;
 
+            array_unshift($this->rules, array($this->matchers, array()));
+            array_unshift($this->ruleCounts, 0);
+        }
+
+        $this->rules[0][1][] = array(
+            function (array $arguments) use ($invoker, $callback) {
                 return $invoker->callWith($callback, $arguments);
-            }
+            },
+            array(),
+            false,
+            false,
+            true,
+            $this->callbacks
         );
+        $this->callbacks = array();
+
+        return $this;
     }
 
     /**
@@ -486,10 +509,15 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 (answers) [
                     (answer) [
                         (primary callback) callable
+                        (arguments) [mixed, ...]
+                        (prefix self) boolean
+                        (append arguments) boolean
+                        (append argument array) boolean
                         (secondary callbacks) [
                             (call details) [
                                 (callback callback) callable
                                 (arguments) [mixed, ...]
+                                (prefix self) boolean
                                 (append arguments) boolean
                                 (append argument array) boolean
                             ]
@@ -518,7 +546,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         // invoke callbacks added via calls() and friends
-        foreach ($answer[1] as $callDetails) {
+        foreach ($answer[5] as $callDetails) {
             // get the actual callback, because it could be an argument
             $argumentsWithSelf = $arguments;
             array_unshift($argumentsWithSelf, $this->self);
@@ -528,14 +556,17 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             // only call the callback if it's sane to do so
             if (is_callable($callback)) {
                 $callbackArguments = $callDetails[1];
-                array_unshift($callbackArguments, $this->self);
 
                 if ($callDetails[2]) {
+                    array_unshift($callbackArguments, $this->self);
+                }
+
+                if ($callDetails[3]) {
                     $callbackArguments =
                         array_merge($callbackArguments, $arguments);
                 }
 
-                if ($callDetails[3]) {
+                if ($callDetails[4]) {
                     $callbackArguments[] = $arguments;
                 }
 
@@ -544,10 +575,22 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             }
         }
 
-        array_unshift($arguments, $this->self);
+        $doesArguments = $answer[1];
+
+        if ($answer[2]) {
+            array_unshift($doesArguments, $this->self);
+        }
+
+        if ($answer[3]) {
+            $doesArguments = array_merge($doesArguments, $arguments);
+        }
+
+        if ($answer[4]) {
+            $doesArguments[] = $arguments;
+        }
 
         // invoke primary callback
-        return $this->invoker->callWith($answer[0], $arguments);
+        return $this->invoker->callWith($answer[0], $doesArguments);
     }
 
     /**
