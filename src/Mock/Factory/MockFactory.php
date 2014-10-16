@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Factory;
 
+use Eloquent\Phony\Invocation\WrappedMethod;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\StubInterface;
-use ReflectionMethod;
 
 /**
  * Creates mock instances.
@@ -47,8 +47,12 @@ class MockFactory implements MockFactoryInterface
     public function createMock(MockBuilderInterface $builder)
     {
         $className = $builder->build();
+        $mock = new $className();
+        $mock->_setStubs(
+            $this->createStubs($builder->methodDefinitions()->methods(), $mock)
+        );
 
-        return new $className($this->createStubsForMock($builder));
+        return $mock;
     }
 
     /**
@@ -60,44 +64,38 @@ class MockFactory implements MockFactoryInterface
      */
     public function createStaticStubs(MockBuilderInterface $builder)
     {
-        return $this
-            ->createForwardStubsForMethods($builder->staticMethodReflectors());
+        return array_map(
+            function ($stub) {
+                return $stub->forwards();
+            },
+            $this->createStubs($builder->staticMethods())
+        );
     }
 
     /**
-     * Create the stubs for a regular mock.
+     * Create the stubs for a mock.
      *
      * @param MockBuilderInterface $builder The builder.
+     * @param MockInterface|null   $mock    The mock.
      *
      * @return array<string,StubInterface> The stubs.
      */
-    public function createStubsForMock(MockBuilderInterface $builder)
-    {
+    protected function createStubs(
+        MockBuilderInterface $builder,
+        MockInterface $mock = null
+    ) {
         $stubs = array();
 
-        foreach ($builder->methodReflectors() as $name => $method) {
-            $stubs[$name] = $this->stubVerifierFactory
-                ->createFromFunction($method);
-        }
-
-        return $stubs;
-    }
-
-    /**
-     * Create stubs that forward for each of the supplied method reflectors.
-     *
-     * @param array<string,ReflectionMethod> $methods The methods.
-     *
-     * @return array<string,StubInterface> The stubs.
-     */
-    protected function createForwardStubsForMethods(array $methods)
-    {
-        $stubs = array();
-
-        foreach ($methods as $name => $method) {
-            $stubs[$name] = $this->stubVerifierFactory
-                ->createFromFunction($method)
-                ->forwards();
+        foreach ($builder->methodDefinitions() as $name => $method) {
+            if ($method->isCustom()) {
+                $stubs[$name] = $this->stubVerifierFactory
+                    ->createFromCallback($method->callback(), $mock);
+            } else {
+                $stubs[$name] = $this->stubVerifierFactory->createFromCallback(
+                    new WrappedMethod($method->method(), $mock),
+                    $mock
+                );
+            }
         }
 
         return $stubs;

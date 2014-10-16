@@ -27,15 +27,44 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     {
         $this->methods = $methods;
     }
-
     /**
      * Get the methods.
      *
      * @return array<string,MethodDefinitionInterface> The methods.
      */
-    public function methods()
+    public function allMethods()
     {
         return $this->methods;
+    }
+
+    /**
+     * Get the static methods.
+     *
+     * @return array<string,MethodDefinitionInterface> The methods.
+     */
+    public function staticMethods()
+    {
+        return array_filter(
+            $this->methods,
+            function ($method) {
+                return $method->isStatic();
+            }
+        );
+    }
+
+    /**
+     * Get the instance methods.
+     *
+     * @return array<string,MethodDefinitionInterface> The methods.
+     */
+    public function methods()
+    {
+        return array_filter(
+            $this->methods,
+            function ($method) {
+                return !$method->isStatic();
+            }
+        );
     }
 
     /**
@@ -55,7 +84,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     }
 
     /**
-     * Get the public non-static methods.
+     * Get the public instance methods.
      *
      * @return array<string,MethodDefinitionInterface> The methods.
      */
@@ -87,7 +116,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     }
 
     /**
-     * Get the protected non-static methods.
+     * Get the protected instance methods.
      *
      * @return array<string,MethodDefinitionInterface> The methods.
      */

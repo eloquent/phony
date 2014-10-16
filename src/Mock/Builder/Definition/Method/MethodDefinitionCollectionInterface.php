@@ -21,6 +21,20 @@ interface MethodDefinitionCollectionInterface
      *
      * @return array<string,MethodDefinitionInterface> The methods.
      */
+    public function allMethods();
+
+    /**
+     * Get the static methods.
+     *
+     * @return array<string,MethodDefinitionInterface> The methods.
+     */
+    public function staticMethods();
+
+    /**
+     * Get the instance methods.
+     *
+     * @return array<string,MethodDefinitionInterface> The methods.
+     */
     public function methods();
 
     /**
@@ -31,7 +45,7 @@ interface MethodDefinitionCollectionInterface
     public function publicStaticMethods();
 
     /**
-     * Get the public non-static methods.
+     * Get the public instance methods.
      *
      * @return array<string,MethodDefinitionInterface> The methods.
      */
@@ -45,7 +59,7 @@ interface MethodDefinitionCollectionInterface
     public function protectedStaticMethods();
 
     /**
-     * Get the protected non-static methods.
+     * Get the protected instance methods.
      *
      * @return array<string,MethodDefinitionInterface> The methods.
      */

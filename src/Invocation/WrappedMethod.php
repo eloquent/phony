@@ -15,27 +15,44 @@ use Exception;
 use ReflectionMethod;
 
 /**
- * Bypasses method access modifier restrictions.
+ * Wraps a method reflector, bypassing access modifier restrictions if
+ * necessary.
  *
  * @internal
  */
-class AccessibleMethod extends AbstractInvocable
+class WrappedMethod extends AbstractWrappedInvocable
 {
     /**
-     * Construct a new accessible method.
+     * Construct a new wrapped method.
      *
      * @param ReflectionMethod $method   The method.
      * @param object|null      $instance The instance.
+     * @param string|null      $name     The name.
      */
-    public function __construct(ReflectionMethod $method, $instance = null)
-    {
+    public function __construct(
+        ReflectionMethod $method,
+        $instance = null,
+        $name = null
+    ) {
+        $realName = $method->getName();
+
+        if (null === $name) {
+            $name = $realName;
+        }
+
         $this->method = new ReflectionMethod(
             $method->getDeclaringClass()->getName(),
-            $method->getName()
+            $realName
         );
         $this->instance = $instance;
 
-        $this->method->setAccessible(true);
+        if (!$this->method->isPublic()) {
+            $this->method->setAccessible(true);
+        }
+
+        parent::__construct(array($instance, $name));
+
+        $this->name = $name;
     }
 
     /**
@@ -59,6 +76,16 @@ class AccessibleMethod extends AbstractInvocable
     }
 
     /**
+     * Get the name.
+     *
+     * @return string The name.
+     */
+    public function name()
+    {
+        return $this->name;
+    }
+
+    /**
      * Invoke this object.
      *
      * This method supports reference parameters.
@@ -79,4 +106,5 @@ class AccessibleMethod extends AbstractInvocable
 
     private $method;
     private $instance;
+    private $name;
 }

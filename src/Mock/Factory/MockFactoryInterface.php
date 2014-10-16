@@ -37,13 +37,4 @@ interface MockFactoryInterface
      * @return array<string,StubInterface> The stubs.
      */
     public function createStaticStubs(MockBuilderInterface $builder);
-
-    /**
-     * Create the stubs for a regular mock.
-     *
-     * @param MockBuilderInterface $builder The builder.
-     *
-     * @return array<string,StubInterface> The stubs.
-     */
-    public function createStubsForMock(MockBuilderInterface $builder);
 }

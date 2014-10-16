@@ -36,7 +36,27 @@ class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame($this->methods, $this->subject->methods());
+        $this->assertSame($this->methods, $this->subject->allMethods());
+        $this->assertSame(
+            array(
+                'methodA' => $this->methods['methodA'],
+                'testClassAStaticMethodA' => $this->methods['testClassAStaticMethodA'],
+                'testClassAStaticMethodB' => $this->methods['testClassAStaticMethodB'],
+                'testClassAStaticMethodC' => $this->methods['testClassAStaticMethodC'],
+                'testClassAStaticMethodD' => $this->methods['testClassAStaticMethodD'],
+            ),
+            $this->subject->staticMethods()
+        );
+        $this->assertSame(
+            array(
+                'methodB' => $this->methods['methodB'],
+                'testClassAMethodA' => $this->methods['testClassAMethodA'],
+                'testClassAMethodB' => $this->methods['testClassAMethodB'],
+                'testClassAMethodC' => $this->methods['testClassAMethodC'],
+                'testClassAMethodD' => $this->methods['testClassAMethodD'],
+            ),
+            $this->subject->methods()
+        );
         $this->assertSame(
             array(
                 'methodA' => $this->methods['methodA'],
