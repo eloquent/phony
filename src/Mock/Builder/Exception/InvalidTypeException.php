@@ -22,7 +22,7 @@ final class InvalidTypeException extends Exception implements
     MockBuilderExceptionInterface
 {
     /**
-     * Construct an invalid type exception.
+     * Construct a new invalid type exception.
      *
      * @param mixed          $type  The type.
      * @param Exception|null $cause The cause, if available.

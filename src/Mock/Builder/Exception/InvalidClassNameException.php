@@ -22,7 +22,7 @@ final class InvalidClassNameException extends Exception implements
     MockBuilderExceptionInterface
 {
     /**
-     * Construct an invalid class name exception.
+     * Construct a new invalid class name exception.
      *
      * @param mixed          $className The class name.
      * @param Exception|null $cause     The cause, if available.

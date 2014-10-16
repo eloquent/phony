@@ -23,7 +23,7 @@ final class InvalidSingularCardinalityException extends Exception implements
     InvalidCardinalityExceptionInterface
 {
     /**
-     * Construct an invalid singular cardinality exception.
+     * Construct a new invalid singular cardinality exception.
      *
      * @param tuple<integer|null,integer|null> $cardinality The cardinality.
      * @param Exception|null                   $cause       The cause, if available.

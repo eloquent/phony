@@ -9,25 +9,28 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Cardinality\Exception;
+namespace Eloquent\Phony\Stub\Rule\Exception;
 
 use Exception;
 
 /**
- * The specified cardinality is invalid.
+ * No answers were defined for the matching stub rule.
  *
  * @internal
  */
-final class InvalidCardinalityException extends Exception implements
-    InvalidCardinalityExceptionInterface
+final class UndefinedAnswerException extends Exception
 {
     /**
-     * Construct a new invalid cardinality exception.
-     *
+     * Construct a new undefined answer exception.
+     *\
      * @param Exception|null $cause The cause, if available.
      */
     public function __construct(Exception $cause = null)
     {
-        parent::__construct('Invalid cardinality.', 0, $cause);
+        parent::__construct(
+            'No answers were defined for the matching stub rule.',
+            0,
+            $cause
+        );
     }
 }
