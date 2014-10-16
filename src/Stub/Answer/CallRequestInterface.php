@@ -19,11 +19,9 @@ interface CallRequestInterface
     /**
      * Get the callback.
      *
-     * @param array<integer,mixed>|null $arguments The incoming arguments.
-     *
-     * @return callable|null The callback, or null if no callback is available.
+     * @return callable The callback.
      */
-    public function callback(array $arguments = null);
+    public function callback();
 
     /**
      * Get the final arguments.

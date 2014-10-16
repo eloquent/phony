@@ -46,7 +46,7 @@ interface StubRuleInterface
      * Get the next answer.
      *
      * @return AnswerInterface          The answer.
-     * @throws UndefinedAnswerException If no answers have been defined.
+     * @throws UndefinedAnswerException If an undefined or incomplete answer is encountered.
      */
     public function next();
 }

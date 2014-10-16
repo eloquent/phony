@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Stub\Rule\Exception;
 use Exception;
 
 /**
- * No answers were defined for the matching stub rule.
+ * No answer was defined, or the answer is incomplete.
  *
  * @internal
  */
@@ -28,7 +28,7 @@ final class UndefinedAnswerException extends Exception
     public function __construct(Exception $cause = null)
     {
         parent::__construct(
-            'No answers were defined for the matching stub rule.',
+            'No answer was defined, or the answer is incomplete.',
             0,
             $cause
         );

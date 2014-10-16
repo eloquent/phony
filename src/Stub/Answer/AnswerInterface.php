@@ -17,9 +17,16 @@ namespace Eloquent\Phony\Stub\Answer;
 interface AnswerInterface
 {
     /**
+     * Set the primary request.
+     *
+     * @param CallRequestInterface $primaryRequest The primary request.
+     */
+    public function setPrimaryRequest(CallRequestInterface $primaryRequest);
+
+    /**
      * Get the primary request.
      *
-     * @return CallRequestInterface The primary request.
+     * @return CallRequestInterface|null The primary request, or null if none has been set.
      */
     public function primaryRequest();
 

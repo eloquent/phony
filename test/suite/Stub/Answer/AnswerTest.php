@@ -17,9 +17,9 @@ class AnswerTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->primaryRequest = new ArgumentCallRequest(1);
-        $this->secondaryRequestA = new ArgumentCallRequest(2);
-        $this->secondaryRequestB = new ArgumentCallRequest(3);
+        $this->primaryRequest = new CallRequest('implode');
+        $this->secondaryRequestA = new CallRequest('implode');
+        $this->secondaryRequestB = new CallRequest('implode');
         $this->secondaryRequests = array($this->secondaryRequestA, $this->secondaryRequestB);
         $this->subject = new Answer($this->primaryRequest, $this->secondaryRequests);
     }
@@ -32,18 +32,27 @@ class AnswerTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new Answer($this->primaryRequest);
+        $this->subject = new Answer();
 
+        $this->assertNull($this->subject->primaryRequest());
         $this->assertSame(array(), $this->subject->secondaryRequests());
+    }
+
+    public function testSetPrimaryRequest()
+    {
+        $this->primaryRequest = new CallRequest('implode');
+        $this->subject->setPrimaryRequest($this->primaryRequest);
+
+        $this->assertSame($this->primaryRequest, $this->subject->primaryRequest());
     }
 
     public function testAddSecondaryRequest()
     {
-        $secondaryRequest = new ArgumentCallRequest(4);
-        $this->subject->addSecondaryRequest($secondaryRequest);
+        $request = new CallRequest('implode');
+        $this->subject->addSecondaryRequest($request);
 
         $this->assertSame(
-            array($this->secondaryRequestA, $this->secondaryRequestB, $secondaryRequest),
+            array($this->secondaryRequestA, $this->secondaryRequestB, $request),
             $this->subject->secondaryRequests()
         );
     }

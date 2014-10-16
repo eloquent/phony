@@ -21,7 +21,7 @@ class UndefinedAnswerExceptionTest extends PHPUnit_Framework_TestCase
         $cause = new Exception();
         $exception = new UndefinedAnswerException($cause);
 
-        $this->assertSame("No answers were defined for the matching stub rule.", $exception->getMessage());
+        $this->assertSame("No answer was defined, or the answer is incomplete.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

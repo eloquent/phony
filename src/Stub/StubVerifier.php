@@ -138,10 +138,8 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function with()
     {
-        $this->invoker->callWith(
-            array($this->stub, __FUNCTION__),
-            func_get_args()
-        );
+        $this->invoker
+            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
 
         return $this;
     }
@@ -156,10 +154,8 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function withExactly()
     {
-        $this->invoker->callWith(
-            array($this->stub, __FUNCTION__),
-            func_get_args()
-        );
+        $this->invoker
+            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
 
         return $this;
     }
@@ -169,17 +165,15 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback      The callback.
-     * @param mixed    $arguments,... The arguments to call the callback with.
+     * @param callable $callback                The callback.
+     * @param callable $additionalCallbacks,... Additional callbacks.
      *
      * @return StubInterface This stub.
      */
     public function calls($callback)
     {
-        $this->invoker->callWith(
-            array($this->stub, __FUNCTION__),
-            func_get_args()
-        );
+        $this->invoker
+            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
 
         return $this;
     }
@@ -191,18 +185,26 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                  $callback        The callback.
-     * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
-     * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
-     *
-     * @return StubInterface This stub.
+     * @param callable                  $callback             The callback.
+     * @param array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null              $suffixArguments      True if arguments should be appended.
      */
     public function callsWith(
         $callback,
         array $arguments = null,
-        $appendArguments = null
+        $prefixSelf = null,
+        $suffixArgumentsArray = null,
+        $suffixArguments = null
     ) {
-        $this->stub->callsWith($callback, $arguments, $appendArguments);
+        $this->stub->callsWith(
+            $callback,
+            $arguments,
+            $prefixSelf,
+            $suffixArgumentsArray,
+            $suffixArguments
+        );
 
         return $this;
     }
@@ -214,17 +216,15 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null $index         The argument index, or null to call the first argument.
-     * @param mixed        $arguments,... The arguments to call the callback with.
+     * @param integer|null $index                 The argument index, or null to call the first argument.
+     * @param integer|null $additionalIndices,... Additional argument indices to call.
      *
      * @return StubInterface This stub.
      */
     public function callsArgument($index = null)
     {
-        $this->invoker->callWith(
-            array($this->stub, __FUNCTION__),
-            func_get_args()
-        );
+        $this->invoker
+            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
 
         return $this;
     }
@@ -239,18 +239,28 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null              $index           The argument index, or null to call the first argument.
-     * @param array<integer,mixed>|null $arguments       The arguments to call the callback with.
-     * @param boolean|null              $appendArguments True if the invocation arguments should be appended.
+     * @param integer|null              $index                The argument index, or null to call the first argument.
+     * @param array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null              $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function callsArgumentWith(
         $index = null,
         array $arguments = null,
-        $appendArguments = null
+        $prefixSelf = null,
+        $suffixArgumentsArray = null,
+        $suffixArguments = null
     ) {
-        $this->stub->callsArgumentWith($index, $arguments, $appendArguments);
+        $this->stub->callsArgumentWith(
+            $index,
+            $arguments,
+            $prefixSelf,
+            $suffixArgumentsArray,
+            $suffixArguments
+        );
 
         return $this;
     }
@@ -280,9 +290,36 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function does($callback)
     {
-        $this->invoker->callWith(
-            array($this->stub, __FUNCTION__),
-            func_get_args()
+        $this->invoker
+            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+
+        return $this;
+    }
+
+    /**
+     * Add a callback as an answer.
+     *
+     * @param callable                  $callback             The callback.
+     * @param array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     *
+     * @return StubInterface This stub.
+     */
+    public function doesWith(
+        $callback,
+        array $arguments = null,
+        $prefixSelf = null,
+        $suffixArgumentsArray = null,
+        $suffixArguments = null
+    ) {
+        $this->stub->doesWith(
+            $callback,
+            $arguments,
+            $prefixSelf,
+            $suffixArgumentsArray,
+            $suffixArguments
         );
 
         return $this;
@@ -291,11 +328,25 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an answer that calls the wrapped callback.
      *
+     * @param array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     *
      * @return StubInterface This stub.
      */
-    public function forwards()
-    {
-        $this->stub->forwards();
+    public function forwards(
+        array $arguments = null,
+        $prefixSelf = null,
+        $suffixArgumentsArray = null,
+        $suffixArguments = null
+    ) {
+        $this->stub->forwards(
+            $arguments,
+            $prefixSelf,
+            $suffixArgumentsArray,
+            $suffixArguments
+        );
 
         return $this;
     }
@@ -310,10 +361,8 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function returns($value = null)
     {
-        $this->invoker->callWith(
-            array($this->stub, __FUNCTION__),
-            func_get_args()
-        );
+        $this->invoker
+            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
 
         return $this;
     }
@@ -356,10 +405,8 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function throws(Exception $exception = null)
     {
-        $this->invoker->callWith(
-            array($this->stub, __FUNCTION__),
-            func_get_args()
-        );
+        $this->invoker
+            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
 
         return $this;
     }

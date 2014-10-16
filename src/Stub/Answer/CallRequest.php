@@ -16,7 +16,7 @@ namespace Eloquent\Phony\Stub\Answer;
  *
  * @internal
  */
-class CallRequest extends AbstractCallRequest
+class CallRequest implements CallRequestInterface
 {
     /**
      * Construct a call request.
@@ -34,27 +34,107 @@ class CallRequest extends AbstractCallRequest
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
-        parent::__construct(
-            $arguments,
-            $prefixSelf,
-            $suffixArgumentsArray,
-            $suffixArguments
-        );
+        if (null === $arguments) {
+            $arguments = array();
+        }
+        if (null === $prefixSelf) {
+            $prefixSelf = false;
+        }
+        if (null === $suffixArgumentsArray) {
+            $suffixArgumentsArray = false;
+        }
+        if (null === $suffixArguments) {
+            $suffixArguments = true;
+        }
 
         $this->callback = $callback;
+        $this->arguments = $arguments;
+        $this->prefixSelf = $prefixSelf;
+        $this->suffixArgumentsArray = $suffixArgumentsArray;
+        $this->suffixArguments = $suffixArguments;
     }
 
     /**
      * Get the callback.
      *
-     * @param array<integer,mixed>|null $arguments The incoming arguments.
-     *
-     * @return callable|null The callback, or null if no callback is available.
+     * @return callable The callback.
      */
-    public function callback(array $arguments = null)
+    public function callback()
     {
         return $this->callback;
     }
 
+    /**
+     * Get the final arguments.
+     *
+     * @param object                    $self      The self value.
+     * @param array<integer,mixed>|null $arguments The incoming arguments.
+     *
+     * @return array<integer,mixed> The final arguments.
+     */
+    public function finalArguments($self, array $arguments = null)
+    {
+        $finalArguments = $this->arguments;
+
+        if ($this->prefixSelf) {
+            array_unshift($finalArguments, $self);
+        }
+        if ($this->suffixArgumentsArray) {
+            $finalArguments[] = $arguments;
+        }
+
+        if ($this->suffixArguments) {
+            $finalArguments = array_merge($finalArguments, $arguments);
+        }
+
+        return $finalArguments;
+    }
+
+    /**
+     * Get the hard-coded arguments.
+     *
+     * @return array<integer,mixed> The hard-coded arguments.
+     */
+    public function arguments()
+    {
+        return $this->arguments;
+    }
+
+    /**
+     * Returns true if the self value should be prefixed to the final arguments.
+     *
+     * @return boolean True if the self value should be prefixed.
+     */
+    public function prefixSelf()
+    {
+        return $this->prefixSelf;
+    }
+
+    /**
+     * Returns true if the incoming arguments should be appended to the final
+     * arguments as an array.
+     *
+     * @return boolean True if arguments should be appended as an array.
+     */
+    public function suffixArgumentsArray()
+    {
+        return $this->suffixArgumentsArray;
+    }
+
+    /**
+     * Returns true if the incoming arguments should be appended to the final
+     * arguments.
+     *
+     * @return boolean True if arguments should be appended.
+     */
+    public function suffixArguments()
+    {
+        return $this->suffixArguments;
+    }
+
     private $callback;
+    private $arguments;
+    private $prefixSelf;
+    private $suffixArgumentsArray;
+    private $suffixArguments;
 }

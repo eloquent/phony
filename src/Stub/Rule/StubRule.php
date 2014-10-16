@@ -101,7 +101,7 @@ class StubRule implements StubRuleInterface
      * Get the next answer.
      *
      * @return AnswerInterface          The answer.
-     * @throws UndefinedAnswerException If no answers have been defined.
+     * @throws UndefinedAnswerException If an undefined or incomplete answer is encountered.
      */
     public function next()
     {
@@ -113,7 +113,10 @@ class StubRule implements StubRuleInterface
 
         $this->calledCount++;
 
-        if (!isset($this->answers[$index])) {
+        if (
+            !isset($this->answers[$index]) ||
+            !$this->answers[$index]->primaryRequest()
+        ) {
             throw new UndefinedAnswerException();
         }
 

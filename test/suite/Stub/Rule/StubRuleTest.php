@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Stub\Rule;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Stub\Answer\Answer;
-use Eloquent\Phony\Stub\Answer\ArgumentCallRequest;
+use Eloquent\Phony\Stub\Answer\CallRequest;
 use PHPUnit_Framework_TestCase;
 
 class StubRuleTest extends PHPUnit_Framework_TestCase
@@ -25,8 +25,8 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->subject = new StubRule($this->criteria, $this->matcherVerifier);
 
-        $this->answerA = new Answer(new ArgumentCallRequest(1));
-        $this->answerB = new Answer(new ArgumentCallRequest(2));
+        $this->answerA = new Answer(new CallRequest('implode'));
+        $this->answerB = new Answer(new CallRequest('implode'));
     }
 
     public function testConstructor()
