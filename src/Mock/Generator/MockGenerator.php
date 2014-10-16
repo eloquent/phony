@@ -65,7 +65,6 @@ class MockGenerator implements MockGeneratorInterface
 
         return $this->generateHeader($builder) .
             $this->generateConstants($builder) .
-            $this->generateStaticStubSetter($builder) .
             $this->generateMethods(
                 $builder->methodDefinitions()->publicStaticMethods()
             ) .
@@ -185,30 +184,6 @@ EOD;
     }
 
     /**
-     * Generate the static stub setter.
-     *
-     * @param MockBuilderInterface $builder The builder.
-     *
-     * @return string The source code.
-     */
-    protected function generateStaticStubSetter(MockBuilderInterface $builder)
-    {
-        return <<<'EOD'
-
-    /**
-     * Set the static stubs.
-     *
-     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
-     */
-    public static function _setStaticStubs(array $staticStubs)
-    {
-        self::$_staticStubs = $staticStubs;
-    }
-
-EOD;
-    }
-
-    /**
      * Generate the constructors.
      *
      * @param MockBuilderInterface $builder The builder.
@@ -216,37 +191,6 @@ EOD;
      * @return string The source code.
      */
     protected function generateConstructors(MockBuilderInterface $builder)
-    {
-        $constructor = <<<'EOD'
-
-    /**
-     * Construct a mock.
-     *
-     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $stubs The stubs to use.
-     */
-    public function __construct(
-        array $stubs = null
-    ) {
-        if (null === $stubs) {
-            $stubs = array();
-        }
-
-        $this->_stubs = $stubs;
-    }
-
-EOD;
-
-        return $constructor . $this->generateParentConstructor($builder);
-    }
-
-    /**
-     * Generate the parent constructor.
-     *
-     * @param MockBuilderInterface $builder The builder.
-     *
-     * @return string The source code.
-     */
-    protected function generateParentConstructor(MockBuilderInterface $builder)
     {
         $className = $builder->parentClassName();
 
@@ -262,6 +206,13 @@ EOD;
         }
 
         $template = <<<'EOD'
+
+    /**
+     * Construct a mock.
+     */
+    public function __construct()
+    {
+    }
 
     /**
      * Call the parent constructor.
@@ -398,7 +349,7 @@ EOD;
         $source .= <<<'EOD'
 
     private static $_staticStubs = array();
-    private $_stubs;
+    private $_stubs = array();
 EOD;
 
         return $source;

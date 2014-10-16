@@ -15,31 +15,6 @@
 class MockGeneratorEmpty
 implements \Eloquent\Phony\Mock\MockInterface
 {
-    /**
-     * Set the static stubs.
-     *
-     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $staticStubs The stubs to use.
-     */
-    public static function _setStaticStubs(array $staticStubs)
-    {
-        self::$_staticStubs = $staticStubs;
-    }
-
-    /**
-     * Construct a mock.
-     *
-     * @param array<string,\Eloquent\Phony\Stub\StubInterface>|null $stubs The stubs to use.
-     */
-    public function __construct(
-        array $stubs = null
-    ) {
-        if (null === $stubs) {
-            $stubs = array();
-        }
-
-        $this->_stubs = $stubs;
-    }
-
     private static $_staticStubs = array();
-    private $_stubs;
+    private $_stubs = array();
 }

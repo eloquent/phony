@@ -15,6 +15,7 @@ use Eloquent\Phony\Invocation\WrappedMethod;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\StubInterface;
+use ReflectionClass;
 
 /**
  * Creates mock instances.
@@ -48,7 +49,13 @@ class MockFactory implements MockFactoryInterface
     {
         $className = $builder->build();
         $mock = new $className();
-        $mock->_setStubs(
+
+        $class = new ReflectionClass($className);
+        $property = $class->getProperty('_stubs');
+        $property->setAccessible(true);
+
+        $property->setValue(
+            $mock,
             $this->createStubs($builder->methodDefinitions()->methods(), $mock)
         );
 
