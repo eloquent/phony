@@ -12,23 +12,23 @@
 namespace Eloquent\Phony\Stub\Answer;
 
 /**
- * Represents instructions on how to call a callback.
+ * Represents an argument call request.
  *
  * @internal
  */
-class CallInstructions extends AbstractCallInstructions
+class ArgumentCallRequest extends AbstractCallRequest
 {
     /**
-     * Construct a new set of call instructions.
+     * Construct a new argument call request.
      *
-     * @param callable                  $callback             The callback.
+     * @param integer                   $index                The argument index.
      * @param array<integer,mixed>|null $arguments            The arguments.
      * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
      * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
      * @param boolean|null              $suffixArguments      True if arguments should be appended.
      */
     public function __construct(
-        $callback,
+        $index,
         array $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
@@ -41,7 +41,17 @@ class CallInstructions extends AbstractCallInstructions
             $suffixArguments
         );
 
-        $this->callback = $callback;
+        $this->index = $index;
+    }
+
+    /**
+     * Get the argument index.
+     *
+     * @return integer The argument index.
+     */
+    public function index()
+    {
+        return $this->index;
     }
 
     /**
@@ -53,8 +63,23 @@ class CallInstructions extends AbstractCallInstructions
      */
     public function callback(array $arguments = null)
     {
-        return $this->callback;
+        if (null === $arguments) {
+            return null;
+        }
+
+        $argumentCount = count($arguments);
+        $index = $this->index;
+
+        if ($index < 0) {
+            $index = $argumentCount + $index;
+        }
+
+        if ($index < 0 || $index >= $argumentCount) {
+            return null;
+        }
+
+        return $arguments[$index];
     }
 
-    private $callback;
+    private $index;
 }

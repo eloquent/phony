@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Stub\Answer;
 
 /**
- * The interface implemented by call instructions.
+ * The interface implemented by call requests.
  */
-interface CallInstructionsInterface
+interface CallRequestInterface
 {
     /**
      * Get the callback.

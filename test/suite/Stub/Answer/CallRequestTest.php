@@ -13,17 +13,17 @@ namespace Eloquent\Phony\Stub\Answer;
 
 use PHPUnit_Framework_TestCase;
 
-class ArgumentCallInstructionsTest extends PHPUnit_Framework_TestCase
+class CallRequestTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->index = 2;
+        $this->callback = 'implode';
         $this->arguments = array('a', 'b');
         $this->prefixSelf = true;
         $this->suffixArgumentsArray = true;
         $this->suffixArguments = false;
-        $this->subject = new ArgumentCallInstructions(
-            $this->index,
+        $this->subject = new CallRequest(
+            $this->callback,
             $this->arguments,
             $this->prefixSelf,
             $this->suffixArgumentsArray,
@@ -33,7 +33,7 @@ class ArgumentCallInstructionsTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame($this->index, $this->subject->index());
+        $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->prefixSelf, $this->subject->prefixSelf());
         $this->assertSame($this->suffixArgumentsArray, $this->subject->suffixArgumentsArray());
@@ -42,37 +42,12 @@ class ArgumentCallInstructionsTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new ArgumentCallInstructions($this->index);
+        $this->subject = new CallRequest($this->callback);
 
         $this->assertSame(array(), $this->subject->arguments());
         $this->assertFalse($this->subject->prefixSelf());
         $this->assertFalse($this->subject->suffixArgumentsArray());
         $this->assertTrue($this->subject->suffixArguments());
-    }
-
-    public function callbackData()
-    {
-        //                                   index arguments        expected
-        return array(
-            'First argument'        => array(0,    array('a', 'b'), 'a'),
-            'Second argument'       => array(1,    array('a', 'b'), 'b'),
-            'Last argument'         => array(-1,   array('a', 'b'), 'b'),
-            'Penultimate argument'  => array(-2,   array('a', 'b'), 'a'),
-            'Undefined'             => array(2,    array('a', 'b'), null),
-            'Undefined negative'    => array(-3,   array('a', 'b'), null),
-            'No arguments'          => array(0,    null,            null),
-            'No arguments negative' => array(-1,   null,            null),
-        );
-    }
-
-    /**
-     * @dataProvider callbackData
-     */
-    public function testCallback($index, $arguments, $expected)
-    {
-        $this->subject = new ArgumentCallInstructions($index);
-
-        $this->assertSame($expected, $this->subject->callback($arguments));
     }
 
     public function finalArgumentsData()
@@ -101,8 +76,8 @@ class ArgumentCallInstructionsTest extends PHPUnit_Framework_TestCase
         $incoming,
         $expected
     ) {
-        $this->subject = new ArgumentCallInstructions(
-            $this->index,
+        $this->subject = new CallRequest(
+            $this->callback,
             $arguments,
             $prefixSelf,
             $suffixArray,

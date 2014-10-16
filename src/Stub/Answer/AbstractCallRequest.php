@@ -12,12 +12,12 @@
 namespace Eloquent\Phony\Stub\Answer;
 
 /**
- * An abstract base class for implementing call instructions.
+ * An abstract base class for implementing call requests.
  */
-abstract class AbstractCallInstructions implements CallInstructionsInterface
+abstract class AbstractCallRequest implements CallRequestInterface
 {
     /**
-     * Construct a new set of call instructions.
+     * Construct a new call request.
      *
      * @param array<integer,mixed>|null $arguments            The arguments.
      * @param boolean|null              $prefixSelf           True if the self value should be prefixed.

@@ -16,4 +16,24 @@ namespace Eloquent\Phony\Stub\Answer;
  */
 interface AnswerInterface
 {
+    /**
+     * Get the primary request.
+     *
+     * @return CallRequestInterface The primary request.
+     */
+    public function primaryRequest();
+
+    /**
+     * Add a secondary request.
+     *
+     * @param CallRequestInterface $secondaryRequest The secondary request.
+     */
+    public function addSecondaryRequest(CallRequestInterface $secondaryRequest);
+
+    /**
+     * Get the secondary requests.
+     *
+     * @return array<CallRequestInterface> The secondary requests.
+     */
+    public function secondaryRequests();
 }
