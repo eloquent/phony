@@ -13,13 +13,22 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Stub\StubInterface;
+use ReflectionClass;
 
 /**
  * The interface implemented by mock factories.
  */
 interface MockFactoryInterface
 {
+    /**
+     * Create the mock class for the supplied builder.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return ReflectionClass The class.
+     */
+    public function createMockClass(MockBuilderInterface $builder);
+
     /**
      * Create a new mock instance for the supplied builder.
      *
@@ -28,13 +37,4 @@ interface MockFactoryInterface
      * @return MockInterface The newly created mock.
      */
     public function createMock(MockBuilderInterface $builder);
-
-    /**
-     * Create static stubs for the supplied builder.
-     *
-     * @param MockBuilderInterface $builder The builder.
-     *
-     * @return array<string,StubInterface> The stubs.
-     */
-    public function createStaticStubs(MockBuilderInterface $builder);
 }

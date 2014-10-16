@@ -12,9 +12,12 @@
 namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Invocation\WrappedMethod;
+use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Stub\StubInterface;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
+use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
 
 /**
@@ -39,6 +42,70 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
+     * Cosntruct a new mock factory.
+     *
+     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     */
+    public function __construct(
+        StubVerifierFactoryInterface $stubVerifierFactory = null
+    ) {
+        if (null === $stubVerifierFactory) {
+            $stubVerifierFactory = StubVerifierFactory::instance();
+        }
+
+        $this->stubVerifierFactory = $stubVerifierFactory;
+    }
+
+    /**
+     * Get the stub verifier factory.
+     *
+     * @return StubVerifierFactoryInterface The stub verifier factory.
+     */
+    public function stubVerifierFactory()
+    {
+        return $this->stubVerifierFactory;
+    }
+
+    /**
+     * Create the mock class for the supplied builder.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return ReflectionClass The class.
+     */
+    public function createMockClass(MockBuilderInterface $builder)
+    {
+        $className = $builder->className();
+        $isNew = !class_exists($className);
+
+        if ($isNew) {
+            $builder->build();
+        }
+
+        $class = new ReflectionClass($className);
+
+        if (!$isNew) {
+            return $class;
+        }
+
+        $property = $class->getProperty('_staticStubs');
+        $property->setAccessible(true);
+        $property->setValue(
+            null,
+            array_map(
+                function ($stub) {
+                    return $stub->forwards();
+                },
+                $this->createStubs(
+                    $builder->methodDefinitions()->staticMethods()
+                )
+            )
+        );
+
+        return $class;
+    }
+
+    /**
      * Create a new mock instance for the supplied builder.
      *
      * @param MockBuilderInterface $builder The builder.
@@ -47,13 +114,11 @@ class MockFactory implements MockFactoryInterface
      */
     public function createMock(MockBuilderInterface $builder)
     {
-        $className = $builder->build();
-        $mock = new $className();
+        $class = $this->createMockClass($builder);
+        $mock = $class->newInstanceArgs();
 
-        $class = new ReflectionClass($className);
         $property = $class->getProperty('_stubs');
         $property->setAccessible(true);
-
         $property->setValue(
             $mock,
             $this->createStubs($builder->methodDefinitions()->methods(), $mock)
@@ -63,45 +128,27 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Create static stubs for the supplied builder.
+     * Create the stubs for a list of methods.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param array<string,MethodDefinitionInterface> The methods.
+     * @param MockInterface|null $mock The mock.
      *
-     * @return array<string,StubInterface> The stubs.
+     * @return array<string,StubVerifierInterface> The stubs.
      */
-    public function createStaticStubs(MockBuilderInterface $builder)
+    protected function createStubs(array $methods, MockInterface $mock = null)
     {
-        return array_map(
-            function ($stub) {
-                return $stub->forwards();
-            },
-            $this->createStubs($builder->staticMethods())
-        );
-    }
-
-    /**
-     * Create the stubs for a mock.
-     *
-     * @param MockBuilderInterface $builder The builder.
-     * @param MockInterface|null   $mock    The mock.
-     *
-     * @return array<string,StubInterface> The stubs.
-     */
-    protected function createStubs(
-        MockBuilderInterface $builder,
-        MockInterface $mock = null
-    ) {
         $stubs = array();
 
-        foreach ($builder->methodDefinitions() as $name => $method) {
+        foreach ($methods as $method) {
             if ($method->isCustom()) {
-                $stubs[$name] = $this->stubVerifierFactory
+                $stubs[$method->name()] = $this->stubVerifierFactory
                     ->createFromCallback($method->callback(), $mock);
             } else {
-                $stubs[$name] = $this->stubVerifierFactory->createFromCallback(
-                    new WrappedMethod($method->method(), $mock),
-                    $mock
-                );
+                $stubs[$method->name()] = $this->stubVerifierFactory
+                    ->createFromCallback(
+                        new WrappedMethod($method->method(), $mock),
+                        $mock
+                    );
             }
         }
 
@@ -109,4 +156,5 @@ class MockFactory implements MockFactoryInterface
     }
 
     private static $instance;
+    private $stubVerifierFactory;
 }

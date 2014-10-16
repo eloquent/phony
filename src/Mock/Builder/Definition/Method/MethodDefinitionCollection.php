@@ -27,6 +27,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     {
         $this->methods = $methods;
     }
+
     /**
      * Get the methods.
      *

@@ -100,12 +100,13 @@ interface MockBuilderInterface
     public function named($className = null);
 
     /**
-     * Finalize the mock builder, generate the mock class, and return a new
-     * instance.
+     * Finalize the mock builder, generate the mock class, and return a mock.
      *
-     * @param boolean|null $createNew True if a new instance should be created.
+     * Subsequent calls will return the same mock unless otherwise specified.
      *
-     * @return MockInterface The newly created mock instance.
+     * @param boolean|null $createNew True if a new mock should be created.
+     *
+     * @return MockInterface The mock instance.
      */
     public function get($createNew = null);
 

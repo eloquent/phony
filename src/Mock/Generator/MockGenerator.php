@@ -122,7 +122,8 @@ EOD;
 
         if (count($classNameParts) > 1) {
             $className = array_pop($classNameParts);
-            $namespace = sprintf("namespace %s;\n\n", implode($classNameParts));
+            $namespace =
+                sprintf("namespace %s;\n\n", implode('\\', $classNameParts));
         } else {
             $namespace = '';
         }

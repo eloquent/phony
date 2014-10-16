@@ -36,5 +36,5 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
         'propertyC' => 'valueC',
         'propertyD' => 333,
     ),
-    'Example\MockGeneratorTypicalHhvm'
+    'Phony\Test\MockGeneratorTypicalHhvm'
 );

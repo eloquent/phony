@@ -20,6 +20,10 @@ use Eloquent\Phony\Mock\Builder\Exception\FinalizedMockException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
+use Eloquent\Phony\Mock\Factory\MockFactory;
+use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
+use Eloquent\Phony\Mock\Generator\MockGenerator;
+use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -43,6 +47,8 @@ class MockBuilder implements MockBuilderInterface
      * @param array|object|null                       $definition The definition.
      * @param string|null                             $className  The class name.
      * @param integer|null                            $id         The identifier.
+     * @param MockGeneratorInterface|null             $generator  The generator.
+     * @param MockFactoryInterface|null               $factory    The factory.
      *
      * @throws MockBuilderExceptionInterface If invalid input is supplied.
      */
@@ -50,8 +56,20 @@ class MockBuilder implements MockBuilderInterface
         $types = null,
         $definition = null,
         $className = null,
-        $id = null
+        $id = null,
+        MockGeneratorInterface $generator = null,
+        MockFactoryInterface $factory = null
     ) {
+        if (null === $generator) {
+            $generator = MockGenerator::instance();
+        }
+        if (null === $factory) {
+            $factory = MockFactory::instance();
+        }
+
+        $this->generator = $generator;
+        $this->factory = $factory;
+
         $this->types = array();
         $this->reflectors = array();
         $this->methods = array();
@@ -76,6 +94,26 @@ class MockBuilder implements MockBuilderInterface
         }
 
         $this->named($className);
+    }
+
+    /**
+     * Get the generator.
+     *
+     * @return MockGeneratorInterface The generator.
+     */
+    public function generator()
+    {
+        return $this->generator;
+    }
+
+    /**
+     * Get the factory.
+     *
+     * @return MockFactoryInterface The factory.
+     */
+    public function factory()
+    {
+        return $this->factory;
     }
 
     /**
@@ -274,12 +312,13 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Finalize the mock builder, generate the mock class, and return a new
-     * instance.
+     * Finalize the mock builder, generate the mock class, and return a mock.
      *
-     * @param boolean|null $createNew True if a new instance should be created.
+     * Subsequent calls will return the same mock unless otherwise specified.
      *
-     * @return MockInterface The newly created mock instance.
+     * @param boolean|null $createNew True if a new mock should be created.
+     *
+     * @return MockInterface The mock instance.
      */
     public function get($createNew = null)
     {
@@ -287,9 +326,11 @@ class MockBuilder implements MockBuilderInterface
             $createNew = false;
         }
 
-        $this->build();
+        if ($createNew || null === $this->mock) {
+            $this->mock = $this->factory->createMock($this);
+        }
 
-        return (object) array();
+        return $this->mock;
     }
 
     /**
@@ -300,9 +341,9 @@ class MockBuilder implements MockBuilderInterface
      */
     public function build()
     {
-        $this->finalize();
+        eval($this->source());
 
-        return '';
+        return $this->className();
     }
 
     /**
@@ -315,7 +356,7 @@ class MockBuilder implements MockBuilderInterface
     {
         $this->finalize();
 
-        return '';
+        return $this->generator->generate($this);
     }
 
     /**
@@ -639,6 +680,8 @@ class MockBuilder implements MockBuilderInterface
     }
 
     protected $isTraitSupported;
+    private $generator;
+    private $factory;
     private $types;
     private $reflectors;
     private $methods;
@@ -653,4 +696,5 @@ class MockBuilder implements MockBuilderInterface
     private $traitNames;
     private $isFinalized;
     private $methodDefinitions;
+    private $mock;
 }
