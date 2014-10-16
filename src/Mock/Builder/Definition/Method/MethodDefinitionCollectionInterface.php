@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Builder\Definition;
+namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
 /**
  * The interface implemented by method definition collections.
