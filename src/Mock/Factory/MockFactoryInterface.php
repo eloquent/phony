@@ -25,7 +25,8 @@ interface MockFactoryInterface
      *
      * @param MockBuilderInterface $builder The builder.
      *
-     * @return ReflectionClass The class.
+     * @return ReflectionClass  The class.
+     * @throws RuntimeException If the mock generation fails.
      */
     public function createMockClass(MockBuilderInterface $builder);
 
@@ -35,7 +36,8 @@ interface MockFactoryInterface
      * @param MockBuilderInterface      $builder   The builder.
      * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
-     * @return MockInterface The newly created mock.
+     * @return MockInterface    The newly created mock.
+     * @throws RuntimeException If the mock generation fails.
      */
     public function createMock(
         MockBuilderInterface $builder,

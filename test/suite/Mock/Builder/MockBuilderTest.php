@@ -483,6 +483,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testStubProxying()
     {
+        $this->subject = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $this->subject->testClassAMethodA());
     }
 

@@ -11,12 +11,14 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use BadMethodCallException;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Builder\Exception\FinalizedMockException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException;
+use Eloquent\Phony\Mock\Builder\Exception\InvalidDefinitionException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
@@ -150,7 +152,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param array|object $definition The definition.
      *
-     * @return MockBuilderInterface This builder.
+     * @return MockBuilderInterface          This builder.
+     * @throws MockBuilderExceptionInterface If invalid input is supplied.
      */
     public function define($definition)
     {
@@ -159,6 +162,10 @@ class MockBuilder implements MockBuilderInterface
         }
 
         foreach ($definition as $name => $value) {
+            if (!is_string($name)) {
+                throw new InvalidDefinitionException($name, $value);
+            }
+
             $nameParts = explode(' ', $name);
             $name = array_pop($nameParts);
             $isStatic = in_array('static', $nameParts);

@@ -21,6 +21,7 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
+use RuntimeException;
 
 /**
  * Creates mock instances.
@@ -89,17 +90,54 @@ class MockFactory implements MockFactoryInterface
      *
      * @param MockBuilderInterface $builder The builder.
      *
-     * @return ReflectionClass The class.
+     * @return ReflectionClass  The class.
+     * @throws RuntimeException If the mock generation fails.
      */
     public function createMockClass(MockBuilderInterface $builder)
     {
         $builder->finalize();
 
         $className = $builder->className();
-        $isNew = !class_exists($className);
+        $isNew = !class_exists($className, false);
 
         if ($isNew) {
-            eval($this->generator->generate($builder));
+            $source = $this->generator->generate($builder);
+
+            @eval($source);
+
+            if (!class_exists($className, false)) {
+                $error = error_get_last();
+                $errorLineNumber = $error['line'];
+                $lines = explode("\n", $source);
+
+                $startLine = $errorLineNumber - 3;
+
+                if ($startLine < 0) {
+                    $startLine = 0;
+                }
+
+                $lines = array_slice($lines, $startLine, 7, true);
+                $renderedLines = '';
+
+                foreach ($lines as $lineNumber => $line) {
+                    $renderedLines .= sprintf(
+                        "\n%s: %s",
+                        str_pad($lineNumber + 1, 8, ' ', STR_PAD_LEFT),
+                        $line
+                    );
+                }
+
+                throw new RuntimeException(
+                    sprintf(
+                        "Mock class generation failed: " .
+                            "%s in generated code on line %d.\n" .
+                            "Relevant lines:%s",
+                        $error['message'],
+                        $errorLineNumber,
+                        $renderedLines
+                    )
+                );
+            }
         }
 
         $class = new ReflectionClass($className);
@@ -125,7 +163,8 @@ class MockFactory implements MockFactoryInterface
      * @param MockBuilderInterface      $builder   The builder.
      * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
-     * @return MockInterface The newly created mock.
+     * @return MockInterface    The newly created mock.
+     * @throws RuntimeException If the mock generation fails.
      */
     public function createMock(
         MockBuilderInterface $builder,
