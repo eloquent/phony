@@ -12,6 +12,9 @@
 namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Exception\ClassExistsException;
+use Eloquent\Phony\Mock\Builder\Exception\MockBuilderExceptionInterface;
+use Eloquent\Phony\Mock\Builder\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
@@ -21,7 +24,6 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
-use RuntimeException;
 
 /**
  * Creates mock instances.
@@ -90,8 +92,8 @@ class MockFactory implements MockFactoryInterface
      *
      * @param MockBuilderInterface $builder The builder.
      *
-     * @return ReflectionClass  The class.
-     * @throws RuntimeException If the mock generation fails.
+     * @return ReflectionClass               The class.
+     * @throws MockBuilderExceptionInterface If the mock generation fails.
      */
     public function createMockClass(MockBuilderInterface $builder)
     {
@@ -106,48 +108,19 @@ class MockFactory implements MockFactoryInterface
             @eval($source);
 
             if (!class_exists($className, false)) {
-                if (defined('HHVM_VERSION')) { // @codeCoverageIgnoreStart
-                    throw new RuntimeException('Mock class generation failed.');
-                } // @codeCoverageIgnoreEnd
-
-                $error = error_get_last();
-                $errorLineNumber = $error['line'];
-                $lines = explode("\n", $source);
-
-                $startLine = $errorLineNumber - 4;
-                $contextLineCount = 7;
-
-                if ($startLine < 0) {
-                    $contextLineCount += $startLine;
-                    $startLine = 0;
-                }
-
-                $lines =
-                    array_slice($lines, $startLine, $contextLineCount, true);
-                $renderedLines = '';
-
-                foreach ($lines as $lineNumber => $line) {
-                    $renderedLines .= sprintf(
-                        "\n%s: %s",
-                        str_pad($lineNumber + 1, 8, ' ', STR_PAD_LEFT),
-                        $line
-                    );
-                }
-
-                throw new RuntimeException(
-                    sprintf(
-                        "Mock class generation failed: " .
-                            "%s in generated code on line %d.\n" .
-                            "Relevant lines:%s",
-                        $error['message'],
-                        $errorLineNumber,
-                        $renderedLines
-                    )
+                throw new MockGenerationFailedException(
+                    $builder,
+                    $source,
+                    error_get_last()
                 );
             }
         }
 
         $class = new ReflectionClass($className);
+
+        if (!$class->implementsInterface('Eloquent\Phony\Mock\MockInterface')) {
+            throw new ClassExistsException($className);
+        }
 
         if ($isNew) {
             $property = $class->getProperty('_staticStubs');
@@ -170,8 +143,8 @@ class MockFactory implements MockFactoryInterface
      * @param MockBuilderInterface      $builder   The builder.
      * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
-     * @return MockInterface    The newly created mock.
-     * @throws RuntimeException If the mock generation fails.
+     * @return MockInterface                 The newly created mock.
+     * @throws MockBuilderExceptionInterface If the mock generation fails.
      */
     public function createMock(
         MockBuilderInterface $builder,

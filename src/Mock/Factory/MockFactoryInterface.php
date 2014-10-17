@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Factory;
 
+use Eloquent\Phony\Mock\Builder\Exception\MockBuilderExceptionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use ReflectionClass;
@@ -25,8 +26,8 @@ interface MockFactoryInterface
      *
      * @param MockBuilderInterface $builder The builder.
      *
-     * @return ReflectionClass  The class.
-     * @throws RuntimeException If the mock generation fails.
+     * @return ReflectionClass               The class.
+     * @throws MockBuilderExceptionInterface If the mock generation fails.
      */
     public function createMockClass(MockBuilderInterface $builder);
 
@@ -36,8 +37,8 @@ interface MockFactoryInterface
      * @param MockBuilderInterface      $builder   The builder.
      * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
-     * @return MockInterface    The newly created mock.
-     * @throws RuntimeException If the mock generation fails.
+     * @return MockInterface                 The newly created mock.
+     * @throws MockBuilderExceptionInterface If the mock generation fails.
      */
     public function createMock(
         MockBuilderInterface $builder,

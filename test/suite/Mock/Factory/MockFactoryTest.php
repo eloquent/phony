@@ -68,95 +68,20 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame('static custom ab', PhonyMockFactoryTestCreateMockClass::methodA('a', 'b'));
     }
 
-    public function testCreateMockClassFailure()
+    public function testCreateMockClassFailureExists()
     {
-        $source = <<<'EOD'
-// this line is NOT context
-// this line is context
-// this line is context
-// this line is context
-function function () {}
-// this line is context
-// this line is context
-// this line is context
-// this line is NOT context
-EOD;
-        $this->subject = new MockFactory(new TestMockGenerator($source));
-        $builder = new MockBuilder();
-        $expected = <<<'EOD'
-Relevant lines:
-       2: // this line is context
-       3: // this line is context
-       4: // this line is context
-       5: function function () {}
-       6: // this line is context
-       7: // this line is context
-       8: // this line is context
-EOD;
+        $builder = new MockBuilder(null, null, __CLASS__);
 
-        if (defined('HHVM_VERSION')) {
-            $this->setExpectedException('RuntimeException', 'Mock class generation failed.');
-        } else {
-            $this->setExpectedException('RuntimeException', $expected);
-        }
+        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\ClassExistsException');
         $this->subject->createMockClass($builder);
     }
 
-    public function testCreateMockClassFailureAtStart()
+    public function testCreateMockClassFailureSyntax()
     {
-        $source = <<<'EOD'
-// this line is context
-function function () {}
-// this line is context
-// this line is context
-// this line is context
-// this line is NOT context
-EOD;
-        $this->subject = new MockFactory(new TestMockGenerator($source));
+        $this->subject = new MockFactory(new TestMockGenerator('{'));
         $builder = new MockBuilder();
-        $expected = <<<'EOD'
-Relevant lines:
-       1: // this line is context
-       2: function function () {}
-       3: // this line is context
-       4: // this line is context
-       5: // this line is context
-EOD;
 
-        if (defined('HHVM_VERSION')) {
-            $this->setExpectedException('RuntimeException', 'Mock class generation failed.');
-        } else {
-            $this->setExpectedException('RuntimeException', $expected);
-        }
-        $this->subject->createMockClass($builder);
-    }
-
-    public function testCreateMockClassFailureAtEnd()
-    {
-        $source = <<<'EOD'
-// this line is NOT context
-// this line is context
-// this line is context
-// this line is context
-function function () {}
-// this line is context
-EOD;
-        $this->subject = new MockFactory(new TestMockGenerator($source));
-        $builder = new MockBuilder();
-        $expected = <<<'EOD'
-Relevant lines:
-       2: // this line is context
-       3: // this line is context
-       4: // this line is context
-       5: function function () {}
-       6: // this line is context
-EOD;
-
-        if (defined('HHVM_VERSION')) {
-            $this->setExpectedException('RuntimeException', 'Mock class generation failed.');
-        } else {
-            $this->setExpectedException('RuntimeException', $expected);
-        }
+        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\MockGenerationFailedException');
         $this->subject->createMockClass($builder);
     }
 
