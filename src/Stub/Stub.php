@@ -456,21 +456,26 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
-        if (null === $prefixSelf && $this->callback instanceof Closure) {
+        if (
+            null === $prefixSelf &&
+            $this->callback instanceof Closure &&
+            is_object($this->self)
+        ) {
             $selfClass = new ReflectionClass($this->self);
             $parameters = $this->invocableInspector
                 ->callbackReflector($this->callback)->getParameters();
 
             if ($parameters && 'self' === $parameters[0]->getName()) {
                 try {
-                    $parameterClass = $parameters[0]->getClass();
+                    if ($parameterClass = $parameters[0]->getClass()) {
+                        $parameterClassName = $parameterClass->getName();
 
-                    if (
-                        $parameterClass &&
-                        $selfClass->getName() === $parameterClass->getName() ||
-                        $selfClass->isSubclassOf($parameterClass->getName())
-                    ) {
-                        $prefixSelf = true;
+                        if (
+                            $selfClass->getName() === $parameterClassName ||
+                            $selfClass->isSubclassOf($parameterClassName)
+                        ) {
+                            $prefixSelf = true;
+                        }
                     }
                 } catch (ReflectionException $e) {
                     // ignore

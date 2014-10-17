@@ -728,17 +728,84 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c - d', call_user_func($this->subject, ' - ', array('c', 'd')));
     }
 
-    public function testForwardsSelfParameterAutoDetection()
+    public function forwardsSelfParameterAutoDetectionoDetectionData()
     {
-        $this->callback = function (TestClassA $self) {
-            return func_get_args();
-        };
-        $this->self = new TestClassB();
-        $this->stub = new Stub($this->callback, $this->self);
-        $this->stub->forwards();
-        $this->subject = new StubVerifier($this->stub);
+        return array(
+            'Exact match' => array(
+                function (TestClassA $self) {
+                    return func_get_args();
+                },
+                new TestClassA(),
+                array('a', 'b'),
+                array(new TestClassA(), 'a', 'b'),
+            ),
+            'Subclass' => array(
+                function (TestClassA $self) {
+                    return func_get_args();
+                },
+                new TestClassB(),
+                array('a', 'b'),
+                array(new TestClassB(), 'a', 'b'),
+            ),
+            'Superclass' => array(
+                function (TestClassB $self) {
+                    return func_get_args();
+                },
+                new TestClassA(),
+                array(new TestClassB(), 'a', 'b'),
+                array(new TestClassB(), 'a', 'b'),
+            ),
+            'No hint' => array(
+                function ($self) {
+                    return func_get_args();
+                },
+                new TestClassA(),
+                array('a', 'b'),
+                array('a', 'b'),
+            ),
+            'Wrong name' => array(
+                function (TestClassA $a) {
+                    return func_get_args();
+                },
+                new TestClassA(),
+                array(new TestClassA(), 'a', 'b'),
+                array(new TestClassA(), 'a', 'b'),
+            ),
+            'No parameters' => array(
+                function () {
+                    return func_get_args();
+                },
+                new TestClassA(),
+                array('a', 'b'),
+                array('a', 'b'),
+            ),
+            'Not a closure' => array(
+                'implode',
+                new TestClassA(),
+                array(array('a', 'b')),
+                'ab',
+            ),
+            'Self is not object' => array(
+                function (TestClassA $self) {
+                    return func_get_args();
+                },
+                'Eloquent\Phony\Test\TestClassA',
+                array(new TestClassA(), 'a', 'b'),
+                array(new TestClassA(), 'a', 'b'),
+            ),
+        );
+    }
 
-        $this->assertSame(array($this->self, 'a', 'b'), call_user_func($this->subject, 'a', 'b'));
+    /**
+     * @dataProvider forwardsSelfParameterAutoDetectionoDetectionData
+     */
+    public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
+    {
+        $stub = new Stub($callback, $self);
+        $stub->forwards();
+        $subject = new StubVerifier($stub);
+
+        $this->assertEquals($expected, call_user_func_array($subject, $arguments));
     }
 
     public function testForwardsWithReferenceParameters()
