@@ -18,6 +18,34 @@ class MockGeneratorSimple
 extends \stdClass
 implements \Eloquent\Phony\Mock\MockInterface
 {
+    /**
+     * Call a static parent method.
+     *
+     * @param string $name The method name.
+     * @param array<integer,mixed> The arguments.
+     */
+    private static function _callParentStatic($name, array $arguments)
+    {
+        return call_user_func_array(
+            array(__CLASS__, 'parent::' . $name),
+            $arguments
+        );
+    }
+
+    /**
+     * Call a parent method.
+     *
+     * @param string $name The method name.
+     * @param array<integer,mixed> The arguments.
+     */
+    private function _callParent($name, array $arguments)
+    {
+        return call_user_func_array(
+            array($this, 'parent::' . $name),
+            $arguments
+        );
+    }
+
     private static $_staticStubs = array();
     private $_stubs = array();
 }

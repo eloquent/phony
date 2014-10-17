@@ -78,6 +78,7 @@ class MockGenerator implements MockGeneratorInterface
             $this->generateMethods(
                 $builder->methodDefinitions()->protectedMethods()
             ) .
+            $this->generateCallParentMethods($builder) .
             $this->generateProperties($builder) .
             "\n}\n";
     }
@@ -206,7 +207,7 @@ EOD;
             return '';
         }
 
-        $template = <<<'EOD'
+        return <<<'EOD'
 
     /**
      * Construct a mock.
@@ -215,29 +216,7 @@ EOD;
     {
     }
 
-    /**
-     * Call the parent constructor.
-     *
-     * @uses %s::%s%s
-     */
-    public function _constructParent%s        call_user_func_array(
-            array($this, 'parent::%s'),
-            func_get_args()
-        );
-    }
-
 EOD;
-
-        $name = $constructor->getName();
-
-        return sprintf(
-            $template,
-            $constructor->getDeclaringClass()->getName(),
-            $name,
-            $this->renderParametersDocumentation($constructor, false),
-            $this->renderParameters($constructor, false),
-            $name
-        );
     }
 
     /**
@@ -316,6 +295,48 @@ EOD;
         }
 
         return $source;
+    }
+
+    /**
+     * Generate the call parent methods.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return string The source code.
+     */
+    protected function generateCallParentMethods(MockBuilderInterface $builder)
+    {
+        return <<<'EOD'
+
+    /**
+     * Call a static parent method.
+     *
+     * @param string $name The method name.
+     * @param array<integer,mixed> The arguments.
+     */
+    private static function _callParentStatic($name, array $arguments)
+    {
+        return call_user_func_array(
+            array(__CLASS__, 'parent::' . $name),
+            $arguments
+        );
+    }
+
+    /**
+     * Call a parent method.
+     *
+     * @param string $name The method name.
+     * @param array<integer,mixed> The arguments.
+     */
+    private function _callParent($name, array $arguments)
+    {
+        return call_user_func_array(
+            array($this, 'parent::' . $name),
+            $arguments
+        );
+    }
+
+EOD;
     }
 
     /**

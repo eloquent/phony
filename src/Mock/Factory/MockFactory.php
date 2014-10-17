@@ -11,11 +11,11 @@
 
 namespace Eloquent\Phony\Mock\Factory;
 
-use Eloquent\Phony\Invocation\WrappedMethod;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
+use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
@@ -108,6 +108,7 @@ class MockFactory implements MockFactoryInterface
             $property->setValue(
                 null,
                 $this->createStubs(
+                    $class,
                     $builder->methodDefinitions()->staticMethods()
                 )
             );
@@ -135,13 +136,21 @@ class MockFactory implements MockFactoryInterface
         $property->setAccessible(true);
         $property->setValue(
             $mock,
-            $this->createStubs($builder->methodDefinitions()->methods(), $mock)
+            $this->createStubs(
+                $class,
+                $builder->methodDefinitions()->methods(),
+                $mock
+            )
         );
 
-        if (null !== $arguments && $class->hasMethod('_constructParent')) {
-            $method = $class->getMethod('_constructParent');
-            $method->setAccessible(true);
-            $method->invokeArgs($mock, $arguments);
+        if (null !== $arguments) {
+            if ($parentClass = $class->getParentClass()) {
+                if ($constructor = $parentClass->getConstructor()) {
+                    $method = $class->getMethod('_callParent');
+                    $method->setAccessible(true);
+                    $method->invoke($mock, $constructor->getName(), $arguments);
+                }
+            }
         }
 
         return $mock;
@@ -150,14 +159,24 @@ class MockFactory implements MockFactoryInterface
     /**
      * Create the stubs for a list of methods.
      *
+     * @param ReflectionClass    $class The mock class.
      * @param array<string,MethodDefinitionInterface> The methods.
-     * @param MockInterface|null $mock The mock.
+     * @param MockInterface|null $mock  The mock, or null for static stubs.
      *
      * @return array<string,StubVerifierInterface> The stubs.
      */
-    protected function createStubs(array $methods, MockInterface $mock = null)
-    {
+    protected function createStubs(
+        ReflectionClass $class,
+        array $methods,
+        MockInterface $mock = null
+    ) {
         $stubs = array();
+
+        $callParentStatic = $class->getMethod('_callParentStatic');
+        $callParentStatic->setAccessible(true);
+
+        $callParentInstance = $class->getMethod('_callParent');
+        $callParentInstance->setAccessible(true);
 
         foreach ($methods as $method) {
             $name = $method->name();
@@ -166,9 +185,19 @@ class MockFactory implements MockFactoryInterface
                 $stubs[$name] = $stub = $this->stubVerifierFactory
                     ->createFromCallback($method->callback(), $mock);
             } else {
+                if ($method->isStatic()) {
+                    $callParentMethod = $callParentStatic;
+                } else {
+                    $callParentMethod = $callParentInstance;
+                }
+
                 $stubs[$name] = $stub = $this->stubVerifierFactory
                     ->createFromCallback(
-                        new WrappedMethod($method->method(), $mock),
+                        new WrappedMethod(
+                            $callParentMethod,
+                            $method->method(),
+                            $mock
+                        ),
                         $mock
                     );
             }

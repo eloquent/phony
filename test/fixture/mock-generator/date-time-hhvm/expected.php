@@ -63,24 +63,6 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     /**
-     * Call the parent constructor.
-     *
-     * @uses DateTime::__construct
-     *
-     * @param mixed $a0 Was 'time'.
-     * @param mixed $a1 Was 'timezone'.
-     */
-    public function _constructParent(
-        $a0 = 'now',
-        $a1 = null
-    ) {
-        call_user_func_array(
-            array($this, 'parent::__construct'),
-            func_get_args()
-        );
-    }
-
-    /**
      * Inherited method '__debugInfo'.
      *
      * @uses \DateTime::__debugInfo()
@@ -362,6 +344,34 @@ implements \Eloquent\Phony\Mock\MockInterface
                 func_get_args()
             );
         }
+    }
+
+    /**
+     * Call a static parent method.
+     *
+     * @param string $name The method name.
+     * @param array<integer,mixed> The arguments.
+     */
+    private static function _callParentStatic($name, array $arguments)
+    {
+        return call_user_func_array(
+            array(__CLASS__, 'parent::' . $name),
+            $arguments
+        );
+    }
+
+    /**
+     * Call a parent method.
+     *
+     * @param string $name The method name.
+     * @param array<integer,mixed> The arguments.
+     */
+    private function _callParent($name, array $arguments)
+    {
+        return call_user_func_array(
+            array($this, 'parent::' . $name),
+            $arguments
+        );
     }
 
     private static $_staticStubs = array();
