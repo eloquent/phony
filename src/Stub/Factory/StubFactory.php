@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -45,16 +47,18 @@ class StubFactory implements StubFactoryInterface
     /**
      * Construct a new stub factory.
      *
-     * @param SequencerInterface|null       $idSequencer     The identifier sequencer to use.
-     * @param MatcherFactoryInterface|null  $matcherFactory  The matcher factory to use.
-     * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
-     * @param InvokerInterface|null         $invoker         The invoker to use.
+     * @param SequencerInterface|null          $idSequencer        The identifier sequencer to use.
+     * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
+     * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
+     * @param InvokerInterface|null            $invoker            The invoker to use.
+     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
      */
     public function __construct(
         SequencerInterface $idSequencer = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
-        InvokerInterface $invoker = null
+        InvokerInterface $invoker = null,
+        InvocableInspectorInterface $invocableInspector = null
     ) {
         if (null === $idSequencer) {
             $idSequencer = new Sequencer();
@@ -68,11 +72,15 @@ class StubFactory implements StubFactoryInterface
         if (null === $invoker) {
             $invoker = Invoker::instance();
         }
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
 
         $this->idSequencer = $idSequencer;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
+        $this->invocableInspector = $invocableInspector;
     }
 
     /**
@@ -116,6 +124,16 @@ class StubFactory implements StubFactoryInterface
     }
 
     /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
+    }
+
+    /**
      * Create a new stub.
      *
      * @param callable|null $callback The callback, or null to create an unbound stub.
@@ -131,7 +149,8 @@ class StubFactory implements StubFactoryInterface
             $this->idSequencer->next(),
             $this->matcherFactory,
             $this->matcherVerifier,
-            $this->invoker
+            $this->invoker,
+            $this->invocableInspector
         );
     }
 
@@ -140,4 +159,5 @@ class StubFactory implements StubFactoryInterface
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;
+    private $invocableInspector;
 }

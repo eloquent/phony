@@ -24,14 +24,14 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * This value is used by returnsSelf().
      *
-     * @param object $self The self value.
+     * @param mixed $self The self value.
      */
     public function setSelf($self);
 
     /**
      * Get the self value of this stub.
      *
-     * @return object The self value.
+     * @return mixed The self value.
      */
     public function self();
 

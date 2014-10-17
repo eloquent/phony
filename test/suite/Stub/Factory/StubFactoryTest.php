@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
@@ -27,8 +28,14 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
-        $this->subject =
-            new StubFactory($this->idSequencer, $this->matcherFactory, $this->matcherVerifier, $this->invoker);
+        $this->invocableInspector = new InvocableInspector();
+        $this->subject = new StubFactory(
+            $this->idSequencer,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector
+        );
     }
 
     public function testConstructor()
@@ -37,6 +44,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
     }
 
     public function testConstructorDefaults()
@@ -47,6 +55,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testCreate()

@@ -11,10 +11,13 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
@@ -28,13 +31,15 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
+        $this->invocableInspector = new InvocableInspector();
         $this->subject = new Stub(
             $this->callback,
             $this->self,
             $this->id,
             $this->matcherFactory,
             $this->matcherVerifier,
-            $this->invoker
+            $this->invoker,
+            $this->invocableInspector
         );
 
         $this->callsA = array();
@@ -138,6 +143,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
     }
 
     public function testConstructorDefaults()
@@ -152,6 +158,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testSetSelf()
@@ -705,6 +712,18 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->forwards());
         $this->assertSame('a, b', call_user_func($this->subject, ', ', array('a', 'b')));
         $this->assertSame('c - d', call_user_func($this->subject, ' - ', array('c', 'd')));
+    }
+
+    public function testForwardsSelfParameterAutoDetection()
+    {
+        $this->callback = function (TestClassA $self) {
+            return func_get_args();
+        };
+        $this->self = new TestClassB();
+        $this->subject = new Stub($this->callback, $this->self);
+        $this->subject->forwards();
+
+        $this->assertSame(array($this->self, 'a', 'b'), call_user_func($this->subject, 'a', 'b'));
     }
 
     public function testForwardsWithReferenceParameters()

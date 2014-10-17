@@ -19,6 +19,8 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
@@ -705,7 +707,8 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testForwards()
     {
-        $this->subject = new Stub($this->callbackA, $this->self);
+        $this->stub = new Stub($this->callbackA, $this->self);
+        $this->subject = new StubVerifier($this->stub);
 
         $this->assertSame($this->subject, $this->subject->forwards(array(1, 2), true, true, true));
         $this->assertSame(
@@ -723,6 +726,19 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->forwards());
         $this->assertSame('a, b', call_user_func($this->subject, ', ', array('a', 'b')));
         $this->assertSame('c - d', call_user_func($this->subject, ' - ', array('c', 'd')));
+    }
+
+    public function testForwardsSelfParameterAutoDetection()
+    {
+        $this->callback = function (TestClassA $self) {
+            return func_get_args();
+        };
+        $this->self = new TestClassB();
+        $this->stub = new Stub($this->callback, $this->self);
+        $this->stub->forwards();
+        $this->subject = new StubVerifier($this->stub);
+
+        $this->assertSame(array($this->self, 'a', 'b'), call_user_func($this->subject, 'a', 'b'));
     }
 
     public function testForwardsWithReferenceParameters()
