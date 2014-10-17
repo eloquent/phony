@@ -258,7 +258,7 @@ interface MockBuilderInterface
     /**
      * Get a static stub.
      *
-     * Calling this method will finalize the mock builder
+     * Calling this method will finalize the mock builder.
      *
      * @param string $name The method name.
      *
@@ -266,6 +266,17 @@ interface MockBuilderInterface
      * @throws BadMethodCallException If the method does not exist.
      */
     public function staticStub($name);
+
+    /**
+     * Turn a mock into a full mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param MockInterface|null $mock The mock, or null to use the current mock.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function full(MockInterface $mock = null);
 
     /**
      * Get a stub.

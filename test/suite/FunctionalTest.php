@@ -21,6 +21,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $builder->get()->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $builder->get()->testClassAMethodA('c', 'd'));
+
+        $builder->full();
+
+        $this->assertNull($builder->get()->testClassAMethodA('a', 'b'));
+        $this->assertNull($builder->get()->testClassAMethodA('c', 'd'));
     }
 
     public function testMockFunction()
@@ -30,6 +35,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $builder->get()->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $builder->get()->testClassAMethodA('c', 'd'));
+
+        $builder->full();
+
+        $this->assertNull($builder->get()->testClassAMethodA('a', 'b'));
+        $this->assertNull($builder->get()->testClassAMethodA('c', 'd'));
     }
 
     public function testSpyStatic()

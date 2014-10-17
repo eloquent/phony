@@ -534,7 +534,7 @@ class MockBuilder implements MockBuilderInterface
 
         $property = $class->getProperty('_staticStubs');
         $property->setAccessible(true);
-        $stubs = $property->getValue($mock);
+        $stubs = $property->getValue(null);
 
         if (isset($stubs[$name])) {
             return $stubs[$name];
@@ -547,6 +547,31 @@ class MockBuilder implements MockBuilderInterface
                 $name
             )
         );
+    }
+
+    /**
+     * Turn a mock into a full mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param MockInterface|null $mock The mock, or null to use the current mock.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function full(MockInterface $mock = null)
+    {
+        if (!$mock) {
+            $mock = $this->get();
+        }
+
+        $property = new ReflectionProperty($mock, '_stubs');
+        $property->setAccessible(true);
+
+        foreach ($property->getValue($mock) as $stub) {
+            $stub->with()->returns();
+        }
+
+        return $mock;
     }
 
     /**
