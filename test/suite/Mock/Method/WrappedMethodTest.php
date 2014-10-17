@@ -71,6 +71,7 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame('protected ab', $subject('a', 'b'));
         $this->assertSame('protected ab', $subject->invoke('a', 'b'));
         $this->assertSame('protected ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('protected ', $subject->invokeWith());
     }
 
     public function testInvokeMethodsWithStatic()
@@ -85,5 +86,6 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame('protected ab', $subject('a', 'b'));
         $this->assertSame('protected ab', $subject->invoke('a', 'b'));
         $this->assertSame('protected ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('protected ', $subject->invokeWith());
     }
 }

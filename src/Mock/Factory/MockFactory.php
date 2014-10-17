@@ -106,17 +106,24 @@ class MockFactory implements MockFactoryInterface
             @eval($source);
 
             if (!class_exists($className, false)) {
+                if (defined('HHVM_VERSION')) { // @codeCoverageIgnoreStart
+                    throw new RuntimeException('Mock class generation failed.');
+                } // @codeCoverageIgnoreEnd
+
                 $error = error_get_last();
                 $errorLineNumber = $error['line'];
                 $lines = explode("\n", $source);
 
-                $startLine = $errorLineNumber - 3;
+                $startLine = $errorLineNumber - 4;
+                $contextLineCount = 7;
 
                 if ($startLine < 0) {
+                    $contextLineCount += $startLine;
                     $startLine = 0;
                 }
 
-                $lines = array_slice($lines, $startLine, 7, true);
+                $lines =
+                    array_slice($lines, $startLine, $contextLineCount, true);
                 $renderedLines = '';
 
                 foreach ($lines as $lineNumber => $line) {
