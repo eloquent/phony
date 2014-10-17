@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
-use Closure;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
@@ -184,7 +183,7 @@ class MockBuilder implements MockBuilderInterface
             $isConstant = in_array('const', $nameParts);
 
             if (!$isFunction && !$isProperty && !$isConstant) {
-                if ($value instanceof Closure) {
+                if (is_object($value) && is_callable($value)) {
                     $isFunction = true;
                 } else {
                     $isProperty = true;
@@ -622,14 +621,14 @@ class MockBuilder implements MockBuilderInterface
             }
         }
 
-        foreach ($this->staticMethods as $name => $closure) {
+        foreach ($this->staticMethods as $name => $callback) {
             $methods[$name] =
-                new CustomMethodDefinition(true, $name, $closure);
+                new CustomMethodDefinition(true, $name, $callback);
         }
 
-        foreach ($this->methods as $name => $closure) {
+        foreach ($this->methods as $name => $callback) {
             $methods[$name] =
-                new CustomMethodDefinition(false, $name, $closure);
+                new CustomMethodDefinition(false, $name, $callback);
         }
 
         ksort($methods, SORT_STRING);

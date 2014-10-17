@@ -21,8 +21,7 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodE');
         $this->instance = new TestClassA();
-        $this->name = 'name';
-        $this->subject = new WrappedMethod($this->method, $this->instance, $this->name);
+        $this->subject = new WrappedMethod($this->method, $this->instance);
     }
 
     public function testConstructor()
@@ -34,9 +33,30 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame($this->method->getName(), $this->subject->method()->getName());
         $this->assertSame($this->instance, $this->subject->instance());
-        $this->assertSame($this->name, $this->subject->name());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(array($this->instance, $this->name), $this->subject->callback());
+        $this->assertSame(array($this->instance, 'testClassAMethodE'), $this->subject->callback());
+        $this->assertNull($this->subject->id());
+    }
+
+    public function testConstructorWithStatic()
+    {
+        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodE');
+        $this->instance = new TestClassA();
+        $this->name = 'name';
+        $this->subject = new WrappedMethod($this->method, $this->instance, $this->name);
+
+        $this->assertInstanceOf('ReflectionMethod', $this->subject->method());
+        $this->assertSame(
+            $this->method->getDeclaringClass()->getName(),
+            $this->subject->method()->getDeclaringClass()->getName()
+        );
+        $this->assertSame($this->method->getName(), $this->subject->method()->getName());
+        $this->assertSame($this->instance, $this->subject->instance());
+        $this->assertFalse($this->subject->isAnonymous());
+        $this->assertSame(
+            array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'),
+            $this->subject->callback()
+        );
         $this->assertNull($this->subject->id());
     }
 
@@ -45,7 +65,6 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->subject = new WrappedMethod($this->method);
 
         $this->assertNull($this->subject->instance());
-        $this->assertSame($this->method->getName(), $this->subject->name());
         $this->assertSame(array(null, $this->method->getName()), $this->subject->callback());
     }
 

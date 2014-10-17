@@ -38,7 +38,8 @@ class CustomMethodDefinitionTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new CustomMethodDefinition($this->isStatic, $this->name);
 
-        $this->assertInstanceOf('Closure', $this->subject->callback());
+        $this->assertInternalType('object', $this->subject->callback());
+        $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
     }
 }

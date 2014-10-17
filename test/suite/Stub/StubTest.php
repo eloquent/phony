@@ -153,7 +153,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isAnonymous());
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
-        $this->assertInstanceOf('Closure', $this->subject->self());
+        $this->assertTrue(is_callable($this->subject->self()));
         $this->assertNull($this->subject->id());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
@@ -765,7 +765,7 @@ class StubTest extends PHPUnit_Framework_TestCase
                 array('a', 'b'),
                 array('a', 'b'),
             ),
-            'Not a closure' => array(
+            'Not a callable object' => array(
                 'implode',
                 new TestClassA(),
                 array(array('a', 'b')),

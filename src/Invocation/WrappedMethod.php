@@ -27,32 +27,27 @@ class WrappedMethod extends AbstractWrappedInvocable
      *
      * @param ReflectionMethod $method   The method.
      * @param object|null      $instance The instance.
-     * @param string|null      $name     The name.
      */
     public function __construct(
         ReflectionMethod $method,
-        $instance = null,
-        $name = null
+        $instance = null
     ) {
-        $realName = $method->getName();
-
-        if (null === $name) {
-            $name = $realName;
-        }
-
-        $this->method = new ReflectionMethod(
-            $method->getDeclaringClass()->getName(),
-            $realName
-        );
+        $class = $method->getDeclaringClass()->getName();
+        $name = $method->getName();
+        $this->method = new ReflectionMethod($class, $name);
         $this->instance = $instance;
 
         if (!$this->method->isPublic()) {
             $this->method->setAccessible(true);
         }
 
-        parent::__construct(array($instance, $name));
+        if ($this->method->isStatic()) {
+            $callback = array($class, $name);
+        } else {
+            $callback = array($instance, $name);
+        }
 
-        $this->name = $name;
+        parent::__construct($callback);
     }
 
     /**
@@ -76,16 +71,6 @@ class WrappedMethod extends AbstractWrappedInvocable
     }
 
     /**
-     * Get the name.
-     *
-     * @return string The name.
-     */
-    public function name()
-    {
-        return $this->name;
-    }
-
-    /**
      * Invoke this object.
      *
      * This method supports reference parameters.
@@ -106,5 +91,4 @@ class WrappedMethod extends AbstractWrappedInvocable
 
     private $method;
     private $instance;
-    private $name;
 }

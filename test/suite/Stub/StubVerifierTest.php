@@ -779,7 +779,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 array('a', 'b'),
                 array('a', 'b'),
             ),
-            'Not a closure' => array(
+            'Not a callable object' => array(
                 'implode',
                 new TestClassA(),
                 array(array('a', 'b')),

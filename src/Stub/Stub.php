@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Closure;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
@@ -458,7 +457,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     ) {
         if (
             null === $prefixSelf &&
-            $this->callback instanceof Closure &&
+            is_object($this->callback) &&
             is_object($this->self)
         ) {
             $selfClass = new ReflectionClass($this->self);
@@ -673,7 +672,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Returns a callback to use when normalizing indices.
      *
-     * @return Closure The index normalizer.
+     * @return callable The index normalizer.
      */
     protected function indexNormalizer()
     {
