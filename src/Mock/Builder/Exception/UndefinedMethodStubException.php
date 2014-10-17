@@ -40,8 +40,8 @@ final class UndefinedMethodStubException extends Exception implements
         parent::__construct(
             sprintf(
                 'The requested method stub %s::%s() does not exist.',
-                var_export($mockBuilder->className(), true),
-                var_export($name, true)
+                $mockBuilder->className(),
+                $name
             ),
             0,
             $cause
