@@ -15,6 +15,8 @@ use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Event\Verification\EventOrderVerifier;
 use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Facade\FacadeDriverInterface;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 
@@ -47,8 +49,20 @@ class PhpunitFacadeDriver extends FacadeDriver
         $assertionRecorder = PhpunitAssertionRecorder::instance();
         $callVerifierFactory =
             new CallVerifierFactory(null, null, $assertionRecorder);
+        $stubVerifierFactory = new StubVerifierFactory(
+            null,
+            null,
+            null,
+            null,
+            $callVerifierFactory,
+            $assertionRecorder
+        );
 
         parent::__construct(
+            new MockBuilderFactory(
+                null,
+                new MockFactory(null, $stubVerifierFactory)
+            ),
             new SpyVerifierFactory(
                 null,
                 null,
@@ -56,14 +70,7 @@ class PhpunitFacadeDriver extends FacadeDriver
                 $callVerifierFactory,
                 $assertionRecorder
             ),
-            new StubVerifierFactory(
-                null,
-                null,
-                null,
-                null,
-                $callVerifierFactory,
-                $assertionRecorder
-            ),
+            $stubVerifierFactory,
             new EventOrderVerifier($assertionRecorder)
         );
     }

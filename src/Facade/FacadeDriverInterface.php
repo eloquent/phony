@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 
@@ -21,6 +22,13 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
  */
 interface FacadeDriverInterface
 {
+    /**
+     * Get the mock builder factory.
+     *
+     * @return MockBuilderFactoryInterface The mock builder factory.
+     */
+    public function mockBuilderFactory();
+
     /**
      * Get the spy verifier factory.
      *

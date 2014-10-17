@@ -14,6 +14,24 @@ use Eloquent\Phony\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
+    public function testMockStatic()
+    {
+        $builder = Phony::mock('Eloquent\Phony\Test\TestClassA');
+        $builder->testClassAMethodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $builder->get()->testClassAMethodA('a', 'b'));
+        $this->assertSame('cd', $builder->get()->testClassAMethodA('c', 'd'));
+    }
+
+    public function testMockFunction()
+    {
+        $builder = x\mock('Eloquent\Phony\Test\TestClassA');
+        $builder->testClassAMethodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $builder->get()->testClassAMethodA('a', 'b'));
+        $this->assertSame('cd', $builder->get()->testClassAMethodA('c', 'd'));
+    }
+
     public function testSpyStatic()
     {
         $spy = Phony::spy();

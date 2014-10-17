@@ -32,9 +32,13 @@ interface MockFactoryInterface
     /**
      * Create a new mock instance for the supplied builder.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockBuilderInterface      $builder   The builder.
+     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return MockInterface The newly created mock.
      */
-    public function createMock(MockBuilderInterface $builder);
+    public function createMock(
+        MockBuilderInterface $builder,
+        array $arguments = null
+    );
 }

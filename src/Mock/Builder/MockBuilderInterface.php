@@ -121,9 +121,25 @@ interface MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @param mixed $arguments,... The constructor arguments.
+     *
      * @return MockInterface The mock instance.
      */
     public function create();
+
+    /**
+     * Create a new mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function createWith(array $arguments = null);
 
     /**
      * Generate and define the mock class.

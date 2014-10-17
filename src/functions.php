@@ -13,9 +13,28 @@ namespace Eloquent\Phony;
 
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Facade\FacadeDriver;
+use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
+
+/**
+ * Create a new mock builder.
+ *
+ * @param array<string|object>|string|object|null $types      The types to mock.
+ * @param array|object|null                       $definition The definition.
+ * @param string|null                             $className  The class name.
+ *
+ * @return MockBuilderInterface The mock builder.
+ */
+function mock(
+    $types = null,
+    $definition = null,
+    $className = null
+) {
+    return static::driver()->mockBuilderFactory()
+        ->create($types, $definition, $className);
+}
 
 /**
  * Create a new spy verifier for the supplied callback.

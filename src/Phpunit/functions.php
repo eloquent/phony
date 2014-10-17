@@ -18,6 +18,24 @@ use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
 
 /**
+ * Create a new mock builder.
+ *
+ * @param array<string|object>|string|object|null $types      The types to mock.
+ * @param array|object|null                       $definition The definition.
+ * @param string|null                             $className  The class name.
+ *
+ * @return MockBuilderInterface The mock builder.
+ */
+function mock(
+    $types = null,
+    $definition = null,
+    $className = null
+) {
+    return PhpunitFacadeDriver::instance()->mockBuilderFactory()
+        ->create($types, $definition, $className);
+}
+
+/**
  * Create a new spy verifier for the supplied callback.
  *
  * @param callable|null $callback The callback, or null to create an unbound spy verifier.

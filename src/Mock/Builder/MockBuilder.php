@@ -42,11 +42,11 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * @param array<string|object>|string|object|null $types      Types to add.
+     * @param array<string|object>|string|object|null $types      The types to mock.
      * @param array|object|null                       $definition The definition.
      * @param string|null                             $className  The class name.
      * @param integer|null                            $id         The identifier.
-     * @param MockFactoryInterface|null               $factory    The factory.
+     * @param MockFactoryInterface|null               $factory    The factory to use.
      *
      * @throws MockBuilderExceptionInterface If invalid input is supplied.
      */
@@ -321,11 +321,30 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @param mixed $arguments,... The constructor arguments.
+     *
      * @return MockInterface The mock instance.
      */
     public function create()
     {
-        $this->mock = $this->factory->createMock($this);
+        return $this->createWith(func_get_args());
+    }
+
+    /**
+     * Create a new mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function createWith(array $arguments = null)
+    {
+        $this->mock = $this->factory->createMock($this, $arguments);
 
         return $this->mock;
     }

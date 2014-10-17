@@ -15,6 +15,8 @@ use Eloquent\Phony\Event\Verification\EventOrderVerifier;
 use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -44,17 +46,22 @@ class FacadeDriver implements FacadeDriverInterface
     /**
      * Construct a new facade driver.
      *
+     * @param MockBuilderFactoryInterface|null  $mockBuilderFactory  The mock builder factory to use.
      * @param SpyVerifierFactoryInterface|null  $spyVerifierFactory  The spy verifier factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param EventOrderVerifierInterface|null  $eventOrderVerifier  The event order verifier to use.
      * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
      */
     public function __construct(
+        MockBuilderFactoryInterface $mockBuilderFactory = null,
         SpyVerifierFactoryInterface $spyVerifierFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         EventOrderVerifierInterface $eventOrderVerifier = null,
         MatcherFactoryInterface $matcherFactory = null
     ) {
+        if (null === $mockBuilderFactory) {
+            $mockBuilderFactory = MockBuilderFactory::instance();
+        }
         if (null === $spyVerifierFactory) {
             $spyVerifierFactory = SpyVerifierFactory::instance();
         }
@@ -68,10 +75,21 @@ class FacadeDriver implements FacadeDriverInterface
             $matcherFactory = MatcherFactory::instance();
         }
 
+        $this->mockBuilderFactory = $mockBuilderFactory;
         $this->spyVerifierFactory = $spyVerifierFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->eventOrderVerifier = $eventOrderVerifier;
         $this->matcherFactory = $matcherFactory;
+    }
+
+    /**
+     * Get the mock builder factory.
+     *
+     * @return MockBuilderFactoryInterface The mock builder factory.
+     */
+    public function mockBuilderFactory()
+    {
+        return $this->mockBuilderFactory;
     }
 
     /**
@@ -115,6 +133,7 @@ class FacadeDriver implements FacadeDriverInterface
     }
 
     private static $instance;
+    private $mockBuilderFactory;
     private $spyVerifierFactory;
     private $stubVerifierFactory;
     private $eventOrderVerifier;

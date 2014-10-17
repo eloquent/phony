@@ -52,12 +52,15 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $class = new ReflectionClass($actual);
         $protectedMethod = $class->getMethod('testClassAMethodC');
         $protectedMethod->setAccessible(true);
+        $protectedStaticMethod = $class->getMethod('testClassAStaticMethodC');
+        $protectedStaticMethod->setAccessible(true);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertNull($actual->testClassAMethodA('a', 'b'));
-        $this->assertNull($protectedMethod->invoke($actual, 'a', 'b'));
+        $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
+        $this->assertSame('protected ab', $protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertSame('ab', PhonyMockFactoryTestCreateMock::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame('protected ab', $protectedStaticMethod->invoke(null, 'a', 'b'));
     }
 
     public function testInstance()

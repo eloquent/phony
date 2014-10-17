@@ -107,13 +107,8 @@ class MockFactory implements MockFactoryInterface
             $property->setAccessible(true);
             $property->setValue(
                 null,
-                array_map(
-                    function ($stub) {
-                        return $stub->forwards();
-                    },
-                    $this->createStubs(
-                        $builder->methodDefinitions()->staticMethods()
-                    )
+                $this->createStubs(
+                    $builder->methodDefinitions()->staticMethods()
                 )
             );
         }
@@ -124,12 +119,15 @@ class MockFactory implements MockFactoryInterface
     /**
      * Create a new mock instance for the supplied builder.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockBuilderInterface      $builder   The builder.
+     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return MockInterface The newly created mock.
      */
-    public function createMock(MockBuilderInterface $builder)
-    {
+    public function createMock(
+        MockBuilderInterface $builder,
+        array $arguments = null
+    ) {
         $class = $this->createMockClass($builder);
         $mock = $class->newInstanceArgs();
 
@@ -139,6 +137,12 @@ class MockFactory implements MockFactoryInterface
             $mock,
             $this->createStubs($builder->methodDefinitions()->methods(), $mock)
         );
+
+        if (null !== $arguments && $class->hasMethod('_constructParent')) {
+            $method = $class->getMethod('_constructParent');
+            $method->setAccessible(true);
+            $method->invokeArgs($mock, $arguments);
+        }
 
         return $mock;
     }
@@ -156,16 +160,20 @@ class MockFactory implements MockFactoryInterface
         $stubs = array();
 
         foreach ($methods as $method) {
+            $name = $method->name();
+
             if ($method->isCustom()) {
-                $stubs[$method->name()] = $this->stubVerifierFactory
+                $stubs[$name] = $stub = $this->stubVerifierFactory
                     ->createFromCallback($method->callback(), $mock);
             } else {
-                $stubs[$method->name()] = $this->stubVerifierFactory
+                $stubs[$name] = $stub = $this->stubVerifierFactory
                     ->createFromCallback(
                         new WrappedMethod($method->method(), $mock),
                         $mock
                     );
             }
+
+            $stub->forwards();
         }
 
         return $stubs;
