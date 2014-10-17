@@ -368,8 +368,10 @@ class MockBuilder implements MockBuilderInterface
      */
     public function finalize()
     {
-        $this->isFinalized = true;
-        $this->methodDefinitions = $this->buildMethodDefinitions();
+        if (!$this->isFinalized) {
+            $this->isFinalized = true;
+            $this->methodDefinitions = $this->buildMethodDefinitions();
+        }
 
         return $this;
     }

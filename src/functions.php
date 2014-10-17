@@ -32,7 +32,7 @@ function mock(
     $definition = null,
     $className = null
 ) {
-    return static::driver()->mockBuilderFactory()
+    return FacadeDriver::instance()->mockBuilderFactory()
         ->create($types, $definition, $className);
 }
 

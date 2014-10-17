@@ -26,6 +26,24 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->eventB = new TestEvent(1, 1.0);
     }
 
+    public function testMock()
+    {
+        $actual = Phony::mock('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Builder\MockBuilder', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual->get());
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $actual->get());
+    }
+
+    public function testMockFunction()
+    {
+        $actual = mock('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Builder\MockBuilder', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual->get());
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $actual->get());
+    }
+
     public function testSpy()
     {
         $callback = function () {};

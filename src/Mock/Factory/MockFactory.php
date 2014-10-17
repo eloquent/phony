@@ -93,6 +93,8 @@ class MockFactory implements MockFactoryInterface
      */
     public function createMockClass(MockBuilderInterface $builder)
     {
+        $builder->finalize();
+
         $className = $builder->className();
         $isNew = !class_exists($className);
 
