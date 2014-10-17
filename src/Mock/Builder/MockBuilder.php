@@ -21,6 +21,7 @@ use Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidDefinitionException;
 use Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
+use Eloquent\Phony\Mock\Builder\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
@@ -302,88 +303,6 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get a mock.
-     *
-     * This method will return the current mock, only creating a new mock if no
-     * existing mock is available.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @return MockInterface The mock instance.
-     */
-    public function get()
-    {
-        if ($this->mock) {
-            return $this->mock;
-        }
-
-        return $this->create();
-    }
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param mixed $arguments,... The constructor arguments.
-     *
-     * @return MockInterface The mock instance.
-     */
-    public function create()
-    {
-        return $this->createWith(func_get_args());
-    }
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
-     *
-     * @return MockInterface The mock instance.
-     */
-    public function createWith(array $arguments = null)
-    {
-        $this->mock = $this->factory->createMock($this, $arguments);
-
-        return $this->mock;
-    }
-
-    /**
-     * Generate and define the mock class.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @return ReflectionClass The class.
-     */
-    public function build()
-    {
-        return $this->factory->createMockClass($this);
-    }
-
-    /**
-     * Finalize the mock builder.
-     *
-     * @return MockBuilderInterface This builder.
-     */
-    public function finalize()
-    {
-        if (!$this->isFinalized) {
-            $this->isFinalized = true;
-            $this->methodDefinitions = $this->buildMethodDefinitions();
-        }
-
-        return $this;
-    }
-
-    /**
      * Get the identifier.
      *
      * @return integer|null The identifier.
@@ -528,34 +447,87 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get a static stub.
+     * Finalize the mock builder.
+     *
+     * @return MockBuilderInterface This builder.
+     */
+    public function finalize()
+    {
+        if (!$this->isFinalized) {
+            $this->isFinalized = true;
+            $this->methodDefinitions = $this->buildMethodDefinitions();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Generate and define the mock class.
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param string $name The method name.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
+     * @return ReflectionClass The class.
      */
-    public function staticStub($name)
+    public function build()
     {
-        $class = $this->build();
+        return $this->factory->createMockClass($this);
+    }
 
-        $property = $class->getProperty('_staticStubs');
-        $property->setAccessible(true);
-        $stubs = $property->getValue(null);
-
-        if (isset($stubs[$name])) {
-            return $stubs[$name];
+    /**
+     * Get a mock.
+     *
+     * This method will return the current mock, only creating a new mock if no
+     * existing mock is available.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function get()
+    {
+        if ($this->mock) {
+            return $this->mock;
         }
 
-        throw new BadMethodCallException(
-            sprintf(
-                'No stub defined for method %s::%s()',
-                get_class($mock),
-                $name
-            )
-        );
+        return $this->create();
+    }
+
+    /**
+     * Create a new mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param mixed $arguments,... The constructor arguments.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function create()
+    {
+        return $this->createWith(func_get_args());
+    }
+
+    /**
+     * Create a new mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * This method supports reference parameters.
+     *
+     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function createWith(array $arguments = null)
+    {
+        $this->mock = $this->factory->createMock($this, $arguments);
+
+        return $this->mock;
     }
 
     /**
@@ -584,6 +556,31 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Get a static stub.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface         The stub verifier.
+     * @throws MockBuilderExceptionInterface If the stub does not exist.
+     */
+    public function staticStub($name)
+    {
+        $class = $this->build();
+
+        $property = $class->getProperty('_staticStubs');
+        $property->setAccessible(true);
+        $stubs = $property->getValue(null);
+
+        if (isset($stubs[$name])) {
+            return $stubs[$name];
+        }
+
+        throw new UndefinedMethodStubException($this, $name);
+    }
+
+    /**
      * Get a stub.
      *
      * Calling this method will finalize the mock builder, unless a mock is
@@ -592,8 +589,8 @@ class MockBuilder implements MockBuilderInterface
      * @param string             $name The method name.
      * @param MockInterface|null $mock The mock, or null to use the current mock.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
+     * @return StubVerifierInterface         The stub verifier.
+     * @throws MockBuilderExceptionInterface If the stub does not exist.
      */
     public function stub($name, MockInterface $mock = null)
     {
@@ -609,59 +606,7 @@ class MockBuilder implements MockBuilderInterface
             return $stubs[$name];
         }
 
-        throw new BadMethodCallException(
-            sprintf(
-                'No stub defined for method %s::%s()',
-                get_class($mock),
-                $name
-            )
-        );
-    }
-
-    /**
-     * Get a stub, and modify its current criteria to match the supplied
-     * arguments (and possibly others).
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param string $name         The method name.
-     * @param mixed  $argument,... The arguments.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
-     */
-    public function stubWith($name)
-    {
-        $arguments = func_get_args();
-        array_shift($arguments);
-
-        return call_user_func_array(
-            array($this->stub($name), 'with'),
-            $arguments
-        );
-    }
-
-    /**
-     * Get a stub, and modify its current criteria to match the supplied
-     * arguments (and no others).
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param string $name         The method name.
-     * @param mixed  $argument,... The arguments.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
-     */
-    public function stubWithExactly($name)
-    {
-        $arguments = func_get_args();
-        array_shift($arguments);
-
-        return call_user_func_array(
-            array($this->stub($name), 'withExactly'),
-            $arguments
-        );
+        throw new UndefinedMethodStubException($this, $name);
     }
 
     /**
@@ -674,14 +619,25 @@ class MockBuilder implements MockBuilderInterface
      * @param array<integer,mixed> $arguments The arguments.
      *
      * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
+     * @throws BadMethodCallException If the stub does not exist.
      */
     public function __call($name, array $arguments)
     {
-        return call_user_func_array(
-            array($this->stub($name), 'with'),
-            $arguments
-        );
+        try {
+            $stub = $this->stub($name);
+        } catch (UndefinedMethodStubException $e) {
+            throw new BadMethodCallException(
+                sprintf(
+                    'Call to undefined method %s::%s().',
+                    get_class(),
+                    $name
+                ),
+                0,
+                $e
+            );
+        }
+
+        return call_user_func_array(array($stub, 'with'), $arguments);
     }
 
     /**

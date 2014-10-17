@@ -152,6 +152,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
+     * Construct a mock.
+     */
+    public function __construct()
+    {
+    }
+
+    /**
      * Inherited method 'count'.
      *
      * @uses \Countable::count()

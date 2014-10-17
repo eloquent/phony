@@ -102,62 +102,6 @@ interface MockBuilderInterface
     public function named($className = null);
 
     /**
-     * Get a mock.
-     *
-     * This method will return the current mock, only creating a new mock if no
-     * existing mock is available.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @return MockInterface The mock instance.
-     */
-    public function get();
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param mixed $arguments,... The constructor arguments.
-     *
-     * @return MockInterface The mock instance.
-     */
-    public function create();
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
-     *
-     * @return MockInterface The mock instance.
-     */
-    public function createWith(array $arguments = null);
-
-    /**
-     * Generate and define the mock class.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @return ReflectionClass The class.
-     */
-    public function build();
-
-    /**
-     * Finalize the mock builder.
-     *
-     * @return MockBuilderInterface This builder.
-     */
-    public function finalize();
-
-    /**
      * Get the identifier.
      *
      * @return integer|null The identifier.
@@ -256,16 +200,62 @@ interface MockBuilderInterface
     public function isFinalized();
 
     /**
-     * Get a static stub.
+     * Finalize the mock builder.
+     *
+     * @return MockBuilderInterface This builder.
+     */
+    public function finalize();
+
+    /**
+     * Generate and define the mock class.
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param string $name The method name.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
+     * @return ReflectionClass The class.
      */
-    public function staticStub($name);
+    public function build();
+
+    /**
+     * Get a mock.
+     *
+     * This method will return the current mock, only creating a new mock if no
+     * existing mock is available.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function get();
+
+    /**
+     * Create a new mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param mixed $arguments,... The constructor arguments.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function create();
+
+    /**
+     * Create a new mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * This method supports reference parameters.
+     *
+     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function createWith(array $arguments = null);
 
     /**
      * Turn a mock into a full mock.
@@ -279,6 +269,18 @@ interface MockBuilderInterface
     public function full(MockInterface $mock = null);
 
     /**
+     * Get a static stub.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface         The stub verifier.
+     * @throws MockBuilderExceptionInterface If the stub does not exist.
+     */
+    public function staticStub($name);
+
+    /**
      * Get a stub.
      *
      * Calling this method will finalize the mock builder, unless a mock is
@@ -287,38 +289,10 @@ interface MockBuilderInterface
      * @param string             $name The method name.
      * @param MockInterface|null $mock The mock, or null to use the current mock.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
+     * @return StubVerifierInterface         The stub verifier.
+     * @throws MockBuilderExceptionInterface If the stub does not exist.
      */
     public function stub($name, MockInterface $mock = null);
-
-    /**
-     * Get a stub, and modify its current criteria to match the supplied
-     * arguments (and possibly others).
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param string $name         The method name.
-     * @param mixed  $argument,... The arguments.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
-     */
-    public function stubWith($name);
-
-    /**
-     * Get a stub, and modify its current criteria to match the supplied
-     * arguments (and no others).
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param string $name         The method name.
-     * @param mixed  $argument,... The arguments.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
-     */
-    public function stubWithExactly($name);
 
     /**
      * Get a stub, and modify its current criteria to match the supplied
@@ -330,7 +304,7 @@ interface MockBuilderInterface
      * @param array<integer,mixed> $arguments The arguments.
      *
      * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the method does not exist.
+     * @throws BadMethodCallException If the stub does not exist.
      */
     public function __call($name, array $arguments);
 }

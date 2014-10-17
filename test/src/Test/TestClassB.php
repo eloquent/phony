@@ -21,6 +21,11 @@ class TestClassB extends TestClassA implements TestInterfaceB
         return implode(func_get_args());
     }
 
+    public function __construct()
+    {
+        $this->constructorArguments = func_get_args();
+    }
+
     public function testClassAMethodB($first, $second, &$third = null)
     {
         return implode(func_get_args());

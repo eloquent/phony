@@ -35,7 +35,7 @@ final class InvalidDefinitionException extends Exception implements
 
         parent::__construct(
             sprintf(
-                'Unable to add definition %s => (%s).',
+                'Invalid mock definition %s => (%s).',
                 var_export($name, true),
                 gettype($value)
             ),

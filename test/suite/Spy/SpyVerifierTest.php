@@ -903,9 +903,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on supplied object. Called on:
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
     - null
 EOD;
 
@@ -927,9 +927,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on object like <stdClass Object (...)>. Called on:
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
     - null
 EOD;
 
@@ -985,9 +985,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected every call on supplied object. Called on:
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
     - null
 EOD;
 
@@ -1008,10 +1008,10 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected every call on object like <Eloquent\Phony\Test\TestClassA Object ()>. Called on:
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
-    - Eloquent\Phony\Test\TestClassA Object ()
+Expected every call on object like <Eloquent\Phony\Test\TestClassA Object (...)>. Called on:
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
+    - Eloquent\Phony\Test\TestClassA Object (...)
     - null
 EOD;
 
@@ -1023,7 +1023,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on object like <Eloquent\Phony\Test\TestClassA Object ()>. Never called.'
+            'Expected every call on object like <Eloquent\Phony\Test\TestClassA Object (...)>. Never called.'
         );
         $this->subject->always()->calledOn(new EqualToMatcher($this->thisValueA));
     }

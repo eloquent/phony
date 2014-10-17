@@ -23,6 +23,14 @@ class TestClassA implements TestInterfaceA
         return implode(func_get_args());
     }
 
+    public function __construct(&$first = null, &$second = null)
+    {
+        $this->constructorArguments = func_get_args();
+
+        $first = 'first';
+        $second = 'second';
+    }
+
     public function testClassAMethodA()
     {
         return implode(func_get_args());
@@ -67,4 +75,6 @@ class TestClassA implements TestInterfaceA
     {
         return 'private ' . implode(func_get_args());
     }
+
+    public $constructorArguments;
 }
