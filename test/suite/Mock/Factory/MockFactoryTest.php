@@ -12,7 +12,9 @@
 namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Mockery\Generator\Generator;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -20,12 +22,14 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->generator = new MockGenerator();
         $this->stubVerifierFactory = new StubVerifierFactory();
-        $this->subject = new MockFactory($this->stubVerifierFactory);
+        $this->subject = new MockFactory($this->generator, $this->stubVerifierFactory);
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->generator, $this->subject->generator());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
     }
 
@@ -33,6 +37,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MockFactory();
 
+        $this->assertSame(MockGenerator::instance(), $this->subject->generator());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
     }
 

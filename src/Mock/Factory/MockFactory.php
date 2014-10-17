@@ -14,6 +14,8 @@ namespace Eloquent\Phony\Mock\Factory;
 use Eloquent\Phony\Invocation\WrappedMethod;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
+use Eloquent\Phony\Mock\Generator\MockGenerator;
+use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
@@ -44,16 +46,32 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
+     * @param MockGeneratorInterface|null             $generator  The generator to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      */
     public function __construct(
+        MockGeneratorInterface $generator = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null
     ) {
+        if (null === $generator) {
+            $generator = MockGenerator::instance();
+        }
         if (null === $stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
 
+        $this->generator = $generator;
         $this->stubVerifierFactory = $stubVerifierFactory;
+    }
+
+    /**
+     * Get the generator.
+     *
+     * @return MockGeneratorInterface The generator.
+     */
+    public function generator()
+    {
+        return $this->generator;
     }
 
     /**
@@ -79,28 +97,26 @@ class MockFactory implements MockFactoryInterface
         $isNew = !class_exists($className);
 
         if ($isNew) {
-            $builder->build();
+            eval($this->generator->generate($builder));
         }
 
         $class = new ReflectionClass($className);
 
-        if (!$isNew) {
-            return $class;
-        }
-
-        $property = $class->getProperty('_staticStubs');
-        $property->setAccessible(true);
-        $property->setValue(
-            null,
-            array_map(
-                function ($stub) {
-                    return $stub->forwards();
-                },
-                $this->createStubs(
-                    $builder->methodDefinitions()->staticMethods()
+        if ($isNew) {
+            $property = $class->getProperty('_staticStubs');
+            $property->setAccessible(true);
+            $property->setValue(
+                null,
+                array_map(
+                    function ($stub) {
+                        return $stub->forwards();
+                    },
+                    $this->createStubs(
+                        $builder->methodDefinitions()->staticMethods()
+                    )
                 )
-            )
-        );
+            );
+        }
 
         return $class;
     }
@@ -156,5 +172,6 @@ class MockFactory implements MockFactoryInterface
     }
 
     private static $instance;
+    private $generator;
     private $stubVerifierFactory;
 }

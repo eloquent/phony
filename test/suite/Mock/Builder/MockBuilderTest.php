@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Mock\Builder;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
+use Eloquent\Phony\Mock\Factory\MockFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionMethod;
@@ -42,7 +43,9 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         );
         $this->className = 'ClassName';
         $this->id = 111;
-        $this->subject = new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id);
+        $this->factory = new MockFactory();
+        $this->subject =
+            new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id, $this->factory);
 
         $this->types = $this->inputTypes;
         $this->reflectors = array();
@@ -57,6 +60,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->id, $this->subject->id());
+        $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame('Eloquent\Phony\Test\TestClassB', $this->subject->parentClassName());
         $this->assertSame(array('Iterator', 'Countable'), $this->subject->interfaceNames());
         $this->assertSame(array(), $this->subject->traitNames());
@@ -172,6 +176,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->reflectors());
         $this->assertRegExp('/^PhonyMock_[[:xdigit:]]{6}$/', $this->subject->className());
         $this->assertNull($this->subject->id());
+        $this->assertSame(MockFactory::instance(), $this->subject->factory());
         $this->assertNull($this->subject->parentClassName());
         $this->assertSame(array(), $this->subject->interfaceNames());
         $this->assertSame(array(), $this->subject->traitNames());

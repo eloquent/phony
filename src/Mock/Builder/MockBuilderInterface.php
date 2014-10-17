@@ -11,9 +11,11 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use BadMethodCallException;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Builder\Exception\MockBuilderExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
 
 /**
@@ -100,31 +102,37 @@ interface MockBuilderInterface
     public function named($className = null);
 
     /**
-     * Finalize the mock builder, generate the mock class, and return a mock.
+     * Get a mock.
      *
-     * Subsequent calls will return the same mock unless otherwise specified.
+     * This method will return the current mock, only creating a new mock if no
+     * existing mock is available.
      *
-     * @param boolean|null $createNew True if a new mock should be created.
+     * Calling this method will finalize the mock builder.
      *
      * @return MockInterface The mock instance.
      */
-    public function get($createNew = null);
+    public function get();
 
     /**
-     * Finalize the mock builder, generate the mock class, and return the class
-     * name.
+     * Create a new mock.
      *
-     * @return string The class name.
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function create();
+
+    /**
+     * Generate and define the mock class.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return ReflectionClass The class.
      */
     public function build();
-
-    /**
-     * Finalize the mock builder, generate the mock class, and return the source
-     * code.
-     *
-     * @return string The source code.
-     */
-    public function source();
 
     /**
      * Finalize the mock builder.
@@ -230,4 +238,72 @@ interface MockBuilderInterface
      * @return boolean True if finalized.
      */
     public function isFinalized();
+
+    /**
+     * Get a static stub.
+     *
+     * Calling this method will finalize the mock builder
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function staticStub($name);
+
+    /**
+     * Get a stub.
+     *
+     * Calling this method will finalize the mock builder, unless a mock is
+     * supplied.
+     *
+     * @param string             $name The method name.
+     * @param MockInterface|null $mock The mock, or null to use the current mock.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function stub($name, MockInterface $mock = null);
+
+    /**
+     * Get a stub, and modify its current criteria to match the supplied
+     * arguments (and possibly others).
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string $name         The method name.
+     * @param mixed  $argument,... The arguments.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function stubWith($name);
+
+    /**
+     * Get a stub, and modify its current criteria to match the supplied
+     * arguments (and no others).
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string $name         The method name.
+     * @param mixed  $argument,... The arguments.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function stubWithExactly($name);
+
+    /**
+     * Get a stub, and modify its current criteria to match the supplied
+     * arguments (and possibly others).
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string               $name      The method name.
+     * @param array<integer,mixed> $arguments The arguments.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function __call($name, array $arguments);
 }

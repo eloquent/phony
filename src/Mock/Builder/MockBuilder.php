@@ -21,11 +21,11 @@ use Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
-use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionProperty;
 
 /**
  * Builds mock classes.
@@ -46,7 +46,6 @@ class MockBuilder implements MockBuilderInterface
      * @param array|object|null                       $definition The definition.
      * @param string|null                             $className  The class name.
      * @param integer|null                            $id         The identifier.
-     * @param MockGeneratorInterface|null             $generator  The generator.
      * @param MockFactoryInterface|null               $factory    The factory.
      *
      * @throws MockBuilderExceptionInterface If invalid input is supplied.
@@ -56,17 +55,12 @@ class MockBuilder implements MockBuilderInterface
         $definition = null,
         $className = null,
         $id = null,
-        MockGeneratorInterface $generator = null,
         MockFactoryInterface $factory = null
     ) {
-        if (null === $generator) {
-            $generator = MockGenerator::instance();
-        }
         if (null === $factory) {
             $factory = MockFactory::instance();
         }
 
-        $this->generator = $generator;
         $this->factory = $factory;
 
         $this->types = array();
@@ -93,16 +87,6 @@ class MockBuilder implements MockBuilderInterface
         }
 
         $this->named($className);
-    }
-
-    /**
-     * Get the generator.
-     *
-     * @return MockGeneratorInterface The generator.
-     */
-    public function generator()
-    {
-        return $this->generator;
     }
 
     /**
@@ -311,51 +295,49 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Finalize the mock builder, generate the mock class, and return a mock.
+     * Get a mock.
      *
-     * Subsequent calls will return the same mock unless otherwise specified.
+     * This method will return the current mock, only creating a new mock if no
+     * existing mock is available.
      *
-     * @param boolean|null $createNew True if a new mock should be created.
+     * Calling this method will finalize the mock builder.
      *
      * @return MockInterface The mock instance.
      */
-    public function get($createNew = null)
+    public function get()
     {
-        if (null === $createNew) {
-            $createNew = false;
+        if ($this->mock) {
+            return $this->mock;
         }
 
-        if ($createNew || null === $this->mock) {
-            $this->mock = $this->factory->createMock($this);
-        }
-
-        return $this->mock;
+        return $this->create();
     }
 
     /**
-     * Finalize the mock builder, generate the mock class, and return the class
-     * name.
+     * Create a new mock.
      *
-     * @return string The class name.
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function create()
+    {
+        $this->mock = $this->factory->createMock($this);
+    }
+
+    /**
+     * Generate and define the mock class.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return ReflectionClass The class.
      */
     public function build()
     {
-        eval($this->source());
-
-        return $this->className();
-    }
-
-    /**
-     * Finalize the mock builder, generate the mock class, and return the source
-     * code.
-     *
-     * @return string The source code.
-     */
-    public function source()
-    {
-        $this->finalize();
-
-        return $this->generator->generate($this);
+        return $this->factory->createMockClass($this);
     }
 
     /**
@@ -513,6 +495,138 @@ class MockBuilder implements MockBuilderInterface
     public function isFinalized()
     {
         return $this->isFinalized;
+    }
+
+    /**
+     * Get a static stub.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function staticStub($name)
+    {
+        $class = $this->build();
+
+        $property = $class->getProperty('_staticStubs');
+        $property->setAccessible(true);
+        $stubs = $property->getValue($mock);
+
+        if (isset($stubs[$name])) {
+            return $stubs[$name];
+        }
+
+        throw new BadMethodCallException(
+            sprintf(
+                'No stub defined for method %s::%s()',
+                get_class($mock),
+                $name
+            )
+        );
+    }
+
+    /**
+     * Get a stub.
+     *
+     * Calling this method will finalize the mock builder, unless a mock is
+     * supplied.
+     *
+     * @param string             $name The method name.
+     * @param MockInterface|null $mock The mock, or null to use the current mock.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function stub($name, MockInterface $mock = null)
+    {
+        if (!$mock) {
+            $mock = $this->get();
+        }
+
+        $property = new ReflectionProperty($mock, '_stubs');
+        $property->setAccessible(true);
+        $stubs = $property->getValue($mock);
+
+        if (isset($stubs[$name])) {
+            return $stubs[$name];
+        }
+
+        throw new BadMethodCallException(
+            sprintf(
+                'No stub defined for method %s::%s()',
+                get_class($mock),
+                $name
+            )
+        );
+    }
+
+    /**
+     * Get a stub, and modify its current criteria to match the supplied
+     * arguments (and possibly others).
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string $name         The method name.
+     * @param mixed  $argument,... The arguments.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function stubWith($name)
+    {
+        $arguments = func_get_args();
+        array_shift($arguments);
+
+        return call_user_func_array(
+            array($this->stub($name), 'with'),
+            $arguments
+        );
+    }
+
+    /**
+     * Get a stub, and modify its current criteria to match the supplied
+     * arguments (and no others).
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string $name         The method name.
+     * @param mixed  $argument,... The arguments.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function stubWithExactly($name)
+    {
+        $arguments = func_get_args();
+        array_shift($arguments);
+
+        return call_user_func_array(
+            array($this->stub($name), 'withExactly'),
+            $arguments
+        );
+    }
+
+    /**
+     * Get a stub, and modify its current criteria to match the supplied
+     * arguments (and possibly others).
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string               $name      The method name.
+     * @param array<integer,mixed> $arguments The arguments.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws BadMethodCallException If the method does not exist.
+     */
+    public function __call($name, array $arguments)
+    {
+        return call_user_func_array(
+            array($this->stub($name), 'with'),
+            $arguments
+        );
     }
 
     /**
@@ -679,7 +793,6 @@ class MockBuilder implements MockBuilderInterface
     }
 
     protected $isTraitSupported;
-    private $generator;
     private $factory;
     private $types;
     private $reflectors;
