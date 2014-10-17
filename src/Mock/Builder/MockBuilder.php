@@ -326,6 +326,8 @@ class MockBuilder implements MockBuilderInterface
     public function create()
     {
         $this->mock = $this->factory->createMock($this);
+
+        return $this->mock;
     }
 
     /**

@@ -46,7 +46,7 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
-     * @param MockGeneratorInterface|null             $generator  The generator to use.
+     * @param MockGeneratorInterface|null       $generator           The generator to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      */
     public function __construct(
