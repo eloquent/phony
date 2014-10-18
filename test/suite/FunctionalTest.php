@@ -14,32 +14,32 @@ use Eloquent\Phony\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
-    public function testMockStatic()
+    public function testMockingStatic()
     {
-        $builder = Phony::mock('Eloquent\Phony\Test\TestClassA');
-        $builder->testClassAMethodA('a', 'b')->returns('x');
+        $mock = Phony::mock('Eloquent\Phony\Test\TestClassA')->get();
+        Phony::on($mock)->testClassAMethodA()->with('a', 'b')->returns('x');
 
-        $this->assertSame('x', $builder->get()->testClassAMethodA('a', 'b'));
-        $this->assertSame('cd', $builder->get()->testClassAMethodA('c', 'd'));
+        $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
+        $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
 
-        $builder->full();
+        Phony::on($mock)->full();
 
-        $this->assertNull($builder->get()->testClassAMethodA('a', 'b'));
-        $this->assertNull($builder->get()->testClassAMethodA('c', 'd'));
+        $this->assertNull($mock->testClassAMethodA('a', 'b'));
+        $this->assertNull($mock->testClassAMethodA('c', 'd'));
     }
 
-    public function testMockFunction()
+    public function testMockingFunctions()
     {
-        $builder = x\mock('Eloquent\Phony\Test\TestClassA');
-        $builder->testClassAMethodA('a', 'b')->returns('x');
+        $mock = x\mock('Eloquent\Phony\Test\TestClassA')->get();
+        x\on($mock)->testClassAMethodA()->with('a', 'b')->returns('x');
 
-        $this->assertSame('x', $builder->get()->testClassAMethodA('a', 'b'));
-        $this->assertSame('cd', $builder->get()->testClassAMethodA('c', 'd'));
+        $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
+        $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
 
-        $builder->full();
+        x\on($mock)->full();
 
-        $this->assertNull($builder->get()->testClassAMethodA('a', 'b'));
-        $this->assertNull($builder->get()->testClassAMethodA('c', 'd'));
+        $this->assertNull($mock->testClassAMethodA('a', 'b'));
+        $this->assertNull($mock->testClassAMethodA('c', 'd'));
     }
 
     public function testSpyStatic()

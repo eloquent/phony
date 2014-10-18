@@ -14,6 +14,8 @@ namespace Eloquent\Phony;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
+use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\MockProxyInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
@@ -34,6 +36,18 @@ function mock(
 ) {
     return FacadeDriver::instance()->mockBuilderFactory()
         ->create($types, $definition, $className);
+}
+
+/**
+ * Create a new mock proxy.
+ *
+ * @param MockInterface $mock The mock.
+ *
+ * @return MockProxyInterface The mock proxy.
+ */
+function on(MockInterface $mock)
+{
+    return FacadeDriver::instance()->mockProxyFactory()->create($mock);
 }
 
 /**

@@ -15,6 +15,7 @@ use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Integration\Phpunit\PhpunitAssertionRecorder;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Mock\Proxy\MockProxy;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 
@@ -42,6 +43,24 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Mock\Builder\MockBuilder', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual->get());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $actual->get());
+    }
+
+    public function testOn()
+    {
+        $mock = Phony::mock()->create();
+        $actual = Phony::on($mock);
+        $expected = new MockProxy($mock);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testOnFunction()
+    {
+        $mock = mock()->create();
+        $actual = on($mock);
+        $expected = new MockProxy($mock);
+
+        $this->assertEquals($expected, $actual);
     }
 
     public function testSpy()

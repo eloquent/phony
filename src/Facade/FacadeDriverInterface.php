@@ -30,6 +30,13 @@ interface FacadeDriverInterface
     public function mockBuilderFactory();
 
     /**
+     * Get the mock proxy factory.
+     *
+     * @return MockProxyFactoryInterface The mock proxy factory.
+     */
+    public function mockProxyFactory();
+
+    /**
      * Get the spy verifier factory.
      *
      * @return SpyVerifierFactoryInterface The spy verifier factory.

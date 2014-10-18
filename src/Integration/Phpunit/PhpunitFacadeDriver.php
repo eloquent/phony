@@ -63,6 +63,7 @@ class PhpunitFacadeDriver extends FacadeDriver
                 null,
                 new MockFactory(null, null, $stubVerifierFactory)
             ),
+            null,
             new SpyVerifierFactory(
                 null,
                 null,
