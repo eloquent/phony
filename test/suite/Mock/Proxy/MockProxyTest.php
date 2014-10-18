@@ -25,11 +25,14 @@ class MockProxyTest extends PHPUnit_Framework_TestCase
         $property->setAccessible(true);
         $this->stubs = $property->getValue($this->mock);
         $this->subject = new MockProxy($this->mock, $this->stubs);
+
+        $this->className = $this->mockBuilder->className();
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->mock, $this->subject->mock());
+        $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->stubs, $this->subject->stubs());
     }
 

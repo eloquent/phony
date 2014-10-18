@@ -11,11 +11,9 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
-use BadMethodCallException;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
 
 /**
@@ -266,55 +264,4 @@ interface MockBuilderInterface
      * @return MockInterface The mock instance.
      */
     public function createWith(array $arguments = null, $id = null);
-
-    /**
-     * Turn a mock into a full mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param MockInterface|null $mock The mock, or null to use the current mock.
-     *
-     * @return MockInterface The mock instance.
-     */
-    public function full(MockInterface $mock = null);
-
-    /**
-     * Get a static stub.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param string $name The method name.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
-     */
-    public function staticStub($name);
-
-    /**
-     * Get a stub.
-     *
-     * Calling this method will finalize the mock builder, unless a mock is
-     * supplied.
-     *
-     * @param string             $name The method name.
-     * @param MockInterface|null $mock The mock, or null to use the current mock.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
-     */
-    public function stub($name, MockInterface $mock = null);
-
-    /**
-     * Get a stub, and modify its current criteria to match the supplied
-     * arguments (and possibly others).
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param string               $name      The method name.
-     * @param array<integer,mixed> $arguments The arguments.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the stub does not exist.
-     */
-    public function __call($name, array $arguments);
 }

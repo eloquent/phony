@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Mock\Proxy;
 
 use BadMethodCallException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
-use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
@@ -22,11 +21,11 @@ use Eloquent\Phony\Stub\StubVerifierInterface;
 interface MockProxyInterface
 {
     /**
-     * Get the mock.
+     * Get the class name.
      *
-     * @return MockInterface The mock.
+     * @return string The class name.
      */
-    public function mock();
+    public function className();
 
     /**
      * Get the stubs.

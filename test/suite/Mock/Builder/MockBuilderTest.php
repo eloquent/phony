@@ -637,19 +637,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($third, $this->subject->get());
     }
 
-    public function testFull()
-    {
-        $actual = $this->subject->full();
-
-        $this->assertTrue($this->subject->isFinalized());
-        $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertNull($actual->testClassAMethodA());
-        $this->assertNull($actual->testClassAMethodB('a', 'b'));
-        $this->assertSame($actual, $this->subject->get());
-    }
-
     public function testStaticStub()
     {
         $actual = $this->subject->staticStub('testClassAStaticMethodA')->with('a', 'b')->returns('x');
@@ -666,42 +653,5 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->staticStub('nonexistent');
-    }
-
-    public function testStub()
-    {
-        $actual = $this->subject->stub('testClassAMethodA')->with('a', 'b')->returns('x');
-
-        $this->assertTrue($this->subject->isFinalized());
-        $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame('x', $this->subject->get()->testClassAMethodA('a', 'b'));
-        $this->assertSame('cd', $this->subject->get()->testClassAMethodA('c', 'd'));
-    }
-
-    public function testStubFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
-        $this->subject->stub('nonexistent');
-    }
-
-    public function testMagicCall()
-    {
-        $actual = $this->subject->testClassAMethodA('a', 'b')->returns('x');
-
-        $this->assertTrue($this->subject->isFinalized());
-        $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame('x', $this->subject->get()->testClassAMethodA('a', 'b'));
-        $this->assertSame('cd', $this->subject->get()->testClassAMethodA('c', 'd'));
-    }
-
-    public function testMagicCallFailureUndefined()
-    {
-        $this->setExpectedException(
-            'BadMethodCallException',
-            "Call to undefined method Eloquent\Phony\Mock\Builder\MockBuilder::nonexistent()."
-        );
-        $this->subject->nonexistent();
     }
 }
