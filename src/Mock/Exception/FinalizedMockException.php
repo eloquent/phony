@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Builder\Exception;
+namespace Eloquent\Phony\Mock\Exception;
 
 use Exception;
 
@@ -19,7 +19,7 @@ use Exception;
  * @internal
  */
 final class FinalizedMockException extends Exception implements
-    MockBuilderExceptionInterface
+    MockExceptionInterface
 {
     /**
      * Construct a finalized mock exception.

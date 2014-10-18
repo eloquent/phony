@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Builder;
 
 use BadMethodCallException;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
-use Eloquent\Phony\Mock\Builder\Exception\MockBuilderExceptionInterface;
+use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
@@ -29,8 +29,8 @@ interface MockBuilderInterface
      * @param string|object|array<string|object> $type      A type, or types to add.
      * @param string|object|array<string|object> $types,... Additional types to add.
      *
-     * @return MockBuilderInterface          This builder.
-     * @throws MockBuilderExceptionInterface If invalid input is supplied.
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If invalid input is supplied.
      */
     public function like($type);
 
@@ -285,8 +285,8 @@ interface MockBuilderInterface
      *
      * @param string $name The method name.
      *
-     * @return StubVerifierInterface         The stub verifier.
-     * @throws MockBuilderExceptionInterface If the stub does not exist.
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
      */
     public function staticStub($name);
 
@@ -299,8 +299,8 @@ interface MockBuilderInterface
      * @param string             $name The method name.
      * @param MockInterface|null $mock The mock, or null to use the current mock.
      *
-     * @return StubVerifierInterface         The stub verifier.
-     * @throws MockBuilderExceptionInterface If the stub does not exist.
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
      */
     public function stub($name, MockInterface $mock = null);
 

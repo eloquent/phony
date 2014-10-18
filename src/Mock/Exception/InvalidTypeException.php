@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Builder\Exception;
+namespace Eloquent\Phony\Mock\Exception;
 
 use Exception;
 
@@ -19,7 +19,7 @@ use Exception;
  * @internal
  */
 final class InvalidTypeException extends Exception implements
-    MockBuilderExceptionInterface
+    MockExceptionInterface
 {
     /**
      * Construct a new invalid type exception.

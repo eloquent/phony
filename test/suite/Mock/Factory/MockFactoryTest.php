@@ -77,7 +77,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $builderA = new MockBuilder();
         $builderB = new MockBuilder(null, null, $builderA->build()->getName());
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\ClassExistsException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\ClassExistsException');
         $this->subject->createMockClass($builderB);
     }
 
@@ -86,7 +86,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject = new MockFactory($this->idSequencer, new TestMockGenerator('{'));
         $builder = new MockBuilder();
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\MockGenerationFailedException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\MockGenerationFailedException');
         $this->subject->createMockClass($builder);
     }
 

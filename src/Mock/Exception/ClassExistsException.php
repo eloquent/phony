@@ -9,20 +9,20 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Builder\Exception;
+namespace Eloquent\Phony\Mock\Exception;
 
 use Exception;
 
 /**
- * Unable to extend final class.
+ * The class is already defined.
  *
  * @internal
  */
-final class FinalClassException extends Exception implements
-    MockBuilderExceptionInterface
+final class ClassExistsException extends Exception implements
+    MockExceptionInterface
 {
     /**
-     * Construct a final class exception.
+     * Construct a class exists exception.
      *
      * @param string         $className The class name.
      * @param Exception|null $cause     The cause, if available.
@@ -33,7 +33,7 @@ final class FinalClassException extends Exception implements
 
         parent::__construct(
             sprintf(
-                'Unable to extend final class %s.',
+                'Class %s is already defined.',
                 var_export($className, true)
             ),
             0,

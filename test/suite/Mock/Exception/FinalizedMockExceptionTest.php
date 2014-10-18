@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Builder\Exception;
+namespace Eloquent\Phony\Mock\Exception;
 
 use Exception;
 use PHPUnit_Framework_TestCase;

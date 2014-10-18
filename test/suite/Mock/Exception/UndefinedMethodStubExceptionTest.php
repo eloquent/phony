@@ -9,22 +9,25 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Builder\Exception;
+namespace Eloquent\Phony\Mock\Exception;
 
+use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
-class MultipleInheritanceExceptionTest extends PHPUnit_Framework_TestCase
+class UndefinedMethodStubExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $classNames = array('ClassNameA', 'ClassNameB', 'ClassNameC');
+        $mockBuilder = new MockBuilder(null, null, 'ClassName');
+        $name = 'method';
         $cause = new Exception();
-        $exception = new MultipleInheritanceException($classNames, $cause);
+        $exception = new UndefinedMethodStubException($mockBuilder, $name, $cause);
 
-        $this->assertSame($classNames, $exception->classNames());
+        $this->assertSame($mockBuilder, $exception->mockBuilder());
+        $this->assertSame($name, $exception->name());
         $this->assertSame(
-            "Unable to extend 'ClassNameA' and 'ClassNameB' and 'ClassNameC' simultaneously.",
+            "The requested method stub ClassName::method() does not exist.",
             $exception->getMessage()
         );
         $this->assertSame(0, $exception->getCode());

@@ -9,11 +9,11 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Builder\Exception;
+namespace Eloquent\Phony\Mock\Exception;
 
 /**
- * The interface used to identify mock builder exceptions.
+ * The interface used to identify mock exceptions.
  */
-interface MockBuilderExceptionInterface
+interface MockExceptionInterface
 {
 }

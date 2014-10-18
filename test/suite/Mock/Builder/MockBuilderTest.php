@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Mock\Builder;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
-use Eloquent\Phony\Mock\Builder\Exception\ClassExistsException;
+use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
@@ -214,31 +214,31 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorFailureInvalidClassName()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidClassNameException');
         new MockBuilder(null, null, '1');
     }
 
     public function testConstructorFailureUndefinedClass()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
         new MockBuilder(array('Nonexistent'));
     }
 
     public function testConstructorFailureFinalClass()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\FinalClassException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalClassException');
         new MockBuilder(array('Eloquent\Phony\Test\TestFinalClass'));
     }
 
     public function testConstructorFailureMultipleInheritance()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\MultipleInheritanceException');
         new MockBuilder(array('Eloquent\Phony\Test\TestClassB', 'ArrayIterator'));
     }
 
     public function testConstructorFailureInvalidType()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
         new MockBuilder(array(1));
     }
 
@@ -270,25 +270,25 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testLikeFailureUndefinedClass()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
         $this->subject->like('Nonexistent');
     }
 
     public function testLikeFailureFinalClass()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\FinalClassException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalClassException');
         $this->subject->like('Eloquent\Phony\Test\TestFinalClass');
     }
 
     public function testLikeFailureMultipleInheritance()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\MultipleInheritanceException');
         $this->subject->like('Eloquent\Phony\Test\TestClassB', 'ArrayIterator');
     }
 
     public function testLikeFailureInvalidType()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
         $this->subject->like(1);
     }
 
@@ -296,7 +296,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->finalize();
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\FinalizedMockException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
         $this->subject->like('ClassName');
     }
 
@@ -374,7 +374,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testDefineFailureInvalid()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidDefinitionException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidDefinitionException');
         $this->subject->define(array('propertyA', 'valueA'));
     }
 
@@ -439,7 +439,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testNamedFailureInvalid()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidClassNameException');
         $this->subject->named('1');
     }
 
@@ -447,7 +447,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->finalize();
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\FinalizedMockException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
         $this->subject->named('AnotherClassName');
     }
 
@@ -664,7 +664,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testStaticStubFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\UndefinedMethodStubException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->staticStub('nonexistent');
     }
 
@@ -681,7 +681,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testStubFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\UndefinedMethodStubException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->stub('nonexistent');
     }
 

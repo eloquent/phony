@@ -15,13 +15,14 @@ use BadMethodCallException;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
-use Eloquent\Phony\Mock\Builder\Exception\FinalClassException;
-use Eloquent\Phony\Mock\Builder\Exception\FinalizedMockException;
-use Eloquent\Phony\Mock\Builder\Exception\InvalidClassNameException;
-use Eloquent\Phony\Mock\Builder\Exception\InvalidDefinitionException;
-use Eloquent\Phony\Mock\Builder\Exception\InvalidTypeException;
-use Eloquent\Phony\Mock\Builder\Exception\MultipleInheritanceException;
-use Eloquent\Phony\Mock\Builder\Exception\UndefinedMethodStubException;
+use Eloquent\Phony\Mock\Exception\FinalClassException;
+use Eloquent\Phony\Mock\Exception\FinalizedMockException;
+use Eloquent\Phony\Mock\Exception\InvalidClassNameException;
+use Eloquent\Phony\Mock\Exception\InvalidDefinitionException;
+use Eloquent\Phony\Mock\Exception\InvalidTypeException;
+use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
+use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
+use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
@@ -51,7 +52,7 @@ class MockBuilder implements MockBuilderInterface
      * @param string|null                             $id         The identifier.
      * @param MockFactoryInterface|null               $factory    The factory to use.
      *
-     * @throws MockBuilderExceptionInterface If invalid input is supplied.
+     * @throws MockExceptionInterface If invalid input is supplied.
      */
     public function __construct(
         $types = null,
@@ -109,8 +110,8 @@ class MockBuilder implements MockBuilderInterface
      * @param string|object|array<string|object> $type      A type, or types to add.
      * @param string|object|array<string|object> $types,... Additional types to add.
      *
-     * @return MockBuilderInterface          This builder.
-     * @throws MockBuilderExceptionInterface If invalid input is supplied, or this builder is already finalized.
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
      */
     public function like($type)
     {
@@ -154,8 +155,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param array|object $definition The definition.
      *
-     * @return MockBuilderInterface          This builder.
-     * @throws MockBuilderExceptionInterface If invalid input is supplied.
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If invalid input is supplied.
      */
     public function define($definition)
     {
@@ -281,8 +282,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param string $className|null The class name, or null to use a generated name.
      *
-     * @return MockBuilderInterface          This builder.
-     * @throws MockBuilderExceptionInterface If this builder is already finalized.
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function named($className = null)
     {
@@ -581,8 +582,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param string $name The method name.
      *
-     * @return StubVerifierInterface         The stub verifier.
-     * @throws MockBuilderExceptionInterface If the stub does not exist.
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
      */
     public function staticStub($name)
     {
@@ -608,8 +609,8 @@ class MockBuilder implements MockBuilderInterface
      * @param string             $name The method name.
      * @param MockInterface|null $mock The mock, or null to use the current mock.
      *
-     * @return StubVerifierInterface         The stub verifier.
-     * @throws MockBuilderExceptionInterface If the stub does not exist.
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
      */
     public function stub($name, MockInterface $mock = null)
     {
@@ -662,7 +663,7 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Normalize the specified build parameters.
      *
-     * @throws MockBuilderExceptionInterface If invalid input is supplied.
+     * @throws MockExceptionInterface If invalid input is supplied.
      */
     protected function normalize(array $toAdd = null)
     {
