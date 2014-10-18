@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
-use BadMethodCallException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
@@ -52,13 +51,24 @@ interface MockProxyInterface
     public function stub($name);
 
     /**
-     * Get a stub verifier.
+     * Get a stub verifier, and modify its current criteria to match the
+     * supplied arguments (and possibly others).
      *
      * @param string $name      The method name.
-     * @param array  $arguments Ignored.
+     * @param array  $arguments The arguments.
      *
      * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the stub does not exist.
+     * @throws MockExceptionInterface If the stub does not exist.
      */
     public function __call($name, array $arguments);
+
+    /**
+     * Get a stub verifier.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
+     */
+    public function __get($name);
 }

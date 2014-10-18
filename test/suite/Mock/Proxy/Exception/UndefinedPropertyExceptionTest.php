@@ -9,23 +9,23 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Exception;
+namespace Eloquent\Phony\Mock\Proxy\Exception;
 
 use Exception;
 use PHPUnit_Framework_TestCase;
 
-class UndefinedMethodStubExceptionTest extends PHPUnit_Framework_TestCase
+class UndefinedPropertyExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
         $className = 'ClassName';
-        $name = 'method';
+        $name = 'property';
         $cause = new Exception();
-        $exception = new UndefinedMethodStubException($className, $name, $cause);
+        $exception = new UndefinedPropertyException($className, $name, $cause);
 
         $this->assertSame($className, $exception->className());
         $this->assertSame($name, $exception->name());
-        $this->assertSame("The requested method stub ClassName::method() does not exist.", $exception->getMessage());
+        $this->assertSame("Undefined property ClassName::property().", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

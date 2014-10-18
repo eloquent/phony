@@ -79,9 +79,13 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
 
     public function testStubMethods()
     {
+        $className = $this->className;
+
         $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->stub('testClassAStaticMethodA'));
-        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA());
-        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA('a', 'b'));
+        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA);
+        $this->assertSame('ab', $className::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA('a')->returns('x'));
+        $this->assertSame('x', $className::testClassAStaticMethodA('a', 'b'));
     }
 
     public function testStubFailure()
@@ -90,12 +94,15 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
         $this->subject->stub('nonexistent');
     }
 
+    public function testMagicPropertyFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException');
+        $this->subject->nonexistent;
+    }
+
     public function testMagicCallFailure()
     {
-        $this->setExpectedException(
-            'BadMethodCallException',
-            "Call to undefined method Eloquent\Phony\Mock\Proxy\StaticMockProxy::nonexistent()."
-        );
+        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
         $this->subject->nonexistent();
     }
 }

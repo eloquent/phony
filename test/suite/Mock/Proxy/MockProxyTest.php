@@ -53,8 +53,10 @@ class MockProxyTest extends PHPUnit_Framework_TestCase
     public function testStubMethods()
     {
         $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->stub('testClassAMethodA'));
-        $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->testClassAMethodA());
-        $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->testClassAMethodA('a', 'b'));
+        $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->testClassAMethodA);
+        $this->assertSame('ab', $this->mock->testClassAMethodA('a', 'b'));
+        $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->testClassAMethodA('a')->returns('x'));
+        $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
     }
 
     public function testStubFailure()
@@ -63,12 +65,15 @@ class MockProxyTest extends PHPUnit_Framework_TestCase
         $this->subject->stub('nonexistent');
     }
 
+    public function testMagicPropertyFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException');
+        $this->subject->nonexistent;
+    }
+
     public function testMagicCallFailure()
     {
-        $this->setExpectedException(
-            'BadMethodCallException',
-            "Call to undefined method Eloquent\Phony\Mock\Proxy\MockProxy::nonexistent()."
-        );
+        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
         $this->subject->nonexistent();
     }
 }

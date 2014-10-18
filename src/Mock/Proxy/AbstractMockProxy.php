@@ -11,9 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
-use BadMethodCallException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
+use Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException;
+use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
@@ -87,28 +88,40 @@ abstract class AbstractMockProxy implements MockProxyInterface
     }
 
     /**
-     * Get a stub verifier.
+     * Get a stub verifier, and modify its current criteria to match the
+     * supplied arguments (and possibly others).
      *
      * @param string $name      The method name.
-     * @param array  $arguments Ignored.
+     * @param array  $arguments The arguments.
      *
      * @return StubVerifierInterface  The stub verifier.
-     * @throws BadMethodCallException If the stub does not exist.
+     * @throws MockExceptionInterface If the stub does not exist.
      */
     public function __call($name, array $arguments)
     {
         try {
             $stub = $this->stub($name);
         } catch (UndefinedMethodStubException $e) {
-            throw new BadMethodCallException(
-                sprintf(
-                    'Call to undefined method %s::%s().',
-                    get_called_class(),
-                    $name
-                ),
-                0,
-                $e
-            );
+            throw new UndefinedMethodException(get_called_class(), $name, $e);
+        }
+
+        return call_user_func_array(array($stub, 'with'), $arguments);
+    }
+
+    /**
+     * Get a stub verifier.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
+     */
+    public function __get($name)
+    {
+        try {
+            $stub = $this->stub($name);
+        } catch (UndefinedMethodStubException $e) {
+            throw new UndefinedPropertyException(get_called_class(), $name, $e);
         }
 
         return $stub;
