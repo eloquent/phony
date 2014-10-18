@@ -42,6 +42,15 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertNull($mock->testClassAMethodA('c', 'd'));
     }
 
+    public function testMockMocking()
+    {
+        $mock = Phony::mock()->get();
+        $mockMock = Phony::mock($mock)->get();
+
+        $this->assertInstanceOf(get_class($mock), $mockMock);
+        $this->assertNotInstanceOf(get_class($mockMock), $mock);
+    }
+
     public function testSpyStatic()
     {
         $spy = Phony::spy();
