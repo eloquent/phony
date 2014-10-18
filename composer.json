@@ -17,8 +17,9 @@
         "sebastian/exporter": "~1"
     },
     "require-dev": {
-        "hamcrest/hamcrest-php": "~1.2.0",
-        "mockery/mockery": "~0.9.0",
+        "counterpart/counterpart": "~1",
+        "hamcrest/hamcrest-php": "~1",
+        "mockery/mockery": "~0",
         "phake/phake": "~1",
         "phpspec/prophecy": "~1",
         "phpunit/phpunit": "~4",
@@ -32,8 +33,5 @@
             "src/functions.php",
             "src/Phpunit/functions.php"
         ]
-    },
-    "scripts": {
-        "post-install-cmd": "./.install.sh"
     }
 }

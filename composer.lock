@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8a6dab5dda65993c193f7dd4ff5bb9a0",
+    "hash": "241ac596e890398460d0ae10b8389aab",
     "packages": [
         {
             "name": "sebastian/comparator",
@@ -189,6 +189,58 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "counterpart/counterpart",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chrisguitarguy/Counterpart.git",
+                "reference": "6eb89d4660a9ae3377575c2ebfa3797eef8bc08e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chrisguitarguy/Counterpart/zipball/6eb89d4660a9ae3377575c2ebfa3797eef8bc08e",
+                "reference": "6eb89d4660a9ae3377575c2ebfa3797eef8bc08e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "sebastian/diff": "~1.1",
+                "sebastian/exporter": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.1",
+                "sami/sami": "~1.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Counterpart\\": "src/"
+                },
+                "files": [
+                    "src/utilities.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Christopher Davis",
+                    "homepage": "http://christopherdavis.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A set of generic matchers -- for seeing if one value matches another",
+            "homepage": "http://docs.counterpartphp.org",
+            "keywords": [
+                "assert",
+                "matcher",
+                "testing"
+            ],
+            "time": "2014-07-30 00:23:04"
+        },
         {
             "name": "doctrine/instantiator",
             "version": "1.0.4",
