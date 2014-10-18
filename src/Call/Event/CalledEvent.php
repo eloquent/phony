@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
+
 /**
  * Represents the start of a call.
  *
@@ -63,6 +65,27 @@ class CalledEvent extends AbstractCallEvent implements CalledEventInterface
     public function arguments()
     {
         return $this->arguments;
+    }
+
+    /**
+     * Get an argument by index.
+     *
+     * @param integer|null $index The index, or null for the first argument.
+     *
+     * @return mixed                      The argument.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
+     */
+    public function argument($index = null)
+    {
+        if (null === $index) {
+            $index = 0;
+        }
+
+        if (array_key_exists($index, $this->arguments)) {
+            return $this->arguments[$index];
+        }
+
+        throw new UndefinedArgumentException($index);
     }
 
     private $callback;

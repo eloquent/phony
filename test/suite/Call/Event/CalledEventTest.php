@@ -50,6 +50,19 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->arguments());
     }
 
+    public function testArgument()
+    {
+        $this->assertSame('a', $this->subject->argument());
+        $this->assertSame('a', $this->subject->argument(0));
+        $this->assertSame('b', $this->subject->argument(1));
+    }
+
+    public function testArgumentFailureUndefined()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->subject->argument(111);
+    }
+
     public function testIteration()
     {
         $this->assertSame(array($this->subject), iterator_to_array($this->subject));
