@@ -228,7 +228,7 @@ class MockFactory implements MockFactoryInterface
             $name = $method->name();
 
             if ($method->isCustom()) {
-                $stubs[$name] = $stub = $this->stubVerifierFactory
+                $stubs[$name] = $this->stubVerifierFactory
                     ->createFromCallback($method->callback(), $mock);
             } else {
                 if ($method->isStatic()) {
@@ -237,18 +237,15 @@ class MockFactory implements MockFactoryInterface
                     $callParentMethod = $callParentInstance;
                 }
 
-                $stubs[$name] = $stub = $this->stubVerifierFactory
-                    ->createFromCallback(
-                        new WrappedMethod(
-                            $callParentMethod,
-                            $method->method(),
-                            $mock
-                        ),
+                $stubs[$name] = $this->stubVerifierFactory->createFromCallback(
+                    new WrappedMethod(
+                        $callParentMethod,
+                        $method->method(),
                         $mock
-                    );
+                    ),
+                    $mock
+                );
             }
-
-            $stub->forwards();
         }
 
         return $stubs;

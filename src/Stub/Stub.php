@@ -169,7 +169,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function with()
     {
         if ($this->isNewRule) {
-            $this->returns();
+            $this->forwards();
         }
 
         $this->isNewRule = true;
@@ -191,7 +191,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function withExactly()
     {
         if ($this->isNewRule) {
-            $this->returns();
+            $this->forwards();
         }
 
         $this->isNewRule = true;
@@ -645,7 +645,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         if ($this->isNewRule) {
-            $this->returns();
+            $this->forwards();
         }
 
         foreach ($this->rules as $rule) {
