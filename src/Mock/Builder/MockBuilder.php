@@ -661,6 +661,10 @@ class MockBuilder implements MockBuilderInterface
             foreach ($type->getMethods() as $method) {
                 $name = $method->getName();
 
+                if ($this->isReservedWord($name)) {
+                    continue;
+                }
+
                 if (
                     !$method->isFinal() &&
                     !$method->isPrivate() &&
@@ -734,6 +738,21 @@ class MockBuilder implements MockBuilderInterface
         }
 
         return $className;
+    }
+
+    /**
+     * Determines if the supplied string is a reserved word.
+     *
+     * @param string $string The string.
+     *
+     * @return boolean True if the string is a reserved word.
+     */
+    protected function isReservedWord($string)
+    {
+        $tokens = token_get_all('<?php ' . $string);
+        $token = $tokens[1];
+
+        return !is_array($token) || $token[0] !== T_STRING;
     }
 
     protected $isTraitSupported;

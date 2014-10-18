@@ -31,13 +31,8 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
                 continue;
             }
 
-            $isSupported =
-                require $fixturePath . '/' . $testName . '/supported.php';
-
-            if ($isSupported) {
-                $testName = $testName;
-                $data[$testName] = array($testName);
-            }
+            $testName = $testName;
+            $data[$testName] = array($testName);
         }
 
         return $data;
@@ -49,6 +44,12 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerate($testName)
     {
         $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
+        $isSupported = require $fixturePath . '/' . $testName . '/supported.php';
+
+        if (!$isSupported) {
+            $this->markTestSkipped('Not supported by the current PHP runtime.');
+        }
+
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
         $actual = $this->subject->generate($builder);
