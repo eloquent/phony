@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Integration\Phpunit\PhpunitAssertionRecorder;
+use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Proxy\MockProxy;
@@ -178,6 +179,38 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError');
         inOrderSequence(array($this->eventB, $this->eventA));
+    }
+
+    public function testAny()
+    {
+        $expected = new AnyMatcher();
+        $actual = Phony::any();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testAnyFunction()
+    {
+        $expected = new AnyMatcher();
+        $actual = any();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testEqualTo()
+    {
+        $expected = new EqualToMatcher('a');
+        $actual = Phony::equalTo('a');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testEqualToFunction()
+    {
+        $expected = new EqualToMatcher('a');
+        $actual = equalTo('a');
+
+        $this->assertEquals($expected, $actual);
     }
 
     public function testWildcard()

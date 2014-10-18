@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
@@ -171,6 +172,28 @@ abstract class AbstractFacade
     public static function inOrderSequence($events)
     {
         return static::driver()->eventOrderVerifier()->inOrderSequence($events);
+    }
+
+    /**
+     * Create a new matcher that matches anything.
+     *
+     * @return MatcherInterface The newly created matcher.
+     */
+    public static function any()
+    {
+        return static::driver()->matcherFactory()->any();
+    }
+
+    /**
+     * Create a new equal to matcher.
+     *
+     * @param mixed $value The value to check.
+     *
+     * @return MatcherInterface The newly created matcher.
+     */
+    public static function equalTo($value)
+    {
+        return static::driver()->matcherFactory()->equalTo($value);
     }
 
     /**

@@ -13,6 +13,7 @@ namespace Eloquent\Phony;
 
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Facade\FacadeDriver;
+use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
@@ -165,6 +166,28 @@ function inOrderSequence($events)
 {
     return FacadeDriver::instance()->eventOrderVerifier()
         ->inOrderSequence($events);
+}
+
+/**
+ * Create a new matcher that matches anything.
+ *
+ * @return MatcherInterface The newly created matcher.
+ */
+function any()
+{
+    return FacadeDriver::instance()->matcherFactory()->any();
+}
+
+/**
+ * Create a new equal to matcher.
+ *
+ * @param mixed $value The value to check.
+ *
+ * @return MatcherInterface The newly created matcher.
+ */
+function equalTo($value)
+{
+    return FacadeDriver::instance()->matcherFactory()->equalTo($value);
 }
 
 /**

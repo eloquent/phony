@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
+use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\InstanceMockProxyInterface;
@@ -167,6 +168,28 @@ function inOrderSequence($events)
 {
     return PhpunitFacadeDriver::instance()->eventOrderVerifier()
         ->inOrderSequence($events);
+}
+
+/**
+ * Create a new matcher that matches anything.
+ *
+ * @return MatcherInterface The newly created matcher.
+ */
+function any()
+{
+    return PhpunitFacadeDriver::instance()->matcherFactory()->any();
+}
+
+/**
+ * Create a new equal to matcher.
+ *
+ * @param mixed $value The value to check.
+ *
+ * @return MatcherInterface The newly created matcher.
+ */
+function equalTo($value)
+{
+    return PhpunitFacadeDriver::instance()->matcherFactory()->equalTo($value);
 }
 
 /**
