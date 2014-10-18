@@ -19,6 +19,8 @@ use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Integration\Prophecy\ProphecyMatcherDriver;
 use Eloquent\Phony\Integration\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Matcher\AnyMatcher;
+use Eloquent\Phony\Matcher\CaptureMatcher;
+use Eloquent\Phony\Matcher\CaptureMatcherInterface;
 use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherInterface;
@@ -228,6 +230,23 @@ class MatcherFactory implements MatcherFactoryInterface
     public function equalTo($value)
     {
         return new EqualToMatcher($value);
+    }
+
+    /**
+     * Create a new capture matcher.
+     *
+     * @param mixed &$value  The value to capture to.
+     * @param mixed $matcher The internal matcher to use.
+     *
+     * @return CaptureMatcherInterface The newly created capture matcher.
+     */
+    public function capture(&$value = null, $matcher = null)
+    {
+        if (func_num_args() > 1) {
+            $matcher = $this->adapt($matcher);
+        }
+
+        return new CaptureMatcher($value, $matcher);
     }
 
     /**

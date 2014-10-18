@@ -19,6 +19,7 @@ use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Integration\Prophecy\ProphecyMatcherDriver;
 use Eloquent\Phony\Integration\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Matcher\AnyMatcher;
+use Eloquent\Phony\Matcher\CaptureMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Test\TestMatcherA;
@@ -156,6 +157,18 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->wildcardAnyMatcher, $this->subject->adapt('*'));
         $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
+    }
+
+    public function testCapture()
+    {
+        $value = null;
+        $matcher = new EqualToMatcher('a');
+
+        $this->assertEquals(new CaptureMatcher($value, $matcher), $this->subject->capture($value, $matcher));
+        $this->assertEquals(new CaptureMatcher($value, $matcher), $this->subject->capture($value, 'a'));
+        $this->assertEquals(new CaptureMatcher($value, new EqualToMatcher(null)), $this->subject->capture($value, null));
+        $this->assertEquals(new CaptureMatcher($value), $this->subject->capture($value));
+        $this->assertEquals(new CaptureMatcher(), $this->subject->capture());
     }
 
     public function testWildcard()

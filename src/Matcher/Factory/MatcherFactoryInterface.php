@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Matcher\Factory;
 
+use Eloquent\Phony\Matcher\CaptureMatcherInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
@@ -61,6 +62,16 @@ interface MatcherFactoryInterface
      * @return MatcherInterface The newly created matcher.
      */
     public function equalTo($value);
+
+    /**
+     * Create a new capture matcher.
+     *
+     * @param mixed &$value  The value to capture to.
+     * @param mixed $matcher The internal matcher to use.
+     *
+     * @return CaptureMatcherInterface The newly created capture matcher.
+     */
+    public function capture(&$value = null, $matcher = null);
 
     /**
      * Create a new matcher that matches multiple arguments.
