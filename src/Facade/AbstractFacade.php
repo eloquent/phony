@@ -63,7 +63,7 @@ abstract class AbstractFacade
     /**
      * Create a new static mock proxy.
      *
-     * @param ReflectionClass|string $class The class.
+     * @param ReflectionClass|object|string $class The class.
      *
      * @return StaticMockProxyInterface The mock proxy.
      * @throws MockExceptionInterface   If the supplied class name is not a mock class.

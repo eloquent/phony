@@ -29,7 +29,7 @@ class StaticMockProxy extends AbstractMockProxy implements
     /**
      * Construct a new static mock proxy.
      *
-     * @param ReflectionClass|string                   $class The class.
+     * @param ReflectionClass|object|string            $class The class.
      * @param array<string,StubVerifierInterface>|null $stubs The stubs.
      *
      * @throws MockExceptionInterface If the supplied class name is not a mock class.

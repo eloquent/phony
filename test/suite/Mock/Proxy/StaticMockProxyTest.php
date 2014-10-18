@@ -41,6 +41,14 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stubs, $this->subject->stubs());
     }
 
+    public function testConstructorWithObject()
+    {
+        $this->subject = new StaticMockProxy($this->mockBuilder->get(), $this->stubs);
+
+        $this->assertSame($this->className, $this->subject->className());
+        $this->assertSame($this->stubs, $this->subject->stubs());
+    }
+
     public function testConstructorDefaults()
     {
         $this->subject = new StaticMockProxy($this->className);
