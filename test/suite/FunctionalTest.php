@@ -17,7 +17,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testMockingStatic()
     {
         $mock = Phony::mock('Eloquent\Phony\Test\TestClassA')->get();
-        Phony::on($mock)->testClassAMethodA()->with('a', 'b')->returns('x');
+        Phony::on($mock)->testClassAMethodA('a', 'b')->returns('x');
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
@@ -31,7 +31,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testMockingFunctions()
     {
         $mock = x\mock('Eloquent\Phony\Test\TestClassA')->get();
-        x\on($mock)->testClassAMethodA()->with('a', 'b')->returns('x');
+        x\on($mock)->testClassAMethodA('a', 'b')->returns('x');
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));

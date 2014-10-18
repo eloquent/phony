@@ -16,6 +16,7 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -50,7 +51,9 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'const constantB' => 'constantValueB',
         );
         $this->factory = new MockFactory(new Sequencer());
-        $this->subject = new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory);
+        $this->proxyFactory = new MockProxyFactory();
+        $this->subject =
+            new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory, $this->proxyFactory);
 
         $this->types = $this->inputTypes;
         $this->reflectors = array();
@@ -65,6 +68,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
         $this->assertNull($this->subject->id());
         $this->assertSame($this->factory, $this->subject->factory());
+        $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
         $this->assertSame('Eloquent\Phony\Test\TestClassB', $this->subject->parentClassName());
         $this->assertSame(
             array('Eloquent\Phony\Test\TestInterfaceA', 'Iterator', 'Countable'),
@@ -141,12 +145,14 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         foreach ($this->types as $type) {
             $this->reflectors[$type] = new ReflectionClass($type);
         }
-        $this->subject = new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory);
+        $this->subject =
+            new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory, $this->proxyFactory);
 
         $this->assertSame($this->types, $this->subject->types());
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
         $this->assertNull($this->subject->id());
         $this->assertSame($this->factory, $this->subject->factory());
+        $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
         $this->assertSame('Eloquent\Phony\Test\TestClassB', $this->subject->parentClassName());
         $this->assertSame(
             array('Eloquent\Phony\Test\TestInterfaceA', 'Iterator', 'Countable'),
@@ -637,21 +643,24 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($third, $this->subject->get());
     }
 
-    public function testStaticStub()
+    public function testFull()
     {
-        $actual = $this->subject->staticStub('testClassAStaticMethodA')->with('a', 'b')->returns('x');
-        $class = $this->subject->className();
+        $first = $this->subject->full('id');
+        $idProperty = new ReflectionProperty($this->subject->className(), '_mockId');
+        $idProperty->setAccessible(true);
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame('x', $class::testClassAStaticMethodA('a', 'b'));
-        $this->assertSame('cd', $class::testClassAStaticMethodA('c', 'd'));
-    }
+        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
+        $this->assertSame('id', $idProperty->getValue($first));
+        $this->assertNull($first->constructorArguments);
+        $this->assertSame($first, $this->subject->get());
 
-    public function testStaticStubFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
-        $this->subject->staticStub('nonexistent');
+        $second = $this->subject->full();
+
+        $this->assertNotSame($first, $second);
+        $this->assertNull($second->constructorArguments);
+        $this->assertSame($second, $this->subject->get());
     }
 }

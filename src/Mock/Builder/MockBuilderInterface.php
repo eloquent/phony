@@ -264,4 +264,18 @@ interface MockBuilderInterface
      * @return MockInterface The mock instance.
      */
     public function createWith(array $arguments = null, $id = null);
+
+    /**
+     * Create a new full mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param string|null $id The identifier.
+     *
+     * @return MockInterface The mock instance.
+     */
+    public function full($id = null);
 }

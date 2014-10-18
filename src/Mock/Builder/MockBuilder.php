@@ -21,11 +21,11 @@ use Eloquent\Phony\Mock\Exception\InvalidDefinitionException;
 use Eloquent\Phony\Mock\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
-use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactoryInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -44,11 +44,12 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * @param array<string|object>|string|object|null $types      The types to mock.
-     * @param array|object|null                       $definition The definition.
-     * @param string|null                             $className  The class name.
-     * @param string|null                             $id         The identifier.
-     * @param MockFactoryInterface|null               $factory    The factory to use.
+     * @param array<string|object>|string|object|null $types        The types to mock.
+     * @param array|object|null                       $definition   The definition.
+     * @param string|null                             $className    The class name.
+     * @param string|null                             $id           The identifier.
+     * @param MockFactoryInterface|null               $factory      The factory to use.
+     * @param MockProxyFactoryInterface|null          $proxyFactory The proxy factory to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
      */
@@ -57,13 +58,18 @@ class MockBuilder implements MockBuilderInterface
         $definition = null,
         $className = null,
         $id = null,
-        MockFactoryInterface $factory = null
+        MockFactoryInterface $factory = null,
+        MockProxyFactoryInterface $proxyFactory = null
     ) {
         if (null === $factory) {
             $factory = MockFactory::instance();
         }
+        if (null === $proxyFactory) {
+            $proxyFactory = MockProxyFactory::instance();
+        }
 
         $this->factory = $factory;
+        $this->proxyFactory = $proxyFactory;
 
         $this->types = array();
         $this->reflectors = array();
@@ -100,6 +106,16 @@ class MockBuilder implements MockBuilderInterface
     public function factory()
     {
         return $this->factory;
+    }
+
+    /**
+     * Get the mock proxy factory.
+     *
+     * @return MockProxyFactoryInterface The mock proxy factory.
+     */
+    public function proxyFactory()
+    {
+        return $this->proxyFactory;
     }
 
     /**
@@ -549,28 +565,23 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get a static stub.
+     * Create a new full mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param string $name The method name.
+     * @param string|null $id The identifier.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
+     * @return MockInterface The mock instance.
      */
-    public function staticStub($name)
+    public function full($id = null)
     {
-        $class = $this->build();
+        $mock = $this->createWith(null, $id);
+        $this->proxyFactory->create($mock)->full();
 
-        $property = $class->getProperty('_staticStubs');
-        $property->setAccessible(true);
-        $stubs = $property->getValue(null);
-
-        if (isset($stubs[$name])) {
-            return $stubs[$name];
-        }
-
-        throw new UndefinedMethodStubException($class->getName(), $name);
+        return $mock;
     }
 
     /**
@@ -757,6 +768,7 @@ class MockBuilder implements MockBuilderInterface
 
     protected $isTraitSupported;
     private $factory;
+    private $proxyFactory;
     private $types;
     private $reflectors;
     private $methods;
