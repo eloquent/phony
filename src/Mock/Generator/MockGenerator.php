@@ -372,6 +372,7 @@ EOD;
 
     private static $_staticStubs = array();
     private $_stubs = array();
+    private $_mockId;
 EOD;
 
         return $source;

@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Test\TestMockGenerator;
 use Mockery\Generator\Generator;
@@ -23,13 +24,15 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->idSequencer = new Sequencer();
         $this->generator = new MockGenerator();
         $this->stubVerifierFactory = new StubVerifierFactory();
-        $this->subject = new MockFactory($this->generator, $this->stubVerifierFactory);
+        $this->subject = new MockFactory($this->idSequencer, $this->generator, $this->stubVerifierFactory);
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->idSequencer, $this->subject->idSequencer());
         $this->assertSame($this->generator, $this->subject->generator());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
     }
@@ -38,6 +41,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MockFactory();
 
+        $this->assertSame(Sequencer::sequence('mock-id'), $this->subject->idSequencer());
         $this->assertSame(MockGenerator::instance(), $this->subject->generator());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
     }
@@ -79,7 +83,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateMockClassFailureSyntax()
     {
-        $this->subject = new MockFactory(new TestMockGenerator('{'));
+        $this->subject = new MockFactory($this->idSequencer, new TestMockGenerator('{'));
         $builder = new MockBuilder();
 
         $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\MockGenerationFailedException');
@@ -102,6 +106,8 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         );
         $actual = $this->subject->createMock($builder);
         $class = new ReflectionClass($actual);
+        $idProperty = $class->getProperty('_mockId');
+        $idProperty->setAccessible(true);
         $protectedMethod = $class->getMethod('testClassAMethodC');
         $protectedMethod->setAccessible(true);
         $protectedStaticMethod = $class->getMethod('testClassAStaticMethodC');
@@ -109,6 +115,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
+        $this->assertSame('0', $idProperty->getValue($actual));
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertSame('custom ab', $actual->methodB('a', 'b'));
@@ -117,16 +124,20 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame('static custom ab', PhonyMockFactoryTestCreateMock::methodA('a', 'b'));
     }
 
-    public function testCreateMockWithConstructorArguments()
+    public function testCreateMockWithConstructorArgumentsAndId()
     {
         $builder = new MockBuilder(
             'Eloquent\Phony\Test\TestClassB',
             null,
             __NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithConstructorArguments'
         );
-        $actual = $this->subject->createMock($builder, array('a', 'b'));
+        $actual = $this->subject->createMock($builder, array('a', 'b'), 'id');
+        $class = new ReflectionClass($actual);
+        $idProperty = $class->getProperty('_mockId');
+        $idProperty->setAccessible(true);
 
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);
+        $this->assertSame('id', $idProperty->getValue($actual));
     }
 
     public function testCreateMockWithConstructorArgumentsWithReferences()

@@ -36,12 +36,14 @@ interface MockFactoryInterface
      *
      * @param MockBuilderInterface      $builder   The builder.
      * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param string|null               $id        The identifier.
      *
      * @return MockInterface                 The newly created mock.
      * @throws MockBuilderExceptionInterface If the mock generation fails.
      */
     public function createMock(
         MockBuilderInterface $builder,
-        array $arguments = null
+        array $arguments = null,
+        $id = null
     );
 }

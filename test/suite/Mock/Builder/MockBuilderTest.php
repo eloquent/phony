@@ -14,10 +14,13 @@ namespace Eloquent\Phony\Mock\Builder;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
+use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionProperty;
 
 class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
@@ -46,7 +49,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'const constantA' => 'constantValueA',
             'const constantB' => 'constantValueB',
         );
-        $this->factory = new MockFactory();
+        $this->factory = new MockFactory(new Sequencer());
         $this->subject = new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory);
 
         $this->types = $this->inputTypes;
@@ -561,6 +564,20 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassB'));
     }
 
+    public function testBuildFailure()
+    {
+        $this->subject->build();
+        $builder = new MockBuilder(null, null, $this->subject->className());
+        $exception = null;
+        try {
+            $builder->build();
+        } catch (ClassExistsException $exception) {}
+
+        $this->assertNotNull($exception);
+        $this->assertFalse($builder->isFinalized());
+        $this->assertFalse($builder->isBuilt());
+    }
+
     public function testGet()
     {
         $actual = $this->subject->get();
@@ -592,18 +609,22 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateWith()
     {
-        $first = $this->subject->createWith(array('a', 'b'));
+        $first = $this->subject->createWith(array('a', 'b'), 'id');
+        $idProperty = new ReflectionProperty($this->subject->className(), '_mockId');
+        $idProperty->setAccessible(true);
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
+        $this->assertSame('id', $idProperty->getValue($first));
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
         $second = $this->subject->createWith(array());
 
         $this->assertNotSame($first, $second);
+        $this->assertSame('0', $idProperty->getValue($second));
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
 
@@ -611,6 +632,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertNotSame($first, $third);
         $this->assertNotSame($second, $third);
+        $this->assertSame('1', $idProperty->getValue($third));
         $this->assertNull($third->constructorArguments);
         $this->assertSame($third, $this->subject->get());
     }

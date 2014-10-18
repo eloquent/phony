@@ -20,6 +20,8 @@ use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
@@ -49,13 +51,18 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
+     * @param SequencerInterface|null           $idSequencer         The identifier sequencer to use.
      * @param MockGeneratorInterface|null       $generator           The generator to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      */
     public function __construct(
+        SequencerInterface $idSequencer = null,
         MockGeneratorInterface $generator = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null
     ) {
+        if (null === $idSequencer) {
+            $idSequencer = Sequencer::sequence('mock-id');
+        }
         if (null === $generator) {
             $generator = MockGenerator::instance();
         }
@@ -63,8 +70,19 @@ class MockFactory implements MockFactoryInterface
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
 
+        $this->idSequencer = $idSequencer;
         $this->generator = $generator;
         $this->stubVerifierFactory = $stubVerifierFactory;
+    }
+
+    /**
+     * Get the identifier sequencer.
+     *
+     * @return SequencerInterface The identifier sequencer.
+     */
+    public function idSequencer()
+    {
+        return $this->idSequencer;
     }
 
     /**
@@ -139,20 +157,26 @@ class MockFactory implements MockFactoryInterface
      *
      * @param MockBuilderInterface      $builder   The builder.
      * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param string|null               $id        The identifier.
      *
      * @return MockInterface                 The newly created mock.
      * @throws MockBuilderExceptionInterface If the mock generation fails.
      */
     public function createMock(
         MockBuilderInterface $builder,
-        array $arguments = null
+        array $arguments = null,
+        $id = null
     ) {
+        if (null === $id) {
+            $id = strval($this->idSequencer->next());
+        }
+
         $class = $builder->build();
         $mock = $class->newInstanceArgs();
 
-        $property = $class->getProperty('_stubs');
-        $property->setAccessible(true);
-        $property->setValue(
+        $stubsProperty = $class->getProperty('_stubs');
+        $stubsProperty->setAccessible(true);
+        $stubsProperty->setValue(
             $mock,
             $this->createStubs(
                 $class,
@@ -160,6 +184,10 @@ class MockFactory implements MockFactoryInterface
                 $mock
             )
         );
+
+        $idProperty = $class->getProperty('_mockId');
+        $idProperty->setAccessible(true);
+        $idProperty->setValue($mock, $id);
 
         if (null !== $arguments) {
             if ($parentClass = $class->getParentClass()) {
@@ -227,6 +255,7 @@ class MockFactory implements MockFactoryInterface
     }
 
     private static $instance;
+    private $idSequencer;
     private $generator;
     private $stubVerifierFactory;
 }

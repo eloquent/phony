@@ -261,10 +261,11 @@ interface MockBuilderInterface
      * This method supports reference parameters.
      *
      * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param string|null               $id        The identifier.
      *
      * @return MockInterface The mock instance.
      */
-    public function createWith(array $arguments = null);
+    public function createWith(array $arguments = null, $id = null);
 
     /**
      * Turn a mock into a full mock.
