@@ -597,7 +597,7 @@ class MockBuilder implements MockBuilderInterface
             return $stubs[$name];
         }
 
-        throw new UndefinedMethodStubException($this, $name);
+        throw new UndefinedMethodStubException($class->getName(), $name);
     }
 
     /**
@@ -626,7 +626,7 @@ class MockBuilder implements MockBuilderInterface
             return $stubs[$name];
         }
 
-        throw new UndefinedMethodStubException($this, $name);
+        throw new UndefinedMethodStubException(get_class($mock), $name);
     }
 
     /**

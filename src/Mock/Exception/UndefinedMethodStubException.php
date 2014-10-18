@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Exception;
 
 /**
@@ -25,22 +24,22 @@ final class UndefinedMethodStubException extends Exception implements
     /**
      * Construct a new undefined method stub exception.
      *
-     * @param MockBuilderInterface $mockBuilder The mock builder.
-     * @param string               $name        The method name.
-     * @param Exception|null       $cause       The cause, if available.
+     * @param string         $className The class name.
+     * @param string         $name      The method name.
+     * @param Exception|null $cause     The cause, if available.
      */
     public function __construct(
-        MockBuilderInterface $mockBuilder,
+        $className,
         $name,
         Exception $cause = null
     ) {
-        $this->mockBuilder = $mockBuilder;
+        $this->className = $className;
         $this->name = $name;
 
         parent::__construct(
             sprintf(
                 'The requested method stub %s::%s() does not exist.',
-                $mockBuilder->className(),
+                $className,
                 $name
             ),
             0,
@@ -49,13 +48,13 @@ final class UndefinedMethodStubException extends Exception implements
     }
 
     /**
-     * Get the mock builder.
+     * Get the class name.
      *
-     * @return MockBuilderInterface The mock builder.
+     * @return string The class name.
      */
-    public function mockBuilder()
+    public function className()
     {
-        return $this->mockBuilder;
+        return $this->className;
     }
 
     /**
@@ -68,6 +67,6 @@ final class UndefinedMethodStubException extends Exception implements
         return $this->name;
     }
 
-    private $mockBuilder;
+    private $className;
     private $name;
 }
