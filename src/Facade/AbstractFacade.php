@@ -14,11 +14,14 @@ namespace Eloquent\Phony\Facade;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
+use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\MockProxyInterface;
+use Eloquent\Phony\Mock\Proxy\InstanceMockProxyInterface;
+use Eloquent\Phony\Mock\Proxy\StaticMockProxyInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
+use ReflectionClass;
 
 /**
  * An abstract base class for implementing facades.
@@ -50,11 +53,24 @@ abstract class AbstractFacade
      *
      * @param MockInterface $mock The mock.
      *
-     * @return MockProxyInterface The mock proxy.
+     * @return InstanceMockProxyInterface The mock proxy.
      */
     public static function on(MockInterface $mock)
     {
         return static::driver()->mockProxyFactory()->create($mock);
+    }
+
+    /**
+     * Create a new static mock proxy.
+     *
+     * @param ReflectionClass|string $class The class.
+     *
+     * @return StaticMockProxyInterface The mock proxy.
+     * @throws MockExceptionInterface   If the supplied class name is not a mock class.
+     */
+    public static function onStatic($class)
+    {
+        return static::driver()->mockProxyFactory()->createStatic($class);
     }
 
     /**

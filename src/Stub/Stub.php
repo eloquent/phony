@@ -175,7 +175,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->isNewRule = true;
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $matchers[] = $this->matcherFactory->wildcard();
-        $this->rule = new StubRule($matchers);
+        $this->rule = new StubRule($matchers, $this->matcherVerifier);
 
         return $this;
     }
@@ -195,8 +195,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         $this->isNewRule = true;
-        $this->rule =
-            new StubRule($this->matcherFactory->adaptAll(func_get_args()));
+        $this->rule = new StubRule(
+            $this->matcherFactory->adaptAll(func_get_args()),
+            $this->matcherVerifier
+        );
 
         return $this;
     }

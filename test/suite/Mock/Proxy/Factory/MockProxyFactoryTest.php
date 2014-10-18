@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Proxy\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Proxy\MockProxy;
+use Eloquent\Phony\Mock\Proxy\StaticMockProxy;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -21,6 +22,16 @@ class MockProxyFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new MockProxyFactory();
+    }
+
+    public function testCreateStatic()
+    {
+        $mockBuilder = new MockBuilder();
+        $class = $mockBuilder->build();
+        $expected = new StaticMockProxy($class);
+        $actual = $this->subject->createStatic($class);
+
+        $this->assertEquals($expected, $actual);
     }
 
     public function testCreate()
