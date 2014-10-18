@@ -190,6 +190,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
+                ->returns()
                 ->with('a', new EqualToMatcher('b'))
                 ->returns('x')
         );
@@ -203,6 +204,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
+                ->returns()
                 ->withExactly('a', new EqualToMatcher('b'))
                 ->returns('x')
         );
@@ -281,7 +283,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     {
         $a = null;
         $b = null;
-        $this->subject->calls($this->referenceCallback);
+        $this->subject->calls($this->referenceCallback)->returns();
         $this->subject->invokeWith(array(&$a, &$b));
 
         $this->assertSame('a', $a);
@@ -399,7 +401,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->callsWith($this->referenceCallback, array(&$a, &$b));
+        $this->subject->callsWith($this->referenceCallback, array(&$a, &$b))->returns();
         $this->subject->invokeWith(array(&$c, &$d));
 
         $this->assertSame('a', $a);
@@ -595,7 +597,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->callsArgumentWith(2, array(&$a, &$b), false, false, true);
+        $this->subject->callsArgumentWith(2, array(&$a, &$b), false, false, true)->returns();
         $this->subject->invokeWith(array(&$c, &$d, $this->referenceCallback));
 
         $this->assertSame('a', $a);
@@ -614,6 +616,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->setsArgument('c', -1)
                 ->setsArgument('d', 111)
                 ->setsArgument('e', -111)
+                ->returns()
         );
 
         $a = null;
@@ -810,7 +813,8 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testForwardsWithReferenceParameters()
     {
-        $this->subject = new Stub($this->referenceCallback, $this->self);
+        $this->stub = new Stub($this->referenceCallback, $this->self);
+        $this->subject = new StubVerifier($this->stub);
         $a = null;
         $b = null;
         $c = null;
@@ -974,24 +978,26 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->with('a')
-                ->with('b')
-                ->withExactly('a')->calls($callbackA)
-                ->withExactly('b')->calls($callbackA, $callbackB)
+                ->with(array('a', 'b'))
+                ->with(array('c', 'd'))
+                ->withExactly(array('a', 'b'))->calls($callbackA)
+                ->withExactly(array('c', 'd'))->calls($callbackA, $callbackB)
         );
-        $this->assertNull(call_user_func($this->subject, 'a'));
+        $this->assertSame('ab', call_user_func($this->subject, array('a', 'b')));
         $this->assertSame(1, $callCountA);
         $this->assertSame(0, $callCountB);
-        $this->assertNull(call_user_func($this->subject, 'b'));
+        $this->assertSame('cd', call_user_func($this->subject, array('c', 'd')));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
-        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame('ef', call_user_func($this->subject, array('e', 'f')));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
     }
 
     public function testInvokeMethods()
     {
+        $this->subject->returns();
+
         $this->assertNull($this->subject->invokeWith());
         $this->assertNull($this->subject->invoke());
         $this->assertNull(call_user_func($this->subject));
