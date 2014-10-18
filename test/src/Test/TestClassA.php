@@ -58,12 +58,7 @@ class TestClassA implements TestInterfaceA
 
     protected function testClassAMethodD(&$first, &$second)
     {
-        $result = 'protected ' . implode(func_get_args());
-
-        $first = 'first';
-        $second = 'second';
-
-        return $result;
+        return 'protected ' . implode(func_get_args());
     }
 
     private static function testClassAStaticMethodE()

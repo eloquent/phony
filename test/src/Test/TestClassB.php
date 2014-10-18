@@ -46,8 +46,13 @@ class TestClassB extends TestClassA implements TestInterfaceB
         return implode(func_get_args());
     }
 
-    public function testClassBMethodB($first, $second)
+    public function testClassBMethodB(&$first, &$second)
     {
-        return implode(func_get_args());
+        $result = implode(func_get_args());
+
+        $first = 'first';
+        $second = 'second';
+
+        return $result;
     }
 }

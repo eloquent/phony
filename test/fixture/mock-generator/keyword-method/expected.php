@@ -38,10 +38,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a1 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -60,10 +57,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a2 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -78,10 +72,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -100,10 +91,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a2 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -115,10 +103,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function declareQueue()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -133,10 +118,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -151,10 +133,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -169,10 +148,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -184,10 +160,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getArguments()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -199,10 +172,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getChannel()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -214,10 +184,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getConnection()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -229,10 +196,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getFlags()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -244,10 +208,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getName()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -264,10 +225,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a1 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -279,10 +237,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function purge()
     {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -299,10 +254,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a1 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -319,10 +271,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a1
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -337,10 +286,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         array $a0
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -355,10 +301,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -373,10 +316,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 
@@ -395,10 +335,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a2 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 

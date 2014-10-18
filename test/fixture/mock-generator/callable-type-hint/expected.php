@@ -26,10 +26,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         callable $a1 = null
     ) {
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
     }
 

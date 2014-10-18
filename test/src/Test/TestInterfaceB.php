@@ -19,5 +19,5 @@ interface TestInterfaceB extends TestInterfaceA
 
     public function testClassBMethodA();
 
-    public function testClassBMethodB($first, $second);
+    public function testClassBMethodB(&$first, &$second);
 }

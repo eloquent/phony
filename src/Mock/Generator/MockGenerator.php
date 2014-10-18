@@ -265,20 +265,15 @@ EOD;
                 $scope = 'static ';
                 $body = <<<'EOD'
         if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return call_user_func_array(
-                self::$_staticStubs[__FUNCTION__],
-                func_get_args()
-            );
+            return self::$_staticStubs[__FUNCTION__]
+                ->invokeWith(func_get_args());
         }
 EOD;
             } else {
                 $scope = '';
                 $body = <<<'EOD'
         if (isset($this->_stubs[__FUNCTION__])) {
-            return call_user_func_array(
-                $this->_stubs[__FUNCTION__],
-                func_get_args()
-            );
+            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
         }
 EOD;
             }
