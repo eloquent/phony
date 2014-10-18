@@ -15,8 +15,8 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Event\EventCollection;
-use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Call\Event\CallEventCollection;
+use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\NullEvent;
 
@@ -85,9 +85,9 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param CallEventCollectionInterface $events,... The events.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkInOrder()
     {
@@ -98,10 +98,10 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param CallEventCollectionInterface $events,... The events.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function inOrder()
     {
@@ -111,9 +111,9 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks if the supplied event sequence happened in chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkInOrderSequence($events)
     {
@@ -181,10 +181,10 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Throws an exception unless the supplied event sequence happened in
      * chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function inOrderSequence($events)
     {
@@ -217,9 +217,9 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Attempts to normalize the supplied event order expectation into a
      * meaningful sequence of singular events.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @return EventCollectionInterface The normalized events.
+     * @return CallCallEventCollectionInterface The normalized events.
      */
     protected function expectedEvents($events)
     {
@@ -253,16 +253,16 @@ class EventOrderVerifier implements EventOrderVerifierInterface
             }
         }
 
-        return new EventCollection($expected);
+        return new CallEventCollection($expected);
     }
 
     /**
      * Merge the supplied event sequence into a single event collection, in
      * chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @param EventCollectionInterface $events The ordered events.
+     * @param CallCallEventCollectionInterface $events The ordered events.
      */
     protected function mergeEvents($events)
     {
@@ -280,7 +280,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
 
         ksort($merged);
 
-        return new EventCollection($merged);
+        return new CallEventCollection($merged);
     }
 
     private static $instance;

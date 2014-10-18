@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Event\Verification;
 
-use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Exception;
 
 /**
@@ -22,9 +22,9 @@ interface EventOrderVerifierInterface
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param CallEventCollectionInterface $events,... The events.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkInOrder();
 
@@ -32,19 +32,19 @@ interface EventOrderVerifierInterface
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param CallEventCollectionInterface $events,... The events.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function inOrder();
 
     /**
      * Checks if the supplied event sequence happened in chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkInOrderSequence($events);
 
@@ -52,10 +52,10 @@ interface EventOrderVerifierInterface
      * Throws an exception unless the supplied event sequence happened in
      * chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function inOrderSequence($events);
 }

@@ -17,13 +17,13 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
+use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
-use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -381,7 +381,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Checks if called.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkCalled()
     {
@@ -398,8 +398,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Throws an exception unless called.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function called()
     {
@@ -436,7 +436,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkCalledWith()
     {
@@ -468,8 +468,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function calledWith()
     {
@@ -512,7 +512,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param object|null $value The possible $this value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkCalledOn($value)
     {
@@ -558,8 +558,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param object|null $value The possible $this value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function calledOn($value)
     {
@@ -603,7 +603,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkReturned($value = null)
     {
@@ -650,8 +650,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function returned($value = null)
     {
@@ -706,8 +706,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface|null The result.
-     * @throws InvalidArgumentException      If the type is invalid.
+     * @return CallEventCollectionInterface|null The result.
+     * @throws InvalidArgumentException          If the type is invalid.
      */
     public function checkThrew($type = null)
     {
@@ -781,9 +781,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface The result.
-     * @throws InvalidArgumentException If the type is invalid.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws InvalidArgumentException     If the type is invalid.
+     * @throws Exception                    If the assertion fails.
      */
     public function threw($type = null)
     {
@@ -850,7 +850,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkProduced($keyOrValue = null, $value = null)
     {
@@ -915,8 +915,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -982,7 +982,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkProducedAll()
     {
@@ -1060,8 +1060,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function producedAll()
     {
@@ -1136,7 +1136,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public function checkReceived($value = null)
     {
@@ -1182,8 +1182,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public function received($value = null)
     {
@@ -1240,8 +1240,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface|null The result.
-     * @throws InvalidArgumentException      If the type is invalid.
+     * @return CallEventCollectionInterface|null The result.
+     * @throws InvalidArgumentException          If the type is invalid.
      */
     public function checkReceivedException($type = null)
     {
@@ -1336,9 +1336,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface The result.
-     * @throws InvalidArgumentException If the type is invalid.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws InvalidArgumentException     If the type is invalid.
+     * @throws Exception                    If the assertion fails.
      */
     public function receivedException($type = null)
     {

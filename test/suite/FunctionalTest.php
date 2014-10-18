@@ -21,6 +21,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
+        $this->assertSame(array('a', 'b'), Phony::on($mock)->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame('b', Phony::on($mock)->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         Phony::on($mock)->full();
 
@@ -35,6 +37,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
+        $this->assertSame(array('a', 'b'), x\on($mock)->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame('b', x\on($mock)->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         x\on($mock)->full();
 

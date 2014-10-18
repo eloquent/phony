@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony;
 
-use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -125,13 +125,13 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertTrue((boolean) Phony::checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) Phony::checkInOrder($this->eventB, $this->eventA));
         $this->assertEquals(
-            new EventCollection(array($this->eventA, $this->eventB)),
+            new CallEventCollection(array($this->eventA, $this->eventB)),
             Phony::inOrder($this->eventA, $this->eventB)
         );
         $this->assertTrue((boolean) Phony::checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) Phony::checkInOrderSequence(array($this->eventB, $this->eventA)));
         $this->assertEquals(
-            new EventCollection(array($this->eventA, $this->eventB)),
+            new CallEventCollection(array($this->eventA, $this->eventB)),
             Phony::inOrderSequence(array($this->eventA, $this->eventB))
         );
     }
@@ -153,13 +153,13 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertTrue((boolean) checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) checkInOrder($this->eventB, $this->eventA));
         $this->assertEquals(
-            new EventCollection(array($this->eventA, $this->eventB)),
+            new CallEventCollection(array($this->eventA, $this->eventB)),
             inOrder($this->eventA, $this->eventB)
         );
         $this->assertTrue((boolean) checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) checkInOrderSequence(array($this->eventB, $this->eventA)));
         $this->assertEquals(
-            new EventCollection(array($this->eventA, $this->eventB)),
+            new CallEventCollection(array($this->eventA, $this->eventB)),
             inOrderSequence(array($this->eventA, $this->eventB))
         );
     }

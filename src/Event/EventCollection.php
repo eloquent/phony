@@ -99,5 +99,5 @@ class EventCollection implements EventCollectionInterface
         return count($this->events);
     }
 
-    private $events;
+    protected $events;
 }

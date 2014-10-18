@@ -13,11 +13,11 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Cardinality\Cardinality;
-use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -102,10 +102,10 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
 
-        $this->assertionResult = new EventCollection(array($this->call));
-        $this->returnedAssertionResult = new EventCollection(array($this->call->responseEvent()));
-        $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new EventCollection();
+        $this->assertionResult = new CallEventCollection(array($this->call));
+        $this->returnedAssertionResult = new CallEventCollection(array($this->call->responseEvent()));
+        $this->threwAssertionResult = new CallEventCollection(array($this->callWithException->responseEvent()));
+        $this->emptyAssertionResult = new CallEventCollection();
     }
 
     public function testConstructor()

@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Facade;
 
-use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
@@ -122,9 +122,9 @@ abstract class AbstractFacade
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param CallEventCollectionInterface $events,... The events.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public static function checkInOrder()
     {
@@ -136,10 +136,10 @@ abstract class AbstractFacade
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param CallEventCollectionInterface $events,... The events.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public static function inOrder()
     {
@@ -150,9 +150,9 @@ abstract class AbstractFacade
     /**
      * Checks if the supplied event sequence happened in chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return CallEventCollectionInterface|null The result.
      */
     public static function checkInOrderSequence($events)
     {
@@ -164,10 +164,10 @@ abstract class AbstractFacade
      * Throws an exception unless the supplied event sequence happened in
      * chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails.
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
      */
     public static function inOrderSequence($events)
     {

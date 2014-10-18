@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Phpunit;
 
-use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
@@ -117,9 +117,9 @@ function stub(
 /**
  * Checks if the supplied events happened in chronological order.
  *
- * @param EventCollectionInterface $events,... The events.
+ * @param CallEventCollectionInterface $events,... The events.
  *
- * @return EventCollectionInterface|null The result.
+ * @return CallEventCollectionInterface|null The result.
  */
 function checkInOrder()
 {
@@ -131,9 +131,9 @@ function checkInOrder()
  * Throws an exception unless the supplied events happened in chronological
  * order.
  *
- * @param EventCollectionInterface $events,... The events.
+ * @param CallEventCollectionInterface $events,... The events.
  *
- * @return EventCollectionInterface The result.
+ * @return CallEventCollectionInterface The result.
  * @throws Exception If the assertion fails.
  */
 function inOrder()
@@ -145,9 +145,9 @@ function inOrder()
 /**
  * Checks if the supplied event sequence happened in chronological order.
  *
- * @param mixed<EventCollectionInterface> $events The event sequence.
+ * @param mixed<CallEventCollectionInterface> $events The event sequence.
  *
- * @return EventCollectionInterface|null The result.
+ * @return CallEventCollectionInterface|null The result.
  */
 function checkInOrderSequence($events)
 {
@@ -159,9 +159,9 @@ function checkInOrderSequence($events)
  * Throws an exception unless the supplied event sequence happened in
  * chronological order.
  *
- * @param mixed<EventCollectionInterface> $events The event sequence.
+ * @param mixed<CallEventCollectionInterface> $events The event sequence.
  *
- * @return EventCollectionInterface The result.
+ * @return CallEventCollectionInterface The result.
  * @throws Exception If the assertion fails.
  */
 function inOrderSequence($events)
