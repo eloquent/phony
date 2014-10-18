@@ -51,7 +51,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new StubFactory();
 
-        $this->assertEquals($this->idSequencer, $this->subject->idSequencer());
+        $this->assertSame(Sequencer::sequence('stub-id'), $this->subject->idSequencer());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());

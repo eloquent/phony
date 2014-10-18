@@ -17,6 +17,7 @@ use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
 use PHPUnit_Framework_TestCase;
@@ -26,7 +27,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->spyFactory = new SpyFactory();
+        $this->spyFactory = new SpyFactory(new Sequencer());
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = new CallVerifierFactory();
@@ -103,7 +104,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $spy = new Spy($callback, true, false);
+        $spy = new Spy($callback, true, false, 0);
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
         $actual = $this->subject->createFromCallback($callback, true, false);
 

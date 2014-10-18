@@ -75,6 +75,7 @@ class MockBuilder implements MockBuilderInterface
         $this->constants = array();
         $this->id = $id;
         $this->isFinalized = false;
+        $this->isBuilt = false;
 
         $reflectorReflector = new ReflectionClass('ReflectionClass');
         $this->isTraitSupported = $reflectorReflector->hasMethod('isTrait');
@@ -387,16 +388,6 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get the method definitions.
-     *
-     * @return MethodDefinitionCollectionInterface|null The definitions, or null if the builder is not yet finalized.
-     */
-    public function methodDefinitions()
-    {
-        return $this->methodDefinitions;
-    }
-
-    /**
      * Get the custom static methods.
      *
      * @return array<string,callable|null> The custom static methods.
@@ -462,6 +453,30 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Get the method definitions.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return MethodDefinitionCollectionInterface The method definitions.
+     */
+    public function methodDefinitions()
+    {
+        $this->finalize();
+
+        return $this->methodDefinitions;
+    }
+
+    /**
+     * Returns true if the mock class has been built.
+     *
+     * @return boolean True if the mock class has been built.
+     */
+    public function isBuilt()
+    {
+        return $this->isBuilt;
+    }
+
+    /**
      * Generate and define the mock class.
      *
      * Calling this method will finalize the mock builder.
@@ -470,7 +485,10 @@ class MockBuilder implements MockBuilderInterface
      */
     public function build()
     {
-        return $this->factory->createMockClass($this);
+        $class = $this->factory->createMockClass($this);
+        $this->isBuilt = true;
+
+        return $class;
     }
 
     /**
@@ -818,6 +836,7 @@ class MockBuilder implements MockBuilderInterface
     private $interfaceNames;
     private $traitNames;
     private $isFinalized;
+    private $isBuilt;
     private $methodDefinitions;
     private $mock;
 }

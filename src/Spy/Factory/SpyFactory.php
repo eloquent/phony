@@ -52,7 +52,7 @@ class SpyFactory implements SpyFactoryInterface
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
         if (null === $idSequencer) {
-            $idSequencer = new Sequencer();
+            $idSequencer = Sequencer::sequence('spy-id');
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();

@@ -50,7 +50,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
         MockFactoryInterface $mockFactory = null
     ) {
         if (null === $idSequencer) {
-            $idSequencer = new Sequencer();
+            $idSequencer = Sequencer::sequence('mock-builder-id');
         }
         if (null === $mockFactory) {
             $mockFactory = MockFactory::instance();

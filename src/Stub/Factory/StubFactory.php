@@ -61,7 +61,7 @@ class StubFactory implements StubFactoryInterface
         InvocableInspectorInterface $invocableInspector = null
     ) {
         if (null === $idSequencer) {
-            $idSequencer = new Sequencer();
+            $idSequencer = Sequencer::sequence('stub-id');
         }
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();

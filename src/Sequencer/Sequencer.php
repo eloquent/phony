@@ -19,17 +19,19 @@ namespace Eloquent\Phony\Sequencer;
 class Sequencer implements SequencerInterface
 {
     /**
-     * Get the static instance of this sequencer.
+     * Get a sequencer for a named sequence.
      *
-     * @return SequencerInterface The static sequencer.
+     * @param string $name The sequence name.
+     *
+     * @return SequencerInterface The sequencer.
      */
-    public static function instance()
+    public static function sequence($name)
     {
-        if (null === self::$instance) {
-            self::$instance = new self();
+        if (!isset(self::$instances[$name])) {
+            self::$instances[$name] = new self();
         }
 
-        return self::$instance;
+        return self::$instances[$name];
     }
 
     /**
@@ -70,6 +72,6 @@ class Sequencer implements SequencerInterface
         return ++$this->current;
     }
 
-    private static $instance;
+    private static $instances = array();
     private $current = -1;
 }

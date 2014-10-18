@@ -17,6 +17,7 @@ use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\Stub;
@@ -30,10 +31,10 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callFactory = new TestCallFactory();
-        $this->spyFactory = new SpyFactory(null, $this->callFactory);
+        $this->spyFactory = new SpyFactory(new Sequencer(), $this->callFactory);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->stubFactory = new StubFactory(null, $this->matcherFactory, $this->matcherVerifier);
+        $this->stubFactory = new StubFactory(new Sequencer(), $this->matcherFactory, $this->matcherVerifier);
         $this->callVerifierFactory = new CallVerifierFactory();
         $this->assertionRecorder = new AssertionRecorder();
         $this->assertionRenderer = new AssertionRenderer();

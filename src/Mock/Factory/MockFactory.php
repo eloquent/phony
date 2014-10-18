@@ -97,14 +97,15 @@ class MockFactory implements MockFactoryInterface
      */
     public function createMockClass(MockBuilderInterface $builder)
     {
-        $builder->finalize();
-
+        $isNew = !$builder->isBuilt();
         $className = $builder->className();
-        $isNew = !class_exists($className, false);
 
         if ($isNew) {
-            $source = $this->generator->generate($builder);
+            if (class_exists($className, false)) {
+                throw new ClassExistsException($className);
+            }
 
+            $source = $this->generator->generate($builder);
             @eval($source);
 
             if (!class_exists($className, false)) {
@@ -117,10 +118,6 @@ class MockFactory implements MockFactoryInterface
         }
 
         $class = new ReflectionClass($className);
-
-        if (!$class->implementsInterface('Eloquent\Phony\Mock\MockInterface')) {
-            throw new ClassExistsException($className);
-        }
 
         if ($isNew) {
             $property = $class->getProperty('_staticStubs');
@@ -150,7 +147,7 @@ class MockFactory implements MockFactoryInterface
         MockBuilderInterface $builder,
         array $arguments = null
     ) {
-        $class = $this->createMockClass($builder);
+        $class = $builder->build();
         $mock = $class->newInstanceArgs();
 
         $property = $class->getProperty('_stubs');

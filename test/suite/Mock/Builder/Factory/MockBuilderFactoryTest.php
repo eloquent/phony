@@ -36,7 +36,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MockBuilderFactory();
 
-        $this->assertEquals($this->idSequencer, $this->subject->idSequencer());
+        $this->assertSame(Sequencer::sequence('mock-builder-id'), $this->subject->idSequencer());
         $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
     }
 

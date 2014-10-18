@@ -46,11 +46,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'const constantA' => 'constantValueA',
             'const constantB' => 'constantValueB',
         );
-        $this->className = __NAMESPACE__ . '\PhonyMockMockBuilderTest';
-        $this->id = 111;
         $this->factory = new MockFactory();
-        $this->subject =
-            new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id, $this->factory);
+        $this->subject = new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory);
 
         $this->types = $this->inputTypes;
         $this->reflectors = array();
@@ -63,8 +60,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->types, $this->subject->types());
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
-        $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertNull($this->subject->id());
         $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame('Eloquent\Phony\Test\TestClassB', $this->subject->parentClassName());
         $this->assertSame(
@@ -89,14 +85,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             array('constantA' => 'constantValueA', 'constantB' => 'constantValueB'),
             $this->subject->constants()
         );
-        $this->assertNull($this->subject->methodDefinitions());
-    }
-
-    public function testConstructorWithoutClassName()
-    {
-        $this->subject = new MockBuilder(null, null, null, $this->id);
-
-        $this->assertSame('PhonyMock_111', $this->subject->className());
+        $this->assertFalse($this->subject->isFinalized());
+        $this->assertFalse($this->subject->isBuilt());
     }
 
     public function testConstructorWithDuplicateTypes()
@@ -148,12 +138,12 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         foreach ($this->types as $type) {
             $this->reflectors[$type] = new ReflectionClass($type);
         }
-        $this->subject = new MockBuilder($this->inputTypes, $this->definition, $this->className, $this->id);
+        $this->subject = new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory);
 
         $this->assertSame($this->types, $this->subject->types());
         $this->assertEquals($this->reflectors, $this->subject->reflectors());
-        $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertNull($this->subject->id());
+        $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame('Eloquent\Phony\Test\TestClassB', $this->subject->parentClassName());
         $this->assertSame(
             array('Eloquent\Phony\Test\TestInterfaceA', 'Iterator', 'Countable'),
@@ -180,7 +170,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             array('constantA' => 'constantValueA', 'constantB' => 'constantValueB'),
             $this->subject->constants()
         );
-        $this->assertNull($this->subject->methodDefinitions());
+        $this->assertFalse($this->subject->isFinalized());
+        $this->assertFalse($this->subject->isBuilt());
     }
 
     public function testConstructorDefaults()
@@ -200,6 +191,22 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->properties());
         $this->assertSame(array(), $this->subject->staticProperties());
         $this->assertSame(array(), $this->subject->constants());
+        $this->assertFalse($this->subject->isFinalized());
+        $this->assertFalse($this->subject->isBuilt());
+    }
+
+    public function testConstructorWithClassName()
+    {
+        $this->subject = new MockBuilder($this->inputTypes, $this->definition, 'ClassName', null, $this->factory);
+
+        $this->assertSame('ClassName', $this->subject->className());
+    }
+
+    public function testConstructorWithId()
+    {
+        $this->subject = new MockBuilder($this->inputTypes, $this->definition, null, 111, $this->factory);
+
+        $this->assertSame('PhonyMock_TestClassB_111', $this->subject->className());
     }
 
     public function testConstructorFailureInvalidClassName()
@@ -424,7 +431,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->named($this->className));
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->subject, $this->subject->named());
-        $this->assertSame('PhonyMock_TestClassB_111', $this->subject->className());
+        $this->assertRegExp('/^PhonyMock_TestClassB_[[:xdigit:]]{6}$/', $this->subject->className());
     }
 
     public function testNamedFailureInvalid()
@@ -479,6 +486,15 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testFinalize()
     {
+        $this->assertFalse($this->subject->isFinalized());
+        $this->assertSame($this->subject, $this->subject->finalize());
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertSame($this->subject, $this->subject->finalize());
+        $this->assertTrue($this->subject->isFinalized());
+    }
+
+    public function testMethodDefinitions()
+    {
         $expected = new MethodDefinitionCollection(
             array(
                 'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count')),
@@ -530,31 +546,29 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $this->assertFalse($this->subject->isFinalized());
-        $this->assertSame($this->subject, $this->subject->finalize());
-        $this->assertTrue($this->subject->isFinalized());
-        $this->assertSame($this->subject, $this->subject->finalize());
-        $this->assertTrue($this->subject->isFinalized());
         $this->assertEquals($expected, $this->subject->methodDefinitions());
+        $this->assertTrue($this->subject->isFinalized());
     }
 
     public function testBuild()
     {
         $actual = $this->subject->build();
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('ReflectionClass', $actual);
         $this->assertTrue($actual->implementsInterface('Eloquent\Phony\Mock\MockInterface'));
         $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassB'));
-        $this->assertSame(__NAMESPACE__ . '\PhonyMockMockBuilderTest', $actual->getName());
     }
 
     public function testGet()
     {
         $actual = $this->subject->get();
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertInstanceOf(__NAMESPACE__ . '\PhonyMockMockBuilderTest', $actual);
         $this->assertSame($actual, $this->subject->get());
     }
 
@@ -562,9 +576,10 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $first = $this->subject->create('a', 'b');
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertInstanceOf(__NAMESPACE__ . '\PhonyMockMockBuilderTest', $first);
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
@@ -579,9 +594,10 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $first = $this->subject->createWith(array('a', 'b'));
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertInstanceOf(__NAMESPACE__ . '\PhonyMockMockBuilderTest', $first);
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
@@ -603,9 +619,10 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $actual = $this->subject->full();
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertInstanceOf(__NAMESPACE__ . '\PhonyMockMockBuilderTest', $actual);
         $this->assertNull($actual->testClassAMethodA());
         $this->assertNull($actual->testClassAMethodB('a', 'b'));
         $this->assertSame($actual, $this->subject->get());
@@ -614,10 +631,13 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testStaticStub()
     {
         $actual = $this->subject->staticStub('testClassAStaticMethodA')->with('a', 'b')->returns('x');
+        $class = $this->subject->className();
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame('x', PhonyMockMockBuilderTest::testClassAStaticMethodA('a', 'b'));
-        $this->assertSame('cd', PhonyMockMockBuilderTest::testClassAStaticMethodA('c', 'd'));
+        $this->assertSame('x', $class::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame('cd', $class::testClassAStaticMethodA('c', 'd'));
     }
 
     public function testStaticStubFailureUndefined()
@@ -630,6 +650,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $actual = $this->subject->stub('testClassAMethodA')->with('a', 'b')->returns('x');
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('x', $this->subject->get()->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $this->subject->get()->testClassAMethodA('c', 'd'));
@@ -645,6 +667,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $actual = $this->subject->testClassAMethodA('a', 'b')->returns('x');
 
+        $this->assertTrue($this->subject->isFinalized());
+        $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('x', $this->subject->get()->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $this->subject->get()->testClassAMethodA('c', 'd'));

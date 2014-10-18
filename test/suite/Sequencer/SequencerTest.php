@@ -48,16 +48,19 @@ class SequencerTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, $this->subject->next());
     }
 
-    public function testInstance()
+    public function testSequence()
     {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
+        $reflector = new ReflectionClass('Eloquent\Phony\Sequencer\Sequencer');
+        $property = $reflector->getProperty('instances');
         $property->setAccessible(true);
         $property->setValue(null, null);
-        $instance = $class::instance();
+        $instanceA = Sequencer::sequence('a');
+        $instanceB = Sequencer::sequence('b');
 
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
+        $this->assertInstanceOf('Eloquent\Phony\Sequencer\Sequencer', $instanceA);
+        $this->assertInstanceOf('Eloquent\Phony\Sequencer\Sequencer', $instanceB);
+        $this->assertSame($instanceA, Sequencer::sequence('a'));
+        $this->assertSame($instanceB, Sequencer::sequence('b'));
+        $this->assertNotSame($instanceA, $instanceB);
     }
 }

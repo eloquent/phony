@@ -165,13 +165,6 @@ interface MockBuilderInterface
     public function staticMethods();
 
     /**
-     * Get the method definitions.
-     *
-     * @return MethodDefinitionCollectionInterface|null The definitions, or null if the builder is not yet finalized.
-     */
-    public function methodDefinitions();
-
-    /**
      * Get the custom properties.
      *
      * @return array<string,mixed> The custom properties.
@@ -205,6 +198,22 @@ interface MockBuilderInterface
      * @return MockBuilderInterface This builder.
      */
     public function finalize();
+
+    /**
+     * Get the method definitions.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return MethodDefinitionCollectionInterface The method definitions.
+     */
+    public function methodDefinitions();
+
+    /**
+     * Returns true if the mock class has been built.
+     *
+     * @return boolean True if the mock class has been built.
+     */
+    public function isBuilt();
 
     /**
      * Generate and define the mock class.

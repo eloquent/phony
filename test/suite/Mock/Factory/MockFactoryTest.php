@@ -70,10 +70,11 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateMockClassFailureExists()
     {
-        $builder = new MockBuilder(null, null, __CLASS__);
+        $builderA = new MockBuilder();
+        $builderB = new MockBuilder(null, null, $builderA->build()->getName());
 
         $this->setExpectedException('Eloquent\Phony\Mock\Builder\Exception\ClassExistsException');
-        $this->subject->createMockClass($builder);
+        $this->subject->createMockClass($builderB);
     }
 
     public function testCreateMockClassFailureSyntax()

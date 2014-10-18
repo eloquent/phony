@@ -38,7 +38,7 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new SpyFactory();
 
-        $this->assertEquals($this->idSequencer, $this->subject->idSequencer());
+        $this->assertSame(Sequencer::sequence('spy-id'), $this->subject->idSequencer());
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
         $this->assertSame(TraversableSpyFactory::instance(), $this->subject->traversableSpyFactory());
     }

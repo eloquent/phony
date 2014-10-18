@@ -25,10 +25,10 @@ final class MockGenerationFailedException extends Exception implements
     /**
      * Construct a mock generation failed exception.
      *
-     * @param MockBuilderInterface $mockBuilder The mock builder.
-     * @param string               $source      The generated source code.
-     * @param array<string,mixed>|null  $error       The error details.
-     * @param Exception|null       $cause       The cause, if available.
+     * @param MockBuilderInterface     $mockBuilder The mock builder.
+     * @param string                   $source      The generated source code.
+     * @param array<string,mixed>|null $error       The error details.
+     * @param Exception|null           $cause       The cause, if available.
      */
     public function __construct(
         MockBuilderInterface $mockBuilder,
