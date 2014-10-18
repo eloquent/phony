@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
+use Eloquent\Phony\Mock\Proxy\MockProxy;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Test\TestMockGenerator;
@@ -179,5 +180,20 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
+    }
+
+    public function testDefaultStubAnswerCanBeOverridden()
+    {
+        $builder = new MockBuilder(
+            'Eloquent\Phony\Test\TestClassA',
+            array(),
+            __NAMESPACE__ . '\PhonyMockFactoryTestDefaultStubAnswerCanBeOverridden'
+        );
+
+        $mock = $this->subject->createMock($builder);
+        $proxy = new MockProxy($mock);
+        $proxy->testClassAMethodA()->returns(123);
+
+        $this->assertSame(123, $mock->testClassAMethodA());
     }
 }
