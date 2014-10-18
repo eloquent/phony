@@ -71,7 +71,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $spy = new Spy();
+        $spy = new Spy(null, null, null, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
         $actual = $this->subject->create($spy);
 
@@ -87,7 +87,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateDefaults()
     {
-        $spy = new Spy();
+        $spy = new Spy(null, null, null, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
         $actual = $this->subject->create();
 
@@ -122,7 +122,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateFromCallbackDefaults()
     {
-        $spy = new Spy();
+        $spy = new Spy(null, null, null, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
         $actual = $this->subject->createFromCallback();
 

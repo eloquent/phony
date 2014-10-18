@@ -48,7 +48,7 @@ class MockBuilder implements MockBuilderInterface
      * @param array<string|object>|string|object|null $types      The types to mock.
      * @param array|object|null                       $definition The definition.
      * @param string|null                             $className  The class name.
-     * @param integer|null                            $id         The identifier.
+     * @param string|null                             $id         The identifier.
      * @param MockFactoryInterface|null               $factory    The factory to use.
      *
      * @throws MockBuilderExceptionInterface If invalid input is supplied.
@@ -306,7 +306,7 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Get the identifier.
      *
-     * @return integer|null The identifier.
+     * @return string|null The identifier.
      */
     public function id()
     {

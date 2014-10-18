@@ -121,7 +121,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Get the identifier.
      *
-     * @return integer|null The identifier.
+     * @return string|null The identifier.
      */
     public function id()
     {

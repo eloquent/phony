@@ -146,7 +146,7 @@ class StubFactory implements StubFactoryInterface
         return new Stub(
             $callback,
             $self,
-            $this->idSequencer->next(),
+            strval($this->idSequencer->next()),
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,

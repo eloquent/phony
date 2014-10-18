@@ -79,8 +79,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $stub = new Stub();
-        $spy = new Spy();
+        $stub = new Stub(null, null, '0');
+        $spy = new Spy(null, null, null, '0');
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -106,8 +106,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateDefaults()
     {
-        $stub = new Stub(null, null, null, $this->matcherFactory, $this->matcherVerifier);
-        $spy = new Spy($stub, null, null, null, $this->callFactory);
+        $stub = new Stub(null, null, '0', $this->matcherFactory, $this->matcherVerifier);
+        $spy = new Spy($stub, null, null, '0', $this->callFactory);
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -133,8 +133,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     {
         $callback = function () {};
         $thisValue = (object) array();
-        $stub = new Stub($callback, $thisValue, null, $this->matcherFactory, $this->matcherVerifier);
-        $spy = new Spy($stub, true, false, null, $this->callFactory);
+        $stub = new Stub($callback, $thisValue, '0', $this->matcherFactory, $this->matcherVerifier);
+        $spy = new Spy($stub, true, false, '0', $this->callFactory);
         $expected = new StubVerifier(
             $stub,
             $spy,

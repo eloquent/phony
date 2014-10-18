@@ -98,7 +98,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
             $types,
             $definition,
             $className,
-            $this->idSequencer->next(),
+            strval($this->idSequencer->next()),
             $this->mockFactory
         );
     }

@@ -104,7 +104,7 @@ interface MockBuilderInterface
     /**
      * Get the identifier.
      *
-     * @return integer|null The identifier.
+     * @return string|null The identifier.
      */
     public function id();
 

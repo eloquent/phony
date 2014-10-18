@@ -114,7 +114,7 @@ class SpyFactory implements SpyFactoryInterface
             $callback,
             $useTraversableSpies,
             $useGeneratorSpies,
-            $this->idSequencer->next(),
+            strval($this->idSequencer->next()),
             $this->callFactory,
             $this->traversableSpyFactory
         );

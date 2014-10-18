@@ -23,7 +23,7 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      * Construct a new wrapped invocable.
      *
      * @param callable|null $callback The callback.
-     * @param integer|null  $id       The identifier.
+     * @param string|null   $id       The identifier.
      */
     public function __construct($callback = null, $id = null)
     {
@@ -61,7 +61,7 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
     /**
      * Get the identifier.
      *
-     * @return integer|null The identifier.
+     * @return string|null The identifier.
      */
     public function id()
     {
