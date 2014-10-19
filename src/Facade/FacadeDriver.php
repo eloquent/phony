@@ -25,7 +25,8 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 
 /**
- * The interface implemented by facade drivers.
+ * A service container that supplies all of the underlying services required by
+ * the facades.
  *
  * @internal
  */

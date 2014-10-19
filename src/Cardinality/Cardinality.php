@@ -16,7 +16,9 @@ use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
 use Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException;
 
 /**
- * The interface implemented by cardinalities.
+ * Represents the cardinality of a verification.
+ *
+ * @internal
  */
 class Cardinality implements CardinalityInterface
 {

@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * No argument is defined for the requested index.
- *
- * @internal
  */
 final class UndefinedArgumentException extends Exception
 {

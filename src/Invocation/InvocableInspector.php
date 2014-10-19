@@ -19,7 +19,7 @@ use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 /**
- * The interface implemented by invocable inspectors.
+ * Utilities for inspecting invocables.
  *
  * @internal
  */

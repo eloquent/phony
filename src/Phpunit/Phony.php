@@ -23,6 +23,8 @@ class Phony extends AbstractFacade
     /**
      * Get the facade driver.
      *
+     * @internal
+     *
      * @return FacadeDriverInterface The facade driver.
      */
     protected static function driver()

@@ -22,7 +22,7 @@ final class UndefinedAnswerException extends Exception
 {
     /**
      * Construct a new undefined answer exception.
-     *\
+     *
      * @param Exception|null $cause The cause, if available.
      */
     public function __construct(Exception $cause = null)
