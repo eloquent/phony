@@ -264,18 +264,49 @@ EOD;
             if ($method->isStatic()) {
                 $scope = 'static ';
                 $body = <<<'EOD'
+        $arguments = array(%s);
+        for ($i = %d; $i < func_num_args(); $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($arguments);
+
         if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]
-                ->invokeWith(func_get_args());
+            return self::$_staticStubs[__FUNCTION__]->invokeWith($arguments);
         }
 EOD;
             } else {
                 $scope = '';
                 $body = <<<'EOD'
+        $arguments = array(%s);
+        for ($i = %d; $i < func_num_args(); $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($arguments);
+
         if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
+            return $this->_stubs[__FUNCTION__]->invokeWith($arguments);
         }
 EOD;
+            }
+
+            $parameters = $method->method()->getParameters();
+
+            if ($method->isCustom()) {
+                array_shift($parameters);
+            }
+
+            $argumentPacking = array();
+
+            foreach ($parameters as $index => $parameter) {
+                if ($parameter->isPassedByReference()) {
+                    $reference = '&';
+                } else {
+                    $reference = '';
+                }
+
+                $argumentPacking[] = sprintf('%s$a%d', $reference, $index);
             }
 
             $source .= sprintf(
@@ -285,7 +316,11 @@ EOD;
                 $scope,
                 $method->name(),
                 $this->renderParameters($method->method(), $method->isCustom()),
-                $body
+                sprintf(
+                    $body,
+                    implode(', ', $argumentPacking),
+                    count($parameters)
+                )
             );
         }
 

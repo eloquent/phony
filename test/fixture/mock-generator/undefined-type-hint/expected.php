@@ -25,8 +25,15 @@ implements \Eloquent\Phony\Mock\MockInterface
         \Non\Existent $a0,
         \Non\Existent $a1 = null
     ) {
+        $arguments = array($a0, $a1);
+        for ($i = 2; $i < func_num_args(); $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($arguments);
+
         if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
+            return $this->_stubs[__FUNCTION__]->invokeWith($arguments);
         }
     }
 

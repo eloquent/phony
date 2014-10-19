@@ -46,10 +46,36 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertNull($mock->testClassAMethodA('c', 'd'));
     }
 
+    public function testMockCalls()
+    {
+        $mock = x\mock('Eloquent\Phony\Test\TestClassB')->create('A', 'B');
+        $e = 'e';
+        $n = 'n';
+        $q = 'q';
+        $r = 'r';
+
+        $this->assertSame(array('A', 'B'), $mock->constructorArguments);
+        $this->assertSame('ab', $mock::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame('cde', $mock::testClassAStaticMethodB('c', 'd', $e));
+        x\onStatic($mock)->testClassAStaticMethodB->calledWith('c', 'd', 'e');
+        $this->assertSame('third', $e);
+        $this->assertSame('fg', $mock::testClassBStaticMethodA('f', 'g'));
+        $this->assertSame('hi', $mock::testClassBStaticMethodB('h', 'i'));
+        $this->assertSame('jk', $mock->testClassAMethodA('j', 'k'));
+        $this->assertSame('lmn', $mock->testClassAMethodB('l', 'm', $n));
+        x\on($mock)->testClassAMethodB->calledWith('l', 'm', 'n');
+        $this->assertSame('third', $n);
+        $this->assertSame('op', $mock->testClassBMethodA('o', 'p'));
+        $this->assertSame('qr', $mock->testClassBMethodB($q, $r));
+        x\on($mock)->testClassBMethodB->calledWith('q', 'r');
+        $this->assertSame('first', $q);
+        $this->assertSame('second', $r);
+    }
+
     public function testMockMocking()
     {
-        $mock = Phony::mock()->get();
-        $mockMock = Phony::mock($mock)->get();
+        $mock = x\mock()->get();
+        $mockMock = x\mock($mock)->get();
 
         $this->assertInstanceOf(get_class($mock), $mockMock);
         $this->assertNotInstanceOf(get_class($mockMock), $mock);

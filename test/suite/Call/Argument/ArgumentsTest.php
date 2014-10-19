@@ -37,6 +37,20 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->all());
     }
 
+    public function testCopy()
+    {
+        $copy = $this->subject->copy();
+
+        $this->assertNotSame($this->subject, $copy);
+        $this->assertEquals($this->subject, $copy);
+        $this->assertSame($this->arguments, $copy->all());
+
+        $copy->set('value');
+
+        $this->assertSame('a', $this->subject->get());
+        $this->assertSame('a', $this->arguments[0]);
+    }
+
     public function testSet()
     {
         $this->subject->set('c');

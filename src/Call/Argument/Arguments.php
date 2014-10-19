@@ -35,7 +35,7 @@ class Arguments implements ArgumentsInterface
             return $arguments;
         }
 
-        return new Arguments($arguments);
+        return new static($arguments);
     }
 
     /**
@@ -51,6 +51,22 @@ class Arguments implements ArgumentsInterface
 
         $this->arguments = $arguments;
         $this->count = count($arguments);
+    }
+
+    /**
+     * Copy these arguments, breaking any references.
+     *
+     * @return ArgumentsInterface The copied arguments.
+     */
+    public function copy()
+    {
+        $arguments = array();
+
+        foreach ($this->arguments as $argument) {
+            $arguments[] = $argument;
+        }
+
+        return new static($arguments);
     }
 
     /**

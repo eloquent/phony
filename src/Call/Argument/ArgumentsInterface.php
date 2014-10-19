@@ -21,6 +21,13 @@ use IteratorAggregate;
 interface ArgumentsInterface extends Countable, IteratorAggregate
 {
     /**
+     * Copy these arguments, breaking any references.
+     *
+     * @return ArgumentsInterface The copied arguments.
+     */
+    public function copy();
+
+    /**
      * Get the arguments.
      *
      * This method supports reference parameters.

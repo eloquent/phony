@@ -23,8 +23,15 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function methodA(
         $a0 = 256
     ) {
+        $arguments = array($a0);
+        for ($i = 1; $i < func_num_args(); $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($arguments);
+
         if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(func_get_args());
+            return $this->_stubs[__FUNCTION__]->invokeWith($arguments);
         }
     }
 
