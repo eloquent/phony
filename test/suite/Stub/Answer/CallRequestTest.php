@@ -76,14 +76,50 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $incoming,
         $expected
     ) {
-        $this->subject = new CallRequest(
-            $this->callback,
-            $arguments,
-            $prefixSelf,
-            $suffixArray,
-            $suffix
-        );
+        $this->subject = new CallRequest($this->callback, $arguments, $prefixSelf, $suffixArray, $suffix);
 
         $this->assertSame($expected, $this->subject->finalArguments($self, $incoming));
+    }
+
+    public function testFinalArgumentsWithReferenceParameters()
+    {
+        $a = null;
+        $b = null;
+        $c = null;
+        $d = null;
+        $arguments = array(&$a, &$b);
+        $incoming = array(&$c, &$d);
+        $this->subject = new CallRequest($this->callback, $arguments, false, false, true);
+        $finalArguments = $this->subject->finalArguments(null, $incoming);
+        $finalArguments[0] = 'a';
+        $finalArguments[1] = 'b';
+        $finalArguments[2] = 'c';
+        $finalArguments[3] = 'd';
+
+        $this->assertSame('a', $a);
+        $this->assertSame('b', $b);
+        $this->assertSame('c', $c);
+        $this->assertSame('d', $d);
+    }
+
+    public function testFinalArgumentsWithReferenceParametersArray()
+    {
+        $a = null;
+        $b = null;
+        $c = null;
+        $d = null;
+        $arguments = array(&$a, &$b);
+        $incoming = array(&$c, &$d);
+        $this->subject = new CallRequest($this->callback, $arguments, false, true, false);
+        $finalArguments = $this->subject->finalArguments(null, $incoming);
+        $finalArguments[0] = 'a';
+        $finalArguments[1] = 'b';
+        $finalArguments[2][0] = 'c';
+        $finalArguments[2][1] = 'd';
+
+        $this->assertSame('a', $a);
+        $this->assertSame('b', $b);
+        $this->assertSame('c', $c);
+        $this->assertSame('d', $d);
     }
 }
