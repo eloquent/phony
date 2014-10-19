@@ -100,6 +100,9 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
+        $this->assertSame(array('a', 'b'), $arguments);
+        $this->assertSame(array('c', 'd'), $incoming);
+        $this->assertSame(array('a', 'b', 'c', 'd'), $finalArguments);
     }
 
     public function testFinalArgumentsWithReferenceParametersArray()
@@ -121,5 +124,8 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
+        $this->assertSame(array('a', 'b'), $arguments);
+        $this->assertSame(array('c', 'd'), $incoming);
+        $this->assertSame(array('a', 'b', array('c', 'd')), $finalArguments);
     }
 }

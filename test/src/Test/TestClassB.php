@@ -18,7 +18,11 @@ class TestClassB extends TestClassA implements TestInterfaceB
         $second,
         &$third = null
     ) {
-        return implode(func_get_args());
+        $result = implode(func_get_args());
+
+        $third = 'third';
+
+        return $result;
     }
 
     public function __construct()
@@ -28,7 +32,11 @@ class TestClassB extends TestClassA implements TestInterfaceB
 
     public function testClassAMethodB($first, $second, &$third = null)
     {
-        return implode(func_get_args());
+        $result = implode(func_get_args());
+
+        $third = 'third';
+
+        return $result;
     }
 
     public static function testClassBStaticMethodA()
