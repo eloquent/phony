@@ -15,8 +15,7 @@ use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Mock\Proxy\MockProxy;
-use Eloquent\Phony\Mock\Proxy\StaticMockProxy;
+use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 
@@ -24,6 +23,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->mockProxyFactory = new MockProxyFactory();
+
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);
     }
@@ -50,7 +51,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $mock = Phony::mock()->create();
         $actual = Phony::on($mock);
-        $expected = new MockProxy($mock);
+        $expected = $this->mockProxyFactory->create($mock);
 
         $this->assertEquals($expected, $actual);
     }
@@ -59,7 +60,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $mock = mock()->create();
         $actual = on($mock);
-        $expected = new MockProxy($mock);
+        $expected = $this->mockProxyFactory->create($mock);
 
         $this->assertEquals($expected, $actual);
     }
@@ -68,7 +69,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $class = Phony::mock()->build();
         $actual = Phony::onStatic($class);
-        $expected = new StaticMockProxy($class);
+        $expected = $this->mockProxyFactory->createStatic($class);
 
         $this->assertEquals($expected, $actual);
     }
@@ -77,7 +78,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $class = mock()->build();
         $actual = onStatic($class);
-        $expected = new StaticMockProxy($class);
+        $expected = $this->mockProxyFactory->createStatic($class);
 
         $this->assertEquals($expected, $actual);
     }

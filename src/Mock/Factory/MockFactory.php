@@ -22,9 +22,11 @@ use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
+use Eloquent\Phony\Spy\Factory\SpyFactoryInterface;
+use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Stub\Factory\StubFactory;
+use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use ReflectionClass;
 
 /**
@@ -51,14 +53,16 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
-     * @param SequencerInterface|null           $idSequencer         The identifier sequencer to use.
-     * @param MockGeneratorInterface|null       $generator           The generator to use.
-     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param SequencerInterface|null     $idSequencer The identifier sequencer to use.
+     * @param MockGeneratorInterface|null $generator   The generator to use.
+     * @param StubFactoryInterface|null   $stubFactory The stub factory to use.
+     * @param SpyFactoryInterface|null    $spyFactory  The spy factory to use.
      */
     public function __construct(
         SequencerInterface $idSequencer = null,
         MockGeneratorInterface $generator = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null
+        StubFactoryInterface $stubFactory = null,
+        SpyFactoryInterface $spyFactory = null
     ) {
         if (null === $idSequencer) {
             $idSequencer = Sequencer::sequence('mock-id');
@@ -66,13 +70,17 @@ class MockFactory implements MockFactoryInterface
         if (null === $generator) {
             $generator = MockGenerator::instance();
         }
-        if (null === $stubVerifierFactory) {
-            $stubVerifierFactory = StubVerifierFactory::instance();
+        if (null === $stubFactory) {
+            $stubFactory = StubFactory::instance();
+        }
+        if (null === $spyFactory) {
+            $spyFactory = SpyFactory::instance();
         }
 
         $this->idSequencer = $idSequencer;
         $this->generator = $generator;
-        $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->stubFactory = $stubFactory;
+        $this->spyFactory = $spyFactory;
     }
 
     /**
@@ -96,13 +104,23 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Get the stub verifier factory.
+     * Get the stub factory.
      *
-     * @return StubVerifierFactoryInterface The stub verifier factory.
+     * @return StubFactoryInterface The stub factory.
      */
-    public function stubVerifierFactory()
+    public function stubFactory()
     {
-        return $this->stubVerifierFactory;
+        return $this->stubFactory;
+    }
+
+    /**
+     * Get the spy factory.
+     *
+     * @return SpyFactoryInterface The spy factory.
+     */
+    public function spyFactory()
+    {
+        return $this->spyFactory;
     }
 
     /**
@@ -209,7 +227,7 @@ class MockFactory implements MockFactoryInterface
      * @param array<string,MethodDefinitionInterface> The methods.
      * @param MockInterface|null $mock  The mock, or null for static stubs.
      *
-     * @return array<string,StubVerifierInterface> The stubs.
+     * @return array<string,SpyInterface> The stubs.
      */
     protected function createStubs(
         ReflectionClass $class,
@@ -225,11 +243,8 @@ class MockFactory implements MockFactoryInterface
         $callParentInstance->setAccessible(true);
 
         foreach ($methods as $method) {
-            $name = $method->name();
-
             if ($method->isCustom()) {
-                $stubs[$name] = $this->stubVerifierFactory
-                    ->createFromCallback($method->callback(), $mock);
+                $stub = $this->stubFactory->create($method->callback(), $mock);
             } else {
                 if ($method->isStatic()) {
                     $callParentMethod = $callParentStatic;
@@ -237,7 +252,7 @@ class MockFactory implements MockFactoryInterface
                     $callParentMethod = $callParentInstance;
                 }
 
-                $stubs[$name] = $this->stubVerifierFactory->createFromCallback(
+                $stub = $this->stubFactory->create(
                     new WrappedMethod(
                         $callParentMethod,
                         $method->method(),
@@ -246,6 +261,8 @@ class MockFactory implements MockFactoryInterface
                     $mock
                 );
             }
+
+            $stubs[$method->name()] = $this->spyFactory->create($stub);
         }
 
         return $stubs;
@@ -254,5 +271,6 @@ class MockFactory implements MockFactoryInterface
     private static $instance;
     private $idSequencer;
     private $generator;
-    private $stubVerifierFactory;
+    private $stubFactory;
+    private $spyFactory;
 }

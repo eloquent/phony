@@ -663,4 +663,15 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertNull($second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
     }
+
+    public function testMockedConstructorWithReferenceParameters()
+    {
+        $first = null;
+        $second = null;
+        $builder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $builder->createWith(array(&$first, &$second));
+
+        $this->assertSame('first', $first);
+        $this->assertSame('second', $second);
+    }
 }

@@ -64,7 +64,7 @@ abstract class AbstractMockProxy implements MockProxyInterface
     public function full()
     {
         foreach ($this->stubs as $stub) {
-            $stub->with()->returns();
+            $stub->callback()->with()->returns();
         }
 
         return $this;
@@ -105,7 +105,10 @@ abstract class AbstractMockProxy implements MockProxyInterface
             throw new UndefinedMethodException(get_called_class(), $name, $e);
         }
 
-        return call_user_func_array(array($stub, 'with'), $arguments);
+        return call_user_func_array(
+            array($stub->callback(), 'with'),
+            $arguments
+        );
     }
 
     /**

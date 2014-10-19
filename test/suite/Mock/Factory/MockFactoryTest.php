@@ -13,9 +13,10 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Proxy\MockProxy;
+use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Test\TestMockGenerator;
 use Mockery\Generator\Generator;
 use PHPUnit_Framework_TestCase;
@@ -27,15 +28,19 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->idSequencer = new Sequencer();
         $this->generator = new MockGenerator();
-        $this->stubVerifierFactory = new StubVerifierFactory();
-        $this->subject = new MockFactory($this->idSequencer, $this->generator, $this->stubVerifierFactory);
+        $this->stubFactory = new StubFactory();
+        $this->spyFactory = new SpyFactory();
+        $this->subject = new MockFactory($this->idSequencer, $this->generator, $this->stubFactory, $this->spyFactory);
+
+        $this->proxyFactory = new MockProxyFactory();
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->idSequencer, $this->subject->idSequencer());
         $this->assertSame($this->generator, $this->subject->generator());
-        $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
+        $this->assertSame($this->stubFactory, $this->subject->stubFactory());
+        $this->assertSame($this->spyFactory, $this->subject->spyFactory());
     }
 
     public function testConstructorDefaults()
@@ -44,7 +49,8 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(Sequencer::sequence('mock-id'), $this->subject->idSequencer());
         $this->assertSame(MockGenerator::instance(), $this->subject->generator());
-        $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
+        $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
+        $this->assertSame(SpyFactory::instance(), $this->subject->spyFactory());
     }
 
     public function testCreateMockClass()
@@ -191,7 +197,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         );
 
         $mock = $this->subject->createMock($builder);
-        $proxy = new MockProxy($mock);
+        $proxy = $this->proxyFactory->create($mock);
         $proxy->testClassAMethodA()->returns(123);
 
         $this->assertSame(123, $mock->testClassAMethodA());

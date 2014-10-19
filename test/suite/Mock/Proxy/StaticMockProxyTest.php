@@ -33,41 +33,6 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stubs, $this->subject->stubs());
     }
 
-    public function testConstructorWithReflector()
-    {
-        $this->subject = new StaticMockProxy($this->class, $this->stubs);
-
-        $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->stubs, $this->subject->stubs());
-    }
-
-    public function testConstructorWithObject()
-    {
-        $this->subject = new StaticMockProxy($this->mockBuilder->get(), $this->stubs);
-
-        $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->stubs, $this->subject->stubs());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new StaticMockProxy($this->className);
-
-        $this->assertSame($this->stubs, $this->subject->stubs());
-    }
-
-    public function testConstructorFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        new StaticMockProxy('Nonexistent');
-    }
-
-    public function testConstructorFailureNonMockClass()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        new StaticMockProxy(__CLASS__);
-    }
-
     public function testFull()
     {
         $className = $this->className;
@@ -84,7 +49,7 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->stub('testClassAStaticMethodA'));
         $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA);
         $this->assertSame('ab', $className::testClassAStaticMethodA('a', 'b'));
-        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA('a')->returns('x'));
+        $this->assertSame($this->stubs['testClassAStaticMethodA']->callback(), $this->subject->testClassAStaticMethodA('a')->returns('x'));
         $this->assertSame('x', $className::testClassAStaticMethodA('a', 'b'));
     }
 
