@@ -587,28 +587,32 @@ implements \Eloquent\Phony\Mock\MockInterface
     /**
      * Call a static parent method.
      *
-     * @param string $name The method name.
-     * @param array<integer,mixed> The arguments.
+     * @param string                                           $name      The method name.
+     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
      */
-    private static function _callParentStatic($name, array $arguments)
-    {
+    private static function _callParentStatic(
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
         return call_user_func_array(
             array(__CLASS__, 'parent::' . $name),
-            $arguments
+            $arguments->all()
         );
     }
 
     /**
      * Call a parent method.
      *
-     * @param string $name The method name.
-     * @param array<integer,mixed> The arguments.
+     * @param string                                           $name      The method name.
+     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
      */
-    private function _callParent($name, array $arguments)
-    {
+    private function _callParent(
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
         return call_user_func_array(
             array($this, 'parent::' . $name),
-            $arguments
+            $arguments->all()
         );
     }
 

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Assertion\Renderer;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
@@ -130,11 +131,11 @@ interface AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param array<integer,mixed> $arguments The arguments.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
-    public function renderArguments(array $arguments);
+    public function renderArguments($arguments);
 
     /**
      * Render an exception.

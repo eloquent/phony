@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Stub\Answer;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+
 /**
  * Represents a call request.
  *
@@ -21,36 +24,33 @@ class CallRequest implements CallRequestInterface
     /**
      * Construct a call request.
      *
-     * @param callable                  $callback             The callback.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param callable                                     $callback              The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments             The arguments.
+     * @param boolean|null                                 $prefixSelf            True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsObject True if arguments object should be appended.
+     * @param boolean|null                                 $suffixArguments       True if arguments should be appended.
      */
     public function __construct(
         $callback,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
-        $suffixArgumentsArray = null,
+        $suffixArgumentsObject = null,
         $suffixArguments = null
     ) {
-        if (null === $arguments) {
-            $arguments = array();
-        }
         if (null === $prefixSelf) {
             $prefixSelf = false;
         }
-        if (null === $suffixArgumentsArray) {
-            $suffixArgumentsArray = false;
+        if (null === $suffixArgumentsObject) {
+            $suffixArgumentsObject = false;
         }
         if (null === $suffixArguments) {
             $suffixArguments = true;
         }
 
         $this->callback = $callback;
-        $this->arguments = $arguments;
+        $this->arguments = Arguments::adapt($arguments);
         $this->prefixSelf = $prefixSelf;
-        $this->suffixArgumentsArray = $suffixArgumentsArray;
+        $this->suffixArgumentsObject = $suffixArgumentsObject;
         $this->suffixArguments = $suffixArguments;
     }
 
@@ -67,33 +67,34 @@ class CallRequest implements CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object                    $self      The self value.
-     * @param array<integer,mixed>|null $arguments The incoming arguments.
+     * @param object                                       $self      The self value.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The incoming arguments.
      *
-     * @return array<integer,mixed> The final arguments.
+     * @return ArgumentsInterface The final arguments.
      */
-    public function finalArguments($self, array $arguments = null)
+    public function finalArguments($self, $arguments = null)
     {
-        $finalArguments = $this->arguments;
+        $arguments = Arguments::adapt($arguments);
+        $finalArguments = $this->arguments->all();
 
         if ($this->prefixSelf) {
             array_unshift($finalArguments, $self);
         }
-        if ($this->suffixArgumentsArray) {
+        if ($this->suffixArgumentsObject) {
             $finalArguments[] = $arguments;
         }
 
         if ($this->suffixArguments) {
-            $finalArguments = array_merge($finalArguments, $arguments);
+            $finalArguments = array_merge($finalArguments, $arguments->all());
         }
 
-        return $finalArguments;
+        return new Arguments($finalArguments);
     }
 
     /**
      * Get the hard-coded arguments.
      *
-     * @return array<integer,mixed> The hard-coded arguments.
+     * @return ArgumentsInterface The hard-coded arguments.
      */
     public function arguments()
     {
@@ -112,13 +113,13 @@ class CallRequest implements CallRequestInterface
 
     /**
      * Returns true if the incoming arguments should be appended to the final
-     * arguments as an array.
+     * arguments as an object.
      *
-     * @return boolean True if arguments should be appended as an array.
+     * @return boolean True if arguments object should be appended.
      */
-    public function suffixArgumentsArray()
+    public function suffixArgumentsObject()
     {
-        return $this->suffixArgumentsArray;
+        return $this->suffixArgumentsObject;
     }
 
     /**
@@ -135,6 +136,6 @@ class CallRequest implements CallRequestInterface
     private $callback;
     private $arguments;
     private $prefixSelf;
-    private $suffixArgumentsArray;
+    private $suffixArgumentsObject;
     private $suffixArguments;
 }

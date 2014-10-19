@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Event\EventCollection;
 
 /**
@@ -35,7 +35,7 @@ class CallEventCollection extends EventCollection implements
                 $event instanceof CallInterface ||
                 $event instanceof CalledEventInterface
             ) {
-                return $event->arguments();
+                return $event->arguments()->all();
             }
         }
     }
@@ -55,7 +55,7 @@ class CallEventCollection extends EventCollection implements
                 $event instanceof CallInterface ||
                 $event instanceof CalledEventInterface
             ) {
-                return $event->argument($index);
+                return $event->arguments()->get($index);
             }
         }
 

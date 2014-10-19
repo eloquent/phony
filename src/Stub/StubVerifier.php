@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
@@ -185,22 +187,22 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                  $callback             The callback.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param callable                                     $callback             The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      */
     public function callsWith(
         $callback,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
         $this->stub->callsWith(
             $callback,
-            $arguments,
+            Arguments::adapt($arguments),
             $prefixSelf,
             $suffixArgumentsArray,
             $suffixArguments
@@ -239,24 +241,24 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null              $index                The argument index, or null to call the first argument.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param integer|null                                 $index                The argument index, or null to call the first argument.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function callsArgumentWith(
         $index = null,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
         $this->stub->callsArgumentWith(
             $index,
-            $arguments,
+            Arguments::adapt($arguments),
             $prefixSelf,
             $suffixArgumentsArray,
             $suffixArguments
@@ -299,24 +301,24 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable                  $callback             The callback.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param callable                                     $callback             The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function doesWith(
         $callback,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
         $this->stub->doesWith(
             $callback,
-            $arguments,
+            Arguments::adapt($arguments),
             $prefixSelf,
             $suffixArgumentsArray,
             $suffixArguments
@@ -328,21 +330,21 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function forwards(
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
         $this->stub->forwards(
-            $arguments,
+            Arguments::adapt($arguments),
             $prefixSelf,
             $suffixArgumentsArray,
             $suffixArguments

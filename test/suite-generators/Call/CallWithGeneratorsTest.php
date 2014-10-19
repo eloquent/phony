@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -25,7 +26,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
-        $this->arguments = array('a', 'b');
+        $this->arguments = new Arguments(array('a', 'b'));
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnValue = 'ab';
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);

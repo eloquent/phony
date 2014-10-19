@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Assertion\Renderer;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
@@ -441,12 +443,14 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param array<integer,mixed> $arguments The arguments.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
-    public function renderArguments(array $arguments)
+    public function renderArguments($arguments)
     {
+        $arguments = Arguments::adapt($arguments);
+
         if (count($arguments) < 1) {
             return '<none>';
         }

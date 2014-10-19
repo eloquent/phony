@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
@@ -89,23 +91,22 @@ class CallFactory implements CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null             $callback  The callback.
-     * @param array<integer,mixed>|null $arguments The arguments.
-     * @param SpyInterface|null         $spy       The spy to record the call to.
+     * @param callable|null                                $callback  The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     * @param SpyInterface|null                            $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
-        array $arguments = null,
+        $arguments = null,
         SpyInterface $spy = null
     ) {
         if (null === $callback) {
             $callback = function () {};
         }
-        if (null === $arguments) {
-            $arguments = array();
-        }
+
+        $arguments = Arguments::adapt($arguments);
 
         if ($spy) {
             $call = $this

@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Answer;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+
 /**
  * The interface implemented by call requests.
  */
@@ -26,17 +28,17 @@ interface CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object                    $self      The self value.
-     * @param array<integer,mixed>|null $arguments The incoming arguments.
+     * @param object                                       $self      The self value.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The incoming arguments.
      *
-     * @return array<integer,mixed> The final arguments.
+     * @return ArgumentsInterface The final arguments.
      */
-    public function finalArguments($self, array $arguments = null);
+    public function finalArguments($self, $arguments = null);
 
     /**
      * Get the hard-coded arguments.
      *
-     * @return array<integer,mixed> The hard-coded arguments.
+     * @return ArgumentsInterface The hard-coded arguments.
      */
     public function arguments();
 
@@ -49,11 +51,11 @@ interface CallRequestInterface
 
     /**
      * Returns true if the incoming arguments should be appended to the final
-     * arguments as an array.
+     * arguments as an object.
      *
-     * @return boolean True if arguments should be appended as an array.
+     * @return boolean True if arguments object should be appended.
      */
-    public function suffixArgumentsArray();
+    public function suffixArgumentsObject();
 
     /**
      * Returns true if the incoming arguments should be appended to the final

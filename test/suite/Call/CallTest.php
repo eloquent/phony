@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use ArrayIterator;
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -23,7 +24,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
-        $this->arguments = array('a', 'b');
+        $this->arguments = new Arguments(array('a', 'b'));
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnValue = 'ab';
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
@@ -180,19 +181,6 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->exception());
         $this->assertNull($this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
-    }
-
-    public function testArgument()
-    {
-        $this->assertSame('a', $this->subject->argument());
-        $this->assertSame('a', $this->subject->argument(0));
-        $this->assertSame('b', $this->subject->argument(1));
-    }
-
-    public function testArgumentFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument(111);
     }
 
     public function testIteration()

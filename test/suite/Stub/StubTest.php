@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -290,42 +291,42 @@ class StubTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertNull(call_user_func($this->subject, 'a', 'b'));
-        $this->assertSame(
+        $this->assertEquals(
             array(
-                array($this->self, 'A', 'B', array('a', 'b'), 'a', 'b'),
+                array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
             ),
             $this->callsA
         );
         $this->assertSame(array(), $this->callsB);
 
         $this->assertNull(call_user_func($this->subject, 'c', 'd'));
-        $this->assertSame(
+        $this->assertEquals(
             array(
-                array($this->self, 'A', 'B', array('a', 'b'), 'a', 'b'),
-                array($this->self, 'C', 'D', array('c', 'd'), 'c', 'd'),
+                array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
+                array($this->self, 'C', 'D', new Arguments(array('c', 'd')), 'c', 'd'),
             ),
             $this->callsA
         );
-        $this->assertSame(
+        $this->assertEquals(
             array(
-                array($this->self, 'E', 'F', array('c', 'd'), 'c', 'd'),
+                array($this->self, 'E', 'F', new Arguments(array('c', 'd')), 'c', 'd'),
             ),
             $this->callsB
         );
 
         $this->assertNull(call_user_func($this->subject, 'e', 'f'));
-        $this->assertSame(
+        $this->assertEquals(
             array(
-                array($this->self, 'A', 'B', array('a', 'b'), 'a', 'b'),
-                array($this->self, 'C', 'D', array('c', 'd'), 'c', 'd'),
-                array($this->self, 'C', 'D', array('e', 'f'), 'e', 'f'),
+                array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
+                array($this->self, 'C', 'D', new Arguments(array('c', 'd')), 'c', 'd'),
+                array($this->self, 'C', 'D', new Arguments(array('e', 'f')), 'e', 'f'),
             ),
             $this->callsA
         );
-        $this->assertSame(
+        $this->assertEquals(
             array(
-                array($this->self, 'E', 'F', array('c', 'd'), 'c', 'd'),
-                array($this->self, 'E', 'F', array('e', 'f'), 'e', 'f'),
+                array($this->self, 'E', 'F', new Arguments(array('c', 'd')), 'c', 'd'),
+                array($this->self, 'E', 'F', new Arguments(array('e', 'f')), 'e', 'f'),
             ),
             $this->callsB
         );
@@ -450,13 +451,13 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->callsB);
 
         $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
-        $this->assertSame(
+        $this->assertEquals(
             array(
                 array(
                     $this->self,
                     'A',
                     'B',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
@@ -466,13 +467,13 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->callsB);
 
         $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
-        $this->assertSame(
+        $this->assertEquals(
             array(
                 array(
                     $this->self,
                     'A',
                     'B',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
@@ -480,20 +481,20 @@ class StubTest extends PHPUnit_Framework_TestCase
                     $this->self,
                     'C',
                     'D',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
             ),
             $this->callsA
         );
-        $this->assertSame(
+        $this->assertEquals(
             array(
                 array(
                     $this->self,
                     'E',
                     'F',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
@@ -502,13 +503,13 @@ class StubTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
-        $this->assertSame(
+        $this->assertEquals(
             array(
                 array(
                     $this->self,
                     'A',
                     'B',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
@@ -516,7 +517,7 @@ class StubTest extends PHPUnit_Framework_TestCase
                     $this->self,
                     'C',
                     'D',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
@@ -524,20 +525,20 @@ class StubTest extends PHPUnit_Framework_TestCase
                     $this->self,
                     'C',
                     'D',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
             ),
             $this->callsA
         );
-        $this->assertSame(
+        $this->assertEquals(
             array(
                 array(
                     $this->self,
                     'E',
                     'F',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
@@ -545,7 +546,7 @@ class StubTest extends PHPUnit_Framework_TestCase
                     $this->self,
                     'E',
                     'F',
-                    array($this->callbackA, $this->callbackB),
+                    new Arguments(array($this->callbackA, $this->callbackB)),
                     $this->callbackA,
                     $this->callbackB,
                 ),
@@ -652,16 +653,16 @@ class StubTest extends PHPUnit_Framework_TestCase
                 ->doesWith($this->callbackB, array(3, 4), true, true, true)
         );
 
-        $this->assertSame(
-            array('A', $this->self, 1, 2, array('a', 'b'), 'a', 'b'),
+        $this->assertEquals(
+            array('A', $this->self, 1, 2, new Arguments(array('a', 'b')), 'a', 'b'),
             call_user_func($this->subject, 'a', 'b')
         );
-        $this->assertSame(
-            array('B', $this->self, 3, 4, array('c', 'd'), 'c', 'd'),
+        $this->assertEquals(
+            array('B', $this->self, 3, 4, new Arguments(array('c', 'd')), 'c', 'd'),
             call_user_func($this->subject, 'c', 'd')
         );
-        $this->assertSame(
-            array('B', $this->self, 3, 4, array('e', 'f'), 'e', 'f'),
+        $this->assertEquals(
+            array('B', $this->self, 3, 4, new Arguments(array('e', 'f')), 'e', 'f'),
             call_user_func($this->subject, 'e', 'f')
         );
     }
@@ -700,12 +701,12 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->subject = new Stub($this->callbackA, $this->self);
 
         $this->assertSame($this->subject, $this->subject->forwards(array(1, 2), true, true, true));
-        $this->assertSame(
-            array('A', $this->self, 1, 2, array('a', 'b'), 'a', 'b'),
+        $this->assertEquals(
+            array('A', $this->self, 1, 2, new Arguments(array('a', 'b')), 'a', 'b'),
             call_user_func($this->subject, 'a', 'b')
         );
-        $this->assertSame(
-            array('A', $this->self, 1, 2, array('c', 'd'), 'c', 'd'),
+        $this->assertEquals(
+            array('A', $this->self, 1, 2, new Arguments(array('c', 'd')), 'c', 'd'),
             call_user_func($this->subject, 'c', 'd')
         );
     }

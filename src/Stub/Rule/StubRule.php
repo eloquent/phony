@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Rule;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Stub\Answer\AnswerInterface;
@@ -88,13 +90,14 @@ class StubRule implements StubRuleInterface
     /**
      * Returns true if this rule's criteria match the supplied arguments.
      *
-     * @param array<integer,mixed> $arguments The arguments.
+     * @param ArgumentsInterface|array<integer,mixed> $arguments The arguments.
      *
      * @return boolean True if the criteria matches.
      */
-    public function matches(array $arguments)
+    public function matches($arguments)
     {
-        return $this->matcherVerifier->matches($this->criteria, $arguments);
+        return $this->matcherVerifier
+            ->matches($this->criteria, Arguments::adapt($arguments));
     }
 
     /**

@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Spy;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Factory\CallFactory;
@@ -162,14 +164,15 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      *
      * This method supports reference parameters.
      *
-     * @param array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.
      */
-    public function invokeWith(array $arguments = null)
+    public function invokeWith($arguments = null)
     {
-        $call = $this->callFactory->record($this->callback, $arguments, $this);
+        $call = $this->callFactory
+            ->record($this->callback, Arguments::adapt($arguments), $this);
         $exception = $call->exception();
 
         if ($exception) {

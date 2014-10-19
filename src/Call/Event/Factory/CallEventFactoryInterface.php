@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event\Factory;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
@@ -26,12 +27,12 @@ interface CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null             $callback  The callback.
-     * @param array<integer,mixed>|null $arguments The arguments.
+     * @param callable|null                                $callback  The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled($callback = null, array $arguments = null);
+    public function createCalled($callback = null, $arguments = null);
 
     /**
      * Create a new response event.

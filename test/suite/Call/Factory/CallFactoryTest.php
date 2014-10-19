@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
@@ -86,7 +87,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Call\Call', $actual);
 
         $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $actual->calledEvent());
-        $this->assertSame(array(), $actual->calledEvent()->arguments());
+        $this->assertEquals(new Arguments(), $actual->calledEvent()->arguments());
         $this->assertInstanceOf('Eloquent\Phony\Call\Event\ReturnedEvent', $actual->responseEvent());
         $this->assertNull($actual->responseEvent()->value());
     }

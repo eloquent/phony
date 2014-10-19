@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Mock\MockInterface;
 use Exception;
@@ -87,19 +89,18 @@ class WrappedMethod extends AbstractWrappedInvocable
      *
      * This method supports reference parameters.
      *
-     * @param array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.
      */
-    public function invokeWith(array $arguments = null)
+    public function invokeWith($arguments = null)
     {
-        if (null === $arguments) {
-            $arguments = array();
-        }
-
-        return $this->callParentMethod
-            ->invoke($this->mock, $this->name, $arguments);
+        return $this->callParentMethod->invoke(
+            $this->mock,
+            $this->name,
+            Arguments::adapt($arguments)
+        );
     }
 
     private $callParentMethod;

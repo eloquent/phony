@@ -15,15 +15,14 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
-use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -360,24 +359,11 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the received arguments.
      *
-     * @return array<integer,mixed> The received arguments.
+     * @return ArgumentsInterface The received arguments.
      */
     public function arguments()
     {
         return $this->call->arguments();
-    }
-
-    /**
-     * Get an argument by index.
-     *
-     * @param integer|null $index The index, or null for the first argument.
-     *
-     * @return mixed                      The argument.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
-     */
-    public function argument($index = null)
-    {
-        return $this->call->argument($index);
     }
 
     /**

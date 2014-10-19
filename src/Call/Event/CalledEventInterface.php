@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 
 /**
  * The interface implemented by 'called' events.
@@ -28,17 +28,7 @@ interface CalledEventInterface extends CallEventInterface
     /**
      * Get the received arguments.
      *
-     * @return array<integer,mixed> The received arguments.
+     * @return ArgumentsInterface The received arguments.
      */
     public function arguments();
-
-    /**
-     * Get an argument by index.
-     *
-     * @param integer|null $index The index, or null for the first argument.
-     *
-     * @return mixed                      The argument.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
-     */
-    public function argument($index = null);
 }

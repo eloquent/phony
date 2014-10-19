@@ -15,6 +15,8 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
@@ -271,14 +273,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * This method supports reference parameters.
      *
-     * @param array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.
      */
-    public function invokeWith(array $arguments = null)
+    public function invokeWith($arguments = null)
     {
-        return $this->spy->invokeWith($arguments);
+        return $this->spy->invokeWith(Arguments::adapt($arguments));
     }
 
     /**

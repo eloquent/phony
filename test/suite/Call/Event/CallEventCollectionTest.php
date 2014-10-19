@@ -79,7 +79,7 @@ class CallEventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testArgumentFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
         $this->subject->argument(111);
     }
 
@@ -87,7 +87,7 @@ class CallEventCollectionTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new CallEventCollection(array($this->eventA));
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
         $this->subject->argument();
     }
 
@@ -95,7 +95,7 @@ class CallEventCollectionTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new CallEventCollection();
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
         $this->subject->argument();
     }
 

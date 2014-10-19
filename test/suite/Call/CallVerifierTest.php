@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
@@ -36,7 +37,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(111);
         $this->thisValue = (object) array();
         $this->callback = array($this->thisValue, 'implode');
-        $this->arguments = array('a', 'b', 'c');
+        $this->arguments = new Arguments(array('a', 'b', 'c'));
         $this->returnValue = 'abc';
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
@@ -58,7 +59,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
         $this->argumentCount = count($this->arguments);
-        $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
+        $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->events = array($this->calledEvent, $this->returnedEvent);
 
@@ -155,19 +156,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertSame($this->returnedEvent->time(), $this->subject->endTime());
         $this->assertNull($this->subject->exception());
-    }
-
-    public function testArgument()
-    {
-        $this->assertSame('a', $this->subject->argument());
-        $this->assertSame('a', $this->subject->argument(0));
-        $this->assertSame('b', $this->subject->argument(1));
-    }
-
-    public function testArgumentFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument(111);
     }
 
     public function testIteration()

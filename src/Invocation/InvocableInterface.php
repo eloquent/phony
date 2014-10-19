@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Invocation;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Exception;
 
 /**
@@ -23,12 +24,12 @@ interface InvocableInterface
      *
      * This method supports reference parameters.
      *
-     * @param array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.
      */
-    public function invokeWith(array $arguments = null);
+    public function invokeWith($arguments = null);
 
     /**
      * Invoke this object.

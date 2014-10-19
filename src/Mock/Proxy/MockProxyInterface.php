@@ -54,8 +54,8 @@ interface MockProxyInterface
      * Get a stub verifier, and modify its current criteria to match the
      * supplied arguments (and possibly others).
      *
-     * @param string $name      The method name.
-     * @param array  $arguments The arguments.
+     * @param string               $name      The method name.
+     * @param array<integer,mixed> $arguments The arguments.
      *
      * @return StubVerifierInterface  The stub verifier.
      * @throws MockExceptionInterface If the stub does not exist.

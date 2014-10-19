@@ -74,15 +74,15 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                  $callback             The callback.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param callable                                     $callback             The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      */
     public function callsWith(
         $callback,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
@@ -112,17 +112,17 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null              $index                The argument index, or null to call the first argument.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param integer|null                                 $index                The argument index, or null to call the first argument.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function callsArgumentWith(
         $index = null,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
@@ -151,17 +151,17 @@ interface StubInterface extends WrappedInvocableInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable                  $callback             The callback.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param callable                                     $callback             The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function doesWith(
         $callback,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
@@ -170,15 +170,15 @@ interface StubInterface extends WrappedInvocableInterface
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function forwards(
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null

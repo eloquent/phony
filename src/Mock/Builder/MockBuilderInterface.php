@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
@@ -258,12 +259,12 @@ interface MockBuilderInterface
      *
      * This method supports reference parameters.
      *
-     * @param array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null               $id        The identifier.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param string|null                                  $id        The identifier.
      *
      * @return MockInterface The mock instance.
      */
-    public function createWith(array $arguments = null, $id = null);
+    public function createWith($arguments = null, $id = null);
 
     /**
      * Create a new full mock.

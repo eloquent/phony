@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
@@ -229,15 +231,15 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                  $callback             The callback.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param callable                                     $callback             The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      */
     public function callsWith(
         $callback,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
@@ -245,7 +247,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->answer->addSecondaryRequest(
             new CallRequest(
                 $callback,
-                $arguments,
+                Arguments::adapt($arguments),
                 $prefixSelf,
                 $suffixArgumentsArray,
                 $suffixArguments
@@ -286,17 +288,17 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null              $index                The argument index, or null to call the first argument.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param integer|null                                 $index                The argument index, or null to call the first argument.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function callsArgumentWith(
         $index = null,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
@@ -311,12 +313,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $suffixArguments = false;
         }
 
-        $indexNormalizer = $this->indexNormalizer();
         $invoker = $this->invoker;
+        $arguments = Arguments::adapt($arguments);
 
         return $this->callsWith(
-            function ($self, array $incoming) use (
-                $indexNormalizer,
+            function ($self, $incoming) use (
                 $invoker,
                 $index,
                 $arguments,
@@ -324,13 +325,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 $suffixArgumentsArray,
                 $suffixArguments
             ) {
-                $index = $indexNormalizer($index, count($incoming));
-
-                if (null === $index) {
+                if (!$incoming->has($index)) {
                     return;
                 }
 
-                $callback = $incoming[$index];
+                $callback = $incoming->get($index);
 
                 if (!is_callable($callback)) {
                     return;
@@ -364,17 +363,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function setsArgument($value, $index = null)
     {
-        $indexNormalizer = $this->indexNormalizer();
-
         return $this->callsWith(
-            function (array $arguments) use ($indexNormalizer, $value, $index) {
-                $index = $indexNormalizer($index, count($arguments));
-
-                if (null === $index) {
-                    return;
+            function ($arguments) use ($value, $index) {
+                if ($arguments->has($index)) {
+                    $arguments->set($value, $index);
                 }
-
-                $arguments[$index] = $value;
             },
             null,
             false,
@@ -405,17 +398,17 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable                  $callback             The callback.
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param callable                                     $callback             The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function doesWith(
         $callback,
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
@@ -429,7 +422,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->answer->setPrimaryRequest(
             new CallRequest(
                 $callback,
-                $arguments,
+                Arguments::adapt($arguments),
                 $prefixSelf,
                 $suffixArgumentsArray,
                 $suffixArguments
@@ -444,15 +437,15 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param array<integer,mixed>|null $arguments            The arguments.
-     * @param boolean|null              $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null              $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null              $suffixArguments      True if arguments should be appended.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments            The arguments.
+     * @param boolean|null                                 $prefixSelf           True if the self value should be prefixed.
+     * @param boolean|null                                 $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean|null                                 $suffixArguments      True if arguments should be appended.
      *
      * @return StubInterface This stub.
      */
     public function forwards(
-        array $arguments = null,
+        $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
         $suffixArguments = null
@@ -486,9 +479,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         $invoker = $this->invoker;
         $callback = $this->callback;
+        $arguments = Arguments::adapt($arguments);
 
         return $this->doesWith(
-            function ($self, array $incoming) use (
+            function ($self, $incoming) use (
                 $invoker,
                 $callback,
                 $arguments,
@@ -554,17 +548,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function returnsArgument($index = null)
     {
-        $indexNormalizer = $this->indexNormalizer();
-
         return $this->doesWith(
-            function (array $arguments) use ($indexNormalizer, $index) {
-                $index = $indexNormalizer($index, count($arguments));
-
-                if (null === $index) {
-                    return null;
+            function ($arguments) use ($index) {
+                if ($arguments->has($index)) {
+                    return $arguments->get($index);
                 }
-
-                return $arguments[$index];
             },
             null,
             false,
@@ -633,16 +621,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * This method supports reference parameters.
      *
-     * @param array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.
      */
-    public function invokeWith(array $arguments = null)
+    public function invokeWith($arguments = null)
     {
-        if (null === $arguments) {
-            $arguments = array();
-        }
+        $arguments = Arguments::adapt($arguments);
 
         if ($this->isNewRule) {
             $this->forwards();
@@ -669,36 +655,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $request->callback(),
             $request->finalArguments($this->self, $arguments)
         );
-    }
-
-    /**
-     * Returns a callback to use when normalizing indices.
-     *
-     * @return callable The index normalizer.
-     */
-    protected function indexNormalizer()
-    {
-        return function ($index, $count) {
-            if ($count < 1) {
-                return null;
-            }
-
-            if (null === $index) {
-                $index = 0;
-            } elseif ($index < 0) {
-                $index = $count + $index;
-
-                if ($index < 0) {
-                    return null;
-                }
-            }
-
-            if ($index >= $count) {
-                return null;
-            }
-
-            return $index;
-        };
     }
 
     private $self;

@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Call\Event\Factory;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEvent;
@@ -95,18 +97,18 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null             $callback  The callback.
-     * @param array<integer,mixed>|null $arguments The arguments.
+     * @param callable|null                                $callback  The callback.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled($callback = null, array $arguments = null)
+    public function createCalled($callback = null, $arguments = null)
     {
         return new CalledEvent(
             $this->sequencer->next(),
             $this->clock->time(),
             $callback,
-            $arguments
+            Arguments::adapt($arguments)
         );
     }
 

@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Event\EventCollectionInterface;
 
 /**

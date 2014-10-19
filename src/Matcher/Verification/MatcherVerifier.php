@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Matcher\Verification;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
@@ -37,13 +39,14 @@ class MatcherVerifier implements MatcherVerifierInterface
     /**
      * Verify that the supplied arguments match the supplied matchers.
      *
-     * @param array<MatcherInterface> $matchers  The matchers.
-     * @param array                   $arguments The arguments.
+     * @param array<MatcherInterface>                      $matchers  The matchers.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
      *
      * @return boolean True if the arguments match.
      */
-    public function matches(array $matchers, array $arguments)
+    public function matches(array $matchers, $arguments)
     {
+        $arguments = Arguments::adapt($arguments)->all();
         $pair = each($arguments);
 
         foreach ($matchers as $matcher) {

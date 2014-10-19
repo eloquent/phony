@@ -15,7 +15,7 @@ use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 
 class TestWrappedInvocable extends AbstractWrappedInvocable
 {
-    public function invokeWith(array $arguments = null)
+    public function invokeWith($arguments = null)
     {
     }
 }

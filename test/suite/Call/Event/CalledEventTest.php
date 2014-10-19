@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
@@ -21,7 +22,7 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->sequenceNumber = 111;
         $this->time = 1.11;
         $this->callback = 'implode';
-        $this->arguments = array('a', 'b');
+        $this->arguments = new Arguments(array('a', 'b'));
         $this->subject = new CalledEvent($this->sequenceNumber, $this->time, $this->callback, $this->arguments);
 
         $this->callFactory = new TestCallFactory();
@@ -47,20 +48,7 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
-        $this->assertSame(array(), $this->subject->arguments());
-    }
-
-    public function testArgument()
-    {
-        $this->assertSame('a', $this->subject->argument());
-        $this->assertSame('a', $this->subject->argument(0));
-        $this->assertSame('b', $this->subject->argument(1));
-    }
-
-    public function testArgumentFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument(111);
+        $this->assertEquals(new Arguments(), $this->subject->arguments());
     }
 
     public function testIteration()
