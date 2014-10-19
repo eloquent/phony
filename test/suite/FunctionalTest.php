@@ -210,4 +210,20 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->producedAll('b', 'd');
         $stub->producedAll(array('a', 'b'), array('c', 'd'));
     }
+
+    public function testDefaultStubAnswerCanBeOverridden()
+    {
+        $mock = x\mock('Eloquent\Phony\Test\TestClassA')->get();
+        x\on($mock)->testClassAMethodA()->returns(123);
+
+        $this->assertSame(123, $mock->testClassAMethodA());
+    }
+
+    public function testFullMockDefaultStubAnswerCanBeOverridden()
+    {
+        $mock = x\mock('Eloquent\Phony\Test\TestClassA')->full();
+        x\on($mock)->testClassAMethodA->returns(123);
+
+        $this->assertSame(123, $mock->testClassAMethodA());
+    }
 }

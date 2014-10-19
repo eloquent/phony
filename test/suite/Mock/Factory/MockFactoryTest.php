@@ -187,19 +187,4 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
     }
-
-    public function testDefaultStubAnswerCanBeOverridden()
-    {
-        $builder = new MockBuilder(
-            'Eloquent\Phony\Test\TestClassA',
-            array(),
-            __NAMESPACE__ . '\PhonyMockFactoryTestDefaultStubAnswerCanBeOverridden'
-        );
-
-        $mock = $this->subject->createMock($builder);
-        $proxy = $this->proxyFactory->create($mock);
-        $proxy->testClassAMethodA()->returns(123);
-
-        $this->assertSame(123, $mock->testClassAMethodA());
-    }
 }

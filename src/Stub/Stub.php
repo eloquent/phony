@@ -82,12 +82,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->invocableInspector = $invocableInspector;
 
         $this->answer = new Answer();
-        $this->isNewRule = true;
-        $this->rule = new StubRule(
-            array($this->matcherFactory->wildcard()),
-            $this->matcherVerifier
-        );
+        $this->isNewRule = false;
         $this->rules = array();
+
+        $this->with();
     }
 
     /**
@@ -630,7 +628,17 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     {
         $arguments = Arguments::adapt($arguments);
 
-        if ($this->isNewRule) {
+        if ($this->rules) {
+            if ($this->isNewRule) {
+                $isDangling = $this->answer->secondaryRequests();
+            } else {
+                $isDangling = false;
+            }
+        } else {
+            $isDangling = true;
+        }
+
+        if ($isDangling) {
             $this->forwards();
         }
 
