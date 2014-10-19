@@ -48,7 +48,10 @@ class MockProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->stub('testClassAMethodA'));
         $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->testClassAMethodA);
         $this->assertSame('ab', $this->mock->testClassAMethodA('a', 'b'));
-        $this->assertSame($this->stubs['testClassAMethodA']->callback(), $this->subject->testClassAMethodA('a')->returns('x'));
+        $this->assertSame(
+            $this->stubs['testClassAMethodA']->callback(),
+            $this->subject->testClassAMethodA('a', '*')->returns('x')
+        );
         $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
     }
 

@@ -85,7 +85,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->isNewRule = false;
         $this->rules = array();
 
-        $this->with();
+        $this->with($this->matcherFactory->wildcard());
     }
 
     /**
@@ -159,36 +159,13 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
-     * Modify the current criteria to match the supplied arguments (and possibly
-     * others).
+     * Modify the current criteria to match the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
      * @return StubInterface This stub.
      */
     public function with()
-    {
-        if ($this->isNewRule) {
-            $this->forwards();
-        }
-
-        $this->isNewRule = true;
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
-        $matchers[] = $this->matcherFactory->wildcard();
-        $this->rule = new StubRule($matchers, $this->matcherVerifier);
-
-        return $this;
-    }
-
-    /**
-     * Modify the current criteria to match the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return StubInterface This stub.
-     */
-    public function withExactly()
     {
         if ($this->isNewRule) {
             $this->forwards();

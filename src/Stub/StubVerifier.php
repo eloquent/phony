@@ -131,30 +131,13 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
-     * Modify the current criteria to match the supplied arguments (and possibly
-     * others).
+     * Modify the current criteria to match the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
      * @return StubInterface This stub.
      */
     public function with()
-    {
-        $this->invoker
-            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
-
-        return $this;
-    }
-
-    /**
-     * Modify the current criteria to match the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return StubInterface This stub.
-     */
-    public function withExactly()
     {
         $this->invoker
             ->callWith(array($this->stub, __FUNCTION__), func_get_args());

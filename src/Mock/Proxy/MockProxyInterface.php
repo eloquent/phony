@@ -52,7 +52,7 @@ interface MockProxyInterface
 
     /**
      * Get a stub verifier, and modify its current criteria to match the
-     * supplied arguments (and possibly others).
+     * supplied arguments.
      *
      * @param string               $name      The method name.
      * @param array<integer,mixed> $arguments The arguments.

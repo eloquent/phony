@@ -183,20 +183,6 @@ class StubTest extends PHPUnit_Framework_TestCase
                 ->returns('x')
         );
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));
-        $this->assertSame('x', call_user_func($this->subject, 'a', 'b', 'c'));
-        $this->assertNull(call_user_func($this->subject));
-    }
-
-    public function testWithExactly()
-    {
-        $this->assertSame(
-            $this->subject,
-            $this->subject
-                ->returns()
-                ->withExactly('a', new EqualToMatcher('b'))
-                ->returns('x')
-        );
-        $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));
         $this->assertNull(call_user_func($this->subject, 'a', 'b', 'c'));
         $this->assertNull(call_user_func($this->subject));
@@ -819,7 +805,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('a', call_user_func($this->subject));
         $this->assertSame('b', call_user_func($this->subject));
         $this->assertSame('b', call_user_func($this->subject));
-        $this->assertSame($this->subject, $this->subject->with()->returns());
+        $this->assertSame($this->subject, $this->subject->returns());
         $this->assertNull(call_user_func($this->subject));
     }
 
@@ -830,20 +816,20 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', call_user_func($this->subject, 'b'));
         $this->assertNull(call_user_func($this->subject));
 
-        $this->assertSame($this->subject, $this->subject->with()->returnsArgument(1));
+        $this->assertSame($this->subject, $this->subject->returnsArgument(1));
         $this->assertSame('b', call_user_func($this->subject, 'a', 'b', 'c'));
         $this->assertSame('c', call_user_func($this->subject, 'b', 'c', 'd'));
         $this->assertNull(call_user_func($this->subject, 'a'));
 
-        $this->assertSame($this->subject, $this->subject->with()->returnsArgument(-1));
+        $this->assertSame($this->subject, $this->subject->returnsArgument(-1));
         $this->assertSame('c', call_user_func($this->subject, 'a', 'b', 'c'));
         $this->assertSame('d', call_user_func($this->subject, 'b', 'c', 'd'));
         $this->assertNull(call_user_func($this->subject));
 
-        $this->assertSame($this->subject, $this->subject->with()->returnsArgument(111));
+        $this->assertSame($this->subject, $this->subject->returnsArgument(111));
         $this->assertNull(call_user_func($this->subject, 'a'));
 
-        $this->assertSame($this->subject, $this->subject->with()->returnsArgument(-111));
+        $this->assertSame($this->subject, $this->subject->returnsArgument(-111));
         $this->assertNull(call_user_func($this->subject, 'a'));
     }
 
@@ -897,8 +883,8 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->subject,
             $this->subject
                 ->returns('a')
-                ->with('a')->returns('b', 'c')->returns('d')
-                ->with('b')->returns('e', 'f')->throws()
+                ->with('a', '*')->returns('b', 'c')->returns('d')
+                ->with('b', '*')->returns('e', 'f')->throws()
         );
 
         $this->assertSame('a', call_user_func($this->subject));
@@ -934,9 +920,10 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->with()->returns('b')
-                ->with('a')->returns('c')
-                ->with('b')->returns('e')
+                ->with()
+                ->returns('b')
+                ->with('a', '*')->returns('c')
+                ->with('b', '*')->returns('e')
         );
 
         $this->assertSame('b', call_user_func($this->subject));
@@ -963,10 +950,8 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->with(array('a', 'b'))
-                ->with(array('c', 'd'))
-                ->withExactly(array('a', 'b'))->calls($callbackA)
-                ->withExactly(array('c', 'd'))->calls($callbackA, $callbackB)
+                ->with(array('a', 'b'))->calls($callbackA)
+                ->with(array('c', 'd'))->calls($callbackA, $callbackB)
         );
         $this->assertSame('ab', call_user_func($this->subject, array('a', 'b')));
         $this->assertSame(1, $callCountA);

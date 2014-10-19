@@ -12,6 +12,8 @@
 namespace Eloquent\Phony\Mock\Proxy;
 
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException;
@@ -30,11 +32,20 @@ abstract class AbstractMockProxy implements MockProxyInterface
      *
      * @param string                              $className The class name.
      * @param array<string,StubVerifierInterface> $stubs     The stubs.
+     * @param WildcardMatcherInterface|null       $wildcard  The wildcard matcher to use.
      */
-    public function __construct($className, array $stubs)
-    {
+    public function __construct(
+        $className,
+        array $stubs,
+        WildcardMatcherInterface $wildcard = null
+    ) {
+        if (null === $wildcard) {
+            $wildcard = WildcardMatcher::instance();
+        }
+
         $this->className = $className;
         $this->stubs = $stubs;
+        $this->wildcard = $wildcard;
     }
 
     /**
@@ -65,7 +76,8 @@ abstract class AbstractMockProxy implements MockProxyInterface
     public function full()
     {
         foreach ($this->stubs as $stub) {
-            $stub->callback()->with()->returns()->with();
+            $stub->callback()->with($this->wildcard)->returns()
+                ->with($this->wildcard);
         }
 
         return $this;
@@ -90,7 +102,7 @@ abstract class AbstractMockProxy implements MockProxyInterface
 
     /**
      * Get a stub verifier, and modify its current criteria to match the
-     * supplied arguments (and possibly others).
+     * supplied arguments.
      *
      * @param string               $name      The method name.
      * @param array<integer,mixed> $arguments The arguments.
@@ -133,4 +145,5 @@ abstract class AbstractMockProxy implements MockProxyInterface
 
     private $className;
     private $stubs;
+    private $wildcard;
 }

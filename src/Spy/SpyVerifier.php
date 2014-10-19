@@ -434,7 +434,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Checks if called with the supplied arguments (and possibly others).
+     * Checks if called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
@@ -465,8 +465,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Throws an exception unless called with the supplied arguments (and
-     * possibly others).
+     * Throws an exception unless called with the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *

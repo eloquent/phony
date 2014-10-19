@@ -36,24 +36,13 @@ interface StubInterface extends WrappedInvocableInterface
     public function self();
 
     /**
-     * Modify the current criteria to match the supplied arguments (and possibly
-     * others).
+     * Modify the current criteria to match the supplied arguments.
      *
      * @param mixed $argument,... The arguments.
      *
      * @return StubInterface This stub.
      */
     public function with();
-
-    /**
-     * Modify the current criteria to match the supplied arguments (and no
-     * others).
-     *
-     * @param mixed $argument,... The arguments.
-     *
-     * @return StubInterface This stub.
-     */
-    public function withExactly();
 
     /**
      * Add a callback to be called as part of an answer.

@@ -49,7 +49,10 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->stub('testClassAStaticMethodA'));
         $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA);
         $this->assertSame('ab', $className::testClassAStaticMethodA('a', 'b'));
-        $this->assertSame($this->stubs['testClassAStaticMethodA']->callback(), $this->subject->testClassAStaticMethodA('a')->returns('x'));
+        $this->assertSame(
+            $this->stubs['testClassAStaticMethodA']->callback(),
+            $this->subject->testClassAStaticMethodA('a', '*')->returns('x')
+        );
         $this->assertSame('x', $className::testClassAStaticMethodA('a', 'b'));
     }
 
