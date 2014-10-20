@@ -13,8 +13,12 @@ namespace Eloquent\Phony\Mock\Proxy\Factory;
 
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Verification\InstanceVerificationProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
 use ReflectionClass;
 
 /**
@@ -25,7 +29,7 @@ interface ProxyFactoryInterface
     /**
      * Create a new static stubbing proxy.
      *
-     * @param ReflectionClass|object|string $class The class.
+     * @param ProxyInterface|ReflectionClass|object|string $class The class.
      *
      * @return StaticStubbingProxyInterface The newly created proxy.
      * @throws MockExceptionInterface       If the supplied class name is not a mock class.
@@ -35,9 +39,30 @@ interface ProxyFactoryInterface
     /**
      * Create a new stubbing proxy.
      *
-     * @param MockInterface $mock The mock.
+     * @param MockInterface|InstanceProxyInterface $mock The mock.
      *
      * @return InstanceStubbingProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface         If the supplied mock is invalid.
      */
-    public function createStubbing(MockInterface $mock);
+    public function createStubbing($mock);
+
+    /**
+     * Create a new static verification proxy.
+     *
+     * @param ProxyInterface|ReflectionClass|object|string $class The class.
+     *
+     * @return StaticVerificationProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface           If the supplied class name is not a mock class.
+     */
+    public function createVerificationStatic($class);
+
+    /**
+     * Create a new verification proxy.
+     *
+     * @param MockInterface|InstanceProxyInterface $mock The mock.
+     *
+     * @return InstanceVerificationProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface             If the supplied mock is invalid.
+     */
+    public function createVerification($mock);
 }

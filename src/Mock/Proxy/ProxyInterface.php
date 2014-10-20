@@ -42,4 +42,14 @@ interface ProxyInterface
      * @throws MockExceptionInterface If the stub does not exist.
      */
     public function stub($name);
+
+    /**
+     * Get a stub verifier.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
+     */
+    public function __get($name);
 }

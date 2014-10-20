@@ -15,6 +15,7 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
+use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
@@ -80,6 +81,25 @@ abstract class AbstractProxy implements ProxyInterface
         }
 
         throw new UndefinedMethodStubException($this->className, $name);
+    }
+
+    /**
+     * Get a stub verifier.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
+     */
+    public function __get($name)
+    {
+        try {
+            $stub = $this->stub($name);
+        } catch (UndefinedMethodStubException $e) {
+            throw new UndefinedPropertyException(get_called_class(), $name, $e);
+        }
+
+        return $stub;
     }
 
     protected $className;

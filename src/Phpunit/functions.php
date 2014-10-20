@@ -16,8 +16,12 @@ use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Verification\InstanceVerificationProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
@@ -42,30 +46,59 @@ function mock(
 }
 
 /**
+ * Create a new static stubbing proxy.
+ *
+ * @param ProxyInterface|ReflectionClass|object|string $class The class.
+ *
+ * @return StaticStubbingProxyInterface The newly created proxy.
+ * @throws MockExceptionInterface       If the supplied class name is not a mock class.
+ */
+function onStatic($class)
+{
+    return PhpunitFacadeDriver::instance()->proxyFactory()
+        ->createStubbingStatic($class);
+}
+
+/**
  * Create a new stubbing proxy.
  *
- * @param MockInterface $mock The mock.
+ * @param MockInterface|InstanceProxyInterface $mock The mock.
  *
- * @return InstanceStubbingProxyInterface The stubbing proxy.
+ * @return InstanceStubbingProxyInterface The newly created proxy.
+ * @throws MockExceptionInterface         If the supplied mock is invalid.
  */
-function on(MockInterface $mock)
+function on($mock)
 {
     return PhpunitFacadeDriver::instance()->proxyFactory()
         ->createStubbing($mock);
 }
 
 /**
- * Create a new static stubbing proxy.
+ * Create a new static verification proxy.
  *
- * @param ReflectionClass|object|string $class The class.
+ * @param ProxyInterface|ReflectionClass|object|string $class The class.
  *
- * @return StaticStubbingProxyInterface The stubbing proxy.
- * @throws MockExceptionInterface If the supplied class name is not a mock class.
+ * @return StaticVerificationProxyInterface The newly created proxy.
+ * @throws MockExceptionInterface           If the supplied class name is not a mock class.
  */
-function onStatic($class)
+function verifyStatic($class)
 {
     return PhpunitFacadeDriver::instance()->proxyFactory()
-        ->createStubbingStatic($class);
+        ->createVerificationStatic($class);
+}
+
+/**
+ * Create a new verification proxy.
+ *
+ * @param MockInterface|InstanceProxyInterface $mock The mock.
+ *
+ * @return InstanceVerificationProxyInterface The newly created proxy.
+ * @throws MockExceptionInterface             If the supplied mock is invalid.
+ */
+function verify($mock)
+{
+    return PhpunitFacadeDriver::instance()->proxyFactory()
+        ->createVerification($mock);
 }
 
 /**

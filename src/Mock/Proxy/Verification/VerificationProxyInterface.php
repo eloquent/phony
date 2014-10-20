@@ -9,33 +9,27 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Stubbing;
+namespace Eloquent\Phony\Mock\Proxy\Verification;
 
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Exception;
 
 /**
- * The interface implemented by stubbing proxies.
+ * The interface implemented by verification proxies.
  */
-interface StubbingProxyInterface extends ProxyInterface
+interface VerificationProxyInterface extends ProxyInterface
 {
     /**
-     * Turn the mock into a full mock.
-     *
-     * @return StubbingProxyInterface This proxy.
-     */
-    public function full();
-
-    /**
-     * Get a stub verifier, and modify its current criteria to match the
+     * Throws an exception unless the specified method was called with the
      * supplied arguments.
      *
      * @param string               $name      The method name.
      * @param array<integer,mixed> $arguments The arguments.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
+     * @return VerificationProxyInterface This proxy.
+     * @throws MockExceptionInterface     If the stub does not exist.
+     * @throws Exception                  If the assertion fails.
      */
     public function __call($name, array $arguments);
 }

@@ -21,8 +21,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
-        $this->assertSame(array('a', 'b'), Phony::on($mock)->testClassAMethodA->calledWith('a', '*')->arguments());
-        $this->assertSame('b', Phony::on($mock)->testClassAMethodA->calledWith('a', '*')->argument(1));
+        $this->assertSame(array('a', 'b'), Phony::verify($mock)->testClassAMethodA('a', '*')->arguments());
+        $this->assertSame('b', Phony::verify($mock)->testClassAMethodA('a', '*')->argument(1));
 
         Phony::on($mock)->full();
 
@@ -37,8 +37,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
-        $this->assertSame(array('a', 'b'), x\on($mock)->testClassAMethodA->calledWith('a', '*')->arguments());
-        $this->assertSame('b', x\on($mock)->testClassAMethodA->calledWith('a', '*')->argument(1));
+        $this->assertSame(array('a', 'b'), x\verify($mock)->testClassAMethodA('a', '*')->arguments());
+        $this->assertSame('b', x\verify($mock)->testClassAMethodA('a', '*')->argument(1));
 
         x\on($mock)->full();
 
@@ -57,17 +57,17 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('A', 'B'), $mock->constructorArguments);
         $this->assertSame('ab', $mock::testClassAStaticMethodA('a', 'b'));
         $this->assertSame('cde', $mock::testClassAStaticMethodB('c', 'd', $e));
-        x\onStatic($mock)->testClassAStaticMethodB->calledWith('c', 'd', 'e');
+        x\verifyStatic($mock)->testClassAStaticMethodB('c', 'd', 'e');
         $this->assertSame('third', $e);
         $this->assertSame('fg', $mock::testClassBStaticMethodA('f', 'g'));
         $this->assertSame('hi', $mock::testClassBStaticMethodB('h', 'i'));
         $this->assertSame('jk', $mock->testClassAMethodA('j', 'k'));
         $this->assertSame('lmn', $mock->testClassAMethodB('l', 'm', $n));
-        x\on($mock)->testClassAMethodB->calledWith('l', 'm', 'n');
+        x\verify($mock)->testClassAMethodB('l', 'm', 'n');
         $this->assertSame('third', $n);
         $this->assertSame('op', $mock->testClassBMethodA('o', 'p'));
         $this->assertSame('qr', $mock->testClassBMethodB($q, $r));
-        x\on($mock)->testClassBMethodB->calledWith('q', 'r');
+        x\verify($mock)->testClassBMethodB('q', 'r');
         $this->assertSame('first', $q);
         $this->assertSame('second', $r);
     }

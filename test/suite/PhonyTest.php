@@ -47,6 +47,24 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $actual->get());
     }
 
+    public function testOnStatic()
+    {
+        $class = Phony::mock()->build();
+        $actual = Phony::onStatic($class);
+        $expected = $this->proxyFactory->createStubbingStatic($class);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testOnStaticFunction()
+    {
+        $class = mock()->build();
+        $actual = onStatic($class);
+        $expected = $this->proxyFactory->createStubbingStatic($class);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testOn()
     {
         $mock = Phony::mock()->create();
@@ -65,20 +83,38 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testOnStatic()
+    public function testVerifyStatic()
     {
         $class = Phony::mock()->build();
-        $actual = Phony::onStatic($class);
-        $expected = $this->proxyFactory->createStubbingStatic($class);
+        $actual = Phony::verifyStatic($class);
+        $expected = $this->proxyFactory->createVerificationStatic($class);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testOnStaticFunction()
+    public function testVerifyStaticFunction()
     {
         $class = mock()->build();
-        $actual = onStatic($class);
-        $expected = $this->proxyFactory->createStubbingStatic($class);
+        $actual = verifyStatic($class);
+        $expected = $this->proxyFactory->createVerificationStatic($class);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testVerify()
+    {
+        $mock = Phony::mock()->create();
+        $actual = Phony::verify($mock);
+        $expected = $this->proxyFactory->createVerification($mock);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testVerifyFunction()
+    {
+        $mock = mock()->create();
+        $actual = verify($mock);
+        $expected = $this->proxyFactory->createVerification($mock);
 
         $this->assertEquals($expected, $actual);
     }

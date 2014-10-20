@@ -14,10 +14,16 @@ namespace Eloquent\Phony\Mock\Proxy\Factory;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy;
+use Eloquent\Phony\Mock\Proxy\Verification\InstanceVerificationProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy;
+use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use ReflectionClass;
@@ -73,14 +79,76 @@ class ProxyFactory implements ProxyFactoryInterface
     /**
      * Create a new static stubbing proxy.
      *
-     * @param ReflectionClass|object|string $class The class.
+     * @param ProxyInterface|ReflectionClass|object|string $class The class.
      *
      * @return StaticStubbingProxyInterface The newly created proxy.
      * @throws MockExceptionInterface       If the supplied class name is not a mock class.
      */
     public function createStubbingStatic($class)
     {
-        if (!$class instanceof ReflectionClass) {
+        list($className, $stubs) = $this->prepareStatic($class);
+
+        return new StaticStubbingProxy($className, $stubs);
+    }
+
+    /**
+     * Create a new stubbing proxy.
+     *
+     * @param MockInterface|InstanceProxyInterface $mock The mock.
+     *
+     * @return InstanceStubbingProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface         If the supplied mock is invalid.
+     */
+    public function createStubbing($mock)
+    {
+        list($mock, $stubs) = $this->prepareInstance($mock);
+
+        return new StubbingProxy($mock, $stubs);
+    }
+
+    /**
+     * Create a new static verification proxy.
+     *
+     * @param ProxyInterface|ReflectionClass|object|string $class The class.
+     *
+     * @return StaticVerificationProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface           If the supplied class name is not a mock class.
+     */
+    public function createVerificationStatic($class)
+    {
+        list($className, $stubs) = $this->prepareStatic($class);
+
+        return new StaticVerificationProxy($className, $stubs);
+    }
+
+    /**
+     * Create a new verification proxy.
+     *
+     * @param MockInterface|InstanceProxyInterface $mock The mock.
+     *
+     * @return InstanceVerificationProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface             If the supplied mock is invalid.
+     */
+    public function createVerification($mock)
+    {
+        list($mock, $stubs) = $this->prepareInstance($mock);
+
+        return new VerificationProxy($mock, $stubs);
+    }
+
+    /**
+     * Prepare the arguments for a static proxy.
+     *
+     * @param ProxyInterface|ReflectionClass|object|string $class The class.
+     *
+     * @return tuple<string,array<string,StubVerifierInterface>> The arguments.
+     * @throws MockExceptionInterface                            If the supplied class name is not a mock class.
+     */
+    protected function prepareStatic($class)
+    {
+        if ($class instanceof ProxyInterface) {
+            $class = new ReflectionClass($class->className());
+        } elseif (!$class instanceof ReflectionClass) {
             try {
                 $class = new ReflectionClass($class);
             } catch (ReflectionException $e) {
@@ -98,26 +166,30 @@ class ProxyFactory implements ProxyFactoryInterface
         $stubsProperty->setAccessible(true);
         $stubs = $stubsProperty->getValue(null);
 
-        return new StaticStubbingProxy(
-            $class->getName(),
-            $this->wrapStubs($stubs)
-        );
+        return array($class->getName(), $this->wrapStubs($stubs));
     }
 
     /**
-     * Create a new stubbing proxy.
+     * Prepare the arguments for an instance proxy.
      *
-     * @param MockInterface $mock The mock.
+     * @param MockInterface|InstanceProxyInterface $mock The mock.
      *
-     * @return InstanceStubbingProxyInterface The newly created proxy.
+     * @return tuple<MockInterface,array<string,StubVerifierInterface>> The arguments.
+     * @throws MockExceptionInterface                                   If the supplied mock is invalid.
      */
-    public function createStubbing(MockInterface $mock)
+    protected function prepareInstance($mock)
     {
+        if ($mock instanceof InstanceProxyInterface) {
+            $mock = $mock->mock();
+        } elseif (!$mock instanceof MockInterface) {
+            throw new NonMockClassException(get_class($mock));
+        }
+
         $stubsProperty = new ReflectionProperty($mock, '_stubs');
         $stubsProperty->setAccessible(true);
         $stubs = $stubsProperty->getValue($mock);
 
-        return new StubbingProxy($mock, $this->wrapStubs($stubs));
+        return array($mock, $this->wrapStubs($stubs));
     }
 
     /**

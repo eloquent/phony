@@ -9,14 +9,14 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Stubbing;
+namespace Eloquent\Phony\Mock\Proxy\Verification;
 
 use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
 
 /**
- * The interface implemented by instance stubbing proxies.
+ * The interface implemented by instance verification proxies.
  */
-interface InstanceStubbingProxyInterface extends InstanceProxyInterface,
-    StubbingProxyInterface
+interface InstanceVerificationProxyInterface extends InstanceProxyInterface,
+    VerificationProxyInterface
 {
 }
