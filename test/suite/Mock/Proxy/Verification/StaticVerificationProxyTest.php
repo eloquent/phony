@@ -63,10 +63,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA->spy());
         $className::testClassAStaticMethodA('a', 'b');
-        $this->assertInstanceOf(
-            'Eloquent\Phony\Event\EventCollectionInterface',
-            $this->subject->testClassAStaticMethodA('a', 'b')
-        );
+        $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA('a', 'b'));
     }
 
     public function testStubFailure()

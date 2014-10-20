@@ -44,6 +44,8 @@ abstract class AbstractVerificationProxy extends AbstractProxy implements
             throw new UndefinedMethodException(get_called_class(), $name, $e);
         }
 
-        return call_user_func_array(array($stub, 'calledWith'), $arguments);
+        call_user_func_array(array($stub, 'calledWith'), $arguments);
+
+        return $this;
     }
 }

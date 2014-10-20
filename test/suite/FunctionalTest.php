@@ -22,8 +22,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
-        $this->assertSame(array('a', 'b'), Phony::verify($mock)->testClassAMethodA('a', '*')->arguments());
-        $this->assertSame('b', Phony::verify($mock)->testClassAMethodA('a', '*')->argument(1));
+        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         $proxy->full();
 
@@ -39,8 +39,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
-        $this->assertSame(array('a', 'b'), x\verify($mock)->testClassAMethodA('a', '*')->arguments());
-        $this->assertSame('b', x\verify($mock)->testClassAMethodA('a', '*')->argument(1));
+        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         $proxy->full();
 
@@ -245,5 +245,15 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $mock = $proxy->mock();
 
         $this->assertSame(123, $mock->testClassAMethodA());
+    }
+
+    public function testCanChainVerificationProxyCalls()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $mock = $proxy->mock();
+        $mock->testClassAMethodA('a', 'b');
+        $mock->testClassAMethodA('c', 'd');
+
+        x\verify($mock)->testClassAMethodA('a', 'b')->testClassAMethodA('c', 'd');
     }
 }

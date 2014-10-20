@@ -59,10 +59,7 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->stub('testClassAMethodA')->spy());
         $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->testClassAMethodA->spy());
         $this->mock->testClassAMethodA('a', 'b');
-        $this->assertInstanceOf(
-            'Eloquent\Phony\Event\EventCollectionInterface',
-            $this->subject->testClassAMethodA('a', 'b')
-        );
+        $this->assertSame($this->subject, $this->subject->testClassAMethodA('a', 'b'));
     }
 
     public function testStubFailure()
