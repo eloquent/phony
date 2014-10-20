@@ -573,8 +573,14 @@ EOD;
                 $this->isParameterConstantSupported &&
                 $parameter->isDefaultValueConstant()
             ) {
-                $defaultValue =
-                    '\\' . $parameter->getDefaultValueConstantName();
+                $constantName = $parameter->getDefaultValueConstantName();
+
+                if ('self:' === substr($constantName, 0, 5)) {
+                    $constantName = $parameter->getDeclaringClass()->getName() .
+                        substr($constantName, 4);
+                }
+
+                $defaultValue = '\\' . $constantName;
             } else {
                 $defaultValue =
                     $this->renderValue($parameter->getDefaultValue());
