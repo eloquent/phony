@@ -39,8 +39,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         &$a1
     ) {
-        $arguments = array($a0, &$a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = &$a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -67,8 +72,16 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a3 = array('valueA', 'valueB'),
         $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB')
     ) {
-        $arguments = array($a0, $a1, $a2, $a3, $a4);
-        for ($i = 5; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = $a2;
+        if ($argumentCount > 3) $arguments[] = $a3;
+        if ($argumentCount > 4) $arguments[] = $a4;
+
+        for ($i = 5; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -86,8 +99,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public static function testClassAStaticMethodA()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -112,8 +127,14 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a1,
         &$a2 = null
     ) {
-        $arguments = array($a0, $a1, &$a2);
-        for ($i = 3; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = &$a2;
+
+        for ($i = 3; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -131,8 +152,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public static function testClassBStaticMethodA()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -155,8 +178,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         $a1
     ) {
-        $arguments = array($a0, $a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -206,8 +234,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function count()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -225,8 +255,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function current()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -244,8 +276,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function key()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -270,8 +304,15 @@ implements \Eloquent\Phony\Mock\MockInterface,
         array $a2 = array(),
         array $a3 = null
     ) {
-        $arguments = array($a0, $a1, $a2, $a3);
-        for ($i = 4; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = $a2;
+        if ($argumentCount > 3) $arguments[] = $a3;
+
+        for ($i = 4; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -287,8 +328,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function methodD()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -306,8 +349,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function next()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -328,8 +373,12 @@ implements \Eloquent\Phony\Mock\MockInterface,
     public function offsetExists(
         $a0
     ) {
-        $arguments = array($a0);
-        for ($i = 1; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+
+        for ($i = 1; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -350,8 +399,12 @@ implements \Eloquent\Phony\Mock\MockInterface,
     public function offsetGet(
         $a0
     ) {
-        $arguments = array($a0);
-        for ($i = 1; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+
+        for ($i = 1; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -374,8 +427,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         $a1
     ) {
-        $arguments = array($a0, $a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -396,8 +454,12 @@ implements \Eloquent\Phony\Mock\MockInterface,
     public function offsetUnset(
         $a0
     ) {
-        $arguments = array($a0);
-        for ($i = 1; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+
+        for ($i = 1; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -415,8 +477,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function rewind()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -434,8 +498,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function testClassAMethodA()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -460,8 +526,14 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a1,
         &$a2 = null
     ) {
-        $arguments = array($a0, $a1, &$a2);
-        for ($i = 3; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = &$a2;
+
+        for ($i = 3; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -479,8 +551,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function testClassBMethodA()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -503,8 +577,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         &$a0,
         &$a1
     ) {
-        $arguments = array(&$a0, &$a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = &$a0;
+        if ($argumentCount > 1) $arguments[] = &$a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -522,8 +601,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     public function valid()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -566,8 +647,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     protected static function testClassAStaticMethodC()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -590,8 +673,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         $a1
     ) {
-        $arguments = array($a0, $a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -609,8 +697,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
      */
     protected function testClassAMethodC()
     {
+        $argumentCount = func_num_args();
         $arguments = array();
-        for ($i = 0; $i < func_num_args(); $i++) {
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -633,8 +723,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         &$a0,
         &$a1
     ) {
-        $arguments = array(&$a0, &$a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = &$a0;
+        if ($argumentCount > 1) $arguments[] = &$a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 

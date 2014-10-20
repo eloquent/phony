@@ -25,8 +25,13 @@ implements \Eloquent\Phony\Mock\MockInterface
         callable $a0,
         callable $a1 = null
     ) {
-        $arguments = array($a0, $a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 

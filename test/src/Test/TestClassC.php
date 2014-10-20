@@ -18,4 +18,8 @@ class TestClassC
     public function methodA(self $first, $second = self::CONSTANT_A)
     {
     }
+
+    public function methodB($first, $second = 111, $third = 'second')
+    {
+    }
 }

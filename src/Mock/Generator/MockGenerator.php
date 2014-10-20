@@ -274,8 +274,10 @@ EOD;
 
             if ($method->isStatic()) {
                 $body = <<<'EOD'
-        $arguments = array(%s);
-        for ($i = %d; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();%s
+
+        for ($i = %d; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -287,8 +289,10 @@ EOD;
 EOD;
             } else {
                 $body = <<<'EOD'
-        $arguments = array(%s);
-        for ($i = %d; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();%s
+
+        for ($i = %d; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -306,25 +310,32 @@ EOD;
                 array_shift($parameters);
             }
 
-            $argumentPacking = array();
+            if ($parameters) {
+                $argumentPacking = "\n";
 
-            foreach ($parameters as $index => $parameter) {
-                if ($parameter->isPassedByReference()) {
-                    $reference = '&';
-                } else {
-                    $reference = '';
+                foreach ($parameters as $index => $parameter) {
+                    if ($parameter->isPassedByReference()) {
+                        $reference = '&';
+                    } else {
+                        $reference = '';
+                    }
+
+                    $argumentPacking .= sprintf(
+                        "\n        if (\$argumentCount > %d) " .
+                            "\$arguments[] = %s\$a%d;",
+                        $index,
+                        $reference,
+                        $index
+                    );
                 }
-
-                $argumentPacking[] = sprintf('%s$a%d', $reference, $index);
+            } else {
+                $argumentPacking = '';
             }
 
-            $body = sprintf(
-                $body,
-                implode(', ', $argumentPacking),
-                count($parameters)
+            $source .= $this->generateMethod(
+                $method,
+                sprintf($body, $argumentPacking, count($parameters))
             );
-
-            $source .= $this->generateMethod($method, $body);
         }
 
         return $source;

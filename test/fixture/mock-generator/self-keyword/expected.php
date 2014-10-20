@@ -30,8 +30,45 @@ implements \Eloquent\Phony\Mock\MockInterface
         \Eloquent\Phony\Test\TestClassC $a0,
         $a1 = \Eloquent\Phony\Test\TestClassC::CONSTANT_A
     ) {
-        $arguments = array($a0, $a1);
-        for ($i = 2; $i < func_num_args(); $i++) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return $this->_stubs[__FUNCTION__]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            );
+        }
+    }
+
+    /**
+     * Inherited method 'methodB'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassC::methodB()
+     *
+     * @param mixed $a0 Was 'first'.
+     * @param mixed $a1 Was 'second'.
+     * @param mixed $a2 Was 'third'.
+     */
+    public function methodB(
+        $a0,
+        $a1 = 111,
+        $a2 = 'second'
+    ) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = $a2;
+
+        for ($i = 3; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 

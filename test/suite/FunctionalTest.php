@@ -264,4 +264,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
     }
+
+    public function testDefaultArgumentsNotRecorded()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassC');
+        $proxy->mock()->methodB('a');
+
+        $proxy->methodB->calledWith('a');
+    }
 }
