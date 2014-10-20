@@ -54,23 +54,28 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
     public function testSet()
     {
         $this->subject->set('c');
-        $this->subject->set('d', 1);
+        $this->subject->set(1, 'd');
 
         $this->assertSame(array('c', 'd'), $this->subject->all());
         $this->assertSame('c', $this->a);
         $this->assertSame('d', $this->b);
+
+        $this->subject->set();
+
+        $this->assertSame(array(null, 'd'), $this->subject->all());
+        $this->assertNull($this->a);
     }
 
     public function testSetFailureTooHigh()
     {
         $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
-        $this->subject->set('value', 111);
+        $this->subject->set(111, 'value');
     }
 
     public function testSetFailureTooLow()
     {
         $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
-        $this->subject->set('value', -111);
+        $this->subject->set(-111, 'value');
     }
 
     public function testSetFailureNoArguments()

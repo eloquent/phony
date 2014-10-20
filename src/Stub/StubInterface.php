@@ -120,12 +120,19 @@ interface StubInterface extends WrappedInvocableInterface
     /**
      * Set the value of an argument passed by reference as part of an answer.
      *
-     * @param mixed        $value The value to set the argument to.
-     * @param integer|null $index The argument index, or null to set the first argument.
+     * If called with no arguments, sets the first argument to null.
+     *
+     * If called with one argument, sets the first argument to $indexOrValue.
+     *
+     * If called with two arguments, sets the argument at $indexOrValue to
+     * $value.
+     *
+     * @param mixed $indexOrValue The index, or value if no index is specified.
+     * @param mixed $value        The value.
      *
      * @return StubInterface This stub.
      */
-    public function setsArgument($value, $index = null);
+    public function setsArgument($indexOrValue = null, $value = null);
 
     /**
      * Add a callback as an answer.

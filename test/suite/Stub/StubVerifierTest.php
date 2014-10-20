@@ -599,10 +599,10 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->subject,
             $this->subject
                 ->setsArgument('a')
-                ->setsArgument('b', 1)
-                ->setsArgument('c', -1)
-                ->setsArgument('d', 111)
-                ->setsArgument('e', -111)
+                ->setsArgument(1, 'b')
+                ->setsArgument(-1, 'c')
+                ->setsArgument(111, 'd')
+                ->setsArgument(-111, 'e')
                 ->returns()
         );
 

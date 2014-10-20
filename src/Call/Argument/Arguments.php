@@ -84,13 +84,28 @@ class Arguments implements ArgumentsInterface
     /**
      * Set an argument by index.
      *
-     * @param mixed        $value The value.
-     * @param integer|null $index The index, or null for the first argument.
+     * If called with no arguments, sets the first argument to null.
+     *
+     * If called with one argument, sets the first argument to $indexOrValue.
+     *
+     * If called with two arguments, sets the argument at $indexOrValue to
+     * $value.
+     *
+     * @param mixed $indexOrValue The index, or value if no index is specified.
+     * @param mixed $value        The value.
      *
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function set($value, $index = null)
+    public function set($indexOrValue = null, $value = null)
     {
+        if (func_num_args() > 1) {
+            $index = $indexOrValue;
+        } else {
+            $index = 0;
+            $normalized = 0;
+            $value = $indexOrValue;
+        }
+
         $normalized = $this->normalizeIndex($index);
 
         if (null === $normalized) {
