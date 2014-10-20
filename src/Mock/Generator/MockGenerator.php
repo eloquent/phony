@@ -203,17 +203,13 @@ EOD;
         }
 
         $body = <<<'EOD'
+        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
+
         if (isset(self::$_magicStaticStubs[$a0])) {
-            return self::$_magicStaticStubs[$a0]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($a1)
-            );
+            return self::$_magicStaticStubs[$a0]->invokeWith($arguments);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments(func_get_args())
-            );
-        }
+        return self::_callMagicStatic($a0, $arguments);
 EOD;
 
         return $this->generateMethod($methods['__callStatic'], $body);
@@ -416,17 +412,13 @@ EOD;
         }
 
         $body = <<<'EOD'
+        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
+
         if (isset($this->_magicStubs[$a0])) {
-            return $this->_magicStubs[$a0]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($a1)
-            );
+            return $this->_magicStubs[$a0]->invokeWith($arguments);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments(func_get_args())
-            );
-        }
+        return self::_callMagic($a0, $arguments);
 EOD;
 
         return $this->generateMethod($methods['__call'], $body);
@@ -441,7 +433,7 @@ EOD;
      */
     protected function generateCallParentMethods(MockBuilderInterface $builder)
     {
-        return <<<'EOD'
+        $source = <<<'EOD'
 
     /**
      * Call a static parent method.
@@ -453,11 +445,39 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return call_user_func_array(
+        return \call_user_func_array(
             array(__CLASS__, 'parent::' . $name),
             $arguments->all()
         );
     }
+
+EOD;
+
+        $methods = $builder->methodDefinitions()->publicStaticMethods();
+
+        if (isset($methods['__callStatic'])) {
+            $source .= <<<'EOD'
+
+    /**
+     * Perform a magic call via the __callStatic stub.
+     *
+     * @param string                                           $name      The method name.
+     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
+     */
+    private static function _callMagicStatic(
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        if (isset(self::$_staticStubs['__callStatic'])) {
+            return self::$_staticStubs['__callStatic']
+                ->invoke($name, $arguments->all());
+        }
+    }
+
+EOD;
+        }
+
+        $source .= <<<'EOD'
 
     /**
      * Call a parent method.
@@ -469,13 +489,38 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return call_user_func_array(
+        return \call_user_func_array(
             array($this, 'parent::' . $name),
             $arguments->all()
         );
     }
 
 EOD;
+
+        $methods = $builder->methodDefinitions()->publicMethods();
+
+        if (isset($methods['__call'])) {
+            $source .= <<<'EOD'
+
+    /**
+     * Perform a magic call via the __call stub.
+     *
+     * @param string                                           $name      The method name.
+     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
+     */
+    private function _callMagic(
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        if (isset($this->_stubs['__call'])) {
+            return $this->_stubs['__call']->invoke($name, $arguments->all());
+        }
+    }
+
+EOD;
+        }
+
+        return $source;
     }
 
     /**

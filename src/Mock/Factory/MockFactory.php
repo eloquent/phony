@@ -289,21 +289,19 @@ class MockFactory implements MockFactoryInterface
         MockInterface $mock = null
     ) {
         if ($mock) {
-            $callParentMethod = $class->getMethod('_callParent');
-            $methodName = '__call';
+            $callMethod = $class->getMethod('_callMagic');
         } else {
-            $callParentMethod = $class->getMethod('_callParentStatic');
-            $methodName = '__callStatic';
+            $callMethod = $class->getMethod('_callMagicStatic');
         }
 
-        $callParentMethod->setAccessible(true);
+        $callMethod->setAccessible(true);
 
         $stub = $this->stubFactory->create(
-            function () use ($callParentMethod, $mock, $methodName, $name) {
-                return $callParentMethod->invoke(
+            function () use ($callMethod, $mock, $name) {
+                return $callMethod->invoke(
                     $mock,
-                    $methodName,
-                    new Arguments(array($name, func_get_args()))
+                    $name,
+                    new Arguments(func_get_args())
                 );
             },
             $mock

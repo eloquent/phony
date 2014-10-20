@@ -52,7 +52,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return call_user_func_array(
+        return \call_user_func_array(
             array(__CLASS__, 'parent::' . $name),
             $arguments->all()
         );
@@ -68,7 +68,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return call_user_func_array(
+        return \call_user_func_array(
             array($this, 'parent::' . $name),
             $arguments->all()
         );
