@@ -62,7 +62,7 @@ abstract class AbstractFacade
      * @param array|object|null                            $definition The definition.
      * @param string|null                                  $className  The class name.
      *
-     * @return MockInterface The mock.
+     * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
      */
     public static function mock(
         $types = null,
@@ -71,11 +71,13 @@ abstract class AbstractFacade
         $className = null
     ) {
         if (func_num_args() > 1) {
-            return static::driver()->mockBuilderFactory()
+            $mock = static::driver()->mockBuilderFactory()
                 ->createMock($types, $arguments, $definition, $className);
+        } else {
+            $mock = static::driver()->mockBuilderFactory()->createMock($types);
         }
 
-        return static::driver()->mockBuilderFactory()->createMock($types);
+        return static::on($mock);
     }
 
     /**
@@ -85,15 +87,17 @@ abstract class AbstractFacade
      * @param array|object|null                       $definition The definition.
      * @param string|null                             $className  The class name.
      *
-     * @return MockInterface The mock.
+     * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
      */
     public static function fullMock(
         $types = null,
         $definition = null,
         $className = null
     ) {
-        return static::driver()->mockBuilderFactory()
-            ->createFullMock($types, $definition, $className);
+        return static::on(
+            static::driver()->mockBuilderFactory()
+                ->createFullMock($types, $definition, $className)
+        );
     }
 
     /**

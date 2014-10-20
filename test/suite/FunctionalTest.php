@@ -16,15 +16,16 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 {
     public function testMockingStatic()
     {
-        $mock = Phony::mock('Eloquent\Phony\Test\TestClassA');
-        Phony::on($mock)->testClassAMethodA('a', 'b')->returns('x');
+        $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA('a', 'b')->returns('x');
+        $mock = $proxy->mock();
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
         $this->assertSame(array('a', 'b'), Phony::verify($mock)->testClassAMethodA('a', '*')->arguments());
         $this->assertSame('b', Phony::verify($mock)->testClassAMethodA('a', '*')->argument(1));
 
-        Phony::on($mock)->full();
+        $proxy->full();
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
         $this->assertNull($mock->testClassAMethodA('c', 'd'));
@@ -32,15 +33,16 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockingFunctions()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassA');
-        x\on($mock)->testClassAMethodA('a', 'b')->returns('x');
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA('a', 'b')->returns('x');
+        $mock = $proxy->mock();
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
         $this->assertSame(array('a', 'b'), x\verify($mock)->testClassAMethodA('a', '*')->arguments());
         $this->assertSame('b', x\verify($mock)->testClassAMethodA('a', '*')->argument(1));
 
-        x\on($mock)->full();
+        $proxy->full();
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
         $this->assertNull($mock->testClassAMethodA('c', 'd'));
@@ -48,7 +50,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockCalls()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassB', array('A', 'B'));
+        $mock = x\mock('Eloquent\Phony\Test\TestClassB', array('A', 'B'))->mock();
         $e = 'e';
         $n = 'n';
         $q = 'q';
@@ -74,8 +76,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockMocking()
     {
-        $mock = x\mock();
-        $mockMock = x\mock($mock);
+        $mock = x\mock()->mock();
+        $mockMock = x\mock($mock)->mock();
 
         $this->assertInstanceOf(get_class($mock), $mockMock);
         $this->assertNotInstanceOf(get_class($mockMock), $mock);
@@ -213,16 +215,18 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultStubAnswerCanBeOverridden()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassA');
-        x\on($mock)->testClassAMethodA()->returns(123);
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA()->returns(123);
+        $mock = $proxy->mock();
 
         $this->assertSame(123, $mock->testClassAMethodA());
     }
 
     public function testFullMockDefaultStubAnswerCanBeOverridden()
     {
-        $mock = x\fullMock('Eloquent\Phony\Test\TestClassA');
-        x\on($mock)->testClassAMethodA->returns(123);
+        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA->returns(123);
+        $mock = $proxy->mock();
 
         $this->assertSame(123, $mock->testClassAMethodA());
     }

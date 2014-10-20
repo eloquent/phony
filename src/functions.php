@@ -52,7 +52,7 @@ function mockBuilder($types = null, $definition = null, $className = null)
  * @param array|object|null                       $definition The definition.
  * @param string|null                             $className  The class name.
  *
- * @return MockInterface The mock.
+ * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
 function mock(
     $types = null,
@@ -61,11 +61,14 @@ function mock(
     $className = null
 ) {
     if (func_num_args() > 1) {
-        return FacadeDriver::instance()->mockBuilderFactory()
+        $mock = FacadeDriver::instance()->mockBuilderFactory()
             ->createMock($types, $arguments, $definition, $className);
+    } else {
+        $mock = FacadeDriver::instance()->mockBuilderFactory()
+            ->createMock($types);
     }
 
-    return FacadeDriver::instance()->mockBuilderFactory()->createMock($types);
+    return on($mock);
 }
 
 /**
@@ -75,12 +78,14 @@ function mock(
  * @param array|object|null                       $definition The definition.
  * @param string|null                             $className  The class name.
  *
- * @return MockInterface The mock.
+ * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
 function fullMock($types = null, $definition = null, $className = null)
 {
-    return FacadeDriver::instance()->mockBuilderFactory()
-        ->createFullMock($types, $definition, $className);
+    return on(
+        FacadeDriver::instance()->mockBuilderFactory()
+            ->createFullMock($types, $definition, $className)
+    );
 }
 
 /**
