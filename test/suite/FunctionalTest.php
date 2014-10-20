@@ -232,19 +232,21 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testDefaultStubAnswerCanBeOverridden()
     {
         $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
-        $proxy->testClassAMethodA()->returns(123);
+        $proxy->testClassAMethodA('a', 'b')->returns(123);
         $mock = $proxy->mock();
 
-        $this->assertSame(123, $mock->testClassAMethodA());
+        $this->assertSame(123, $mock->testClassAMethodA('a', 'b'));
+        $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
     }
 
     public function testFullMockDefaultStubAnswerCanBeOverridden()
     {
         $proxy = x\fullMock('Eloquent\Phony\Test\TestClassA');
-        $proxy->testClassAMethodA->returns(123);
+        $proxy->testClassAMethodA('a', 'b')->returns(123);
         $mock = $proxy->mock();
 
-        $this->assertSame(123, $mock->testClassAMethodA());
+        $this->assertSame(123, $mock->testClassAMethodA('a', 'b'));
+        $this->assertNull($mock->testClassAMethodA('c', 'd'));
     }
 
     public function testCanChainVerificationProxyCalls()

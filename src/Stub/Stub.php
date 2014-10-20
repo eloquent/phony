@@ -167,9 +167,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function with()
     {
-        if ($this->isNewRule) {
-            $this->forwards();
-        }
+        $this->handleDanglingRules();
 
         $this->isNewRule = true;
         $this->rule = new StubRule(
@@ -618,21 +616,9 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function invokeWith($arguments = null)
     {
+        $this->handleDanglingRules();
+
         $arguments = Arguments::adapt($arguments);
-
-        if ($this->rules) {
-            if ($this->isNewRule) {
-                $isDangling = $this->answer->secondaryRequests();
-            } else {
-                $isDangling = false;
-            }
-        } else {
-            $isDangling = true;
-        }
-
-        if ($isDangling) {
-            $this->forwards();
-        }
 
         foreach ($this->rules as $rule) {
             if ($rule->matches($arguments)) {
@@ -655,6 +641,26 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $request->callback(),
             $request->finalArguments($this->self, $arguments)
         );
+    }
+
+    /**
+     * Handles any unfinished rules.
+     */
+    protected function handleDanglingRules()
+    {
+        if ($this->rules) {
+            if ($this->isNewRule) {
+                $isDangling = $this->answer->secondaryRequests();
+            } else {
+                $isDangling = false;
+            }
+        } else {
+            $isDangling = (boolean) $this->rule;
+        }
+
+        if ($isDangling) {
+            $this->forwards();
+        }
     }
 
     private $self;
