@@ -26,8 +26,8 @@ use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactoryInterface;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -51,7 +51,7 @@ class MockBuilder implements MockBuilderInterface
      * @param string|null                             $className    The class name.
      * @param string|null                             $id           The identifier.
      * @param MockFactoryInterface|null               $factory      The factory to use.
-     * @param MockProxyFactoryInterface|null          $proxyFactory The proxy factory to use.
+     * @param ProxyFactoryInterface|null              $proxyFactory The proxy factory to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
      */
@@ -61,13 +61,13 @@ class MockBuilder implements MockBuilderInterface
         $className = null,
         $id = null,
         MockFactoryInterface $factory = null,
-        MockProxyFactoryInterface $proxyFactory = null
+        ProxyFactoryInterface $proxyFactory = null
     ) {
         if (null === $factory) {
             $factory = MockFactory::instance();
         }
         if (null === $proxyFactory) {
-            $proxyFactory = MockProxyFactory::instance();
+            $proxyFactory = ProxyFactory::instance();
         }
 
         $this->factory = $factory;
@@ -111,9 +111,9 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get the mock proxy factory.
+     * Get the proxy factory.
      *
-     * @return MockProxyFactoryInterface The mock proxy factory.
+     * @return ProxyFactoryInterface The proxy factory.
      */
     public function proxyFactory()
     {
@@ -585,7 +585,7 @@ class MockBuilder implements MockBuilderInterface
     public function full($id = null)
     {
         $mock = $this->createWith(null, $id);
-        $this->proxyFactory->create($mock)->full();
+        $this->proxyFactory->createStubbing($mock)->full();
 
         return $mock;
     }

@@ -16,7 +16,7 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -51,7 +51,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'const constantB' => 'constantValueB',
         );
         $this->factory = new MockFactory(new Sequencer());
-        $this->proxyFactory = new MockProxyFactory();
+        $this->proxyFactory = new ProxyFactory();
         $this->subject =
             new MockBuilder($this->inputTypes, $this->definition, null, null, $this->factory, $this->proxyFactory);
 

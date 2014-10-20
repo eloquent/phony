@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Builder\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -24,7 +24,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->idSequencer = new Sequencer();
         $this->mockFactory = new MockFactory();
-        $this->proxyFactory = new MockProxyFactory();
+        $this->proxyFactory = new ProxyFactory();
         $this->subject = new MockBuilderFactory($this->idSequencer, $this->mockFactory, $this->proxyFactory);
     }
 
@@ -41,7 +41,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(Sequencer::sequence('mock-builder-id'), $this->subject->idSequencer());
         $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
-        $this->assertSame(MockProxyFactory::instance(), $this->subject->proxyFactory());
+        $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
     }
 
     public function testCreate()

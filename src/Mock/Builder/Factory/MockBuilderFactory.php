@@ -15,8 +15,8 @@ use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactoryInterface;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 
@@ -44,14 +44,14 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Construct a new mock builder factory.
      *
-     * @param SequencerInterface|null        $idSequencer  The identifier sequencer to use.
-     * @param MockFactoryInterface|null      $mockFactory  The mock factory to use.
-     * @param MockProxyFactoryInterface|null $proxyFactory The proxy factory to use.
+     * @param SequencerInterface|null    $idSequencer  The identifier sequencer to use.
+     * @param MockFactoryInterface|null  $mockFactory  The mock factory to use.
+     * @param ProxyFactoryInterface|null $proxyFactory The proxy factory to use.
      */
     public function __construct(
         SequencerInterface $idSequencer = null,
         MockFactoryInterface $mockFactory = null,
-        MockProxyFactoryInterface $proxyFactory = null
+        ProxyFactoryInterface $proxyFactory = null
     ) {
         if (null === $idSequencer) {
             $idSequencer = Sequencer::sequence('mock-builder-id');
@@ -60,7 +60,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
             $mockFactory = MockFactory::instance();
         }
         if (null === $proxyFactory) {
-            $proxyFactory = MockProxyFactory::instance();
+            $proxyFactory = ProxyFactory::instance();
         }
 
         $this->idSequencer = $idSequencer;
@@ -89,9 +89,9 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     }
 
     /**
-     * Get the mock proxy factory.
+     * Get the proxy factory.
      *
-     * @return MockProxyFactoryInterface The mock proxy factory.
+     * @return ProxyFactoryInterface The proxy factory.
      */
     public function proxyFactory()
     {

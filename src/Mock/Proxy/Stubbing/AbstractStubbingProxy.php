@@ -9,69 +9,28 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
+use Eloquent\Phony\Mock\Proxy\AbstractProxy;
 use Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException;
 use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
- * An abstract base class for implementing mock proxies.
+ * An abstract base class for implementing stubbing proxies.
  *
  * @internal
  */
-abstract class AbstractMockProxy implements MockProxyInterface
+abstract class AbstractStubbingProxy extends AbstractProxy implements
+    StubbingProxyInterface
 {
-    /**
-     * Construct a new static mock proxy.
-     *
-     * @param string                              $className The class name.
-     * @param array<string,StubVerifierInterface> $stubs     The stubs.
-     * @param WildcardMatcherInterface|null       $wildcard  The wildcard matcher to use.
-     */
-    public function __construct(
-        $className,
-        array $stubs,
-        WildcardMatcherInterface $wildcard = null
-    ) {
-        if (null === $wildcard) {
-            $wildcard = WildcardMatcher::instance();
-        }
-
-        $this->className = $className;
-        $this->stubs = $stubs;
-        $this->wildcard = $wildcard;
-    }
-
-    /**
-     * Get the class name.
-     *
-     * @return string The class name.
-     */
-    public function className()
-    {
-        return $this->className;
-    }
-
-    /**
-     * Get the stubs.
-     *
-     * @return array<string,StubVerifierInterface> The stubs.
-     */
-    public function stubs()
-    {
-        return $this->stubs;
-    }
-
     /**
      * Turn the mock into a full mock.
      *
-     * @return MockProxyInterface This proxy.
+     * @return StubbingProxyInterface This proxy.
      */
     public function full()
     {
@@ -81,23 +40,6 @@ abstract class AbstractMockProxy implements MockProxyInterface
         }
 
         return $this;
-    }
-
-    /**
-     * Get a stub verifier.
-     *
-     * @param string $name The method name.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
-     */
-    public function stub($name)
-    {
-        if (isset($this->stubs[$name])) {
-            return $this->stubs[$name];
-        }
-
-        throw new UndefinedMethodStubException($this->className, $name);
     }
 
     /**
@@ -142,8 +84,4 @@ abstract class AbstractMockProxy implements MockProxyInterface
 
         return $stub;
     }
-
-    private $className;
-    private $stubs;
-    private $wildcard;
 }

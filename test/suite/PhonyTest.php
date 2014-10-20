@@ -15,7 +15,7 @@ use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 
@@ -23,7 +23,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->mockProxyFactory = new MockProxyFactory();
+        $this->proxyFactory = new ProxyFactory();
 
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);
@@ -51,7 +51,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $mock = Phony::mock()->create();
         $actual = Phony::on($mock);
-        $expected = $this->mockProxyFactory->create($mock);
+        $expected = $this->proxyFactory->createStubbing($mock);
 
         $this->assertEquals($expected, $actual);
     }
@@ -60,7 +60,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $mock = mock()->create();
         $actual = on($mock);
-        $expected = $this->mockProxyFactory->create($mock);
+        $expected = $this->proxyFactory->createStubbing($mock);
 
         $this->assertEquals($expected, $actual);
     }
@@ -69,7 +69,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $class = Phony::mock()->build();
         $actual = Phony::onStatic($class);
-        $expected = $this->mockProxyFactory->createStatic($class);
+        $expected = $this->proxyFactory->createStubbingStatic($class);
 
         $this->assertEquals($expected, $actual);
     }
@@ -78,7 +78,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $class = mock()->build();
         $actual = onStatic($class);
-        $expected = $this->mockProxyFactory->createStatic($class);
+        $expected = $this->proxyFactory->createStubbingStatic($class);
 
         $this->assertEquals($expected, $actual);
     }

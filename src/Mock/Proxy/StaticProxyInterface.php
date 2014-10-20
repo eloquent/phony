@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Mock\Proxy;
 
 /**
- * The interface used to identify staic mock proxies.
+ * The interface used to identify static proxies.
  */
-interface StaticMockProxyInterface extends MockProxyInterface
+interface StaticProxyInterface extends ProxyInterface
 {
 }

@@ -9,20 +9,21 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
- * A proxy for controlling a mock.
+ * A proxy for stubbing a mock.
  *
  * @internal
  */
-class MockProxy extends AbstractMockProxy implements InstanceMockProxyInterface
+class StubbingProxy extends AbstractStubbingProxy implements
+    InstanceStubbingProxyInterface
 {
     /**
-     * Construct a new mock proxy.
+     * Construct a new stubbing proxy.
      *
      * @param MockInterface                       $mock  The mock.
      * @param array<string,StubVerifierInterface> $stubs The stubs.

@@ -9,14 +9,14 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
 /**
- * A proxy for controlling a mock class.
+ * A proxy for stubbing a mock class.
  *
  * @internal
  */
-class StaticMockProxy extends AbstractMockProxy implements
-    StaticMockProxyInterface
+class StaticStubbingProxy extends AbstractStubbingProxy implements
+    StaticStubbingProxyInterface
 {
 }

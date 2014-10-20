@@ -17,8 +17,8 @@ use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceMockProxyInterface;
-use Eloquent\Phony\Mock\Proxy\StaticMockProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
@@ -50,28 +50,28 @@ abstract class AbstractFacade
     }
 
     /**
-     * Create a new mock proxy.
+     * Create a new stubbing proxy.
      *
      * @param MockInterface $mock The mock.
      *
-     * @return InstanceMockProxyInterface The mock proxy.
+     * @return InstanceStubbingProxyInterface The stubbing proxy.
      */
     public static function on(MockInterface $mock)
     {
-        return static::driver()->mockProxyFactory()->create($mock);
+        return static::driver()->proxyFactory()->createStubbing($mock);
     }
 
     /**
-     * Create a new static mock proxy.
+     * Create a new static stubbing proxy.
      *
      * @param ReflectionClass|object|string $class The class.
      *
-     * @return StaticMockProxyInterface The mock proxy.
-     * @throws MockExceptionInterface   If the supplied class name is not a mock class.
+     * @return StaticStubbingProxyInterface The stubbing proxy.
+     * @throws MockExceptionInterface       If the supplied class name is not a mock class.
      */
     public static function onStatic($class)
     {
-        return static::driver()->mockProxyFactory()->createStatic($class);
+        return static::driver()->proxyFactory()->createStubbingStatic($class);
     }
 
     /**

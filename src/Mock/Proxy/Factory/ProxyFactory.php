@@ -14,10 +14,10 @@ namespace Eloquent\Phony\Mock\Proxy\Factory;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceMockProxyInterface;
-use Eloquent\Phony\Mock\Proxy\MockProxy;
-use Eloquent\Phony\Mock\Proxy\StaticMockProxy;
-use Eloquent\Phony\Mock\Proxy\StaticMockProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
+use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
+use Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use ReflectionClass;
@@ -25,16 +25,16 @@ use ReflectionException;
 use ReflectionProperty;
 
 /**
- * Creates mock proxies.
+ * Creates proxies.
  *
  * @internal
  */
-class MockProxyFactory implements MockProxyFactoryInterface
+class ProxyFactory implements ProxyFactoryInterface
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return MockProxyFactoryInterface The static factory.
+     * @return ProxyFactoryInterface The static factory.
      */
     public static function instance()
     {
@@ -46,7 +46,7 @@ class MockProxyFactory implements MockProxyFactoryInterface
     }
 
     /**
-     * Construct a new mock proxy factory.
+     * Construct a new proxy factory.
      *
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory THe stub verifier factory to use.
      */
@@ -71,14 +71,14 @@ class MockProxyFactory implements MockProxyFactoryInterface
     }
 
     /**
-     * Create a new static mock proxy.
+     * Create a new static stubbing proxy.
      *
      * @param ReflectionClass|object|string $class The class.
      *
-     * @return StaticMockProxyInterface The newly created mock proxy.
-     * @throws MockExceptionInterface   If the supplied class name is not a mock class.
+     * @return StaticStubbingProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface       If the supplied class name is not a mock class.
      */
-    public function createStatic($class)
+    public function createStubbingStatic($class)
     {
         if (!$class instanceof ReflectionClass) {
             try {
@@ -98,23 +98,26 @@ class MockProxyFactory implements MockProxyFactoryInterface
         $stubsProperty->setAccessible(true);
         $stubs = $stubsProperty->getValue(null);
 
-        return new StaticMockProxy($class->getName(), $this->wrapStubs($stubs));
+        return new StaticStubbingProxy(
+            $class->getName(),
+            $this->wrapStubs($stubs)
+        );
     }
 
     /**
-     * Create a new mock proxy.
+     * Create a new stubbing proxy.
      *
      * @param MockInterface $mock The mock.
      *
-     * @return InstanceMockProxyInterface The newly created mock proxy.
+     * @return InstanceStubbingProxyInterface The newly created proxy.
      */
-    public function create(MockInterface $mock)
+    public function createStubbing(MockInterface $mock)
     {
         $stubsProperty = new ReflectionProperty($mock, '_stubs');
         $stubsProperty->setAccessible(true);
         $stubs = $stubsProperty->getValue($mock);
 
-        return new MockProxy($mock, $this->wrapStubs($stubs));
+        return new StubbingProxy($mock, $this->wrapStubs($stubs));
     }
 
     /**

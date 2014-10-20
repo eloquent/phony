@@ -9,12 +9,13 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
 
-class StaticMockProxyTest extends PHPUnit_Framework_TestCase
+class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -23,8 +24,8 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
         $this->className = $this->class->getName();
         $property = $this->class->getProperty('_staticStubs');
         $property->setAccessible(true);
-        $this->stubs = $property->getValue(null);
-        $this->subject = new StaticMockProxy($this->className, $this->stubs);
+        $this->stubs = $this->expectedStubs($property->getValue(null));
+        $this->subject = new StaticStubbingProxy($this->className, $this->stubs);
     }
 
     public function testConstructor()
@@ -72,5 +73,14 @@ class StaticMockProxyTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
         $this->subject->nonexistent();
+    }
+
+    protected function expectedStubs(array $stubs)
+    {
+        foreach ($stubs as $name => $stub) {
+            $stubs[$name] = StubVerifierFactory::instance()->create($stub->callback(), $stub);
+        }
+
+        return $stubs;
     }
 }

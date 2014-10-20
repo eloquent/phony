@@ -17,8 +17,8 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactoryInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactoryInterface;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -50,7 +50,7 @@ class FacadeDriver implements FacadeDriverInterface
      * Construct a new facade driver.
      *
      * @param MockBuilderFactoryInterface|null  $mockBuilderFactory  The mock builder factory to use.
-     * @param MockProxyFactoryInterface|null    $mockProxyFactory    The mock proxy factory to use.
+     * @param ProxyFactoryInterface|null        $proxyFactory        The proxy factory to use.
      * @param SpyVerifierFactoryInterface|null  $spyVerifierFactory  The spy verifier factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param EventOrderVerifierInterface|null  $eventOrderVerifier  The event order verifier to use.
@@ -58,7 +58,7 @@ class FacadeDriver implements FacadeDriverInterface
      */
     public function __construct(
         MockBuilderFactoryInterface $mockBuilderFactory = null,
-        MockProxyFactoryInterface $mockProxyFactory = null,
+        ProxyFactoryInterface $proxyFactory = null,
         SpyVerifierFactoryInterface $spyVerifierFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         EventOrderVerifierInterface $eventOrderVerifier = null,
@@ -67,8 +67,8 @@ class FacadeDriver implements FacadeDriverInterface
         if (null === $mockBuilderFactory) {
             $mockBuilderFactory = MockBuilderFactory::instance();
         }
-        if (null === $mockProxyFactory) {
-            $mockProxyFactory = MockProxyFactory::instance();
+        if (null === $proxyFactory) {
+            $proxyFactory = ProxyFactory::instance();
         }
         if (null === $spyVerifierFactory) {
             $spyVerifierFactory = SpyVerifierFactory::instance();
@@ -84,7 +84,7 @@ class FacadeDriver implements FacadeDriverInterface
         }
 
         $this->mockBuilderFactory = $mockBuilderFactory;
-        $this->mockProxyFactory = $mockProxyFactory;
+        $this->proxyFactory = $proxyFactory;
         $this->spyVerifierFactory = $spyVerifierFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->eventOrderVerifier = $eventOrderVerifier;
@@ -102,13 +102,13 @@ class FacadeDriver implements FacadeDriverInterface
     }
 
     /**
-     * Get the mock proxy factory.
+     * Get the proxy factory.
      *
-     * @return MockProxyFactoryInterface The mock proxy factory.
+     * @return ProxyFactoryInterface The proxy factory.
      */
-    public function mockProxyFactory()
+    public function proxyFactory()
     {
-        return $this->mockProxyFactory;
+        return $this->proxyFactory;
     }
 
     /**
@@ -153,7 +153,7 @@ class FacadeDriver implements FacadeDriverInterface
 
     private static $instance;
     private $mockBuilderFactory;
-    private $mockProxyFactory;
+    private $proxyFactory;
     private $spyVerifierFactory;
     private $stubVerifierFactory;
     private $eventOrderVerifier;

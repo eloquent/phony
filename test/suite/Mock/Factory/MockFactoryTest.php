@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Proxy\Factory\MockProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Stub\Factory\StubFactory;
@@ -32,7 +32,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->spyFactory = new SpyFactory();
         $this->subject = new MockFactory($this->idSequencer, $this->generator, $this->stubFactory, $this->spyFactory);
 
-        $this->proxyFactory = new MockProxyFactory();
+        $this->proxyFactory = new ProxyFactory();
     }
 
     public function testConstructor()

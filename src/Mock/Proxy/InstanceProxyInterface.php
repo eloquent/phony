@@ -14,9 +14,9 @@ namespace Eloquent\Phony\Mock\Proxy;
 use Eloquent\Phony\Mock\MockInterface;
 
 /**
- * The interface implemented by instance mock proxies.
+ * The interface implemented by instance proxies.
  */
-interface InstanceMockProxyInterface extends MockProxyInterface
+interface InstanceProxyInterface extends ProxyInterface
 {
     /**
      * Get the mock.
