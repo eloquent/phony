@@ -33,8 +33,8 @@ abstract class AbstractStubbingProxy extends AbstractProxy implements
     public function full()
     {
         foreach ($this->stubs as $stub) {
-            $stub->callback()->with($this->wildcard)->returns()
-                ->with($this->wildcard);
+            $stub->callback()->with($this->wildcardMatcher)->returns()
+                ->with($this->wildcardMatcher);
         }
 
         return $this;
@@ -58,9 +58,6 @@ abstract class AbstractStubbingProxy extends AbstractProxy implements
             throw new UndefinedMethodException(get_called_class(), $name, $e);
         }
 
-        return call_user_func_array(
-            array($stub->callback(), 'with'),
-            $arguments
-        );
+        return call_user_func_array(array($stub, 'with'), $arguments);
     }
 }

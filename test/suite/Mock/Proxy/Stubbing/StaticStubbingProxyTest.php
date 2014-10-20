@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -28,9 +29,11 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->class, $this->subject->reflector());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->stubs, $this->subject->stubs());
+        $this->assertSame(array(), $this->subject->magicStubs());
         $this->assertSame($this->magicStubsProperty, $this->subject->magicStubsProperty());
         $this->assertSame($this->mockFactory, $this->subject->mockFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
+        $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
     }
 
     public function testConstructorDefaults()
@@ -40,6 +43,7 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->magicStubsProperty());
         $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
+        $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
     }
 
     public function testFull()
@@ -49,6 +53,31 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->full());
         $this->assertNull($className::testClassAStaticMethodA());
         $this->assertNull($className::testClassAStaticMethodB('a', 'b'));
+    }
+
+    public function testMagicStubs()
+    {
+        $this->subject->nonexistentA;
+        $this->subject->nonexistentB;
+
+        $this->assertSame(array('nonexistentA', 'nonexistentB'), array_keys($this->subject->magicStubs()));
+    }
+
+    public function testStubMethods()
+    {
+        $className = $this->className;
+
+        $this->assertSame(
+            $this->stubs['testClassAStaticMethodA'],
+            $this->subject->stub('testClassAStaticMethodA')->spy()
+        );
+        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA->spy());
+        $this->assertSame(
+            $this->stubs['testClassAStaticMethodA'],
+            $this->subject->testClassAStaticMethodA('a', 'b')->returns('x')->spy()
+        );
+        $this->assertSame('x', $className::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame('cd', $className::testClassAStaticMethodA('c', 'd'));
     }
 
     public function testStubFailure()
@@ -91,12 +120,14 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
         }
         $this->mockFactory = new MockFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->wildcardMatcher = new WildcardMatcher();
         $this->subject = new StaticStubbingProxy(
             $this->class,
             $this->stubs,
             $this->magicStubsProperty,
             $this->mockFactory,
-            $this->stubVerifierFactory
+            $this->stubVerifierFactory,
+            $this->wildcardMatcher
         );
     }
 

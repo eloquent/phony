@@ -41,7 +41,7 @@ abstract class AbstractProxy implements ProxyInterface
      * @param ReflectionProperty|null           $magicStubsProperty  The magic stubs property, or null if magic is not available.
      * @param MockFactoryInterface|null         $mockFactory         The mock factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param WildcardMatcherInterface|null     $wildcard            The wildcard matcher to use.
+     * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
      */
     public function __construct(
         ReflectionClass $class,
@@ -49,7 +49,7 @@ abstract class AbstractProxy implements ProxyInterface
         ReflectionProperty $magicStubsProperty = null,
         MockFactoryInterface $mockFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
-        WildcardMatcherInterface $wildcard = null
+        WildcardMatcherInterface $wildcardMatcher = null
     ) {
         if (null === $mockFactory) {
             $mockFactory = MockFactory::instance();
@@ -57,8 +57,8 @@ abstract class AbstractProxy implements ProxyInterface
         if (null === $stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
-        if (null === $wildcard) {
-            $wildcard = WildcardMatcher::instance();
+        if (null === $wildcardMatcher) {
+            $wildcardMatcher = WildcardMatcher::instance();
         }
 
         $this->class = $class;
@@ -66,7 +66,7 @@ abstract class AbstractProxy implements ProxyInterface
         $this->magicStubsProperty = $magicStubsProperty;
         $this->mockFactory = $mockFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
-        $this->wildcard = $wildcard;
+        $this->wildcardMatcher = $wildcardMatcher;
     }
 
     /**
@@ -137,6 +137,16 @@ abstract class AbstractProxy implements ProxyInterface
     public function stubVerifierFactory()
     {
         return $this->stubVerifierFactory;
+    }
+
+    /**
+     * Get the wildcard matcher.
+     *
+     * @return WildcardMatcherInterface The wildcard matcher.
+     */
+    public function wildcardMatcher()
+    {
+        return $this->wildcardMatcher;
     }
 
     /**
@@ -226,5 +236,5 @@ abstract class AbstractProxy implements ProxyInterface
     protected $magicStubsProperty;
     protected $mockFactory;
     protected $stubVerifierFactory;
-    protected $wildcard;
+    protected $wildcardMatcher;
 }

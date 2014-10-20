@@ -36,7 +36,7 @@ class VerificationProxy extends AbstractVerificationProxy implements
      * @param ReflectionProperty|null           $magicStubsProperty  The magic stubs property, or null if magic is not available.
      * @param MockFactoryInterface|null         $mockFactory         The mock factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param WildcardMatcherInterface|null     $wildcard            The wildcard matcher to use.
+     * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
      */
     public function __construct(
         MockInterface $mock,
@@ -45,7 +45,7 @@ class VerificationProxy extends AbstractVerificationProxy implements
         ReflectionProperty $magicStubsProperty = null,
         MockFactoryInterface $mockFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
-        WildcardMatcherInterface $wildcard = null
+        WildcardMatcherInterface $wildcardMatcher = null
     ) {
         parent::__construct(
             $class,
@@ -53,7 +53,7 @@ class VerificationProxy extends AbstractVerificationProxy implements
             $magicStubsProperty,
             $mockFactory,
             $stubVerifierFactory,
-            $wildcard
+            $wildcardMatcher
         );
 
         $this->mock = $mock;

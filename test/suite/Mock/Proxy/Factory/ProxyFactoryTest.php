@@ -70,6 +70,26 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testCreateStubbingStaticNonMagic()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $class = $mockBuilder->build();
+        $stubsProperty = $class->getProperty('_staticStubs');
+        $stubsProperty->setAccessible(true);
+        $magicStubsProperty = null;
+        $expected = new StaticStubbingProxy(
+            $class,
+            $stubsProperty->getValue(null),
+            $magicStubsProperty,
+            $this->mockFactory,
+            $this->stubVerifierFactory,
+            $this->wildcardMatcher
+        );
+        $actual = $this->subject->createStubbingStatic($class);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testCreateStubbingStaticWithObject()
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
@@ -169,6 +189,28 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testCreateStubbingNonMagic()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $mock = $mockBuilder->create();
+        $class = new ReflectionClass($mock);
+        $stubsProperty = new ReflectionProperty($mock, '_stubs');
+        $stubsProperty->setAccessible(true);
+        $magicStubsProperty = null;
+        $expected = new StubbingProxy(
+            $mock,
+            $class,
+            $stubsProperty->getValue($mock),
+            $magicStubsProperty,
+            $this->mockFactory,
+            $this->stubVerifierFactory,
+            $this->wildcardMatcher
+        );
+        $actual = $this->subject->createStubbing($mock);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testCreateStubbingWithProxy()
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
@@ -206,6 +248,26 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $stubsProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStaticStubs');
         $magicStubsProperty->setAccessible(true);
+        $expected = new StaticVerificationProxy(
+            $class,
+            $stubsProperty->getValue(null),
+            $magicStubsProperty,
+            $this->mockFactory,
+            $this->stubVerifierFactory,
+            $this->wildcardMatcher
+        );
+        $actual = $this->subject->createVerificationStatic($class);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateVerificationStaticNonMagic()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $class = $mockBuilder->build();
+        $stubsProperty = $class->getProperty('_staticStubs');
+        $stubsProperty->setAccessible(true);
+        $magicStubsProperty = null;
         $expected = new StaticVerificationProxy(
             $class,
             $stubsProperty->getValue(null),
@@ -304,6 +366,28 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $stubsProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStubs');
         $magicStubsProperty->setAccessible(true);
+        $expected = new VerificationProxy(
+            $mock,
+            $class,
+            $stubsProperty->getValue($mock),
+            $magicStubsProperty,
+            $this->mockFactory,
+            $this->stubVerifierFactory,
+            $this->wildcardMatcher
+        );
+        $actual = $this->subject->createVerification($mock);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateVerificationNonMagic()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $mock = $mockBuilder->create();
+        $class = new ReflectionClass($mock);
+        $stubsProperty = new ReflectionProperty($mock, '_stubs');
+        $stubsProperty->setAccessible(true);
+        $magicStubsProperty = null;
         $expected = new VerificationProxy(
             $mock,
             $class,
