@@ -235,7 +235,7 @@ class MockFactory implements MockFactoryInterface
      *
      * @return array<string,SpyInterface> The stubs.
      */
-    protected function createStubs(
+    public function createStubs(
         ReflectionClass $class,
         array $methods,
         MockInterface $mock = null
@@ -272,6 +272,44 @@ class MockFactory implements MockFactoryInterface
         }
 
         return $stubs;
+    }
+
+    /**
+     * Create a magic stub.
+     *
+     * @param ReflectionClass $class The mock class.
+     * @param string $name The method name.
+     * @param MockInterface|null $mock  The mock, or null for a static stub.
+     *
+     * @return SpyInterface The stub.
+     */
+    public function createMagicStub(
+        ReflectionClass $class,
+        $name,
+        MockInterface $mock = null
+    ) {
+        if ($mock) {
+            $callParentMethod = $class->getMethod('_callParent');
+            $methodName = '__call';
+        } else {
+            $callParentMethod = $class->getMethod('_callParentStatic');
+            $methodName = '__callStatic';
+        }
+
+        $callParentMethod->setAccessible(true);
+
+        $stub = $this->stubFactory->create(
+            function () use ($callParentMethod, $mock, $methodName, $name) {
+                return $callParentMethod->invoke(
+                    $mock,
+                    $methodName,
+                    new Arguments(array($name, func_get_args()))
+                );
+            },
+            $mock
+        );
+
+        return $this->spyFactory->create($stub);
     }
 
     private static $instance;

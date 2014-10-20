@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Spy\SpyInterface;
 use ReflectionClass;
 
 /**
@@ -46,5 +47,35 @@ interface MockFactoryInterface
         MockBuilderInterface $builder,
         $arguments = null,
         $id = null
+    );
+
+    /**
+     * Create the stubs for a list of methods.
+     *
+     * @param ReflectionClass    $class The mock class.
+     * @param array<string,MethodDefinitionInterface> The methods.
+     * @param MockInterface|null $mock  The mock, or null for static stubs.
+     *
+     * @return array<string,SpyInterface> The stubs.
+     */
+    public function createStubs(
+        ReflectionClass $class,
+        array $methods,
+        MockInterface $mock = null
+    );
+
+    /**
+     * Create a magic stub.
+     *
+     * @param ReflectionClass $class The mock class.
+     * @param string $name The method name.
+     * @param MockInterface|null $mock  The mock, or null for a static stub.
+     *
+     * @return SpyInterface The stub.
+     */
+    public function createMagicStub(
+        ReflectionClass $class,
+        $name,
+        MockInterface $mock = null
     );
 }

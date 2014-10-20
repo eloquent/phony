@@ -451,6 +451,8 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     private static $_staticStubs = array();
+    private static $_magicStaticStubs = array();
     private $_stubs = array();
+    private $_magicStubs = array();
     private $_mockId;
 }

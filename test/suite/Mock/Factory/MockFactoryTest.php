@@ -175,6 +175,22 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);
     }
 
+    public function testCreateMagicStub()
+    {
+        $builder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $builder->build();
+        $mock = $builder->get();
+
+        $this->assertSame(
+            'static magic nonexistent ab',
+            call_user_func($this->subject->createMagicStub($class, 'nonexistent'), 'a', 'b')
+        );
+        $this->assertSame(
+            'magic nonexistent ab',
+            call_user_func($this->subject->createMagicStub($class, 'nonexistent', $mock), 'a', 'b')
+        );
+    }
+
     public function testInstance()
     {
         $class = get_class($this->subject);

@@ -25,6 +25,11 @@ class TestClassB extends TestClassA implements TestInterfaceB
         return $result;
     }
 
+    public static function __callStatic($name, array $arguments)
+    {
+        return 'static magic ' . $name . ' ' . implode($arguments);
+    }
+
     public function __construct()
     {
         $this->constructorArguments = func_get_args();
@@ -62,5 +67,10 @@ class TestClassB extends TestClassA implements TestInterfaceB
         $second = 'second';
 
         return $result;
+    }
+
+    public function __call($name, array $arguments)
+    {
+        return 'magic ' . $name . ' ' . implode($arguments);
     }
 }
