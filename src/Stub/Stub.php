@@ -648,17 +648,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     protected function handleDanglingRules()
     {
-        if ($this->rules) {
-            if ($this->isNewRule) {
-                $isDangling = $this->answer->secondaryRequests();
-            } else {
-                $isDangling = false;
-            }
-        } else {
-            $isDangling = (boolean) $this->rule;
+        if (!$this->rule) {
+            return;
         }
 
-        if ($isDangling) {
+        if (!$this->rules || $this->answer->secondaryRequests()) {
             $this->forwards();
         }
     }
