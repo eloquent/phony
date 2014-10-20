@@ -59,7 +59,7 @@ class PhpunitFacadeDriver extends FacadeDriver
 
         parent::__construct(
             null,
-            new ProxyFactory($stubVerifierFactory),
+            new ProxyFactory(null, $stubVerifierFactory),
             new SpyVerifierFactory(
                 null,
                 null,

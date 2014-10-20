@@ -168,6 +168,31 @@ implements \Eloquent\Phony\Mock\MockInterface,
     }
 
     /**
+     * Inherited method '__callStatic'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassB::__callStatic()
+     *
+     * @param mixed $a0 Was 'name'.
+     * @param array $a1 Was 'arguments'.
+     */
+    public static function __callStatic(
+        $a0,
+        array $a1
+    ) {
+        if (isset(self::$_magicStaticStubs[$a0])) {
+            return self::$_magicStaticStubs[$a0]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments($a1)
+            );
+        }
+
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return self::$_staticStubs[__FUNCTION__]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments(func_get_args())
+            );
+        }
+    }
+
+    /**
      * Construct a mock.
      */
     public function __construct()
@@ -505,6 +530,31 @@ implements \Eloquent\Phony\Mock\MockInterface,
         if (isset($this->_stubs[__FUNCTION__])) {
             return $this->_stubs[__FUNCTION__]->invokeWith(
                 new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            );
+        }
+    }
+
+    /**
+     * Inherited method '__call'.
+     *
+     * @uses \Eloquent\Phony\Test\TestClassB::__call()
+     *
+     * @param mixed $a0 Was 'name'.
+     * @param array $a1 Was 'arguments'.
+     */
+    public function __call(
+        $a0,
+        array $a1
+    ) {
+        if (isset($this->_magicStubs[$a0])) {
+            return $this->_magicStubs[$a0]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments($a1)
+            );
+        }
+
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return $this->_stubs[__FUNCTION__]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments(func_get_args())
             );
         }
     }

@@ -68,10 +68,12 @@ class MockGenerator implements MockGeneratorInterface
             $this->generateMethods(
                 $builder->methodDefinitions()->publicStaticMethods()
             ) .
+            $this->generateMagicCallStatic($builder) .
             $this->generateConstructors($builder) .
             $this->generateMethods(
                 $builder->methodDefinitions()->publicMethods()
             ) .
+            $this->generateMagicCall($builder) .
             $this->generateMethods(
                 $builder->methodDefinitions()->protectedStaticMethods()
             ) .
@@ -186,6 +188,38 @@ EOD;
     }
 
     /**
+     * Generate the __callStatic() method.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return string The source code.
+     */
+    protected function generateMagicCallStatic(MockBuilderInterface $builder)
+    {
+        $methods = $builder->methodDefinitions()->publicStaticMethods();
+
+        if (!isset($methods['__callStatic'])) {
+            return '';
+        }
+
+        $body = <<<'EOD'
+        if (isset(self::$_magicStaticStubs[$a0])) {
+            return self::$_magicStaticStubs[$a0]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments($a1)
+            );
+        }
+
+        if (isset(self::$_staticStubs[__FUNCTION__])) {
+            return self::$_staticStubs[__FUNCTION__]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments(func_get_args())
+            );
+        }
+EOD;
+
+        return $this->generateMethod($methods['__callStatic'], $body);
+    }
+
+    /**
      * Generate the constructors.
      *
      * @param MockBuilderInterface $builder The builder.
@@ -231,38 +265,14 @@ EOD;
         $source = '';
 
         foreach ($methods as $method) {
-            if ($method->isCustom()) {
-                $commentTemplate = <<<'EOD'
-    /**
-     * Custom method '%s'.%s
-     */
-EOD;
-            } else {
-                $commentTemplate = <<<'EOD'
-    /**
-     * Inherited method '%%s'.
-     *
-     * @uses \%s::%s()%%s
-     */
-EOD;
-                $commentTemplate = sprintf(
-                    $commentTemplate,
-                    $method->method()->getDeclaringClass()->getName(),
-                    $method->method()->getName()
-                );
+            if (
+                '__call' === $method->name() ||
+                '__callStatic' === $method->name()
+            ) {
+                continue;
             }
 
-            $comment = sprintf(
-                $commentTemplate,
-                $method->name(),
-                $this->renderParametersDocumentation(
-                    $method->method(),
-                    $method->isCustom()
-                )
-            );
-
             if ($method->isStatic()) {
-                $scope = 'static ';
                 $body = <<<'EOD'
         $arguments = array(%s);
         for ($i = %d; $i < func_num_args(); $i++) {
@@ -276,7 +286,6 @@ EOD;
         }
 EOD;
             } else {
-                $scope = '';
                 $body = <<<'EOD'
         $arguments = array(%s);
         for ($i = %d; $i < func_num_args(); $i++) {
@@ -309,22 +318,107 @@ EOD;
                 $argumentPacking[] = sprintf('%s$a%d', $reference, $index);
             }
 
-            $source .= sprintf(
-                "\n%s\n    %s %sfunction %s%s%s\n    }\n",
-                $comment,
-                $method->accessLevel(),
-                $scope,
-                $method->name(),
-                $this->renderParameters($method->method(), $method->isCustom()),
-                sprintf(
-                    $body,
-                    implode(', ', $argumentPacking),
-                    count($parameters)
-                )
+            $body = sprintf(
+                $body,
+                implode(', ', $argumentPacking),
+                count($parameters)
             );
+
+            $source .= $this->generateMethod($method, $body);
         }
 
         return $source;
+    }
+
+    /**
+     * Generate the supplied method.
+     *
+     * @param MethodDefinitionInterface $method The method.
+     * @param string                    $body   The method body.
+     *
+     * @return string The source code.
+     */
+    protected function generateMethod(MethodDefinitionInterface $method, $body)
+    {
+        $source = '';
+
+        if ($method->isCustom()) {
+            $commentTemplate = <<<'EOD'
+    /**
+     * Custom method '%s'.%s
+     */
+EOD;
+        } else {
+            $commentTemplate = <<<'EOD'
+    /**
+     * Inherited method '%%s'.
+     *
+     * @uses \%s::%s()%%s
+     */
+EOD;
+            $commentTemplate = sprintf(
+                $commentTemplate,
+                $method->method()->getDeclaringClass()->getName(),
+                $method->method()->getName()
+            );
+        }
+
+        $comment = sprintf(
+            $commentTemplate,
+            $method->name(),
+            $this->renderParametersDocumentation(
+                $method->method(),
+                $method->isCustom()
+            )
+        );
+
+        if ($method->isStatic()) {
+            $scope = 'static ';
+        } else {
+            $scope = '';
+        }
+
+        return sprintf(
+            "\n%s\n    %s %sfunction %s%s%s\n    }\n",
+            $comment,
+            $method->accessLevel(),
+            $scope,
+            $method->name(),
+            $this->renderParameters($method->method(), $method->isCustom()),
+            $body
+        );
+    }
+
+    /**
+     * Generate the __call() method.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return string The source code.
+     */
+    protected function generateMagicCall(MockBuilderInterface $builder)
+    {
+        $methods = $builder->methodDefinitions()->publicMethods();
+
+        if (!isset($methods['__call'])) {
+            return '';
+        }
+
+        $body = <<<'EOD'
+        if (isset($this->_magicStubs[$a0])) {
+            return $this->_magicStubs[$a0]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments($a1)
+            );
+        }
+
+        if (isset($this->_stubs[__FUNCTION__])) {
+            return $this->_stubs[__FUNCTION__]->invokeWith(
+                new \Eloquent\Phony\Call\Argument\Arguments(func_get_args())
+            );
+        }
+EOD;
+
+        return $this->generateMethod($methods['__call'], $body);
     }
 
     /**

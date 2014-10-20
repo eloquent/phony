@@ -552,6 +552,12 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB')
                 ),
                 'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid')),
+                '__call' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__call')
+                ),
+                '__callStatic' => new RealMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic')
+                ),
             )
         );
 

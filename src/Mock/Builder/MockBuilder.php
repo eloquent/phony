@@ -678,11 +678,7 @@ class MockBuilder implements MockBuilderInterface
             foreach ($type->getMethods() as $method) {
                 $name = $method->getName();
 
-                if (
-                    $this->isReservedWord($name) ||
-                    '__call' === $name ||
-                    '__callStatic' === $name
-                ) {
+                if ($this->isReservedWord($name)) {
                     continue;
                 }
 

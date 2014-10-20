@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Proxy\Verification;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
 
@@ -19,50 +20,75 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $this->class = $this->mockBuilder->build();
-        $this->className = $this->class->getName();
-        $property = $this->class->getProperty('_staticStubs');
-        $property->setAccessible(true);
-        $this->stubs = $this->expectedStubs($property->getValue(null));
-        $this->subject = new StaticVerificationProxy($this->className, $this->stubs);
+        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->class, $this->subject->reflector());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->stubs, $this->subject->stubs());
+        $this->assertSame($this->magicStubsProperty, $this->subject->magicStubsProperty());
+        $this->assertSame($this->mockFactory, $this->subject->mockFactory());
+        $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
     }
 
-    public function testStubMethods()
+    public function testConstructorDefaults()
     {
-        $className = $this->className;
+        $this->subject = new StaticVerificationProxy($this->class, $this->stubs);
 
-        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->stub('testClassAStaticMethodA'));
-        $this->assertSame($this->stubs['testClassAStaticMethodA'], $this->subject->testClassAStaticMethodA);
-        $this->assertSame('ab', $className::testClassAStaticMethodA('a', 'b'));
-        $this->assertInstanceOf(
-            'Eloquent\Phony\Call\Event\CallEventCollection',
-            $this->subject->testClassAStaticMethodA('a', 'b')
-        );
+        $this->assertNull($this->subject->magicStubsProperty());
+        $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
+        $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
     }
 
     public function testStubFailure()
     {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->stub('nonexistent');
     }
 
     public function testMagicPropertyFailure()
     {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
         $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException');
         $this->subject->nonexistent;
     }
 
     public function testMagicCallFailure()
     {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
         $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
         $this->subject->nonexistent();
+    }
+
+    protected function setUpWith($className)
+    {
+        $this->mockBuilder = new MockBuilder($className);
+        $this->class = $this->mockBuilder->build();
+        $this->className = $this->class->getName();
+        $stubsProperty = $this->class->getProperty('_staticStubs');
+        $stubsProperty->setAccessible(true);
+        $this->stubs = $this->expectedStubs($stubsProperty->getValue(null));
+        if ($this->class->hasMethod('__callStatic')) {
+            $this->magicStubsProperty = $this->class->getProperty('_magicStaticStubs');
+            $this->magicStubsProperty->setAccessible(true);
+        } else {
+            $this->magicStubsProperty = null;
+        }
+        $this->mockFactory = new MockFactory();
+        $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->subject = new StaticVerificationProxy(
+            $this->class,
+            $this->stubs,
+            $this->magicStubsProperty,
+            $this->mockFactory,
+            $this->stubVerifierFactory
+        );
     }
 
     protected function expectedStubs(array $stubs)

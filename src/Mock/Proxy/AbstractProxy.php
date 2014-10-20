@@ -15,8 +15,16 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
+use Eloquent\Phony\Mock\Factory\MockFactory;
+use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
+use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
+use Eloquent\Phony\Stub\StubInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
+use ReflectionClass;
+use ReflectionProperty;
 
 /**
  * An abstract base class for implementing proxies.
@@ -28,22 +36,47 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Construct a new proxy.
      *
-     * @param string                              $className The class name.
-     * @param array<string,StubVerifierInterface> $stubs     The stubs.
-     * @param WildcardMatcherInterface|null       $wildcard  The wildcard matcher to use.
+     * @param ReflectionClass                   $class               The class.
+     * @param array<string,StubInterface>       $stubs               The stubs.
+     * @param ReflectionProperty|null           $magicStubsProperty  The magic stubs property, or null if magic is not available.
+     * @param MockFactoryInterface|null         $mockFactory         The mock factory to use.
+     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param WildcardMatcherInterface|null     $wildcard            The wildcard matcher to use.
      */
     public function __construct(
-        $className,
+        ReflectionClass $class,
         array $stubs,
+        ReflectionProperty $magicStubsProperty = null,
+        MockFactoryInterface $mockFactory = null,
+        StubVerifierFactoryInterface $stubVerifierFactory = null,
         WildcardMatcherInterface $wildcard = null
     ) {
+        if (null === $mockFactory) {
+            $mockFactory = MockFactory::instance();
+        }
+        if (null === $stubVerifierFactory) {
+            $stubVerifierFactory = StubVerifierFactory::instance();
+        }
         if (null === $wildcard) {
             $wildcard = WildcardMatcher::instance();
         }
 
-        $this->className = $className;
+        $this->class = $class;
         $this->stubs = $stubs;
+        $this->magicStubsProperty = $magicStubsProperty;
+        $this->mockFactory = $mockFactory;
+        $this->stubVerifierFactory = $stubVerifierFactory;
         $this->wildcard = $wildcard;
+    }
+
+    /**
+     * Get the class.
+     *
+     * @return ReflectionClass The class.
+     */
+    public function reflector()
+    {
+        return $this->class;
     }
 
     /**
@@ -53,17 +86,57 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function className()
     {
-        return $this->className;
+        return $this->class->getName();
     }
 
     /**
      * Get the stubs.
      *
-     * @return array<string,StubVerifierInterface> The stubs.
+     * @return array<string,SpyInterface> The stubs.
      */
     public function stubs()
     {
         return $this->stubs;
+    }
+
+    /**
+     * Get the magic stubs.
+     *
+     * @return array<string,SpyInterface> The magic stubs.
+     */
+    public function magicStubs()
+    {
+        return $this->magicStubsProperty->getValue($this->mock);
+    }
+
+    /**
+     * Get the magic stubs property.
+     *
+     * @return ReflectionProperty|null The magic stubs property, or null if magic calls are not supported.
+     */
+    public function magicStubsProperty()
+    {
+        return $this->magicStubsProperty;
+    }
+
+    /**
+     * Get the mock factory.
+     *
+     * @return MockFactoryInterface The mock factory.
+     */
+    public function mockFactory()
+    {
+        return $this->mockFactory;
+    }
+
+    /**
+     * Get the stub verifier factory.
+     *
+     * @return StubVerifierFactoryInterface The stub verifier factory.
+     */
+    public function stubVerifierFactory()
+    {
+        return $this->stubVerifierFactory;
     }
 
     /**
@@ -77,10 +150,43 @@ abstract class AbstractProxy implements ProxyInterface
     public function stub($name)
     {
         if (isset($this->stubs[$name])) {
-            return $this->stubs[$name];
+            $stub = $this->stubs[$name];
+
+            return $this->stubVerifierFactory->create($stub->callback(), $stub);
         }
 
-        throw new UndefinedMethodStubException($this->className, $name);
+        return $this->magicStub($name);
+    }
+
+    /**
+     * Get a magic stub verifier.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If magic calls are not supported.
+     */
+    public function magicStub($name)
+    {
+        if (null === $this->magicStubsProperty) {
+            throw new UndefinedMethodStubException(
+                $this->class->getName(),
+                $name
+            );
+        }
+
+        $magicStubs = $this->magicStubsProperty->getValue($this->mock);
+
+        if (!isset($magicStubs[$name])) {
+            $magicStubs[$name] = $this->wrapStub(
+                $this->mockFactory
+                    ->createMagicStub($this->class, $name, $this->mock)
+            );
+        }
+
+        $this->magicStubsProperty->setValue($this->mock, $magicStubs);
+
+        return $this->wrapStub($magicStubs[$name]);
     }
 
     /**
@@ -102,7 +208,23 @@ abstract class AbstractProxy implements ProxyInterface
         return $stub;
     }
 
-    protected $className;
+    /**
+     * Wrap a stub in a stub verifier.
+     *
+     * @param SpyInterface $stub The stub.
+     *
+     * @return StubVerifierInterface The stub verifier.
+     */
+    protected function wrapStub(SpyInterface $stub)
+    {
+        return $this->stubVerifierFactory->create($stub->callback(), $stub);
+    }
+
+    protected $mock;
+    protected $class;
     protected $stubs;
+    protected $magicStubsProperty;
+    protected $mockFactory;
+    protected $stubVerifierFactory;
     protected $wildcard;
 }

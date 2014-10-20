@@ -67,8 +67,8 @@ interface MockFactoryInterface
     /**
      * Create a magic stub.
      *
-     * @param ReflectionClass $class The mock class.
-     * @param string $name The method name.
+     * @param ReflectionClass    $class The mock class.
+     * @param string             $name  The method name.
      * @param MockInterface|null $mock  The mock, or null for a static stub.
      *
      * @return SpyInterface The stub.

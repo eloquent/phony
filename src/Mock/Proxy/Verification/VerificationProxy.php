@@ -11,8 +11,13 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Verification;
 
+use Eloquent\Phony\Matcher\WildcardMatcherInterface;
+use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
+use ReflectionClass;
+use ReflectionProperty;
 
 /**
  * A proxy for verifying a mock.
@@ -25,12 +30,31 @@ class VerificationProxy extends AbstractVerificationProxy implements
     /**
      * Construct a new verification proxy.
      *
-     * @param MockInterface                       $mock  The mock.
-     * @param array<string,StubVerifierInterface> $stubs The stubs.
+     * @param MockInterface                     $mock                The mock.
+     * @param ReflectionClass                   $class               The class.
+     * @param array<string,SpyInterface>        $stubs               The stubs.
+     * @param ReflectionProperty|null           $magicStubsProperty  The magic stubs property, or null if magic is not available.
+     * @param MockFactoryInterface|null         $mockFactory         The mock factory to use.
+     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param WildcardMatcherInterface|null     $wildcard            The wildcard matcher to use.
      */
-    public function __construct(MockInterface $mock, array $stubs)
-    {
-        parent::__construct(get_class($mock), $stubs);
+    public function __construct(
+        MockInterface $mock,
+        ReflectionClass $class,
+        array $stubs,
+        ReflectionProperty $magicStubsProperty = null,
+        MockFactoryInterface $mockFactory = null,
+        StubVerifierFactoryInterface $stubVerifierFactory = null,
+        WildcardMatcherInterface $wildcard = null
+    ) {
+        parent::__construct(
+            $class,
+            $stubs,
+            $magicStubsProperty,
+            $mockFactory,
+            $stubVerifierFactory,
+            $wildcard
+        );
 
         $this->mock = $mock;
     }
@@ -44,6 +68,4 @@ class VerificationProxy extends AbstractVerificationProxy implements
     {
         return $this->mock;
     }
-
-    private $mock;
 }

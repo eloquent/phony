@@ -13,11 +13,13 @@ namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Event\CallEventCollection;
+use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Integration\Phpunit\PhpunitAssertionRecorder;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 
@@ -25,7 +27,17 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->proxyFactory = new ProxyFactory();
+        $this->assertionRecorder = PhpunitAssertionRecorder::instance();
+        $this->callVerifierFactory = new CallVerifierFactory(null, null, $this->assertionRecorder);
+        $this->stubVerifierFactory = new StubVerifierFactory(
+            null,
+            null,
+            null,
+            null,
+            $this->callVerifierFactory,
+            $this->assertionRecorder
+        );
+        $this->proxyFactory = new ProxyFactory(null, $this->stubVerifierFactory);
 
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);

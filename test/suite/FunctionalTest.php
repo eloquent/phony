@@ -74,6 +74,22 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('second', $r);
     }
 
+    public function testMagicMethodMocking()
+    {
+        $mock = x\mock('Eloquent\Phony\Test\TestClassB')->mock();
+
+        $this->assertSame('static magic nonexistent ab', $mock::nonexistent('a', 'b'));
+        $this->assertSame('magic nonexistent ab', $mock->nonexistent('a', 'b'));
+
+        x\onStatic($mock)->nonexistent('a', 'b')->returns('x');
+        x\on($mock)->nonexistent('a', 'b')->returns('y');
+
+        $this->assertSame('x', $mock::nonexistent('a', 'b'));
+        $this->assertSame('static magic nonexistent cd', $mock::nonexistent('c', 'd'));
+        $this->assertSame('y', $mock->nonexistent('a', 'b'));
+        $this->assertSame('magic nonexistent cd', $mock->nonexistent('c', 'd'));
+    }
+
     public function testMockMocking()
     {
         $mock = x\mock()->mock();
