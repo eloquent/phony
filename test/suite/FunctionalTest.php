@@ -16,7 +16,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 {
     public function testMockingStatic()
     {
-        $mock = Phony::mock('Eloquent\Phony\Test\TestClassA')->get();
+        $mock = Phony::mock('Eloquent\Phony\Test\TestClassA');
         Phony::on($mock)->testClassAMethodA('a', 'b')->returns('x');
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
@@ -32,7 +32,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockingFunctions()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassA')->get();
+        $mock = x\mock('Eloquent\Phony\Test\TestClassA');
         x\on($mock)->testClassAMethodA('a', 'b')->returns('x');
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
@@ -48,7 +48,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockCalls()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassB')->create('A', 'B');
+        $mock = x\mock('Eloquent\Phony\Test\TestClassB', array('A', 'B'));
         $e = 'e';
         $n = 'n';
         $q = 'q';
@@ -74,8 +74,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockMocking()
     {
-        $mock = x\mock()->get();
-        $mockMock = x\mock($mock)->get();
+        $mock = x\mock();
+        $mockMock = x\mock($mock);
 
         $this->assertInstanceOf(get_class($mock), $mockMock);
         $this->assertNotInstanceOf(get_class($mockMock), $mock);
@@ -213,7 +213,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultStubAnswerCanBeOverridden()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassA')->get();
+        $mock = x\mock('Eloquent\Phony\Test\TestClassA');
         x\on($mock)->testClassAMethodA()->returns(123);
 
         $this->assertSame(123, $mock->testClassAMethodA());
@@ -221,7 +221,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFullMockDefaultStubAnswerCanBeOverridden()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassA')->full();
+        $mock = x\fullMock('Eloquent\Phony\Test\TestClassA');
         x\on($mock)->testClassAMethodA->returns(123);
 
         $this->assertSame(123, $mock->testClassAMethodA());

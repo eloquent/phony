@@ -11,10 +11,13 @@
 
 namespace Eloquent\Phony\Mock\Builder\Factory;
 
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
+use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -120,6 +123,47 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
             $this->mockFactory,
             $this->proxyFactory
         );
+    }
+
+    /**
+     * Create a new mock.
+     *
+     * @param array<string|object>|string|object|null      $types      The types to mock.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null                            $definition The definition.
+     * @param string|null                                  $className  The class name.
+     *
+     * @return MockInterface The mock.
+     */
+    public function createMock(
+        $types = null,
+        $arguments = null,
+        $definition = null,
+        $className = null
+    ) {
+        if (null !== $arguments || func_num_args() < 2) {
+            $arguments = Arguments::adapt($arguments);
+        }
+
+        return $this->create($types, $definition, $className)
+            ->createWith($arguments);
+    }
+
+    /**
+     * Create a new full mock.
+     *
+     * @param array<string|object>|string|object|null $types      The types to mock.
+     * @param array|object|null                       $definition The definition.
+     * @param string|null                             $className  The class name.
+     *
+     * @return MockInterface The mock.
+     */
+    public function createFullMock(
+        $types = null,
+        $definition = null,
+        $className = null
+    ) {
+        return $this->create($types, $definition, $className)->full();
     }
 
     private static $instance;

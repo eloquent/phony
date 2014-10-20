@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Facade;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
@@ -44,13 +45,55 @@ abstract class AbstractFacade
      *
      * @return MockBuilderInterface The mock builder.
      */
-    public static function mock(
+    public static function mockBuilder(
         $types = null,
         $definition = null,
         $className = null
     ) {
         return static::driver()->mockBuilderFactory()
             ->create($types, $definition, $className);
+    }
+
+    /**
+     * Create a new mock.
+     *
+     * @param array<string|object>|string|object|null      $types      The types to mock.
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null                            $definition The definition.
+     * @param string|null                                  $className  The class name.
+     *
+     * @return MockInterface The mock.
+     */
+    public static function mock(
+        $types = null,
+        $arguments = null,
+        $definition = null,
+        $className = null
+    ) {
+        if (func_num_args() > 1) {
+            return static::driver()->mockBuilderFactory()
+                ->createMock($types, $arguments, $definition, $className);
+        }
+
+        return static::driver()->mockBuilderFactory()->createMock($types);
+    }
+
+    /**
+     * Create a new full mock.
+     *
+     * @param array<string|object>|string|object|null $types      The types to mock.
+     * @param array|object|null                       $definition The definition.
+     * @param string|null                             $className  The class name.
+     *
+     * @return MockInterface The mock.
+     */
+    public static function fullMock(
+        $types = null,
+        $definition = null,
+        $className = null
+    ) {
+        return static::driver()->mockBuilderFactory()
+            ->createFullMock($types, $definition, $className);
     }
 
     /**

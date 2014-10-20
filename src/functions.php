@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
@@ -37,13 +38,49 @@ use ReflectionClass;
  *
  * @return MockBuilderInterface The mock builder.
  */
+function mockBuilder($types = null, $definition = null, $className = null)
+{
+    return FacadeDriver::instance()->mockBuilderFactory()
+        ->create($types, $definition, $className);
+}
+
+/**
+ * Create a new mock.
+ *
+ * @param array<string|object>|string|object|null $types      The types to mock.
+ * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+ * @param array|object|null                       $definition The definition.
+ * @param string|null                             $className  The class name.
+ *
+ * @return MockInterface The mock.
+ */
 function mock(
     $types = null,
+    $arguments = null,
     $definition = null,
     $className = null
 ) {
+    if (func_num_args() > 1) {
+        return FacadeDriver::instance()->mockBuilderFactory()
+            ->createMock($types, $arguments, $definition, $className);
+    }
+
+    return FacadeDriver::instance()->mockBuilderFactory()->createMock($types);
+}
+
+/**
+ * Create a new full mock.
+ *
+ * @param array<string|object>|string|object|null $types      The types to mock.
+ * @param array|object|null                       $definition The definition.
+ * @param string|null                             $className  The class name.
+ *
+ * @return MockInterface The mock.
+ */
+function fullMock($types = null, $definition = null, $className = null)
+{
     return FacadeDriver::instance()->mockBuilderFactory()
-        ->create($types, $definition, $className);
+        ->createFullMock($types, $definition, $className);
 }
 
 /**
