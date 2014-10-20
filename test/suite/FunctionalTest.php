@@ -237,16 +237,29 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(123, $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
+        $this->assertSame('ef', $mock->testClassAMethodB('e', 'f'));
     }
 
     public function testFullMockDefaultStubAnswerCanBeOverridden()
     {
         $proxy = x\fullMock('Eloquent\Phony\Test\TestClassA');
-        $proxy->testClassAMethodA('a', 'b')->returns(123);
         $mock = $proxy->mock();
+        $proxy->testClassAMethodA('a', 'b')->returns(123);
 
         $this->assertSame(123, $mock->testClassAMethodA('a', 'b'));
         $this->assertNull($mock->testClassAMethodA('c', 'd'));
+        $this->assertNull($mock->testClassAMethodB('e', 'f'));
+    }
+
+    public function testMagicMockDefaultStubAnswerCanBeOverridden()
+    {
+        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassB');
+        $mock = $proxy->mock();
+        $proxy->nonexistentA('a', 'b')->returns(123);
+
+        $this->assertSame(123, $mock->nonexistentA('a', 'b'));
+        $this->assertNull($mock->nonexistentA('c', 'd'));
+        $this->assertNull($mock->nonexistentB('e', 'f'));
     }
 
     public function testCanChainVerificationProxyCalls()
