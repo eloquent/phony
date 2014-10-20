@@ -96,6 +96,10 @@ class WrappedMethod extends AbstractWrappedInvocable
      */
     public function invokeWith($arguments = null)
     {
+        if ($this->method->isAbstract()) {
+            return null;
+        }
+
         return $this->callParentMethod->invoke(
             $this->mock,
             $this->name,

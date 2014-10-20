@@ -256,4 +256,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         x\verify($mock)->testClassAMethodA('a', 'b')->testClassAMethodA('c', 'd');
     }
+
+    public function testDoesntCallParentOnInterfaceOnlyMock()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceA');
+        $mock = $proxy->mock();
+
+        $this->assertNull($mock->testClassAMethodA('a', 'b'));
+    }
 }
