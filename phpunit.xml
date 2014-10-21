@@ -1,0 +1,23 @@
+<phpunit
+    bootstrap="test/bootstrap.php"
+    strict="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    mapTestClassNameToCoveredClassName="true"
+    verbose="true"
+    colors="true"
+>
+    <testsuites>
+        <testsuite>
+            <directory>test/suite</directory>
+            <directory phpVersion="5.5.0-dev">test/suite-generators</directory>
+        </testsuite>
+    </testsuites>
+
+    <groups>
+        <exclude>
+            <group>exclude-by-default</group>
+        </exclude>
+    </groups>
+</phpunit>
