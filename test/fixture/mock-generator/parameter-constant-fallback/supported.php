@@ -1,6 +1,6 @@
 <?php
 
-$message = 'Only applicable where ReflectionParameter does not support constant names.';
+$message = 'Requires no parameter constant name support in ReflectionParameter.';
 
 return defined('HHVM_VERSION') ||
     version_compare(PHP_VERSION, '5.4.0-dev', '<');

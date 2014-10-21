@@ -1,5 +1,5 @@
 <?php
 
-$message = 'API difference.';
+$message = 'Requires non-HHVM runtime.';
 
 return !defined('HHVM_VERSION');
