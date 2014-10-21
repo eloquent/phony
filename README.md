@@ -15,8 +15,11 @@
 
 ## Installation and documentation
 
-* Available as [Composer] package [eloquent/phony].
-<!-- * [API documentation] available. -->
+- Available as [Composer] package [eloquent/phony].
+
+<!--
+- [API documentation] available.
+-->
 
 [API documentation]: http://lqnt.co/phony/artifacts/documentation/api/
 [Composer]: http://getcomposer.org/
