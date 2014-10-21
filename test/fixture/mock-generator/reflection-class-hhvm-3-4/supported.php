@@ -1,5 +1,5 @@
 <?php
 
-return defined('HHVM_VERSION') &&
-    version_compare(HHVM_VERSION, '3.4.0-dev', '>=') &&
-    version_compare(HHVM_VERSION, '3.5.0-dev', '<');
+$message = 'API difference.';
+
+return defined('HHVM_VERSION') && '3.3' === substr(HHVM_VERSION, 0, 3);

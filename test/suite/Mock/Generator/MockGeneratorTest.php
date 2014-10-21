@@ -47,7 +47,7 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
         $isSupported = require $fixturePath . '/' . $testName . '/supported.php';
 
         if (!$isSupported) {
-            $this->markTestSkipped('Not supported by the current PHP runtime.');
+            $this->markTestSkipped($message);
         }
 
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
