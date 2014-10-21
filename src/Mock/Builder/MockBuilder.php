@@ -616,7 +616,7 @@ class MockBuilder implements MockBuilderInterface
                 throw new InvalidTypeException($type, $e);
             }
 
-            if ($reflector->isFinal()) {
+            if (!$reflector->isTrait() && $reflector->isFinal()) {
                 throw new FinalClassException($type);
             }
         }
