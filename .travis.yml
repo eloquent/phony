@@ -9,7 +9,7 @@ php:
     - hhvm-nightly
 matrix:
     allow_failures:
-        php: hhvm-nightly
+        - php: hhvm-nightly
     fast_finish: true
 install:
     - composer selfupdate --no-interaction
