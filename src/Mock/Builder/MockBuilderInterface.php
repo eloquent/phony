@@ -25,11 +25,11 @@ interface MockBuilderInterface
     /**
      * Add classes, interfaces, or traits.
      *
-     * @param string|object|array<string|object> $type      A type, or types to add.
-     * @param string|object|array<string|object> $types,... Additional types to add.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface> $type      A type, or types to add.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface> $types,... Additional types to add.
      *
      * @return MockBuilderInterface   This builder.
-     * @throws MockExceptionInterface If invalid input is supplied.
+     * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
      */
     public function like($type);
 

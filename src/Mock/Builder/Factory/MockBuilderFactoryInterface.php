@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Mock\Builder\Factory;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\MockInterface;
+use ReflectionClass;
 
 /**
  * The interface implemented by mock builder factories.
@@ -23,9 +24,9 @@ interface MockBuilderFactoryInterface
     /**
      * Create a new mock builder.
      *
-     * @param array<string|object>|string|object|null $types      The types to mock.
-     * @param array|object|null                       $definition The definition.
-     * @param string|null                             $className  The class name.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+     * @param array|object|null                                                                                   $definition The definition.
+     * @param string|null                                                                                         $className  The class name.
      *
      * @return MockBuilderInterface The mock builder.
      */
@@ -38,10 +39,10 @@ interface MockBuilderFactoryInterface
     /**
      * Create a new mock.
      *
-     * @param array<string|object>|string|object|null      $types      The types to mock.
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null                            $definition The definition.
-     * @param string|null                                  $className  The class name.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+     * @param ArgumentsInterface|array<integer,mixed>|null                                                        $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null                                                                                   $definition The definition.
+     * @param string|null                                                                                         $className  The class name.
      *
      * @return MockInterface The mock.
      */
@@ -55,9 +56,9 @@ interface MockBuilderFactoryInterface
     /**
      * Create a new full mock.
      *
-     * @param array<string|object>|string|object|null $types      The types to mock.
-     * @param array|object|null                       $definition The definition.
-     * @param string|null                             $className  The class name.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+     * @param array|object|null                                                                                   $definition The definition.
+     * @param string|null                                                                                         $className  The class name.
      *
      * @return MockInterface The mock.
      */

@@ -257,12 +257,12 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($types, $builder->types());
     }
 
-    public function testLikeWithObject()
+    public function testLikeWithReflectionClass()
     {
         $builder = new MockBuilder();
         $types = array('stdClass');
 
-        $this->assertSame($builder, $builder->like((object) array()));
+        $this->assertSame($builder, $builder->like(new ReflectionClass('stdClass')));
         $this->assertSame($types, $builder->types());
     }
 

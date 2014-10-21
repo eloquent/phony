@@ -96,11 +96,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockMocking()
     {
-        $mock = x\mock()->mock();
-        $mockMock = x\mock($mock)->mock();
+        $mock = x\mock();
+        $mockMock = x\mock($mock->className());
 
-        $this->assertInstanceOf(get_class($mock), $mockMock);
-        $this->assertNotInstanceOf(get_class($mockMock), $mock);
+        $this->assertInstanceOf(get_class($mock->mock()), $mockMock->mock());
+        $this->assertNotInstanceOf(get_class($mockMock->mock()), $mock->mock());
     }
 
     public function testSpyStatic()

@@ -46,12 +46,12 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * @param array<string|object>|string|object|null $types        The types to mock.
-     * @param array|object|null                       $definition   The definition.
-     * @param string|null                             $className    The class name.
-     * @param string|null                             $id           The identifier.
-     * @param MockFactoryInterface|null               $factory      The factory to use.
-     * @param ProxyFactoryInterface|null              $proxyFactory The proxy factory to use.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
+     * @param array|object|null                                                                                   $definition   The definition.
+     * @param string|null                                                                                         $className    The class name.
+     * @param string|null                                                                                         $id           The identifier.
+     * @param MockFactoryInterface|null                                                                           $factory      The factory to use.
+     * @param ProxyFactoryInterface|null                                                                          $proxyFactory The proxy factory to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
      */
@@ -123,8 +123,8 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add classes, interfaces, or traits.
      *
-     * @param string|object|array<string|object> $type      A type, or types to add.
-     * @param string|object|array<string|object> $types,... Additional types to add.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface> $type      A type, or types to add.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface> $types,... Additional types to add.
      *
      * @return MockBuilderInterface   This builder.
      * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
@@ -148,14 +148,12 @@ class MockBuilder implements MockBuilderInterface
         $toAdd = array();
 
         foreach ($types as $type) {
-            if (is_object($type)) {
-                if ($type instanceof MockBuilderInterface) {
-                    $toAdd = array_merge($toAdd, $type->types());
-                } else {
-                    $toAdd[] = get_class($type);
-                }
-            } elseif (is_string($type)) {
+            if (is_string($type)) {
                 $toAdd[] = $type;
+            } elseif ($type instanceof ReflectionClass) {
+                $toAdd[] = $type->getName();
+            } elseif ($type instanceof MockBuilderInterface) {
+                $toAdd = array_merge($toAdd, $type->types());
             } else {
                 throw new InvalidTypeException($type);
             }
