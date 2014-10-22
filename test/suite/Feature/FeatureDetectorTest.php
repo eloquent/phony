@@ -39,7 +39,7 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->assertEquals(FeatureDetector::standardFeatures(), $this->subject->features());
+        $this->assertEquals($this->subject->standardFeatures(), $this->subject->features());
         $this->assertSame(array(), $this->subject->supported());
     }
 
