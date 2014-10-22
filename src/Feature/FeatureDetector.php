@@ -120,80 +120,97 @@ class FeatureDetector implements FeatureDetectorInterface
     public function standardFeatures()
     {
         return array(
-            'closures' => function ($detector) {
+            'closure' => function ($detector) {
                 return $detector->checkInternalClass('Closure');
             },
 
-            'closures.bind' => function ($detector) {
+            'closure.bind' => function ($detector) {
                 return $detector->checkInternalMethod('Closure', 'bind');
             },
 
-            'generators' => function ($detector) {
-                return $detector->checkToken('yield', 'T_YIELD');
+            'constant.expression' => function ($detector) {
+                return $detector->checkExpression('const _X =0+0', false);
             },
 
-            'generators.yield' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator' => function ($detector) {
+                return $detector->checkInternalClass('Generator');
+            },
+
+            'generator.yield' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('yield 0');
             },
 
-            'generators.yield.assign' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.assign' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('$x=yield 0');
             },
 
-            'generators.yield.assign.key' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.assign.key' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('$x=yield 0=>0');
             },
 
-            'generators.yield.assign.nothing' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.assign.nothing' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('$x=yield');
             },
 
-            'generators.yield.expression' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.expression' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('(yield 0)');
             },
 
-            'generators.yield.expression.assign' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.expression.assign' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('$x=(yield 0)');
             },
 
-            'generators.yield.expression.assign.key' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.expression.assign.key' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('$x=(yield 0=>0)');
             },
 
-            'generators.yield.expression.assign.nothing' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.expression.assign.nothing' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('$x=(yield)');
             },
 
-            'generators.yield.expression.key' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.expression.key' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('(yield 0=>0)');
             },
 
-            'generators.yield.expression.nothing' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.expression.nothing' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('(yield)');
             },
 
-            'generators.yield.key' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.key' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('yield 0=>0');
             },
 
-            'generators.yield.nothing' => function ($detector) {
-                return $detector->isSupported('generators') &&
+            'generator.yield.nothing' => function ($detector) {
+                return $detector->isSupported('generator') &&
                     $detector->checkExpression('yield');
             },
 
-            'traits' => function ($detector) {
-                return $detector->checkToken('trait', 'T_TRAIT');
+            'trait' => function ($detector) {
+                return $detector
+                    ->checkInternalMethod('ReflectionClass', 'isTrait');
+            },
+
+            'parameter.default.constant' => function ($detector) {
+                return $detector->checkInternalMethod(
+                    'ReflectionParameter',
+                    'isDefaultValueConstant'
+                );
+            },
+
+            'parameter.type.callable' => function ($detector) {
+                return $detector
+                    ->checkInternalMethod('ReflectionParameter', 'isCallable');
             },
         );
     }
@@ -225,9 +242,19 @@ class FeatureDetector implements FeatureDetectorInterface
      *
      * @return boolean True if the syntax is valid.
      */
-    public function checkExpression($source)
+    public function checkExpression($source, $useClosure = null)
     {
-        return true === @eval(sprintf('function () {%s;};return true;', $source));
+        if (null === $useClosure) {
+            $useClosure = true;
+        }
+
+        if ($useClosure) {
+            return true === @eval(
+                sprintf('function () {%s;};return true;', $source)
+            );
+        }
+
+        return true === @eval(sprintf('%s;return true;', $source));
     }
 
     /**
