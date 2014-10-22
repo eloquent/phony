@@ -18,6 +18,7 @@
     },
     "require-dev": {
         "counterpart/counterpart": "~1",
+        "eloquent/fixie": "~0.1",
         "hamcrest/hamcrest-php": "~1",
         "mockery/mockery": "~0",
         "phake/phake": "~1",

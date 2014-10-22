@@ -1,0 +1,20 @@
+columns:
+ [feature,                                    minimum, maximum, exclude, hhvmMinimum, hhmvMaximum, hhvmExclude]
+data: [
+ [closures,                                   '5.3',   true,    [],      true,        true,        []         ],
+ [closures.bind,                              '5.4',   true,    [],      true,        true,        []         ],
+ [generators,                                 '5.5',   true,    [],      true,        true,        []         ],
+ [generators.yield,                           '5.5',   true,    [],      true,        true,        []         ],
+ [generators.yield.assign,                    false,   false,   [],      true,        true,        []         ],
+ [generators.yield.assign.key,                false,   false,   [],      true,        true,        []         ],
+ [generators.yield.assign.nothing,            '5.5',   true,    [],      true,        true,        []         ],
+ [generators.yield.expression,                '5.5',   true,    [],      false,       false,       []         ],
+ [generators.yield.expression.assign,         '5.5',   true,    [],      false,       false,       []         ],
+ [generators.yield.expression.assign.key,     '5.5',   true,    [],      false,       false,       []         ],
+ [generators.yield.expression.assign.nothing, '5.5',   true,    [],      false,       false,       []         ],
+ [generators.yield.expression.key,            '5.5',   true,    [],      false,       false,       []         ],
+ [generators.yield.expression.nothing,        '5.5',   true,    [],      false,       false,       []         ],
+ [generators.yield.key,                       '5.5',   true,    [],      true,        true,        []         ],
+ [generators.yield.nothing,                   '5.5',   true,    [],      true,        true,        []         ],
+ [traits,                                     '5.4',   true,    [],      true,        true,        []         ],
+]
