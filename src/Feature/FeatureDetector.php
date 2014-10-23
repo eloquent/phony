@@ -192,22 +192,6 @@ class FeatureDetector implements FeatureDetectorInterface
                 );
             },
 
-            'error.last' => function ($detector) {
-                if (!function_exists('error_get_last')) {
-                    return false; // @codeCoverageIgnore
-                }
-
-                @sprintf($undefined);
-                $error = error_get_last();
-
-                if (!is_array($error)) {
-                    return false; // @codeCoverageIgnore
-                }
-
-                return array('type', 'message', 'file', 'line') ===
-                    array_keys($error);
-            },
-
             'generator' => function ($detector) {
                 return $detector->checkInternalClass('Generator');
             },

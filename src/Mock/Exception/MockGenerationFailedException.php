@@ -40,15 +40,14 @@ final class MockGenerationFailedException extends Exception implements
         $this->source = $source;
         $this->error = $error;
 
-        $isHhvm = defined('HHVM_VERSION');
         $lines = explode("\n", $source);
 
-        if ($isHhvm) { // @codeCoverageIgnoreStart
+        if (null === $error) {
             $message = sprintf(
                 "Mock class %s generation failed.\nRelevant lines:%%s",
                 $mockBuilder->className()
             );
-        } else { // @codeCoverageIgnoreEnd
+        } else {
             $errorLineNumber = $error['line'];
             $startLine = $errorLineNumber - 4;
             $contextLineCount = 7;
