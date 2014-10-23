@@ -146,6 +146,7 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->subject->checkInternalMethod('ReflectionClass', 'isInterface'));
         $this->assertFalse($this->subject->checkInternalMethod(__CLASS__, __FUNCTION__));
+        $this->assertFalse($this->subject->checkInternalMethod('Nonexistent', 'nonexistent'));
         $this->assertFalse($this->subject->checkInternalMethod('ReflectionClass', 'nonexistent'));
     }
 
