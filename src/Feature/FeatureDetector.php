@@ -131,7 +131,7 @@ class FeatureDetector implements FeatureDetectorInterface
             'constant.array' => function ($detector) {
                 // syntax causes fatal on PHP < 5.6
                 if ($detector->isSupported('runtime.php')) {
-                    if (!$detector->checkMinimumVersion(PHP_VERSION, '5.6')) {
+                    if (version_compare(PHP_VERSION, '5.6.x', '<')) {
                         return false; // @codeCoverageIgnore
                     }
                 }
@@ -139,7 +139,7 @@ class FeatureDetector implements FeatureDetectorInterface
                 // syntax causes fatal on HHVM < 3.4
                 // @codeCoverageIgnoreStart
                 if ($detector->isSupported('runtime.hhvm')) {
-                    if (!$detector->checkMinimumVersion(HHVM_VERSION, '3.4')) {
+                    if (version_compare(HHVM_VERSION, '3.4.x', '<')) {
                         return false;
                     }
                 } // @codeCoverageIgnoreEnd
@@ -153,7 +153,7 @@ class FeatureDetector implements FeatureDetectorInterface
             'constant.class.array' => function ($detector) {
                 // syntax causes fatal on PHP < 5.6
                 if ($detector->isSupported('runtime.php')) {
-                    if (!$detector->checkMinimumVersion(PHP_VERSION, '5.6')) {
+                    if (version_compare(PHP_VERSION, '5.6.x', '<')) {
                         return false; // @codeCoverageIgnore
                     }
                 }
@@ -161,7 +161,7 @@ class FeatureDetector implements FeatureDetectorInterface
                 // syntax causes fatal on HHVM < 3.4
                 // @codeCoverageIgnoreStart
                 if ($detector->isSupported('runtime.hhvm')) {
-                    if (!$detector->checkMinimumVersion(HHVM_VERSION, '3.4')) {
+                    if (version_compare(HHVM_VERSION, '3.4.x', '<')) {
                         return false;
                     }
                 } // @codeCoverageIgnoreEnd
@@ -388,52 +388,6 @@ class FeatureDetector implements FeatureDetectorInterface
     }
 
     /**
-     * Check that the specified version is greater than or equal to a given
-     * version.
-     *
-     * This method uses simple version numbers like '5.6' or '5.4.3'.
-     *
-     * @param string $version The version.
-     * @param string $minimum The minimum version.
-     *
-     * @return boolean True if the version matches.
-     */
-    public function checkMinimumVersion($version, $minimum)
-    {
-        if (true === $minimum) {
-            return true;
-        }
-        if (false === $minimum) {
-            return false;
-        }
-
-        return version_compare($version, $this->minimumVersion($minimum), '>');
-    }
-
-    /**
-     * Check that the specified version is less than or equal to a given
-     * version.
-     *
-     * This method uses simple version numbers like '5.6' or '5.4.3'.
-     *
-     * @param string $version The version.
-     * @param string $maximum The maximum version.
-     *
-     * @return boolean True if the version matches.
-     */
-    public function checkMaximumVersion($version, $maximum)
-    {
-        if (true === $maximum) {
-            return true;
-        }
-        if (false === $maximum) {
-            return false;
-        }
-
-        return version_compare($version, $this->maximumVersion($maximum), '<=');
-    }
-
-    /**
      * Capture the output produced by a callback.
      *
      * @param callable                  $callback  The callback.
@@ -463,21 +417,6 @@ class FeatureDetector implements FeatureDetectorInterface
     public function uniqueSymbolName()
     {
         return sprintf('_FD_symbol_%s', md5(uniqid()));
-    }
-
-    private function minimumVersion($minimum)
-    {
-        $parts = explode('.', $minimum);
-        $partCount = count($parts);
-        $parts[$partCount - 1] = strval(intval($parts[$partCount - 1]) - 1);
-        $parts[] = '99999';
-
-        return implode('.', $parts);
-    }
-
-    private function maximumVersion($maximum)
-    {
-        return $maximum . '.99999';
     }
 
     private static $instance;
