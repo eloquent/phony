@@ -136,6 +136,14 @@ class FeatureDetector implements FeatureDetectorInterface
                     }
                 }
 
+                // syntax causes fatal on HHVM < 3.4
+                // @codeCoverageIgnoreStart
+                if ($detector->isSupported('runtime.hhvm')) {
+                    if (!$detector->checkMinimumVersion(HHVM_VERSION, '3.4')) {
+                        return false;
+                    }
+                } // @codeCoverageIgnoreEnd
+
                 return $detector->checkStatement(
                     sprintf('const %s=array()', $detector->uniqueSymbolName()),
                     false
@@ -149,6 +157,14 @@ class FeatureDetector implements FeatureDetectorInterface
                         return false; // @codeCoverageIgnore
                     }
                 }
+
+                // syntax causes fatal on HHVM < 3.4
+                // @codeCoverageIgnoreStart
+                if ($detector->isSupported('runtime.hhvm')) {
+                    if (!$detector->checkMinimumVersion(HHVM_VERSION, '3.4')) {
+                        return false;
+                    }
+                } // @codeCoverageIgnoreEnd
 
                 return $detector->checkStatement(
                     sprintf(
@@ -253,17 +269,11 @@ class FeatureDetector implements FeatureDetectorInterface
             },
 
             'runtime.hhvm' => function ($detector) {
-                return false !== strpos(
-                    $detector->captureOutput('phpinfo', array(0)),
-                    'HipHop'
-                );
+                return 'hhvm' === $detector->runtime();
             },
 
             'runtime.php' => function ($detector) {
-                return false === strpos(
-                    $detector->captureOutput('phpinfo', array(0)),
-                    'HipHop'
-                );
+                return 'php' === $detector->runtime();
             },
 
             'trait' => function ($detector) {
@@ -271,6 +281,29 @@ class FeatureDetector implements FeatureDetectorInterface
                     ->checkInternalMethod('ReflectionClass', 'isTrait');
             },
         );
+    }
+
+    /**
+     * Determine the current PHP runtime.
+     *
+     * @return string The runtime.
+     */
+    public function runtime()
+    {
+        if (null === $this->runtime) {
+            if (
+                false === strpos(
+                    $this->captureOutput('phpinfo', array(0)),
+                    'HipHop'
+                )
+            ) {
+                $this->runtime = 'php';
+            } else {
+                $this->runtime = 'hhvm';
+            }
+        }
+
+        return $this->runtime;
     }
 
     /**
@@ -450,4 +483,5 @@ class FeatureDetector implements FeatureDetectorInterface
     private static $instance;
     private $features;
     private $supported;
+    private $runtime;
 }

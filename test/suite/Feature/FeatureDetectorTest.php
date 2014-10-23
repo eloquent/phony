@@ -112,6 +112,15 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $this->subject->isSupported($feature));
     }
 
+    public function testRuntime()
+    {
+        if (defined('HHVM_VERSION')) {
+            $this->assertSame('hhvm', $this->subject->runtime());
+        } else {
+            $this->assertSame('php', $this->subject->runtime());
+        }
+    }
+
     public function testCheckToken()
     {
         $this->assertTrue($this->subject->checkToken('return', 'T_RETURN'));
