@@ -41,13 +41,13 @@ EOD;
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:
-    2: // this line is context
-    3: // this line is context
-    4: // this line is context
+    2  // this line is context
+    3  // this line is context
+    4  // this line is context
     5: ERROR
-    6: // this line is context
-    7: // this line is context
-    8: // this line is context
+    6  // this line is context
+    7  // this line is context
+    8  // this line is context
 EOD;
 
         $this->assertSame($this->mockBuilder, $exception->mockBuilder());
@@ -76,15 +76,15 @@ EOD;
         $expected = <<<'EOD'
 Mock class ClassName generation failed.
 Relevant lines:
-    1: // this line is NOT context
-    2: // this line is context
-    3: // this line is context
-    4: // this line is context
-    5: ERROR
-    6: // this line is context
-    7: // this line is context
-    8: // this line is context
-    9: // this line is NOT context
+    1  // this line is NOT context
+    2  // this line is context
+    3  // this line is context
+    4  // this line is context
+    5  ERROR
+    6  // this line is context
+    7  // this line is context
+    8  // this line is context
+    9  // this line is NOT context
 EOD;
 
         $this->assertSame($this->mockBuilder, $exception->mockBuilder());
@@ -110,11 +110,11 @@ EOD;
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 2.
 Relevant lines:
-    1: // this line is context
+    1  // this line is context
     2: ERROR
-    3: // this line is context
-    4: // this line is context
-    5: // this line is context
+    3  // this line is context
+    4  // this line is context
+    5  // this line is context
 EOD;
 
         $this->assertSame($this->mockBuilder, $exception->mockBuilder());
@@ -140,11 +140,11 @@ EOD;
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:
-    2: // this line is context
-    3: // this line is context
-    4: // this line is context
+    2  // this line is context
+    3  // this line is context
+    4  // this line is context
     5: ERROR
-    6: // this line is context
+    6  // this line is context
 EOD;
 
         $this->assertSame($this->mockBuilder, $exception->mockBuilder());

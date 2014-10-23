@@ -47,6 +47,7 @@ final class MockGenerationFailedException extends Exception implements
                 "Mock class %s generation failed.\nRelevant lines:%%s",
                 $mockBuilder->className()
             );
+            $errorLineNumber = null;
         } else {
             $errorLineNumber = $error['line'];
             $startLine = $errorLineNumber - 4;
@@ -75,9 +76,16 @@ final class MockGenerationFailedException extends Exception implements
         $renderedLines = '';
 
         foreach ($lines as $lineNumber => $line) {
+            if (null !== $errorLineNumber) {
+                $highlight = $lineNumber + 1 === $errorLineNumber;
+            } else {
+                $highlight = false;
+            }
+
             $renderedLines .= sprintf(
-                "\n%s: %s",
+                "\n%s%s %s",
                 str_pad($lineNumber + 1, $padSize, ' ', STR_PAD_LEFT),
+                $highlight ? ':' : ' ',
                 $line
             );
         }
