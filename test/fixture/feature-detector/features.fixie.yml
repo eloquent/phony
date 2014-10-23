@@ -3,7 +3,7 @@ columns:
 data: [
  [closure,                                   '5.3',   true,    [],      true,        true,        []         ],
  [closure.bind,                              '5.4',   true,    [],      '3.4',       true,        []         ],
- [constant.array,                            '5.6',   true,    [],      true,        true,        []         ],
+ [constant.array,                            '5.6',   true,    [],      '3.4',       true,        []         ],
  [constant.class.array,                      '5.6',   true,    [],      false,       false,       []         ],
  [constant.class.expression,                 '5.6',   true,    [],      true,        true,        []         ],
  [constant.expression,                       '5.6',   true,    [],      true,        true,        []         ],
