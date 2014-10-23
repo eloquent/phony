@@ -1,11 +1,11 @@
 <?php
 
-if (!defined('HHVM_VERSION') || '3.4' !== substr(HHVM_VERSION, 0, 3)) {
-    $message = 'Requires HHVM 3.4.';
+if (!$detector->isSupported('runtime.hhvm')) {
+    $message = 'Requires HHVM.';
 
     return false;
 }
 
-$message = 'Requires non-nightly HHVM.';
+$message = 'Requires non-nightly HHVM 3.4.';
 
 return version_compare(HHVM_VERSION, '3.4.0-dev', '>=');

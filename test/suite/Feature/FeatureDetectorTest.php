@@ -100,12 +100,12 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $hhvmExclude
     ) {
         if (defined('HHVM_VERSION')) {
-            $expected = $this->checkMinimumVersion(HHVM_VERSION, $hhvmMinimum) &&
-                $this->checkMaximumVersion(HHVM_VERSION, $hhmvMaximum) &&
+            $expected = $this->subject->checkMinimumVersion(HHVM_VERSION, $hhvmMinimum) &&
+                $this->subject->checkMaximumVersion(HHVM_VERSION, $hhmvMaximum) &&
                 $this->checkVersionIncluded(HHVM_VERSION, $hhvmExclude);
         } else {
-            $expected = $this->checkMinimumVersion(PHP_VERSION, $minimum) &&
-                $this->checkMaximumVersion(PHP_VERSION, $maximum) &&
+            $expected = $this->subject->checkMinimumVersion(PHP_VERSION, $minimum) &&
+                $this->subject->checkMaximumVersion(PHP_VERSION, $maximum) &&
                 $this->checkVersionIncluded(PHP_VERSION, $exclude);
         }
 
@@ -119,11 +119,11 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->checkToken('return', 'T_JIBBA_JABBA'));
     }
 
-    public function testCheckExpression()
+    public function testCheckStatement()
     {
-        $this->assertTrue($this->subject->checkExpression(''));
-        $this->assertTrue($this->subject->checkExpression('return'));
-        $this->assertFalse($this->subject->checkExpression('{'));
+        $this->assertTrue($this->subject->checkStatement(''));
+        $this->assertTrue($this->subject->checkStatement('return'));
+        $this->assertFalse($this->subject->checkStatement('{'));
     }
 
     public function testCheckInternalClass()
@@ -138,6 +138,71 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->checkInternalMethod('ReflectionClass', 'isInterface'));
         $this->assertFalse($this->subject->checkInternalMethod(__CLASS__, __FUNCTION__));
         $this->assertFalse($this->subject->checkInternalMethod('ReflectionClass', 'nonexistent'));
+    }
+
+    public function testCheckMinimumVersion()
+    {
+        $this->assertTrue($this->subject->checkMinimumVersion('5.0.0-dev~nightly', '5'));
+        $this->assertTrue($this->subject->checkMinimumVersion('5.99999', '5'));
+        $this->assertFalse($this->subject->checkMinimumVersion('4.99999', '5'));
+
+        $this->assertTrue($this->subject->checkMinimumVersion('5.4.0-dev~nightly', '5.4'));
+        $this->assertTrue($this->subject->checkMinimumVersion('5.99999', '5.4'));
+        $this->assertFalse($this->subject->checkMinimumVersion('5.3.99999', '5.4'));
+
+        $this->assertTrue($this->subject->checkMinimumVersion('5.5.0-dev~nightly', '5.5'));
+        $this->assertTrue($this->subject->checkMinimumVersion('5.99999', '5.5'));
+        $this->assertFalse($this->subject->checkMinimumVersion('5.4.99999', '5.5'));
+
+        $this->assertTrue($this->subject->checkMinimumVersion('5.6.7-dev~nightly', '5.6.7'));
+        $this->assertTrue($this->subject->checkMinimumVersion('5.99999', '5.6.7'));
+        $this->assertFalse($this->subject->checkMinimumVersion('5.6.6.99999', '5.6.7'));
+        $this->assertFalse($this->subject->checkMinimumVersion('5.7.0-dev', '5.7.0'));
+
+        $this->assertTrue($this->subject->checkMinimumVersion('4.0.0', true));
+        $this->assertTrue($this->subject->checkMinimumVersion('6.0.0', true));
+
+        $this->assertFalse($this->subject->checkMinimumVersion('4.0.0', false));
+        $this->assertFalse($this->subject->checkMinimumVersion('6.0.0', false));
+    }
+
+    public function testCheckMaximumVersion()
+    {
+        $this->assertTrue($this->subject->checkMaximumVersion('5.0.0-dev~nightly', '5'));
+        $this->assertTrue($this->subject->checkMaximumVersion('5.99999', '5'));
+        $this->assertFalse($this->subject->checkMaximumVersion('6.0.0-dev~nightly', '5'));
+
+        $this->assertTrue($this->subject->checkMaximumVersion('5.4.0-dev~nightly', '5.4'));
+        $this->assertTrue($this->subject->checkMaximumVersion('5.4.99999', '5.4'));
+        $this->assertFalse($this->subject->checkMaximumVersion('5.5.0-dev~nightly', '5.4'));
+
+        $this->assertTrue($this->subject->checkMaximumVersion('5.5.0-dev~nightly', '5.5'));
+        $this->assertTrue($this->subject->checkMaximumVersion('5.5.99999', '5.5'));
+        $this->assertFalse($this->subject->checkMaximumVersion('5.6.0-dev~nightly', '5.5'));
+
+        $this->assertTrue($this->subject->checkMaximumVersion('5.6.7-dev~nightly', '5.6.7'));
+        $this->assertTrue($this->subject->checkMaximumVersion('5.6.7.99999', '5.6.7'));
+        $this->assertFalse($this->subject->checkMaximumVersion('5.6.8-dev~nightly', '5.6.7'));
+
+        $this->assertTrue($this->subject->checkMaximumVersion('4.0.0', true));
+        $this->assertTrue($this->subject->checkMaximumVersion('6.0.0', true));
+
+        $this->assertFalse($this->subject->checkMaximumVersion('4.0.0', false));
+        $this->assertFalse($this->subject->checkMaximumVersion('6.0.0', false));
+    }
+
+    public function testCaptureOutput()
+    {
+        $this->assertSame('ab', $this->subject->captureOutput('printf', array('%s%s', 'a', 'b')));
+        $this->assertSame('c', $this->subject->captureOutput(function () { echo 'c'; }));
+    }
+
+    public function testUniqueSymbolName()
+    {
+        $actual = $this->subject->uniqueSymbolName();
+
+        $this->assertRegExp('/^_FD_symbol_[[:xdigit:]]{32}$/', $actual);
+        $this->assertNotEquals($actual, $this->subject->uniqueSymbolName());
     }
 
     public function testInstance()
@@ -155,56 +220,6 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
 
     // end of feature detector tests
 
-    public function testCheckMinimumVersion()
-    {
-        $this->assertTrue($this->checkMinimumVersion('5.0.0-dev~nightly', '5'));
-        $this->assertTrue($this->checkMinimumVersion('5.99999', '5'));
-        $this->assertFalse($this->checkMinimumVersion('4.99999', '5'));
-
-        $this->assertTrue($this->checkMinimumVersion('5.4.0-dev~nightly', '5.4'));
-        $this->assertTrue($this->checkMinimumVersion('5.99999', '5.4'));
-        $this->assertFalse($this->checkMinimumVersion('5.3.99999', '5.4'));
-
-        $this->assertTrue($this->checkMinimumVersion('5.5.0-dev~nightly', '5.5'));
-        $this->assertTrue($this->checkMinimumVersion('5.99999', '5.5'));
-        $this->assertFalse($this->checkMinimumVersion('5.4.99999', '5.5'));
-
-        $this->assertTrue($this->checkMinimumVersion('5.6.7-dev~nightly', '5.6.7'));
-        $this->assertTrue($this->checkMinimumVersion('5.99999', '5.6.7'));
-        $this->assertFalse($this->checkMinimumVersion('5.6.6.99999', '5.6.7'));
-
-        $this->assertTrue($this->checkMinimumVersion('4.0.0', true));
-        $this->assertTrue($this->checkMinimumVersion('6.0.0', true));
-
-        $this->assertFalse($this->checkMinimumVersion('4.0.0', false));
-        $this->assertFalse($this->checkMinimumVersion('6.0.0', false));
-    }
-
-    public function testCheckMaximumVersion()
-    {
-        $this->assertTrue($this->checkMaximumVersion('5.0.0-dev~nightly', '5'));
-        $this->assertTrue($this->checkMaximumVersion('5.99999', '5'));
-        $this->assertFalse($this->checkMaximumVersion('6.0.0-dev~nightly', '5'));
-
-        $this->assertTrue($this->checkMaximumVersion('5.4.0-dev~nightly', '5.4'));
-        $this->assertTrue($this->checkMaximumVersion('5.4.99999', '5.4'));
-        $this->assertFalse($this->checkMaximumVersion('5.5.0-dev~nightly', '5.4'));
-
-        $this->assertTrue($this->checkMaximumVersion('5.5.0-dev~nightly', '5.5'));
-        $this->assertTrue($this->checkMaximumVersion('5.5.99999', '5.5'));
-        $this->assertFalse($this->checkMaximumVersion('5.6.0-dev~nightly', '5.5'));
-
-        $this->assertTrue($this->checkMaximumVersion('5.6.7-dev~nightly', '5.6.7'));
-        $this->assertTrue($this->checkMaximumVersion('5.6.7.99999', '5.6.7'));
-        $this->assertFalse($this->checkMaximumVersion('5.6.8-dev~nightly', '5.6.7'));
-
-        $this->assertTrue($this->checkMaximumVersion('4.0.0', true));
-        $this->assertTrue($this->checkMaximumVersion('6.0.0', true));
-
-        $this->assertFalse($this->checkMaximumVersion('4.0.0', false));
-        $this->assertFalse($this->checkMaximumVersion('6.0.0', false));
-    }
-
     public function testCheckVersionIncluded()
     {
         $this->assertTrue($this->checkVersionIncluded('5.4.3', array()));
@@ -216,45 +231,6 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->checkVersionIncluded('5.4.3', array('5')));
         $this->assertFalse($this->checkVersionIncluded('5.4.3', array('5.4')));
         $this->assertFalse($this->checkVersionIncluded('5.4.3', array('5.4.3')));
-    }
-
-    protected function checkMinimumVersion($version, $minimum)
-    {
-        if (true === $minimum) {
-            return true;
-        }
-        if (false === $minimum) {
-            return false;
-        }
-
-        return version_compare($version, $this->minimumVersion($minimum), '>');
-    }
-
-    protected function minimumVersion($minimum)
-    {
-        $parts = explode('.', $minimum);
-        $partCount = count($parts);
-        $parts[$partCount - 1] = strval(intval($parts[$partCount - 1]) - 1);
-        $parts[] = '99999';
-
-        return implode('.', $parts);
-    }
-
-    protected function checkMaximumVersion($version, $maximum)
-    {
-        if (true === $maximum) {
-            return true;
-        }
-        if (false === $maximum) {
-            return false;
-        }
-
-        return version_compare($version, $this->maximumVersion($maximum), '<=');
-    }
-
-    protected function maximumVersion($maximum)
-    {
-        return $maximum . '.99999';
     }
 
     protected function checkVersionIncluded($version, $exclude)

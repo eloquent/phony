@@ -3,6 +3,9 @@ columns:
 data: [
  [closure,                                   '5.3',   true,    [],      true,        true,        []         ],
  [closure.bind,                              '5.4',   true,    [],      '3.4',       true,        []         ],
+ [constant.array,                            '5.6',   true,    [],      true,        true,        []         ],
+ [constant.class.array,                      '5.6',   true,    [],      false,       false,       []         ],
+ [constant.class.expression,                 '5.6',   true,    [],      true,        true,        []         ],
  [constant.expression,                       '5.6',   true,    [],      true,        true,        []         ],
  [generator,                                 '5.5',   true,    [],      true,        true,        []         ],
  [generator.yield,                           '5.5',   true,    [],      true,        true,        []         ],
@@ -19,5 +22,7 @@ data: [
  [generator.yield.nothing,                   '5.5',   true,    [],      '3.4',       true,        []         ],
  [parameter.default.constant,                '5.4.6', true,    [],      false,       false,       []         ],
  [parameter.type.callable,                   '5.4',   true,    [],      true,        true,        []         ],
+ [runtime.hhvm,                              false,   false,   [],      true,        true,        []         ],
+ [runtime.php,                               true,    true,    [],      false,       false,       []         ],
  [trait,                                     '5.4',   true,    [],      true,        true,        []         ],
 ]

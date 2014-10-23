@@ -128,8 +128,52 @@ class FeatureDetector implements FeatureDetectorInterface
                 return $detector->checkInternalMethod('Closure', 'bind');
             },
 
+            'constant.array' => function ($detector) {
+                // syntax causes fatal on PHP < 5.6
+                if ($detector->isSupported('runtime.php')) {
+                    if (!$detector->checkMinimumVersion(PHP_VERSION, '5.6')) {
+                        return false; // @codeCoverageIgnore
+                    }
+                }
+
+                return $detector->checkStatement(
+                    sprintf('const %s=array()', $detector->uniqueSymbolName()),
+                    false
+                );
+            },
+
+            'constant.class.array' => function ($detector) {
+                // syntax causes fatal on PHP < 5.6
+                if ($detector->isSupported('runtime.php')) {
+                    if (!$detector->checkMinimumVersion(PHP_VERSION, '5.6')) {
+                        return false; // @codeCoverageIgnore
+                    }
+                }
+
+                return $detector->checkStatement(
+                    sprintf(
+                        'class %s{const A=array();}',
+                        $detector->uniqueSymbolName()
+                    ),
+                    false
+                );
+            },
+
+            'constant.class.expression' => function ($detector) {
+                return $detector->checkStatement(
+                    sprintf(
+                        'class %s{const A=0+0;}',
+                        $detector->uniqueSymbolName()
+                    ),
+                    false
+                );
+            },
+
             'constant.expression' => function ($detector) {
-                return $detector->checkExpression('const _X =0+0', false);
+                return $detector->checkStatement(
+                    sprintf('const %s=0+0', $detector->uniqueSymbolName()),
+                    false
+                );
             },
 
             'generator' => function ($detector) {
@@ -138,67 +182,62 @@ class FeatureDetector implements FeatureDetectorInterface
 
             'generator.yield' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('yield 0');
+                    $detector->checkStatement('yield 0');
             },
 
             'generator.yield.assign' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('$x=yield 0');
+                    $detector->checkStatement('$x=yield 0');
             },
 
             'generator.yield.assign.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('$x=yield 0=>0');
+                    $detector->checkStatement('$x=yield 0=>0');
             },
 
             'generator.yield.assign.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('$x=yield');
+                    $detector->checkStatement('$x=yield');
             },
 
             'generator.yield.expression' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('(yield 0)');
+                    $detector->checkStatement('(yield 0)');
             },
 
             'generator.yield.expression.assign' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('$x=(yield 0)');
+                    $detector->checkStatement('$x=(yield 0)');
             },
 
             'generator.yield.expression.assign.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('$x=(yield 0=>0)');
+                    $detector->checkStatement('$x=(yield 0=>0)');
             },
 
             'generator.yield.expression.assign.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('$x=(yield)');
+                    $detector->checkStatement('$x=(yield)');
             },
 
             'generator.yield.expression.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('(yield 0=>0)');
+                    $detector->checkStatement('(yield 0=>0)');
             },
 
             'generator.yield.expression.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('(yield)');
+                    $detector->checkStatement('(yield)');
             },
 
             'generator.yield.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('yield 0=>0');
+                    $detector->checkStatement('yield 0=>0');
             },
 
             'generator.yield.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkExpression('yield');
-            },
-
-            'trait' => function ($detector) {
-                return $detector
-                    ->checkInternalMethod('ReflectionClass', 'isTrait');
+                    $detector->checkStatement('yield');
             },
 
             'parameter.default.constant' => function ($detector) {
@@ -211,6 +250,25 @@ class FeatureDetector implements FeatureDetectorInterface
             'parameter.type.callable' => function ($detector) {
                 return $detector
                     ->checkInternalMethod('ReflectionParameter', 'isCallable');
+            },
+
+            'runtime.hhvm' => function ($detector) {
+                return false !== strpos(
+                    $detector->captureOutput('phpinfo', array(0)),
+                    'HipHop'
+                );
+            },
+
+            'runtime.php' => function ($detector) {
+                return false === strpos(
+                    $detector->captureOutput('phpinfo', array(0)),
+                    'HipHop'
+                );
+            },
+
+            'trait' => function ($detector) {
+                return $detector
+                    ->checkInternalMethod('ReflectionClass', 'isTrait');
             },
         );
     }
@@ -242,7 +300,7 @@ class FeatureDetector implements FeatureDetectorInterface
      *
      * @return boolean True if the syntax is valid.
      */
-    public function checkExpression($source, $useClosure = null)
+    public function checkStatement($source, $useClosure = null)
     {
         if (null === $useClosure) {
             $useClosure = true;
@@ -294,6 +352,99 @@ class FeatureDetector implements FeatureDetectorInterface
         }
 
         return false;
+    }
+
+    /**
+     * Check that the specified version is greater than or equal to a given
+     * version.
+     *
+     * This method uses simple version numbers like '5.6' or '5.4.3'.
+     *
+     * @param string $version The version.
+     * @param string $minimum The minimum version.
+     *
+     * @return boolean True if the version matches.
+     */
+    public function checkMinimumVersion($version, $minimum)
+    {
+        if (true === $minimum) {
+            return true;
+        }
+        if (false === $minimum) {
+            return false;
+        }
+
+        return version_compare($version, $this->minimumVersion($minimum), '>');
+    }
+
+    /**
+     * Check that the specified version is less than or equal to a given
+     * version.
+     *
+     * This method uses simple version numbers like '5.6' or '5.4.3'.
+     *
+     * @param string $version The version.
+     * @param string $maximum The maximum version.
+     *
+     * @return boolean True if the version matches.
+     */
+    public function checkMaximumVersion($version, $maximum)
+    {
+        if (true === $maximum) {
+            return true;
+        }
+        if (false === $maximum) {
+            return false;
+        }
+
+        return version_compare($version, $this->maximumVersion($maximum), '<=');
+    }
+
+    /**
+     * Capture the output produced by a callback.
+     *
+     * @param callable                  $callback  The callback.
+     * @param array<integer,mixed>|null $arguments Arguments to pass to the callback.
+     *
+     * @return string The captured output.
+     */
+    public function captureOutput($callback, array $arguments = null)
+    {
+        if (null === $arguments) {
+            $arguments = array();
+        }
+
+        ob_start();
+        call_user_func_array($callback, $arguments);
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        return $output;
+    }
+
+    /**
+     * Returns a symbol name that is unique for this process execution.
+     *
+     * @return string The symbol name.
+     */
+    public function uniqueSymbolName()
+    {
+        return sprintf('_FD_symbol_%s', md5(uniqid()));
+    }
+
+    private function minimumVersion($minimum)
+    {
+        $parts = explode('.', $minimum);
+        $partCount = count($parts);
+        $parts[$partCount - 1] = strval(intval($parts[$partCount - 1]) - 1);
+        $parts[] = '99999';
+
+        return implode('.', $parts);
+    }
+
+    private function maximumVersion($maximum)
+    {
+        return $maximum . '.99999';
     }
 
     private static $instance;

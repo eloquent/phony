@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Generator;
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -44,6 +45,8 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerate($testName)
     {
         $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
+
+        $detector = FeatureDetector::instance();
         $isSupported = require $fixturePath . '/' . $testName . '/supported.php';
 
         if (!$isSupported) {

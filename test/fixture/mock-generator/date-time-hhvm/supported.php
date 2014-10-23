@@ -2,4 +2,4 @@
 
 $message = 'Requires HHVM.';
 
-return defined('HHVM_VERSION');
+return $detector->isSupported('runtime.hhvm');
