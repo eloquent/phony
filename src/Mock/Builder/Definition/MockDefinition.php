@@ -223,6 +223,24 @@ class MockDefinition implements MockDefinitionInterface
     }
 
     /**
+     * Get an array map representation of this definition.
+     *
+     * @return array<string,mixed> The map.
+     */
+    public function toMap()
+    {
+        return array(
+            'types' => $this->typeNames(),
+            'customMethods' => $this->customMethods,
+            'customProperties' => $this->customProperties,
+            'customStaticMethods' => $this->customStaticMethods,
+            'customStaticProperties' => $this->customStaticProperties,
+            'customConstants' => $this->customConstants,
+            'className' => $this->className,
+        );
+    }
+
+    /**
      * Inspect the supplied types and build caches of useful information.
      */
     protected function inspectTypes()

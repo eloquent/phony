@@ -272,4 +272,20 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
         $this->assertSame($actual, $this->subject->methods());
     }
+
+    public function testToMap()
+    {
+        $this->setUpWith($this->typeNames);
+        $expected = array(
+            'types' => $this->typeNames,
+            'customMethods' => $this->customMethods,
+            'customProperties' => $this->customProperties,
+            'customStaticMethods' => $this->customStaticMethods,
+            'customStaticProperties' => $this->customStaticProperties,
+            'customConstants' => $this->customConstants,
+            'className' => $this->className,
+        );
+
+        $this->assertSame($expected, $this->subject->toMap());
+    }
 }

@@ -150,18 +150,22 @@ interface MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     *
      * @return ReflectionClass The class.
      */
-    public function build();
+    public function build($createNew = null);
 
     /**
      * Generate and define the mock class, and return the class name.
      *
      * Calling this method will finalize the mock builder.
      *
+     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     *
      * @return string The class name.
      */
-    public function className();
+    public function className($createNew = null);
 
     /**
      * Get a mock.

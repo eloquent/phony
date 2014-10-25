@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Factory;
 
+use Eloquent\Phony\Hash\HashGenerator;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
@@ -28,9 +29,16 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->idSequencer = new Sequencer();
         $this->generator = new MockGenerator();
+        $this->hashGenerator = new HashGenerator();
         $this->stubFactory = new StubFactory();
         $this->spyFactory = new SpyFactory();
-        $this->subject = new MockFactory($this->idSequencer, $this->generator, $this->stubFactory, $this->spyFactory);
+        $this->subject = new MockFactory(
+            $this->idSequencer,
+            $this->generator,
+            $this->hashGenerator,
+            $this->stubFactory,
+            $this->spyFactory
+        );
 
         $this->proxyFactory = new ProxyFactory();
     }
@@ -39,6 +47,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->idSequencer, $this->subject->idSequencer());
         $this->assertSame($this->generator, $this->subject->generator());
+        $this->assertSame($this->hashGenerator, $this->subject->hashGenerator());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->spyFactory, $this->subject->spyFactory());
     }
@@ -49,6 +58,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(Sequencer::sequence('mock-id'), $this->subject->idSequencer());
         $this->assertSame(MockGenerator::instance(), $this->subject->generator());
+        $this->assertSame(HashGenerator::instance(), $this->subject->hashGenerator());
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(SpyFactory::instance(), $this->subject->spyFactory());
     }
@@ -82,7 +92,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateMockClassFailureExists()
     {
         $builderA = new MockBuilder();
-        $builderB = new MockBuilder(null, null, $builderA->build()->getName());
+        $builderB = new MockBuilder(null, null, $builderA->build(true)->getName());
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\ClassExistsException');
         $this->subject->createMockClass($builderB);
@@ -178,7 +188,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateMagicStub()
     {
         $builder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $class = $builder->build();
+        $class = $builder->build(true);
         $mock = $builder->get();
 
         $this->assertSame(

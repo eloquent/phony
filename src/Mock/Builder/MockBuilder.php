@@ -461,12 +461,14 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     *
      * @return ReflectionClass The class.
      */
-    public function build()
+    public function build($createNew = null)
     {
         if (!$this->class) {
-            $this->class = $this->factory->createMockClass($this);
+            $this->class = $this->factory->createMockClass($this, $createNew);
         }
 
         return $this->class;
@@ -477,11 +479,13 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     *
      * @return string The class name.
      */
-    public function className()
+    public function className($createNew = null)
     {
-        return $this->build()->getName();
+        return $this->build($createNew)->getName();
     }
 
     /**

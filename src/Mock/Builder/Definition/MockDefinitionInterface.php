@@ -104,4 +104,11 @@ interface MockDefinitionInterface
      * @return MethodDefinitionCollectionInterface The method definitions.
      */
     public function methods();
+
+    /**
+     * Get an array map representation of this definition.
+     *
+     * @return array<string,mixed> The map.
+     */
+    public function toMap();
 }

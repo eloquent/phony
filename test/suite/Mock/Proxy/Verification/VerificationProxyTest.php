@@ -89,8 +89,8 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
     protected function setUpWith($className)
     {
         $this->mockBuilder = new MockBuilder($className);
+        $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->get();
-        $this->class = $this->mockBuilder->build();
         $this->className = $this->class->getName();
         $stubsProperty = $this->class->getProperty('_stubs');
         $stubsProperty->setAccessible(true);

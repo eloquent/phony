@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+use Eloquent\Phony\Hash\HashGenerator;
+use Eloquent\Phony\Hash\HashGeneratorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
@@ -55,14 +57,16 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
-     * @param SequencerInterface|null     $idSequencer The identifier sequencer to use.
-     * @param MockGeneratorInterface|null $generator   The generator to use.
-     * @param StubFactoryInterface|null   $stubFactory The stub factory to use.
-     * @param SpyFactoryInterface|null    $spyFactory  The spy factory to use.
+     * @param SequencerInterface|null     $idSequencer   The identifier sequencer to use.
+     * @param MockGeneratorInterface|null $generator     The generator to use.
+     * @param HashGeneratorInterface|null $hashGenerator The hash generator to use.
+     * @param StubFactoryInterface|null   $stubFactory   The stub factory to use.
+     * @param SpyFactoryInterface|null    $spyFactory    The spy factory to use.
      */
     public function __construct(
         SequencerInterface $idSequencer = null,
         MockGeneratorInterface $generator = null,
+        HashGeneratorInterface $hashGenerator = null,
         StubFactoryInterface $stubFactory = null,
         SpyFactoryInterface $spyFactory = null
     ) {
@@ -71,6 +75,9 @@ class MockFactory implements MockFactoryInterface
         }
         if (null === $generator) {
             $generator = MockGenerator::instance();
+        }
+        if (null === $hashGenerator) {
+            $hashGenerator = HashGenerator::instance();
         }
         if (null === $stubFactory) {
             $stubFactory = StubFactory::instance();
@@ -81,8 +88,10 @@ class MockFactory implements MockFactoryInterface
 
         $this->idSequencer = $idSequencer;
         $this->generator = $generator;
+        $this->hashGenerator = $hashGenerator;
         $this->stubFactory = $stubFactory;
         $this->spyFactory = $spyFactory;
+        $this->classes = array();
     }
 
     /**
@@ -103,6 +112,16 @@ class MockFactory implements MockFactoryInterface
     public function generator()
     {
         return $this->generator;
+    }
+
+    /**
+     * Get the hash generator.
+     *
+     * @return HashGeneratorInterface The hash generator.
+     */
+    public function hashGenerator()
+    {
+        return $this->hashGenerator;
     }
 
     /**
@@ -128,49 +147,57 @@ class MockFactory implements MockFactoryInterface
     /**
      * Create the mock class for the supplied builder.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockBuilderInterface $builder   The builder.
+     * @param boolean|null         $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return ReflectionClass        The class.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createMockClass(MockBuilderInterface $builder)
-    {
-        $isNew = !$builder->isBuilt();
+    public function createMockClass(
+        MockBuilderInterface $builder,
+        $createNew = null
+    ) {
+        if (null === $createNew) {
+            $createNew = false;
+        }
+
         $definition = $builder->definition();
+        $hash = $this->hashGenerator->hash($definition->toMap());
+
+        if (!$createNew && isset($this->classes[$hash])) {
+            return $this->classes[$hash];
+        }
+
         $className = $this->generator->generateClassName($definition);
 
-        if ($isNew) {
-            if (class_exists($className, false)) {
-                throw new ClassExistsException($className);
-            }
+        if (class_exists($className, false)) {
+            throw new ClassExistsException($className);
+        }
 
-            $source = $this->generator->generate($definition, $className);
-            @eval($source);
+        $source = $this->generator->generate($definition, $className);
+        @eval($source);
 
-            if (!class_exists($className, false)) {
-                throw new MockGenerationFailedException(
-                    $definition,
-                    $source,
-                    error_get_last()
-                );
-            }
+        if (!class_exists($className, false)) {
+            throw new MockGenerationFailedException(
+                $definition,
+                $source,
+                error_get_last()
+            );
         }
 
         $class = new ReflectionClass($className);
 
-        if ($isNew) {
-            $property = $class->getProperty('_staticStubs');
-            $property->setAccessible(true);
-            $property->setValue(
-                null,
-                $this->createStubs(
-                    $class,
-                    $definition->methods()->staticMethods()
-                )
-            );
-        }
+        $property = $class->getProperty('_staticStubs');
+        $property->setAccessible(true);
+        $property->setValue(
+            null,
+            $this->createStubs(
+                $class,
+                $definition->methods()->staticMethods()
+            )
+        );
 
-        return $class;
+        return $this->classes[$hash] = $class;
     }
 
     /**
@@ -314,6 +341,8 @@ class MockFactory implements MockFactoryInterface
     private static $instance;
     private $idSequencer;
     private $generator;
+    private $hashGenerator;
     private $stubFactory;
     private $spyFactory;
+    private $classes;
 }

@@ -93,7 +93,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
     protected function setUpWith($className)
     {
         $this->mockBuilder = new MockBuilder($className);
-        $this->class = $this->mockBuilder->build();
+        $this->class = $this->mockBuilder->build(true);
         $this->className = $this->class->getName();
         $stubsProperty = $this->class->getProperty('_staticStubs');
         $stubsProperty->setAccessible(true);
