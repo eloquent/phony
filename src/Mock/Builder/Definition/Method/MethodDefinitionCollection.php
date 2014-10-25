@@ -21,10 +21,14 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinitionInterface> $methods The methods.
+     * @param array<string,MethodDefinitionInterface>|null $methods The methods.
      */
-    public function __construct(array $methods)
+    public function __construct(array $methods = null)
     {
+        if (null === $methods) {
+            $methods = array();
+        }
+
         $this->methods = $methods;
     }
 
