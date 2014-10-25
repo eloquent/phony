@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 use Exception;
 
 /**
@@ -25,18 +25,18 @@ final class MockGenerationFailedException extends Exception implements
     /**
      * Construct a mock generation failed exception.
      *
-     * @param MockBuilderInterface     $mockBuilder The mock builder.
-     * @param string                   $source      The generated source code.
-     * @param array<string,mixed>|null $error       The error details.
-     * @param Exception|null           $cause       The cause, if available.
+     * @param MockDefinitionInterface  $definition The definition.
+     * @param string                   $source     The generated source code.
+     * @param array<string,mixed>|null $error      The error details.
+     * @param Exception|null           $cause      The cause, if available.
      */
     public function __construct(
-        MockBuilderInterface $mockBuilder,
+        MockDefinitionInterface $definition,
         $source,
         array $error = null,
         Exception $cause = null
     ) {
-        $this->mockBuilder = $mockBuilder;
+        $this->definition = $definition;
         $this->source = $source;
         $this->error = $error;
 
@@ -45,7 +45,7 @@ final class MockGenerationFailedException extends Exception implements
         if (null === $error) {
             $message = sprintf(
                 "Mock class %s generation failed.\nRelevant lines:%%s",
-                $mockBuilder->className()
+                $definition->className()
             );
             $errorLineNumber = null;
         } else {
@@ -64,7 +64,7 @@ final class MockGenerationFailedException extends Exception implements
                 "Mock class %s generation failed: " .
                     "%s in generated code on line %d.\n" .
                     "Relevant lines:%%s",
-                $mockBuilder->className(),
+                $definition->className(),
                 $error['message'],
                 $errorLineNumber
             );
@@ -94,13 +94,13 @@ final class MockGenerationFailedException extends Exception implements
     }
 
     /**
-     * Get the mock builder.
+     * Get the definition.
      *
-     * @return MockBuilderInterface The mock builder.
+     * @return MockDefinitionInterface The definition.
      */
-    public function mockBuilder()
+    public function definition()
     {
-        return $this->mockBuilder;
+        return $this->definition;
     }
 
     /**
@@ -123,7 +123,7 @@ final class MockGenerationFailedException extends Exception implements
         return $this->error;
     }
 
-    private $mockBuilder;
+    private $definition;
     private $source;
     private $error;
 }

@@ -19,7 +19,20 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->featureDetector = new FeatureDetector();
+        $this->subject = new MockGenerator($this->featureDetector);
+    }
+
+    public function testConstructor()
+    {
+        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
+    }
+
+    public function testConstructorDefaults()
+    {
         $this->subject = new MockGenerator();
+
+        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
     public function generateData()
@@ -54,14 +67,15 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
         }
 
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
+        $definition = $builder->definition();
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
-        $actual = $this->subject->generate($builder);
+        $actual = $this->subject->generate($definition);
 
         $this->assertSame($expected, "<?php\n\n" . $actual);
 
         eval($actual);
 
-        $this->assertTrue(class_exists($builder->className()));
+        $this->assertTrue(class_exists($definition->className()));
     }
 
     public function testInstance()

@@ -136,19 +136,20 @@ class MockFactory implements MockFactoryInterface
     public function createMockClass(MockBuilderInterface $builder)
     {
         $isNew = !$builder->isBuilt();
-        $className = $builder->className();
+        $definition = $builder->definition();
+        $className = $definition->className();
 
         if ($isNew) {
             if (class_exists($className, false)) {
                 throw new ClassExistsException($className);
             }
 
-            $source = $this->generator->generate($builder);
+            $source = $this->generator->generate($definition);
             @eval($source);
 
             if (!class_exists($className, false)) {
                 throw new MockGenerationFailedException(
-                    $builder,
+                    $definition,
                     $source,
                     error_get_last()
                 );
@@ -164,7 +165,7 @@ class MockFactory implements MockFactoryInterface
                 null,
                 $this->createStubs(
                     $class,
-                    $builder->methodDefinitions()->staticMethods()
+                    $definition->methods()->staticMethods()
                 )
             );
         }
@@ -200,7 +201,7 @@ class MockFactory implements MockFactoryInterface
             $mock,
             $this->createStubs(
                 $class,
-                $builder->methodDefinitions()->methods(),
+                $builder->definition()->methods()->methods(),
                 $mock
             )
         );

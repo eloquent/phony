@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
@@ -19,7 +19,7 @@ class MockGenerationFailedExceptionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->mockBuilder = new MockBuilder(null, null, 'ClassName');
+        $this->definition = new MockDefinition(null, null, null, null, null, null, 'ClassName');
         $this->cause = new Exception();
     }
 
@@ -37,7 +37,7 @@ ERROR
 // this line is NOT context
 EOD;
         $error = array('message' => 'errorMessage', 'line' => 5);
-        $exception = new MockGenerationFailedException($this->mockBuilder, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:
@@ -50,7 +50,7 @@ Relevant lines:
     8  // this line is context
 EOD;
 
-        $this->assertSame($this->mockBuilder, $exception->mockBuilder());
+        $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
         $this->assertSame($error, $exception->error());
         $this->assertSame($expected, $exception->getMessage());
@@ -72,7 +72,7 @@ ERROR
 // this line is NOT context
 EOD;
         $error = null;
-        $exception = new MockGenerationFailedException($this->mockBuilder, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed.
 Relevant lines:
@@ -87,7 +87,7 @@ Relevant lines:
     9  // this line is NOT context
 EOD;
 
-        $this->assertSame($this->mockBuilder, $exception->mockBuilder());
+        $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
         $this->assertSame($error, $exception->error());
         $this->assertSame($expected, $exception->getMessage());
@@ -106,7 +106,7 @@ ERROR
 // this line is NOT context
 EOD;
         $error = array('message' => 'errorMessage', 'line' => 2);
-        $exception = new MockGenerationFailedException($this->mockBuilder, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 2.
 Relevant lines:
@@ -117,7 +117,7 @@ Relevant lines:
     5  // this line is context
 EOD;
 
-        $this->assertSame($this->mockBuilder, $exception->mockBuilder());
+        $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
         $this->assertSame($error, $exception->error());
         $this->assertSame($expected, $exception->getMessage());
@@ -136,7 +136,7 @@ ERROR
 // this line is context
 EOD;
         $error = array('message' => 'errorMessage', 'line' => 5);
-        $exception = new MockGenerationFailedException($this->mockBuilder, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:
@@ -147,7 +147,7 @@ Relevant lines:
     6  // this line is context
 EOD;
 
-        $this->assertSame($this->mockBuilder, $exception->mockBuilder());
+        $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
         $this->assertSame($error, $exception->error());
         $this->assertSame($expected, $exception->getMessage());

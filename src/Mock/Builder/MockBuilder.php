@@ -13,9 +13,10 @@ namespace Eloquent\Phony\Mock\Builder;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
-use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
-use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
+use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Feature\FeatureDetectorInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalizedMockException;
 use Eloquent\Phony\Mock\Exception\InvalidClassNameException;
@@ -46,12 +47,13 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
-     * @param array|object|null                                                                                   $definition   The definition.
-     * @param string|null                                                                                         $className    The class name.
-     * @param string|null                                                                                         $id           The identifier.
-     * @param MockFactoryInterface|null                                                                           $factory      The factory to use.
-     * @param ProxyFactoryInterface|null                                                                          $proxyFactory The proxy factory to use.
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types           The types to mock.
+     * @param array|object|null                                                                                   $definition      The definition.
+     * @param string|null                                                                                         $className       The class name.
+     * @param string|null                                                                                         $id              The identifier.
+     * @param MockFactoryInterface|null                                                                           $factory         The factory to use.
+     * @param ProxyFactoryInterface|null                                                                          $proxyFactory    The proxy factory to use.
+     * @param FeatureDetectorInterface|null                                                                       $featureDetector The feature detector to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
      */
@@ -61,7 +63,8 @@ class MockBuilder implements MockBuilderInterface
         $className = null,
         $id = null,
         MockFactoryInterface $factory = null,
-        ProxyFactoryInterface $proxyFactory = null
+        ProxyFactoryInterface $proxyFactory = null,
+        FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $factory) {
             $factory = MockFactory::instance();
@@ -69,27 +72,25 @@ class MockBuilder implements MockBuilderInterface
         if (null === $proxyFactory) {
             $proxyFactory = ProxyFactory::instance();
         }
+        if (null === $featureDetector) {
+            $featureDetector = FeatureDetector::instance();
+        }
 
         $this->factory = $factory;
         $this->proxyFactory = $proxyFactory;
+        $this->featureDetector = $featureDetector;
 
         $this->types = array();
-        $this->reflectors = array();
-        $this->methods = array();
-        $this->staticMethods = array();
-        $this->properties = array();
-        $this->staticProperties = array();
-        $this->constants = array();
+        $this->parentClassName = null;
+        $this->customMethods = array();
+        $this->customProperties = array();
+        $this->customStaticMethods = array();
+        $this->customStaticProperties = array();
+        $this->customConstants = array();
         $this->id = $id;
         $this->isFinalized = false;
-        $this->isBuilt = false;
 
-        $reflectorReflector = new ReflectionClass('ReflectionClass');
-        $this->isTraitSupported = $reflectorReflector->hasMethod('isTrait');
-
-        if (null === $types) {
-            $this->normalize();
-        } else {
+        if (null !== $types) {
             $this->like($types);
         }
 
@@ -121,6 +122,26 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Get the feature detector.
+     *
+     * @return FeatureDetectorInterface The feature detector.
+     */
+    public function featureDetector()
+    {
+        return $this->featureDetector;
+    }
+
+    /**
+     * Get the types.
+     *
+     * @return array<string,ReflectionClass> The types.
+     */
+    public function types()
+    {
+        return $this->types;
+    }
+
+    /**
      * Add classes, interfaces, or traits.
      *
      * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface> $type      A type, or types to add.
@@ -145,21 +166,65 @@ class MockBuilder implements MockBuilderInterface
             }
         }
 
+        $isTraitSupported = $this->featureDetector->isSupported('trait');
         $toAdd = array();
 
+        if (null === $this->parentClassName) {
+            $parentClassNames = array();
+        } else {
+            $parentClassNames = array($this->parentClassName);
+        }
+
+        $parentClassName = null;
+
         foreach ($types as $type) {
-            if (is_string($type)) {
-                $toAdd[] = $type;
-            } elseif ($type instanceof ReflectionClass) {
-                $toAdd[] = $type->getName();
-            } elseif ($type instanceof MockBuilderInterface) {
+            if ($type instanceof MockBuilderInterface) {
                 $toAdd = array_merge($toAdd, $type->types());
-            } else {
+
+                continue;
+            }
+
+            if (is_string($type)) {
+                try {
+                    $type = new ReflectionClass($type);
+                } catch (ReflectionException $e) {
+                    throw new InvalidTypeException($type, $e);
+                }
+            } elseif (!$type instanceof ReflectionClass) {
                 throw new InvalidTypeException($type);
+            }
+
+            $isTrait = $isTraitSupported && $type->isTrait();
+
+            if (!$isTrait && $type->isFinal()) {
+                throw new FinalClassException($type->getName());
+            }
+
+            if (!$isTrait && !$type->isInterface()) {
+                $parentClassNames[] = $parentClassName = $type->getName();
+            }
+
+            $toAdd[] = $type;
+        }
+
+        $parentClassNames = array_unique($parentClassNames);
+        $parentClassCount = count($parentClassNames);
+
+        if ($parentClassCount > 1) {
+            throw new MultipleInheritanceException($parentClassNames);
+        }
+
+        foreach ($toAdd as $type) {
+            $name = $type->getName();
+
+            if (!isset($this->types[$name])) {
+                $this->types[$name] = $type;
             }
         }
 
-        $this->normalize($toAdd);
+        if ($parentClassCount > 0) {
+            $this->parentClassName = $parentClassName;
+        }
 
         return $this;
     }
@@ -170,7 +235,7 @@ class MockBuilder implements MockBuilderInterface
      * @param array|object $definition The definition.
      *
      * @return MockBuilderInterface   This builder.
-     * @throws MockExceptionInterface If invalid input is supplied.
+     * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
      */
     public function define($definition)
     {
@@ -224,26 +289,16 @@ class MockBuilder implements MockBuilderInterface
      * @param string        $name     The name.
      * @param callable|null $callback The callback.
      *
-     * @return MockBuilderInterface This builder.
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addMethod($name, $callback = null)
     {
-        $this->methods[$name] = $callback;
+        if ($this->isFinalized) {
+            throw new FinalizedMockException();
+        }
 
-        return $this;
-    }
-
-    /**
-     * Add a custom static method.
-     *
-     * @param string        $name     The name.
-     * @param callable|null $callback The callback.
-     *
-     * @return MockBuilderInterface This builder.
-     */
-    public function addStaticMethod($name, $callback = null)
-    {
-        $this->staticMethods[$name] = $callback;
+        $this->customMethods[$name] = $callback;
 
         return $this;
     }
@@ -254,11 +309,36 @@ class MockBuilder implements MockBuilderInterface
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return MockBuilderInterface This builder.
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addProperty($name, $value = null)
     {
-        $this->properties[$name] = $value;
+        if ($this->isFinalized) {
+            throw new FinalizedMockException();
+        }
+
+        $this->customProperties[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Add a custom static method.
+     *
+     * @param string        $name     The name.
+     * @param callable|null $callback The callback.
+     *
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If this builder is already finalized.
+     */
+    public function addStaticMethod($name, $callback = null)
+    {
+        if ($this->isFinalized) {
+            throw new FinalizedMockException();
+        }
+
+        $this->customStaticMethods[$name] = $callback;
 
         return $this;
     }
@@ -269,11 +349,16 @@ class MockBuilder implements MockBuilderInterface
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return MockBuilderInterface This builder.
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addStaticProperty($name, $value = null)
     {
-        $this->staticProperties[$name] = $value;
+        if ($this->isFinalized) {
+            throw new FinalizedMockException();
+        }
+
+        $this->customStaticProperties[$name] = $value;
 
         return $this;
     }
@@ -283,10 +368,17 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param string $name  The name.
      * @param mixed  $value The value.
+     *
+     * @return MockBuilderInterface   This builder.
+     * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addConstant($name, $value)
     {
-        $this->constants[$name] = $value;
+        if ($this->isFinalized) {
+            throw new FinalizedMockException();
+        }
+
+        $this->customConstants[$name] = $value;
 
         return $this;
     }
@@ -319,130 +411,6 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get the identifier.
-     *
-     * @return string|null The identifier.
-     */
-    public function id()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Get the class name.
-     *
-     * @return string The class name.
-     */
-    public function className()
-    {
-        if (null !== $this->className) {
-            return $this->className;
-        }
-
-        return $this->generatedClassName;
-    }
-
-    /**
-     * Get the parent class name.
-     *
-     * @return string|null The parent class name, or null if the mock will not extend a class.
-     */
-    public function parentClassName()
-    {
-        return $this->parentClassName;
-    }
-
-    /**
-     * Get the interface names.
-     *
-     * @return array<string> The interface names.
-     */
-    public function interfaceNames()
-    {
-        return $this->interfaceNames;
-    }
-
-    /**
-     * Get the trait names.
-     *
-     * @return array<string> The trait names.
-     */
-    public function traitNames()
-    {
-        return $this->traitNames;
-    }
-
-    /**
-     * Get the types.
-     *
-     * @return array<string> The types.
-     */
-    public function types()
-    {
-        return $this->types;
-    }
-
-    /**
-     * Get the type reflectors.
-     *
-     * @return array<string,ReflectionClass> The type reflectors.
-     */
-    public function reflectors()
-    {
-        return $this->reflectors;
-    }
-
-    /**
-     * Get the custom methods.
-     *
-     * @return array<string,callable|null> The custom methods.
-     */
-    public function methods()
-    {
-        return $this->methods;
-    }
-
-    /**
-     * Get the custom static methods.
-     *
-     * @return array<string,callable|null> The custom static methods.
-     */
-    public function staticMethods()
-    {
-        return $this->staticMethods;
-    }
-
-    /**
-     * Get the custom properties.
-     *
-     * @return array<string,mixed> The custom properties.
-     */
-    public function properties()
-    {
-        return $this->properties;
-    }
-
-    /**
-     * Get the custom static properties.
-     *
-     * @return array<string,mixed> The custom static properties.
-     */
-    public function staticProperties()
-    {
-        return $this->staticProperties;
-    }
-
-    /**
-     * Get the custom constants.
-     *
-     * @return array<string,mixed> The custom constants.
-     */
-    public function constants()
-    {
-        return $this->constants;
-    }
-
-    /**
      * Returns true if this builder is finalized.
      *
      * @return boolean True if finalized.
@@ -461,24 +429,24 @@ class MockBuilder implements MockBuilderInterface
     {
         if (!$this->isFinalized) {
             $this->isFinalized = true;
-            $this->methodDefinitions = $this->buildMethodDefinitions();
+            $this->definition = $this->buildDefinition();
         }
 
         return $this;
     }
 
     /**
-     * Get the method definitions.
+     * Get the mock definitions.
      *
      * Calling this method will finalize the mock builder.
      *
-     * @return MethodDefinitionCollectionInterface The method definitions.
+     * @return MockDefinitionInterface The mock definition.
      */
-    public function methodDefinitions()
+    public function definition()
     {
         $this->finalize();
 
-        return $this->methodDefinitions;
+        return $this->definition;
     }
 
     /**
@@ -488,7 +456,7 @@ class MockBuilder implements MockBuilderInterface
      */
     public function isBuilt()
     {
-        return $this->isBuilt;
+        return (boolean) $this->class;
     }
 
     /**
@@ -500,10 +468,23 @@ class MockBuilder implements MockBuilderInterface
      */
     public function build()
     {
-        $class = $this->factory->createMockClass($this);
-        $this->isBuilt = true;
+        if (!$this->class) {
+            $this->class = $this->factory->createMockClass($this);
+        }
 
-        return $class;
+        return $this->class;
+    }
+
+    /**
+     * Generate and define the mock class, and return the class name.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @return string The class name.
+     */
+    public function className()
+    {
+        return $this->build()->getName();
     }
 
     /**
@@ -589,208 +570,39 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Normalize the specified build parameters.
+     * Build the mock definitions.
      *
-     * @throws MockExceptionInterface If invalid input is supplied.
+     * @return MockDefinitionInterface The mock definition.
      */
-    protected function normalize(array $toAdd = null)
+    protected function buildDefinition()
     {
-        if (null === $toAdd) {
-            $toAdd = array();
-        } else {
-            $toAdd = array_unique($toAdd);
-
-            foreach ($toAdd as $index => $type) {
-                if (in_array($type, $this->types, true)) {
-                    unset($toAdd[$index]);
-                }
-            }
-        }
-
-        $reflectors = $this->reflectors;
-
-        foreach ($toAdd as $type) {
-            try {
-                $reflectors[$type] = $reflector = new ReflectionClass($type);
-            } catch (ReflectionException $e) {
-                throw new InvalidTypeException($type, $e);
-            }
-
-            if ($this->isTraitSupported && $reflector->isTrait()) {
-                continue;
-            }
-
-            if ($reflector->isFinal()) {
-                throw new FinalClassException($type);
-            }
-        }
-
-        $parentClassCount = 0;
-        $parentClassNames = array();
-        $parentClassName = null;
-        $interfaceNames = array();
-        $traitNames = array();
-
-        foreach ($reflectors as $reflector) {
-            $className = $reflector->getName();
-
-            if ($reflector->isInterface()) {
-                $interfaceNames[] = $className;
-            } elseif ($this->isTraitSupported && $reflector->isTrait()) {
-                $traitNames[] = $className;
-            } else {
-                $parentClassNames[] = $className;
-                $parentClassCount++;
-
-                if (null === $parentClassName) {
-                    $parentClassName = $className;
-                }
-            }
-        }
-
-        if ($parentClassCount > 1) {
-            throw new MultipleInheritanceException($parentClassNames);
-        }
-
-        $this->types = array_merge($this->types, $toAdd);
-        $this->reflectors = $reflectors;
-        $this->parentClassName = $parentClassName;
-        $this->interfaceNames = $interfaceNames;
-        $this->traitNames = $traitNames;
-
-        $this->generatedClassName = $this->generateClassName(
-            $parentClassName,
-            $interfaceNames,
-            $traitNames,
-            $this->id
+        return new MockDefinition(
+            $this->types,
+            $this->customMethods,
+            $this->customProperties,
+            $this->customStaticMethods,
+            $this->customStaticProperties,
+            $this->customConstants,
+            $this->className,
+            $this->id,
+            $this->featureDetector
         );
     }
 
-    /**
-     * Build the method definitions.
-     *
-     * @return MethodDefinitionCollectionInterface The method definitions.
-     */
-    protected function buildMethodDefinitions()
-    {
-        $methods = array();
-        $parameterCounts = array();
-
-        foreach ($this->reflectors as $type) {
-            foreach ($type->getMethods() as $method) {
-                $name = $method->getName();
-
-                if ($this->isReservedWord($name)) {
-                    continue;
-                }
-
-                if (
-                    !$method->isFinal() &&
-                    !$method->isPrivate() &&
-                    !$method->isConstructor()
-                ) {
-                    $parameterCount = $method->getNumberOfParameters();
-
-                    if (
-                        !isset($methods[$name]) ||
-                        $parameterCount > $parameterCounts[$name]
-                    ) {
-                        $methods[$name] = new RealMethodDefinition($method);
-                        $parameterCounts[$name] = $parameterCount;
-                    }
-                }
-            }
-        }
-
-        foreach ($this->staticMethods as $name => $callback) {
-            $methods[$name] =
-                new CustomMethodDefinition(true, $name, $callback);
-        }
-
-        foreach ($this->methods as $name => $callback) {
-            $methods[$name] =
-                new CustomMethodDefinition(false, $name, $callback);
-        }
-
-        ksort($methods, SORT_STRING);
-
-        return new MethodDefinitionCollection($methods);
-    }
-
-    /**
-     * Generate a mock class name.
-     *
-     * @param string|null                $parentClassName The parent class name.
-     * @param array<integer,string>|null $interfaceNames  The interface names.
-     * @param array<integer,string>|null $traitNames      The trait names.
-     * @param integer|null               $id              The identifier.
-     *
-     * @return string The generated class name.
-     */
-    protected function generateClassName(
-        $parentClassName = null,
-        array $interfaceNames = null,
-        array $traitNames = null,
-        $id = null
-    ) {
-        $className = 'PhonyMock';
-
-        if (null !== $parentClassName) {
-            $subject = $parentClassName;
-        } elseif ($interfaceNames) {
-            $subject = $interfaceNames[0];
-        } elseif ($traitNames) {
-            $subject = $traitNames[0];
-        } else {
-            $subject = null;
-        }
-
-        if ($subject) {
-            $subjectAtoms = preg_split('/[_\\\\]/', $subject);
-            $className .= '_' . array_pop($subjectAtoms);
-        }
-
-        if (null === $id) {
-            $className .= '_' . substr(md5(uniqid()), 0, 6);
-        } else {
-            $className .= '_' . $id;
-        }
-
-        return $className;
-    }
-
-    /**
-     * Determines if the supplied string is a reserved word.
-     *
-     * @param string $string The string.
-     *
-     * @return boolean True if the string is a reserved word.
-     */
-    protected function isReservedWord($string)
-    {
-        $tokens = token_get_all('<?php ' . $string);
-        $token = $tokens[1];
-
-        return !is_array($token) || $token[0] !== T_STRING;
-    }
-
-    protected $isTraitSupported;
     private $factory;
     private $proxyFactory;
+    private $featureDetector;
     private $types;
-    private $reflectors;
-    private $methods;
-    private $staticMethods;
-    private $properties;
-    private $staticProperties;
-    private $constants;
-    private $className;
-    private $generatedClassName;
     private $parentClassName;
-    private $interfaceNames;
-    private $traitNames;
+    private $customMethods;
+    private $customProperties;
+    private $customStaticMethods;
+    private $customStaticProperties;
+    private $customConstants;
+    private $className;
+    private $id;
     private $isFinalized;
-    private $isBuilt;
-    private $methodDefinitions;
+    private $definition;
+    private $class;
     private $mock;
 }

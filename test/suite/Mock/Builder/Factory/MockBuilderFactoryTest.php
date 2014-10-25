@@ -54,7 +54,6 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
         $expected = new MockBuilder($types, $definition, $className, 0, $this->mockFactory);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame('0', $actual->id());
         $this->assertSame($this->mockFactory, $actual->factory());
         $this->assertSame($this->proxyFactory, $actual->proxyFactory());
     }
