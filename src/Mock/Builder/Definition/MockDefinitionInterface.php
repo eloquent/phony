@@ -106,9 +106,9 @@ interface MockDefinitionInterface
     public function methods();
 
     /**
-     * Get an array map representation of this definition.
+     * Check if the supplied definition is equal to this definition.
      *
-     * @return array<string,mixed> The map.
+     * @return boolean True if equal.
      */
-    public function toMap();
+    public function isEqualTo(MockDefinitionInterface $definition);
 }

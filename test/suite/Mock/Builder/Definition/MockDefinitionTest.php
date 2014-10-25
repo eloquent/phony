@@ -26,21 +26,25 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = array(
+            'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
             'Iterator',
-            'Countable',
         );
         $this->typeNamesTraits = array(
+            'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
-            'Iterator',
-            'Countable',
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
+            'Iterator',
         );
         $this->parentClassName = 'Eloquent\Phony\Test\TestClassB';
-        $this->interfaceNames = array('Eloquent\Phony\Test\TestInterfaceA', 'Iterator', 'Countable');
+        $this->interfaceNames = array(
+            'Countable',
+            'Eloquent\Phony\Test\TestInterfaceA',
+            'Iterator',
+        );
         $this->traitNames = array(
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
@@ -273,19 +277,22 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->methods());
     }
 
-    public function testToMap()
+    public function testIsEqualTo()
     {
         $this->setUpWith($this->typeNames);
-        $expected = array(
-            'types' => $this->typeNames,
-            'customMethods' => $this->customMethods,
-            'customProperties' => $this->customProperties,
-            'customStaticMethods' => $this->customStaticMethods,
-            'customStaticProperties' => $this->customStaticProperties,
-            'customConstants' => $this->customConstants,
-            'className' => $this->className,
-        );
+        $definitionA = $this->subject;
+        $this->setUpWith($this->typeNames);
+        $definitionB = $this->subject;
+        $definitionC = new MockDefinition();
 
-        $this->assertSame($expected, $this->subject->toMap());
+        $this->assertTrue($definitionA->isEqualTo($definitionA));
+        $this->assertTrue($definitionA->isEqualTo($definitionB));
+        $this->assertTrue($definitionB->isEqualTo($definitionA));
+        $this->assertTrue($definitionB->isEqualTo($definitionB));
+        $this->assertTrue($definitionC->isEqualTo($definitionC));
+        $this->assertFalse($definitionA->isEqualTo($definitionC));
+        $this->assertFalse($definitionC->isEqualTo($definitionA));
+        $this->assertFalse($definitionB->isEqualTo($definitionC));
+        $this->assertFalse($definitionC->isEqualTo($definitionB));
     }
 }

@@ -70,6 +70,8 @@ class MockDefinition implements MockDefinitionInterface
             $featureDetector = FeatureDetector::instance();
         }
 
+        ksort($types);
+
         $this->types = $types;
         $this->customMethods = $customMethods;
         $this->customProperties = $customProperties;
@@ -223,21 +225,21 @@ class MockDefinition implements MockDefinitionInterface
     }
 
     /**
-     * Get an array map representation of this definition.
+     * Check if the supplied definition is equal to this definition.
      *
-     * @return array<string,mixed> The map.
+     * @return boolean True if equal.
      */
-    public function toMap()
+    public function isEqualTo(MockDefinitionInterface $definition)
     {
-        return array(
-            'types' => $this->typeNames(),
-            'customMethods' => $this->customMethods,
-            'customProperties' => $this->customProperties,
-            'customStaticMethods' => $this->customStaticMethods,
-            'customStaticProperties' => $this->customStaticProperties,
-            'customConstants' => $this->customConstants,
-            'className' => $this->className,
-        );
+        return
+            $definition->className() === $this->className &&
+            $definition->typeNames() === $this->typeNames() &&
+            $definition->customMethods() === $this->customMethods &&
+            $definition->customProperties() === $this->customProperties &&
+            $definition->customStaticMethods() === $this->customStaticMethods &&
+            $definition->customStaticProperties() ===
+                $this->customStaticProperties &&
+            $definition->customConstants() === $this->customConstants;
     }
 
     /**
