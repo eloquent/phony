@@ -34,5 +34,10 @@
             "src/functions.php",
             "src/Phpunit/functions.php"
         ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.1.x-dev"
+        }
     }
 }
