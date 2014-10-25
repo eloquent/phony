@@ -123,10 +123,13 @@ class ProxyFactory implements ProxyFactoryInterface
     {
         list($class, $stubs, $magicStubsProperty) =
             $this->prepareStatic($class);
+        $isFullMockProperty = $class->getProperty('_isStaticFullMock');
+        $isFullMockProperty->setAccessible(true);
 
         return new StaticStubbingProxy(
             $class,
             $stubs,
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -146,11 +149,14 @@ class ProxyFactory implements ProxyFactoryInterface
     {
         list($mock, $class, $stubs, $magicStubsProperty) =
             $this->prepareInstance($mock);
+        $isFullMockProperty = $class->getProperty('_isFullMock');
+        $isFullMockProperty->setAccessible(true);
 
         return new StubbingProxy(
             $mock,
             $class,
             $stubs,
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,

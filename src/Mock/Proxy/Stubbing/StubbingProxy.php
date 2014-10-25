@@ -33,6 +33,7 @@ class StubbingProxy extends AbstractStubbingProxy implements
      * @param MockInterface                     $mock                The mock.
      * @param ReflectionClass                   $class               The class.
      * @param array<string,SpyInterface>        $stubs               The stubs.
+     * @param ReflectionProperty                $isFullMockProperty  The is full mock property.
      * @param ReflectionProperty|null           $magicStubsProperty  The magic stubs property, or null if magic is not available.
      * @param MockFactoryInterface|null         $mockFactory         The mock factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
@@ -42,6 +43,7 @@ class StubbingProxy extends AbstractStubbingProxy implements
         MockInterface $mock,
         ReflectionClass $class,
         array $stubs,
+        ReflectionProperty $isFullMockProperty,
         ReflectionProperty $magicStubsProperty = null,
         MockFactoryInterface $mockFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
@@ -50,6 +52,7 @@ class StubbingProxy extends AbstractStubbingProxy implements
         parent::__construct(
             $class,
             $stubs,
+            $isFullMockProperty,
             $magicStubsProperty,
             $mockFactory,
             $stubVerifierFactory,

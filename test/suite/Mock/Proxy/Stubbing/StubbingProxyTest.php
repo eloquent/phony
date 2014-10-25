@@ -24,12 +24,45 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
     }
 
+    protected function setUpWith($className)
+    {
+        $this->mockBuilder = new MockBuilder($className);
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->get();
+        $this->className = $this->class->getName();
+        $stubsProperty = $this->class->getProperty('_stubs');
+        $stubsProperty->setAccessible(true);
+        $this->stubs = $this->expectedStubs($stubsProperty->getValue($this->mock));
+        $this->isFullMockProperty = $this->class->getProperty('_isFullMock');
+        $this->isFullMockProperty->setAccessible(true);
+        if ($this->class->hasMethod('__call')) {
+            $this->magicStubsProperty = $this->class->getProperty('_magicStubs');
+            $this->magicStubsProperty->setAccessible(true);
+        } else {
+            $this->magicStubsProperty = null;
+        }
+        $this->mockFactory = new MockFactory();
+        $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->wildcardMatcher = new WildcardMatcher();
+        $this->subject = new StubbingProxy(
+            $this->mock,
+            $this->class,
+            $this->stubs,
+            $this->isFullMockProperty,
+            $this->magicStubsProperty,
+            $this->mockFactory,
+            $this->stubVerifierFactory,
+            $this->wildcardMatcher
+        );
+    }
+
     public function testConstructor()
     {
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertSame($this->class, $this->subject->reflector());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->stubs, $this->subject->stubs());
+        $this->assertSame($this->isFullMockProperty, $this->subject->isFullMockProperty());
         $this->assertSame($this->magicStubsProperty, $this->subject->magicStubsProperty());
         $this->assertSame($this->mockFactory, $this->subject->mockFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
@@ -38,7 +71,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new StubbingProxy($this->mock, $this->class, $this->stubs);
+        $this->subject = new StubbingProxy($this->mock, $this->class, $this->stubs, $this->isFullMockProperty);
 
         $this->assertNull($this->subject->magicStubsProperty());
         $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
@@ -53,6 +86,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->full());
         $this->assertNull($this->mock->testClassAMethodA());
         $this->assertNull($this->mock->testClassAMethodB('a', 'b'));
+        $this->assertTrue($this->isFullMockProperty->getValue($this->mock));
     }
 
     public function testMagicStubs()
@@ -97,35 +131,6 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
         $this->subject->nonexistent();
-    }
-
-    protected function setUpWith($className)
-    {
-        $this->mockBuilder = new MockBuilder($className);
-        $this->class = $this->mockBuilder->build(true);
-        $this->mock = $this->mockBuilder->get();
-        $this->className = $this->class->getName();
-        $stubsProperty = $this->class->getProperty('_stubs');
-        $stubsProperty->setAccessible(true);
-        $this->stubs = $this->expectedStubs($stubsProperty->getValue($this->mock));
-        if ($this->class->hasMethod('__call')) {
-            $this->magicStubsProperty = $this->class->getProperty('_magicStubs');
-            $this->magicStubsProperty->setAccessible(true);
-        } else {
-            $this->magicStubsProperty = null;
-        }
-        $this->mockFactory = new MockFactory();
-        $this->stubVerifierFactory = new StubVerifierFactory();
-        $this->wildcardMatcher = new WildcardMatcher();
-        $this->subject = new StubbingProxy(
-            $this->mock,
-            $this->class,
-            $this->stubs,
-            $this->magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
     }
 
     protected function expectedStubs(array $stubs)

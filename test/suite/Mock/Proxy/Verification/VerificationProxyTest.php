@@ -24,6 +24,35 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
     }
 
+    protected function setUpWith($className)
+    {
+        $this->mockBuilder = new MockBuilder($className);
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->get();
+        $this->className = $this->class->getName();
+        $stubsProperty = $this->class->getProperty('_stubs');
+        $stubsProperty->setAccessible(true);
+        $this->stubs = $this->expectedStubs($stubsProperty->getValue($this->mock));
+        if ($this->class->hasMethod('__call')) {
+            $this->magicStubsProperty = $this->class->getProperty('_magicStubs');
+            $this->magicStubsProperty->setAccessible(true);
+        } else {
+            $this->magicStubsProperty = null;
+        }
+        $this->mockFactory = new MockFactory();
+        $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->wildcardMatcher = new WildcardMatcher();
+        $this->subject = new VerificationProxy(
+            $this->mock,
+            $this->class,
+            $this->stubs,
+            $this->magicStubsProperty,
+            $this->mockFactory,
+            $this->stubVerifierFactory,
+            $this->wildcardMatcher
+        );
+    }
+
     public function testConstructor()
     {
         $this->assertSame($this->mock, $this->subject->mock());
@@ -84,35 +113,6 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
         $this->subject->nonexistent();
-    }
-
-    protected function setUpWith($className)
-    {
-        $this->mockBuilder = new MockBuilder($className);
-        $this->class = $this->mockBuilder->build(true);
-        $this->mock = $this->mockBuilder->get();
-        $this->className = $this->class->getName();
-        $stubsProperty = $this->class->getProperty('_stubs');
-        $stubsProperty->setAccessible(true);
-        $this->stubs = $this->expectedStubs($stubsProperty->getValue($this->mock));
-        if ($this->class->hasMethod('__call')) {
-            $this->magicStubsProperty = $this->class->getProperty('_magicStubs');
-            $this->magicStubsProperty->setAccessible(true);
-        } else {
-            $this->magicStubsProperty = null;
-        }
-        $this->mockFactory = new MockFactory();
-        $this->stubVerifierFactory = new StubVerifierFactory();
-        $this->wildcardMatcher = new WildcardMatcher();
-        $this->subject = new VerificationProxy(
-            $this->mock,
-            $this->class,
-            $this->stubs,
-            $this->magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
     }
 
     protected function expectedStubs(array $stubs)

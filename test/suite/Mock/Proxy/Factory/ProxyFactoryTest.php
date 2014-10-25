@@ -55,11 +55,14 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $class = $mockBuilder->build();
         $stubsProperty = $class->getProperty('_staticStubs');
         $stubsProperty->setAccessible(true);
+        $isFullMockProperty = $class->getProperty('_isStaticFullMock');
+        $isFullMockProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStaticStubs');
         $magicStubsProperty->setAccessible(true);
         $expected = new StaticStubbingProxy(
             $class,
             $stubsProperty->getValue(null),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -74,12 +77,15 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
         $class = $mockBuilder->build();
+        $isFullMockProperty = $class->getProperty('_isStaticFullMock');
+        $isFullMockProperty->setAccessible(true);
         $stubsProperty = $class->getProperty('_staticStubs');
         $stubsProperty->setAccessible(true);
         $magicStubsProperty = null;
         $expected = new StaticStubbingProxy(
             $class,
             $stubsProperty->getValue(null),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -97,11 +103,14 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $class = new ReflectionClass($mock);
         $stubsProperty = $class->getProperty('_staticStubs');
         $stubsProperty->setAccessible(true);
+        $isFullMockProperty = $class->getProperty('_isStaticFullMock');
+        $isFullMockProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStaticStubs');
         $magicStubsProperty->setAccessible(true);
         $expected = new StaticStubbingProxy(
             $class,
             $stubsProperty->getValue(null),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -118,11 +127,14 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $class = $mockBuilder->build();
         $stubsProperty = $class->getProperty('_staticStubs');
         $stubsProperty->setAccessible(true);
+        $isFullMockProperty = $class->getProperty('_isStaticFullMock');
+        $isFullMockProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStaticStubs');
         $magicStubsProperty->setAccessible(true);
         $expected = new StaticStubbingProxy(
             $class,
             $stubsProperty->getValue(null),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -139,11 +151,14 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $class = $mockBuilder->build();
         $stubsProperty = $class->getProperty('_staticStubs');
         $stubsProperty->setAccessible(true);
+        $isFullMockProperty = $class->getProperty('_isStaticFullMock');
+        $isFullMockProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStaticStubs');
         $magicStubsProperty->setAccessible(true);
         $expected = new StaticStubbingProxy(
             $class,
             $stubsProperty->getValue(null),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -173,12 +188,15 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $class = new ReflectionClass($mock);
         $stubsProperty = new ReflectionProperty($mock, '_stubs');
         $stubsProperty->setAccessible(true);
+        $isFullMockProperty = $class->getProperty('_isFullMock');
+        $isFullMockProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStubs');
         $magicStubsProperty->setAccessible(true);
         $expected = new StubbingProxy(
             $mock,
             $class,
             $stubsProperty->getValue($mock),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -196,11 +214,14 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $class = new ReflectionClass($mock);
         $stubsProperty = new ReflectionProperty($mock, '_stubs');
         $stubsProperty->setAccessible(true);
+        $isFullMockProperty = $class->getProperty('_isFullMock');
+        $isFullMockProperty->setAccessible(true);
         $magicStubsProperty = null;
         $expected = new StubbingProxy(
             $mock,
             $class,
             $stubsProperty->getValue($mock),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
@@ -218,12 +239,15 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $class = new ReflectionClass($mock);
         $stubsProperty = new ReflectionProperty($mock, '_stubs');
         $stubsProperty->setAccessible(true);
+        $isFullMockProperty = $class->getProperty('_isFullMock');
+        $isFullMockProperty->setAccessible(true);
         $magicStubsProperty = $class->getProperty('_magicStubs');
         $magicStubsProperty->setAccessible(true);
         $expected = new StubbingProxy(
             $mock,
             $class,
             $stubsProperty->getValue($mock),
+            $isFullMockProperty,
             $magicStubsProperty,
             $this->mockFactory,
             $this->stubVerifierFactory,
