@@ -50,7 +50,6 @@ class MockBuilder implements MockBuilderInterface
      * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types           The types to mock.
      * @param array|object|null                                                                                   $definition      The definition.
      * @param string|null                                                                                         $className       The class name.
-     * @param string|null                                                                                         $id              The identifier.
      * @param MockFactoryInterface|null                                                                           $factory         The factory to use.
      * @param ProxyFactoryInterface|null                                                                          $proxyFactory    The proxy factory to use.
      * @param FeatureDetectorInterface|null                                                                       $featureDetector The feature detector to use.
@@ -61,7 +60,6 @@ class MockBuilder implements MockBuilderInterface
         $types = null,
         $definition = null,
         $className = null,
-        $id = null,
         MockFactoryInterface $factory = null,
         ProxyFactoryInterface $proxyFactory = null,
         FeatureDetectorInterface $featureDetector = null
@@ -87,7 +85,6 @@ class MockBuilder implements MockBuilderInterface
         $this->customStaticMethods = array();
         $this->customStaticProperties = array();
         $this->customConstants = array();
-        $this->id = $id;
         $this->isFinalized = false;
 
         if (null !== $types) {
@@ -584,7 +581,6 @@ class MockBuilder implements MockBuilderInterface
             $this->customStaticProperties,
             $this->customConstants,
             $this->className,
-            $this->id,
             $this->featureDetector
         );
     }
@@ -600,7 +596,6 @@ class MockBuilder implements MockBuilderInterface
     private $customStaticProperties;
     private $customConstants;
     private $className;
-    private $id;
     private $isFinalized;
     private $definition;
     private $class;

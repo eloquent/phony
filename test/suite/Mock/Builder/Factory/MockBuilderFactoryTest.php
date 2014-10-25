@@ -15,7 +15,6 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -23,15 +22,13 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->idSequencer = new Sequencer();
         $this->mockFactory = new MockFactory();
         $this->proxyFactory = new ProxyFactory();
-        $this->subject = new MockBuilderFactory($this->idSequencer, $this->mockFactory, $this->proxyFactory);
+        $this->subject = new MockBuilderFactory($this->mockFactory, $this->proxyFactory);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->idSequencer, $this->subject->idSequencer());
         $this->assertSame($this->mockFactory, $this->subject->mockFactory());
         $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
     }
@@ -40,7 +37,6 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MockBuilderFactory();
 
-        $this->assertSame(Sequencer::sequence('mock-builder-id'), $this->subject->idSequencer());
         $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
         $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
     }
@@ -51,7 +47,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
         $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
         $className = 'PhonyMockMockBuilderFactoryTestCreate';
         $actual = $this->subject->create($types, $definition, $className);
-        $expected = new MockBuilder($types, $definition, $className, 0, $this->mockFactory);
+        $expected = new MockBuilder($types, $definition, $className, $this->mockFactory);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($this->mockFactory, $actual->factory());

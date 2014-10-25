@@ -19,11 +19,24 @@ use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 interface MockGeneratorInterface
 {
     /**
-     * Generate a mock class and return the source code.
+     * Generate a mock class name.
      *
      * @param MockDefinitionInterface $definition The definition.
      *
+     * @return string The mock class name.
+     */
+    public function generateClassName(MockDefinitionInterface $definition);
+
+    /**
+     * Generate a mock class and return the source code.
+     *
+     * @param MockDefinitionInterface $definition The definition.
+     * @param string|null             $className  The class name.
+     *
      * @return string The source code.
      */
-    public function generate(MockDefinitionInterface $definition);
+    public function generate(
+        MockDefinitionInterface $definition,
+        $className = null
+    );
 }

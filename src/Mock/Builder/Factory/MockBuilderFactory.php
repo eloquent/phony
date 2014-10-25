@@ -21,7 +21,6 @@ use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Sequencer\SequencerInterface;
 use ReflectionClass;
 
 /**
@@ -48,18 +47,13 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Construct a new mock builder factory.
      *
-     * @param SequencerInterface|null    $idSequencer  The identifier sequencer to use.
      * @param MockFactoryInterface|null  $mockFactory  The mock factory to use.
      * @param ProxyFactoryInterface|null $proxyFactory The proxy factory to use.
      */
     public function __construct(
-        SequencerInterface $idSequencer = null,
         MockFactoryInterface $mockFactory = null,
         ProxyFactoryInterface $proxyFactory = null
     ) {
-        if (null === $idSequencer) {
-            $idSequencer = Sequencer::sequence('mock-builder-id');
-        }
         if (null === $mockFactory) {
             $mockFactory = MockFactory::instance();
         }
@@ -67,19 +61,8 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
             $proxyFactory = ProxyFactory::instance();
         }
 
-        $this->idSequencer = $idSequencer;
         $this->mockFactory = $mockFactory;
         $this->proxyFactory = $proxyFactory;
-    }
-
-    /**
-     * Get the identifier sequencer.
-     *
-     * @return SequencerInterface The identifier sequencer.
-     */
-    public function idSequencer()
-    {
-        return $this->idSequencer;
     }
 
     /**
@@ -120,7 +103,6 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
             $types,
             $definition,
             $className,
-            strval($this->idSequencer->next()),
             $this->mockFactory,
             $this->proxyFactory
         );
@@ -168,7 +150,6 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     }
 
     private static $instance;
-    private $idSequencer;
     private $mockFactory;
     private $proxyFactory;
 }

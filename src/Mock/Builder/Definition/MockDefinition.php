@@ -36,7 +36,6 @@ class MockDefinition implements MockDefinitionInterface
      * @param array<string,mixed>|null           $customStaticProperties The custom static properties.
      * @param array<string,mixed>|null           $customConstants        The custom constants.
      * @param string|null                        $className              The class name.
-     * @param string|null                        $id                     The identifier.
      * @param FeatureDetectorInterface|null      $featureDetector        The feature detector to use.
      */
     public function __construct(
@@ -47,7 +46,6 @@ class MockDefinition implements MockDefinitionInterface
         array $customStaticProperties = null,
         array $customConstants = null,
         $className = null,
-        $id = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $types) {
@@ -79,7 +77,6 @@ class MockDefinition implements MockDefinitionInterface
         $this->customStaticProperties = $customStaticProperties;
         $this->customConstants = $customConstants;
         $this->className = $className;
-        $this->id = $id;
         $this->featureDetector = $featureDetector;
     }
 
@@ -146,23 +143,11 @@ class MockDefinition implements MockDefinitionInterface
     /**
      * Get the class name.
      *
-     * @return string The class name.
+     * @return string|null The class name.
      */
     public function className()
     {
-        $this->inspectTypes();
-
         return $this->className;
-    }
-
-    /**
-     * Get the identifier.
-     *
-     * @return string|null The identifier.
-     */
-    public function id()
-    {
-        return $this->id;
     }
 
     /**
@@ -264,43 +249,6 @@ class MockDefinition implements MockDefinitionInterface
                 $this->parentClassName = $typeName;
             }
         }
-
-        $this->buildClassName();
-    }
-
-    /**
-     * Build the mock class name.
-     *
-     * @return string The mock class name.
-     */
-    protected function buildClassName()
-    {
-        if (null !== $this->className) {
-            return;
-        }
-
-        $this->className = 'PhonyMock';
-
-        if (null !== $this->parentClassName) {
-            $subject = $this->parentClassName;
-        } elseif ($this->interfaceNames) {
-            $subject = $this->interfaceNames[0];
-        } elseif ($this->traitNames) {
-            $subject = $this->traitNames[0];
-        } else {
-            $subject = null;
-        }
-
-        if ($subject) {
-            $subjectAtoms = preg_split('/[_\\\\]/', $subject);
-            $this->className .= '_' . array_pop($subjectAtoms);
-        }
-
-        if (null === $this->id) {
-            $this->className .= '_' . substr(md5(uniqid()), 0, 6);
-        } else {
-            $this->className .= '_' . $this->id;
-        }
     }
 
     /**
@@ -378,7 +326,6 @@ class MockDefinition implements MockDefinitionInterface
     private $customStaticProperties;
     private $customConstants;
     private $className;
-    private $id;
     private $featureDetector;
     private $typeNames;
     private $parentClassName;

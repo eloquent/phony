@@ -68,7 +68,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             $typeNames,
             $this->definition,
             null,
-            null,
             $this->factory,
             $this->proxyFactory,
             $this->featureDetector
@@ -164,14 +163,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $definition = $this->subject->definition();
 
         $this->assertSame('ClassName', $definition->className());
-    }
-
-    public function testConstructorWithId()
-    {
-        $this->subject = new MockBuilder($this->typesFor($this->typeNames), null, null, 111);
-        $definition = $this->subject->definition();
-
-        $this->assertSame('PhonyMock_TestClassB_111', $definition->className());
     }
 
     public function testConstructorFailureInvalidClassName()
@@ -552,7 +543,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->setUpWith($this->typeNames);
         $actual = $this->subject->className();
 
-        $this->assertRegExp('/^PhonyMock_TestClassB_[[:xdigit:]]{6}$/', $actual);
+        $this->assertRegExp('/^PhonyMock_TestClassB_\d+$/', $actual);
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertSame($actual, $this->subject->className());

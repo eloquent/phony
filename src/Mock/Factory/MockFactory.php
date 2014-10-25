@@ -137,14 +137,14 @@ class MockFactory implements MockFactoryInterface
     {
         $isNew = !$builder->isBuilt();
         $definition = $builder->definition();
-        $className = $definition->className();
+        $className = $this->generator->generateClassName($definition);
 
         if ($isNew) {
             if (class_exists($className, false)) {
                 throw new ClassExistsException($className);
             }
 
-            $source = $this->generator->generate($definition);
+            $source = $this->generator->generate($definition, $className);
             @eval($source);
 
             if (!class_exists($className, false)) {

@@ -64,16 +64,9 @@ interface MockDefinitionInterface
     /**
      * Get the class name.
      *
-     * @return string The class name.
+     * @return string|null The class name.
      */
     public function className();
-
-    /**
-     * Get the identifier.
-     *
-     * @return string|null The identifier.
-     */
-    public function id();
 
     /**
      * Get the type names.

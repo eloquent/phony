@@ -12,6 +12,8 @@
 namespace Eloquent\Phony\Mock\Generator;
 
 use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
+use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -19,12 +21,14 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->idSequencer = new Sequencer();
         $this->featureDetector = new FeatureDetector();
-        $this->subject = new MockGenerator($this->featureDetector);
+        $this->subject = new MockGenerator($this->idSequencer, $this->featureDetector);
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->idSequencer, $this->subject->idSequencer());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
     }
 
@@ -32,7 +36,45 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MockGenerator();
 
+        $this->assertSame(Sequencer::sequence('mock-class-id'), $this->subject->idSequencer());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
+    }
+
+    public function classNameData()
+    {
+        //                                      types                                    expected
+        return array(
+            'Anonymous'                => array(array(),                                 'PhonyMock_0'),
+            'Extends class'            => array(array('stdClass'),                       'PhonyMock_stdClass_0'),
+            'Extends namespaced class' => array(array('Eloquent\Phony\Test\TestClassB'), 'PhonyMock_TestClassB_0'),
+            'Inherits interface'       => array(array('Iterator', 'Countable'),          'PhonyMock_Iterator_0'),
+        );
+    }
+
+    /**
+     * @dataProvider classNameData
+     */
+    public function testClassName($types, $expected)
+    {
+        $types = array_map(function ($type) { return new ReflectionClass($type); }, $types);
+        $definition = new MockDefinition($types);
+
+        $this->assertSame($expected, $this->subject->generateClassName($definition));
+    }
+
+    public function testClassNameWithTraits()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->types = array(
+            new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
+            new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
+        );
+        $definition = new MockDefinition($this->types);
+
+        $this->assertSame('PhonyMock_TestTraitA_0', $this->subject->generateClassName($definition));
     }
 
     public function generateData()

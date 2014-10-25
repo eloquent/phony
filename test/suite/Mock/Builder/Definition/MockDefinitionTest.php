@@ -71,8 +71,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         );
         $this->customStaticProperties = array('e' => 'f', 'g' => 'h');
         $this->customConstants = array('i' => 'j', 'k' => 'l');
-        $this->className = 'className';
-        $this->id = 111;
+        $this->className = 'ClassName';
         $this->subject = new MockDefinition(
             $this->types,
             $this->customMethods,
@@ -81,7 +80,6 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             $this->customStaticProperties,
             $this->customConstants,
             $this->className,
-            $this->id,
             $this->featureDetector
         );
     }
@@ -97,7 +95,6 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->customStaticProperties, $this->subject->customStaticProperties());
         $this->assertSame($this->customConstants, $this->subject->customConstants());
         $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->id, $this->subject->id());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertSame($this->typeNames, $this->subject->typeNames());
         $this->assertSame($this->parentClassName, $this->subject->parentClassName());
@@ -131,51 +128,13 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->customStaticMethods());
         $this->assertSame(array(), $this->subject->customStaticProperties());
         $this->assertSame(array(), $this->subject->customConstants());
-        $this->assertRegExp('/^PhonyMock_[[:xdigit:]]{6}$/', $this->subject->className());
-        $this->assertNull($this->subject->id());
+        $this->assertNull($this->subject->className());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertSame(array(), $this->subject->typeNames());
         $this->assertNull($this->subject->parentClassName());
         $this->assertSame(array(), $this->subject->interfaceNames());
         $this->assertSame(array(), $this->subject->traitNames());
         $this->assertEquals(new MethodDefinitionCollection(), $this->subject->methods());
-    }
-
-    public function classNameData()
-    {
-        //                                      types                                    expected
-        return array(
-            'Anonymous'                => array(array(),                                 'PhonyMock_111'),
-            'Extends class'            => array(array('stdClass'),                       'PhonyMock_stdClass_111'),
-            'Extends namespaced class' => array(array('Eloquent\Phony\Test\TestClassB'), 'PhonyMock_TestClassB_111'),
-            'Inherits interface'       => array(array('Iterator', 'Countable'),          'PhonyMock_Iterator_111'),
-        );
-    }
-
-    /**
-     * @dataProvider classNameData
-     */
-    public function testClassName($types, $expected)
-    {
-        $types = array_map(function ($type) { return new ReflectionClass($type); }, $types);
-        $this->subject = new MockDefinition($types, null, null, null, null, null, null, 111);
-
-        $this->assertSame($expected, $this->subject->className());
-    }
-
-    public function testClassNameWithTraits()
-    {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
-        $this->types = array(
-            new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
-            new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
-        );
-        $this->subject = new MockDefinition($this->types, null, null, null, null, null, null, 111);
-
-        $this->assertSame('PhonyMock_TestTraitA_111', $this->subject->className());
     }
 
     public function testMethods()

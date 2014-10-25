@@ -12,17 +12,21 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
-use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
+use Eloquent\Phony\Mock\Generator\MockGenerator;
 
-class TestMockGenerator implements MockGeneratorInterface
+class TestMockGenerator extends MockGenerator
 {
     public function __construct($source)
     {
         $this->source = $source;
+
+        parent::__construct();
     }
 
-    public function generate(MockDefinitionInterface $definition)
-    {
+    public function generate(
+        MockDefinitionInterface $definition,
+        $className = null
+    ) {
         return $this->source;
     }
 
