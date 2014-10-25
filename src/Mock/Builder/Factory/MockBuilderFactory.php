@@ -20,7 +20,6 @@ use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
-use Eloquent\Phony\Sequencer\Sequencer;
 use ReflectionClass;
 
 /**
