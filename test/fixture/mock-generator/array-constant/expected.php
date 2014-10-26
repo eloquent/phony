@@ -19,41 +19,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     const CONSTANT_B = array('a', 'b');
     const CONSTANT_C = array('a' => 'b', 'c' => 'd');
 
-    /**
-     * Call a static parent method.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
-    private static function _callParentStatic(
-        $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
-    ) {
-        return \call_user_func_array(
-            array(__CLASS__, 'parent::' . $name),
-            $arguments->all()
-        );
-    }
-
-    /**
-     * Call a parent method.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
-    private function _callParent(
-        $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
-    ) {
-        return \call_user_func_array(
-            array($this, 'parent::' . $name),
-            $arguments->all()
-        );
-    }
-
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
 }

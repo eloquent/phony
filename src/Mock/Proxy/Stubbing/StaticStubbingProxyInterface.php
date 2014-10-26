@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 use Eloquent\Phony\Mock\Proxy\StaticProxyInterface;
 
 /**
- * The interface implemented by static stubbing proxies.
+ * The interface used to identify static stubbing proxies.
  */
 interface StaticStubbingProxyInterface extends StaticProxyInterface,
     StubbingProxyInterface

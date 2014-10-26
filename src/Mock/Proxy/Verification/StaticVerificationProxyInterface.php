@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Mock\Proxy\Verification;
 use Eloquent\Phony\Mock\Proxy\StaticProxyInterface;
 
 /**
- * The interface implemented by static verification proxies.
+ * The interface used to identify static verification proxies.
  */
 interface StaticVerificationProxyInterface extends StaticProxyInterface,
     VerificationProxyInterface

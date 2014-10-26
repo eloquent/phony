@@ -1,6 +1,5 @@
 <?php
 
-$message = 'Requires constant expression support.';
+$message = 'Requires class constant array support.';
 
-return !defined('HHVM_VERSION') &
-    version_compare(PHP_VERSION, '5.6.0-dev', '>=');
+return $detector->isSupported('constant.class.array');

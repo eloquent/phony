@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
@@ -19,7 +19,7 @@ class MockGenerationFailedExceptionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->mockBuilder = new MockBuilder(null, null, 'ClassName');
+        $this->definition = new MockDefinition(null, null, null, null, null, null, 'ClassName');
         $this->cause = new Exception();
     }
 
@@ -37,36 +37,57 @@ ERROR
 // this line is NOT context
 EOD;
         $error = array('message' => 'errorMessage', 'line' => 5);
-        $exception = new MockGenerationFailedException($this->mockBuilder, $source, $error, $this->cause);
-        if (defined('HHVM_VERSION')) {
-            $expected = <<<'EOD'
-Mock class ClassName generation failed.
-Relevant lines:
-    1: // this line is NOT context
-    2: // this line is context
-    3: // this line is context
-    4: // this line is context
-    5: ERROR
-    6: // this line is context
-    7: // this line is context
-    8: // this line is context
-    9: // this line is NOT context
-EOD;
-        } else {
-            $expected = <<<'EOD'
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:
-    2: // this line is context
-    3: // this line is context
-    4: // this line is context
+    2  // this line is context
+    3  // this line is context
+    4  // this line is context
     5: ERROR
-    6: // this line is context
-    7: // this line is context
-    8: // this line is context
+    6  // this line is context
+    7  // this line is context
+    8  // this line is context
 EOD;
-        }
 
-        $this->assertSame($this->mockBuilder, $exception->mockBuilder());
+        $this->assertSame($this->definition, $exception->definition());
+        $this->assertSame($source, $exception->source());
+        $this->assertSame($error, $exception->error());
+        $this->assertSame($expected, $exception->getMessage());
+        $this->assertSame(0, $exception->getCode());
+        $this->assertSame($this->cause, $exception->getPrevious());
+    }
+
+    public function testExceptionWithoutError()
+    {
+        $source = <<<'EOD'
+// this line is NOT context
+// this line is context
+// this line is context
+// this line is context
+ERROR
+// this line is context
+// this line is context
+// this line is context
+// this line is NOT context
+EOD;
+        $error = null;
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $expected = <<<'EOD'
+Mock class ClassName generation failed.
+Relevant lines:
+    1  // this line is NOT context
+    2  // this line is context
+    3  // this line is context
+    4  // this line is context
+    5  ERROR
+    6  // this line is context
+    7  // this line is context
+    8  // this line is context
+    9  // this line is NOT context
+EOD;
+
+        $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
         $this->assertSame($error, $exception->error());
         $this->assertSame($expected, $exception->getMessage());
@@ -85,31 +106,18 @@ ERROR
 // this line is NOT context
 EOD;
         $error = array('message' => 'errorMessage', 'line' => 2);
-        $exception = new MockGenerationFailedException($this->mockBuilder, $source, $error, $this->cause);
-        if (defined('HHVM_VERSION')) {
-            $expected = <<<'EOD'
-Mock class ClassName generation failed.
-Relevant lines:
-    1: // this line is context
-    2: ERROR
-    3: // this line is context
-    4: // this line is context
-    5: // this line is context
-    6: // this line is NOT context
-EOD;
-        } else {
-            $expected = <<<'EOD'
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 2.
 Relevant lines:
-    1: // this line is context
+    1  // this line is context
     2: ERROR
-    3: // this line is context
-    4: // this line is context
-    5: // this line is context
+    3  // this line is context
+    4  // this line is context
+    5  // this line is context
 EOD;
-        }
 
-        $this->assertSame($this->mockBuilder, $exception->mockBuilder());
+        $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
         $this->assertSame($error, $exception->error());
         $this->assertSame($expected, $exception->getMessage());
@@ -128,31 +136,18 @@ ERROR
 // this line is context
 EOD;
         $error = array('message' => 'errorMessage', 'line' => 5);
-        $exception = new MockGenerationFailedException($this->mockBuilder, $source, $error, $this->cause);
-        if (defined('HHVM_VERSION')) {
-            $expected = <<<'EOD'
-Mock class ClassName generation failed.
-Relevant lines:
-    1: // this line is NOT context
-    2: // this line is context
-    3: // this line is context
-    4: // this line is context
-    5: ERROR
-    6: // this line is context
-EOD;
-        } else {
-            $expected = <<<'EOD'
+        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:
-    2: // this line is context
-    3: // this line is context
-    4: // this line is context
+    2  // this line is context
+    3  // this line is context
+    4  // this line is context
     5: ERROR
-    6: // this line is context
+    6  // this line is context
 EOD;
-        }
 
-        $this->assertSame($this->mockBuilder, $exception->mockBuilder());
+        $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
         $this->assertSame($error, $exception->error());
         $this->assertSame($expected, $exception->getMessage());

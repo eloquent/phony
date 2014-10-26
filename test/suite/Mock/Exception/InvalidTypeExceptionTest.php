@@ -27,4 +27,16 @@ class InvalidTypeExceptionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }
+
+    public function testExceptionWithString()
+    {
+        $type = 'Nonexistent';
+        $cause = new Exception();
+        $exception = new InvalidTypeException($type, $cause);
+
+        $this->assertSame($type, $exception->type());
+        $this->assertSame("Undefined type 'Nonexistent'.", $exception->getMessage());
+        $this->assertSame(0, $exception->getCode());
+        $this->assertSame($cause, $exception->getPrevious());
+    }
 }

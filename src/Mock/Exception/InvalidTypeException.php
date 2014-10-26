@@ -31,14 +31,16 @@ final class InvalidTypeException extends Exception implements
     {
         $this->type = $type;
 
-        parent::__construct(
-            sprintf(
+        if (is_string($type)) {
+            $message = sprintf('Undefined type %s.', var_export($type, true));
+        } else {
+            $message = sprintf(
                 'Unable to add type of type %s.',
                 var_export(gettype($type), true)
-            ),
-            0,
-            $cause
-        );
+            );
+        }
+
+        parent::__construct($message, 0, $cause);
     }
 
     /**

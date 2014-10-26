@@ -35,48 +35,12 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
-    }
-
-    /**
-     * Call a static parent method.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
-    private static function _callParentStatic(
-        $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
-    ) {
-        return \call_user_func_array(
-            array(__CLASS__, 'parent::' . $name),
-            $arguments->all()
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
     }
 
-    /**
-     * Call a parent method.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
-    private function _callParent(
-        $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
-    ) {
-        return \call_user_func_array(
-            array($this, 'parent::' . $name),
-            $arguments->all()
-        );
-    }
-
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
 }

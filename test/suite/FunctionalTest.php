@@ -22,10 +22,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
+
         $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
         $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
-        $proxy->full();
+        $proxy->reset()->full();
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
         $this->assertNull($mock->testClassAMethodA('c', 'd'));
@@ -42,7 +43,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
         $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
-        $proxy->full();
+        $proxy->reset()->full();
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
         $this->assertNull($mock->testClassAMethodA('c', 'd'));

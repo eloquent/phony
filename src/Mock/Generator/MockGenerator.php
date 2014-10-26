@@ -11,10 +11,13 @@
 
 namespace Eloquent\Phony\Mock\Generator;
 
+use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
-use ReflectionClass;
+use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Sequencer\SequencerInterface;
 use ReflectionException;
 use ReflectionFunctionAbstract;
 use ReflectionParameter;
@@ -42,58 +45,129 @@ class MockGenerator implements MockGeneratorInterface
 
     /**
      * Construct a new mock generator.
+     *
+     * @param SequencerInterface|null       $idSequencer     The identifier sequencer to use.
+     * @param FeatureDetectorInterface|null $featureDetector The feature detector to use.
      */
-    public function __construct()
+    public function __construct(
+        SequencerInterface $idSequencer = null,
+        FeatureDetectorInterface $featureDetector = null
+    ) {
+        if (null === $idSequencer) {
+            $idSequencer = Sequencer::sequence('mock-class-id');
+        }
+        if (null === $featureDetector) {
+            $featureDetector = FeatureDetector::instance();
+        }
+
+        $this->idSequencer = $idSequencer;
+        $this->featureDetector = $featureDetector;
+    }
+
+    /**
+     * Get the identifier sequencer.
+     *
+     * @return SequencerInterface The identifier sequencer.
+     */
+    public function idSequencer()
     {
-        $reflectorReflector = new ReflectionClass('ReflectionParameter');
-        $this->isCallableTypeHintSupported =
-            $reflectorReflector->hasMethod('isCallable');
-        $this->isParameterConstantSupported =
-            $reflectorReflector->hasMethod('isDefaultValueConstant');
+        return $this->idSequencer;
+    }
+
+    /**
+     * Get the feature detector.
+     *
+     * @return FeatureDetectorInterface The feature detector.
+     */
+    public function featureDetector()
+    {
+        return $this->featureDetector;
+    }
+
+    /**
+     * Generate a mock class name.
+     *
+     * @param MockDefinitionInterface $definition The definition.
+     *
+     * @return string The mock class name.
+     */
+    public function generateClassName(MockDefinitionInterface $definition)
+    {
+        $className = $definition->className();
+
+        if (null !== $className) {
+            return $className;
+        }
+
+        $className = 'PhonyMock';
+        $parentClassName = $definition->parentClassName();
+
+        if (null !== $parentClassName) {
+            $subject = $parentClassName;
+        } elseif ($interfaceNames = $definition->interfaceNames()) {
+            $subject = $interfaceNames[0];
+        } elseif ($traitNames = $definition->traitNames()) {
+            $subject = $traitNames[0];
+        } else {
+            $subject = null;
+        }
+
+        if ($subject) {
+            $subjectAtoms = preg_split('/[_\\\\]/', $subject);
+            $className .= '_' . array_pop($subjectAtoms);
+        }
+
+        $className .= '_' . $this->idSequencer->next();
+
+        return $className;
     }
 
     /**
      * Generate a mock class and return the source code.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
+     * @param string|null             $className  The class name.
      *
      * @return string The source code.
      */
-    public function generate(MockBuilderInterface $builder)
-    {
-        $builder->finalize();
+    public function generate(
+        MockDefinitionInterface $definition,
+        $className = null
+    ) {
+        if (null === $className) {
+            $className = $this->generateClassName($definition);
+        }
 
-        return $this->generateHeader($builder) .
-            $this->generateConstants($builder) .
+        return $this->generateHeader($definition, $className) .
+            $this->generateConstants($definition) .
             $this->generateMethods(
-                $builder->methodDefinitions()->publicStaticMethods()
+                $definition->methods()->publicStaticMethods()
             ) .
-            $this->generateMagicCallStatic($builder) .
-            $this->generateConstructors($builder) .
+            $this->generateMagicCallStatic($definition) .
+            $this->generateConstructors($definition) .
+            $this->generateMethods($definition->methods()->publicMethods()) .
+            $this->generateMagicCall($definition) .
             $this->generateMethods(
-                $builder->methodDefinitions()->publicMethods()
+                $definition->methods()->protectedStaticMethods()
             ) .
-            $this->generateMagicCall($builder) .
-            $this->generateMethods(
-                $builder->methodDefinitions()->protectedStaticMethods()
-            ) .
-            $this->generateMethods(
-                $builder->methodDefinitions()->protectedMethods()
-            ) .
-            $this->generateCallParentMethods($builder) .
-            $this->generateProperties($builder) .
+            $this->generateMethods($definition->methods()->protectedMethods()) .
+            $this->generateCallParentMethods($definition) .
+            $this->generateProperties($definition) .
             "\n}\n";
     }
 
     /**
      * Generate the class header.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
+     * @param string                  $className  The class name.
      *
      * @return string The source code.
      */
-    protected function generateHeader(MockBuilderInterface $builder)
-    {
+    protected function generateHeader(
+        MockDefinitionInterface $definition,
+        $className
+    ) {
         $template = <<<'EOD'
 %s/**
  * A mock class generated by Phony.%s
@@ -110,17 +184,16 @@ class MockGenerator implements MockGeneratorInterface
 class %s
 EOD;
 
-        if ($types = $builder->types()) {
+        if ($typeNames = $definition->typeNames()) {
             $usedTypes = "\n *";
 
-            foreach ($types as $type) {
-                $usedTypes .= sprintf("\n * @uses \%s", $type);
+            foreach ($typeNames as $typeName) {
+                $usedTypes .= sprintf("\n * @uses \%s", $typeName);
             }
         } else {
             $usedTypes = '';
         }
 
-        $className = $builder->className();
         $classNameParts = explode('\\', $className);
 
         if (count($classNameParts) > 1) {
@@ -133,9 +206,9 @@ EOD;
 
         $source = sprintf($template, $namespace, $usedTypes, $className);
 
-        $parentClassName = $builder->parentClassName();
-        $interfaceNames = $builder->interfaceNames();
-        $traitNames = $builder->traitNames();
+        $parentClassName = $definition->parentClassName();
+        $interfaceNames = $definition->interfaceNames();
+        $traitNames = $definition->traitNames();
 
         if (null !== $parentClassName) {
             $source .= sprintf("\nextends \%s", $parentClassName);
@@ -163,13 +236,13 @@ EOD;
     /**
      * Generate the class constants.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateConstants(MockBuilderInterface $builder)
+    protected function generateConstants(MockDefinitionInterface $definition)
     {
-        $constants = $builder->constants();
+        $constants = $definition->customConstants();
         $source = '';
 
         if ($constants) {
@@ -190,47 +263,45 @@ EOD;
     /**
      * Generate the __callStatic() method.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateMagicCallStatic(MockBuilderInterface $builder)
+    protected function generateMagicCallStatic(MockDefinitionInterface $definition)
     {
-        $methods = $builder->methodDefinitions()->publicStaticMethods();
+        $methods = $definition->methods()->publicStaticMethods();
 
         if (!isset($methods['__callStatic'])) {
             return '';
         }
 
         $body = <<<'EOD'
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
-
-        if (isset(self::$_magicStaticStubs[$a0])) {
-            return self::$_magicStaticStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagicStatic($a0, $arguments);
+        %s self::$_staticProxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 EOD;
 
-        return $this->generateMethod($methods['__callStatic'], $body);
+        return $this->generateMethod(
+            $methods['__callStatic'],
+            sprintf($body, 'return')
+        );
     }
 
     /**
      * Generate the constructors.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateConstructors(MockBuilderInterface $builder)
+    protected function generateConstructors(MockDefinitionInterface $definition)
     {
-        $className = $builder->parentClassName();
+        $className = $definition->parentClassName();
 
         if (null === $className) {
             $constructor = null;
         } else {
-            $reflectors = $builder->reflectors();
-            $constructor = $reflectors[$className]->getConstructor();
+            $types = $definition->types();
+            $constructor = $types[$className]->getConstructor();
         }
 
         if (!$constructor) {
@@ -277,11 +348,9 @@ EOD;
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
 EOD;
             } else {
                 $body = <<<'EOD'
@@ -292,11 +361,9 @@ EOD;
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
 EOD;
             }
 
@@ -399,41 +466,41 @@ EOD;
     /**
      * Generate the __call() method.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateMagicCall(MockBuilderInterface $builder)
+    protected function generateMagicCall(MockDefinitionInterface $definition)
     {
-        $methods = $builder->methodDefinitions()->publicMethods();
+        $methods = $definition->methods()->publicMethods();
 
         if (!isset($methods['__call'])) {
             return '';
         }
 
         $body = <<<'EOD'
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
-
-        if (isset($this->_magicStubs[$a0])) {
-            return $this->_magicStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagic($a0, $arguments);
+        %s $this->_proxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 EOD;
 
-        return $this->generateMethod($methods['__call'], $body);
+        return $this
+            ->generateMethod($methods['__call'], sprintf($body, 'return'));
     }
 
     /**
      * Generate the call parent methods.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateCallParentMethods(MockBuilderInterface $builder)
+    protected function generateCallParentMethods(MockDefinitionInterface $definition)
     {
-        $source = <<<'EOD'
+        $hasParentClass = null !== $definition->parentClassName();
+        $source = '';
+
+        if ($hasParentClass) {
+            $source .= <<<'EOD'
 
     /**
      * Call a static parent method.
@@ -452,8 +519,9 @@ EOD;
     }
 
 EOD;
+        }
 
-        $methods = $builder->methodDefinitions()->publicStaticMethods();
+        $methods = $definition->methods()->publicStaticMethods();
 
         if (isset($methods['__callStatic'])) {
             $source .= <<<'EOD'
@@ -468,16 +536,15 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset(self::$_staticStubs['__callStatic'])) {
-            return self::$_staticStubs['__callStatic']
-                ->invoke($name, $arguments->all());
-        }
+        return self::$_staticProxy
+            ->spy('__callStatic')->invoke($name, $arguments->all());
     }
 
 EOD;
         }
 
-        $source .= <<<'EOD'
+        if ($hasParentClass) {
+            $source .= <<<'EOD'
 
     /**
      * Call a parent method.
@@ -496,8 +563,9 @@ EOD;
     }
 
 EOD;
+        }
 
-        $methods = $builder->methodDefinitions()->publicMethods();
+        $methods = $definition->methods()->publicMethods();
 
         if (isset($methods['__call'])) {
             $source .= <<<'EOD'
@@ -512,9 +580,8 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset($this->_stubs['__call'])) {
-            return $this->_stubs['__call']->invoke($name, $arguments->all());
-        }
+        return $this->_proxy
+            ->spy('__call')->invoke($name, $arguments->all());
     }
 
 EOD;
@@ -526,14 +593,14 @@ EOD;
     /**
      * Generate the properties.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateProperties(MockBuilderInterface $builder)
+    protected function generateProperties(MockDefinitionInterface $definition)
     {
-        $staticProperties = $builder->staticProperties();
-        $properties = $builder->properties();
+        $staticProperties = $definition->customStaticProperties();
+        $properties = $definition->customProperties();
         $source = '';
 
         foreach ($staticProperties as $name => $value) {
@@ -554,11 +621,9 @@ EOD;
 
         $source .= <<<'EOD'
 
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
 EOD;
 
         return $source;
@@ -626,7 +691,8 @@ EOD;
             if (!$parameter->isDefaultValueAvailable()) {
                 $defaultValue = 'null';
             } elseif (
-                $this->isParameterConstantSupported &&
+                $this->featureDetector
+                    ->isSupported('parameter.default.constant') &&
                 $parameter->isDefaultValueConstant()
             ) {
                 $constantName = $parameter->getDefaultValueConstantName();
@@ -749,7 +815,8 @@ EOD;
         if ($parameter->isArray()) {
             return 'array';
         } elseif (
-            $this->isCallableTypeHintSupported && $parameter->isCallable()
+            $this->featureDetector->isSupported('parameter.type.callable') &&
+            $parameter->isCallable()
         ) {
             return 'callable';
         } else {
@@ -818,7 +885,7 @@ EOD;
         return var_export($value, true);
     }
 
-    protected $isCallableTypeHintSupported;
-    protected $isParameterConstantSupported;
     private static $instance;
+    private $idSequencer;
+    private $featureDetector;
 }
