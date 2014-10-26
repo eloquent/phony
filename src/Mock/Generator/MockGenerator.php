@@ -276,13 +276,9 @@ EOD;
         }
 
         $body = <<<'EOD'
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
 
-        if (isset(self::$_magicStaticStubs[$a0])) {
-            return self::$_magicStaticStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagicStatic($a0, $arguments);
+        return self::$_staticProxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 EOD;
 
         return $this->generateMethod($methods['__callStatic'], $body);
@@ -350,11 +346,9 @@ EOD;
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
 EOD;
             } else {
                 $body = <<<'EOD'
@@ -365,11 +359,9 @@ EOD;
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
 EOD;
             }
 
@@ -485,13 +477,9 @@ EOD;
         }
 
         $body = <<<'EOD'
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
 
-        if (isset($this->_magicStubs[$a0])) {
-            return $this->_magicStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagic($a0, $arguments);
+        return $this->_proxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 EOD;
 
         return $this->generateMethod($methods['__call'], $body);
@@ -506,7 +494,11 @@ EOD;
      */
     protected function generateCallParentMethods(MockDefinitionInterface $definition)
     {
-        $source = <<<'EOD'
+        $hasParentClass = null !== $definition->parentClassName();
+        $source = '';
+
+        if ($hasParentClass) {
+            $source .= <<<'EOD'
 
     /**
      * Call a static parent method.
@@ -525,6 +517,7 @@ EOD;
     }
 
 EOD;
+        }
 
         $methods = $definition->methods()->publicStaticMethods();
 
@@ -541,16 +534,15 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset(self::$_staticStubs['__callStatic'])) {
-            return self::$_staticStubs['__callStatic']
-                ->invoke($name, $arguments->all());
-        }
+        return self::$_staticProxy
+            ->spy('__callStatic')->invoke($name, $arguments->all());
     }
 
 EOD;
         }
 
-        $source .= <<<'EOD'
+        if ($hasParentClass) {
+            $source .= <<<'EOD'
 
     /**
      * Call a parent method.
@@ -569,6 +561,7 @@ EOD;
     }
 
 EOD;
+        }
 
         $methods = $definition->methods()->publicMethods();
 
@@ -585,9 +578,8 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset($this->_stubs['__call'])) {
-            return $this->_stubs['__call']->invoke($name, $arguments->all());
-        }
+        return $this->_proxy
+            ->spy('__call')->invoke($name, $arguments->all());
     }
 
 EOD;
@@ -627,13 +619,9 @@ EOD;
 
         $source .= <<<'EOD'
 
-    private static $_isStaticFullMock = false;
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_isFullMock = false;
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
 EOD;
 
         return $source;

@@ -11,64 +11,38 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
-use Eloquent\Phony\Matcher\WildcardMatcherInterface;
-use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
-use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Spy\SpyInterface;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
-use ReflectionClass;
-use ReflectionProperty;
+use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
+use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
+use Eloquent\Phony\Mock\Proxy\AbstractInstanceProxy;
+use Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException;
+use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
  * A proxy for stubbing a mock.
  *
  * @internal
  */
-class StubbingProxy extends AbstractStubbingProxy implements
+class StubbingProxy extends AbstractInstanceProxy implements
     InstanceStubbingProxyInterface
 {
     /**
-     * Construct a new stubbing proxy.
+     * Get a stub verifier, and modify its current criteria to match the
+     * supplied arguments.
      *
-     * @param MockInterface                     $mock                The mock.
-     * @param ReflectionClass                   $class               The class.
-     * @param array<string,SpyInterface>        $stubs               The stubs.
-     * @param ReflectionProperty                $isFullMockProperty  The is full mock property.
-     * @param ReflectionProperty|null           $magicStubsProperty  The magic stubs property, or null if magic is not available.
-     * @param MockFactoryInterface|null         $mockFactory         The mock factory to use.
-     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
-     */
-    public function __construct(
-        MockInterface $mock,
-        ReflectionClass $class,
-        array $stubs,
-        ReflectionProperty $isFullMockProperty,
-        ReflectionProperty $magicStubsProperty = null,
-        MockFactoryInterface $mockFactory = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null,
-        WildcardMatcherInterface $wildcardMatcher = null
-    ) {
-        parent::__construct(
-            $class,
-            $stubs,
-            $isFullMockProperty,
-            $magicStubsProperty,
-            $mockFactory,
-            $stubVerifierFactory,
-            $wildcardMatcher
-        );
-
-        $this->mock = $mock;
-    }
-
-    /**
-     * Get the mock.
+     * @param string               $name      The method name.
+     * @param array<integer,mixed> $arguments The arguments.
      *
-     * @return MockInterface The mock.
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the stub does not exist.
      */
-    public function mock()
+    public function __call($name, array $arguments)
     {
-        return $this->mock;
+        try {
+            $stub = $this->stub($name);
+        } catch (UndefinedMethodStubException $e) {
+            throw new UndefinedMethodException(get_called_class(), $name, $e);
+        }
+
+        return call_user_func_array(array($stub, 'with'), $arguments);
     }
 }

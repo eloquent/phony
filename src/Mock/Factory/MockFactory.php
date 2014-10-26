@@ -13,22 +13,17 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
-use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
-use Eloquent\Phony\Spy\Factory\SpyFactory;
-use Eloquent\Phony\Spy\Factory\SpyFactoryInterface;
-use Eloquent\Phony\Spy\SpyInterface;
-use Eloquent\Phony\Stub\Factory\StubFactory;
-use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use ReflectionClass;
 
 /**
@@ -55,16 +50,14 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
-     * @param SequencerInterface|null     $idSequencer The identifier sequencer to use.
-     * @param MockGeneratorInterface|null $generator   The generator to use.
-     * @param StubFactoryInterface|null   $stubFactory The stub factory to use.
-     * @param SpyFactoryInterface|null    $spyFactory  The spy factory to use.
+     * @param SequencerInterface|null     $idSequencer  The identifier sequencer to use.
+     * @param MockGeneratorInterface|null $generator    The generator to use.
+     * @param ProxyFactoryInterface|null  $proxyFactory The proxy factory to use.
      */
     public function __construct(
         SequencerInterface $idSequencer = null,
         MockGeneratorInterface $generator = null,
-        StubFactoryInterface $stubFactory = null,
-        SpyFactoryInterface $spyFactory = null
+        ProxyFactoryInterface $proxyFactory = null
     ) {
         if (null === $idSequencer) {
             $idSequencer = Sequencer::sequence('mock-id');
@@ -72,17 +65,13 @@ class MockFactory implements MockFactoryInterface
         if (null === $generator) {
             $generator = MockGenerator::instance();
         }
-        if (null === $stubFactory) {
-            $stubFactory = StubFactory::instance();
-        }
-        if (null === $spyFactory) {
-            $spyFactory = SpyFactory::instance();
+        if (null === $proxyFactory) {
+            $proxyFactory = ProxyFactory::instance();
         }
 
         $this->idSequencer = $idSequencer;
         $this->generator = $generator;
-        $this->stubFactory = $stubFactory;
-        $this->spyFactory = $spyFactory;
+        $this->proxyFactory = $proxyFactory;
         $this->definitions = array();
     }
 
@@ -107,23 +96,13 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Get the stub factory.
+     * Get the proxy factory.
      *
-     * @return StubFactoryInterface The stub factory.
+     * @return ProxyFactoryInterface The proxy factory.
      */
-    public function stubFactory()
+    public function proxyFactory()
     {
-        return $this->stubFactory;
-    }
-
-    /**
-     * Get the spy factory.
-     *
-     * @return SpyFactoryInterface The spy factory.
-     */
-    public function spyFactory()
-    {
-        return $this->spyFactory;
+        return $this->proxyFactory;
     }
 
     /**
@@ -172,15 +151,20 @@ class MockFactory implements MockFactoryInterface
 
         $class = new ReflectionClass($className);
 
-        $property = $class->getProperty('_staticStubs');
-        $property->setAccessible(true);
-        $property->setValue(
+        $customMethodsProperty = $class->getProperty('_customMethods');
+        $customMethodsProperty->setAccessible(true);
+        $customMethodsProperty->setValue(
             null,
-            $this->createStubs(
-                $class,
-                $definition->methods()->staticMethods()
+            array_merge(
+                $definition->customStaticMethods(),
+                $definition->customMethods()
             )
         );
+
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+        $proxyProperty
+            ->setValue(null, $this->proxyFactory->createStubbingStatic($class));
 
         $this->definitions[] = array($definition, $class);
 
@@ -208,127 +192,22 @@ class MockFactory implements MockFactoryInterface
 
         $class = $builder->build();
         $mock = $class->newInstanceArgs();
+        $proxy = $this->proxyFactory->createStubbing($mock);
 
-        $stubsProperty = $class->getProperty('_stubs');
-        $stubsProperty->setAccessible(true);
-        $stubsProperty->setValue(
-            $mock,
-            $this->createStubs(
-                $class,
-                $builder->definition()->methods()->methods(),
-                $mock
-            )
-        );
-
-        $idProperty = $class->getProperty('_mockId');
-        $idProperty->setAccessible(true);
-        $idProperty->setValue($mock, $id);
+        $proxyProperty = $class->getProperty('_proxy');
+        $proxyProperty->setAccessible(true);
+        $proxyProperty->setValue($mock, $proxy);
 
         if (null !== $arguments) {
-            if ($parentClass = $class->getParentClass()) {
-                if ($constructor = $parentClass->getConstructor()) {
-                    $method = $class->getMethod('_callParent');
-                    $method->setAccessible(true);
-                    $method->invoke(
-                        $mock,
-                        $constructor->getName(),
-                        Arguments::adapt($arguments)
-                    );
-                }
-            }
+            $proxy->constructWith($arguments);
         }
 
         return $mock;
     }
 
-    /**
-     * Create the stubs for a list of methods.
-     *
-     * @param ReflectionClass    $class The mock class.
-     * @param array<string,MethodDefinitionInterface> The methods.
-     * @param MockInterface|null $mock  The mock, or null for static stubs.
-     *
-     * @return array<string,SpyInterface> The stubs.
-     */
-    public function createStubs(
-        ReflectionClass $class,
-        array $methods,
-        MockInterface $mock = null
-    ) {
-        $stubs = array();
-
-        $callParentStatic = $class->getMethod('_callParentStatic');
-        $callParentStatic->setAccessible(true);
-
-        $callParentInstance = $class->getMethod('_callParent');
-        $callParentInstance->setAccessible(true);
-
-        foreach ($methods as $method) {
-            if ($method->isCustom()) {
-                $stub = $this->stubFactory->create($method->callback(), $mock);
-            } else {
-                if ($method->isStatic()) {
-                    $callParentMethod = $callParentStatic;
-                } else {
-                    $callParentMethod = $callParentInstance;
-                }
-
-                $stub = $this->stubFactory->create(
-                    new WrappedMethod(
-                        $callParentMethod,
-                        $method->method(),
-                        $mock
-                    ),
-                    $mock
-                );
-            }
-
-            $stubs[$method->name()] = $this->spyFactory->create($stub);
-        }
-
-        return $stubs;
-    }
-
-    /**
-     * Create a magic stub.
-     *
-     * @param ReflectionClass    $class The mock class.
-     * @param string             $name  The method name.
-     * @param MockInterface|null $mock  The mock, or null for a static stub.
-     *
-     * @return SpyInterface The stub.
-     */
-    public function createMagicStub(
-        ReflectionClass $class,
-        $name,
-        MockInterface $mock = null
-    ) {
-        if ($mock) {
-            $callMethod = $class->getMethod('_callMagic');
-        } else {
-            $callMethod = $class->getMethod('_callMagicStatic');
-        }
-
-        $callMethod->setAccessible(true);
-
-        $stub = $this->stubFactory->create(
-            function () use ($callMethod, $mock, $name) {
-                return $callMethod->invoke(
-                    $mock,
-                    $name,
-                    new Arguments(func_get_args())
-                );
-            },
-            $mock
-        );
-
-        return $this->spyFactory->create($stub);
-    }
-
     private static $instance;
     private $idSequencer;
     private $generator;
-    private $stubFactory;
-    private $spyFactory;
+    private $proxyFactory;
     private $definitions;
 }

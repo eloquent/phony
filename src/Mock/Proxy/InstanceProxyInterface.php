@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
+use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\MockInterface;
 
 /**
@@ -24,4 +25,18 @@ interface InstanceProxyInterface extends ProxyInterface
      * @return MockInterface The mock.
      */
     public function mock();
+
+    /**
+     * Call the original constructor.
+     *
+     * @param mixed $arguments,... The arguments.
+     */
+    public function construct();
+
+    /**
+     * Call the original constructor.
+     *
+     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     */
+    public function constructWith($arguments = null);
 }
