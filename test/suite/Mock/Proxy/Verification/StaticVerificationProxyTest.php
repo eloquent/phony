@@ -21,8 +21,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->stubs = (object) array();
-        $this->isFull = true;
+        $this->state = (object) array('stubs' => (object) array(), 'isFull' => true);
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
         $this->wildcardMatcher = new WildcardMatcher();
@@ -34,8 +33,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->class = $this->mockBuilder->build(true);
         $this->subject = new StaticVerificationProxy(
             $this->class,
-            $this->stubs,
-            $this->isFull,
+            $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -50,8 +48,8 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->class, $this->subject->clazz());
         $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->stubs, $this->subject->stubs());
-        $this->assertSame($this->isFull, $this->subject->isFull());
+        $this->assertSame($this->state->stubs, $this->subject->stubs());
+        $this->assertSame($this->state->isFull, $this->subject->isFull());
         $this->assertTrue($this->subject->hasParent());
         $this->assertTrue($this->subject->isMagic());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());

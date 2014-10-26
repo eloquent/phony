@@ -17,6 +17,7 @@ use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
@@ -38,8 +39,7 @@ abstract class AbstractProxy implements ProxyInterface
      * Construct a new proxy.
      *
      * @param ReflectionClass                   $class               The class.
-     * @param stdClass|null                     $stubs               The stubs.
-     * @param boolean|null                      $isFull              True if the mock is a full mock.
+     * @param stdClass|null                     $state               The state.
      * @param ReflectionMethod|null             $callParentMethod    The call parent method, or null if no parent class exists.
      * @param ReflectionMethod|null             $callMagicMethod     The call magic method, or null if magic calls are not supported.
      * @param MockInterface|null                $mock                The mock, or null if this is a static proxy.
@@ -49,8 +49,7 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function __construct(
         ReflectionClass $class,
-        stdClass $stubs = null,
-        $isFull = null,
+        stdClass $state = null,
         ReflectionMethod $callParentMethod = null,
         ReflectionMethod $callMagicMethod = null,
         MockInterface $mock = null,
@@ -58,11 +57,11 @@ abstract class AbstractProxy implements ProxyInterface
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         WildcardMatcherInterface $wildcardMatcher = null
     ) {
-        if (null === $stubs) {
-            $stubs = (object) array();
-        }
-        if (null === $isFull) {
-            $isFull = false;
+        if (null === $state) {
+            $state = (object) array(
+                'stubs' => (object) array(),
+                'isFull' => false,
+            );
         }
         if (null === $stubFactory) {
             $stubFactory = StubFactory::instance();
@@ -76,8 +75,7 @@ abstract class AbstractProxy implements ProxyInterface
 
         $this->mock = $mock;
         $this->class = $class;
-        $this->stubs = $stubs;
-        $this->isFull = $isFull;
+        $this->state = $state;
         $this->callParentMethod = $callParentMethod;
         $this->callMagicMethod = $callMagicMethod;
         $this->stubFactory = $stubFactory;
@@ -146,7 +144,7 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function full()
     {
-        $this->isFull = true;
+        $this->state->isFull = true;
 
         return $this;
     }
@@ -158,7 +156,7 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function partial()
     {
-        $this->isFull = false;
+        $this->state->isFull = false;
 
         return $this;
     }
@@ -170,7 +168,7 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function isFull()
     {
-        return $this->isFull;
+        return $this->state->isFull;
     }
 
     /**
@@ -200,7 +198,7 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function stubs()
     {
-        return $this->stubs;
+        return $this->state->stubs;
     }
 
     /**
@@ -213,11 +211,11 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function stub($name)
     {
-        if (!isset($this->stubs->$name)) {
-            $this->stubs->$name = $this->createStub($name);
+        if (!isset($this->state->stubs->$name)) {
+            $this->state->stubs->$name = $this->createStub($name);
         }
 
-        return $this->stubs->$name;
+        return $this->state->stubs->$name;
     }
 
     /**
@@ -259,11 +257,23 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function reset()
     {
-        foreach (get_object_vars($this->stubs) as $name => $stub) {
-            unset($this->stubs->$name);
+        foreach (get_object_vars($this->state->stubs) as $name => $stub) {
+            unset($this->state->stubs->$name);
         }
 
         return $this;
+    }
+
+    /**
+     * Get the proxy state.
+     *
+     * @internal
+     *
+     * @return stdClass The state.
+     */
+    public function state()
+    {
+        return $this->state;
     }
 
     /**
@@ -312,7 +322,7 @@ abstract class AbstractProxy implements ProxyInterface
             $stub = $this->stubFactory->create();
         }
 
-        if ($this->isFull) {
+        if ($this->state->isFull) {
             $stub->returns()->with($this->wildcardMatcher);
         }
 
@@ -321,8 +331,7 @@ abstract class AbstractProxy implements ProxyInterface
 
     private $mock;
     private $class;
-    private $stubs;
-    private $isFull;
+    private $state;
     private $callParentMethod;
     private $callMagicMethod;
     private $stubFactory;

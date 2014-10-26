@@ -113,4 +113,13 @@ interface ProxyInterface
      * @return ProxyInterface This proxy.
      */
     public function reset();
+
+    /**
+     * Get the proxy state.
+     *
+     * @internal
+     *
+     * @return stdClass The state.
+     */
+    public function state();
 }

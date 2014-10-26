@@ -32,8 +32,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      * Construct a new instance proxy.
      *
      * @param MockInterface                     $mock                The mock.
-     * @param stdClass|null                     $stubs               The stubs.
-     * @param boolean|null                      $isFull              True if the mock is a full mock.
+     * @param stdClass|null                     $state               The state.
      * @param string|null                       $id                  The identifier.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
@@ -41,8 +40,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      */
     public function __construct(
         MockInterface $mock,
-        stdClass $stubs = null,
-        $isFull = null,
+        stdClass $state = null,
         $id = null,
         StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
@@ -71,8 +69,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
 
         parent::__construct(
             $class,
-            $stubs,
-            $isFull,
+            $state,
             $callParentMethod,
             $callMagicMethod,
             $mock,

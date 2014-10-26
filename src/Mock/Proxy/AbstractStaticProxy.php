@@ -29,16 +29,14 @@ abstract class AbstractStaticProxy extends AbstractProxy implements
      * Construct a new static proxy.
      *
      * @param ReflectionClass                   $class               The class.
-     * @param stdClass|null                     $stubs               The stubs.
-     * @param boolean|null                      $isFull              True if the mock is a full mock.
+     * @param stdClass|null                     $state               The state.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
      */
     public function __construct(
         ReflectionClass $class,
-        stdClass $stubs = null,
-        $isFull = null,
+        stdClass $state = null,
         StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         WildcardMatcherInterface $wildcardMatcher = null
@@ -59,8 +57,7 @@ abstract class AbstractStaticProxy extends AbstractProxy implements
 
         parent::__construct(
             $class,
-            $stubs,
-            $isFull,
+            $state,
             $callParentMethod,
             $callMagicMethod,
             null,

@@ -21,7 +21,7 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->stubs = (object) array();
+        $this->state = (object) array('stubs' => (object) array(), 'isFull' => true);
         $this->isFull = true;
         $this->id = 'id';
         $this->stubFactory = new StubFactory();
@@ -36,8 +36,7 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->mock = $this->mockBuilder->create();
         $this->subject = new VerificationProxy(
             $this->mock,
-            $this->stubs,
-            $this->isFull,
+            $this->state,
             $this->id,
             $this->stubFactory,
             $this->stubVerifierFactory,
@@ -55,8 +54,8 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('ReflectionClass', $this->subject->clazz());
         $this->assertSame($this->className, $this->subject->clazz()->getName());
         $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->stubs, $this->subject->stubs());
-        $this->assertSame($this->isFull, $this->subject->isFull());
+        $this->assertSame($this->state->stubs, $this->subject->stubs());
+        $this->assertSame($this->state->isFull, $this->subject->isFull());
         $this->assertSame($this->id, $this->subject->id());
         $this->assertTrue($this->subject->hasParent());
         $this->assertTrue($this->subject->isMagic());

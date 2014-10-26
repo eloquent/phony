@@ -58,8 +58,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $proxyProperty->setValue($mock, null);
         $expected = new StubbingProxy(
             $mock,
-            (object) array(),
-            false,
+            null,
             'id',
             $this->stubFactory,
             $this->stubVerifierFactory,
@@ -150,8 +149,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $proxyProperty->setValue(null, null);
         $expected = new StaticStubbingProxy(
             $class,
-            (object) array(),
-            false,
+            null,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher

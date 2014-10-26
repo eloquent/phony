@@ -147,8 +147,7 @@ class ProxyFactory implements ProxyFactoryInterface
 
         return new StubbingProxy(
             $mock,
-            (object) array(),
-            false,
+            null,
             $id,
             $this->stubFactory,
             $this->stubVerifierFactory,
@@ -174,8 +173,7 @@ class ProxyFactory implements ProxyFactoryInterface
 
         return new VerificationProxy(
             $stubbingProxy->mock(),
-            $stubbingProxy->stubs(),
-            $stubbingProxy->isFull(),
+            $stubbingProxy->state(),
             $stubbingProxy->id(),
             $this->stubFactory,
             $this->stubVerifierFactory,
@@ -224,8 +222,7 @@ class ProxyFactory implements ProxyFactoryInterface
 
         return new StaticStubbingProxy(
             $class,
-            (object) array(),
-            false,
+            null,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -250,8 +247,7 @@ class ProxyFactory implements ProxyFactoryInterface
 
         return new StaticVerificationProxy(
             $stubbingProxy->clazz(),
-            $stubbingProxy->stubs(),
-            $stubbingProxy->isFull(),
+            $stubbingProxy->state(),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
