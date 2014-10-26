@@ -13,12 +13,13 @@ namespace Eloquent\Phony\Mock\Proxy\Factory;
 
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
+use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
+use Eloquent\Phony\Mock\Exception\InvalidMockException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
-use Eloquent\Phony\Mock\Proxy\StaticProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
@@ -141,7 +142,7 @@ class ProxyFactory implements ProxyFactoryInterface
                 return $proxy;
             }
         } else {
-            throw new NonMockClassException(get_class($mock), $e);
+            throw new InvalidMockException($mock);
         }
 
         return new StubbingProxy(
@@ -196,44 +197,35 @@ class ProxyFactory implements ProxyFactoryInterface
             return $class;
         }
 
-        if ($class instanceof StaticProxyInterface) {
-            $proxy = $class->clazz();
-        } else {
-            if ($class instanceof InstanceProxyInterface) {
-                $class = $class->clazz();
-            } elseif ($class instanceof MockInterface) {
+        if ($class instanceof ProxyInterface) {
+            $class = $class->clazz();
+        } elseif ($class instanceof MockInterface) {
+            $class = new ReflectionClass($class);
+        } elseif (is_string($class)) {
+            try {
                 $class = new ReflectionClass($class);
-            } elseif (is_string($class)) {
-                try {
-                    $class = new ReflectionClass($class);
-                } catch (ReflectionException $e) {
-                    throw new NonMockClassException($class, $e);
-                }
-            } elseif (!$class instanceof ReflectionClass) {
-                throw new NonMockClassException(strval($class), $e);
+            } catch (ReflectionException $e) {
+                throw new NonMockClassException($class, $e);
             }
-
-            $proxyProperty = $class->getProperty('_staticProxy');
-            $proxyProperty->setAccessible(true);
-
-            if ($proxy = $proxyProperty->getValue(null)) {
-                return $proxy;
-            }
+        } elseif (!$class instanceof ReflectionClass) {
+            throw new InvalidMockClassException($class);
         }
 
-        if ($proxy) {
-            $class = $proxy->clazz();
-            $stubs = $proxy->stubs();
-            $isFull = $proxy->isFull();
-        } else {
-            $stubs = (object) array();
-            $isFull = false;
+        if (!$class->isSubclassOf('Eloquent\Phony\Mock\MockInterface')) {
+            throw new NonMockClassException($class->getName());
+        }
+
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+
+        if ($proxy = $proxyProperty->getValue(null)) {
+            return $proxy;
         }
 
         return new StaticStubbingProxy(
             $class,
-            $stubs,
-            $isFull,
+            (object) array(),
+            false,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -264,33 +256,6 @@ class ProxyFactory implements ProxyFactoryInterface
             $this->stubVerifierFactory,
             $this->wildcardMatcher
         );
-    }
-
-    /**
-     * Adapt the supplied class value into a reflection class.
-     *
-     * @param ProxyInterface|ReflectionClass|object|string $class The class value.
-     *
-     * @return ReflectionClass        The reflection class.
-     * @throws MockExceptionInterface If the supplied class value is invalid.
-     */
-    protected function adaptClass($class)
-    {
-        if ($class instanceof ProxyInterface) {
-            $class = new ReflectionClass($class->className());
-        } elseif (!$class instanceof ReflectionClass) {
-            try {
-                $class = new ReflectionClass($class);
-            } catch (ReflectionException $e) {
-                throw new NonMockClassException($class, $e);
-            }
-        }
-
-        if (!$class->isSubclassOf('Eloquent\Phony\Mock\MockInterface')) {
-            throw new NonMockClassException($className);
-        }
-
-        return $class;
     }
 
     private static $instance;

@@ -276,12 +276,14 @@ EOD;
         }
 
         $body = <<<'EOD'
-
-        return self::$_staticProxy->spy($a0)
+        %s self::$_staticProxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 EOD;
 
-        return $this->generateMethod($methods['__callStatic'], $body);
+        return $this->generateMethod(
+            $methods['__callStatic'],
+            sprintf($body, 'return')
+        );
     }
 
     /**
@@ -477,12 +479,12 @@ EOD;
         }
 
         $body = <<<'EOD'
-
-        return $this->_proxy->spy($a0)
+        %s $this->_proxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 EOD;
 
-        return $this->generateMethod($methods['__call'], $body);
+        return $this
+            ->generateMethod($methods['__call'], sprintf($body, 'return'));
     }
 
     /**
