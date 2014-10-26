@@ -40,11 +40,9 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -72,11 +70,9 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -111,11 +107,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    private static $_isStaticFullMock = false;
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_isFullMock = false;
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
 }

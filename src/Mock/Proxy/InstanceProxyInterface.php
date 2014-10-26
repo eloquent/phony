@@ -39,4 +39,11 @@ interface InstanceProxyInterface extends ProxyInterface
      * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
      */
     public function constructWith($arguments = null);
+
+    /**
+     * Get the identifier.
+     *
+     * @return string|null The identifier.
+     */
+    public function id();
 }

@@ -88,20 +88,4 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame('protected ab', $subject->invokeWith(array('a', 'b')));
         $this->assertSame('protected ', $subject->invokeWith());
     }
-
-    public function testInvokeMethodsWithAbstract()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestInterfaceA');
-        $class = $mockBuilder->build();
-        $callParentMethod = $class->getMethod('_callParent');
-        $callParentMethod->setAccessible(true);
-        $method = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceA::testClassAMethodA');
-        $mock = $mockBuilder->get();
-        $subject = new WrappedMethod($callParentMethod, $method, $mock);
-
-        $this->assertNull($subject('a', 'b'));
-        $this->assertNull($subject->invoke('a', 'b'));
-        $this->assertNull($subject->invokeWith(array('a', 'b')));
-        $this->assertNull($subject->invokeWith());
-    }
 }

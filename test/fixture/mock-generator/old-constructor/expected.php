@@ -57,11 +57,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    private static $_isStaticFullMock = false;
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_isFullMock = false;
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
 }

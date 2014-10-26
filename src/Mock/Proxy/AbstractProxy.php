@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Proxy;
 
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
@@ -19,6 +20,7 @@ use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
@@ -150,16 +152,6 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
-     * Returns true if the mock is a full mock.
-     *
-     * @return boolean True if the mock is a full mock.
-     */
-    public function isFull()
-    {
-        return $this->isFull;
-    }
-
-    /**
      * Turn the mock into a partial mock.
      *
      * @return ProxyInterface This proxy.
@@ -172,13 +164,13 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
-     * Returns true if the mock is a partial mock.
+     * Returns true if the mock is a full mock.
      *
-     * @return boolean True if the mock is a partial mock.
+     * @return boolean True if the mock is a full mock.
      */
-    public function isPartial()
+    public function isFull()
     {
-        return $this->isPartial;
+        return $this->isFull;
     }
 
     /**

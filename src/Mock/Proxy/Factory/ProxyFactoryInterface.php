@@ -30,11 +30,12 @@ interface ProxyFactoryInterface
      * Create a new stubbing proxy.
      *
      * @param MockInterface|InstanceProxyInterface $mock The mock.
+     * @param string|null                          $id   The identifier.
      *
      * @return InstanceStubbingProxyInterface The newly created proxy.
      * @throws MockExceptionInterface         If the supplied mock is invalid.
      */
-    public function createStubbing($mock);
+    public function createStubbing($mock, $id = null);
 
     /**
      * Create a new verification proxy.

@@ -194,7 +194,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = Phony::onStatic($class);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy', $actual);
-        $this->assertSame($class, $actual->reflector());
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testOnStaticFunction()
@@ -203,7 +203,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = onStatic($class);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy', $actual);
-        $this->assertSame($class, $actual->reflector());
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testOn()
@@ -232,7 +232,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $expected = $this->proxyFactory->createVerificationStatic($class);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
-        $this->assertSame($class, $actual->reflector());
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testVerifyStaticFunction()
@@ -242,7 +242,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $expected = $this->proxyFactory->createVerificationStatic($class);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
-        $this->assertSame($class, $actual->reflector());
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testVerify()

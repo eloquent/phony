@@ -192,7 +192,7 @@ class MockFactory implements MockFactoryInterface
 
         $class = $builder->build();
         $mock = $class->newInstanceArgs();
-        $proxy = $this->proxyFactory->createStubbing($mock);
+        $proxy = $this->proxyFactory->createStubbing($mock, $id);
 
         $proxyProperty = $class->getProperty('_proxy');
         $proxyProperty->setAccessible(true);

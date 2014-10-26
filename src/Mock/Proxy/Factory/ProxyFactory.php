@@ -116,14 +116,19 @@ class ProxyFactory implements ProxyFactoryInterface
      * Create a new stubbing proxy.
      *
      * @param MockInterface|InstanceProxyInterface $mock The mock.
+     * @param string|null                          $id   The identifier.
      *
      * @return InstanceStubbingProxyInterface The newly created proxy.
      * @throws MockExceptionInterface         If the supplied mock is invalid.
      */
-    public function createStubbing($mock)
+    public function createStubbing($mock, $id = null)
     {
         if ($mock instanceof InstanceStubbingProxyInterface) {
             return $mock;
+        }
+
+        if ($mock instanceof InstanceProxyInterface) {
+            $mock = $mock->mock();
         }
 
         if ($mock instanceof MockInterface) {
@@ -135,23 +140,15 @@ class ProxyFactory implements ProxyFactoryInterface
             if ($proxy = $proxyProperty->getValue($mock)) {
                 return $proxy;
             }
-        } elseif ($mock instanceof InstanceProxyInterface) {
-            $proxy = $mock;
         } else {
             throw new NonMockClassException(get_class($mock), $e);
         }
 
-        if ($proxy) {
-            $mock = $proxy->mock();
-            $stubs = $proxy->stubs();
-        } else {
-            $stubs = (object) array();
-        }
-
         return new StubbingProxy(
             $mock,
-            $stubs,
+            (object) array(),
             false,
+            $id,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -177,7 +174,8 @@ class ProxyFactory implements ProxyFactoryInterface
         return new VerificationProxy(
             $stubbingProxy->mock(),
             $stubbingProxy->stubs(),
-            false,
+            $stubbingProxy->isFull(),
+            $stubbingProxy->id(),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -226,14 +224,16 @@ class ProxyFactory implements ProxyFactoryInterface
         if ($proxy) {
             $class = $proxy->clazz();
             $stubs = $proxy->stubs();
+            $isFull = $proxy->isFull();
         } else {
             $stubs = (object) array();
+            $isFull = false;
         }
 
         return new StaticStubbingProxy(
             $class,
             $stubs,
-            false,
+            $isFull,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -259,7 +259,7 @@ class ProxyFactory implements ProxyFactoryInterface
         return new StaticVerificationProxy(
             $stubbingProxy->clazz(),
             $stubbingProxy->stubs(),
-            false,
+            $stubbingProxy->isFull(),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher

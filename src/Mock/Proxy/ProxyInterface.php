@@ -43,13 +43,6 @@ interface ProxyInterface
     public function full();
 
     /**
-     * Returns true if the mock is a full mock.
-     *
-     * @return boolean True if the mock is a full mock.
-     */
-    public function isFull();
-
-    /**
      * Turn the mock into a partial mock.
      *
      * @return ProxyInterface This proxy.
@@ -57,11 +50,11 @@ interface ProxyInterface
     public function partial();
 
     /**
-     * Returns true if the mock is a partial mock.
+     * Returns true if the mock is a full mock.
      *
-     * @return boolean True if the mock is a partial mock.
+     * @return boolean True if the mock is a full mock.
      */
-    public function isPartial();
+    public function isFull();
 
     /**
      * Returns true if this proxy has a parent implementation.

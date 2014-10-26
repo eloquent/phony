@@ -49,11 +49,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -85,11 +83,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -106,11 +102,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -138,11 +132,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -159,11 +151,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -188,11 +178,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -207,13 +195,8 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         array $a1
     ) {
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
-
-        if (isset(self::$_magicStaticStubs[$a0])) {
-            return self::$_magicStaticStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagicStatic($a0, $arguments);
+        return self::$_staticProxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
 
     /**
@@ -237,11 +220,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -258,11 +239,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -279,11 +258,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -312,11 +289,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -331,11 +306,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -352,11 +325,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -378,11 +349,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -404,11 +373,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -433,11 +400,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -459,11 +424,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -480,11 +443,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -501,11 +462,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -533,11 +492,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -554,11 +511,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -583,11 +538,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -604,11 +557,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -623,13 +574,8 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         array $a1
     ) {
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
-
-        if (isset($this->_magicStubs[$a0])) {
-            return $this->_magicStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagic($a0, $arguments);
+        return $this->_proxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
 
     /**
@@ -646,11 +592,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -675,11 +619,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -696,11 +638,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -725,11 +665,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = func_get_arg($i);
         }
 
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
     }
 
     /**
@@ -758,10 +696,8 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset(self::$_staticStubs['__callStatic'])) {
-            return self::$_staticStubs['__callStatic']
-                ->invoke($name, $arguments->all());
-        }
+        return self::$_staticProxy
+            ->spy('__callStatic')->invoke($name, $arguments->all());
     }
 
     /**
@@ -790,20 +726,15 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset($this->_stubs['__call'])) {
-            return $this->_stubs['__call']->invoke($name, $arguments->all());
-        }
+        return $this->_proxy
+            ->spy('__call')->invoke($name, $arguments->all());
     }
 
     public static $propertyA = 'valueA';
     public static $propertyB = 222;
     public $propertyC = 'valueC';
     public $propertyD = 333;
-    private static $_isStaticFullMock = false;
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_isFullMock = false;
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
 }

@@ -34,6 +34,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      * @param MockInterface                     $mock                The mock.
      * @param stdClass|null                     $stubs               The stubs.
      * @param boolean|null                      $isFull              True if the mock is a full mock.
+     * @param string|null                       $id                  The identifier.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
@@ -42,6 +43,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         MockInterface $mock,
         stdClass $stubs = null,
         $isFull = null,
+        $id = null,
         StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         WildcardMatcherInterface $wildcardMatcher = null
@@ -63,6 +65,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         }
 
         $this->mock = $mock;
+        $this->id = $id;
         $this->class = $class;
         $this->callParentMethod = $callParentMethod;
 
@@ -119,7 +122,18 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         }
     }
 
+    /**
+     * Get the identifier.
+     *
+     * @return string|null The identifier.
+     */
+    public function id()
+    {
+        return $this->id;
+    }
+
     private $mock;
+    private $id;
     private $class;
     private $callParentMethod;
 }

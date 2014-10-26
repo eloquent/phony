@@ -18,7 +18,6 @@ use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
-use ReflectionProperty;
 
 class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
@@ -584,21 +583,19 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->typeNames);
         $first = $this->subject->createWith(array('a', 'b'), 'id');
-        $idProperty = new ReflectionProperty($this->subject->build()->getName(), '_mockId');
-        $idProperty->setAccessible(true);
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('id', $idProperty->getValue($first));
+        $this->assertSame('id', $this->proxyFactory->createStubbing($first)->id());
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
         $second = $this->subject->createWith(array());
 
         $this->assertNotSame($first, $second);
-        $this->assertSame('0', $idProperty->getValue($second));
+        $this->assertSame('0', $this->proxyFactory->createStubbing($second)->id());
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
 
@@ -606,7 +603,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertNotSame($first, $third);
         $this->assertNotSame($second, $third);
-        $this->assertSame('1', $idProperty->getValue($third));
+        $this->assertSame('1', $this->proxyFactory->createStubbing($third)->id());
         $this->assertNull($third->constructorArguments);
         $this->assertSame($third, $this->subject->get());
     }
@@ -615,14 +612,12 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->typeNames);
         $first = $this->subject->full('id');
-        $idProperty = new ReflectionProperty($this->subject->build()->getName(), '_mockId');
-        $idProperty->setAccessible(true);
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('id', $idProperty->getValue($first));
+        $this->assertSame('id', $this->proxyFactory->createStubbing($first)->id());
         $this->assertNull($first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
