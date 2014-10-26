@@ -30,6 +30,8 @@ interface InstanceProxyInterface extends ProxyInterface
      * Call the original constructor.
      *
      * @param mixed $arguments,... The arguments.
+     *
+     * @return ProxyInterface This proxy.
      */
     public function construct();
 
@@ -37,6 +39,8 @@ interface InstanceProxyInterface extends ProxyInterface
      * Call the original constructor.
      *
      * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     *
+     * @return ProxyInterface This proxy.
      */
     public function constructWith($arguments = null);
 

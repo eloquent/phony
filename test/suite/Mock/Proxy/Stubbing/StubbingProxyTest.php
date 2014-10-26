@@ -81,66 +81,206 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
     }
 
-    // public function testFull()
-    // {
-    //     $className = $this->className;
+    public function testConstructorWithNoParent()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
 
-    //     $this->assertSame($this->subject, $this->subject->full());
-    //     $this->assertNull($this->mock->testClassAMethodA());
-    //     $this->assertNull($this->mock->testClassAMethodB('a', 'b'));
-    //     $this->assertTrue($this->isFullMockProperty->getValue($this->mock));
-    // }
+        $this->assertFalse($this->subject->hasParent());
+        $this->assertFalse($this->subject->isMagic());
+    }
 
-    // public function testMagicStubs()
-    // {
-    //     $this->subject->nonexistentA;
-    //     $this->subject->nonexistentB;
+    public function testFull()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
 
-    //     $this->assertSame(array('nonexistentA', 'nonexistentB'), array_keys($this->subject->magicStubs()));
-    // }
+        $this->assertSame($this->subject, $this->subject->full());
+        $this->assertTrue($this->subject->isFull());
+        $this->assertNull($this->mock->testClassAMethodA());
+        $this->assertNull($this->mock->testClassAMethodB('a', 'b'));
+    }
 
-    // public function testStubMethods()
-    // {
-    //     $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->stub('testClassAMethodA')->spy());
-    //     $this->assertSame($this->stubs['testClassAMethodA'], $this->subject->testClassAMethodA->spy());
-    //     $this->assertSame(
-    //         $this->stubs['testClassAMethodA'],
-    //         $this->subject->testClassAMethodA('a', 'b')->returns('x')->spy()
-    //     );
-    //     $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
-    //     $this->assertSame('cd', $this->mock->testClassAMethodA('c', 'd'));
-    // }
+    public function testPartial()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
 
-    // public function testStubFailure()
-    // {
-    //     $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->assertSame($this->subject, $this->subject->partial());
+        $this->assertFalse($this->subject->isFull());
+        $this->assertSame('', $this->mock->testClassAMethodA());
+        $this->assertSame('ab', $this->mock->testClassAMethodB('a', 'b'));
+    }
 
-    //     $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
-    //     $this->subject->stub('nonexistent');
-    // }
+    public function testStub()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $actual = $this->subject->stub('testClassAMethodA');
 
-    // public function testMagicPropertyFailure()
-    // {
-    //     $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame($actual, $this->subject->stub('testClassAMethodA'));
+        $this->assertSame($actual, $this->subject->state()->stubs->testClassAMethodA);
+    }
 
-    //     $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException');
-    //     $this->subject->nonexistent;
-    // }
+    public function testStubWithMagic()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $actual = $this->subject->stub('nonexistent');
 
-    // public function testMagicCallFailure()
-    // {
-    //     $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame($actual, $this->subject->stub('nonexistent'));
+        $this->assertSame($actual, $this->subject->state()->stubs->nonexistent);
+    }
 
-    //     $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
-    //     $this->subject->nonexistent();
-    // }
+    public function testStubFailure()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-    // protected function expectedStubs(array $stubs)
-    // {
-    //     foreach ($stubs as $name => $stub) {
-    //         $stubs[$name] = StubVerifierFactory::instance()->create($stub->callback(), $stub);
-    //     }
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->subject->stub('nonexistent');
+    }
 
-    //     return $stubs;
-    // }
+    public function testMagicProperty()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $actual = $this->subject->testClassAMethodA;
+
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame($actual, $this->subject->testClassAMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testClassAMethodA);
+    }
+
+    public function testMagicPropertyFailure()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException');
+        $this->subject->nonexistent;
+    }
+
+    public function testSpy()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $actual = $this->subject->spy('testClassAMethodA');
+
+        $this->assertInstanceOf('Eloquent\Phony\Spy\Spy', $actual);
+        $this->assertSame($actual, $this->subject->spy('testClassAMethodA'));
+        $this->assertSame($actual, $this->subject->state()->stubs->testClassAMethodA->spy());
+    }
+
+    public function testReset()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->subject->stub('testClassAMethodA');
+        $this->subject->stub('testClassAMethodB');
+        $this->subject->reset();
+
+        $this->assertSame(array(), get_object_vars($this->subject->stubs()));
+    }
+
+    public function testMagicCall()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $actual = $this->subject->testClassAMethodA();
+
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame($actual, $this->subject->testClassAMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testClassAMethodA);
+    }
+
+    public function testMagicCallFailure()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
+        $this->subject->nonexistent();
+    }
+
+    public function testConstruct()
+    {
+        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->createWith(null);
+        $this->subject = new StubbingProxy($this->mock);
+
+        $this->assertNull($this->mock->constructorArguments);
+        $this->assertSame($this->subject, $this->subject->construct('a', 'b'));
+        $this->assertSame(array('a', 'b'), $this->mock->constructorArguments);
+    }
+
+    public function testConstructWith()
+    {
+        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->createWith(null);
+        $this->subject = new StubbingProxy($this->mock);
+
+        $this->assertNull($this->mock->constructorArguments);
+        $this->assertSame($this->subject, $this->subject->constructWith(array('a', 'b')));
+        $this->assertSame(array('a', 'b'), $this->mock->constructorArguments);
+    }
+
+    public function testConstructWithWithReferenceParameters()
+    {
+        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->createWith(null);
+        $this->subject = new StubbingProxy($this->mock);
+        $a = 'a';
+        $b = 'b';
+
+        $this->assertNull($this->mock->constructorArguments);
+        $this->assertSame($this->subject, $this->subject->constructWith(array(&$a, &$b)));
+        $this->assertSame('first', $a);
+        $this->assertSame('second', $b);
+    }
+
+    public function testStubbingWithParentMethod()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->subject->partial();
+        $this->subject->testClassAMethodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
+        $this->assertSame('cd', $this->mock->testClassAMethodA('c', 'd'));
+    }
+
+    public function testStubbingWithMagicMethod()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->subject->partial();
+        $this->subject->nonexistent('a', 'b')->returns('x');
+
+        $this->assertSame('x', $this->mock->nonexistent('a', 'b'));
+        $this->assertSame('magic nonexistent cd', $this->mock->nonexistent('c', 'd'));
+    }
+
+    public function testStubbingWithNoParentMethod()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $this->subject->partial();
+        $this->subject->testClassAMethodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
+        $this->assertNull($this->mock->testClassAMethodA('c', 'd'));
+    }
+
+    public function testStubbingWithCustomMethod()
+    {
+        $this->mockBuilder = new MockBuilder(
+            null,
+            array(
+                'methodA' => function () {
+                    return implode(func_get_args());
+                }
+            )
+        );
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->create();
+        $this->subject = new StubbingProxy($this->mock);
+        $proxyProperty = $this->class->getProperty('_proxy');
+        $proxyProperty->setAccessible(true);
+        $proxyProperty->setValue($this->mock, $this->subject);
+        $this->subject->methodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $this->mock->methodA('a', 'b'));
+        $this->assertSame('cd', $this->mock->methodA('c', 'd'));
+    }
 }

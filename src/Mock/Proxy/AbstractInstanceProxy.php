@@ -93,16 +93,20 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      * Call the original constructor.
      *
      * @param mixed $arguments,... The arguments.
+     *
+     * @return ProxyInterface This proxy.
      */
     public function construct()
     {
-        $this->constructWith(func_get_args());
+        return $this->constructWith(func_get_args());
     }
 
     /**
      * Call the original constructor.
      *
      * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     *
+     * @return ProxyInterface This proxy.
      */
     public function constructWith($arguments = null)
     {
@@ -117,6 +121,8 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
                 );
             }
         }
+
+        return $this;
     }
 
     /**

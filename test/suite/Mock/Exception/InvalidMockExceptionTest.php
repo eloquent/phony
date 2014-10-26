@@ -14,28 +14,28 @@ namespace Eloquent\Phony\Mock\Exception;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
-class InvalidTypeExceptionTest extends PHPUnit_Framework_TestCase
+class InvalidMockExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $type = null;
+        $value = 111;
         $cause = new Exception();
-        $exception = new InvalidTypeException($type, $cause);
+        $exception = new InvalidMockException($value, $cause);
 
-        $this->assertSame($type, $exception->type());
-        $this->assertSame("Unable to add type of type 'NULL'.", $exception->getMessage());
+        $this->assertSame($value, $exception->value());
+        $this->assertSame("Value of type 'integer' is not a mock.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }
 
-    public function testExceptionWithString()
+    public function testExceptionWithObject()
     {
-        $type = 'Nonexistent';
+        $value = (object) array();
         $cause = new Exception();
-        $exception = new InvalidTypeException($type, $cause);
+        $exception = new InvalidMockException($value, $cause);
 
-        $this->assertSame($type, $exception->type());
-        $this->assertSame("Undefined type 'Nonexistent'.", $exception->getMessage());
+        $this->assertSame($value, $exception->value());
+        $this->assertSame("Object of type 'stdClass' is not a mock.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }
