@@ -961,7 +961,7 @@ implements \Eloquent\Phony\Mock\MockInterface
      *
      * @uses \ReflectionClass::newInstanceArgs()
      *
-     * @param array $a0 Was 'args'.
+     * @param array|null $a0 Was 'args'.
      */
     public function newInstanceArgs(
         array $a0 = null
