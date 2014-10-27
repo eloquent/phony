@@ -301,12 +301,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/eloquent/fixie.git",
-                "reference": "8f6ed0b73109f879d48da2930d93dc0ca1440d36"
+                "reference": "e8f72359d58bcb003c9dac744fe17cbcffde1976"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/fixie/zipball/8f6ed0b73109f879d48da2930d93dc0ca1440d36",
-                "reference": "8f6ed0b73109f879d48da2930d93dc0ca1440d36",
+                "url": "https://api.github.com/repos/eloquent/fixie/zipball/e8f72359d58bcb003c9dac744fe17cbcffde1976",
+                "reference": "e8f72359d58bcb003c9dac744fe17cbcffde1976",
                 "shasum": ""
             },
             "require": {
@@ -349,7 +349,7 @@
                 "file",
                 "yaml"
             ],
-            "time": "2014-10-25 03:19:29"
+            "time": "2014-10-27 00:46:57"
         },
         {
             "name": "hamcrest/hamcrest-php",
