@@ -222,7 +222,6 @@ EOD
             . ' ' .
             $className;
 
-
         $parentClassName = $definition->parentClassName();
         $interfaceNames = $definition->interfaceNames();
         $traitNames = $definition->traitNames();

@@ -29,7 +29,38 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
             $methods = array();
         }
 
-        $this->methods = $methods;
+        $this->allMethods = $methods;
+        $this->staticMethods = array();
+        $this->methods = array();
+        $this->publicStaticMethods = array();
+        $this->publicMethods = array();
+        $this->protectedStaticMethods = array();
+        $this->protectedMethods = array();
+
+        foreach ($methods as $name => $method) {
+            $isStatic = $method->isStatic();
+            $accessLevel = $method->accessLevel();
+            $isPublic = 'public' === $accessLevel;
+            $isProtected = 'protected' === $accessLevel;
+
+            if ($isStatic) {
+                $this->staticMethods[$name] = $method;
+
+                if ($isPublic) {
+                    $this->publicStaticMethods[$name] = $method;
+                } elseif ($isProtected) {
+                    $this->protectedStaticMethods[$name] = $method;
+                }
+            } else {
+                $this->methods[$name] = $method;
+
+                if ($isPublic) {
+                    $this->publicMethods[$name] = $method;
+                } elseif ($isProtected) {
+                    $this->protectedMethods[$name] = $method;
+                }
+            }
+        }
     }
 
     /**
@@ -39,7 +70,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      */
     public function allMethods()
     {
-        return $this->methods;
+        return $this->allMethods;
     }
 
     /**
@@ -49,12 +80,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      */
     public function staticMethods()
     {
-        return array_filter(
-            $this->methods,
-            function ($method) {
-                return $method->isStatic();
-            }
-        );
+        return $this->staticMethods;
     }
 
     /**
@@ -64,12 +90,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      */
     public function methods()
     {
-        return array_filter(
-            $this->methods,
-            function ($method) {
-                return !$method->isStatic();
-            }
-        );
+        return $this->methods;
     }
 
     /**
@@ -79,13 +100,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      */
     public function publicStaticMethods()
     {
-        return array_filter(
-            $this->methods,
-            function ($method) {
-                return $method->isStatic() &&
-                    'public' === $method->accessLevel();
-            }
-        );
+        return $this->publicStaticMethods;
     }
 
     /**
@@ -95,13 +110,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      */
     public function publicMethods()
     {
-        return array_filter(
-            $this->methods,
-            function ($method) {
-                return !$method->isStatic() &&
-                    'public' === $method->accessLevel();
-            }
-        );
+        return $this->publicMethods;
     }
 
     /**
@@ -111,13 +120,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      */
     public function protectedStaticMethods()
     {
-        return array_filter(
-            $this->methods,
-            function ($method) {
-                return $method->isStatic() &&
-                    'protected' === $method->accessLevel();
-            }
-        );
+        return $this->protectedStaticMethods;
     }
 
     /**
@@ -127,14 +130,14 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      */
     public function protectedMethods()
     {
-        return array_filter(
-            $this->methods,
-            function ($method) {
-                return !$method->isStatic() &&
-                    'protected' === $method->accessLevel();
-            }
-        );
+        return $this->protectedMethods;
     }
 
+    private $allMethods;
+    private $staticMethods;
     private $methods;
+    private $publicStaticMethods;
+    private $publicMethods;
+    private $protectedStaticMethods;
+    private $protectedMethods;
 }
