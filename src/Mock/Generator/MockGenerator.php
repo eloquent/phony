@@ -15,12 +15,10 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
-use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
-use ReflectionException;
-use ReflectionFunctionAbstract;
-use ReflectionParameter;
 
 /**
  * Generates mock classes.
@@ -46,21 +44,27 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Construct a new mock generator.
      *
-     * @param SequencerInterface|null       $idSequencer     The identifier sequencer to use.
-     * @param FeatureDetectorInterface|null $featureDetector The feature detector to use.
+     * @param SequencerInterface|null                  $idSequencer        The identifier sequencer to use.
+     * @param FunctionSignatureInspectorInterface|null $signatureInspector The function signature inspector to use.
+     * @param FeatureDetectorInterface|null            $featureDetector    The feature detector to use.
      */
     public function __construct(
         SequencerInterface $idSequencer = null,
+        FunctionSignatureInspectorInterface $signatureInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $idSequencer) {
             $idSequencer = Sequencer::sequence('mock-class-id');
+        }
+        if (null === $signatureInspector) {
+            $signatureInspector = FunctionSignatureInspector::instance();
         }
         if (null === $featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
 
         $this->idSequencer = $idSequencer;
+        $this->signatureInspector = $signatureInspector;
         $this->featureDetector = $featureDetector;
     }
 
@@ -72,6 +76,16 @@ class MockGenerator implements MockGeneratorInterface
     public function idSequencer()
     {
         return $this->idSequencer;
+    }
+
+    /**
+     * Get the function signature inspector.
+     *
+     * @return FunctionSignatureInspectorInterface The function signature inspector.
+     */
+    public function signatureInspector()
+    {
+        return $this->signatureInspector;
     }
 
     /**
@@ -282,6 +296,8 @@ EOD;
 
         return $this->generateMethod(
             $methods['__callStatic'],
+            $this->signatureInspector
+                ->signature($methods['__callStatic']->method()),
             sprintf($body, 'return')
         );
     }
@@ -367,29 +383,24 @@ EOD;
 EOD;
             }
 
-            $parameters = $method->method()->getParameters();
-
+            $signature =
+                $this->signatureInspector->signature($method->method());
             if ($method->isCustom()) {
-                array_shift($parameters);
+                array_shift($signature);
             }
 
-            if ($parameters) {
+            if ($signature) {
                 $argumentPacking = "\n";
+                $index = -1;
 
-                foreach ($parameters as $index => $parameter) {
-                    if ($parameter->isPassedByReference()) {
-                        $reference = '&';
-                    } else {
-                        $reference = '';
-                    }
-
-                    $argumentPacking .= sprintf(
-                        "\n        if (\$argumentCount > %d) " .
-                            "\$arguments[] = %s\$a%d;",
-                        $index,
-                        $reference,
-                        $index
-                    );
+                foreach ($signature as $name => $parameter) {
+                    $argumentPacking .= "\n        if (\$argumentCount > " .
+                        ++$index .
+                        ') $arguments[] = ' .
+                        $parameter[2] .
+                        '$a' .
+                        $index .
+                        ';';
                 }
             } else {
                 $argumentPacking = '';
@@ -397,7 +408,8 @@ EOD;
 
             $source .= $this->generateMethod(
                 $method,
-                sprintf($body, $argumentPacking, count($parameters))
+                $signature,
+                sprintf($body, $argumentPacking, count($signature))
             );
         }
 
@@ -407,13 +419,17 @@ EOD;
     /**
      * Generate the supplied method.
      *
-     * @param MethodDefinitionInterface $method The method.
-     * @param string                    $body   The method body.
+     * @param MethodDefinitionInterface           $method    The method.
+     * @param array<string,array<integer,string>> $signature The signature.
+     * @param string                              $body      The method body.
      *
      * @return string The source code.
      */
-    protected function generateMethod(MethodDefinitionInterface $method, $body)
-    {
+    protected function generateMethod(
+        MethodDefinitionInterface $method,
+        array $signature,
+        $body
+    ) {
         $source = '';
 
         if ($method->isCustom()) {
@@ -440,10 +456,7 @@ EOD;
         $comment = sprintf(
             $commentTemplate,
             $method->name(),
-            $this->renderParametersDocumentation(
-                $method->method(),
-                $method->isCustom()
-            )
+            $signature ? $this->renderParametersDocumentation($signature) : ''
         );
 
         if ($method->isStatic()) {
@@ -458,7 +471,7 @@ EOD;
             $method->accessLevel(),
             $scope,
             $method->name(),
-            $this->renderParameters($method->method(), $method->isCustom()),
+            $this->renderParameters($signature),
             $body
         );
     }
@@ -483,8 +496,11 @@ EOD;
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 EOD;
 
-        return $this
-            ->generateMethod($methods['__call'], sprintf($body, 'return'));
+        return $this->generateMethod(
+            $methods['__call'],
+            $this->signatureInspector->signature($methods['__call']->method()),
+            sprintf($body, 'return')
+        );
     }
 
     /**
@@ -632,216 +648,67 @@ EOD;
     /**
      * Render a parameter list compatible with the supplied function reflector.
      *
-     * @param ReflectionFunctionAbstract $function            The function.
-     * @param boolean                    $stripFirstParameter True if the first parameter should not be rendered.
+     * @param array<string,array<integer,string>> $signature The signature.
      *
      * @return string The rendered parameter list.
      */
-    protected function renderParameters(
-        ReflectionFunctionAbstract $function,
-        $stripFirstParameter
-    ) {
-        $parameters = $function->getParameters();
-
-        if ($stripFirstParameter) {
-            array_shift($parameters);
-        }
-
-        foreach ($parameters as $index => $parameter) {
-            $renderedParameters[] =
-                $this->renderParameter($index, $parameter);
-        }
-
-        if ($parameters) {
-            return sprintf(
-                "(\n        %s\n    ) {\n",
-                implode(",\n        ",
-                    $renderedParameters)
-            );
-        }
-
-        return "()\n    {\n";
-    }
-
-    /**
-     * Render a parameter compatible with the supplied parameter reflector.
-     *
-     * @param integer             $index     The index at which the parameter appears.
-     * @param ReflectionParameter $parameter The reflector.
-     *
-     * @return string The rendered parameter.
-     */
-    protected function renderParameter($index, ReflectionParameter $parameter)
+    protected function renderParameters(array $signature)
     {
-        $typeHint = $this->parameterType($parameter);
-
-        if ('mixed' === $typeHint) {
-            $typeHint = '';
-        } else {
-            $typeHint .= ' ';
+        if (!$signature) {
+            return "()\n    {\n";
         }
 
-        if ($parameter->isPassedByReference()) {
-            $reference = '&';
-        } else {
-            $reference = '';
+        $renderedParameters = array();
+        $index = -1;
+
+        foreach ($signature as $parameter) {
+            $renderedParameters[] =
+                $parameter[0] . $parameter[2] . '$a' . ++$index . $parameter[3];
         }
 
-        if ($parameter->isOptional()) {
-            if (!$parameter->isDefaultValueAvailable()) {
-                $defaultValue = 'null';
-            } elseif (
-                $this->featureDetector
-                    ->isSupported('parameter.default.constant') &&
-                $parameter->isDefaultValueConstant()
-            ) {
-                $constantName = $parameter->getDefaultValueConstantName();
-
-                if ('self:' === substr($constantName, 0, 5)) {
-                    $constantName = $parameter->getDeclaringClass()->getName() .
-                        substr($constantName, 4);
-                }
-
-                $defaultValue = '\\' . $constantName;
-            } else {
-                $defaultValue =
-                    $this->renderValue($parameter->getDefaultValue());
-            }
-
-            $defaultValue = sprintf(' = %s', $defaultValue);
-        } else {
-            $defaultValue = '';
-        }
-
-        return
-            sprintf('%s%s$a%d%s', $typeHint, $reference, $index, $defaultValue);
+        return sprintf(
+            "(\n        %s\n    ) {\n",
+            implode(",\n        ", $renderedParameters)
+        );
     }
 
     /**
      * Render parameter documentation for a function reflector.
      *
-     * @param ReflectionFunctionAbstract $function            The function.
-     * @param boolean                    $stripFirstParameter True if the first parameter should not be rendered.
+     * @param array<string,array<integer,string>> $signature The signature.
      *
      * @return string The rendered documentation.
      */
-    protected function renderParametersDocumentation(
-        ReflectionFunctionAbstract $function,
-        $stripFirstParameter
-    ) {
-        $parameters = $function->getParameters();
-
-        if ($stripFirstParameter) {
-            array_shift($parameters);
-        }
-
-        if (!$parameters) {
-            return '';
-        }
-
+    protected function renderParametersDocumentation(array $signature)
+    {
         $renderedParameters = array();
-        $columnWidths = array(0, 0, 0);
+        $index = -1;
+        $maxArgumentNameSize = 0;
 
-        foreach ($parameters as $index => $parameter) {
-            $renderedParameter =
-                $this->renderParameterDocumentation($index, $parameter);
+        foreach ($signature as $name => $parameter) {
+            $argumentName = $parameter[2] . '$a' . ++$index;
+            $renderedParameters[] = array(
+                "\n     * @param " . $parameter[1],
+                $argumentName,
+                " Was '" . $name . "'.",
+            );
 
-            foreach ($renderedParameter as $columnIndex => $value) {
-                $size = strlen($value);
+            $argumentNameSize = strlen($argumentName);
 
-                if ($size > $columnWidths[$columnIndex]) {
-                    $columnWidths[$columnIndex] = $size;
-                }
+            if ($argumentNameSize > $maxArgumentNameSize) {
+                $maxArgumentNameSize = $argumentNameSize;
             }
-
-            $renderedParameters[] = $renderedParameter;
         }
 
         $rendered = "\n     *";
 
         foreach ($renderedParameters as $renderedParameter) {
-            $rendered .= sprintf(
-                "\n     * @param %s %s %s",
-                str_pad($renderedParameter[0], $columnWidths[0]),
-                str_pad($renderedParameter[1], $columnWidths[1]),
-                $renderedParameter[2]
-            );
+            $rendered .= $renderedParameter[0] .
+                str_pad($renderedParameter[1], $maxArgumentNameSize, ' ') .
+                $renderedParameter[2];
         }
 
         return $rendered;
-    }
-
-    /**
-     * Render documentation for a parameter.
-     *
-     * @param integer             $index     The index at which the parameter appears.
-     * @param ReflectionParameter $parameter The reflector.
-     *
-     * @return tuple<string,string,string> A 3-tuple of rendered type, name, and description.
-     */
-    protected function renderParameterDocumentation(
-        $index,
-        ReflectionParameter $parameter
-    ) {
-        $typeHint = $this->parameterType($parameter);
-
-        if ('mixed' !== $typeHint && $parameter->allowsNull()) {
-            $typeHint .= '|null';
-        }
-
-        if ($parameter->isPassedByReference()) {
-            $name = '&$a' . $index;
-        } else {
-            $name = '$a' . $index;
-        }
-
-        $description = sprintf(
-            'Was %s.',
-            var_export($parameter->getName(), true)
-        );
-
-        return array($typeHint, $name, $description);
-    }
-
-    /**
-     * Determine a parameter's type.
-     *
-     * @param ReflectionParameter $parameter The parameter.
-     *
-     * @return string The type.
-     */
-    protected function parameterType(ReflectionParameter $parameter)
-    {
-        if ($parameter->isArray()) {
-            return 'array';
-        } elseif (
-            $this->featureDetector->isSupported('parameter.type.callable') &&
-            $parameter->isCallable()
-        ) {
-            return 'callable';
-        } else {
-            try {
-                if ($class = $parameter->getClass()) {
-                    return '\\' . $class->getName();
-                }
-            } catch (ReflectionException $e) {
-                if (
-                    !$parameter->getDeclaringFunction()->isInternal() &&
-                    preg_match(
-                        sprintf(
-                            '/Class (%s) does not exist/',
-                            MockBuilder::SYMBOL_PATTERN
-                        ),
-                        $e->getMessage(),
-                        $matches
-                    )
-                ) {
-                    return '\\' . $matches[1];
-                }
-            }
-        }
-
-        return 'mixed';
     }
 
     /**
@@ -887,5 +754,6 @@ EOD;
 
     private static $instance;
     private $idSequencer;
+    private $signatureInspector;
     private $featureDetector;
 }

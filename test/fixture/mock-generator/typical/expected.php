@@ -67,7 +67,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0 = null,
         $a1 = 111,
         $a2 = array(),
-        $a3 = array('valueA', 'valueB'),
+        $a3 = array(0 => 'valueA', 1 => 'valueB'),
         $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB')
     ) {
         $argumentCount = func_num_args();

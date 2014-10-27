@@ -16,7 +16,6 @@ use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use ReflectionException;
 use ReflectionFunctionAbstract;
-use SplObjectStorage;
 
 /**
  * Inspects functions to determine their signature.
@@ -56,7 +55,6 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             $featureDetector->isSupported('parameter.type.callable');
         $this->isDefaultValueConstantSupported =
             $featureDetector->isSupported('parameter.default.constant');
-        $this->signatures = new SplObjectStorage();
     }
 
     /**
@@ -78,11 +76,8 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
      */
     public function signature(ReflectionFunctionAbstract $function)
     {
-        if ($this->signatures->contains($function)) {
-            return $this->signatures->offsetGet($function);
-        }
-
         $signature = array();
+        $maxDocHintSize = 0;
 
         foreach ($function->getParameters() as $parameter) {
             if ($parameter->isOptional()) {
@@ -143,22 +138,35 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             }
 
             if ('' === $typeHint) {
-                $docHint = 'mixed';
-            } elseif (' = null' === $defaultValue) {
-                $docHint = $typeHint . '|null';
+                $docHint = 'mixed ';
             } else {
-                $docHint = $typeHint;
+                if (' = null' === $defaultValue) {
+                    $docHint = $typeHint . '|null ';
+                } else {
+                    $docHint = $typeHint . ' ';
+                }
+
+                $typeHint .= ' ';
+            }
+
+            $docHintSize = strlen($docHint);
+
+            if ($docHintSize > $maxDocHintSize) {
+                $maxDocHintSize = $docHintSize;
             }
 
             $signature[$parameter->getName()] = array(
-                $parameter->isPassedByReference() ? '&' : '',
                 $typeHint,
                 $docHint,
+                $parameter->isPassedByReference() ? '&' : '',
                 $defaultValue,
             );
         }
 
-        $this->signatures->attach($function, $signature);
+        foreach ($signature as $name => $parameter) {
+            $signature[$name][1] =
+                str_pad($signature[$name][1], $maxDocHintSize, ' ');
+        }
 
         return $signature;
     }
@@ -198,5 +206,4 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     private $featureDetector;
     private $isCallableTypeHintSupported;
     private $isDefaultValueConstantSupported;
-    private $signatures;
 }

@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Generator;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -22,13 +23,15 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->idSequencer = new Sequencer();
+        $this->signatureInspector = new FunctionSignatureInspector();
         $this->featureDetector = new FeatureDetector();
-        $this->subject = new MockGenerator($this->idSequencer, $this->featureDetector);
+        $this->subject = new MockGenerator($this->idSequencer, $this->signatureInspector, $this->featureDetector);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->idSequencer, $this->subject->idSequencer());
+        $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
     }
 
@@ -37,6 +40,7 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
         $this->subject = new MockGenerator();
 
         $this->assertSame(Sequencer::sequence('mock-class-id'), $this->subject->idSequencer());
+        $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
