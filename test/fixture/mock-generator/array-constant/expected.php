@@ -16,7 +16,7 @@ class MockGeneratorArrayConstant
 implements \Eloquent\Phony\Mock\MockInterface
 {
     const CONSTANT_A = array();
-    const CONSTANT_B = array('a', 'b');
+    const CONSTANT_B = array(0 => 'a', 1 => 'b');
     const CONSTANT_C = array('a' => 'b', 'c' => 'd');
 
     private static $_customMethods = array();
