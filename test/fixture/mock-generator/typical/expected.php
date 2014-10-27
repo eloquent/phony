@@ -28,6 +28,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
 {
     const CONSTANT_A = 'constantValueA';
     const CONSTANT_B = 444;
+    const CONSTANT_C = null;
 
     /**
      * Custom method 'methodA'.

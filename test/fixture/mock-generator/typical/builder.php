@@ -10,6 +10,7 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'const CONSTANT_A' => 'constantValueA',
         'const CONSTANT_B' => 444,
+        'const CONSTANT_C' => null,
         'static methodA' => function ($className, $first, &$second) {},
         'static methodB' =>
             function (
