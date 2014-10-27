@@ -101,19 +101,6 @@ abstract class AbstractFacade
     }
 
     /**
-     * Create a new static stubbing proxy.
-     *
-     * @param ProxyInterface|ReflectionClass|object|string $class The class.
-     *
-     * @return StaticStubbingProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface       If the supplied class name is not a mock class.
-     */
-    public static function onStatic($class)
-    {
-        return static::driver()->proxyFactory()->createStubbingStatic($class);
-    }
-
-    /**
      * Create a new stubbing proxy.
      *
      * @param MockInterface|InstanceProxyInterface $mock The mock.
@@ -127,20 +114,6 @@ abstract class AbstractFacade
     }
 
     /**
-     * Create a new static verification proxy.
-     *
-     * @param ProxyInterface|ReflectionClass|object|string $class The class.
-     *
-     * @return StaticVerificationProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface           If the supplied class name is not a mock class.
-     */
-    public static function verifyStatic($class)
-    {
-        return static::driver()->proxyFactory()
-            ->createVerificationStatic($class);
-    }
-
-    /**
      * Create a new verification proxy.
      *
      * @param MockInterface|InstanceProxyInterface $mock The mock.
@@ -151,6 +124,33 @@ abstract class AbstractFacade
     public static function verify($mock)
     {
         return static::driver()->proxyFactory()->createVerification($mock);
+    }
+
+    /**
+     * Create a new static stubbing proxy.
+     *
+     * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+     *
+     * @return StaticStubbingProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface       If the supplied class name is not a mock class.
+     */
+    public static function onStatic($class)
+    {
+        return static::driver()->proxyFactory()->createStubbingStatic($class);
+    }
+
+    /**
+     * Create a new static verification proxy.
+     *
+     * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+     *
+     * @return StaticVerificationProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface           If the supplied class name is not a mock class.
+     */
+    public static function verifyStatic($class)
+    {
+        return static::driver()->proxyFactory()
+            ->createVerificationStatic($class);
     }
 
     /**

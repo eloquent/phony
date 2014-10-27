@@ -89,20 +89,6 @@ function fullMock($types = null, $definition = null, $className = null)
 }
 
 /**
- * Create a new static stubbing proxy.
- *
- * @param ProxyInterface|ReflectionClass|object|string $class The class.
- *
- * @return StaticStubbingProxyInterface The newly created proxy.
- * @throws MockExceptionInterface       If the supplied class name is not a mock class.
- */
-function onStatic($class)
-{
-    return FacadeDriver::instance()->proxyFactory()
-        ->createStubbingStatic($class);
-}
-
-/**
  * Create a new stubbing proxy.
  *
  * @param MockInterface|InstanceProxyInterface $mock The mock.
@@ -116,20 +102,6 @@ function on($mock)
 }
 
 /**
- * Create a new static verification proxy.
- *
- * @param ProxyInterface|ReflectionClass|object|string $class The class.
- *
- * @return StaticVerificationProxyInterface The newly created proxy.
- * @throws MockExceptionInterface           If the supplied class name is not a mock class.
- */
-function verifyStatic($class)
-{
-    return FacadeDriver::instance()->proxyFactory()
-        ->createVerificationStatic($class);
-}
-
-/**
  * Create a new verification proxy.
  *
  * @param MockInterface|InstanceProxyInterface $mock The mock.
@@ -140,6 +112,34 @@ function verifyStatic($class)
 function verify($mock)
 {
     return FacadeDriver::instance()->proxyFactory()->createVerification($mock);
+}
+
+/**
+ * Create a new static stubbing proxy.
+ *
+ * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+ *
+ * @return StaticStubbingProxyInterface The newly created proxy.
+ * @throws MockExceptionInterface       If the supplied class name is not a mock class.
+ */
+function onStatic($class)
+{
+    return FacadeDriver::instance()->proxyFactory()
+        ->createStubbingStatic($class);
+}
+
+/**
+ * Create a new static verification proxy.
+ *
+ * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+ *
+ * @return StaticVerificationProxyInterface The newly created proxy.
+ * @throws MockExceptionInterface           If the supplied class name is not a mock class.
+ */
+function verifyStatic($class)
+{
+    return FacadeDriver::instance()->proxyFactory()
+        ->createVerificationStatic($class);
 }
 
 /**
