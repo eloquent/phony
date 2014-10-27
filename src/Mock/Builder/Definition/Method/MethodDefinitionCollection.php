@@ -41,14 +41,13 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
             $isStatic = $method->isStatic();
             $accessLevel = $method->accessLevel();
             $isPublic = 'public' === $accessLevel;
-            $isProtected = 'protected' === $accessLevel;
 
             if ($isStatic) {
                 $this->staticMethods[$name] = $method;
 
                 if ($isPublic) {
                     $this->publicStaticMethods[$name] = $method;
-                } elseif ($isProtected) {
+                } else {
                     $this->protectedStaticMethods[$name] = $method;
                 }
             } else {
@@ -56,7 +55,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
 
                 if ($isPublic) {
                     $this->publicMethods[$name] = $method;
-                } elseif ($isProtected) {
+                } else {
                     $this->protectedMethods[$name] = $method;
                 }
             }

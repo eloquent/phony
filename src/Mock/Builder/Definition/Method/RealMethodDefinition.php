@@ -35,6 +35,13 @@ class RealMethodDefinition implements MethodDefinitionInterface
 
         $this->method = $method;
         $this->name = $name;
+        $this->isStatic = $this->method->isStatic();
+
+        if ($this->method->isPublic()) {
+            $this->accessLevel = 'public';
+        } else {
+            $this->accessLevel = 'protected';
+        }
     }
 
     /**
@@ -44,7 +51,7 @@ class RealMethodDefinition implements MethodDefinitionInterface
      */
     public function isStatic()
     {
-        return $this->method->isStatic();
+        return $this->isStatic;
     }
 
     /**
@@ -64,11 +71,7 @@ class RealMethodDefinition implements MethodDefinitionInterface
      */
     public function accessLevel()
     {
-        if ($this->method->isPublic()) {
-            return 'public';
-        }
-
-        return 'protected';
+        return $this->accessLevel;
     }
 
     /**
@@ -103,4 +106,6 @@ class RealMethodDefinition implements MethodDefinitionInterface
 
     private $method;
     private $name;
+    private $isStatic;
+    private $accessLevel;
 }
