@@ -119,7 +119,7 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             if ($this->isExportReferenceSupported) {
                 $byReference = isset($match[3]) ? $match[3] : '';
             } else { // @codeCoverageIgnoreStart
-                $byReference = $parameter->isPassedByReference();
+                $byReference = $parameter->isPassedByReference() ? '&' : '';
             } // @codeCoverageIgnoreEnd
 
             if (isset($match[5])) {

@@ -89,16 +89,9 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
     {
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
-
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $expected = array(
-                'filter' => array('\?HH\int ', '', ' = null'),
-            );
-        } else {
-            $expected = array(
-                'filter' => array('', '', ' = null'),
-            );
-        }
+        $expected = array(
+            'filter' => array('', '', ' = null'),
+        );
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
