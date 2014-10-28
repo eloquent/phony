@@ -64,23 +64,23 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         );
         $actual = $this->subject->signature($function);
         $expected = array(
-            'a' => array('',                                         'mixed                                   ', '', ''),
-            'b' => array('',                                         'mixed                                   ', '&', ''),
-            'c' => array('array ',                                   'array                                   ', '', ''),
-            'd' => array('array ',                                   'array                                   ', '&', ''),
-            'e' => array('\Type ',                                   '\Type                                   ', '', ''),
-            'f' => array('\Type ',                                   '\Type                                   ', '&', ''),
-            'g' => array('\Namespaced\Type ',                        '\Namespaced\Type                        ', '', ''),
-            'h' => array('\Namespaced\Type ',                        '\Namespaced\Type                        ', '&', ''),
-            'i' => array('\Eloquent\Phony\Feature\FeatureDetector ', '\Eloquent\Phony\Feature\FeatureDetector ', '', ''),
-            'j' => array('',                                         'mixed                                   ', '', " = 'string'"),
-            'k' => array('',                                         'mixed                                   ', '&', ' = 111'),
-            'l' => array('array ',                                   'array                                   ', '', " = array(0 => 'a', 1 => 'b', 'c' => 'd')"),
-            'm' => array('array ',                                   'array|null                              ', '&', ' = null'),
-            'n' => array('\Type ',                                   '\Type|null                              ', '', ' = null'),
-            'o' => array('\Type ',                                   '\Type|null                              ', '&', ' = null'),
-            'p' => array('\Namespaced\Type ',                        '\Namespaced\Type|null                   ', '', ' = null'),
-            'q' => array('\Namespaced\Type ',                        '\Namespaced\Type|null                   ', '&', ' = null'),
+            'a' => array('',                                         '',  ''),
+            'b' => array('',                                         '&', ''),
+            'c' => array('array ',                                   '',  ''),
+            'd' => array('array ',                                   '&', ''),
+            'e' => array('\Type ',                                   '',  ''),
+            'f' => array('\Type ',                                   '&', ''),
+            'g' => array('\Namespaced\Type ',                        '',  ''),
+            'h' => array('\Namespaced\Type ',                        '&', ''),
+            'i' => array('\Eloquent\Phony\Feature\FeatureDetector ', '',  ''),
+            'j' => array('',                                         '',  " = 'string'"),
+            'k' => array('',                                         '&', ' = 111'),
+            'l' => array('array ',                                   '',  " = array(0 => 'a', 1 => 'b', 'c' => 'd')"),
+            'm' => array('array ',                                   '&', ' = null'),
+            'n' => array('\Type ',                                   '',  ' = null'),
+            'o' => array('\Type ',                                   '&', ' = null'),
+            'p' => array('\Namespaced\Type ',                        '',  ' = null'),
+            'q' => array('\Namespaced\Type ',                        '&', ' = null'),
         );
 
         $this->assertEquals($expected, $actual);
@@ -92,7 +92,7 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
         $expected = array(
-            'filter' => array('', 'mixed ', '', ' = null'),
+            'filter' => array('', '', ' = null'),
         );
 
         $this->assertEquals($expected, $actual);
@@ -112,8 +112,8 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         );
         $actual = $this->subject->signature($function);
         $expected = array(
-            'a' => array('', 'mixed ', '', ' = \ReflectionMethod::IS_FINAL'),
-            'b' => array('', 'mixed ', '', ' = \Eloquent\Phony\Reflection\FunctionSignatureInspectorTest::CONSTANT_A'),
+            'a' => array('', '', ' = \ReflectionMethod::IS_FINAL'),
+            'b' => array('', '', ' = \Eloquent\Phony\Reflection\FunctionSignatureInspectorTest::CONSTANT_A'),
         );
 
         $this->assertEquals($expected, $actual);
@@ -128,8 +128,8 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $function = new ReflectionMethod(__CLASS__, 'methodA');
         $actual = $this->subject->signature($function);
         $expected = array(
-            'a' => array('', 'mixed ', '', ' = ' . ReflectionMethod::IS_FINAL),
-            'b' => array('', 'mixed ', '', " = 'a'"),
+            'a' => array('', '', ' = ' . ReflectionMethod::IS_FINAL),
+            'b' => array('', '', " = 'a'"),
         );
 
         $this->assertEquals($expected, $actual);
@@ -146,8 +146,8 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         );
         $actual = $this->subject->signature($function);
         $expected = array(
-            'a' => array('callable ', 'callable      ', '', ''),
-            'b' => array('callable ', 'callable|null ', '', ' = null'),
+            'a' => array('callable ', '', ''),
+            'b' => array('callable ', '', ' = null'),
         );
 
         $this->assertEquals($expected, $actual);

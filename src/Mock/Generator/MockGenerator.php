@@ -350,7 +350,7 @@ EOD;
                     $argumentPacking .= "\n        if (\$argumentCount > " .
                         ++$index .
                         ') $arguments[] = ' .
-                        $parameter[2] .
+                        $parameter[1] .
                         '$a' .
                         $index .
                         ';';
@@ -577,7 +577,7 @@ EOD;
 
         foreach ($signature as $parameter) {
             $renderedParameters[] =
-                $parameter[0] . $parameter[2] . '$a' . ++$index . $parameter[3];
+                $parameter[0] . $parameter[1] . '$a' . ++$index . $parameter[2];
         }
 
         return "(\n        " .

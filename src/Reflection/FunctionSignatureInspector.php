@@ -77,7 +77,6 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     public function signature(ReflectionFunctionAbstract $function)
     {
         $signature = array();
-        $maxDocHintSize = 0;
 
         foreach ($function->getParameters() as $parameter) {
             if ($parameter->isOptional()) {
@@ -107,18 +106,18 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             }
 
             if ($parameter->isArray()) {
-                $typeHint = 'array';
+                $typeHint = 'array ';
             } elseif (
                 $this->isCallableTypeHintSupported &&
                 $parameter->isCallable()
             ) {
-                $typeHint = 'callable';
+                $typeHint = 'callable ';
             } else {
                 $typeHint = '';
 
                 try {
                     if ($class = $parameter->getClass()) {
-                        $typeHint = '\\' . $class->getName();
+                        $typeHint = '\\' . $class->getName() . ' ';
                     }
                 } catch (ReflectionException $e) {
                     if (
@@ -132,40 +131,16 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                             $matches
                         )
                     ) {
-                        $typeHint = '\\' . $matches[1];
+                        $typeHint = '\\' . $matches[1] . ' ';
                     }
                 }
             }
 
-            if ('' === $typeHint) {
-                $docHint = 'mixed ';
-            } else {
-                if (' = null' === $defaultValue) {
-                    $docHint = $typeHint . '|null ';
-                } else {
-                    $docHint = $typeHint . ' ';
-                }
-
-                $typeHint .= ' ';
-            }
-
-            $docHintSize = strlen($docHint);
-
-            if ($docHintSize > $maxDocHintSize) {
-                $maxDocHintSize = $docHintSize;
-            }
-
             $signature[$parameter->getName()] = array(
                 $typeHint,
-                $docHint,
                 $parameter->isPassedByReference() ? '&' : '',
                 $defaultValue,
             );
-        }
-
-        foreach ($signature as $name => $parameter) {
-            $signature[$name][1] =
-                str_pad($signature[$name][1], $maxDocHintSize, ' ');
         }
 
         return $signature;
