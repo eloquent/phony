@@ -17,6 +17,7 @@
         "sebastian/exporter": "~1"
     },
     "require-dev": {
+        "athletic/athletic": "~0.1",
         "counterpart/counterpart": "~1",
         "eloquent/fixie": "~0.2.0@dev",
         "hamcrest/hamcrest-php": "~1",
@@ -35,6 +36,11 @@
             "src/functions.php",
             "src/Phpunit/functions.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Eloquent\\Phony\\": "test/benchmarks"
+        }
     },
     "extra": {
         "branch-alias": {
