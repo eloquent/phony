@@ -1,5 +1,5 @@
 <phpunit
-    bootstrap="test/bootstrap.php"
+    bootstrap="vendor/autoload.php"
     convertErrorsToExceptions="true"
     convertNoticesToExceptions="true"
     convertWarningsToExceptions="true"
