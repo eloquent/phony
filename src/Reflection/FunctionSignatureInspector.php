@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Feature\FeatureDetectorInterface;
-use Eloquent\Phony\Mock\Builder\MockBuilder;
-use ReflectionException;
 use ReflectionFunctionAbstract;
 
 /**
@@ -24,6 +22,8 @@ use ReflectionFunctionAbstract;
  */
 class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 {
+    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(?:or NULL )?(&)?\$(\S+)( = [^\]]+)? ]$/m';
+
     /**
      * Get the static instance of this inspector.
      *
@@ -51,10 +51,10 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
         }
 
         $this->featureDetector = $featureDetector;
-        $this->isCallableTypeHintSupported =
-            $featureDetector->isSupported('parameter.type.callable');
-        $this->isDefaultValueConstantSupported =
-            $featureDetector->isSupported('parameter.default.constant');
+        $this->isExportDefaultArraySupported = $featureDetector
+            ->isSupported('reflection.function.export.default.array');
+        $this->isExportReferenceSupported = $featureDetector
+            ->isSupported('reflection.function.export.reference');
     }
 
     /**
@@ -76,77 +76,74 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
      */
     public function signature(ReflectionFunctionAbstract $function)
     {
+        $isMatch = preg_match_all(
+            static::PARAMETER_PATTERN,
+            strval($function),
+            $matches,
+            PREG_SET_ORDER
+        );
+
+        if (!$isMatch) {
+            return array();
+        }
+
+        $parameters = $function->getParameters();
         $signature = array();
+        $index = -1;
 
-        foreach ($function->getParameters() as $parameter) {
-            if ($parameter->isOptional()) {
-                if ($parameter->isDefaultValueAvailable()) {
-                    if (
-                        $this->isDefaultValueConstantSupported &&
-                        $parameter->isDefaultValueConstant()
-                    ) {
-                        $defaultValue = ' = \\' .
-                            $parameter->getDefaultValueConstantName();
+        foreach ($matches as $match) {
+            $parameter = $parameters[++$index];
 
-                        if (0 === strpos($defaultValue, ' = \self:')) {
-                            $defaultValue =
-                                ' = \\' .
-                                $parameter->getDeclaringClass()->getName() .
-                                substr($defaultValue, 8);
-                        }
-                    } else {
-                        $defaultValue = $parameter->getDefaultValue();
+            if (isset($match[2])) {
+                $typehint = $match[2];
 
-                        if (null === $defaultValue) {
-                            $defaultValue = ' = null';
-                        } else {
-                            $defaultValue = ' = ' .
-                                var_export($defaultValue, true);
-                        }
-                    }
-                } else {
-                    $defaultValue = ' = null';
+                if (false !== strpos($typehint, 'HH\\')) {
+                    $typehint = '';
                 }
+
+                switch ($typehint) {
+                    case '':
+                    case 'array ':
+                    case 'callable ':
+                    case 'self ':
+                        break;
+
+                    default:
+                        $typehint = '\\' . $typehint;
+                }
+            } else {
+                $typehint = '';
+            }
+
+            if ($this->isExportReferenceSupported) {
+                $byReference = isset($match[3]) ? $match[3] : '';
+            } else { // @codeCoverageIgnoreStart
+                $byReference = $parameter->isPassedByReference();
+            } // @codeCoverageIgnoreEnd
+
+            if (isset($match[5])) {
+                if (
+                    !$this->isExportDefaultArraySupported &&
+                    ' = Array' === $match[5]
+                ) {
+                    $defaultValue = ' = ' .
+                        var_export($parameter->getDefaultValue(), true);
+                } else {
+                    $defaultValue = $match[5];
+                }
+
+                switch ($defaultValue) {
+                    case ' = NULL':
+                        $defaultValue = ' = null';
+                }
+            } elseif ('optional' === $match[1]) {
+                $defaultValue = ' = null';
             } else {
                 $defaultValue = '';
             }
 
-            if ($parameter->isArray()) {
-                $typeHint = 'array ';
-            } elseif (
-                $this->isCallableTypeHintSupported &&
-                $parameter->isCallable()
-            ) {
-                $typeHint = 'callable ';
-            } else {
-                $typeHint = '';
-
-                try {
-                    if ($class = $parameter->getClass()) {
-                        $typeHint = '\\' . $class->getName() . ' ';
-                    }
-                } catch (ReflectionException $e) {
-                    if (
-                        !$parameter->getDeclaringFunction()->isInternal() &&
-                        preg_match(
-                            sprintf(
-                                '/Class (%s) does not exist/',
-                                MockBuilder::SYMBOL_PATTERN
-                            ),
-                            $e->getMessage(),
-                            $matches
-                        )
-                    ) {
-                        $typeHint = '\\' . $matches[1] . ' ';
-                    }
-                }
-            }
-
-            $signature[$parameter->getName()] = array(
-                $typeHint,
-                $parameter->isPassedByReference() ? '&' : '',
-                $defaultValue,
-            );
+            $signature[$match[4]] =
+                array($typehint, $byReference, $defaultValue);
         }
 
         return $signature;
@@ -154,6 +151,6 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 
     private static $instance;
     private $featureDetector;
-    private $isCallableTypeHintSupported;
-    private $isDefaultValueConstantSupported;
+    private $isExportDefaultArraySupported;
+    private $isExportReferenceSupported;
 }

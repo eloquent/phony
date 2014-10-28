@@ -4,7 +4,7 @@ class MockGeneratorParameterConstant
 implements \Eloquent\Phony\Mock\MockInterface
 {
     public function methodA(
-        $a0 = \ReflectionMethod::IS_PUBLIC
+        $a0 = 256
     ) {
         $argumentCount = func_num_args();
         $arguments = array();

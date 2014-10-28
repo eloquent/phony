@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Feature;
 
 use Eloquent\Phony\Feature\Exception\UndefinedFeatureException;
 use ReflectionClass;
+use ReflectionFunction;
 use ReflectionMethod;
 
 /**
@@ -266,6 +267,19 @@ class FeatureDetector implements FeatureDetectorInterface
             'parameter.type.callable' => function ($detector) {
                 return $detector
                     ->checkInternalMethod('ReflectionParameter', 'isCallable');
+            },
+
+            'reflection.function.export.default.array' => function ($detector) {
+                $function =
+                    new ReflectionFunction(function ($a0 = array('a')) {});
+
+                return false !== strpos(strval($function), "'a'");
+            },
+
+            'reflection.function.export.reference' => function ($detector) {
+                $function = new ReflectionFunction(function (&$a0) {});
+
+                return false !== strpos(strval($function), '&');
             },
 
             'runtime.hhvm' => function ($detector) {

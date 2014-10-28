@@ -776,7 +776,7 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function newInstanceArgs(
         $a0 = array (
-)
+  )
     ) {
         $argumentCount = func_num_args();
         $arguments = array();

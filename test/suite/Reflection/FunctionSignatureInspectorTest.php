@@ -54,7 +54,6 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
                 FeatureDetector $i,
                 $j = 'string',
                 &$k = 111,
-                array $l = array('a', 'b', 'c' => 'd'),
                 array &$m = null,
                 \Type $n = null,
                 \Type &$o = null,
@@ -75,7 +74,6 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
             'i' => array('\Eloquent\Phony\Feature\FeatureDetector ', '',  ''),
             'j' => array('',                                         '',  " = 'string'"),
             'k' => array('',                                         '&', ' = 111'),
-            'l' => array('array ',                                   '',  " = array (\n  0 => 'a',\n  1 => 'b',\n  'c' => 'd',\n)"),
             'm' => array('array ',                                   '&', ' = null'),
             'n' => array('\Type ',                                   '',  ' = null'),
             'o' => array('\Type ',                                   '&', ' = null'),
@@ -91,46 +89,16 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
     {
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
-        $expected = array(
-            'filter' => array('', '', ' = null'),
-        );
 
-        $this->assertEquals($expected, $actual);
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testSignatureWithDefaultValueConstant()
-    {
-        if (!$this->featureDetector->isSupported('parameter.default.constant')) {
-            $this->markTestSkipped('Requires parameter constant name support in ReflectionParameter.');
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $expected = array(
+                'filter' => array('\?HH\int ', '', ' = null'),
+            );
+        } else {
+            $expected = array(
+                'filter' => array('', '', ' = null'),
+            );
         }
-        $function = new ReflectionFunction(
-            function (
-                $a = ReflectionMethod::IS_FINAL,
-                $b = self::CONSTANT_A
-            ) {}
-        );
-        $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('', '', ' = \ReflectionMethod::IS_FINAL'),
-            'b' => array('', '', ' = \Eloquent\Phony\Reflection\FunctionSignatureInspectorTest::CONSTANT_A'),
-        );
-
-        $this->assertEquals($expected, $actual);
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testSignatureWithNoDefaultValueConstant()
-    {
-        if ($this->featureDetector->isSupported('parameter.default.constant')) {
-            $this->markTestSkipped('Requires no parameter constant name support in ReflectionParameter.');
-        }
-        $function = new ReflectionMethod(__CLASS__, 'methodA');
-        $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('', '', ' = ' . ReflectionMethod::IS_FINAL),
-            'b' => array('', '', " = 'a'"),
-        );
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
