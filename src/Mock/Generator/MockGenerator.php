@@ -327,10 +327,9 @@ EOD;
         $source = '';
 
         foreach ($methods as $method) {
-            if (
-                '__call' === $method->name() ||
-                '__callStatic' === $method->name()
-            ) {
+            $name = $method->name();
+
+            if ('__call' === $name || '__callStatic' === $name) {
                 continue;
             }
 
@@ -347,7 +346,7 @@ EOD;
                 $argumentPacking = "\n";
                 $index = -1;
 
-                foreach ($signature as $name => $parameter) {
+                foreach ($signature as $parameter) {
                     $argumentPacking .= "\n        if (\$argumentCount > " .
                         ++$index .
                         ') $arguments[] = ' .
@@ -360,7 +359,9 @@ EOD;
                 $argumentPacking = '';
             }
 
-            if ($method->isStatic()) {
+            $isStatic = $method->isStatic();
+
+            if ($isStatic) {
                 $body = "        \$argumentCount = func_num_args();\n" .
                     "        \$arguments = array();" .
                     $argumentPacking .
@@ -389,12 +390,35 @@ EOD;
             $source .= "\n    " .
                 $method->accessLevel() .
                 ' ' .
-                ($method->isStatic() ? 'static ' : '') .
-                'function '.
-                $method->name() .
-                $this->renderParameters($signature) .
-                $body .
-                "\n    }\n";
+                ($isStatic ? 'static ' : '') .
+                'function ' .
+                $name;
+
+            if ($signature) {
+                $index = -1;
+                $isFirst = true;
+
+                foreach ($signature as $parameter) {
+                    if ($isFirst) {
+                        $isFirst = false;
+                        $source .= "(\n        ";
+                    } else {
+                        $source .= ",\n        ";
+                    }
+
+                    $source .= $parameter[0] .
+                        $parameter[1] .
+                        '$a' .
+                        ++$index .
+                        $parameter[2];
+                }
+
+                $source .= "\n    ) {\n";
+            } else {
+                $source .= "()\n    {\n";
+            }
+
+            $source .= $body . "\n    }\n";
         }
 
         return $source;
@@ -546,32 +570,6 @@ EOD;
 EOD;
 
         return $source;
-    }
-
-    /**
-     * Render a parameter list compatible with the supplied function reflector.
-     *
-     * @param array<string,array<integer,string>> $signature The signature.
-     *
-     * @return string The rendered parameter list.
-     */
-    protected function renderParameters(array $signature)
-    {
-        if (!$signature) {
-            return "()\n    {\n";
-        }
-
-        $renderedParameters = array();
-        $index = -1;
-
-        foreach ($signature as $parameter) {
-            $renderedParameters[] =
-                $parameter[0] . $parameter[1] . '$a' . ++$index . $parameter[2];
-        }
-
-        return "(\n        " .
-            implode(",\n        ", $renderedParameters) .
-            "\n    ) {\n";
     }
 
     private static $instance;

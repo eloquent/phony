@@ -55,6 +55,7 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             ->isSupported('reflection.function.export.default.array');
         $this->isExportReferenceSupported = $featureDetector
             ->isSupported('reflection.function.export.reference');
+        $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
     /**
@@ -78,7 +79,7 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     {
         $isMatch = preg_match_all(
             static::PARAMETER_PATTERN,
-            strval($function),
+            $function,
             $matches,
             PREG_SET_ORDER
         );
@@ -97,7 +98,7 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             if (isset($match[2])) {
                 $typehint = $match[2];
 
-                if (false !== strpos($typehint, 'HH\\')) {
+                if ($this->isHhvm && false !== strpos($typehint, 'HH\\')) {
                     $typehint = '';
                 }
 
@@ -153,4 +154,5 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     private $featureDetector;
     private $isExportDefaultArraySupported;
     private $isExportReferenceSupported;
+    private $isHhvm;
 }
