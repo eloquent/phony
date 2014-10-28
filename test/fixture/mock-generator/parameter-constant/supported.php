@@ -1,5 +1,5 @@
 <?php
 
-$message = 'Requires parameter constant name support in ReflectionParameter.';
+$message = 'Requires parameter default value constant support.';
 
 return $detector->isSupported('parameter.default.constant');

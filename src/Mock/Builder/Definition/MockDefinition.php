@@ -287,14 +287,17 @@ class MockDefinition implements MockDefinitionInterface
             foreach ($type->getMethods() as $method) {
                 $name = $method->getName();
 
-                if ($this->isReservedWord($name)) {
+                $tokens = token_get_all('<?php ' . $name);
+                $token = $tokens[1];
+
+                if (!is_array($token) || $token[0] !== T_STRING) {
                     continue;
                 }
 
                 if (
-                    !$method->isFinal() &&
                     !$method->isPrivate() &&
-                    !$method->isConstructor()
+                    !$method->isConstructor() &&
+                    !$method->isFinal()
                 ) {
                     $parameterCount = $method->getNumberOfParameters();
 
@@ -322,21 +325,6 @@ class MockDefinition implements MockDefinitionInterface
         ksort($methods, SORT_STRING);
 
         $this->methods = new MethodDefinitionCollection($methods);
-    }
-
-    /**
-     * Determines if the supplied string is a reserved word.
-     *
-     * @param string $string The string.
-     *
-     * @return boolean True if the string is a reserved word.
-     */
-    protected function isReservedWord($string)
-    {
-        $tokens = token_get_all('<?php ' . $string);
-        $token = $tokens[1];
-
-        return !is_array($token) || $token[0] !== T_STRING;
     }
 
     private $types;

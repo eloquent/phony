@@ -54,7 +54,6 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
                 FeatureDetector $i,
                 $j = 'string',
                 &$k = 111,
-                array $l = array('a', 'b', 'c' => 'd'),
                 array &$m = null,
                 \Type $n = null,
                 \Type &$o = null,
@@ -64,27 +63,45 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         );
         $actual = $this->subject->signature($function);
         $expected = array(
-            'a' => array('',                                         'mixed                                   ', '', ''),
-            'b' => array('',                                         'mixed                                   ', '&', ''),
-            'c' => array('array ',                                   'array                                   ', '', ''),
-            'd' => array('array ',                                   'array                                   ', '&', ''),
-            'e' => array('\Type ',                                   '\Type                                   ', '', ''),
-            'f' => array('\Type ',                                   '\Type                                   ', '&', ''),
-            'g' => array('\Namespaced\Type ',                        '\Namespaced\Type                        ', '', ''),
-            'h' => array('\Namespaced\Type ',                        '\Namespaced\Type                        ', '&', ''),
-            'i' => array('\Eloquent\Phony\Feature\FeatureDetector ', '\Eloquent\Phony\Feature\FeatureDetector ', '', ''),
-            'j' => array('',                                         'mixed                                   ', '', " = 'string'"),
-            'k' => array('',                                         'mixed                                   ', '&', ' = 111'),
-            'l' => array('array ',                                   'array                                   ', '', " = array(0 => 'a', 1 => 'b', 'c' => 'd')"),
-            'm' => array('array ',                                   'array|null                              ', '&', ' = null'),
-            'n' => array('\Type ',                                   '\Type|null                              ', '', ' = null'),
-            'o' => array('\Type ',                                   '\Type|null                              ', '&', ' = null'),
-            'p' => array('\Namespaced\Type ',                        '\Namespaced\Type|null                   ', '', ' = null'),
-            'q' => array('\Namespaced\Type ',                        '\Namespaced\Type|null                   ', '&', ' = null'),
+            'a' => array('',                                         '',  ''),
+            'b' => array('',                                         '&', ''),
+            'c' => array('array ',                                   '',  ''),
+            'd' => array('array ',                                   '&', ''),
+            'e' => array('\Type ',                                   '',  ''),
+            'f' => array('\Type ',                                   '&', ''),
+            'g' => array('\Namespaced\Type ',                        '',  ''),
+            'h' => array('\Namespaced\Type ',                        '&', ''),
+            'i' => array('\Eloquent\Phony\Feature\FeatureDetector ', '',  ''),
+            'j' => array('',                                         '',  " = 'string'"),
+            'k' => array('',                                         '&', ' = 111'),
+            'm' => array('array ',                                   '&', ' = null'),
+            'n' => array('\Type ',                                   '',  ' = null'),
+            'o' => array('\Type ',                                   '&', ' = null'),
+            'p' => array('\Namespaced\Type ',                        '',  ' = null'),
+            'q' => array('\Namespaced\Type ',                        '&', ' = null'),
         );
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureWithEmptyParameterList()
+    {
+        $function = new ReflectionFunction(function () {});
+        $actual = $this->subject->signature($function);
+        $expected = array();
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureWithArrayDefault()
+    {
+        $function = new ReflectionFunction(function ($a = array('a', 'b', 'c' => 'd')) {});
+        $actual = $this->subject->signature($function);
+
+        $this->assertArrayHasKey('a', $actual);
+        $this->assertSame(array('a', 'b', 'c' => 'd'), eval('return $r' . $actual['a'][2] . ';'));
     }
 
     public function testSignatureWithUnavailableDefaultValue()
@@ -92,44 +109,7 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
         $expected = array(
-            'filter' => array('', 'mixed ', '', ' = null'),
-        );
-
-        $this->assertEquals($expected, $actual);
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testSignatureWithDefaultValueConstant()
-    {
-        if (!$this->featureDetector->isSupported('parameter.default.constant')) {
-            $this->markTestSkipped('Requires parameter constant name support in ReflectionParameter.');
-        }
-        $function = new ReflectionFunction(
-            function (
-                $a = ReflectionMethod::IS_FINAL,
-                $b = self::CONSTANT_A
-            ) {}
-        );
-        $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('', 'mixed ', '', ' = \ReflectionMethod::IS_FINAL'),
-            'b' => array('', 'mixed ', '', ' = \Eloquent\Phony\Reflection\FunctionSignatureInspectorTest::CONSTANT_A'),
-        );
-
-        $this->assertEquals($expected, $actual);
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testSignatureWithNoDefaultValueConstant()
-    {
-        if ($this->featureDetector->isSupported('parameter.default.constant')) {
-            $this->markTestSkipped('Requires no parameter constant name support in ReflectionParameter.');
-        }
-        $function = new ReflectionMethod(__CLASS__, 'methodA');
-        $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('', 'mixed ', '', ' = ' . ReflectionMethod::IS_FINAL),
-            'b' => array('', 'mixed ', '', " = 'a'"),
+            'filter' => array('', '', ' = null'),
         );
 
         $this->assertEquals($expected, $actual);
@@ -141,23 +121,52 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         if (!$this->featureDetector->isSupported('parameter.type.callable')) {
             $this->markTestSkipped('Requires callable type hint support.');
         }
+
         $function = new ReflectionFunction(
             eval('return function (callable $a, callable $b = null) {};')
         );
         $actual = $this->subject->signature($function);
         $expected = array(
-            'a' => array('callable ', 'callable      ', '', ''),
-            'b' => array('callable ', 'callable|null ', '', ' = null'),
+            'a' => array('callable ', '', ''),
+            'b' => array('callable ', '', ' = null'),
         );
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
     }
 
-    protected function methodA(
-        $a = ReflectionMethod::IS_FINAL,
-        $b = self::CONSTANT_A
-    ) {}
+    public function testSignatureWithConstantDefault()
+    {
+        if (!$this->featureDetector->isSupported('parameter.default.constant')) {
+            $this->markTestSkipped('Requires support for constants as parameter defaults.');
+        }
+
+        $function = new ReflectionMethod($this, 'methodA');
+        $actual = $this->subject->signature($function);
+        $expected = array(
+            'a' => array('', '', ' = 4'),
+            'b' => array('', '', " = 'a'"),
+        );
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureWithSelfTypeHint()
+    {
+        $function = new ReflectionMethod($this, 'methodB');
+        $actual = $this->subject->signature($function);
+        $expected = array(
+            'a' => array('\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', ''),
+        );
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    protected function methodA($a = ReflectionMethod::IS_FINAL, $b = self::CONSTANT_A) {}
+
+    protected function methodB(self $a) {}
 
     public function testInstance()
     {
