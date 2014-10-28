@@ -271,16 +271,17 @@ class MockGenerator implements MockGeneratorInterface
             return '';
         }
 
-        $body = "        return self::\$_staticProxy->spy(\$a0)\n" .
-            "            ->invokeWith(new " .
-            "\Eloquent\Phony\Call\Argument\Arguments(\$a1));";
+        return <<<'EOD'
 
-        return $this->generateMethod(
-            $methods['__callStatic'],
-            $this->signatureInspector
-                ->signature($methods['__callStatic']->method()),
-            $body
-        );
+    public static function __callStatic(
+        $a0,
+        array $a1
+    ) {
+        return self::$_staticProxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+    }
+
+EOD;
     }
 
     /**
@@ -385,35 +386,18 @@ EOD;
                     "(\$arguments)\n        );";
             }
 
-            $source .= $this->generateMethod($method, $signature, $body);
+            $source .= "\n    " .
+                $method->accessLevel() .
+                ' ' .
+                ($method->isStatic() ? 'static ' : '') .
+                'function '.
+                $method->name() .
+                $this->renderParameters($signature) .
+                $body .
+                "\n    }\n";
         }
 
         return $source;
-    }
-
-    /**
-     * Generate the supplied method.
-     *
-     * @param MethodDefinitionInterface           $method    The method.
-     * @param array<string,array<integer,string>> $signature The signature.
-     * @param string                              $body      The method body.
-     *
-     * @return string The source code.
-     */
-    protected function generateMethod(
-        MethodDefinitionInterface $method,
-        array $signature,
-        $body
-    ) {
-        return "\n    " .
-            $method->accessLevel() .
-            ' ' .
-            ($method->isStatic() ? 'static ' : '') .
-            'function '.
-            $method->name() .
-            $this->renderParameters($signature) .
-            $body .
-            "\n    }\n";
     }
 
     /**
@@ -431,12 +415,17 @@ EOD;
             return '';
         }
 
-        return $this->generateMethod(
-            $methods['__call'],
-            $this->signatureInspector->signature($methods['__call']->method()),
-            "        return \$this->_proxy->spy(\$a0)\n            ->" .
-                "invokeWith(new \Eloquent\Phony\Call\Argument\Arguments(\$a1));"
-        );
+        return <<<'EOD'
+
+    public function __call(
+        $a0,
+        array $a1
+    ) {
+        return $this->_proxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+    }
+
+EOD;
     }
 
     /**
