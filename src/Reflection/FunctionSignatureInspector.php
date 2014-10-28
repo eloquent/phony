@@ -106,8 +106,11 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                     case '':
                     case 'array ':
                     case 'callable ':
-                    case 'self ':
                         break;
+
+                    case 'self ':
+                        $typehint = $parameter->getDeclaringClass()->getName() .
+                            ' ';
 
                     default:
                         $typehint = '\\' . $typehint;

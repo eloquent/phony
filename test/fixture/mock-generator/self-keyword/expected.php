@@ -5,7 +5,7 @@ extends \Eloquent\Phony\Test\TestClassC
 implements \Eloquent\Phony\Mock\MockInterface
 {
     public function methodA(
-        self $a0,
+        \Eloquent\Phony\Test\TestClassC $a0,
         $a1 = 'a'
     ) {
         $argumentCount = func_num_args();
