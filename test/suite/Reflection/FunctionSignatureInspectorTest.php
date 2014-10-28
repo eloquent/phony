@@ -85,6 +85,25 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
+    public function testSignatureWithEmptyParameterList()
+    {
+        $function = new ReflectionFunction(function () {});
+        $actual = $this->subject->signature($function);
+        $expected = array();
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureWithArrayDefault()
+    {
+        $function = new ReflectionFunction(function ($a = array('a', 'b', 'c' => 'd')) {});
+        $actual = $this->subject->signature($function);
+
+        $this->assertArrayHasKey('a', $actual);
+        $this->assertSame(array('a', 'b', 'c' => 'd'), eval('return $r' . $actual['a'][2] . ';'));
+    }
+
     public function testSignatureWithUnavailableDefaultValue()
     {
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
@@ -102,6 +121,7 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         if (!$this->featureDetector->isSupported('parameter.type.callable')) {
             $this->markTestSkipped('Requires callable type hint support.');
         }
+
         $function = new ReflectionFunction(
             eval('return function (callable $a, callable $b = null) {};')
         );
@@ -115,10 +135,38 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    protected function methodA(
-        $a = ReflectionMethod::IS_FINAL,
-        $b = self::CONSTANT_A
-    ) {}
+    public function testSignatureWithConstantDefault()
+    {
+        if (!$this->featureDetector->isSupported('parameter.default.constant')) {
+            $this->markTestSkipped('Requires support for constants as parameter defaults.');
+        }
+
+        $function = new ReflectionMethod($this, 'methodA');
+        $actual = $this->subject->signature($function);
+        $expected = array(
+            'a' => array('', '', ' = 4'),
+            'b' => array('', '', " = 'a'"),
+        );
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureWithSelfTypeHint()
+    {
+        $function = new ReflectionMethod($this, 'methodB');
+        $actual = $this->subject->signature($function);
+        $expected = array(
+            'a' => array('\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', ''),
+        );
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    protected function methodA($a = ReflectionMethod::IS_FINAL, $b = self::CONSTANT_A) {}
+
+    protected function methodB(self $a) {}
 
     public function testInstance()
     {

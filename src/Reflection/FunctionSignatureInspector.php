@@ -95,32 +95,28 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
         foreach ($matches as $match) {
             $parameter = $parameters[++$index];
 
-            if (isset($match[2])) {
-                $typehint = $match[2];
+            $typehint = $match[2];
 
-                if ($this->isHhvm && false !== strpos($typehint, 'HH\\')) {
-                    $typehint = '';
-                }
-
-                switch ($typehint) {
-                    case '':
-                    case 'array ':
-                    case 'callable ':
-                        break;
-
-                    case 'self ':
-                        $typehint = $parameter->getDeclaringClass()->getName() .
-                            ' ';
-
-                    default:
-                        $typehint = '\\' . $typehint;
-                }
-            } else {
+            if ($this->isHhvm && false !== strpos($typehint, 'HH\\')) { // @codeCoverageIgnoreStart
                 $typehint = '';
+            } // @codeCoverageIgnoreEnd
+
+            switch ($typehint) {
+                case '':
+                case 'array ':
+                case 'callable ':
+                    break;
+
+                case 'self ':
+                    $typehint = $parameter->getDeclaringClass()->getName() .
+                        ' ';
+
+                default:
+                    $typehint = '\\' . $typehint;
             }
 
             if ($this->isExportReferenceSupported) {
-                $byReference = isset($match[3]) ? $match[3] : '';
+                $byReference = $match[3];
             } else { // @codeCoverageIgnoreStart
                 $byReference = $parameter->isPassedByReference() ? '&' : '';
             } // @codeCoverageIgnoreEnd
