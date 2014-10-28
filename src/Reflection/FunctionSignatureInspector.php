@@ -95,8 +95,14 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                                 substr($defaultValue, 8);
                         }
                     } else {
-                        $defaultValue = ' = ' .
-                            $this->renderValue($parameter->getDefaultValue());
+                        $defaultValue = $parameter->getDefaultValue();
+
+                        if (null === $defaultValue) {
+                            $defaultValue = ' = null';
+                        } else {
+                            $defaultValue = ' = ' .
+                                var_export($defaultValue, true);
+                        }
                     }
                 } else {
                     $defaultValue = ' = null';
@@ -144,37 +150,6 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
         }
 
         return $signature;
-    }
-
-    /**
-     * Render the supplied value.
-     *
-     * This method does not support recursive values, which will result in an
-     * infinite loop.
-     *
-     * @param mixed $value The value.
-     *
-     * @return string The rendered value.
-     */
-    protected function renderValue($value)
-    {
-        if (null === $value) {
-            return 'null';
-        }
-
-        if (is_array($value)) {
-            $values = array();
-
-            foreach ($value as $key => $subValue) {
-                $values[] = var_export($key, true) .
-                    ' => ' .
-                    $this->renderValue($subValue);
-            }
-
-            return 'array(' . implode(', ', $values) . ')';
-        }
-
-        return var_export($value, true);
     }
 
     private static $instance;

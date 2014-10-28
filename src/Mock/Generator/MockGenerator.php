@@ -246,7 +246,7 @@ class MockGenerator implements MockGeneratorInterface
                 $source .= "\n    const " .
                     $name .
                     ' = ' .
-                    $this->renderValue($value) .
+                    (null === $value ? 'null' : var_export($value, true)) .
                     ';';
             }
 
@@ -525,7 +525,7 @@ EOD;
                 "\n    public static \$" .
                 $name .
                 ' = ' .
-                $this->renderValue($value) .
+                (null === $value ? 'null' : var_export($value, true)) .
                 ';';
         }
 
@@ -534,7 +534,7 @@ EOD;
                 "\n    public \$" .
                 $name .
                 ' = ' .
-                $this->renderValue($value) .
+                (null === $value ? 'null' : var_export($value, true)) .
                 ';';
         }
 
@@ -572,37 +572,6 @@ EOD;
         return "(\n        " .
             implode(",\n        ", $renderedParameters) .
             "\n    ) {\n";
-    }
-
-    /**
-     * Render the supplied value.
-     *
-     * This method does not support recursive values, which will result in an
-     * infinite loop.
-     *
-     * @param mixed $value The value.
-     *
-     * @return string The rendered value.
-     */
-    protected function renderValue($value)
-    {
-        if (null === $value) {
-            return 'null';
-        }
-
-        if (is_array($value)) {
-            $values = array();
-
-            foreach ($value as $key => $subValue) {
-                $values[] = var_export($key, true) .
-                    ' => ' .
-                    $this->renderValue($subValue);
-            }
-
-            return 'array(' . implode(', ', $values) . ')';
-        }
-
-        return var_export($value, true);
     }
 
     private static $instance;

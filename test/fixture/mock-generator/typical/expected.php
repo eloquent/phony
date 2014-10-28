@@ -35,9 +35,16 @@ implements \Eloquent\Phony\Mock\MockInterface,
     public static function methodB(
         $a0 = null,
         $a1 = 111,
-        $a2 = array(),
-        $a3 = array(0 => 'valueA', 1 => 'valueB'),
-        $a4 = array('keyA' => 'valueA', 'keyB' => 'valueB')
+        $a2 = array (
+),
+        $a3 = array (
+  0 => 'valueA',
+  1 => 'valueB',
+),
+        $a4 = array (
+  'keyA' => 'valueA',
+  'keyB' => 'valueB',
+)
     ) {
         $argumentCount = func_num_args();
         $arguments = array();
@@ -182,7 +189,8 @@ implements \Eloquent\Phony\Mock\MockInterface,
     public function methodC(
         \Eloquent\Phony\Test\TestClassA $a0,
         \Eloquent\Phony\Test\TestClassA $a1 = null,
-        array $a2 = array(),
+        array $a2 = array (
+),
         array $a3 = null
     ) {
         $argumentCount = func_num_args();

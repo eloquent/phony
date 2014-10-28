@@ -75,7 +75,7 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
             'i' => array('\Eloquent\Phony\Feature\FeatureDetector ', '',  ''),
             'j' => array('',                                         '',  " = 'string'"),
             'k' => array('',                                         '&', ' = 111'),
-            'l' => array('array ',                                   '',  " = array(0 => 'a', 1 => 'b', 'c' => 'd')"),
+            'l' => array('array ',                                   '',  " = array (\n  0 => 'a',\n  1 => 'b',\n  'c' => 'd',\n)"),
             'm' => array('array ',                                   '&', ' = null'),
             'n' => array('\Type ',                                   '',  ' = null'),
             'o' => array('\Type ',                                   '&', ' = null'),
