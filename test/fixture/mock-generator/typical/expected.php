@@ -482,10 +482,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return \call_user_func_array(
-            array(__CLASS__, 'parent::' . $name),
-            $arguments->all()
-        );
+        $callback = array(__CLASS__, 'parent::' . $name);
+
+        return \call_user_func_array($callback, $arguments->all());
     }
 
     private static function _callMagicStatic(
@@ -500,10 +499,9 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return \call_user_func_array(
-            array($this, 'parent::' . $name),
-            $arguments->all()
-        );
+        $callback = array($this, 'parent::' . $name);
+
+        return \call_user_func_array($callback, $arguments->all());
     }
 
     private function _callMagic(

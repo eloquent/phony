@@ -488,7 +488,8 @@ EOD;
      */
     protected function generateCallParentMethods(MockDefinitionInterface $definition)
     {
-        $hasParentClass = null !== $definition->parentClassName();
+        $hasTraits = (boolean) $definition->traitNames();
+        $hasParentClass = $hasTraits || null !== $definition->parentClassName();
         $source = '';
 
         if ($hasParentClass) {
@@ -498,10 +499,23 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return \call_user_func_array(
-            array(__CLASS__, 'parent::' . $name),
-            $arguments->all()
-        );
+        $callback = array(__CLASS__, 'parent::' . $name);
+
+EOD;
+
+            if ($hasTraits) {
+                $source .= <<<'EOD'
+
+        if (!\is_callable($callback)) {
+            $callback = array(__CLASS__, '_callTrait_' . $name);
+        }
+
+EOD;
+            }
+
+            $source .= <<<'EOD'
+
+        return \call_user_func_array($callback, $arguments->all());
     }
 
 EOD;
@@ -530,10 +544,23 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return \call_user_func_array(
-            array($this, 'parent::' . $name),
-            $arguments->all()
-        );
+        $callback = array($this, 'parent::' . $name);
+
+EOD;
+
+            if ($hasTraits) {
+                $source .= <<<'EOD'
+
+        if (!\is_callable($callback)) {
+            $callback = array($this, '_callTrait_' . $name);
+        }
+
+EOD;
+            }
+
+            $source .= <<<'EOD'
+
+        return \call_user_func_array($callback, $arguments->all());
     }
 
 EOD;

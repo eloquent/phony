@@ -9,11 +9,17 @@
  * that was distributed with this source code.
  */
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        $this->featureDetector = FeatureDetector::instance();
+    }
+
     public function testMockingStatic()
     {
         $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
@@ -302,5 +308,27 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('y', $proxy->mock()->testClassAMethodA());
         $this->assertSame('z', $proxy->mock()->testClassAMethodA());
         $this->assertSame('z', $proxy->mock()->testClassAMethodA());
+    }
+
+    public function testCanCallMockedTraitMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestTraitA'));
+
+        $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+    }
+
+    public function testCanCallMockedTraitMethodWithoutParentClass()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA'));
+
+        $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
     }
 }
