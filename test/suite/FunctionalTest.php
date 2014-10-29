@@ -292,4 +292,15 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $proxy->methodB->calledWith('a');
     }
+
+    public function testProxyStubOverriding()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA->returns('x');
+        $proxy->testClassAMethodA->returns('y', 'z');
+
+        $this->assertSame('y', $proxy->mock()->testClassAMethodA());
+        $this->assertSame('z', $proxy->mock()->testClassAMethodA());
+        $this->assertSame('z', $proxy->mock()->testClassAMethodA());
+    }
 }

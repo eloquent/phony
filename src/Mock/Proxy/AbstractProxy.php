@@ -234,7 +234,7 @@ abstract class AbstractProxy implements ProxyInterface
             throw new UndefinedPropertyException(get_called_class(), $name, $e);
         }
 
-        return $stub;
+        return $stub->with($this->wildcardMatcher);
     }
 
     /**
