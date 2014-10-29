@@ -97,20 +97,6 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function isCloneable()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
     public function getFileName()
     {
         $argumentCount = func_num_args();
@@ -373,62 +359,6 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function getTraits()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function getTraitNames()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function getTraitAliases()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function isTrait()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
     public function isAbstract()
     {
         $argumentCount = func_num_args();
@@ -497,20 +427,6 @@ implements \Eloquent\Phony\Mock\MockInterface
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function newInstanceWithoutConstructor()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
