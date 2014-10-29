@@ -286,7 +286,7 @@ class MockDefinition implements MockDefinitionInterface
             if ($this->isTraitSupported) {
                 $isTrait = $type->isTrait();
             } else {
-                $isTrait = false;
+                $isTrait = false; // @codeCoverageIgnore
             }
 
             foreach ($type->getMethods() as $method) {
