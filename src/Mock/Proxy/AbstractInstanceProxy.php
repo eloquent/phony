@@ -111,14 +111,14 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     public function constructWith($arguments = null)
     {
         if ($this->callParentMethod) {
-            $parentClass = $this->class->getParentClass();
-
-            if ($constructor = $parentClass->getConstructor()) {
-                $this->callParentMethod->invoke(
-                    $this->mock,
-                    $constructor->getName(),
-                    Arguments::adapt($arguments)
-                );
+            if ($parentClass = $this->class->getParentClass()) {
+                if ($constructor = $parentClass->getConstructor()) {
+                    $this->callParentMethod->invoke(
+                        $this->mock,
+                        $constructor->getName(),
+                        Arguments::adapt($arguments)
+                    );
+                }
             }
         }
 

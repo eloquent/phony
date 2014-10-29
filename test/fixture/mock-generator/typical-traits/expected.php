@@ -5,12 +5,22 @@ namespace Phony\Test;
 class MockGeneratorTypicalTraits
 extends \Eloquent\Phony\Test\TestClassB
 implements \Eloquent\Phony\Mock\MockInterface,
-           \ArrayAccess,
+           \Iterator,
            \Countable,
-           \Iterator
+           \ArrayAccess
 {
-    use \Eloquent\Phony\Test\TestTraitA;
-    use \Eloquent\Phony\Test\TestTraitB;
+    use \Eloquent\Phony\Test\TestTraitA,
+        \Eloquent\Phony\Test\TestTraitB
+    {
+        \Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA
+            insteadof \Eloquent\Phony\Test\TestTraitA;
+        \Eloquent\Phony\Test\TestTraitB::testClassAMethodB
+            insteadof \Eloquent\Phony\Test\TestTraitA;
+        \Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA
+            as private _callTrait_testClassAStaticMethodA;
+        \Eloquent\Phony\Test\TestTraitB::testClassAMethodB
+            as private _callTrait_testClassAMethodB;
+    }
 
     const CONSTANT_A = 'constantValueA';
     const CONSTANT_B = 444;
@@ -491,10 +501,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return \call_user_func_array(
-            array(__CLASS__, 'parent::' . $name),
-            $arguments->all()
-        );
+        $callback = array(__CLASS__, 'parent::' . $name);
+
+        if (!\is_callable($callback)) {
+            $callback = array(__CLASS__, '_callTrait_' . $name);
+        }
+
+        return \call_user_func_array($callback, $arguments->all());
     }
 
     private static function _callMagicStatic(
@@ -509,10 +522,13 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return \call_user_func_array(
-            array($this, 'parent::' . $name),
-            $arguments->all()
-        );
+        $callback = array($this, 'parent::' . $name);
+
+        if (!\is_callable($callback)) {
+            $callback = array($this, '_callTrait_' . $name);
+        }
+
+        return \call_user_func_array($callback, $arguments->all());
     }
 
     private function _callMagic(
