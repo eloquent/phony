@@ -5,12 +5,22 @@ namespace Phony\Test;
 class MockGeneratorTypicalTraits
 extends \Eloquent\Phony\Test\TestClassB
 implements \Eloquent\Phony\Mock\MockInterface,
-           \ArrayAccess,
+           \Iterator,
            \Countable,
-           \Iterator
+           \ArrayAccess
 {
-    use \Eloquent\Phony\Test\TestTraitA;
-    use \Eloquent\Phony\Test\TestTraitB;
+    use \Eloquent\Phony\Test\TestTraitA,
+        \Eloquent\Phony\Test\TestTraitB
+    {
+        \Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA
+            insteadof \Eloquent\Phony\Test\TestTraitA;
+        \Eloquent\Phony\Test\TestTraitB::testClassAMethodB
+            insteadof \Eloquent\Phony\Test\TestTraitA;
+        \Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA
+            as private _callTrait_testClassAStaticMethodA;
+        \Eloquent\Phony\Test\TestTraitB::testClassAMethodB
+            as private _callTrait_testClassAMethodB;
+    }
 
     const CONSTANT_A = 'constantValueA';
     const CONSTANT_B = 444;

@@ -70,8 +70,6 @@ class MockDefinition implements MockDefinitionInterface
             $featureDetector = FeatureDetector::instance();
         }
 
-        ksort($types);
-
         $this->types = $types;
         $this->customMethods = $customMethods;
         $this->customProperties = $customProperties;
@@ -80,6 +78,8 @@ class MockDefinition implements MockDefinitionInterface
         $this->customConstants = $customConstants;
         $this->className = $className;
         $this->featureDetector = $featureDetector;
+
+        $this->isTraitSupported = $this->featureDetector->isSupported('trait');
     }
 
     /**
@@ -260,10 +260,7 @@ class MockDefinition implements MockDefinitionInterface
 
             if ($type->isInterface()) {
                 $this->interfaceNames[] = $typeName;
-            } elseif (
-                $this->featureDetector->isSupported('trait') &&
-                $type->isTrait()
-            ) {
+            } elseif ($this->isTraitSupported && $type->isTrait()) {
                 $this->traitNames[] = $typeName;
             } else {
                 $this->parentClassName = $typeName;
@@ -281,13 +278,21 @@ class MockDefinition implements MockDefinitionInterface
         }
 
         $methods = array();
+        $traitMethods = array();
+        $traitTypesByMethod = array();
         $parameterCounts = array();
 
-        foreach ($this->types as $type) {
-            foreach ($type->getMethods() as $method) {
-                $name = $method->getName();
+        foreach ($this->types as $typeName => $type) {
+            if ($this->isTraitSupported) {
+                $isTrait = $type->isTrait();
+            } else {
+                $isTrait = false;
+            }
 
-                $tokens = token_get_all('<?php ' . $name);
+            foreach ($type->getMethods() as $method) {
+                $methodName = $method->getName();
+
+                $tokens = token_get_all('<?php ' . $methodName);
                 $token = $tokens[1];
 
                 if (!is_array($token) || $token[0] !== T_STRING) {
@@ -295,36 +300,58 @@ class MockDefinition implements MockDefinitionInterface
                 }
 
                 if (
-                    !$method->isPrivate() &&
-                    !$method->isConstructor() &&
-                    !$method->isFinal()
+                    $method->isPrivate() ||
+                    $method->isConstructor() ||
+                    $method->isFinal()
                 ) {
-                    $parameterCount = $method->getNumberOfParameters();
+                    continue;
+                }
 
-                    if (
-                        !isset($methods[$name]) ||
-                        $parameterCount > $parameterCounts[$name]
-                    ) {
-                        $methods[$name] = new RealMethodDefinition($method);
-                        $parameterCounts[$name] = $parameterCount;
-                    }
+                if ($isTrait) {
+                    $traitMethods[$methodName] = $method;
+                    $traitTypesByMethod[$methodName][] = $typeName;
+                }
+
+                $parameterCount = $method->getNumberOfParameters();
+
+                if (
+                    !isset($methods[$methodName]) ||
+                    $parameterCount > $parameterCounts[$methodName]
+                ) {
+                    $methods[$methodName] = new RealMethodDefinition($method);
+                    $parameterCounts[$methodName] = $parameterCount;
                 }
             }
         }
 
-        foreach ($this->customStaticMethods as $name => $callback) {
-            $methods[$name] =
-                new CustomMethodDefinition(true, $name, $callback);
+        $traitResolutions = array();
+
+        foreach ($traitTypesByMethod as $methodName => $traitTypes) {
+            $primaryTrait = array_pop($traitTypes);
+
+            foreach ($traitTypes as $traitType) {
+                $traitResolutions[] =
+                    array($primaryTrait, $methodName, $traitType);
+            }
         }
 
-        foreach ($this->customMethods as $name => $callback) {
-            $methods[$name] =
-                new CustomMethodDefinition(false, $name, $callback);
+        foreach ($this->customStaticMethods as $methodName => $callback) {
+            $methods[$methodName] =
+                new CustomMethodDefinition(true, $methodName, $callback);
         }
 
-        ksort($methods, SORT_STRING);
+        foreach ($this->customMethods as $methodName => $callback) {
+            $methods[$methodName] =
+                new CustomMethodDefinition(false, $methodName, $callback);
+        }
 
-        $this->methods = new MethodDefinitionCollection($methods);
+        ksort($methods);
+
+        $this->methods = new MethodDefinitionCollection(
+            $methods,
+            $traitMethods,
+            $traitResolutions
+        );
     }
 
     private $types;
@@ -335,6 +362,7 @@ class MockDefinition implements MockDefinitionInterface
     private $customConstants;
     private $className;
     private $featureDetector;
+    private $isTraitSupported;
     private $typeNames;
     private $parentClassName;
     private $interfaceNames;

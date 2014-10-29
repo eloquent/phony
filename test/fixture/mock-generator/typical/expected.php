@@ -5,9 +5,9 @@ namespace Phony\Test;
 class MockGeneratorTypical
 extends \Eloquent\Phony\Test\TestClassB
 implements \Eloquent\Phony\Mock\MockInterface,
-           \ArrayAccess,
+           \Iterator,
            \Countable,
-           \Iterator
+           \ArrayAccess
 {
     const CONSTANT_A = 'constantValueA';
     const CONSTANT_B = 444;

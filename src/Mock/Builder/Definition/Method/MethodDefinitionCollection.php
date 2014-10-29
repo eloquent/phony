@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
+use ReflectionMethod;
+
 /**
  * Represents a collection of methods.
  *
@@ -21,15 +23,28 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinitionInterface>|null $methods The methods.
+     * @param array<string,MethodDefinitionInterface>|null $methods          The methods.
+     * @param array<string,ReflectionMethod>|null          $traitMethods     The trait methods.
+     * @param array<tuple<string,string,string>>|null      $traitResolutions The trait resolutions.
      */
-    public function __construct(array $methods = null)
-    {
+    public function __construct(
+        array $methods = null,
+        array $traitMethods = null,
+        array $traitResolutions = null
+    ) {
         if (null === $methods) {
             $methods = array();
         }
+        if (null === $traitMethods) {
+            $traitMethods = array();
+        }
+        if (null === $traitResolutions) {
+            $traitResolutions = array();
+        }
 
         $this->allMethods = $methods;
+        $this->traitMethods = $traitMethods;
+        $this->traitResolutions = $traitResolutions;
         $this->staticMethods = array();
         $this->methods = array();
         $this->publicStaticMethods = array();
@@ -132,7 +147,29 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         return $this->protectedMethods;
     }
 
+    /**
+     * Get the trait methods.
+     *
+     * @return array<string,ReflectionMethod> The trait methods.
+     */
+    public function traitMethods()
+    {
+        return $this->traitMethods;
+    }
+
+    /**
+     * Get the trait resolutions.
+     *
+     * @return array<tuple<string,string,string>> The trait resolutions.
+     */
+    public function traitResolutions()
+    {
+        return $this->traitResolutions;
+    }
+
     private $allMethods;
+    private $traitMethods;
+    private $traitResolutions;
     private $staticMethods;
     private $methods;
     private $publicStaticMethods;

@@ -269,6 +269,16 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                 '__callStatic' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic')
                 ),
+            ),
+            array(
+                'testClassAStaticMethodA' =>
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA'),
+                'testClassAMethodB' =>
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB'),
+            ),
+            array(
+                array('Eloquent\Phony\Test\TestTraitB', 'testClassAStaticMethodA', 'Eloquent\Phony\Test\TestTraitA'),
+                array('Eloquent\Phony\Test\TestTraitB', 'testClassAMethodB', 'Eloquent\Phony\Test\TestTraitA'),
             )
         );
         $actual = $this->subject->methods();

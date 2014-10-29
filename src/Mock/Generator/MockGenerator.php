@@ -219,11 +219,38 @@ class MockGenerator implements MockGeneratorInterface
         $source .= "\n{";
 
         if ($traitNames) {
+            $traitName = array_shift($traitNames);
+            $source .= "\n    use \\" . $traitName;
+
             foreach ($traitNames as $traitName) {
-                $source .= "\n    use \\" . $traitName . ';';
+                $source .= ",\n        \\" . $traitName;
             }
 
-            $source .= "\n";
+            $source .= "\n    {";
+
+            $methods = $definition->methods();
+
+            foreach ($methods->traitResolutions() as $resolution) {
+                $source .= "\n        \\" .
+                    $resolution[0] .
+                    '::' .
+                    $resolution[1] .
+                    "\n            insteadof \\" .
+                    $resolution[2] .
+                    ';';
+            }
+
+            foreach ($methods->traitMethods() as $methodName => $method) {
+                $source .= "\n        \\" .
+                    $method->getDeclaringClass()->getName() .
+                    '::' .
+                    $methodName .
+                    "\n            as private _callTrait_" .
+                    $methodName .
+                    ';';
+            }
+
+            $source .= "\n    }\n";
         }
 
         return $source;
