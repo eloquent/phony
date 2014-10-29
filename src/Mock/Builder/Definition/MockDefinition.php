@@ -345,8 +345,6 @@ class MockDefinition implements MockDefinitionInterface
                 new CustomMethodDefinition(false, $methodName, $callback);
         }
 
-        ksort($methods);
-
         $this->methods = new MethodDefinitionCollection(
             $methods,
             $traitMethods,

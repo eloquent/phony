@@ -43,48 +43,6 @@ implements \Eloquent\Phony\Mock\MockInterface
     {
     }
 
-    public function __debugInfo()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function __sleep()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function __wakeup()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
     public function add(
         $a0
     ) {
@@ -303,6 +261,48 @@ implements \Eloquent\Phony\Mock\MockInterface
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function __sleep()
+    {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function __wakeup()
+    {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function __debugInfo()
+    {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 

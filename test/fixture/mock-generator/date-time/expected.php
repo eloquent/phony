@@ -71,6 +71,40 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
+    public function format(
+        $a0
+    ) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+
+        for ($i = 1; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function modify(
+        $a0
+    ) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+
+        for ($i = 1; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
     public function add(
         $a0
     ) {
@@ -88,17 +122,15 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function diff(
-        $a0,
-        $a1 = null
+    public function sub(
+        $a0
     ) {
         $argumentCount = func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
-        if ($argumentCount > 1) $arguments[] = $a1;
 
-        for ($i = 2; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -107,7 +139,21 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function format(
+    public function getTimezone()
+    {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function setTimezone(
         $a0
     ) {
         $argumentCount = func_num_args();
@@ -138,43 +184,19 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function getTimestamp()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function getTimezone()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function modify(
-        $a0
+    public function setTime(
+        $a0,
+        $a1,
+        $a2 = null
     ) {
         $argumentCount = func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = $a2;
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 3; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -225,27 +247,6 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function setTime(
-        $a0,
-        $a1,
-        $a2 = null
-    ) {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        if ($argumentCount > 0) $arguments[] = $a0;
-        if ($argumentCount > 1) $arguments[] = $a1;
-        if ($argumentCount > 2) $arguments[] = $a2;
-
-        for ($i = 3; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
     public function setTimestamp(
         $a0
     ) {
@@ -263,15 +264,12 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function setTimezone(
-        $a0
-    ) {
+    public function getTimestamp()
+    {
         $argumentCount = func_num_args();
         $arguments = array();
 
-        if ($argumentCount > 0) $arguments[] = $a0;
-
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -280,15 +278,17 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function sub(
-        $a0
+    public function diff(
+        $a0,
+        $a1 = null
     ) {
         $argumentCount = func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 2; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
