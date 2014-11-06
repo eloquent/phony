@@ -180,36 +180,6 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
-     * Returns true if this proxy has a parent implementation.
-     *
-     * @return boolean True if this proxy has a parent implementation.
-     */
-    public function hasParent()
-    {
-        return (boolean) $this->callParentMethod;
-    }
-
-    /**
-     * Returns true if this proxy has methods from a trait.
-     *
-     * @return boolean True if this proxy has methods from a trait.
-     */
-    public function hasTraitMethods()
-    {
-        return (boolean) $this->callTraitMethod;
-    }
-
-    /**
-     * Returns true if this proxy supports magic calls.
-     *
-     * @return boolean True if this proxy supports magic calls.
-     */
-    public function isMagic()
-    {
-        return (boolean) $this->callMagicMethod;
-    }
-
-    /**
      * Get the stubs.
      *
      * @return stdClass The stubs.
@@ -292,16 +262,6 @@ abstract class AbstractProxy implements ProxyInterface
     public function state()
     {
         return $this->state;
-    }
-
-    /**
-     * Get the trait method names.
-     *
-     * @return array<string,string> The trait method names.
-     */
-    public function traitMethodNames()
-    {
-        return $this->traitMethodNames;
     }
 
     /**

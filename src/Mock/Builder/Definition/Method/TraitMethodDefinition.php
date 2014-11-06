@@ -11,9 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
-use ReflectionClass;
-use ReflectionMethod;
-
 /**
  * Represents a trait method definition.
  *
@@ -22,32 +19,4 @@ use ReflectionMethod;
 class TraitMethodDefinition extends RealMethodDefinition implements
     TraitMethodDefinitionInterface
 {
-    /**
-     * Construct a new trait method definition.
-     *
-     * @param ReflectionClass  $type   The trait type.
-     * @param ReflectionMethod $method The method.
-     * @param string|null      $name   The name.
-     */
-    public function __construct(
-        ReflectionClass $type,
-        ReflectionMethod $method,
-        $name = null
-    ) {
-        $this->type = $type;
-
-        parent::__construct($method, $name);
-    }
-
-    /**
-     * Get the trait type.
-     *
-     * @return ReflectionClass The trait type.
-     */
-    public function type()
-    {
-        return $this->type;
-    }
-
-    private $type;
 }

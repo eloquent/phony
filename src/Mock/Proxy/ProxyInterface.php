@@ -57,27 +57,6 @@ interface ProxyInterface
     public function isFull();
 
     /**
-     * Returns true if this proxy has a parent implementation.
-     *
-     * @return boolean True if this proxy has a parent implementation.
-     */
-    public function hasParent();
-
-    /**
-     * Returns true if this proxy has methods from a trait.
-     *
-     * @return boolean True if this proxy has methods from a trait.
-     */
-    public function hasTraitMethods();
-
-    /**
-     * Returns true if this proxy supports magic calls.
-     *
-     * @return boolean True if this proxy supports magic calls.
-     */
-    public function isMagic();
-
-    /**
      * Get the stubs.
      *
      * @return stdClass The stubs.

@@ -282,10 +282,8 @@ class MockDefinition implements MockDefinitionInterface
         $traitMethods = array();
 
         foreach ($this->traitNames() as $typeName) {
-            $type = $this->types[$typeName];
-
-            foreach ($type->getMethods() as $method) {
-                $methodDefinition = new TraitMethodDefinition($type, $method);
+            foreach ($this->types[$typeName]->getMethods() as $method) {
+                $methodDefinition = new TraitMethodDefinition($method);
                 $methods[$method->getName()] = $methodDefinition;
                 $traitMethods[] = $methodDefinition;
             }

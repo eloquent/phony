@@ -11,17 +11,9 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
-use ReflectionClass;
-
 /**
- * The interface implemented by trait method definitions.
+ * The interface used to identify trait method definitions.
  */
 interface TraitMethodDefinitionInterface extends MethodDefinitionInterface
 {
-    /**
-     * Get the trait type.
-     *
-     * @return ReflectionClass The trait type.
-     */
-    public function type();
 }

@@ -67,6 +67,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('ReflectionClass', $actual);
         $this->assertTrue($actual->implementsInterface('Eloquent\Phony\Mock\MockInterface'));
         $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassB'));
+        $this->assertSame($actual, $this->subject->createMockClass($builder));
         $this->assertSame('ab', PhonyMockFactoryTestCreateMockClass::testClassAStaticMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke(null, 'a', 'b'));
         $this->assertSame('static custom ab', PhonyMockFactoryTestCreateMockClass::methodA('a', 'b'));

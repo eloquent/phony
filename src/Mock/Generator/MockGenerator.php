@@ -232,7 +232,7 @@ class MockGenerator implements MockGeneratorInterface
             $methods = $definition->methods();
 
             foreach ($methods->traitMethods() as $method) {
-                $typeName = $method->type()->getName();
+                $typeName = $method->method()->getDeclaringClass()->getName();
                 $methodName = $method->name();
 
                 $source .= "\n        \\" .
@@ -641,7 +641,8 @@ EOD;
 
         foreach ($methods as $methodName => $method) {
             if ($method instanceof TraitMethodDefinitionInterface) {
-                $traitMethodNames[$methodName] = $method->type()->getName();
+                $traitMethodNames[$methodName] =
+                    $method->method()->getDeclaringClass()->getName();
             }
         }
 

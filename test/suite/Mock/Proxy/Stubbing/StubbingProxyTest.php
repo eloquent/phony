@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
@@ -26,6 +27,8 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
         $this->wildcardMatcher = new WildcardMatcher();
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     protected function setUpWith($className)
@@ -60,8 +63,6 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->state->stubs, $this->subject->stubs());
         $this->assertSame($this->state->isFull, $this->subject->isFull());
         $this->assertSame($this->id, $this->subject->id());
-        $this->assertTrue($this->subject->hasParent());
-        $this->assertTrue($this->subject->isMagic());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
@@ -79,14 +80,6 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
-    }
-
-    public function testConstructorWithNoParent()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
-
-        $this->assertFalse($this->subject->hasParent());
-        $this->assertFalse($this->subject->isMagic());
     }
 
     public function testFull()
@@ -240,6 +233,20 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $this->mock->testClassAMethodA('c', 'd'));
+    }
+
+    public function testStubbingWithTraitMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
+        $this->subject->partial();
+        $this->subject->testClassAMethodB('a', 'b')->returns('x');
+
+        $this->assertSame('x', $this->mock->testClassAMethodB('a', 'b'));
+        $this->assertSame('cd', $this->mock->testClassAMethodB('c', 'd'));
     }
 
     public function testStubbingWithMagicMethod()

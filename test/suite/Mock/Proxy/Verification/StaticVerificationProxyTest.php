@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Verification;
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
@@ -26,6 +27,8 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
         $this->wildcardMatcher = new WildcardMatcher();
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     protected function setUpWith($className)
@@ -59,8 +62,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->state->stubs, $this->subject->stubs());
         $this->assertSame($this->state->isFull, $this->subject->isFull());
-        $this->assertTrue($this->subject->hasParent());
-        $this->assertTrue($this->subject->isMagic());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
@@ -77,14 +78,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
-    }
-
-    public function testConstructorWithNoParent()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
-
-        $this->assertFalse($this->subject->hasParent());
-        $this->assertFalse($this->subject->isMagic());
     }
 
     public function testFull()
@@ -198,6 +191,24 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->subject->partial();
         $className = $this->className;
         $className::testClassAStaticMethodA('a', 'b');
+
+        $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA('a', 'b'));
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->testClassAStaticMethodA();
+    }
+
+    public function testVerificationWithTraitMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
+        $this->subject->partial();
+        $className = $this->className;
+        $a = 'a';
+        $className::testClassAStaticMethodA($a, 'b');
 
         $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA('a', 'b'));
 

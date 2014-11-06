@@ -30,12 +30,14 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
+            'Eloquent\Phony\Test\TestInterfaceB',
             'Iterator',
         );
         $this->typeNamesTraits = array(
             'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
+            'Eloquent\Phony\Test\TestInterfaceB',
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
             'Iterator',
@@ -44,6 +46,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->interfaceNames = array(
             'Countable',
             'Eloquent\Phony\Test\TestInterfaceA',
+            'Eloquent\Phony\Test\TestInterfaceB',
             'Iterator',
         );
         $this->traitNames = array(
@@ -273,19 +276,15 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             ),
             array(
                 new TraitMethodDefinition(
-                    new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA')
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB')
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB')
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA')
                 ),
             )
