@@ -8,14 +8,14 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0,
         $a1 = false
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
         if ($argumentCount > 1) $arguments[] = $a1;
 
         for ($i = 2; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
@@ -29,11 +29,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function serialize()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -44,13 +44,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function unserialize(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -60,11 +60,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function __toString()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -74,11 +74,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getName()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -88,11 +88,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function inNamespace()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -102,11 +102,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getNamespaceName()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -116,11 +116,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getShortName()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -130,11 +130,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isInternal()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -144,11 +144,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isUserDefined()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -158,11 +158,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isInstantiable()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -172,11 +172,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isCloneable()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -187,13 +187,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getMethod(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -204,13 +204,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function hasMethod(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -221,13 +221,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getMethods(
         $a0 = null
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -238,13 +238,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function hasConstant(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -255,13 +255,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getConstant(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -271,11 +271,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getConstants()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -285,11 +285,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getInterfaceNames()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -299,11 +299,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getInterfaces()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -313,11 +313,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getRequirementNames()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -327,11 +327,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getRequirements()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -341,11 +341,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getTraitNames()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -355,11 +355,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getTraitAliases()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -369,11 +369,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getTraits()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -383,11 +383,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isInterface()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -397,11 +397,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isAbstract()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -411,11 +411,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isFinal()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -425,11 +425,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isTrait()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -439,11 +439,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getModifiers()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -454,13 +454,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function isInstance(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -470,11 +470,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getConstructor()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -485,13 +485,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function newInstance(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -503,13 +503,13 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0 = array (
   )
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -519,11 +519,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function newInstanceWithoutConstructor()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -534,13 +534,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getProperty(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -551,13 +551,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function hasProperty(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -568,13 +568,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getProperties(
         $a0 = 65535
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -584,11 +584,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getStaticProperties()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -599,13 +599,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getStaticPropertyValue(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -617,14 +617,14 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0,
         $a1
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
         if ($argumentCount > 1) $arguments[] = $a1;
 
         for ($i = 2; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -634,11 +634,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getDefaultProperties()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -648,11 +648,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getExtension()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -662,11 +662,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getExtensionName()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -676,11 +676,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function isIterateable()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -691,13 +691,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function implementsInterface(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -707,11 +707,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getParentClass()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -722,13 +722,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function isSubclassOf(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -738,11 +738,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getFileName()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -752,11 +752,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getStartLine()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -766,11 +766,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getEndLine()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -780,11 +780,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getDocComment()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -795,13 +795,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getAttribute(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -811,11 +811,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getAttributes()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -826,13 +826,13 @@ implements \Eloquent\Phony\Mock\MockInterface
     public function getAttributeRecursive(
         $a0
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
 
         for ($i = 1; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -842,11 +842,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function getAttributesRecursive()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(

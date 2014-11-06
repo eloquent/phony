@@ -389,25 +389,25 @@ EOD;
             $isStatic = $method->isStatic();
 
             if ($isStatic) {
-                $body = "        \$argumentCount = func_num_args();\n" .
+                $body = "        \$argumentCount = \\func_num_args();\n" .
                     "        \$arguments = array();" .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
                     "; \$i < \$argumentCount; \$i++) {\n" .
-                    "            \$arguments[] = func_get_arg(\$i);\n" .
+                    "            \$arguments[] = \\func_get_arg(\$i);\n" .
                     "        }\n\n        return self::\$_staticProxy->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
                     "(\$arguments)\n        );";
             } else {
-                $body = "        \$argumentCount = func_num_args();\n" .
+                $body = "        \$argumentCount = \\func_num_args();\n" .
                     "        \$arguments = array();" .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
                     "; \$i < \$argumentCount; \$i++) {\n" .
-                    "            \$arguments[] = func_get_arg(\$i);\n" .
+                    "            \$arguments[] = \\func_get_arg(\$i);\n" .
                     "        }\n\n        return \$this->_proxy->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
@@ -520,7 +520,7 @@ EOD;
             array(
                 __CLASS__,
                 '_callTrait_' .
-                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name
             ),
@@ -575,7 +575,7 @@ EOD;
             array(
                 $this,
                 '_callTrait_' .
-                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name
             ),

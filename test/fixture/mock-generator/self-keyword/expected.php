@@ -8,14 +8,14 @@ implements \Eloquent\Phony\Mock\MockInterface
         \Eloquent\Phony\Test\TestClassC $a0,
         $a1 = 'a'
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
         if ($argumentCount > 1) $arguments[] = $a1;
 
         for ($i = 2; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -28,7 +28,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a1 = 111,
         $a2 = 'second'
     ) {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         if ($argumentCount > 0) $arguments[] = $a0;
@@ -36,7 +36,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         if ($argumentCount > 2) $arguments[] = $a2;
 
         for ($i = 3; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(

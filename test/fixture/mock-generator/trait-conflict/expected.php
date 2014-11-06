@@ -23,11 +23,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public static function testClassAStaticMethodA()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
@@ -37,11 +37,11 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     public function testClassAMethodB()
     {
-        $argumentCount = func_num_args();
+        $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
+            $arguments[] = \func_get_arg($i);
         }
 
         return $this->_proxy->spy(__FUNCTION__)->invokeWith(
@@ -58,7 +58,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             array(
                 __CLASS__,
                 '_callTrait_' .
-                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name
             ),
@@ -75,7 +75,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             array(
                 $this,
                 '_callTrait_' .
-                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name
             ),
