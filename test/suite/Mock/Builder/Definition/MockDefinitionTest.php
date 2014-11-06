@@ -15,6 +15,7 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionMethod;
@@ -230,7 +231,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA')
                 ),
                 'testClassAMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB')
                 ),
                 'testClassAMethodC' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC')
@@ -239,7 +240,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD')
                 ),
                 'testClassAStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA')
                 ),
                 'testClassAStaticMethodB' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB')
@@ -271,14 +272,22 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                 ),
             ),
             array(
-                'testClassAStaticMethodA' =>
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA'),
-                'testClassAMethodB' =>
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB'),
-            ),
-            array(
-                array('Eloquent\Phony\Test\TestTraitB', 'testClassAStaticMethodA', 'Eloquent\Phony\Test\TestTraitA'),
-                array('Eloquent\Phony\Test\TestTraitB', 'testClassAMethodB', 'Eloquent\Phony\Test\TestTraitA'),
+                new TraitMethodDefinition(
+                    new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA')
+                ),
+                new TraitMethodDefinition(
+                    new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB')
+                ),
+                new TraitMethodDefinition(
+                    new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB')
+                ),
+                new TraitMethodDefinition(
+                    new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA')
+                ),
             )
         );
         $actual = $this->subject->methods();

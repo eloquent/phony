@@ -19,25 +19,28 @@ use Exception;
 use ReflectionMethod;
 
 /**
- * A wrapper that allows calling of the parent method in mocks.
+ * A wrapper that allows calling of the trait method in mocks.
  *
  * @internal
  */
-class WrappedMethod extends AbstractWrappedInvocable
+class WrappedTraitMethod extends AbstractWrappedInvocable
 {
     /**
-     * Construct a new wrapped method.
+     * Construct a new wrapped trait method.
      *
-     * @param ReflectionMethod   $callParentMethod The _callParent() method.
-     * @param ReflectionMethod   $method           The method.
-     * @param MockInterface|null $mock             The mock.
+     * @param ReflectionMethod   $callTraitMethod The _callTrait() method.
+     * @param string             $traitName       The trait name.
+     * @param ReflectionMethod   $method          The method.
+     * @param MockInterface|null $mock            The mock.
      */
     public function __construct(
-        ReflectionMethod $callParentMethod,
+        ReflectionMethod $callTraitMethod,
+        $traitName,
         ReflectionMethod $method,
         MockInterface $mock = null
     ) {
-        $this->callParentMethod = $callParentMethod;
+        $this->callTraitMethod = $callTraitMethod;
+        $this->traitName = $traitName;
         $this->method = $method;
         $this->mock = $mock;
         $this->name = $method->getName();
@@ -55,13 +58,23 @@ class WrappedMethod extends AbstractWrappedInvocable
     }
 
     /**
-     * Get the _callParent() method.
+     * Get the _callTrait() method.
      *
-     * @return ReflectionMethod The _callParent() method.
+     * @return ReflectionMethod The _callTrait() method.
      */
-    public function callParentMethod()
+    public function callTraitMethod()
     {
-        return $this->callParentMethod;
+        return $this->callTraitMethod;
+    }
+
+    /**
+     * Get the trait name.
+     *
+     * @return string The trait name.
+     */
+    public function traitName()
+    {
+        return $this->traitName;
     }
 
     /**
@@ -96,14 +109,16 @@ class WrappedMethod extends AbstractWrappedInvocable
      */
     public function invokeWith($arguments = null)
     {
-        return $this->callParentMethod->invoke(
+        return $this->callTraitMethod->invoke(
             $this->mock,
+            $this->traitName,
             $this->name,
             Arguments::adapt($arguments)
         );
     }
 
-    private $callParentMethod;
+    private $callTraitMethod;
+    private $traitName;
     private $method;
     private $mock;
     private $name;

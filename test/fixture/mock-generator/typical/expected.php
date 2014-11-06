@@ -144,74 +144,6 @@ implements \Eloquent\Phony\Mock\MockInterface,
     {
     }
 
-    public function testClassAMethodB(
-        $a0,
-        $a1,
-        &$a2 = null
-    ) {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        if ($argumentCount > 0) $arguments[] = $a0;
-        if ($argumentCount > 1) $arguments[] = $a1;
-        if ($argumentCount > 2) $arguments[] = &$a2;
-
-        for ($i = 3; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function testClassBMethodA()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function testClassBMethodB(
-        &$a0,
-        &$a1
-    ) {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        if ($argumentCount > 0) $arguments[] = &$a0;
-        if ($argumentCount > 1) $arguments[] = &$a1;
-
-        for ($i = 2; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
-    public function testClassAMethodA()
-    {
-        $argumentCount = func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
-    }
-
     public function current()
     {
         $argumentCount = func_num_args();
@@ -366,6 +298,74 @@ implements \Eloquent\Phony\Mock\MockInterface,
         );
     }
 
+    public function testClassAMethodB(
+        $a0,
+        $a1,
+        &$a2 = null
+    ) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = &$a2;
+
+        for ($i = 3; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function testClassBMethodA()
+    {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function testClassBMethodB(
+        &$a0,
+        &$a1
+    ) {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) $arguments[] = &$a0;
+        if ($argumentCount > 1) $arguments[] = &$a1;
+
+        for ($i = 2; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function testClassAMethodA()
+    {
+        $argumentCount = func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; $i++) {
+            $arguments[] = func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
     public function methodC(
         \Eloquent\Phony\Test\TestClassA $a0,
         \Eloquent\Phony\Test\TestClassA $a1 = null,
@@ -482,9 +482,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array(__CLASS__, 'parent::' . $name);
-
-        return \call_user_func_array($callback, $arguments->all());
+        return \call_user_func_array(
+            array(__CLASS__, 'parent::' . $name),
+            $arguments->all()
+        );
     }
 
     private static function _callMagicStatic(
@@ -499,9 +500,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array($this, 'parent::' . $name);
-
-        return \call_user_func_array($callback, $arguments->all());
+        return \call_user_func_array(
+            array($this, 'parent::' . $name),
+            $arguments->all()
+        );
     }
 
     private function _callMagic(
@@ -516,6 +518,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
     public static $propertyB = 222;
     public $propertyC = 'valueC';
     public $propertyD = 333;
+    private static $_traitMethods = array();
     private static $_customMethods = array();
     private static $_staticProxy;
     private $_proxy;

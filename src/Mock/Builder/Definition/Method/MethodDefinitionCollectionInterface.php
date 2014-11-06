@@ -70,14 +70,7 @@ interface MethodDefinitionCollectionInterface
     /**
      * Get the trait methods.
      *
-     * @return array<string,ReflectionMethod> The trait methods.
+     * @return array<integer,ReflectionMethod> The trait methods.
      */
     public function traitMethods();
-
-    /**
-     * Get the trait resolutions.
-     *
-     * @return array<tuple<string,string,string>> The trait resolutions.
-     */
-    public function traitResolutions();
 }

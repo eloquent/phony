@@ -16,6 +16,7 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
+use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Spy\SpyInterface;
@@ -41,6 +42,7 @@ abstract class AbstractProxy implements ProxyInterface
      * @param ReflectionClass                   $class               The class.
      * @param stdClass|null                     $state               The state.
      * @param ReflectionMethod|null             $callParentMethod    The call parent method, or null if no parent class exists.
+     * @param ReflectionMethod|null             $callTraitMethod     The call trait method, or null if no trait methods are implemented.
      * @param ReflectionMethod|null             $callMagicMethod     The call magic method, or null if magic calls are not supported.
      * @param MockInterface|null                $mock                The mock, or null if this is a static proxy.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
@@ -51,6 +53,7 @@ abstract class AbstractProxy implements ProxyInterface
         ReflectionClass $class,
         stdClass $state = null,
         ReflectionMethod $callParentMethod = null,
+        ReflectionMethod $callTraitMethod = null,
         ReflectionMethod $callMagicMethod = null,
         MockInterface $mock = null,
         StubFactoryInterface $stubFactory = null,
@@ -77,10 +80,15 @@ abstract class AbstractProxy implements ProxyInterface
         $this->class = $class;
         $this->state = $state;
         $this->callParentMethod = $callParentMethod;
+        $this->callTraitMethod = $callTraitMethod;
         $this->callMagicMethod = $callMagicMethod;
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->wildcardMatcher = $wildcardMatcher;
+
+        $traitMethodNamesProperty = $class->getProperty('_traitMethods');
+        $traitMethodNamesProperty->setAccessible(true);
+        $this->traitMethodNames = $traitMethodNamesProperty->getValue(null);
 
         $customMethodsProperty = $class->getProperty('_customMethods');
         $customMethodsProperty->setAccessible(true);
@@ -182,6 +190,16 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
+     * Returns true if this proxy has methods from a trait.
+     *
+     * @return boolean True if this proxy has methods from a trait.
+     */
+    public function hasTraitMethods()
+    {
+        return (boolean) $this->callTraitMethod;
+    }
+
+    /**
      * Returns true if this proxy supports magic calls.
      *
      * @return boolean True if this proxy supports magic calls.
@@ -277,6 +295,16 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
+     * Get the trait method names.
+     *
+     * @return array<string,string> The trait method names.
+     */
+    public function traitMethodNames()
+    {
+        return $this->traitMethodNames;
+    }
+
+    /**
      * Create a new stub verifier.
      *
      * @param string $name The method name.
@@ -309,6 +337,16 @@ abstract class AbstractProxy implements ProxyInterface
         } elseif (isset($this->customMethods[$name])) {
             $stub = $this->stubFactory
                 ->create($this->customMethods[$name], $mock);
+        } elseif (isset($this->traitMethodNames[$name])) {
+            $stub = $this->stubFactory->create(
+                new WrappedTraitMethod(
+                    $this->callTraitMethod,
+                    $this->traitMethodNames[$name],
+                    $this->class->getMethod($name),
+                    $mock
+                ),
+                $mock
+            );
         } elseif ($this->callParentMethod) {
             $stub = $this->stubFactory->create(
                 new WrappedMethod(
@@ -332,7 +370,9 @@ abstract class AbstractProxy implements ProxyInterface
     private $mock;
     private $class;
     private $state;
+    private $traitMethodNames;
     private $callParentMethod;
+    private $callTraitMethod;
     private $callMagicMethod;
     private $stubFactory;
     private $stubVerifierFactory;

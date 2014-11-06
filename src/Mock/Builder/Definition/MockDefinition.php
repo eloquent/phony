@@ -17,6 +17,7 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
 use ReflectionClass;
 
 /**
@@ -279,43 +280,26 @@ class MockDefinition implements MockDefinitionInterface
 
         $methods = array();
         $traitMethods = array();
-        $traitTypesByMethod = array();
-        $parameterCounts = array();
 
-        foreach ($this->types as $typeName => $type) {
-            if ($this->isTraitSupported) {
-                $isTrait = $type->isTrait();
-            } else {
-                $isTrait = false; // @codeCoverageIgnore
-            }
+        foreach ($this->traitNames() as $typeName) {
+            $type = $this->types[$typeName];
 
             foreach ($type->getMethods() as $method) {
+                $methodDefinition = new TraitMethodDefinition($type, $method);
+                $methods[$method->getName()] = $methodDefinition;
+                $traitMethods[] = $methodDefinition;
+            }
+        }
+
+        $parameterCounts = array();
+
+        foreach ($this->interfaceNames() as $typeName) {
+            foreach ($this->types[$typeName]->getMethods() as $method) {
                 $methodName = $method->getName();
-
-                $tokens = token_get_all('<?php ' . $methodName);
-                $token = $tokens[1];
-
-                if (!is_array($token) || $token[0] !== T_STRING) {
-                    continue;
-                }
-
-                if (
-                    $method->isPrivate() ||
-                    $method->isConstructor() ||
-                    $method->isFinal()
-                ) {
-                    continue;
-                }
-
-                if ($isTrait) {
-                    $traitMethods[$methodName] = $method;
-                    $traitTypesByMethod[$methodName][] = $typeName;
-                }
-
                 $parameterCount = $method->getNumberOfParameters();
 
                 if (
-                    !isset($methods[$methodName]) ||
+                    !isset($parameterCounts[$methodName]) ||
                     $parameterCount > $parameterCounts[$methodName]
                 ) {
                     $methods[$methodName] = new RealMethodDefinition($method);
@@ -324,14 +308,40 @@ class MockDefinition implements MockDefinitionInterface
             }
         }
 
-        $traitResolutions = array();
+        if ($typeName = $this->parentClassName()) {
+            foreach ($this->types[$typeName]->getMethods() as $method) {
+                if (
+                    $method->isPrivate() ||
+                    $method->isConstructor() ||
+                    $method->isFinal()
+                ) {
+                    continue;
+                }
 
-        foreach ($traitTypesByMethod as $methodName => $traitTypes) {
-            $primaryTrait = array_pop($traitTypes);
+                $methodName = $method->getName();
+                $parameterCount = $method->getNumberOfParameters();
 
-            foreach ($traitTypes as $traitType) {
-                $traitResolutions[] =
-                    array($primaryTrait, $methodName, $traitType);
+                if (
+                    !isset($parameterCounts[$methodName]) ||
+                    $parameterCount >= $parameterCounts[$methodName]
+                ) {
+                    $methods[$methodName] = new RealMethodDefinition($method);
+                    $parameterCounts[$methodName] = $parameterCount;
+                }
+            }
+        }
+
+        $methodNames = array_keys($methods);
+        $tokens = token_get_all('<?php ' . implode(' ', $methodNames));
+
+        foreach ($methodNames as $index => $methodName) {
+            $tokenIndex = $index * 2 + 1;
+
+            if (
+                !is_array($tokens[$tokenIndex]) ||
+                $tokens[$tokenIndex][0] !== T_STRING
+            ) {
+                unset($methods[$methodName]);
             }
         }
 
@@ -345,11 +355,8 @@ class MockDefinition implements MockDefinitionInterface
                 new CustomMethodDefinition(false, $methodName, $callback);
         }
 
-        $this->methods = new MethodDefinitionCollection(
-            $methods,
-            $traitMethods,
-            $traitResolutions
-        );
+        $this->methods =
+            new MethodDefinitionCollection($methods, $traitMethods);
     }
 
     private $types;

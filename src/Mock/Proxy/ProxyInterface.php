@@ -64,6 +64,13 @@ interface ProxyInterface
     public function hasParent();
 
     /**
+     * Returns true if this proxy has methods from a trait.
+     *
+     * @return boolean True if this proxy has methods from a trait.
+     */
+    public function hasTraitMethods();
+
+    /**
      * Returns true if this proxy supports magic calls.
      *
      * @return boolean True if this proxy supports magic calls.

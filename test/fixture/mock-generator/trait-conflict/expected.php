@@ -7,29 +7,26 @@ implements \Eloquent\Phony\Mock\MockInterface
         \Eloquent\Phony\Test\TestTraitB,
         \Eloquent\Phony\Test\TestTraitC
     {
+        \Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitA»testClassAStaticMethodA;
+        \Eloquent\Phony\Test\TestTraitA::testClassAMethodB
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitA»testClassAMethodB;
+        \Eloquent\Phony\Test\TestTraitB::testClassAMethodB
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitB»testClassAMethodB;
+        \Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitB»testClassAStaticMethodA;
         \Eloquent\Phony\Test\TestTraitC::testClassAStaticMethodA
-            insteadof \Eloquent\Phony\Test\TestTraitA;
-        \Eloquent\Phony\Test\TestTraitC::testClassAStaticMethodA
-            insteadof \Eloquent\Phony\Test\TestTraitB;
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitC»testClassAStaticMethodA;
         \Eloquent\Phony\Test\TestTraitC::testClassAMethodB
-            insteadof \Eloquent\Phony\Test\TestTraitA;
-        \Eloquent\Phony\Test\TestTraitC::testClassAMethodB
-            insteadof \Eloquent\Phony\Test\TestTraitB;
-        \Eloquent\Phony\Test\TestTraitC::testClassAStaticMethodA
-            as private _callTrait_testClassAStaticMethodA;
-        \Eloquent\Phony\Test\TestTraitC::testClassAMethodB
-            as private _callTrait_testClassAMethodB;
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitC»testClassAMethodB;
     }
 
-    public static function testClassAStaticMethodA(
-        &$a0 = null
-    ) {
+    public static function testClassAStaticMethodA()
+    {
         $argumentCount = func_num_args();
         $arguments = array();
 
-        if ($argumentCount > 0) $arguments[] = &$a0;
-
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -38,23 +35,12 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function testClassAMethodB(
-        $a0,
-        $a1,
-        &$a2 = null,
-        &$a3 = null,
-        &$a4 = null
-    ) {
+    public function testClassAMethodB()
+    {
         $argumentCount = func_num_args();
         $arguments = array();
 
-        if ($argumentCount > 0) $arguments[] = $a0;
-        if ($argumentCount > 1) $arguments[] = $a1;
-        if ($argumentCount > 2) $arguments[] = &$a2;
-        if ($argumentCount > 3) $arguments[] = &$a3;
-        if ($argumentCount > 4) $arguments[] = &$a4;
-
-        for ($i = 5; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; $i++) {
             $arguments[] = func_get_arg($i);
         }
 
@@ -63,32 +49,44 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    private static function _callParentStatic(
+    private static function _callTraitStatic(
+        $traitName,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array(__CLASS__, 'parent::' . $name);
-
-        if (!\is_callable($callback)) {
-            $callback = array(__CLASS__, '_callTrait_' . $name);
-        }
-
-        return \call_user_func_array($callback, $arguments->all());
+        return \call_user_func_array(
+            array(
+                __CLASS__,
+                '_callTrait_' .
+                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name
+            ),
+            $arguments->all()
+        );
     }
 
-    private function _callParent(
+    private function _callTrait(
+        $traitName,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array($this, 'parent::' . $name);
-
-        if (!\is_callable($callback)) {
-            $callback = array($this, '_callTrait_' . $name);
-        }
-
-        return \call_user_func_array($callback, $arguments->all());
+        return \call_user_func_array(
+            array(
+                $this,
+                '_callTrait_' .
+                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name
+            ),
+            $arguments->all()
+        );
     }
 
+    private static $_traitMethods = array (
+  'testClassAStaticMethodA' => 'Eloquent\\Phony\\Test\\TestTraitC',
+  'testClassAMethodB' => 'Eloquent\\Phony\\Test\\TestTraitC',
+);
     private static $_customMethods = array();
     private static $_staticProxy;
     private $_proxy;

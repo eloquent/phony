@@ -858,20 +858,23 @@ implements \Eloquent\Phony\Mock\MockInterface
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array(__CLASS__, 'parent::' . $name);
-
-        return \call_user_func_array($callback, $arguments->all());
+        return \call_user_func_array(
+            array(__CLASS__, 'parent::' . $name),
+            $arguments->all()
+        );
     }
 
     private function _callParent(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array($this, 'parent::' . $name);
-
-        return \call_user_func_array($callback, $arguments->all());
+        return \call_user_func_array(
+            array($this, 'parent::' . $name),
+            $arguments->all()
+        );
     }
 
+    private static $_traitMethods = array();
     private static $_customMethods = array();
     private static $_staticProxy;
     private $_proxy;

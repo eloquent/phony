@@ -23,14 +23,12 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinitionInterface>|null $methods          The methods.
-     * @param array<string,ReflectionMethod>|null          $traitMethods     The trait methods.
-     * @param array<tuple<string,string,string>>|null      $traitResolutions The trait resolutions.
+     * @param array<string,MethodDefinitionInterface>|null       $methods      The methods.
+     * @param array<integer,TraitMethodDefinitionInterface>|null $traitMethods The trait methods.
      */
     public function __construct(
         array $methods = null,
-        array $traitMethods = null,
-        array $traitResolutions = null
+        array $traitMethods = null
     ) {
         if (null === $methods) {
             $methods = array();
@@ -38,13 +36,9 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         if (null === $traitMethods) {
             $traitMethods = array();
         }
-        if (null === $traitResolutions) {
-            $traitResolutions = array();
-        }
 
         $this->allMethods = $methods;
         $this->traitMethods = $traitMethods;
-        $this->traitResolutions = $traitResolutions;
         $this->staticMethods = array();
         $this->methods = array();
         $this->publicStaticMethods = array();
@@ -150,26 +144,15 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the trait methods.
      *
-     * @return array<string,ReflectionMethod> The trait methods.
+     * @return array<integer,ReflectionMethod> The trait methods.
      */
     public function traitMethods()
     {
         return $this->traitMethods;
     }
 
-    /**
-     * Get the trait resolutions.
-     *
-     * @return array<tuple<string,string,string>> The trait resolutions.
-     */
-    public function traitResolutions()
-    {
-        return $this->traitResolutions;
-    }
-
     private $allMethods;
     private $traitMethods;
-    private $traitResolutions;
     private $staticMethods;
     private $methods;
     private $publicStaticMethods;

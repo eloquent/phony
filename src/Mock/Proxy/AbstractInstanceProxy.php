@@ -55,6 +55,13 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
             $callParentMethod = null;
         }
 
+        if ($class->hasMethod('_callTrait')) {
+            $callTraitMethod = $class->getMethod('_callTrait');
+            $callTraitMethod->setAccessible(true);
+        } else {
+            $callTraitMethod = null;
+        }
+
         if ($class->hasMethod('_callMagic')) {
             $callMagicMethod = $class->getMethod('_callMagic');
             $callMagicMethod->setAccessible(true);
@@ -71,6 +78,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
             $class,
             $state,
             $callParentMethod,
+            $callTraitMethod,
             $callMagicMethod,
             $mock,
             $stubFactory,

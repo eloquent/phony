@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Mock\Generator;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinitionInterface;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
@@ -230,22 +231,21 @@ class MockGenerator implements MockGeneratorInterface
 
             $methods = $definition->methods();
 
-            foreach ($methods->traitResolutions() as $resolution) {
-                $source .= "\n        \\" .
-                    $resolution[0] .
-                    '::' .
-                    $resolution[1] .
-                    "\n            insteadof \\" .
-                    $resolution[2] .
-                    ';';
-            }
+            foreach ($methods->traitMethods() as $method) {
+                $typeName = $method->type()->getName();
+                $methodName = $method->name();
 
-            foreach ($methods->traitMethods() as $methodName => $method) {
                 $source .= "\n        \\" .
-                    $method->getDeclaringClass()->getName() .
+                    $typeName .
                     '::' .
                     $methodName .
                     "\n            as private _callTrait_" .
+                    str_replace(
+                        '\\',
+                        "\xc2\xa6",
+                        $typeName
+                    ) .
+                    "\xc2\xbb" .
                     $methodName .
                     ';';
             }
@@ -489,7 +489,7 @@ EOD;
     protected function generateCallParentMethods(MockDefinitionInterface $definition)
     {
         $hasTraits = (boolean) $definition->traitNames();
-        $hasParentClass = $hasTraits || null !== $definition->parentClassName();
+        $hasParentClass = null !== $definition->parentClassName();
         $source = '';
 
         if ($hasParentClass) {
@@ -499,23 +499,33 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array(__CLASS__, 'parent::' . $name);
+        return \call_user_func_array(
+            array(__CLASS__, 'parent::' . $name),
+            $arguments->all()
+        );
+    }
 
 EOD;
-
-            if ($hasTraits) {
-                $source .= <<<'EOD'
-
-        if (!\is_callable($callback)) {
-            $callback = array(__CLASS__, '_callTrait_' . $name);
         }
 
-EOD;
-            }
-
+        if ($hasTraits) {
             $source .= <<<'EOD'
 
-        return \call_user_func_array($callback, $arguments->all());
+    private static function _callTraitStatic(
+        $traitName,
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return \call_user_func_array(
+            array(
+                __CLASS__,
+                '_callTrait_' .
+                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name
+            ),
+            $arguments->all()
+        );
     }
 
 EOD;
@@ -544,23 +554,33 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        $callback = array($this, 'parent::' . $name);
+        return \call_user_func_array(
+            array($this, 'parent::' . $name),
+            $arguments->all()
+        );
+    }
 
 EOD;
-
-            if ($hasTraits) {
-                $source .= <<<'EOD'
-
-        if (!\is_callable($callback)) {
-            $callback = array($this, '_callTrait_' . $name);
         }
 
-EOD;
-            }
-
+        if ($hasTraits) {
             $source .= <<<'EOD'
 
-        return \call_user_func_array($callback, $arguments->all());
+    private function _callTrait(
+        $traitName,
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return \call_user_func_array(
+            array(
+                $this,
+                '_callTrait_' .
+                    str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name
+            ),
+            $arguments->all()
+        );
     }
 
 EOD;
@@ -616,12 +636,26 @@ EOD;
                 ';';
         }
 
-        $source .= <<<'EOD'
+        $methods = $definition->methods()->allMethods();
+        $traitMethodNames = array();
 
-    private static $_customMethods = array();
-    private static $_staticProxy;
-    private $_proxy;
-EOD;
+        foreach ($methods as $methodName => $method) {
+            if ($method instanceof TraitMethodDefinitionInterface) {
+                $traitMethodNames[$methodName] = $method->type()->getName();
+            }
+        }
+
+        $source .= "\n    private static \$_traitMethods = ";
+
+        if ($traitMethodNames) {
+            $source .= var_export($traitMethodNames, true);
+        } else {
+            $source .= 'array()';
+        }
+
+        $source .= ";\n    private static \$_customMethods = array();" .
+            "\n    private static \$_staticProxy;" .
+            "\n    private \$_proxy;";
 
         return $source;
     }
