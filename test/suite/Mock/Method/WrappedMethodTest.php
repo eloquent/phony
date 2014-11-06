@@ -46,7 +46,10 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->method, $this->subject->method());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'), $this->subject->callback());
+        $this->assertSame(
+            array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'),
+            $this->subject->callback()
+        );
         $this->assertNull($this->subject->id());
     }
 

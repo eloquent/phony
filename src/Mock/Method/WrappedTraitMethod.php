@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Mock\MockInterface;
 use Exception;
 use ReflectionMethod;
@@ -23,7 +22,7 @@ use ReflectionMethod;
  *
  * @internal
  */
-class WrappedTraitMethod extends AbstractWrappedInvocable
+class WrappedTraitMethod extends AbstractWrappedMethod
 {
     /**
      * Construct a new wrapped trait method.
@@ -41,20 +40,8 @@ class WrappedTraitMethod extends AbstractWrappedInvocable
     ) {
         $this->callTraitMethod = $callTraitMethod;
         $this->traitName = $traitName;
-        $this->method = $method;
-        $this->mock = $mock;
-        $this->name = $method->getName();
 
-        if ($this->method->isStatic()) {
-            $callback = array(
-                $method->getDeclaringClass()->getName(),
-                $this->name
-            );
-        } else {
-            $callback = array($mock, $this->name);
-        }
-
-        parent::__construct($callback);
+        parent::__construct($method, $mock);
     }
 
     /**
@@ -75,26 +62,6 @@ class WrappedTraitMethod extends AbstractWrappedInvocable
     public function traitName()
     {
         return $this->traitName;
-    }
-
-    /**
-     * Get the method.
-     *
-     * @return ReflectionMethod The method.
-     */
-    public function method()
-    {
-        return $this->method;
-    }
-
-    /**
-     * Get the mock.
-     *
-     * @return MockInterface|null The mock.
-     */
-    public function mock()
-    {
-        return $this->mock;
     }
 
     /**
@@ -119,7 +86,4 @@ class WrappedTraitMethod extends AbstractWrappedInvocable
 
     private $callTraitMethod;
     private $traitName;
-    private $method;
-    private $mock;
-    private $name;
 }
