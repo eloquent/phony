@@ -11,10 +11,9 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
         'const CONSTANT_A' => 'constantValueA',
         'const CONSTANT_B' => 444,
         'const CONSTANT_C' => null,
-        'static methodA' => function ($className, $first, &$second) {},
+        'static methodA' => function ($self, $first, &$second) {},
         'static methodB' =>
             function (
-                $className,
                 $first = null,
                 $second = 111,
                 $third = array(),

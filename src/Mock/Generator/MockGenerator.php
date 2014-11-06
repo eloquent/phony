@@ -364,7 +364,15 @@ EOD;
                 $this->signatureInspector->signature($method->method());
 
             if ($method->isCustom()) {
-                array_shift($signature);
+                $parameterName = null;
+
+                foreach ($signature as $parameterName => $parameter) {
+                    break;
+                }
+
+                if ('self' === $parameterName) {
+                    array_shift($signature);
+                }
             }
 
             $parameterCount = count($signature);
