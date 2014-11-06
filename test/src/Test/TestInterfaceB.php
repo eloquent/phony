@@ -15,12 +15,6 @@ interface TestInterfaceB extends TestInterfaceA
 {
     public static function testClassBStaticMethodA();
 
-    public static function testClassAStaticMethodB(
-        $first,
-        $second,
-        &$third = null
-    );
-
     public function testClassBMethodA();
 
     public function testClassBMethodB(&$first, &$second);
