@@ -49,6 +49,20 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
+    public function testTraitCMethodA()
+    {
+        $argumentCount = \func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; $i++) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
     private static function _callTraitStatic(
         $traitName,
         $name,
@@ -83,6 +97,9 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
+    private static $_uncallableMethods = array (
+  'testTraitCMethodA' => true,
+);
     private static $_traitMethods = array (
   'testClassAStaticMethodA' => 'Eloquent\\Phony\\Test\\TestTraitC',
   'testClassAMethodB' => 'Eloquent\\Phony\\Test\\TestTraitC',

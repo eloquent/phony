@@ -35,6 +35,7 @@ class RealMethodDefinition implements MethodDefinitionInterface
 
         $this->method = $method;
         $this->name = $name;
+        $this->isCallable = !$this->method->isAbstract();
         $this->isStatic = $this->method->isStatic();
 
         if ($this->method->isPublic()) {
@@ -42,6 +43,16 @@ class RealMethodDefinition implements MethodDefinitionInterface
         } else {
             $this->accessLevel = 'protected';
         }
+    }
+
+    /**
+     * Returns true if this method is callable.
+     *
+     * @return boolean True if this method is callable.
+     */
+    public function isCallable()
+    {
+        return $this->isCallable;
     }
 
     /**
@@ -106,6 +117,7 @@ class RealMethodDefinition implements MethodDefinitionInterface
 
     private $method;
     private $name;
+    private $isCallable;
     private $isStatic;
     private $accessLevel;
 }

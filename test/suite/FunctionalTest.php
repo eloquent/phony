@@ -310,6 +310,20 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('z', $proxy->mock()->testClassAMethodA());
     }
 
+    public function testCanCallMockedInterfaceMethod()
+    {
+        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestInterfaceA'));
+
+        $this->assertNull($proxy->mock()->testClassAMethodA('a', 'b'));
+    }
+
+    public function testCanCallMockedInterfaceMethodWithoutParentClass()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceA');
+
+        $this->assertNull($proxy->mock()->testClassAMethodA('a', 'b'));
+    }
+
     public function testCanCallMockedTraitMethod()
     {
         if (!$this->featureDetector->isSupported('trait')) {
@@ -330,5 +344,27 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA'));
 
         $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+    }
+
+    public function testCanCallMockedAbstractTraitMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestTraitC'));
+
+        $this->assertNull($proxy->mock()->testTraitCMethodA('a', 'b'));
+    }
+
+    public function testCanCallMockedAbstractTraitMethodWithoutParentClass()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitC'));
+
+        $this->assertNull($proxy->mock()->testTraitCMethodA('a', 'b'));
     }
 }

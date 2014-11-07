@@ -645,16 +645,27 @@ EOD;
         }
 
         $methods = $definition->methods()->allMethods();
+        $uncallableMethodNames = array();
         $traitMethodNames = array();
 
         foreach ($methods as $methodName => $method) {
-            if ($method instanceof TraitMethodDefinitionInterface) {
+            if (!$method->isCallable()) {
+                $uncallableMethodNames[$methodName] = true;
+            } elseif ($method instanceof TraitMethodDefinitionInterface) {
                 $traitMethodNames[$methodName] =
                     $method->method()->getDeclaringClass()->getName();
             }
         }
 
-        $source .= "\n    private static \$_traitMethods = ";
+        $source .= "\n    private static \$_uncallableMethods = ";
+
+        if ($uncallableMethodNames) {
+            $source .= var_export($uncallableMethodNames, true);
+        } else {
+            $source .= 'array()';
+        }
+
+        $source .= ";\n    private static \$_traitMethods = ";
 
         if ($traitMethodNames) {
             $source .= var_export($traitMethodNames, true);

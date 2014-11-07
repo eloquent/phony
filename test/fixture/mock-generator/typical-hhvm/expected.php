@@ -564,6 +564,18 @@ implements \Eloquent\Phony\Mock\MockInterface,
     public static $propertyB = 222;
     public $propertyC = 'valueC';
     public $propertyD = 333;
+    private static $_uncallableMethods = array (
+  'current' => true,
+  'key' => true,
+  'next' => true,
+  'rewind' => true,
+  'valid' => true,
+  'count' => true,
+  'offsetExists' => true,
+  'offsetGet' => true,
+  'offsetSet' => true,
+  'offsetUnset' => true,
+);
     private static $_traitMethods = array();
     private static $_customMethods = array();
     private static $_staticProxy;

@@ -25,8 +25,8 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable
     /**
      * Construct a new wrapped method.
      *
-     * @param ReflectionMethod   $method           The method.
-     * @param MockInterface|null $mock             The mock.
+     * @param ReflectionMethod   $method The method.
+     * @param MockInterface|null $mock   The mock.
      */
     public function __construct(
         ReflectionMethod $method,

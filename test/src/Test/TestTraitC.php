@@ -22,4 +22,6 @@ trait TestTraitC
     {
         return implode(func_get_args());
     }
+
+    abstract public function testTraitCMethodA();
 }

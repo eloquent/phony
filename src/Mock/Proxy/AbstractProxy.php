@@ -86,9 +86,13 @@ abstract class AbstractProxy implements ProxyInterface
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->wildcardMatcher = $wildcardMatcher;
 
-        $traitMethodNamesProperty = $class->getProperty('_traitMethods');
-        $traitMethodNamesProperty->setAccessible(true);
-        $this->traitMethodNames = $traitMethodNamesProperty->getValue(null);
+        $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
+        $uncallableMethodsProperty->setAccessible(true);
+        $this->uncallableMethods = $uncallableMethodsProperty->getValue(null);
+
+        $traitMethodsProperty = $class->getProperty('_traitMethods');
+        $traitMethodsProperty->setAccessible(true);
+        $this->traitMethods = $traitMethodsProperty->getValue(null);
 
         $customMethodsProperty = $class->getProperty('_customMethods');
         $customMethodsProperty->setAccessible(true);
@@ -294,14 +298,16 @@ abstract class AbstractProxy implements ProxyInterface
                 },
                 $mock
             );
+        } elseif (isset($this->uncallableMethods[$name])) {
+            $stub = $this->stubFactory->create();
         } elseif (isset($this->customMethods[$name])) {
             $stub = $this->stubFactory
                 ->create($this->customMethods[$name], $mock);
-        } elseif (isset($this->traitMethodNames[$name])) {
+        } elseif (isset($this->traitMethods[$name])) {
             $stub = $this->stubFactory->create(
                 new WrappedTraitMethod(
                     $this->callTraitMethod,
-                    $this->traitMethodNames[$name],
+                    $this->traitMethods[$name],
                     $this->class->getMethod($name),
                     $mock
                 ),
@@ -330,7 +336,8 @@ abstract class AbstractProxy implements ProxyInterface
     private $mock;
     private $class;
     private $state;
-    private $traitMethodNames;
+    private $uncallableMethods;
+    private $traitMethods;
     private $callParentMethod;
     private $callTraitMethod;
     private $callMagicMethod;
