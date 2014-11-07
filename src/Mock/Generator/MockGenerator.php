@@ -298,17 +298,38 @@ class MockGenerator implements MockGeneratorInterface
             return '';
         }
 
-        return <<<'EOD'
+        $source = <<<'EOD'
 
     public static function __callStatic(
-        $a0,
-        array $a1
+EOD;
+
+        $signature = $this->signatureInspector
+            ->signature($methods['__callStatic']->method());
+        $index = -1;
+
+        foreach ($signature as $parameter) {
+            if (-1 !== $index) {
+                $source .= ',';
+            }
+
+            $source .= "\n        " .
+                $parameter[0] .
+                $parameter[1] .
+                '$a' .
+                ++$index .
+                $parameter[2];
+        }
+
+        $source .= <<<'EOD'
+
     ) {
         return self::$_staticProxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
 
 EOD;
+
+        return $source;
     }
 
     /**
@@ -474,17 +495,38 @@ EOD;
             return '';
         }
 
-        return <<<'EOD'
+        $source = <<<'EOD'
 
     public function __call(
-        $a0,
-        array $a1
+EOD;
+
+        $signature = $this->signatureInspector
+            ->signature($methods['__call']->method());
+        $index = -1;
+
+        foreach ($signature as $parameter) {
+            if (-1 !== $index) {
+                $source .= ',';
+            }
+
+            $source .= "\n        " .
+                $parameter[0] .
+                $parameter[1] .
+                '$a' .
+                ++$index .
+                $parameter[2];
+        }
+
+        $source .= <<<'EOD'
+
     ) {
         return $this->_proxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
 
 EOD;
+
+        return $source;
     }
 
     /**
