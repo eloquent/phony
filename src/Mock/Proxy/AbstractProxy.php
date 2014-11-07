@@ -300,9 +300,6 @@ abstract class AbstractProxy implements ProxyInterface
             );
         } elseif (isset($this->uncallableMethods[$name])) {
             $stub = $this->stubFactory->create();
-        } elseif (isset($this->customMethods[$name])) {
-            $stub = $this->stubFactory
-                ->create($this->customMethods[$name], $mock);
         } elseif (isset($this->traitMethods[$name])) {
             $stub = $this->stubFactory->create(
                 new WrappedTraitMethod(
@@ -313,7 +310,10 @@ abstract class AbstractProxy implements ProxyInterface
                 ),
                 $mock
             );
-        } elseif ($this->callParentMethod) {
+        } elseif (isset($this->customMethods[$name])) {
+            $stub = $this->stubFactory
+                ->create($this->customMethods[$name], $mock);
+        } else {
             $stub = $this->stubFactory->create(
                 new WrappedMethod(
                     $this->callParentMethod,
@@ -322,8 +322,6 @@ abstract class AbstractProxy implements ProxyInterface
                 ),
                 $mock
             );
-        } else {
-            $stub = $this->stubFactory->create();
         }
 
         if ($this->state->isFull) {
