@@ -18,6 +18,7 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinitionInterface;
 use ReflectionClass;
 
 /**
@@ -280,18 +281,6 @@ class MockDefinition implements MockDefinitionInterface
 
         $methods = array();
         $traitMethods = array();
-
-        foreach ($this->traitNames() as $typeName) {
-            foreach ($this->types[$typeName]->getMethods() as $method) {
-                $methodDefinition = new TraitMethodDefinition($method);
-                $methods[$method->getName()] = $methodDefinition;
-
-                if (!$method->isAbstract()) {
-                    $traitMethods[] = $methodDefinition;
-                }
-            }
-        }
-
         $parameterCounts = array();
 
         foreach ($this->interfaceNames() as $typeName) {
@@ -305,6 +294,26 @@ class MockDefinition implements MockDefinitionInterface
                 ) {
                     $methods[$methodName] = new RealMethodDefinition($method);
                     $parameterCounts[$methodName] = $parameterCount;
+                }
+            }
+        }
+
+        foreach ($this->traitNames() as $typeName) {
+            foreach ($this->types[$typeName]->getMethods() as $method) {
+                $methodDefinition = new TraitMethodDefinition($method);
+                $methodName = $methodDefinition->name();
+                $parameterCount = $method->getNumberOfParameters();
+
+                if (
+                    !isset($parameterCounts[$methodName]) ||
+                    $parameterCount > $parameterCounts[$methodName]
+                ) {
+                    $methods[$methodName] = $methodDefinition;
+                    $parameterCounts[$methodName] = $parameterCount;
+                }
+
+                if (!$method->isAbstract()) {
+                    $traitMethods[] = $methodDefinition;
                 }
             }
         }
@@ -324,6 +333,8 @@ class MockDefinition implements MockDefinitionInterface
 
                 if (
                     !isset($parameterCounts[$methodName]) ||
+                    $methods[$methodName] instanceof
+                        TraitMethodDefinitionInterface ||
                     $parameterCount >= $parameterCounts[$methodName]
                 ) {
                     $methods[$methodName] = new RealMethodDefinition($method);

@@ -367,4 +367,15 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($proxy->mock()->testTraitCMethodA('a', 'b'));
     }
+
+    public function testCanCallMockedTraitMethodWithInterface()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestInterfaceA'));
+
+        $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+    }
 }

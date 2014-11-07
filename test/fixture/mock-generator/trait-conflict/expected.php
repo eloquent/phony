@@ -21,12 +21,15 @@ implements \Eloquent\Phony\Mock\MockInterface
             as private _callTrait_Eloquent¦Phony¦Test¦TestTraitC»testClassAMethodB;
     }
 
-    public static function testClassAStaticMethodA()
-    {
+    public static function testClassAStaticMethodA(
+        &$a0 = null
+    ) {
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        if ($argumentCount > 0) $arguments[] = &$a0;
+
+        for ($i = 1; $i < $argumentCount; $i++) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -35,12 +38,23 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
-    public function testClassAMethodB()
-    {
+    public function testClassAMethodB(
+        $a0,
+        $a1,
+        &$a2 = null,
+        &$a3 = null,
+        &$a4 = null
+    ) {
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        if ($argumentCount > 0) $arguments[] = $a0;
+        if ($argumentCount > 1) $arguments[] = $a1;
+        if ($argumentCount > 2) $arguments[] = &$a2;
+        if ($argumentCount > 3) $arguments[] = &$a3;
+        if ($argumentCount > 4) $arguments[] = &$a4;
+
+        for ($i = 5; $i < $argumentCount; $i++) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -101,8 +115,8 @@ implements \Eloquent\Phony\Mock\MockInterface
   'testTraitCMethodA' => true,
 );
     private static $_traitMethods = array (
-  'testClassAStaticMethodA' => 'Eloquent\\Phony\\Test\\TestTraitC',
-  'testClassAMethodB' => 'Eloquent\\Phony\\Test\\TestTraitC',
+  'testClassAStaticMethodA' => 'Eloquent\\Phony\\Test\\TestTraitA',
+  'testClassAMethodB' => 'Eloquent\\Phony\\Test\\TestTraitB',
 );
     private static $_customMethods = array();
     private static $_staticProxy;
