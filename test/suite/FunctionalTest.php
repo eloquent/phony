@@ -424,8 +424,19 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testCanMockClassWithPrivateConstructor()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassC');
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassD');
 
-        $this->assertSame('ab', $proxy->mock()->methodB('a', 'b'));
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassD', $proxy->mock());
+    }
+
+    public function testCanMockClassAndCallPrivateConstructor()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassD', array('a', 'b'));
+
+        $this->assertSame(array('a', 'b'), $proxy->mock()->constructorArguments);
     }
 }

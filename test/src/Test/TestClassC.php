@@ -24,8 +24,4 @@ class TestClassC
     {
         return implode(func_get_args());
     }
-
-    private function __construct()
-    {
-    }
 }

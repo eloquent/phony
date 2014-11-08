@@ -67,6 +67,9 @@ class MockGenerator implements MockGeneratorInterface
         $this->idSequencer = $idSequencer;
         $this->signatureInspector = $signatureInspector;
         $this->featureDetector = $featureDetector;
+
+        $this->isClosureBindingSupported =
+            $this->featureDetector->isSupported('closure.bind');
     }
 
     /**
@@ -617,9 +620,28 @@ EOD;
             $parentClass = $types[$parentClassName];
 
             if ($constructor = $parentClass->getConstructor()) {
-                if (!$constructor->isPrivate()) {
-                    $constructorName = $constructor->getName();
+                $constructorName = $constructor->getName();
 
+                if ($constructor->isPrivate()) {
+                    if ($this->isClosureBindingSupported) {
+                        $source .= <<<EOD
+
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+    ) {
+        \$constructor = function () use (\$arguments) {
+            \call_user_func_array(
+                array(\$this, 'parent::$constructorName'),
+                \$arguments->all()
+            );
+        };
+        \$constructor = \$constructor->bindTo(\$this, '$parentClassName');
+        \$constructor();
+    }
+
+EOD;
+                    }
+                } else {
                     $source .= <<<EOD
 
     private function _callParentConstructor(
@@ -749,4 +771,5 @@ EOD;
     private $idSequencer;
     private $signatureInspector;
     private $featureDetector;
+    private $isClosureBindingSupported;
 }

@@ -4,10 +4,6 @@ class MockGeneratorSelfKeyword
 extends \Eloquent\Phony\Test\TestClassC
 implements \Eloquent\Phony\Mock\MockInterface
 {
-    public function __construct()
-    {
-    }
-
     public function methodA(
         \Eloquent\Phony\Test\TestClassC $a0,
         $a1 = 'a'
