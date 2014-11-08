@@ -20,6 +20,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->featureDetector = FeatureDetector::instance();
     }
 
+    /**
+     * @large
+     */
     public function testMockingStatic()
     {
         $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
@@ -377,5 +380,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestInterfaceA'));
 
         $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+    }
+
+    public function testCanMockClassWithPrivateConstructor()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassC');
+
+        $this->assertSame('ab', $proxy->mock()->methodB('a', 'b'));
     }
 }

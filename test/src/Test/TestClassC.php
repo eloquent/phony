@@ -17,9 +17,15 @@ class TestClassC
 
     public function methodA(self $first, $second = self::CONSTANT_A)
     {
+        return implode(func_get_args());
     }
 
     public function methodB($first, $second = 111, $third = 'second')
+    {
+        return implode(func_get_args());
+    }
+
+    private function __construct()
     {
     }
 }

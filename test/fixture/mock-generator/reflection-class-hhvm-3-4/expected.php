@@ -874,6 +874,15 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        \call_user_func_array(
+            array($this, 'parent::__construct'),
+            $arguments->all()
+        );
+    }
+
     private static $_uncallableMethods = array();
     private static $_traitMethods = array();
     private static $_customMethods = array();

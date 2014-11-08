@@ -506,6 +506,15 @@ implements \Eloquent\Phony\Mock\MockInterface,
         );
     }
 
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        \call_user_func_array(
+            array($this, 'parent::__construct'),
+            $arguments->all()
+        );
+    }
+
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments

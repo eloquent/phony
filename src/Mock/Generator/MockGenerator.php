@@ -539,7 +539,8 @@ EOD;
     protected function generateCallParentMethods(MockDefinitionInterface $definition)
     {
         $hasTraits = (boolean) $definition->traitNames();
-        $hasParentClass = null !== $definition->parentClassName();
+        $parentClassName = $definition->parentClassName();
+        $hasParentClass = null !== $parentClassName;
         $source = '';
 
         if ($hasParentClass) {
@@ -611,6 +612,28 @@ EOD;
     }
 
 EOD;
+
+            $types = $definition->types();
+            $parentClass = $types[$parentClassName];
+
+            if ($constructor = $parentClass->getConstructor()) {
+                if (!$constructor->isPrivate()) {
+                    $constructorName = $constructor->getName();
+
+                    $source .= <<<EOD
+
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+    ) {
+        \call_user_func_array(
+            array(\$this, 'parent::$constructorName'),
+            \$arguments->all()
+        );
+    }
+
+EOD;
+                }
+            }
         }
 
         if ($hasTraits) {

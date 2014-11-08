@@ -55,6 +55,14 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
             $callParentMethod = null;
         }
 
+        if ($class->hasMethod('_callParentConstructor')) {
+            $callParentConstructorMethod =
+                $class->getMethod('_callParentConstructor');
+            $callParentConstructorMethod->setAccessible(true);
+        } else {
+            $callParentConstructorMethod = null;
+        }
+
         if ($class->hasMethod('_callTrait')) {
             $callTraitMethod = $class->getMethod('_callTrait');
             $callTraitMethod->setAccessible(true);
@@ -72,7 +80,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         $this->mock = $mock;
         $this->id = $id;
         $this->class = $class;
-        $this->callParentMethod = $callParentMethod;
+        $this->callParentConstructorMethod = $callParentConstructorMethod;
 
         parent::__construct(
             $class,
@@ -118,16 +126,9 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      */
     public function constructWith($arguments = null)
     {
-        if ($this->callParentMethod) {
-            if ($parentClass = $this->class->getParentClass()) {
-                if ($constructor = $parentClass->getConstructor()) {
-                    $this->callParentMethod->invoke(
-                        $this->mock,
-                        $constructor->getName(),
-                        Arguments::adapt($arguments)
-                    );
-                }
-            }
+        if ($this->callParentConstructorMethod) {
+            $this->callParentConstructorMethod
+                ->invoke($this->mock, Arguments::adapt($arguments));
         }
 
         return $this;
@@ -146,5 +147,5 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     private $mock;
     private $id;
     private $class;
-    private $callParentMethod;
+    private $callParentConstructorMethod;
 }
