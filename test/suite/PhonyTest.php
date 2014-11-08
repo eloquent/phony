@@ -285,21 +285,21 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testStub()
     {
-        $callback = function () {};
+        $callback = function () { return 'a'; };
         $actual = Phony::stub($callback);
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
     }
 
     public function testStubFunction()
     {
-        $callback = function () {};
+        $callback = function () { return 'a'; };
         $actual = stub($callback);
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
     }
 

@@ -718,11 +718,11 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c - d', call_user_func($this->subject, ' - ', array('c', 'd')));
     }
 
-    public function forwardsSelfParameterAutoDetectionoDetectionData()
+    public function forwardsSelfParameterAutoDetectionData()
     {
         return array(
             'Exact match' => array(
-                function (TestClassA $self) {
+                function (TestClassA $phonySelf) {
                     return func_get_args();
                 },
                 new TestClassA(),
@@ -730,28 +730,20 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 array(new TestClassA(), 'a', 'b'),
             ),
             'Subclass' => array(
-                function (TestClassA $self) {
+                function (TestClassA $phonySelf) {
                     return func_get_args();
                 },
                 new TestClassB(),
                 array('a', 'b'),
                 array(new TestClassB(), 'a', 'b'),
             ),
-            'Superclass' => array(
-                function (TestClassB $self) {
-                    return func_get_args();
-                },
-                new TestClassA(),
-                array(new TestClassB(), 'a', 'b'),
-                array(new TestClassB(), 'a', 'b'),
-            ),
             'No hint' => array(
-                function ($self) {
+                function ($phonySelf) {
                     return func_get_args();
                 },
                 new TestClassA(),
                 array('a', 'b'),
-                array('a', 'b'),
+                array(new TestClassA(), 'a', 'b'),
             ),
             'Wrong name' => array(
                 function (TestClassA $a) {
@@ -775,19 +767,11 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 array(array('a', 'b')),
                 'ab',
             ),
-            'Self is not object' => array(
-                function (TestClassA $self) {
-                    return func_get_args();
-                },
-                'Eloquent\Phony\Test\TestClassA',
-                array(new TestClassA(), 'a', 'b'),
-                array(new TestClassA(), 'a', 'b'),
-            ),
         );
     }
 
     /**
-     * @dataProvider forwardsSelfParameterAutoDetectionoDetectionData
+     * @dataProvider forwardsSelfParameterAutoDetectionData
      */
     public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
     {

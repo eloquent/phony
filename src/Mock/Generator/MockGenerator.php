@@ -391,7 +391,7 @@ EOD;
                     break;
                 }
 
-                if ('self' === $parameterName) {
+                if ('phonySelf' === $parameterName) {
                     array_shift($signature);
                 }
             }

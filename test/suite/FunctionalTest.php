@@ -20,9 +20,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->featureDetector = FeatureDetector::instance();
     }
 
-    /**
-     * @large
-     */
     public function testMockingStatic()
     {
         $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
@@ -211,6 +208,49 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $stub->calledWith(111),
             $stub->returned('y')
         );
+    }
+
+    public function testStubMagicSelf()
+    {
+        $callback = function ($phonySelf) {
+            return $phonySelf;
+        };
+
+        $stub = x\stub($callback)->forwards();
+
+        $this->assertSame($callback, $stub());
+    }
+
+    public function testStubThisBinding()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $callback = function () {
+            return $this;
+        };
+
+        $stub = x\stub($callback)->forwards();
+
+        $this->assertSame($callback, $stub());
+    }
+
+    public function testStubClassBinding()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $callback = function () {
+            return self::testClassAStaticMethodC('a', 'b');
+        };
+
+        $stub = x\stub($callback);
+        $stub->setSelf('Eloquent\Phony\Test\TestClassA');
+        $stub->forwards();
+
+        $this->assertSame('protected ab', $stub());
     }
 
     public function testTraversableSpyingStatic()
