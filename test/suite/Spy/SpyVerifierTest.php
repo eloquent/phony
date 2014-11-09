@@ -1085,7 +1085,7 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected call to return like <'z'>. Responded:
+Expected call on implode[label] to return like <'z'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -1101,7 +1101,7 @@ EOD;
         $this->subject->setCalls(array($this->callC, $this->callD));
 
         $expected = <<<'EOD'
-Expected call to return. Responded:
+Expected call on implode[label] to return. Responded:
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1114,7 +1114,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to return like <'x'>. Never called."
+            "Expected call on implode[label] to return like <'x'>. Never called."
         );
         $this->subject->returned($this->returnValueA);
     }
@@ -1162,7 +1162,7 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected every call to return like <'x'>. Responded:
+Expected every call on implode[label] to return like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -1178,7 +1178,7 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected every call to return. Responded:
+Expected every call on implode[label] to return. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -1193,7 +1193,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected every call to return like <'x'>. Never called."
+            "Expected every call on implode[label] to return like <'x'>. Never called."
         );
         $this->subject->always()->returned($this->returnValueA);
     }
@@ -1277,7 +1277,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected call to throw. Responded:
+Expected call on implode[label] to throw. Responded:
     - returned 'x'
     - returned 'y'
 EOD;
@@ -1290,7 +1290,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to throw. Never called.'
+            'Expected call on implode[label] to throw. Never called.'
         );
         $this->subject->threw();
     }
@@ -1299,7 +1299,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
+Expected call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1312,7 +1312,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Never called."
+            "Expected call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException'" .
+                " exception. Never called."
         );
         $this->subject->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
     }
@@ -1321,7 +1322,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
+Expected call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
     - returned 'x'
     - returned 'y'
 EOD;
@@ -1334,7 +1335,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected call to throw exception equal to RuntimeException(). Responded:
+Expected call on implode[label] to throw exception equal to RuntimeException(). Responded:
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1347,7 +1348,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to throw exception equal to RuntimeException(). Never called.'
+            'Expected call on implode[label] to throw exception equal to RuntimeException(). Never called.'
         );
         $this->subject->threw(new RuntimeException());
     }
@@ -1356,7 +1357,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected call to throw exception equal to RuntimeException(). Responded:
+Expected call on implode[label] to throw exception equal to RuntimeException(). Responded:
     - returned 'x'
     - returned 'y'
 EOD;
@@ -1369,7 +1370,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected call to throw exception like <RuntimeException Object (...)>. Responded:
+Expected call on implode[label] to throw exception like <RuntimeException Object (...)>. Responded:
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1382,7 +1383,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to throw exception like <RuntimeException Object (...)>. Never called.'
+            'Expected call on implode[label] to throw exception like <RuntimeException Object (...)>. Never called.'
         );
         $this->subject->threw(new EqualToMatcher(new RuntimeException()));
     }
@@ -1391,7 +1392,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected call to throw exception like <RuntimeException Object (...)>. Responded:
+Expected call on implode[label] to throw exception like <RuntimeException Object (...)>. Responded:
     - returned 'x'
     - returned 'y'
 EOD;
@@ -1478,7 +1479,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected every call to throw. Responded:
+Expected every call on implode[label] to throw. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -1493,7 +1494,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected every call to throw. Responded:
+Expected every call on implode[label] to throw. Responded:
     - returned 'x'
     - returned 'y'
 EOD;
@@ -1506,7 +1507,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call to throw. Never called.'
+            'Expected every call on implode[label] to throw. Never called.'
         );
         $this->subject->always()->threw();
     }
@@ -1515,7 +1516,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
+Expected every call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1528,8 +1529,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. " .
-                "Never called."
+            "Expected every call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException'" .
+                " exception. Never called."
         );
         $this->subject->always()->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
     }
@@ -1538,7 +1539,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected every call to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
+Expected every call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException' exception. Responded:
     - returned 'x'
     - returned 'y'
 EOD;
@@ -1551,7 +1552,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected every call to throw exception equal to RuntimeException(). Responded:
+Expected every call on implode[label] to throw exception equal to RuntimeException(). Responded:
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1564,7 +1565,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call to throw exception equal to RuntimeException(). Never called.'
+            'Expected every call on implode[label] to throw exception equal to RuntimeException(). Never called.'
         );
         $this->subject->always()->threw(new RuntimeException());
     }
@@ -1573,7 +1574,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected every call to throw exception equal to RuntimeException(). Responded:
+Expected every call on implode[label] to throw exception equal to RuntimeException(). Responded:
     - returned 'x'
     - returned 'y'
 EOD;
@@ -1586,7 +1587,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected every call to throw exception like <RuntimeException Object (...)>. Responded:
+Expected every call on implode[label] to throw exception like <RuntimeException Object (...)>. Responded:
     - threw RuntimeException('You done goofed.')
     - threw RuntimeException('Consequences will never be the same.')
 EOD;
@@ -1599,7 +1600,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call to throw exception like <RuntimeException Object (...)>. Never called.'
+            'Expected every call on implode[label] to throw exception like <RuntimeException Object (...)>. Never called.'
         );
         $this->subject->always()->threw(new EqualToMatcher(new RuntimeException()));
     }
@@ -1608,7 +1609,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected every call to throw exception like <RuntimeException Object (...)>. Responded:
+Expected every call on implode[label] to throw exception like <RuntimeException Object (...)>. Responded:
     - returned 'x'
     - returned 'y'
 EOD;

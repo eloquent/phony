@@ -28,7 +28,6 @@ use Eloquent\Phony\Mock\Proxy\Verification\InstanceVerificationProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy;
 use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy;
-use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;

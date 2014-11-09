@@ -687,11 +687,16 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === $argumentCount) {
-            $renderedType = 'call to return';
+            $renderedType = sprintf('call on %s to return', $renderedSubject);
         } else {
-            $renderedType =
-                sprintf('call to return like %s', $value->describe());
+            $renderedType = sprintf(
+                'call on %s to return like %s',
+                $renderedSubject,
+                $value->describe()
+            );
         }
 
         $calls = $this->spy->recordedCalls();
@@ -807,22 +812,27 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (null === $type) {
-            $renderedType = 'call to throw';
+            $renderedType = sprintf('call on %s to throw', $renderedSubject);
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                'call to throw %s exception',
+                'call on %s to throw %s exception',
+                $renderedSubject,
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'call to throw exception equal to %s',
+                    'call on %s to throw exception equal to %s',
+                    $renderedSubject,
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'call to throw exception like %s',
+                    'call on %s to throw exception like %s',
+                    $renderedSubject,
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }
@@ -956,14 +966,20 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === $argumentCount) {
-            $renderedType = 'call to produce';
+            $renderedType = sprintf('call on %s to produce', $renderedSubject);
         } elseif (1 === $argumentCount) {
-            $renderedType =
-                sprintf('call to produce like %s', $value->describe());
+            $renderedType = sprintf(
+                'call on %s to produce like %s',
+                $renderedSubject,
+                $value->describe()
+            );
         } else {
             $renderedType = sprintf(
-                'call to produce like %s => %s',
+                'call on %s to produce like %s => %s',
+                $renderedSubject,
                 $key->describe(),
                 $value->describe()
             );
@@ -1101,10 +1117,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === func_num_args()) {
-            $renderedType = 'call to produce nothing. ';
+            $renderedType =
+                sprintf('call on %s to produce nothing. ', $renderedSubject);
         } else {
-            $renderedType = 'call to produce like:';
+            $renderedType =
+                sprintf('call on %s to produce like:', $renderedSubject);
 
             foreach ($pairs as $pair) {
                 if (is_array($pair)) {
@@ -1219,11 +1239,17 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === $argumentCount) {
-            $renderedType = 'generator to receive value';
+            $renderedType = sprintf(
+                'generator returned by %s to receive value',
+                $renderedSubject
+            );
         } else {
             $renderedType = sprintf(
-                'generator to receive value like %s',
+                'generator returned by %s to receive value like %s',
+                $renderedSubject,
                 $value->describe()
             );
         }
@@ -1362,22 +1388,30 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (null === $type) {
-            $renderedType = 'generator to receive exception';
+            $renderedType = sprintf(
+                'generator returned by %s to receive exception',
+                $renderedSubject
+            );
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                'generator to receive %s exception',
+                'generator returned by %s to receive %s exception',
+                $renderedSubject,
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'generator to receive exception equal to %s',
+                    'generator returned by %s to receive exception equal to %s',
+                    $renderedSubject,
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'generator to receive exception like %s',
+                    'generator returned by %s to receive exception like %s',
+                    $renderedSubject,
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }
