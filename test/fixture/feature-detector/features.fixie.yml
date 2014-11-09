@@ -7,6 +7,7 @@ data:
  Can use class constants with expression values:                   [constant.class.expression,                 '5.6.x',   '999',   [],      '0.x',       '999',       []         ]
  Can use constants with expression values:                         [constant.expression,                       '5.6.x',   '999',   [],      '0.x',       '999',       []         ]
  Can use generators:                                               [generator,                                 '5.5.x',   '999',   [],      '0.x',       '999',       []         ]
+ Can throw an exception into a generator:                          [generator.exception,                       '5.5.x',   '999',   [],      '999',       '0.x',       []         ]
  Can yield:                                                        [generator.yield,                           '5.5.x',   '999',   [],      '0.x',       '999',       []         ]
  Can yield and assign the result:                                  [generator.yield.assign,                    '999',     '0.x',   [],      '0.x',       '999',       []         ]
  Can yield a key and value and assign the result:                  [generator.yield.assign.key,                '999',     '0.x',   [],      '0.x',       '999',       []         ]

@@ -197,6 +197,10 @@ class FeatureDetector implements FeatureDetectorInterface
                 return $detector->checkInternalClass('Generator');
             },
 
+            'generator.exception' => function ($detector) {
+                return $detector->checkInternalMethod('Generator', 'throw');
+            },
+
             'generator.yield' => function ($detector) {
                 return $detector->isSupported('generator') &&
                     $detector->checkStatement('yield 0');

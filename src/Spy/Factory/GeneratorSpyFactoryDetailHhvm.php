@@ -1,4 +1,4 @@
-<?php
+<?php // @codeCoverageIgnoreStart
 
 /*
  * This file is part of the Phony package.
@@ -17,11 +17,11 @@ use Exception;
 use Generator;
 
 /**
- * A detail class for generator spy syntax not currently supported by HHVM.
+ * A detail class for generator spy syntax using an expression.
  *
  * @internal
  */
-abstract class GeneratorSpyFactoryDetail
+abstract class GeneratorSpyFactoryDetailHhvm
 {
     /**
      * Create a new generator spy.
@@ -47,7 +47,9 @@ abstract class GeneratorSpyFactoryDetail
             $value = null;
 
             try {
-                if (!$isFirst) {
+                if ($isFirst) {
+                    $generator->next();
+                } else {
                     if ($receivedException) {
                         $generator->throw($receivedException);
                     } else {
@@ -78,14 +80,15 @@ abstract class GeneratorSpyFactoryDetail
             );
 
             try {
-                $received = (yield $key => $value);
+                $received = yield $key => $value;
 
                 $call->addTraversableEvent(
                     $callEventFactory->createReceived($received)
                 );
             } catch (Exception $receivedException) {
                 $call->addTraversableEvent(
-                    $callEventFactory->createReceivedException($receivedException)
+                    $callEventFactory
+                        ->createReceivedException($receivedException)
                 );
             }
 

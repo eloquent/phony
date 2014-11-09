@@ -128,7 +128,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
-        $this->assertSame(!defined('HHVM_VERSION'), $actual->useGeneratorSpies());
+        $this->assertTrue($actual->useGeneratorSpies());
         $this->assertFalse($actual->useTraversableSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());

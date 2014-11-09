@@ -48,10 +48,6 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeWithWithGeneratorSpy()
     {
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('Not supported under HHVM.');
-        }
-
         $this->callback = function () {
             foreach (func_get_args() as $argument) {
                 yield strtoupper($argument);

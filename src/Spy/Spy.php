@@ -51,7 +51,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
         if (null === $useGeneratorSpies) {
-            $useGeneratorSpies = !defined('HHVM_VERSION');
+            $useGeneratorSpies = true;
         }
         if (null === $useTraversableSpies) {
             $useTraversableSpies = false;
