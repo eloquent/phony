@@ -25,6 +25,7 @@ interface EventOrderVerifierInterface
      * @param CallEventCollectionInterface $events,... The events.
      *
      * @return CallEventCollectionInterface|null The result.
+     * @throws InvalidArgumentException          If invalid input is supplied.
      */
     public function checkInOrder();
 
@@ -35,6 +36,7 @@ interface EventOrderVerifierInterface
      * @param CallEventCollectionInterface $events,... The events.
      *
      * @return CallEventCollectionInterface The result.
+     * @throws InvalidArgumentException     If invalid input is supplied.
      * @throws Exception                    If the assertion fails.
      */
     public function inOrder();
@@ -45,6 +47,7 @@ interface EventOrderVerifierInterface
      * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
      * @return CallEventCollectionInterface|null The result.
+     * @throws InvalidArgumentException          If invalid input is supplied.
      */
     public function checkInOrderSequence($events);
 
@@ -55,6 +58,7 @@ interface EventOrderVerifierInterface
      * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
      * @return CallEventCollectionInterface The result.
+     * @throws InvalidArgumentException     If invalid input is supplied.
      * @throws Exception                    If the assertion fails.
      */
     public function inOrderSequence($events);

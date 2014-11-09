@@ -17,8 +17,10 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\NullEvent;
+use InvalidArgumentException;
 
 /**
  * Checks and asserts the order of events.
@@ -88,6 +90,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * @param CallEventCollectionInterface $events,... The events.
      *
      * @return CallEventCollectionInterface|null The result.
+     * @throws InvalidArgumentException          If invalid input is supplied.
      */
     public function checkInOrder()
     {
@@ -101,6 +104,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * @param CallEventCollectionInterface $events,... The events.
      *
      * @return CallEventCollectionInterface The result.
+     * @throws InvalidArgumentException     If invalid input is supplied.
      * @throws Exception                    If the assertion fails.
      */
     public function inOrder()
@@ -114,6 +118,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
      * @return CallEventCollectionInterface|null The result.
+     * @throws InvalidArgumentException          If invalid input is supplied.
      */
     public function checkInOrderSequence($events)
     {
@@ -126,6 +131,22 @@ class EventOrderVerifier implements EventOrderVerifierInterface
         $earliestEvent = null;
 
         foreach ($events as $eventCollection) {
+            if (!$eventCollection instanceof EventCollectionInterface) {
+                if (is_object($eventCollection)) {
+                    $type = var_export(get_class($eventCollection), true);
+                } else {
+                    $type = gettype($eventCollection);
+                }
+
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Cannot verify event order with supplied value of ' .
+                            'type %s.',
+                        $type
+                    )
+                );
+            }
+
             if (!$eventCollection->hasEvents()) {
                 $isMatch = false;
 
@@ -184,6 +205,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
      * @return CallEventCollectionInterface The result.
+     * @throws InvalidArgumentException     If invalid input is supplied.
      * @throws Exception                    If the assertion fails.
      */
     public function inOrderSequence($events)
