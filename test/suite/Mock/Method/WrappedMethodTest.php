@@ -53,6 +53,17 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->label());
     }
 
+    public function testSetLabel()
+    {
+        $this->subject->setLabel(null);
+
+        $this->assertNull($this->subject->label());
+
+        $this->subject->setLabel('label');
+
+        $this->assertSame('label', $this->subject->label());
+    }
+
     public function testConstructorDefaults()
     {
         $this->subject = new WrappedMethod($this->callParentMethod, $this->method);

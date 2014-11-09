@@ -45,6 +45,13 @@ interface InstanceProxyInterface extends ProxyInterface
     public function constructWith($arguments = null);
 
     /**
+     * Set the label.
+     *
+     * @param string|null $label The label.
+     */
+    public function setLabel($label);
+
+    /**
      * Get the label.
      *
      * @return string|null The label.

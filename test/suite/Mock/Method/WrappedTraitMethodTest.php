@@ -69,6 +69,17 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(null, $this->method->getName()), $this->subject->callback());
     }
 
+    public function testSetLabel()
+    {
+        $this->subject->setLabel(null);
+
+        $this->assertNull($this->subject->label());
+
+        $this->subject->setLabel('label');
+
+        $this->assertSame('label', $this->subject->label());
+    }
+
     public function testInvokeMethods()
     {
         $traitName = 'Eloquent\Phony\Test\TestTraitA';

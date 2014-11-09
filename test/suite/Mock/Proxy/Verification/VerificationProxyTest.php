@@ -88,6 +88,18 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
     }
 
+    public function testSetLabel()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->subject->setLabel(null);
+
+        $this->assertNull($this->subject->label());
+
+        $this->subject->setLabel($this->label);
+
+        $this->assertSame($this->label, $this->subject->label());
+    }
+
     public function testFull()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');

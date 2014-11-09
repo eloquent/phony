@@ -70,6 +70,17 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(TraversableSpyFactory::instance(), $this->subject->traversableSpyFactory());
     }
 
+    public function testSetLabel()
+    {
+        $this->subject->setLabel(null);
+
+        $this->assertNull($this->subject->label());
+
+        $this->subject->setLabel($this->label);
+
+        $this->assertSame($this->label, $this->subject->label());
+    }
+
     public function testSetUseTraversableSpies()
     {
         $this->subject->setUseTraversableSpies(true);

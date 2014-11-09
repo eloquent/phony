@@ -59,6 +59,16 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
     }
 
     /**
+     * Set the label.
+     *
+     * @param string|null $label The label.
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    /**
      * Get the label.
      *
      * @return string|null The label.

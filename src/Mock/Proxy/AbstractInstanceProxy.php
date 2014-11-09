@@ -135,6 +135,16 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     }
 
     /**
+     * Set the label.
+     *
+     * @param string|null $label The label.
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    /**
      * Get the label.
      *
      * @return string|null The label.

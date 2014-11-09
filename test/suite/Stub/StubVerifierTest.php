@@ -186,6 +186,17 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->self, $this->subject->self());
     }
 
+    public function testSetLabel()
+    {
+        $this->subject->setLabel(null);
+
+        $this->assertNull($this->subject->label());
+
+        $this->subject->setLabel($this->label);
+
+        $this->assertSame($this->label, $this->subject->label());
+    }
+
     public function testWith()
     {
         $this->assertSame(
