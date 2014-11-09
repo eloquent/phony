@@ -42,7 +42,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * @param callable|null                    $callback           The callback, or null to create an unbound stub.
      * @param mixed                            $self               The self value.
-     * @param integer|null                     $id                 The identifier.
+     * @param string|null                      $label              The label.
      * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
      * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
      * @param InvokerInterface|null            $invoker            The invoker to use.
@@ -52,7 +52,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function __construct(
         $callback = null,
         $self = null,
-        $id = null,
+        $label = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
@@ -75,7 +75,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $featureDetector = FeatureDetector::instance();
         }
 
-        parent::__construct($callback, $id);
+        parent::__construct($callback, $label);
 
         if (null === $self) {
             $self = $this->callback;

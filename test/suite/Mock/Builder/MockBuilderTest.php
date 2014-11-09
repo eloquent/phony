@@ -587,20 +587,20 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testCreateWith()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->createWith(array('a', 'b'), 'id');
+        $first = $this->subject->createWith(array('a', 'b'), 'label');
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('id', $this->proxyFactory->createStubbing($first)->id());
+        $this->assertSame('label', $this->proxyFactory->createStubbing($first)->label());
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
         $second = $this->subject->createWith(array());
 
         $this->assertNotSame($first, $second);
-        $this->assertSame('0', $this->proxyFactory->createStubbing($second)->id());
+        $this->assertSame('0', $this->proxyFactory->createStubbing($second)->label());
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
 
@@ -608,7 +608,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertNotSame($first, $third);
         $this->assertNotSame($second, $third);
-        $this->assertSame('1', $this->proxyFactory->createStubbing($third)->id());
+        $this->assertSame('1', $this->proxyFactory->createStubbing($third)->label());
         $this->assertNull($third->constructorArguments);
         $this->assertSame($third, $this->subject->get());
     }
@@ -616,13 +616,13 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testFull()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->full('id');
+        $first = $this->subject->full('label');
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('id', $this->proxyFactory->createStubbing($first)->id());
+        $this->assertSame('label', $this->proxyFactory->createStubbing($first)->label());
         $this->assertNull($first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 

@@ -50,17 +50,17 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
-     * @param SequencerInterface|null     $idSequencer  The identifier sequencer to use.
-     * @param MockGeneratorInterface|null $generator    The generator to use.
-     * @param ProxyFactoryInterface|null  $proxyFactory The proxy factory to use.
+     * @param SequencerInterface|null     $labelSequencer The label sequencer to use.
+     * @param MockGeneratorInterface|null $generator      The generator to use.
+     * @param ProxyFactoryInterface|null  $proxyFactory   The proxy factory to use.
      */
     public function __construct(
-        SequencerInterface $idSequencer = null,
+        SequencerInterface $labelSequencer = null,
         MockGeneratorInterface $generator = null,
         ProxyFactoryInterface $proxyFactory = null
     ) {
-        if (null === $idSequencer) {
-            $idSequencer = Sequencer::sequence('mock-id');
+        if (null === $labelSequencer) {
+            $labelSequencer = Sequencer::sequence('mock-label');
         }
         if (null === $generator) {
             $generator = MockGenerator::instance();
@@ -69,20 +69,20 @@ class MockFactory implements MockFactoryInterface
             $proxyFactory = ProxyFactory::instance();
         }
 
-        $this->idSequencer = $idSequencer;
+        $this->labelSequencer = $labelSequencer;
         $this->generator = $generator;
         $this->proxyFactory = $proxyFactory;
         $this->definitions = array();
     }
 
     /**
-     * Get the identifier sequencer.
+     * Get the label sequencer.
      *
-     * @return SequencerInterface The identifier sequencer.
+     * @return SequencerInterface The label sequencer.
      */
-    public function idSequencer()
+    public function labelSequencer()
     {
-        return $this->idSequencer;
+        return $this->labelSequencer;
     }
 
     /**
@@ -176,7 +176,7 @@ class MockFactory implements MockFactoryInterface
      *
      * @param MockBuilderInterface                         $builder   The builder.
      * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null                                  $id        The identifier.
+     * @param string|null                                  $label     The label.
      *
      * @return MockInterface          The newly created mock.
      * @throws MockExceptionInterface If the mock generation fails.
@@ -184,15 +184,15 @@ class MockFactory implements MockFactoryInterface
     public function createMock(
         MockBuilderInterface $builder,
         $arguments = null,
-        $id = null
+        $label = null
     ) {
-        if (null === $id) {
-            $id = strval($this->idSequencer->next());
+        if (null === $label) {
+            $label = strval($this->labelSequencer->next());
         }
 
         $class = $builder->build();
         $mock = $class->newInstanceArgs();
-        $proxy = $this->proxyFactory->createStubbing($mock, $id);
+        $proxy = $this->proxyFactory->createStubbing($mock, $label);
 
         $proxyProperty = $class->getProperty('_proxy');
         $proxyProperty->setAccessible(true);
@@ -206,7 +206,7 @@ class MockFactory implements MockFactoryInterface
     }
 
     private static $instance;
-    private $idSequencer;
+    private $labelSequencer;
     private $generator;
     private $proxyFactory;
     private $definitions;

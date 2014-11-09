@@ -228,13 +228,13 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Get the identifier.
+     * Get the label.
      *
-     * @return string|null The identifier.
+     * @return string|null The label.
      */
-    public function id()
+    public function label()
     {
-        return $this->spy->id();
+        return $this->spy->label();
     }
 
     /**

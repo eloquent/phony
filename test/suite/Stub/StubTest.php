@@ -29,7 +29,7 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->self = (object) array();
-        $this->id = 111;
+        $this->label = 'label';
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
@@ -38,7 +38,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->subject = new Stub(
             $this->callback,
             $this->self,
-            $this->id,
+            $this->label,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
@@ -143,7 +143,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->self, $this->subject->self());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertSame($this->label, $this->subject->label());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
@@ -159,7 +159,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertTrue(is_callable($this->subject->self()));
-        $this->assertNull($this->subject->id());
+        $this->assertNull($this->subject->label());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());

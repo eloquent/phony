@@ -64,7 +64,7 @@ class CallEventFactory implements CallEventFactoryInterface
         ClockInterface $clock = null
     ) {
         if (null === $sequencer) {
-            $sequencer = Sequencer::sequence('event-id');
+            $sequencer = Sequencer::sequence('event-sequence-number');
         }
         if (null === $clock) {
             $clock = SystemClock::instance();

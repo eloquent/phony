@@ -35,7 +35,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * @param callable|null                       $callback              The callback, or null to create an unbound spy.
      * @param boolean|null                        $useTraversableSpies   True if traversable spies should be used.
      * @param boolean|null                        $useGeneratorSpies     True if generator spies should be used.
-     * @param integer|null                        $id                    The identifier.
+     * @param string|null                         $label                 The label.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
@@ -43,7 +43,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         $callback = null,
         $useTraversableSpies = null,
         $useGeneratorSpies = null,
-        $id = null,
+        $label = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
@@ -60,7 +60,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
-        parent::__construct($callback, $id);
+        parent::__construct($callback, $label);
 
         $this->useTraversableSpies = $useTraversableSpies;
         $this->useGeneratorSpies = $useGeneratorSpies;

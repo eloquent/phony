@@ -24,7 +24,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->useTraversableSpies = false;
         $this->useGeneratorSpies = false;
-        $this->id = 111;
+        $this->label = 'label';
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
@@ -32,7 +32,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             $this->callback,
             $this->useTraversableSpies,
             $this->useGeneratorSpies,
-            $this->id,
+            $this->label,
             $this->callFactory,
             $this->traversableSpyFactory
         );
@@ -50,7 +50,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->useTraversableSpies, $this->subject->useTraversableSpies());
         $this->assertSame($this->useGeneratorSpies, $this->subject->useGeneratorSpies());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertSame($this->label, $this->subject->label());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
         $this->assertSame($this->traversableSpyFactory, $this->subject->traversableSpyFactory());
         $this->assertSame(array(), $this->subject->recordedCalls());
@@ -64,7 +64,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_callable($this->subject->callback()));
         $this->assertFalse($this->subject->useTraversableSpies());
         $this->assertSame(!defined('HHVM_VERSION'), $this->subject->useGeneratorSpies());
-        $this->assertNull($this->subject->id());
+        $this->assertNull($this->subject->label());
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
         $this->assertSame(TraversableSpyFactory::instance(), $this->subject->traversableSpyFactory());

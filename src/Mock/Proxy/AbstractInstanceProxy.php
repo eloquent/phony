@@ -33,7 +33,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      *
      * @param MockInterface                     $mock                The mock.
      * @param stdClass|null                     $state               The state.
-     * @param string|null                       $id                  The identifier.
+     * @param string|null                       $label               The label.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
@@ -41,7 +41,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     public function __construct(
         MockInterface $mock,
         stdClass $state = null,
-        $id = null,
+        $label = null,
         StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         WildcardMatcherInterface $wildcardMatcher = null
@@ -78,7 +78,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         }
 
         $this->mock = $mock;
-        $this->id = $id;
+        $this->label = $label;
         $this->class = $class;
         $this->callParentConstructorMethod = $callParentConstructorMethod;
 
@@ -135,17 +135,17 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     }
 
     /**
-     * Get the identifier.
+     * Get the label.
      *
-     * @return string|null The identifier.
+     * @return string|null The label.
      */
-    public function id()
+    public function label()
     {
-        return $this->id;
+        return $this->label;
     }
 
     private $mock;
-    private $id;
+    private $label;
     private $class;
     private $callParentConstructorMethod;
 }

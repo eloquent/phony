@@ -553,17 +553,17 @@ class MockBuilder implements MockBuilderInterface
      * This method supports reference parameters.
      *
      * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null                                  $id        The identifier.
+     * @param string|null                                  $label     The label.
      *
      * @return MockInterface The mock instance.
      */
-    public function createWith($arguments = null, $id = null)
+    public function createWith($arguments = null, $label = null)
     {
         if (null !== $arguments) {
             $arguments = Arguments::adapt($arguments);
         }
 
-        $this->mock = $this->factory->createMock($this, $arguments, $id);
+        $this->mock = $this->factory->createMock($this, $arguments, $label);
 
         return $this->mock;
     }
@@ -576,13 +576,13 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param string|null $id The identifier.
+     * @param string|null $label The label.
      *
      * @return MockInterface The mock instance.
      */
-    public function full($id = null)
+    public function full($label = null)
     {
-        $mock = $this->createWith(null, $id);
+        $mock = $this->createWith(null, $label);
         $this->proxyFactory->createStubbing($mock)->full();
 
         return $mock;

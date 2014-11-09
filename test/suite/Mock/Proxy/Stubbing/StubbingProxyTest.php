@@ -23,7 +23,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->state = (object) array('stubs' => (object) array(), 'isFull' => true);
-        $this->id = 'id';
+        $this->label = 'label';
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
         $this->wildcardMatcher = new WildcardMatcher();
@@ -39,7 +39,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->subject = new StubbingProxy(
             $this->mock,
             $this->state,
-            $this->id,
+            $this->label,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -62,7 +62,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->state->stubs, $this->subject->stubs());
         $this->assertSame($this->state->isFull, $this->subject->isFull());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertSame($this->label, $this->subject->label());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());

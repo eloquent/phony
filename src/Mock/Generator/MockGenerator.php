@@ -45,17 +45,17 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Construct a new mock generator.
      *
-     * @param SequencerInterface|null                  $idSequencer        The identifier sequencer to use.
+     * @param SequencerInterface|null                  $labelSequencer     The label sequencer to use.
      * @param FunctionSignatureInspectorInterface|null $signatureInspector The function signature inspector to use.
      * @param FeatureDetectorInterface|null            $featureDetector    The feature detector to use.
      */
     public function __construct(
-        SequencerInterface $idSequencer = null,
+        SequencerInterface $labelSequencer = null,
         FunctionSignatureInspectorInterface $signatureInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $idSequencer) {
-            $idSequencer = Sequencer::sequence('mock-class-id');
+        if (null === $labelSequencer) {
+            $labelSequencer = Sequencer::sequence('mock-class-label');
         }
         if (null === $signatureInspector) {
             $signatureInspector = FunctionSignatureInspector::instance();
@@ -64,7 +64,7 @@ class MockGenerator implements MockGeneratorInterface
             $featureDetector = FeatureDetector::instance();
         }
 
-        $this->idSequencer = $idSequencer;
+        $this->labelSequencer = $labelSequencer;
         $this->signatureInspector = $signatureInspector;
         $this->featureDetector = $featureDetector;
 
@@ -73,13 +73,13 @@ class MockGenerator implements MockGeneratorInterface
     }
 
     /**
-     * Get the identifier sequencer.
+     * Get the label sequencer.
      *
-     * @return SequencerInterface The identifier sequencer.
+     * @return SequencerInterface The label sequencer.
      */
-    public function idSequencer()
+    public function labelSequencer()
     {
-        return $this->idSequencer;
+        return $this->labelSequencer;
     }
 
     /**
@@ -135,7 +135,7 @@ class MockGenerator implements MockGeneratorInterface
             $className .= '_' . array_pop($subjectAtoms);
         }
 
-        $className .= '_' . $this->idSequencer->next();
+        $className .= '_' . $this->labelSequencer->next();
 
         return $className;
     }
@@ -768,7 +768,7 @@ EOD;
     }
 
     private static $instance;
-    private $idSequencer;
+    private $labelSequencer;
     private $signatureInspector;
     private $featureDetector;
     private $isClosureBindingSupported;

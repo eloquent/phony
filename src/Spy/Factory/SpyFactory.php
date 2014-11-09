@@ -42,17 +42,17 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param SequencerInterface|null             $idSequencer           The identifier sequencer to use.
+     * @param SequencerInterface|null             $labelSequencer        The label sequencer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
-        SequencerInterface $idSequencer = null,
+        SequencerInterface $labelSequencer = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
-        if (null === $idSequencer) {
-            $idSequencer = Sequencer::sequence('spy-id');
+        if (null === $labelSequencer) {
+            $labelSequencer = Sequencer::sequence('spy-label');
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
@@ -61,19 +61,19 @@ class SpyFactory implements SpyFactoryInterface
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
-        $this->idSequencer = $idSequencer;
+        $this->labelSequencer = $labelSequencer;
         $this->callFactory = $callFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
     }
 
     /**
-     * Get the identifier sequencer.
+     * Get the label sequencer.
      *
-     * @return SequencerInterface The identifier sequencer.
+     * @return SequencerInterface The label sequencer.
      */
-    public function idSequencer()
+    public function labelSequencer()
     {
-        return $this->idSequencer;
+        return $this->labelSequencer;
     }
 
     /**
@@ -114,14 +114,14 @@ class SpyFactory implements SpyFactoryInterface
             $callback,
             $useTraversableSpies,
             $useGeneratorSpies,
-            strval($this->idSequencer->next()),
+            strval($this->labelSequencer->next()),
             $this->callFactory,
             $this->traversableSpyFactory
         );
     }
 
     private static $instance;
-    private $idSequencer;
+    private $labelSequencer;
     private $callFactory;
     private $traversableSpyFactory;
 }

@@ -33,8 +33,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
-        $this->id = 111;
-        $this->spy = new Spy($this->callback, false, false, $this->id, $this->callFactory);
+        $this->label = 'label';
+        $this->spy = new Spy($this->callback, false, false, $this->label, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -122,7 +122,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertSame($this->label, $this->subject->label());
     }
 
     public function testSetUseTraversableSpies()

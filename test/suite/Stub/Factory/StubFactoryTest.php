@@ -25,14 +25,14 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->idSequencer = new Sequencer();
+        $this->labelSequencer = new Sequencer();
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
         $this->subject = new StubFactory(
-            $this->idSequencer,
+            $this->labelSequencer,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
@@ -43,7 +43,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame($this->idSequencer, $this->subject->idSequencer());
+        $this->assertSame($this->labelSequencer, $this->subject->labelSequencer());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
@@ -55,7 +55,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new StubFactory();
 
-        $this->assertSame(Sequencer::sequence('stub-id'), $this->subject->idSequencer());
+        $this->assertSame(Sequencer::sequence('stub-label'), $this->subject->labelSequencer());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());

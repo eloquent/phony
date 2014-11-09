@@ -116,13 +116,13 @@ class ProxyFactory implements ProxyFactoryInterface
     /**
      * Create a new stubbing proxy.
      *
-     * @param MockInterface|InstanceProxyInterface $mock The mock.
-     * @param string|null                          $id   The identifier.
+     * @param MockInterface|InstanceProxyInterface $mock  The mock.
+     * @param string|null                          $label The label.
      *
      * @return InstanceStubbingProxyInterface The newly created proxy.
      * @throws MockExceptionInterface         If the supplied mock is invalid.
      */
-    public function createStubbing($mock, $id = null)
+    public function createStubbing($mock, $label = null)
     {
         if ($mock instanceof InstanceStubbingProxyInterface) {
             return $mock;
@@ -148,7 +148,7 @@ class ProxyFactory implements ProxyFactoryInterface
         return new StubbingProxy(
             $mock,
             null,
-            $id,
+            $label,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -174,7 +174,7 @@ class ProxyFactory implements ProxyFactoryInterface
         return new VerificationProxy(
             $stubbingProxy->mock(),
             $stubbingProxy->state(),
-            $stubbingProxy->id(),
+            $stubbingProxy->label(),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher

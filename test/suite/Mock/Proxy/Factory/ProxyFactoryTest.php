@@ -114,7 +114,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($stubbingProxy->mock(), $actual->mock());
         $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
         $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
-        $this->assertSame($stubbingProxy->id(), $actual->id());
+        $this->assertSame($stubbingProxy->label(), $actual->label());
     }
 
     public function testCreateVerificationAdapt()
@@ -137,7 +137,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($stubbingProxy->mock(), $actual->mock());
         $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
         $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
-        $this->assertSame($stubbingProxy->id(), $actual->id());
+        $this->assertSame($stubbingProxy->label(), $actual->label());
     }
 
     public function testCreateStubbingStaticNew()

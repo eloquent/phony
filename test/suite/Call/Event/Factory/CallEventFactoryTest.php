@@ -45,7 +45,7 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new CallEventFactory();
 
-        $this->assertSame(Sequencer::sequence('event-id'), $this->subject->sequencer());
+        $this->assertSame(Sequencer::sequence('event-sequence-number'), $this->subject->sequencer());
         $this->assertSame(SystemClock::instance(), $this->subject->clock());
     }
 

@@ -49,7 +49,7 @@ class StubFactory implements StubFactoryInterface
     /**
      * Construct a new stub factory.
      *
-     * @param SequencerInterface|null          $idSequencer        The identifier sequencer to use.
+     * @param SequencerInterface|null          $labelSequencer     The label sequencer to use.
      * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
      * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
      * @param InvokerInterface|null            $invoker            The invoker to use.
@@ -57,15 +57,15 @@ class StubFactory implements StubFactoryInterface
      * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
      */
     public function __construct(
-        SequencerInterface $idSequencer = null,
+        SequencerInterface $labelSequencer = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
         InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $idSequencer) {
-            $idSequencer = Sequencer::sequence('stub-id');
+        if (null === $labelSequencer) {
+            $labelSequencer = Sequencer::sequence('stub-label');
         }
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -83,7 +83,7 @@ class StubFactory implements StubFactoryInterface
             $featureDetector = FeatureDetector::instance();
         }
 
-        $this->idSequencer = $idSequencer;
+        $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
@@ -92,13 +92,13 @@ class StubFactory implements StubFactoryInterface
     }
 
     /**
-     * Get the identifier sequencer.
+     * Get the label sequencer.
      *
-     * @return SequencerInterface The identifier sequencer.
+     * @return SequencerInterface The label sequencer.
      */
-    public function idSequencer()
+    public function labelSequencer()
     {
-        return $this->idSequencer;
+        return $this->labelSequencer;
     }
 
     /**
@@ -164,7 +164,7 @@ class StubFactory implements StubFactoryInterface
         return new Stub(
             $callback,
             $self,
-            strval($this->idSequencer->next()),
+            strval($this->labelSequencer->next()),
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
@@ -174,7 +174,7 @@ class StubFactory implements StubFactoryInterface
     }
 
     private static $instance;
-    private $idSequencer;
+    private $labelSequencer;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;

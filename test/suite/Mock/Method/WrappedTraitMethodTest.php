@@ -42,7 +42,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(array($this->mock, 'testClassAMethodB'), $this->subject->callback());
-        $this->assertNull($this->subject->id());
+        $this->assertNull($this->subject->label());
     }
 
     public function testConstructorWithStatic()
@@ -58,7 +58,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
             array('Eloquent\Phony\Test\TestTraitA', 'testClassAStaticMethodA'),
             $this->subject->callback()
         );
-        $this->assertNull($this->subject->id());
+        $this->assertNull($this->subject->label());
     }
 
     public function testConstructorDefaults()

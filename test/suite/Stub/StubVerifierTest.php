@@ -31,8 +31,8 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->self = (object) array();
-        $this->id = 111;
-        $this->stub = new Stub($this->callback, $this->self, $this->id);
+        $this->label = 'label';
+        $this->stub = new Stub($this->callback, $this->self, $this->label);
         $this->spy = new Spy($this->stub);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -172,7 +172,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     public function testProxyMethods()
     {
         $this->assertSame($this->self, $this->subject->self());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertSame($this->label, $this->subject->label());
     }
 
     public function testSetSelf()

@@ -31,9 +31,9 @@ interface WrappedInvocableInterface extends InvocableInterface
     public function callback();
 
     /**
-     * Get the identifier.
+     * Get the label.
      *
-     * @return string|null The identifier.
+     * @return string|null The label.
      */
-    public function id();
+    public function label();
 }
