@@ -526,7 +526,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call with arguments like:
+Expected call on implode[label] with arguments like:
     <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
@@ -542,7 +542,7 @@ EOD;
     public function testCalledWithFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected call with arguments like:
+Expected call on implode[label] with arguments like:
     <'b'>, <'c'>
 Never called.
 EOD;
@@ -581,7 +581,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call, exactly 1 time with arguments like:
+Expected call on implode[label], exactly 1 time with arguments like:
     <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
@@ -597,7 +597,7 @@ EOD;
     public function testCalledOnceWithFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected call, exactly 1 time with arguments like:
+Expected call on implode[label], exactly 1 time with arguments like:
     <'a'>, <'b'>, <'c'>
 Never called.
 EOD;
@@ -657,7 +657,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call, exactly 4 times with arguments like:
+Expected call on implode[label], exactly 4 times with arguments like:
     <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
@@ -673,7 +673,7 @@ EOD;
     public function testCalledTimesWithFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected call, exactly 4 times with arguments like:
+Expected call on implode[label], exactly 4 times with arguments like:
     <'a'>, <'b'>, <'c'>
 Never called.
 EOD;
@@ -774,7 +774,7 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected every call with arguments like:
+Expected every call on implode[label] with arguments like:
     <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'
@@ -789,7 +789,7 @@ EOD;
     public function testAlwaysCalledWithFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected every call with arguments like:
+Expected every call on implode[label] with arguments like:
     <'a'>, <'b'>, <'c'>
 Never called.
 EOD;
@@ -864,7 +864,7 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $expected = <<<'EOD'
-Expected no call with arguments like:
+Expected no call on implode[label] with arguments like:
     <'a'>, <'b'>, <'c'>
 Calls:
     - 'a', 'b', 'c'

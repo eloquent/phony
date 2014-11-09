@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Exception;
 use ReflectionMethod;
 
@@ -27,18 +27,18 @@ class WrappedMethod extends AbstractWrappedMethod
     /**
      * Construct a new wrapped method.
      *
-     * @param ReflectionMethod   $callParentMethod The _callParent() method.
-     * @param ReflectionMethod   $method           The method.
-     * @param MockInterface|null $mock             The mock.
+     * @param ReflectionMethod $callParentMethod The _callParent() method.
+     * @param ReflectionMethod $method           The method.
+     * @param ProxyInterface   $proxy            The proxy.
      */
     public function __construct(
         ReflectionMethod $callParentMethod,
         ReflectionMethod $method,
-        MockInterface $mock = null
+        ProxyInterface $proxy
     ) {
         $this->callParentMethod = $callParentMethod;
 
-        parent::__construct($method, $mock);
+        parent::__construct($method, $proxy);
     }
 
     /**

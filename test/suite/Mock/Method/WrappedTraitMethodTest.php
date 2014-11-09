@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
 
@@ -31,7 +32,9 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB');
         $this->mockBuilder = new MockBuilder();
         $this->mock = $this->mockBuilder->create();
-        $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->mock);
+        $this->proxyFactory = new ProxyFactory();
+        $this->proxy = $this->proxyFactory->createStubbing($this->mock);
+        $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->proxy);
     }
 
     public function testConstructor()
@@ -39,6 +42,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callTraitMethod, $this->subject->callTraitMethod());
         $this->assertSame($this->traitName, $this->subject->traitName());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(array($this->mock, 'testClassAMethodB'), $this->subject->callback());
@@ -48,10 +52,12 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA');
-        $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method);
+        $this->proxy = $this->proxyFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->proxy);
 
         $this->assertSame($this->callTraitMethod, $this->subject->callTraitMethod());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
@@ -59,14 +65,6 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method);
-
-        $this->assertNull($this->subject->mock());
-        $this->assertSame(array(null, $this->method->getName()), $this->subject->callback());
     }
 
     public function testSetLabel()
@@ -89,7 +87,8 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $callTraitMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB');
         $mock = $mockBuilder->get();
-        $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $mock);
+        $proxy = $this->proxyFactory->createStubbing($mock);
+        $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $proxy);
 
         $this->assertSame('ab', $subject('a', 'b'));
         $this->assertSame('ab', $subject->invoke('a', 'b'));
@@ -104,7 +103,8 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $callTraitMethod = $class->getMethod('_callTraitStatic');
         $callTraitMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA');
-        $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method);
+        $proxy = $this->proxyFactory->createStubbingStatic($mockBuilder->build());
+        $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $proxy);
         $a = 'a';
 
         $this->assertSame('ab', $subject->invokeWith(array(&$a, 'b')));

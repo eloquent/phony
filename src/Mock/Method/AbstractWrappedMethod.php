@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use ReflectionMethod;
 
 /**
@@ -20,29 +21,30 @@ use ReflectionMethod;
  *
  * @internal
  */
-abstract class AbstractWrappedMethod extends AbstractWrappedInvocable
+abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
+    WrappedMethodInterface
 {
     /**
      * Construct a new wrapped method.
      *
-     * @param ReflectionMethod   $method The method.
-     * @param MockInterface|null $mock   The mock.
+     * @param ReflectionMethod $method The method.
+     * @param ProxyInterface   $proxy  The proxy.
      */
-    public function __construct(
-        ReflectionMethod $method,
-        MockInterface $mock = null
-    ) {
+    public function __construct(ReflectionMethod $method, ProxyInterface $proxy)
+    {
         $this->method = $method;
-        $this->mock = $mock;
+        $this->proxy = $proxy;
         $this->name = $method->getName();
 
         if ($this->method->isStatic()) {
+            $this->mock = null;
             $callback = array(
                 $method->getDeclaringClass()->getName(),
                 $this->name
             );
         } else {
-            $callback = array($mock, $this->name);
+            $this->mock = $proxy->mock();
+            $callback = array($this->mock, $this->name);
         }
 
         parent::__construct($callback);
@@ -59,6 +61,16 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable
     }
 
     /**
+     * Get the proxy.
+     *
+     * @return ProxyInterface The proxy.
+     */
+    public function proxy()
+    {
+        return $this->proxy;
+    }
+
+    /**
      * Get the mock.
      *
      * @return MockInterface|null The mock.
@@ -69,6 +81,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable
     }
 
     protected $method;
+    protected $proxy;
     protected $mock;
     protected $name;
 }

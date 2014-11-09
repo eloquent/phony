@@ -34,6 +34,15 @@ interface AssertionRendererInterface
     public function renderValue($value);
 
     /**
+     * Render a callable.
+     *
+     * @param callable $callback The callable.
+     *
+     * @return string The rendered callable.
+     */
+    public function renderCallable($callback);
+
+    /**
      * Render a sequence of matchers.
      *
      * @param array<integer,MatcherInterface> $matchers The matchers.
@@ -46,13 +55,13 @@ interface AssertionRendererInterface
      * Render a cardinality.
      *
      * @param CardinalityInterface $cardinality The cardinality.
-     * @param string               $verb        The verb.
+     * @param string               $subject     The subject.
      *
      * @return string The rendered cardinality.
      */
     public function renderCardinality(
         CardinalityInterface $cardinality,
-        $verb
+        $subject
     );
 
     /**

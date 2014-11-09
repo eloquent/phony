@@ -28,6 +28,8 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Mock\Method\WrappedMethodInterface;
+use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
 use Exception;
@@ -113,6 +115,75 @@ class AssertionRenderer implements AssertionRendererInterface
     }
 
     /**
+     * Render a callable.
+     *
+     * @param callable $callback The callable.
+     *
+     * @return string The rendered callable.
+     */
+    public function renderCallable($callback)
+    {
+        $wrappedCallback = null;
+
+        while ($callback instanceof WrappedInvocableInterface) {
+            $wrappedCallback = $callback;
+            $callback = $callback->callback();
+        }
+
+        $rendered = null;
+        $label = null;
+
+        if ($wrappedCallback) {
+            if ($wrappedCallback->isAnonymous()) {
+                if ($wrappedCallback instanceof SpyInterface) {
+                    $rendered = '{spy}';
+                } elseif ($wrappedCallback instanceof StubInterface) {
+                    $rendered = '{stub}';
+                }
+            }
+
+            $label = $wrappedCallback->label();
+        }
+
+        if (!$rendered) {
+            $reflector = $this->invocableInspector
+                ->callbackReflector($callback);
+
+            if ($reflector instanceof ReflectionMethod) {
+                $rendered = $reflector->getDeclaringClass()->getName();
+
+                if ($wrappedCallback instanceof WrappedMethodInterface) {
+                    $proxy = $wrappedCallback->proxy();
+
+                    if ($proxy instanceof InstanceProxyInterface) {
+                        $mockLabel = $proxy->label();
+
+                        if (null !== $mockLabel) {
+                            $rendered .= '[' . $mockLabel . ']';
+                        }
+                    }
+                }
+
+                if ($reflector->isStatic()) {
+                    $callOperator = '::';
+                } else {
+                    $callOperator = '->';
+                }
+
+                $rendered .= $callOperator . $reflector->getName();
+            } else {
+                $rendered = $reflector->getName();
+            }
+        }
+
+        if (null !== $label) {
+            $rendered .= sprintf('[%s]', $label);
+        }
+
+        return $rendered;
+    }
+
+    /**
      * Render a sequence of matchers.
      *
      * @param array<integer,MatcherInterface> $matchers The matchers.
@@ -137,24 +208,24 @@ class AssertionRenderer implements AssertionRendererInterface
      * Render a cardinality.
      *
      * @param CardinalityInterface $cardinality The cardinality.
-     * @param string               $verb        The verb.
+     * @param string               $subject     The subject.
      *
      * @return string The rendered cardinality.
      */
     public function renderCardinality(
         CardinalityInterface $cardinality,
-        $verb
+        $subject
     ) {
         if ($cardinality->isNever()) {
-            return sprintf('no %s', $verb);
+            return sprintf('no %s', $subject);
         }
 
         $isAlways = $cardinality->isAlways();
 
         if ($isAlways) {
-            $rendered = sprintf('every %s', $verb);
+            $rendered = sprintf('every %s', $subject);
         } else {
-            $rendered = $verb;
+            $rendered = $subject;
         }
 
         $minimum = $cardinality->minimum();
@@ -319,53 +390,6 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderCalledEvent(CalledEventInterface $event)
     {
-        $callback = $event->callback();
-        $wrappedCallback = null;
-
-        while ($callback instanceof WrappedInvocableInterface) {
-            $wrappedCallback = $callback;
-            $callback = $callback->callback();
-        }
-
-        $renderedSubject = null;
-
-        if ($wrappedCallback && $wrappedCallback->isAnonymous()) {
-            if ($wrappedCallback instanceof SpyInterface) {
-                if (null === $wrappedCallback->label()) {
-                    $renderedSubject = '{spy}';
-                } else {
-                    $renderedSubject =
-                        sprintf('{spy %s}', $wrappedCallback->label());
-                }
-            } elseif ($wrappedCallback instanceof StubInterface) {
-                if (null === $wrappedCallback->label()) {
-                    $renderedSubject = '{stub}';
-                } else {
-                    $renderedSubject =
-                        sprintf('{stub %s}', $wrappedCallback->label());
-                }
-            }
-        }
-
-        if (!$renderedSubject) {
-            $reflector = $this->invocableInspector
-                ->callbackReflector($callback);
-
-            if ($reflector instanceof ReflectionMethod) {
-                if ($reflector->isStatic()) {
-                    $callOperator = '::';
-                } else {
-                    $callOperator = '->';
-                }
-
-                $renderedSubject = $reflector->getDeclaringClass()->getName() .
-                    $callOperator .
-                    $reflector->getName();
-            } else {
-                $renderedSubject = $reflector->getName();
-            }
-        }
-
         $arguments = $event->arguments();
 
         $renderedArguments = array();
@@ -375,7 +399,8 @@ class AssertionRenderer implements AssertionRendererInterface
 
         return sprintf(
             '%s(%s)',
-            $renderedSubject, implode(', ', $renderedArguments)
+            $this->renderCallable($event->callback()),
+            implode(', ', $renderedArguments)
         );
     }
 

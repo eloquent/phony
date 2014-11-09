@@ -439,4 +439,36 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array('a', 'b'), $proxy->mock()->constructorArguments);
     }
+
+    public function testSpyAssertionFailureOutput()
+    {
+        $spy = x\spy();
+        $spy->setLabel('example');
+        $spy('a', 'b');
+        $expected = <<<'EOD'
+Expected call on {spy}[example] with arguments like:
+    <'c'>, <'d'>
+Calls:
+    - 'a', 'b'
+EOD;
+
+        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
+        $spy->calledWith('c', 'd');
+    }
+
+    public function testMockAssertionFailureOutput()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA', null, null, 'PhonyMockAssertionFailure');
+        $proxy->setLabel('example');
+        $proxy->mock()->testClassAMethodA('a', 'b');
+        $expected = <<<'EOD'
+Expected call on PhonyMockAssertionFailure[example]->testClassAMethodA with arguments like:
+    <'c'>, <'d'>
+Calls:
+    - 'a', 'b'
+EOD;
+
+        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
+        $proxy->testClassAMethodA->calledWith('c', 'd');
+    }
 }

@@ -306,7 +306,7 @@ abstract class AbstractProxy implements ProxyInterface
                     $this->callTraitMethod,
                     $this->traitMethods[$name],
                     $this->class->getMethod($name),
-                    $mock
+                    $this
                 ),
                 $mock
             );
@@ -318,7 +318,7 @@ abstract class AbstractProxy implements ProxyInterface
                 new WrappedMethod(
                     $this->callParentMethod,
                     $this->class->getMethod($name),
-                    $mock
+                    $this
                 ),
                 $mock
             );

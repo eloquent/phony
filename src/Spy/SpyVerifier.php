@@ -510,8 +510,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         throw $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected %s with arguments like:\n    %s\n%s",
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'call'),
+                $this->assertionRenderer->renderCardinality(
+                    $cardinality,
+                    'call on ' .
+                        $this->assertionRenderer->renderCallable($this->spy)
+                ),
                 $this->assertionRenderer->renderMatchers($matchers),
                 $renderedActual
             )
