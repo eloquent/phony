@@ -19,6 +19,8 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInte
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinitionInterface;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use ReflectionClass;
 
 /**
@@ -31,14 +33,15 @@ class MockDefinition implements MockDefinitionInterface
     /**
      * Construct a new mock definition.
      *
-     * @param array<string,ReflectionClass>|null $types                  The types.
-     * @param array<string,callable|null>|null   $customMethods          The custom methods.
-     * @param array<string,mixed>|null           $customProperties       The custom properties.
-     * @param array<string,callable|null>|null   $customStaticMethods    The custom static methods.
-     * @param array<string,mixed>|null           $customStaticProperties The custom static properties.
-     * @param array<string,mixed>|null           $customConstants        The custom constants.
-     * @param string|null                        $className              The class name.
-     * @param FeatureDetectorInterface|null      $featureDetector        The feature detector to use.
+     * @param array<string,ReflectionClass>|null       $types                  The types.
+     * @param array<string,callable|null>|null         $customMethods          The custom methods.
+     * @param array<string,mixed>|null                 $customProperties       The custom properties.
+     * @param array<string,callable|null>|null         $customStaticMethods    The custom static methods.
+     * @param array<string,mixed>|null                 $customStaticProperties The custom static properties.
+     * @param array<string,mixed>|null                 $customConstants        The custom constants.
+     * @param string|null                              $className              The class name.
+     * @param FunctionSignatureInspectorInterface|null $signatureInspector     The function signature inspector.
+     * @param FeatureDetectorInterface|null            $featureDetector        The feature detector to use.
      */
     public function __construct(
         array $types = null,
@@ -48,6 +51,7 @@ class MockDefinition implements MockDefinitionInterface
         array $customStaticProperties = null,
         array $customConstants = null,
         $className = null,
+        FunctionSignatureInspectorInterface $signatureInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $types) {
@@ -68,6 +72,9 @@ class MockDefinition implements MockDefinitionInterface
         if (null === $customConstants) {
             $customConstants = array();
         }
+        if (null === $signatureInspector) {
+            $signatureInspector = FunctionSignatureInspector::instance();
+        }
         if (null === $featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
@@ -79,6 +86,7 @@ class MockDefinition implements MockDefinitionInterface
         $this->customStaticProperties = $customStaticProperties;
         $this->customConstants = $customConstants;
         $this->className = $className;
+        $this->signatureInspector = $signatureInspector;
         $this->featureDetector = $featureDetector;
 
         $this->isTraitSupported = $this->featureDetector->isSupported('trait');
@@ -152,6 +160,16 @@ class MockDefinition implements MockDefinitionInterface
     public function className()
     {
         return $this->className;
+    }
+
+    /**
+     * Get the function signature inspector.
+     *
+     * @return FunctionSignatureInspectorInterface The function signature inspector.
+     */
+    public function signatureInspector()
+    {
+        return $this->signatureInspector;
     }
 
     /**
@@ -233,15 +251,39 @@ class MockDefinition implements MockDefinitionInterface
      */
     public function isEqualTo(MockDefinitionInterface $definition)
     {
-        return
+        $customMethods = $definition->customMethods();
+        $customStaticMethods = $definition->customStaticMethods();
+
+        $isEqual =
             $definition->className() === $this->className &&
             $definition->typeNames() === $this->typeNames() &&
-            $definition->customMethods() === $this->customMethods &&
             $definition->customProperties() === $this->customProperties &&
-            $definition->customStaticMethods() === $this->customStaticMethods &&
             $definition->customStaticProperties() ===
                 $this->customStaticProperties &&
-            $definition->customConstants() === $this->customConstants;
+            $definition->customConstants() === $this->customConstants &&
+            array_keys($customMethods) === array_keys($this->customMethods) &&
+            array_keys($customStaticMethods) ===
+                array_keys($this->customStaticMethods);
+
+        if (!$isEqual) {
+            return false;
+        }
+
+        foreach ($this->customMethods as $name => $callback) {
+            if (!$this->isSignatureEqual($callback, $customMethods[$name])) {
+                return false;
+            }
+        }
+
+        foreach ($this->customStaticMethods as $name => $callback) {
+            if (
+                !$this->isSignatureEqual($callback, $customStaticMethods[$name])
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -371,6 +413,21 @@ class MockDefinition implements MockDefinitionInterface
             new MethodDefinitionCollection($methods, $traitMethods);
     }
 
+    /**
+     * Returns true if the supplied callbacks have identical function
+     * signatures.
+     *
+     * @param callable $callbackA The first callback.
+     * @param callable $callbackB The second callback.
+     *
+     * @return boolean True if the callbacks have the same signature.
+     */
+    protected function isSignatureEqual($callbackA, $callbackB)
+    {
+        return $this->signatureInspector->callbackSignature($callbackA) ===
+            $this->signatureInspector->callbackSignature($callbackB);
+    }
+
     private $types;
     private $customMethods;
     private $customProperties;
@@ -378,6 +435,7 @@ class MockDefinition implements MockDefinitionInterface
     private $customStaticProperties;
     private $customConstants;
     private $className;
+    private $signatureInspector;
     private $featureDetector;
     private $isTraitSupported;
     private $typeNames;

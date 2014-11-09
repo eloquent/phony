@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Feature\FeatureDetectorInterface;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use ReflectionFunctionAbstract;
 
 /**
@@ -41,21 +43,37 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     /**
      * Construct a new function signature inspector.
      *
-     * @param FeatureDetectorInterface|null $featureDetector The feature detector to use.
+     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
+     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
      */
     public function __construct(
+        InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
         if (null === $featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
 
+        $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;
         $this->isExportDefaultArraySupported = $featureDetector
             ->isSupported('reflection.function.export.default.array');
         $this->isExportReferenceSupported = $featureDetector
             ->isSupported('reflection.function.export.reference');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
+    }
+
+    /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
     }
 
     /**
@@ -149,7 +167,22 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
         return $signature;
     }
 
+    /**
+     * Get the function signature of the supplied callback.
+     *
+     * @param callable $callback The callback.
+     *
+     * @return array<string,array<integer,string>> The callback signature.
+     */
+    public function callbackSignature($callback)
+    {
+        return $this->signature(
+            $this->invocableInspector->callbackReflector($callback)
+        );
+    }
+
     private static $instance;
+    private $invocableInspector;
     private $featureDetector;
     private $isExportDefaultArraySupported;
     private $isExportReferenceSupported;

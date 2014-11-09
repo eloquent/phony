@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionFunction;
@@ -23,12 +24,14 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
-        $this->subject = new FunctionSignatureInspector($this->featureDetector);
+        $this->subject = new FunctionSignatureInspector($this->invocableInspector, $this->featureDetector);
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
     }
 
@@ -36,6 +39,7 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new FunctionSignatureInspector();
 
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
@@ -162,6 +166,18 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
+    }
+
+    public function testCallbackSignature()
+    {
+        $callback = function ($a, array $b = null) {};
+        $expected = array(
+            'a' => array('',       '', ''),
+            'b' => array('array ', '', ' = null'),
+        );
+        $actual = $this->subject->callbackSignature($callback);
+
+        $this->assertSame($actual, $expected);
     }
 
     protected function methodA($a = ReflectionMethod::IS_FINAL, $b = self::CONSTANT_A) {}
