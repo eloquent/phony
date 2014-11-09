@@ -21,7 +21,7 @@ use Generator;
  *
  * @internal
  */
-abstract class TraversableSpyFactoryDetail
+abstract class GeneratorSpyFactoryDetail
 {
     /**
      * Create a new generator spy.

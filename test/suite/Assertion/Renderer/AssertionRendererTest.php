@@ -232,7 +232,7 @@ EOD;
                 "{spy}()",
             ),
             'Spy with label' => array(
-                $callFactory->create($callEventFactory->createCalled(new Spy(null, null, null, 'label'))),
+                $callFactory->create($callEventFactory->createCalled(new Spy(null, 'label'))),
                 "{spy}[label]()",
             ),
             'Stub' => array(

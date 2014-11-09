@@ -255,7 +255,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testTraversableSpyingStatic()
     {
-        $stub = Phony::stub(null, null, true);
+        $stub = Phony::stub(null, null, null, true);
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 
@@ -270,7 +270,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testTraversableSpyingFunction()
     {
-        $stub = x\stub(null, null, true);
+        $stub = x\stub(null, null, null, true);
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 

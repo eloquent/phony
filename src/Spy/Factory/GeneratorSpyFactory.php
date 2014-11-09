@@ -11,21 +11,19 @@
 
 namespace Eloquent\Phony\Spy\Factory;
 
-use ArrayIterator;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
-use Eloquent\Phony\Spy\IteratorSpy;
+use Generator;
 use InvalidArgumentException;
-use IteratorAggregate;
 use Traversable;
 
 /**
- * Creates traversable spies.
+ * Creates generator spies.
  *
  * @internal
  */
-class TraversableSpyFactory implements TraversableSpyFactoryInterface
+class GeneratorSpyFactory implements TraversableSpyFactoryInterface
 {
     /**
      * Get the static instance of this factory.
@@ -42,7 +40,7 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     }
 
     /**
-     * Construct a new traversable spy factory.
+     * Construct a new generator spy factory.
      *
      * @param CallEventFactoryInterface|null $callEventFactory The call event factory to use.
      */
@@ -75,7 +73,7 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
      */
     public function isSupported($value)
     {
-        return is_array($value) || $value instanceof Traversable;
+        return $value instanceof Generator;
     }
 
     /**
@@ -101,15 +99,8 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
             );
         }
 
-        if (is_array($traversable)) {
-            $iterator = new ArrayIterator($traversable);
-        } elseif ($traversable instanceof IteratorAggregate) {
-            $iterator = $traversable->getIterator();
-        } else {
-            $iterator = $traversable;
-        }
-
-        return new IteratorSpy($call, $iterator, $this->callEventFactory);
+        return GeneratorSpyFactoryDetail
+            ::createGeneratorSpy($call, $traversable, $this->callEventFactory);
     }
 
     private static $instance;

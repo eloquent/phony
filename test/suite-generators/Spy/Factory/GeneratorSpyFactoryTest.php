@@ -17,7 +17,7 @@ use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
 
-class TraversableSpyFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -27,11 +27,7 @@ class TraversableSpyFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->subject = new TraversableSpyFactory($this->callEventFactory);
-
-        $this->call = $this->callFactory->create();
-
-        // additions for generators
+        $this->subject = new GeneratorSpyFactory($this->callEventFactory);
 
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
@@ -40,7 +36,7 @@ class TraversableSpyFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory->reset();
     }
 
-    public function testIsTraversable()
+    public function testIsSupported()
     {
         $generator = call_user_func(
             function () {
@@ -49,7 +45,7 @@ class TraversableSpyFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertTrue($this->subject->isTraversable($generator));
+        $this->assertTrue($this->subject->isSupported($generator));
     }
 
     public function testCreateWithReturnedEnd()

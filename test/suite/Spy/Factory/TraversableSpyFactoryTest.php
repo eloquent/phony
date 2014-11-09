@@ -40,11 +40,11 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(CallEventFactory::instance(), $this->subject->callEventFactory());
     }
 
-    public function testIsTraversable()
+    public function testIsSupported()
     {
-        $this->assertTrue($this->subject->isTraversable(array()));
-        $this->assertTrue($this->subject->isTraversable(new ArrayIterator()));
-        $this->assertFalse($this->subject->isTraversable(null));
+        $this->assertTrue($this->subject->isSupported(array()));
+        $this->assertTrue($this->subject->isSupported(new ArrayIterator()));
+        $this->assertFalse($this->subject->isSupported(null));
     }
 
     public function testCreateWithArrayReturn()
@@ -141,8 +141,16 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->setExpectedException('InvalidArgumentException', "Invalid traversable of type 'NULL'.");
+        $this->setExpectedException('InvalidArgumentException', "Unsupported traversable of type NULL.");
         $this->subject->create($this->call, null);
+    }
+
+    public function testCreateFailureInvalidTraversableObject()
+    {
+        $this->call = $this->callFactory->create();
+
+        $this->setExpectedException('InvalidArgumentException', "Unsupported traversable of type 'stdClass'.");
+        $this->subject->create($this->call, (object) array());
     }
 
     public function testInstance()

@@ -34,7 +34,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
         $this->label = 'label';
-        $this->spy = new Spy($this->callback, false, false, $this->label, $this->callFactory);
+        $this->spy = new Spy($this->callback, $this->label, false, false, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -136,18 +136,18 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->label, $this->subject->label());
     }
 
-    public function testSetUseTraversableSpies()
-    {
-        $this->subject->setUseTraversableSpies(true);
-
-        $this->assertTrue($this->subject->useTraversableSpies());
-    }
-
     public function testSetUseGeneratorSpies()
     {
         $this->subject->setUseGeneratorSpies(true);
 
         $this->assertTrue($this->subject->useGeneratorSpies());
+    }
+
+    public function testSetUseTraversableSpies()
+    {
+        $this->subject->setUseTraversableSpies(true);
+
+        $this->assertTrue($this->subject->useTraversableSpies());
     }
 
     public function testSetCalls()
@@ -205,7 +205,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, false, false, 111, $this->callFactory);
+        $spy = new Spy(null, '111', false, false, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $verifier->invokeWith(array('a'));
         $verifier->invoke('b', 'c');
@@ -236,7 +236,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($callback, false, false, 111, $this->callFactory);
+        $spy = new Spy($callback, '111', false, false, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $caughtExceptions = array();
         try {
@@ -278,7 +278,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $callback = function (&$argument) {
             $argument = 'x';
         };
-        $spy = new Spy($callback, false, false, 111, $this->callFactory);
+        $spy = new Spy($callback, '111', false, false, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $value = null;
         $arguments = array(&$value);

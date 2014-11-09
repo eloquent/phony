@@ -44,11 +44,13 @@ class SpyFactory implements SpyFactoryInterface
      *
      * @param SequencerInterface|null             $labelSequencer        The label sequencer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
+     * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
         SequencerInterface $labelSequencer = null,
         CallFactoryInterface $callFactory = null,
+        TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
         if (null === $labelSequencer) {
@@ -57,12 +59,16 @@ class SpyFactory implements SpyFactoryInterface
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
+        if (null === $generatorSpyFactory) {
+            $generatorSpyFactory = GeneratorSpyFactory::instance();
+        }
         if (null === $traversableSpyFactory) {
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
         $this->labelSequencer = $labelSequencer;
         $this->callFactory = $callFactory;
+        $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
     }
 
@@ -87,6 +93,16 @@ class SpyFactory implements SpyFactoryInterface
     }
 
     /**
+     * Get the generator spy factory.
+     *
+     * @return TraversableSpyFactoryInterface The generator spy factory.
+     */
+    public function generatorSpyFactory()
+    {
+        return $this->generatorSpyFactory;
+    }
+
+    /**
      * Get the traversable spy factory.
      *
      * @return TraversableSpyFactoryInterface The traversable spy factory.
@@ -100,22 +116,23 @@ class SpyFactory implements SpyFactoryInterface
      * Create a new spy.
      *
      * @param callable|null $callback            The callback, or null to create an unbound spy.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyInterface The newly created spy.
      */
     public function create(
         $callback = null,
-        $useTraversableSpies = null,
-        $useGeneratorSpies = null
+        $useGeneratorSpies = null,
+        $useTraversableSpies = null
     ) {
         return new Spy(
             $callback,
-            $useTraversableSpies,
-            $useGeneratorSpies,
             strval($this->labelSequencer->next()),
+            $useGeneratorSpies,
+            $useTraversableSpies,
             $this->callFactory,
+            $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
     }
@@ -123,5 +140,6 @@ class SpyFactory implements SpyFactoryInterface
     private static $instance;
     private $labelSequencer;
     private $callFactory;
+    private $generatorSpyFactory;
     private $traversableSpyFactory;
 }

@@ -20,20 +20,6 @@ use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 interface SpyInterface extends WrappedInvocableInterface
 {
     /**
-     * Turn on or off the use of traversable spies.
-     *
-     * @param boolean $useTraversableSpies True to use traversable spies.
-     */
-    public function setUseTraversableSpies($useTraversableSpies);
-
-    /**
-     * Returns true if this spy uses traversable spies.
-     *
-     * @return boolean True if this spy uses traversable spies.
-     */
-    public function useTraversableSpies();
-
-    /**
      * Turn on or off the use of generator spies.
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
@@ -46,6 +32,20 @@ interface SpyInterface extends WrappedInvocableInterface
      * @return boolean True if this spy uses generator spies.
      */
     public function useGeneratorSpies();
+
+    /**
+     * Turn on or off the use of traversable spies.
+     *
+     * @param boolean $useTraversableSpies True to use traversable spies.
+     */
+    public function setUseTraversableSpies($useTraversableSpies);
+
+    /**
+     * Returns true if this spy uses traversable spies.
+     *
+     * @return boolean True if this spy uses traversable spies.
+     */
+    public function useTraversableSpies();
 
     /**
      * Set the calls.

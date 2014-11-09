@@ -22,14 +22,14 @@ interface SpyFactoryInterface
      * Create a new spy.
      *
      * @param callable|null $callback            The callback, or null to create an unbound spy.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyInterface The newly created spy.
      */
     public function create(
         $callback = null,
-        $useTraversableSpies = null,
-        $useGeneratorSpies = null
+        $useGeneratorSpies = null,
+        $useTraversableSpies = null
     );
 }
