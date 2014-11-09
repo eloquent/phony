@@ -333,7 +333,7 @@ abstract class AbstractProxy implements ProxyInterface
 
     private $mock;
     private $class;
-    private $state;
+    protected $state;
     private $uncallableMethods;
     private $traitMethods;
     private $callParentMethod;

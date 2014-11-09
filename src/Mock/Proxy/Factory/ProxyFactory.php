@@ -28,6 +28,7 @@ use Eloquent\Phony\Mock\Proxy\Verification\InstanceVerificationProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy;
 use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
 use Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -147,8 +148,11 @@ class ProxyFactory implements ProxyFactoryInterface
 
         return new StubbingProxy(
             $mock,
-            null,
-            $label,
+            (object) array(
+                'stubs' => (object) array(),
+                'isFull' => false,
+                'label' => $label,
+            ),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
@@ -174,7 +178,6 @@ class ProxyFactory implements ProxyFactoryInterface
         return new VerificationProxy(
             $stubbingProxy->mock(),
             $stubbingProxy->state(),
-            $stubbingProxy->label(),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher

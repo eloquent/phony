@@ -58,13 +58,16 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $proxyProperty->setValue($mock, null);
         $expected = new StubbingProxy(
             $mock,
-            null,
-            'id',
+            (object) array(
+                'stubs' => (object) array(),
+                'isFull' => false,
+                'label' => 'label',
+            ),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->wildcardMatcher
         );
-        $actual = $this->subject->createStubbing($mock, 'id');
+        $actual = $this->subject->createStubbing($mock, 'label');
 
         $this->assertEquals($expected, $actual);
     }
