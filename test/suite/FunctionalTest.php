@@ -471,4 +471,12 @@ EOD;
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
         $proxy->testClassAMethodA->calledWith('c', 'd');
     }
+
+    public function testMatcherAdaptationForBooleanValues()
+    {
+        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA->with(true)->returns('a');
+
+        $this->assertNull($proxy->mock()->testClassAMethodA());
+    }
 }
