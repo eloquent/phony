@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
@@ -35,6 +37,8 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      * @param stdClass|null                     $state               The state.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
      */
     public function __construct(
@@ -42,6 +46,8 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         stdClass $state = null,
         StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
+        AssertionRendererInterface $assertionRenderer = null,
+        AssertionRecorderInterface $assertionRecorder = null,
         WildcardMatcherInterface $wildcardMatcher = null
     ) {
         $class = new ReflectionClass($mock);
@@ -88,6 +94,8 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
             $mock,
             $stubFactory,
             $stubVerifierFactory,
+            $assertionRenderer,
+            $assertionRecorder,
             $wildcardMatcher
         );
     }
