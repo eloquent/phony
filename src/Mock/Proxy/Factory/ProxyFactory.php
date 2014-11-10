@@ -11,6 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Factory;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
@@ -61,11 +65,15 @@ class ProxyFactory implements ProxyFactoryInterface
      *
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
      */
     public function __construct(
         StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
+        AssertionRendererInterface $assertionRenderer = null,
+        AssertionRecorderInterface $assertionRecorder = null,
         WildcardMatcherInterface $wildcardMatcher = null
     ) {
         if (null === $stubFactory) {
@@ -74,12 +82,20 @@ class ProxyFactory implements ProxyFactoryInterface
         if (null === $stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
+        if (null === $assertionRenderer) {
+            $assertionRenderer = AssertionRenderer::instance();
+        }
+        if (null === $assertionRecorder) {
+            $assertionRecorder = AssertionRecorder::instance();
+        }
         if (null === $wildcardMatcher) {
             $wildcardMatcher = WildcardMatcher::instance();
         }
 
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->assertionRenderer = $assertionRenderer;
+        $this->assertionRecorder = $assertionRecorder;
         $this->wildcardMatcher = $wildcardMatcher;
     }
 
@@ -101,6 +117,26 @@ class ProxyFactory implements ProxyFactoryInterface
     public function stubVerifierFactory()
     {
         return $this->stubVerifierFactory;
+    }
+
+    /**
+     * Get the assertion renderer.
+     *
+     * @return AssertionRendererInterface The assertion renderer.
+     */
+    public function assertionRenderer()
+    {
+        return $this->assertionRenderer;
+    }
+
+    /**
+     * Get the assertion recorder.
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
+     */
+    public function assertionRecorder()
+    {
+        return $this->assertionRecorder;
     }
 
     /**
@@ -154,6 +190,8 @@ class ProxyFactory implements ProxyFactoryInterface
             ),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
     }
@@ -179,6 +217,8 @@ class ProxyFactory implements ProxyFactoryInterface
             $stubbingProxy->state(),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
     }
@@ -227,6 +267,8 @@ class ProxyFactory implements ProxyFactoryInterface
             null,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
     }
@@ -252,6 +294,8 @@ class ProxyFactory implements ProxyFactoryInterface
             $stubbingProxy->state(),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
     }
@@ -259,5 +303,7 @@ class ProxyFactory implements ProxyFactoryInterface
     private static $instance;
     private $mockFactory;
     private $stubVerifierFactory;
+    private $assertionRenderer;
+    private $assertionRecorder;
     private $wildcardMatcher;
 }

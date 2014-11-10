@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
@@ -25,6 +27,8 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->state = (object) array('stubs' => (object) array(), 'isFull' => true, 'label' => 'label');
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->assertionRenderer = new AssertionRenderer();
+        $this->assertionRecorder = new AssertionRecorder();
         $this->wildcardMatcher = new WildcardMatcher();
 
         $this->featureDetector = FeatureDetector::instance();
@@ -40,6 +44,8 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
 
@@ -63,6 +69,8 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->state->label, $this->subject->label());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
+        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
     }
 
@@ -77,6 +85,8 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->isFull());
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
+        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
     }
 

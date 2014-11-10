@@ -11,6 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
@@ -47,6 +51,8 @@ abstract class AbstractProxy implements ProxyInterface
      * @param MockInterface|null                $mock                The mock, or null if this is a static proxy.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
      */
     public function __construct(
@@ -58,6 +64,8 @@ abstract class AbstractProxy implements ProxyInterface
         MockInterface $mock = null,
         StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
+        AssertionRendererInterface $assertionRenderer = null,
+        AssertionRecorderInterface $assertionRecorder = null,
         WildcardMatcherInterface $wildcardMatcher = null
     ) {
         if (null === $state) {
@@ -72,6 +80,12 @@ abstract class AbstractProxy implements ProxyInterface
         if (null === $stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
+        if (null === $assertionRenderer) {
+            $assertionRenderer = AssertionRenderer::instance();
+        }
+        if (null === $assertionRecorder) {
+            $assertionRecorder = AssertionRecorder::instance();
+        }
         if (null === $wildcardMatcher) {
             $wildcardMatcher = WildcardMatcher::instance();
         }
@@ -84,6 +98,8 @@ abstract class AbstractProxy implements ProxyInterface
         $this->callMagicMethod = $callMagicMethod;
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->assertionRenderer = $assertionRenderer;
+        $this->assertionRecorder = $assertionRecorder;
         $this->wildcardMatcher = $wildcardMatcher;
 
         $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
@@ -117,6 +133,26 @@ abstract class AbstractProxy implements ProxyInterface
     public function stubVerifierFactory()
     {
         return $this->stubVerifierFactory;
+    }
+
+    /**
+     * Get the assertion renderer.
+     *
+     * @return AssertionRendererInterface The assertion renderer.
+     */
+    public function assertionRenderer()
+    {
+        return $this->assertionRenderer;
+    }
+
+    /**
+     * Get the assertion recorder.
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
+     */
+    public function assertionRecorder()
+    {
+        return $this->assertionRecorder;
     }
 
     /**
@@ -331,9 +367,9 @@ abstract class AbstractProxy implements ProxyInterface
         return $this->stubVerifierFactory->create($stub);
     }
 
+    protected $state;
     private $mock;
     private $class;
-    protected $state;
     private $uncallableMethods;
     private $traitMethods;
     private $callParentMethod;
@@ -341,6 +377,8 @@ abstract class AbstractProxy implements ProxyInterface
     private $callMagicMethod;
     private $stubFactory;
     private $stubVerifierFactory;
+    private $assertionRenderer;
+    private $assertionRecorder;
     private $wildcardMatcher;
     private $customMethods;
 }
