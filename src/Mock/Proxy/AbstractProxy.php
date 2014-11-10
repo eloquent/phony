@@ -279,6 +279,49 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
+     * Checks if there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface|null The result.
+     */
+    public function checkNoInteraction()
+    {
+        foreach (get_object_vars($this->state->stubs) as $stub) {
+            if ($stub->checkCalled()) {
+                return null;
+            }
+        }
+
+        return $this->assertionRecorder->createSuccess();
+    }
+
+    /**
+     * Throws an exception unless there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails.
+     */
+    public function noInteraction()
+    {
+        if ($result = $this->checkNoInteraction()) {
+            return $result;
+        }
+
+        $calls = array();
+
+        foreach (get_object_vars($this->state->stubs) as $name => $stub) {
+            $calls = array_merge($calls, $stub->recordedCalls());
+        }
+
+        throw $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected no interaction with %s. Calls:\n%s",
+                $this->assertionRenderer->renderMock($this),
+                $this->assertionRenderer->renderCalls($calls)
+            )
+        );
+    }
+
+    /**
      * Reset the mock to its initial state.
      *
      * @return ProxyInterface This proxy.

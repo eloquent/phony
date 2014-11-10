@@ -17,6 +17,7 @@ use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Exception;
 
 /**
@@ -32,6 +33,15 @@ interface AssertionRendererInterface
      * @return string The rendered value.
      */
     public function renderValue($value);
+
+    /**
+     * Render a mock.
+     *
+     * @param ProxyInterface $proxy The proxy.
+     *
+     * @return string The rendered mock.
+     */
+    public function renderMock(ProxyInterface $proxy);
 
     /**
      * Render a callable.

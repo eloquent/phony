@@ -30,6 +30,7 @@ use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Method\WrappedMethodInterface;
 use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
 use Exception;
@@ -112,6 +113,30 @@ class AssertionRenderer implements AssertionRendererInterface
         }
 
         return $this->exporter->shortenedExport($value);
+    }
+
+    /**
+     * Render a mock.
+     *
+     * @param ProxyInterface $proxy The proxy.
+     *
+     * @return string The rendered mock.
+     */
+    public function renderMock(ProxyInterface $proxy)
+    {
+        $rendered = $proxy->className();
+
+        if ($proxy instanceof InstanceProxyInterface) {
+            $label = $proxy->label();
+
+            if (null !== $label) {
+                $rendered .= '[' . $label . ']';
+            }
+        } else {
+            $rendered .= '[static]';
+        }
+
+        return $rendered;
     }
 
     /**
@@ -272,10 +297,17 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderCalls(array $calls)
     {
+        usort(
+            $calls,
+            function ($left, $right) {
+                return $left->sequenceNumber() > $right->sequenceNumber();
+            }
+        );
+
         $rendered = array();
+
         foreach ($calls as $call) {
-            $rendered[] =
-                sprintf('    - %s', $this->renderCall($call));
+            $rendered[] = sprintf('    - %s', $this->renderCall($call));
         }
 
         return implode("\n", $rendered);

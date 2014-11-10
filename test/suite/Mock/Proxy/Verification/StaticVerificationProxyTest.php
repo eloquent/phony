@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Proxy\Verification;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
@@ -35,9 +36,9 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->featureDetector = FeatureDetector::instance();
     }
 
-    protected function setUpWith($className)
+    protected function setUpWith($className, $mockClassName = null)
     {
-        $this->mockBuilder = new MockBuilder($className);
+        $this->mockBuilder = new MockBuilder($className, null, $mockClassName);
         $this->class = $this->mockBuilder->build(true);
         $this->subject = new StaticVerificationProxy(
             $this->class,
@@ -166,6 +167,43 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Spy\Spy', $actual);
         $this->assertSame($actual, $this->subject->spy('testClassAStaticMethodA'));
         $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA->spy());
+    }
+
+    public function testCheckNoInteraction()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $className = $this->subject->className();
+
+        $this->assertTrue((boolean) $this->subject->checkNoInteraction());
+
+        $className::testClassAStaticMethodA();
+
+        $this->assertFalse((boolean) $this->subject->checkNoInteraction());
+    }
+
+    public function testNoInteraction()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertEquals(new CallEventCollection(), $this->subject->noInteraction());
+    }
+
+    public function testNoInteractionFailure()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA', 'PhonyMockStaticVerificationNoInteraction');
+        $className = $this->subject->className();
+        $className::testClassAStaticMethodA('a', 'b');
+        $className::testClassAStaticMethodB('c', 'd');
+        $className::testClassAStaticMethodA('e', 'f');
+        $expected = <<<'EOD'
+Expected no interaction with PhonyMockStaticVerificationNoInteraction[static]. Calls:
+    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodA('a', 'b')
+    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodB('c', 'd')
+    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodA('e', 'f')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->noInteraction();
     }
 
     public function testReset()
