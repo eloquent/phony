@@ -16,6 +16,7 @@ use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 use RuntimeException;
 
 class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
@@ -232,5 +233,34 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->traversableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
+    }
+
+    public function testCreateFailureInvalidTraversable()
+    {
+        $this->call = $this->callFactory->create();
+
+        $this->setExpectedException('InvalidArgumentException', "Unsupported traversable of type NULL.");
+        $this->subject->create($this->call, null);
+    }
+
+    public function testCreateFailureInvalidTraversableObject()
+    {
+        $this->call = $this->callFactory->create();
+
+        $this->setExpectedException('InvalidArgumentException', "Unsupported traversable of type 'stdClass'.");
+        $this->subject->create($this->call, (object) array());
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
     }
 }

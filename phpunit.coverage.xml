@@ -49,6 +49,9 @@
     <filter>
         <whitelist>
             <directory>src</directory>
+            <exclude>
+                <file>src/Spy/Factory/GeneratorSpyFactoryDetailHhvm.php</file>
+            </exclude>
         </whitelist>
     </filter>
 
