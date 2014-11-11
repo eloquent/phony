@@ -30,7 +30,7 @@ class PhoAssertionException extends Exception
     {
         parent::__construct($description, 0, $cause);
 
-        foreach (\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $call) {
+        foreach ($this->getTrace() as $call) {
             if (0 !== strpos($call['class'], 'Eloquent\Phony\\')) {
                 break;
             }
