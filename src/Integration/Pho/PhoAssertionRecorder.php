@@ -9,24 +9,18 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Integration\Phpunit;
+namespace Eloquent\Phony\Integration\Pho;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
-use Eloquent\Phony\Event\EventInterface;
 use Exception;
-use PHPUnit_Framework_Assert;
-use PHPUnit_Framework_ExpectationFailedException;
 
 /**
- * An assertion recorder that uses PHPUnit_Framework_Assert::assertThat().
- *
- * @see PHPUnit_Framework_Assert::assertThat()
+ * An assertion recorder that uses Pho expectation exceptions.
  *
  * @internal
  */
-class PhpunitAssertionRecorder extends AssertionRecorder
+class PhoAssertionRecorder extends AssertionRecorder
 {
     /**
      * Get the static instance of this recorder.
@@ -43,23 +37,6 @@ class PhpunitAssertionRecorder extends AssertionRecorder
     }
 
     /**
-     * Record that a successful assertion occurred.
-     *
-     * @param array<integer,EventInterface>|null $events The events.
-     *
-     * @return CallEventCollectionInterface The result.
-     */
-    public function createSuccess(array $events = null)
-    {
-        PHPUnit_Framework_Assert::assertThat(
-            true,
-            PHPUnit_Framework_Assert::isTrue()
-        );
-
-        return parent::createSuccess($events);
-    }
-
-    /**
      * Create a new assertion failure exception.
      *
      * @param string $description The failure description.
@@ -68,7 +45,7 @@ class PhpunitAssertionRecorder extends AssertionRecorder
      */
     public function createFailure($description)
     {
-        return new PHPUnit_Framework_ExpectationFailedException($description);
+        return new PhoAssertionException($description);
     }
 
     private static $instance;

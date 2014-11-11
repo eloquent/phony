@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Integration\Phpunit;
+namespace Eloquent\Phony\Integration\Pho;
 
 use Eloquent\Phony\Facade\FacadeDriverInterface;
 use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
- * A facade driver for PHPUnit.
+ * A facade driver for Pho.
  *
  * @internal
  */
-class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
+class PhoFacadeDriver extends AbstractIntegratedFacadeDriver
 {
     /**
      * Get the static instance of this driver.
@@ -42,7 +42,7 @@ class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
      */
     protected function createAssertionRecorder()
     {
-        return PhpunitAssertionRecorder::instance();
+        return PhoAssertionRecorder::instance();
     }
 
     private static $instance;
