@@ -30,5 +30,30 @@ final class AssertionException extends Exception implements
     public function __construct($description, Exception $cause = null)
     {
         parent::__construct($description, 0, $cause);
+
+        $reflector = new \ReflectionClass('Exception');
+        $traceProperty = $reflector->getProperty('trace');
+        $traceProperty->setAccessible(true);
+
+        $trace = $traceProperty->getValue($this);
+        $index = null;
+
+        foreach ($trace as $index => $call) {
+            if (!isset($call['class'])) {
+                continue;
+            }
+
+            if (0 !== strpos($call['class'], 'Eloquent\Phony\\')) {
+                break;
+            }
+        }
+
+        if (null === $index) {
+            $trace = array();
+        } else {
+            $trace = array_slice($trace, $index - 1, 1);
+        }
+
+        $traceProperty->setValue($this, $trace);
     }
 }

@@ -17,7 +17,6 @@ use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use PHPUnit_Framework_Assert;
-use PHPUnit_Framework_ExpectationFailedException;
 
 /**
  * An assertion recorder that uses PHPUnit_Framework_Assert::assertThat().
@@ -68,7 +67,7 @@ class PhpunitAssertionRecorder extends AssertionRecorder
      */
     public function createFailure($description)
     {
-        return new PHPUnit_Framework_ExpectationFailedException($description);
+        return new PhpunitAssertionException($description);
     }
 
     private static $instance;

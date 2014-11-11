@@ -9,21 +9,25 @@
  * that was distributed with this source code.
  */
 
-use Eloquent\Phony\Pho\Phony;
+use Eloquent\Phony\Phpunit\Phony;
 
-describe('Phony', function () {
-    beforeEach(function () {
+class PhonyTest extends PHPUnit_Framework_TestCase
+{
+    protected function setUp()
+    {
         $this->proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
         $this->mock = $this->proxy->mock();
-    });
+    }
 
-    it('should record passing mock assertions', function () {
+    public function testShouldRecordPassingMockAssertions()
+    {
         $this->mock->testClassAMethodA('a', 'b');
 
         $this->proxy->testClassAMethodA->calledWith('a', 'b');
-    });
+    }
 
-    it('should record failing mock assertions', function () {
+    public function testShouldRecordFailingMockAssertions()
+    {
         $this->proxy->testClassAMethodA->calledWith('a', 'b');
-    });
-});
+    }
+}

@@ -12,23 +12,23 @@
 namespace Eloquent\Phony\Integration\Pho;
 
 use Exception;
+use pho\Exception\ExpectationException;
 
 /**
  * Emulates Pho's expectation exception for improved assertion failure output.
  *
  * @internal
  */
-class PhoAssertionException extends Exception
+final class PhoAssertionException extends ExpectationException
 {
     /**
      * Construct a new Pho assertion exception.
      *
-     * @param string         $description The failure description.
-     * @param Exception|null $cause       The cause, if available.
+     * @param string $description The failure description.
      */
-    public function __construct($description, Exception $cause = null)
+    public function __construct($description)
     {
-        parent::__construct($description, 0, $cause);
+        parent::__construct($description);
 
         foreach ($this->getTrace() as $call) {
             if (0 !== strpos($call['class'], 'Eloquent\Phony\\')) {
@@ -38,15 +38,5 @@ class PhoAssertionException extends Exception
             $this->file = $call['file'];
             $this->line = $call['line'];
         }
-    }
-
-    /**
-     * Generate a string representation of this assertion failure.
-     *
-     * @return string The string representation.
-     */
-    public function __toString()
-    {
-        return "{$this->file}:{$this->line}\n$this->message";
     }
 }
