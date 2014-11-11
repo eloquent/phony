@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Phony\Phony;
+
+require __DIR__ . '/../../../vendor/autoload.php';
+
+// should record passing mock assertions
+$proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
+$mock = $proxy->mock();
+$mock->testClassAMethodA('a', 'b');
+
+$proxy->testClassAMethodA->calledWith('a', 'b');
+
+// should record failing mock assertions
+$proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
+$mock = $proxy->mock();
+
+$proxy->testClassAMethodA->calledWith('a', 'b');

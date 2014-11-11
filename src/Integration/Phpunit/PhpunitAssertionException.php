@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Exception;
 use PHPUnit_Framework_ExpectationFailedException;
 
@@ -31,25 +32,8 @@ final class PhpunitAssertionException extends
      */
     public function __construct($description, Exception $cause = null)
     {
+        AssertionException::trim($this);
+
         parent::__construct($description, null, $cause);
-    }
-
-    /**
-     * Generate a string representation of this assertion failure.
-     *
-     * @return string The string representation.
-     */
-    public function __toString()
-    {
-        foreach ($this->getTrace() as $call) {
-            if (0 !== strpos($call['class'], 'Eloquent\Phony\\')) {
-                break;
-            }
-
-            $file = $call['file'];
-            $line = $call['line'];
-        }
-
-        return $this->message . "\n\n" . $file . ':' . $line . "\n";
     }
 }
