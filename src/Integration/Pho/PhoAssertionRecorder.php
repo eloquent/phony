@@ -16,7 +16,7 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Exception;
 
 /**
- * An assertion recorder that uses Pho expectation exceptions.
+ * An assertion recorder for Pho.
  *
  * @internal
  */
@@ -41,11 +41,11 @@ class PhoAssertionRecorder extends AssertionRecorder
      *
      * @param string $description The failure description.
      *
-     * @return Exception The appropriate assertion failure exception.
+     * @throws Exception If this recorder throws exceptions.
      */
     public function createFailure($description)
     {
-        return new PhoAssertionException($description);
+        throw new PhoAssertionException($description);
     }
 
     private static $instance;

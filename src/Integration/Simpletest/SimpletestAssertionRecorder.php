@@ -9,21 +9,23 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Integration\Phpunit;
+namespace Eloquent\Phony\Integration\Simpletest;
 
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
-use PHPUnit_Framework_Assert;
+use SimpleTest;
+use SimpleTestContext;
 
 /**
- * An assertion recorder for PHPUnit.
+ * An assertion recorder for SimpleTest.
  *
  * @internal
  */
-class PhpunitAssertionRecorder extends AssertionRecorder
+class SimpletestAssertionRecorder extends AssertionRecorder
 {
     /**
      * Get the static instance of this recorder.
@@ -48,10 +50,7 @@ class PhpunitAssertionRecorder extends AssertionRecorder
      */
     public function createSuccess(array $events = null)
     {
-        PHPUnit_Framework_Assert::assertThat(
-            true,
-            PHPUnit_Framework_Assert::isTrue()
-        );
+        $this->context()->getReporter()->paintPass('');
 
         return parent::createSuccess($events);
     }
@@ -65,8 +64,27 @@ class PhpunitAssertionRecorder extends AssertionRecorder
      */
     public function createFailure($description)
     {
-        throw new PhpunitAssertionException($description);
+        $call = AssertionException
+            ::tracePhonyCall(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+
+        if ($call) {
+            $description .= "\nat [$call[file] line $call[line]]";
+        }
+
+        $this->context()->getReporter()
+            ->paintFail(preg_replace('/(\R)/', '$1   ', $description));
+    }
+
+    /**
+     * Get the SimpleTest context.
+     *
+     * @return SimpleTestContext The context.
+     */
+    protected function context()
+    {
+        return SimpleTest::getContext();
     }
 
     private static $instance;
+    private $passesProperty;
 }

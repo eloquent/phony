@@ -218,7 +218,7 @@ abstract class AbstractFacade
      * @param CallEventCollectionInterface $events,... The events.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrder()
     {
@@ -246,7 +246,7 @@ abstract class AbstractFacade
      * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrderSequence($events)
     {

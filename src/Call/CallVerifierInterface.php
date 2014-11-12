@@ -61,7 +61,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith();
 
@@ -83,7 +83,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledOn($value);
 
@@ -110,7 +110,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null);
 
@@ -134,7 +134,7 @@ interface CallVerifierInterface extends CallInterface,
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws InvalidArgumentException             If the type is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null);
 
@@ -173,7 +173,7 @@ interface CallVerifierInterface extends CallInterface,
      * @param mixed $value      The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null);
 
@@ -194,7 +194,7 @@ interface CallVerifierInterface extends CallInterface,
      * @param mixed $pairs,... The key-value pairs.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function producedAll();
 
@@ -219,7 +219,7 @@ interface CallVerifierInterface extends CallInterface,
      * @param mixed $value The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null);
 
@@ -241,7 +241,7 @@ interface CallVerifierInterface extends CallInterface,
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If the type is invalid.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function receivedException($type = null);
 }

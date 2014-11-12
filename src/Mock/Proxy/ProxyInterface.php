@@ -106,7 +106,7 @@ interface ProxyInterface
      * Throws an exception unless there was no interaction with the mock.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction();
 

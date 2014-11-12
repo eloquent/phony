@@ -37,7 +37,7 @@ interface EventOrderVerifierInterface
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If invalid input is supplied.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrder();
 
@@ -59,7 +59,7 @@ interface EventOrderVerifierInterface
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If invalid input is supplied.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrderSequence($events);
 }

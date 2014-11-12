@@ -33,10 +33,6 @@ final class AssertionException extends Exception implements
      */
     public static function trim(Exception $exception, $prefix = null)
     {
-        if (null === $prefix) {
-            $prefix = 'Eloquent\Phony\\';
-        }
-
         $reflector = new ReflectionClass('Exception');
 
         $traceProperty = $reflector->getProperty('trace');
@@ -46,7 +42,40 @@ final class AssertionException extends Exception implements
         $lineProperty = $reflector->getProperty('line');
         $lineProperty->setAccessible(true);
 
-        $trace = $traceProperty->getValue($exception);
+        $call = static
+            ::tracePhonyCall($traceProperty->getValue($exception), $prefix);
+
+        if ($call) {
+            $traceProperty->setValue($exception, array($call));
+            $fileProperty->setValue(
+                $exception,
+                isset($call['file']) ? $call['file'] : null
+            );
+            $lineProperty->setValue(
+                $exception,
+                isset($call['line']) ? $call['line'] : null
+            );
+        } else {
+            $traceProperty->setValue($exception, array());
+            $fileProperty->setValue($exception, null);
+            $lineProperty->setValue($exception, null);
+        }
+    }
+
+    /**
+     * Find the Phony entry point call in a stack trace.
+     *
+     * @param array       $trace  The stack trace.
+     * @param string|null $prefix The namespace prefix to search for.
+     *
+     * @return array|null The call, or null if unable to determine the entry point.
+     */
+    public static function tracePhonyCall(array $trace, $prefix = null)
+    {
+        if (null === $prefix) {
+            $prefix = 'Eloquent\Phony\\';
+        }
+
         $index = null;
         $broke = false;
 
@@ -64,27 +93,15 @@ final class AssertionException extends Exception implements
             }
         }
 
+        if (null === $index) {
+            return null;
+        }
+
         if (!$broke) {
             $index++;
         }
 
-        if (null === $index) {
-            $traceProperty->setValue($exception, array());
-            $fileProperty->setValue($exception, null);
-            $lineProperty->setValue($exception, null);
-        } else {
-            $trace = array_slice($trace, $index - 1, 1);
-
-            $traceProperty->setValue($exception, $trace);
-            $fileProperty->setValue(
-                $exception,
-                isset($trace[0]['file']) ? $trace[0]['file'] : null
-            );
-            $lineProperty->setValue(
-                $exception,
-                isset($trace[0]['line']) ? $trace[0]['line'] : null
-            );
-        }
+        return $trace[$index - 1];
     }
 
     /**

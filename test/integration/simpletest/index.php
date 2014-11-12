@@ -9,11 +9,14 @@
  * that was distributed with this source code.
  */
 
-use Eloquent\Phony\Phpunit\Phony;
+require __DIR__ . '/../../../vendor/autoload.php';
+require __DIR__ . '/../../../vendor/simpletest/simpletest/autorun.php';
 
-class PhonyTest extends PHPUnit_Framework_TestCase
+use Eloquent\Phony\Simpletest\Phony;
+
+class PhonyTest extends UnitTestCase
 {
-    protected function setUp()
+    public function setUp()
     {
         $this->proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
         $this->mock = $this->proxy->mock();
@@ -23,7 +26,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->mock->testClassAMethodA('a', 'b');
 
-        $this->proxy->testClassAMethodA->calledWith($this->identicalTo('a'), 'b');
+        $this->proxy->testClassAMethodA->calledWith(new EqualExpectation('a'), 'b');
     }
 
     public function testShouldRecordFailingMockAssertions()

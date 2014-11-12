@@ -207,7 +207,7 @@ function checkInOrder()
  * @param CallEventCollectionInterface $events,... The events.
  *
  * @return CallEventCollectionInterface The result.
- * @throws Exception If the assertion fails.
+ * @throws Exception If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrder()
 {
@@ -235,7 +235,7 @@ function checkInOrderSequence($events)
  * @param mixed<CallEventCollectionInterface> $events The event sequence.
  *
  * @return CallEventCollectionInterface The result.
- * @throws Exception If the assertion fails.
+ * @throws Exception If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrderSequence($events)
 {

@@ -411,7 +411,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * Throws an exception unless called.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function called()
     {
@@ -434,7 +434,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $renderedCardinality,
@@ -480,7 +480,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $argument,... The arguments.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith()
     {
@@ -507,7 +507,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected %s with arguments like:\n    %s\n%s",
                 $this->assertionRenderer->renderCardinality(
@@ -573,7 +573,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param object|null $value The possible $this value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledOn($value)
     {
@@ -602,7 +602,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected %s. %s",
                 $this->assertionRenderer
@@ -665,7 +665,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null)
     {
@@ -710,7 +710,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -802,7 +802,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If the type is invalid.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null)
     {
@@ -849,7 +849,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -940,7 +940,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value      The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -996,7 +996,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -1091,7 +1091,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $pairs,... The key-value pairs.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function producedAll()
     {
@@ -1152,7 +1152,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s%s',
                 $this->assertionRenderer
@@ -1217,7 +1217,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null)
     {
@@ -1265,7 +1265,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -1378,7 +1378,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If the type is invalid.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function receivedException($type = null)
     {
@@ -1428,7 +1428,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer

@@ -105,7 +105,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If invalid input is supplied.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrder()
     {
@@ -206,7 +206,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If invalid input is supplied.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrderSequence($events)
     {
@@ -225,7 +225,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
             $renderedActual = 'No events recorded.';
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected events in order:\n%s\n%s",
                 $this->assertionRenderer

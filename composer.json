@@ -36,7 +36,9 @@
         },
         "files": [
             "src/functions.php",
-            "src/Phpunit/functions.php"
+            "src/Pho/functions.php",
+            "src/Phpunit/functions.php",
+            "src/Simpletest/functions.php"
         ]
     },
     "autoload-dev": {

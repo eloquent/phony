@@ -298,7 +298,7 @@ abstract class AbstractProxy implements ProxyInterface
      * Throws an exception unless there was no interaction with the mock.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction()
     {
@@ -312,7 +312,7 @@ abstract class AbstractProxy implements ProxyInterface
             $calls = array_merge($calls, $stub->recordedCalls());
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected no interaction with %s. Calls:\n%s",
                 $this->assertionRenderer->renderMock($this),

@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Assertion\Recorder;
 
-use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use PHPUnit_Framework_TestCase;
@@ -43,7 +42,8 @@ class AssertionRecorderTest extends PHPUnit_Framework_TestCase
     {
         $description = 'description';
 
-        $this->assertEquals(new AssertionException($description), $this->subject->createFailure($description));
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $description);
+        $this->subject->createFailure($description);
     }
 
     public function testInstance()

@@ -479,7 +479,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith()
     {
@@ -494,7 +494,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected %s with arguments like:\n    %s\nArguments:\n    %s",
                 $this->assertionRenderer
@@ -550,7 +550,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledOn($value)
     {
@@ -579,7 +579,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 $message = 'Not called on object like %s. Object was %s.';
             }
 
-            throw $this->assertionRecorder->createFailure(
+            return $this->assertionRecorder->createFailure(
                 sprintf($message, $value->describe(), $renderedThisValue)
             );
         }
@@ -590,7 +590,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $message = 'Not called on supplied object. Object was %s.';
         }
 
-        throw $this->assertionRecorder
+        return $this->assertionRecorder
             ->createFailure(sprintf($message, $renderedThisValue));
     }
 
@@ -646,7 +646,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null)
     {
@@ -674,7 +674,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $renderedType = sprintf('return like %s', $value->describe());
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -769,7 +769,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @return CallEventCollectionInterface         The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws InvalidArgumentException             If the type is invalid.
-     * @throws Exception                            If the assertion fails.
+     * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null)
     {
@@ -800,7 +800,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             }
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -888,7 +888,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value      The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -936,7 +936,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $renderedProduced = ' nothing.';
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. Produced%s',
                 $this->assertionRenderer
@@ -1016,7 +1016,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $pairs,... The key-value pairs.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function producedAll()
     {
@@ -1071,7 +1071,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $renderedProduced = ' nothing.';
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %sProduced%s',
                 $this->assertionRenderer
@@ -1135,7 +1135,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null)
     {
@@ -1175,7 +1175,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $renderedProduced = ' nothing.';
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. Produced%s',
                 $this->assertionRenderer
@@ -1285,7 +1285,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function receivedException($type = null)
     {
@@ -1325,7 +1325,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             $renderedProduced = ' nothing.';
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. Produced%s',
                 $this->assertionRenderer

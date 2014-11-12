@@ -9,11 +9,11 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Pho;
+namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
-use Eloquent\Phony\Integration\Pho\PhoFacadeDriver;
+use Eloquent\Phony\Integration\Simpletest\SimpletestFacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
@@ -40,7 +40,7 @@ use ReflectionClass;
  */
 function mockBuilder($types = null, $definition = null, $className = null)
 {
-    return PhoFacadeDriver::instance()->mockBuilderFactory()
+    return SimpletestFacadeDriver::instance()->mockBuilderFactory()
         ->create($types, $definition, $className);
 }
 
@@ -61,10 +61,10 @@ function mock(
     $className = null
 ) {
     if (func_num_args() > 1) {
-        $mock = PhoFacadeDriver::instance()->mockBuilderFactory()
+        $mock = SimpletestFacadeDriver::instance()->mockBuilderFactory()
             ->createMock($types, $arguments, $definition, $className);
     } else {
-        $mock = PhoFacadeDriver::instance()->mockBuilderFactory()
+        $mock = SimpletestFacadeDriver::instance()->mockBuilderFactory()
             ->createMock($types);
     }
 
@@ -83,7 +83,7 @@ function mock(
 function fullMock($types = null, $definition = null, $className = null)
 {
     return on(
-        PhoFacadeDriver::instance()->mockBuilderFactory()
+        SimpletestFacadeDriver::instance()->mockBuilderFactory()
             ->createFullMock($types, $definition, $className)
     );
 }
@@ -98,7 +98,8 @@ function fullMock($types = null, $definition = null, $className = null)
  */
 function on($mock)
 {
-    return PhoFacadeDriver::instance()->proxyFactory()->createStubbing($mock);
+    return SimpletestFacadeDriver::instance()->proxyFactory()
+        ->createStubbing($mock);
 }
 
 /**
@@ -111,7 +112,7 @@ function on($mock)
  */
 function verify($mock)
 {
-    return PhoFacadeDriver::instance()->proxyFactory()
+    return SimpletestFacadeDriver::instance()->proxyFactory()
         ->createVerification($mock);
 }
 
@@ -125,7 +126,7 @@ function verify($mock)
  */
 function onStatic($class)
 {
-    return PhoFacadeDriver::instance()->proxyFactory()
+    return SimpletestFacadeDriver::instance()->proxyFactory()
         ->createStubbingStatic($class);
 }
 
@@ -139,7 +140,7 @@ function onStatic($class)
  */
 function verifyStatic($class)
 {
-    return PhoFacadeDriver::instance()->proxyFactory()
+    return SimpletestFacadeDriver::instance()->proxyFactory()
         ->createVerificationStatic($class);
 }
 
@@ -157,7 +158,7 @@ function spy(
     $useGeneratorSpies = null,
     $useTraversableSpies = null
 ) {
-    return PhoFacadeDriver::instance()->spyVerifierFactory()
+    return SimpletestFacadeDriver::instance()->spyVerifierFactory()
         ->createFromCallback(
             $callback,
             $useGeneratorSpies,
@@ -181,7 +182,7 @@ function stub(
     $useGeneratorSpies = null,
     $useTraversableSpies = null
 ) {
-    return PhoFacadeDriver::instance()->stubVerifierFactory()
+    return SimpletestFacadeDriver::instance()->stubVerifierFactory()
         ->createFromCallback(
             $callback,
             $thisValue,
@@ -199,7 +200,7 @@ function stub(
  */
 function checkInOrder()
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
         ->checkInOrderSequence(func_get_args());
 }
 
@@ -214,7 +215,7 @@ function checkInOrder()
  */
 function inOrder()
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
         ->inOrderSequence(func_get_args());
 }
 
@@ -227,7 +228,7 @@ function inOrder()
  */
 function checkInOrderSequence($events)
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
         ->checkInOrderSequence($events);
 }
 
@@ -242,7 +243,7 @@ function checkInOrderSequence($events)
  */
 function inOrderSequence($events)
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
         ->inOrderSequence($events);
 }
 
@@ -253,7 +254,7 @@ function inOrderSequence($events)
  */
 function any()
 {
-    return PhoFacadeDriver::instance()->matcherFactory()->any();
+    return SimpletestFacadeDriver::instance()->matcherFactory()->any();
 }
 
 /**
@@ -265,7 +266,8 @@ function any()
  */
 function equalTo($value)
 {
-    return PhoFacadeDriver::instance()->matcherFactory()->equalTo($value);
+    return SimpletestFacadeDriver::instance()->matcherFactory()
+        ->equalTo($value);
 }
 
 /**
@@ -282,6 +284,6 @@ function wildcard(
     $minimumArguments = null,
     $maximumArguments = null
 ) {
-    return PhoFacadeDriver::instance()->matcherFactory()
+    return SimpletestFacadeDriver::instance()->matcherFactory()
         ->wildcard($value, $minimumArguments, $maximumArguments);
 }
