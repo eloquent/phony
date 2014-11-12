@@ -762,16 +762,16 @@
         },
         {
             "name": "peridot-php/peridot",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/peridot-php/peridot.git",
-                "reference": "7ce32ad73756937529ea09f2fc2a3b6efadeabba"
+                "reference": "26bb783a7585e9a1d999db05846c90f38bc64821"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/peridot-php/peridot/zipball/7ce32ad73756937529ea09f2fc2a3b6efadeabba",
-                "reference": "7ce32ad73756937529ea09f2fc2a3b6efadeabba",
+                "url": "https://api.github.com/repos/peridot-php/peridot/zipball/26bb783a7585e9a1d999db05846c90f38bc64821",
+                "reference": "26bb783a7585e9a1d999db05846c90f38bc64821",
                 "shasum": ""
             },
             "require": {
@@ -815,7 +815,7 @@
                 "php",
                 "testing"
             ],
-            "time": "2014-11-09 19:16:28"
+            "time": "2014-11-11 17:57:11"
         },
         {
             "name": "phake/phake",

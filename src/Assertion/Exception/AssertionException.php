@@ -29,7 +29,7 @@ final class AssertionException extends Exception implements
      * Also replaces the file path and line number.
      *
      * @param Exception   $exception The exception.
-     * @param string|null $prefix    The class name prefix to search for.
+     * @param string|null $prefix    The namespace prefix to search for.
      */
     public static function trim(Exception $exception, $prefix = null)
     {
@@ -51,10 +51,13 @@ final class AssertionException extends Exception implements
         $broke = false;
 
         foreach ($trace as $index => $call) {
-            if (
-                !isset($call['class']) ||
-                0 !== strpos($call['class'], $prefix)
-            ) {
+            if (isset($call['class'])) {
+                if (0 !== strpos($call['class'], $prefix)) {
+                    $broke = true;
+
+                    break;
+                }
+            } elseif (0 !== strpos($call['function'], $prefix)) {
                 $broke = true;
 
                 break;

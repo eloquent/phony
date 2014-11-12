@@ -5,14 +5,14 @@ use Eloquent\Phony\Phony;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
-// should record passing mock assertions
+// should record passing mock assertions (static)
 $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
 $mock = $proxy->mock();
 $mock->testClassAMethodA('a', 'b');
 
 $proxy->testClassAMethodA->calledWith('a', 'b');
 
-// should record failing mock assertions
+// should record failing mock assertions (static)
 $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
 $mock = $proxy->mock();
 
