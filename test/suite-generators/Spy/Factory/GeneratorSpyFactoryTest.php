@@ -71,15 +71,13 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        try {
-            if ($this->featureDetector->isSupported('runtime.hhvm')) {
-                $spy->next();
-            }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $spy->next();
+        }
 
-            while ($spy->valid()) {
-                $spy->send(strtoupper($spy->current()));
-            }
-        } catch (RuntimeException $caughtException) {}
+        while ($spy->valid()) {
+            $spy->send(strtoupper($spy->current()));
+        }
         $this->callFactory->reset();
         $generatorEvents = array(
             $this->callEventFactory->createProduced(0, 'a'),
@@ -113,6 +111,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
+        $caughtException = null;
         try {
             if ($this->featureDetector->isSupported('runtime.hhvm')) {
                 $spy->next();
@@ -140,6 +139,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->traversableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
+        $this->assertSame($exception, $caughtException);
     }
 
     public function testCreateWithReceivedException()
@@ -161,19 +161,17 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        try {
-            if ($this->featureDetector->isSupported('runtime.hhvm')) {
-                $spy->next();
-            }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $spy->next();
+        }
 
-            while ($spy->valid()) {
-                if (1 === $spy->key()) {
-                    $spy->throw($receivedException);
-                } else {
-                    $spy->send(strtoupper($spy->current()));
-                }
+        while ($spy->valid()) {
+            if (1 === $spy->key()) {
+                $spy->throw($receivedException);
+            } else {
+                $spy->send(strtoupper($spy->current()));
             }
-        } catch (RuntimeException $caughtException) {}
+        }
         $this->callFactory->reset();
         $generatorEvents = array(
             $this->callEventFactory->createProduced(0, 'a'),
@@ -224,7 +222,10 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        foreach ($spy as $value) {}
+        $caughtException = null;
+        try {
+            foreach ($spy as $value) {}
+        } catch (RuntimeException $caughtException) {};
         $this->callFactory->reset();
         $generatorEvents = array();
         $endEvent = $this->callEventFactory->createThrew($exception);
@@ -233,6 +234,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Generator', $spy);
         $this->assertEquals($generatorEvents, $this->call->traversableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
+        $this->assertSame($exception, $caughtException);
     }
 
     public function testCreateFailureInvalidTraversable()
