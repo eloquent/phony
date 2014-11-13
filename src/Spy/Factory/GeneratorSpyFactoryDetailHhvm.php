@@ -67,7 +67,7 @@ abstract class GeneratorSpyFactoryDetailHhvm
                     $callEventFactory->createThrew($thrown)
                 );
 
-                return;
+                throw $thrown;
             }
 
             $key = $generator->key();

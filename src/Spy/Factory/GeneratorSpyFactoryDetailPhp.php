@@ -65,7 +65,7 @@ abstract class GeneratorSpyFactoryDetailPhp
                     $callEventFactory->createThrew($thrown)
                 );
 
-                return;
+                throw $thrown;
             }
 
             $key = $generator->key();
