@@ -132,6 +132,15 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($matcher, $adaptedValue);
     }
 
+    public function testAdaptBoolean()
+    {
+        $value = true;
+        $matcher = new EqualToMatcher($value);
+        $adaptedValue = $this->subject->adapt($value);
+
+        $this->assertEquals($matcher, $adaptedValue);
+    }
+
     public function testAdaptViaDriver()
     {
         $driverAMatcher = new TestMatcherA();
@@ -139,6 +148,12 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(new EqualToMatcher('a'), $this->subject->adapt($driverAMatcher));
         $this->assertEquals(new EqualToMatcher('b'), $this->subject->adapt($driverBMatcher));
+    }
+
+    public function testAdaptSpecialCases()
+    {
+        $this->assertSame($this->wildcardAnyMatcher, $this->subject->adapt('*'));
+        $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
     }
 
     public function testAdaptAll()
@@ -150,12 +165,6 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $expected = array(new EqualToMatcher($valueA), $valueB);
 
         $this->assertEquals($expected, $actual);
-    }
-
-    public function testAdaptSpecialCases()
-    {
-        $this->assertSame($this->wildcardAnyMatcher, $this->subject->adapt('*'));
-        $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
     }
 
     public function testWildcard()

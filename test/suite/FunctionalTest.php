@@ -9,11 +9,17 @@
  * that was distributed with this source code.
  */
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        $this->featureDetector = FeatureDetector::instance();
+    }
+
     public function testMockingStatic()
     {
         $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
@@ -204,9 +210,52 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testStubMagicSelf()
+    {
+        $callback = function ($phonySelf) {
+            return $phonySelf;
+        };
+
+        $stub = x\stub($callback)->forwards();
+
+        $this->assertSame($callback, $stub());
+    }
+
+    public function testStubThisBinding()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $callback = function () {
+            return $this;
+        };
+
+        $stub = x\stub($callback)->forwards();
+
+        $this->assertSame($callback, $stub());
+    }
+
+    public function testStubClassBinding()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $callback = function () {
+            return self::testClassAStaticMethodC('a', 'b');
+        };
+
+        $stub = x\stub($callback);
+        $stub->setSelf('Eloquent\Phony\Test\TestClassA');
+        $stub->forwards();
+
+        $this->assertSame('protected ab', $stub());
+    }
+
     public function testTraversableSpyingStatic()
     {
-        $stub = Phony::stub(null, null, true);
+        $stub = Phony::stub(null, null, null, true);
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 
@@ -221,7 +270,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testTraversableSpyingFunction()
     {
-        $stub = x\stub(null, null, true);
+        $stub = x\stub(null, null, null, true);
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 
@@ -291,5 +340,143 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $proxy->mock()->methodB('a');
 
         $proxy->methodB->calledWith('a');
+    }
+
+    public function testProxyStubOverriding()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA->returns('x');
+        $proxy->testClassAMethodA->returns('y', 'z');
+
+        $this->assertSame('y', $proxy->mock()->testClassAMethodA());
+        $this->assertSame('z', $proxy->mock()->testClassAMethodA());
+        $this->assertSame('z', $proxy->mock()->testClassAMethodA());
+    }
+
+    public function testCanCallMockedInterfaceMethod()
+    {
+        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestInterfaceA'));
+
+        $this->assertNull($proxy->mock()->testClassAMethodA('a', 'b'));
+    }
+
+    public function testCanCallMockedInterfaceMethodWithoutParentClass()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceA');
+
+        $this->assertNull($proxy->mock()->testClassAMethodA('a', 'b'));
+    }
+
+    public function testCanCallMockedTraitMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestTraitA'));
+
+        $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+    }
+
+    public function testCanCallMockedTraitMethodWithoutParentClass()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA'));
+
+        $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+    }
+
+    public function testCanCallMockedAbstractTraitMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestTraitC'));
+
+        $this->assertNull($proxy->mock()->testTraitCMethodA('a', 'b'));
+    }
+
+    public function testCanCallMockedAbstractTraitMethodWithoutParentClass()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitC'));
+
+        $this->assertNull($proxy->mock()->testTraitCMethodA('a', 'b'));
+    }
+
+    public function testCanCallMockedTraitMethodWithInterface()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestInterfaceA'));
+
+        $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+    }
+
+    public function testCanMockClassWithPrivateConstructor()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassD');
+
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassD', $proxy->mock());
+    }
+
+    public function testCanMockClassAndCallPrivateConstructor()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassD', array('a', 'b'));
+
+        $this->assertSame(array('a', 'b'), $proxy->mock()->constructorArguments);
+    }
+
+    public function testSpyAssertionFailureOutput()
+    {
+        $spy = x\spy();
+        $spy->setLabel('example');
+        $spy('a', 'b');
+        $expected = <<<'EOD'
+Expected call on {spy}[example] with arguments like:
+    <'c'>, <'d'>
+Calls:
+    - 'a', 'b'
+EOD;
+
+        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
+        $spy->calledWith('c', 'd');
+    }
+
+    public function testMockAssertionFailureOutput()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA', null, null, 'PhonyMockAssertionFailure');
+        $proxy->setLabel('example');
+        $proxy->mock()->testClassAMethodA('a', 'b');
+        $expected = <<<'EOD'
+Expected call on PhonyMockAssertionFailure[example]->testClassAMethodA with arguments like:
+    <'c'>, <'d'>
+Calls:
+    - 'a', 'b'
+EOD;
+
+        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
+        $proxy->testClassAMethodA->calledWith('c', 'd');
+    }
+
+    public function testMatcherAdaptationForBooleanValues()
+    {
+        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA->with(true)->returns('a');
+
+        $this->assertNull($proxy->mock()->testClassAMethodA());
     }
 }

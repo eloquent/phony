@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -24,53 +25,68 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->idSequencer = new Sequencer();
+        $this->labelSequencer = new Sequencer();
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
+        $this->featureDetector = new FeatureDetector();
         $this->subject = new StubFactory(
-            $this->idSequencer,
+            $this->labelSequencer,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector
+            $this->invocableInspector,
+            $this->featureDetector
         );
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->idSequencer, $this->subject->idSequencer());
+        $this->assertSame($this->labelSequencer, $this->subject->labelSequencer());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
+        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
     }
 
     public function testConstructorDefaults()
     {
         $this->subject = new StubFactory();
 
-        $this->assertSame(Sequencer::sequence('stub-id'), $this->subject->idSequencer());
+        $this->assertSame(Sequencer::sequence('stub-label'), $this->subject->labelSequencer());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
+        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
     public function testCreate()
     {
-        $callback = function () {};
+        $callback = function () { return 'a'; };
         $self = (object) array();
-        $expected = new Stub($callback, $self, 0, $this->matcherFactory, $this->matcherVerifier);
+        $expected = new Stub(
+            $callback,
+            $self,
+            0,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
         $actual = $this->subject->create($callback, $self);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($callback, $actual->callback());
+        $this->assertSame('a', call_user_func($actual->callback()));
         $this->assertSame($self, $actual->self());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->invoker, $actual->invoker());
+        $this->assertSame($this->invocableInspector, $actual->invocableInspector());
+        $this->assertSame($this->featureDetector, $actual->featureDetector());
     }
 
     public function testInstance()

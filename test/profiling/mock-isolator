@@ -14,23 +14,4 @@ use Eloquent\Phony\Phony;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
-$runs = 10;
-
-$startTime = microtime(true);
-
-for ($i = 0; $i < $runs; $i++) {
-    $mock = Phony::mock('Icecave\Isolator\Isolator')->create();
-}
-
-$elapsedTime = microtime(true) - $startTime;
-printf("Phony: %0.4f seconds\n", $elapsedTime);
-
-
-$startTime = microtime(true);
-
-for ($i = 0; $i < $runs; $i++) {
-    $mock = Phake::partialMock('Icecave\Isolator\Isolator');
-}
-
-$elapsedTime = microtime(true) - $startTime;
-printf("Phake: %0.4f seconds\n", $elapsedTime);
+Phony::mock('Icecave\Isolator\Isolator');

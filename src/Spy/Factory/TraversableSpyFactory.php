@@ -16,7 +16,6 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
 use Eloquent\Phony\Spy\IteratorSpy;
-use Generator;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Traversable;
@@ -68,13 +67,13 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     }
 
     /**
-     * Returns true if the supplied value is traversable.
+     * Returns true if the supplied value is supported by this factory.
      *
      * @param mixed $value The value to check.
      *
-     * @return boolean True if the supplied value is traversable.
+     * @return boolean True if the supplied value is supported.
      */
-    public function isTraversable($value)
+    public function isSupported($value)
     {
         return is_array($value) || $value instanceof Traversable;
     }
@@ -82,36 +81,23 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     /**
      * Create a new traversable spy.
      *
-     * @param CallInterface     $call              The call from which the traversable originated.
-     * @param Traversable|array $traversable       The traversable.
-     * @param boolean|null      $useGeneratorSpies True if generator spies should be used.
+     * @param CallInterface     $call        The call from which the traversable originated.
+     * @param Traversable|array $traversable The traversable.
      *
      * @return Traversable              The newly created traversable spy.
      * @throws InvalidArgumentException If the supplied traversable is invalid.
      */
-    public function create(
-        CallInterface $call,
-        $traversable,
-        $useGeneratorSpies = null
-    ) {
-        if (!$this->isTraversable($traversable)) {
+    public function create(CallInterface $call, $traversable)
+    {
+        if (!$this->isSupported($traversable)) {
+            if (is_object($traversable)) {
+                $type = var_export(get_class($traversable), true);
+            } else {
+                $type = gettype($traversable);
+            }
+
             throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid traversable of type %s.',
-                    var_export(gettype($traversable), true)
-                )
-            );
-        }
-
-        if (null === $useGeneratorSpies) {
-            $useGeneratorSpies = !defined('HHVM_VERSION');
-        }
-
-        if ($useGeneratorSpies && $traversable instanceof Generator) {
-            return TraversableSpyFactoryDetail::createGeneratorSpy(
-                $call,
-                $traversable,
-                $this->callEventFactory
+                sprintf('Unsupported traversable of type %s.', $type)
             );
         }
 

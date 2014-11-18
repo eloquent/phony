@@ -197,19 +197,19 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
      * Create a new spy verifier for the supplied callback.
      *
      * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyVerifierInterface The newly created spy verifier.
      */
     public function createFromCallback(
         $callback = null,
-        $useTraversableSpies = null,
-        $useGeneratorSpies = null
+        $useGeneratorSpies = null,
+        $useTraversableSpies = null
     ) {
         return $this->create(
             $this->spyFactory
-                ->create($callback, $useTraversableSpies, $useGeneratorSpies)
+                ->create($callback, $useGeneratorSpies, $useTraversableSpies)
         );
     }
 

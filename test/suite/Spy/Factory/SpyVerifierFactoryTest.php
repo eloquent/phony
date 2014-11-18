@@ -71,7 +71,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $spy = new Spy(null, null, null, '0');
+        $spy = new Spy(null, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
         $actual = $this->subject->create($spy);
 
@@ -87,7 +87,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateDefaults()
     {
-        $spy = new Spy(null, null, null, '0');
+        $spy = new Spy(null, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
         $actual = $this->subject->create();
 
@@ -104,14 +104,14 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $spy = new Spy($callback, true, false, 0);
+        $spy = new Spy($callback, '0', false, true);
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
-        $actual = $this->subject->createFromCallback($callback, true, false);
+        $actual = $this->subject->createFromCallback($callback, false, true);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
-        $this->assertTrue($actual->useTraversableSpies());
         $this->assertFalse($actual->useGeneratorSpies());
+        $this->assertTrue($actual->useTraversableSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
@@ -122,14 +122,14 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateFromCallbackDefaults()
     {
-        $spy = new Spy(null, null, null, '0');
+        $spy = new Spy(null, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
         $actual = $this->subject->createFromCallback();
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
+        $this->assertTrue($actual->useGeneratorSpies());
         $this->assertFalse($actual->useTraversableSpies());
-        $this->assertSame(!defined('HHVM_VERSION'), $actual->useGeneratorSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());

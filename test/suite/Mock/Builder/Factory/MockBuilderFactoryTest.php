@@ -44,7 +44,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $types = array('Eloquent\Phony\Test\TestInterfaceA', 'Eloquent\Phony\Test\TestInterfaceB');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockMockBuilderFactoryTestCreate';
         $actual = $this->subject->create($types, $definition, $className);
         $expected = new MockBuilder($types, $definition, $className, $this->mockFactory);
@@ -58,7 +58,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockMockBuilderFactoryTestCreateMock';
         $actual = $this->subject->createMock($types, $arguments, $definition, $className);
 
@@ -73,7 +73,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockMockBuilderFactoryTestCreateMockWithNullArguments';
         $actual = $this->subject->createMock($types, $arguments, $definition, $className);
 
@@ -105,7 +105,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFullMock()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockMockBuilderFactoryTestCreateFullMock';
         $actual = $this->subject->createFullMock($types, $definition, $className);
 

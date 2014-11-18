@@ -34,7 +34,7 @@ class VerificationProxy extends AbstractInstanceProxy implements
      *
      * @return VerificationProxyInterface This proxy.
      * @throws MockExceptionInterface     If the stub does not exist.
-     * @throws Exception                  If the assertion fails.
+     * @throws Exception                  If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function __call($name, array $arguments)
     {

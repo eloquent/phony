@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
+use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
@@ -21,18 +22,20 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->useTraversableSpies = false;
+        $this->label = 'label';
         $this->useGeneratorSpies = false;
-        $this->id = 111;
+        $this->useTraversableSpies = false;
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
+        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory);
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
         $this->subject = new Spy(
             $this->callback,
-            $this->useTraversableSpies,
+            $this->label,
             $this->useGeneratorSpies,
-            $this->id,
+            $this->useTraversableSpies,
             $this->callFactory,
+            $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
 
@@ -45,19 +48,25 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeWithWithGeneratorSpy()
     {
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('Not supported under HHVM.');
-        }
-
         $this->callback = function () {
             foreach (func_get_args() as $argument) {
                 yield strtoupper($argument);
             }
         };
         $generator = call_user_func($this->callback);
-        $spy = new Spy($this->callback, true, true, null, $this->callFactory, $this->traversableSpyFactory);
-        foreach ($spy->invoke('a', 'b') as $value) {}
-        foreach ($spy->invoke('c') as $value) {}
+        $spy = new Spy(
+            $this->callback,
+            true,
+            true,
+            null,
+            $this->callFactory,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
+        foreach ($spy->invoke('a', 'b') as $value) {
+        }
+        foreach ($spy->invoke('c') as $value) {
+        }
         $this->callFactory->reset();
         $expected = array(
             $this->callFactory->create(

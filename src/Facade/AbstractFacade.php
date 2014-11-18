@@ -101,19 +101,6 @@ abstract class AbstractFacade
     }
 
     /**
-     * Create a new static stubbing proxy.
-     *
-     * @param ProxyInterface|ReflectionClass|object|string $class The class.
-     *
-     * @return StaticStubbingProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface       If the supplied class name is not a mock class.
-     */
-    public static function onStatic($class)
-    {
-        return static::driver()->proxyFactory()->createStubbingStatic($class);
-    }
-
-    /**
      * Create a new stubbing proxy.
      *
      * @param MockInterface|InstanceProxyInterface $mock The mock.
@@ -124,20 +111,6 @@ abstract class AbstractFacade
     public static function on($mock)
     {
         return static::driver()->proxyFactory()->createStubbing($mock);
-    }
-
-    /**
-     * Create a new static verification proxy.
-     *
-     * @param ProxyInterface|ReflectionClass|object|string $class The class.
-     *
-     * @return StaticVerificationProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface           If the supplied class name is not a mock class.
-     */
-    public static function verifyStatic($class)
-    {
-        return static::driver()->proxyFactory()
-            ->createVerificationStatic($class);
     }
 
     /**
@@ -154,23 +127,50 @@ abstract class AbstractFacade
     }
 
     /**
+     * Create a new static stubbing proxy.
+     *
+     * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+     *
+     * @return StaticStubbingProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface       If the supplied class name is not a mock class.
+     */
+    public static function onStatic($class)
+    {
+        return static::driver()->proxyFactory()->createStubbingStatic($class);
+    }
+
+    /**
+     * Create a new static verification proxy.
+     *
+     * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+     *
+     * @return StaticVerificationProxyInterface The newly created proxy.
+     * @throws MockExceptionInterface           If the supplied class name is not a mock class.
+     */
+    public static function verifyStatic($class)
+    {
+        return static::driver()->proxyFactory()
+            ->createVerificationStatic($class);
+    }
+
+    /**
      * Create a new spy verifier for the supplied callback.
      *
      * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyVerifierInterface The newly created spy verifier.
      */
     public static function spy(
         $callback = null,
-        $useTraversableSpies = null,
-        $useGeneratorSpies = null
+        $useGeneratorSpies = null,
+        $useTraversableSpies = null
     ) {
         return static::driver()->spyVerifierFactory()->createFromCallback(
             $callback,
-            $useTraversableSpies,
-            $useGeneratorSpies
+            $useGeneratorSpies,
+            $useTraversableSpies
         );
     }
 
@@ -179,22 +179,22 @@ abstract class AbstractFacade
      *
      * @param callable|null $callback            The callback, or null to create an unbound stub verifier.
      * @param object|null   $thisValue           The $this value.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      *
      * @return StubVerifierInterface The newly created stub verifier.
      */
     public static function stub(
         $callback = null,
         $thisValue = null,
-        $useTraversableSpies = null,
-        $useGeneratorSpies = null
+        $useGeneratorSpies = null,
+        $useTraversableSpies = null
     ) {
         return static::driver()->stubVerifierFactory()->createFromCallback(
             $callback,
             $thisValue,
-            $useTraversableSpies,
-            $useGeneratorSpies
+            $useGeneratorSpies,
+            $useTraversableSpies
         );
     }
 
@@ -218,7 +218,7 @@ abstract class AbstractFacade
      * @param CallEventCollectionInterface $events,... The events.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrder()
     {
@@ -246,7 +246,7 @@ abstract class AbstractFacade
      * @param mixed<CallEventCollectionInterface> $events The event sequence.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrderSequence($events)
     {

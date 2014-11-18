@@ -41,6 +41,16 @@ class CustomMethodDefinition implements MethodDefinitionInterface
     }
 
     /**
+     * Returns true if this method is callable.
+     *
+     * @return boolean True if this method is callable.
+     */
+    public function isCallable()
+    {
+        return true;
+    }
+
+    /**
      * Returns true if this method is static.
      *
      * @return boolean True if this method is static.

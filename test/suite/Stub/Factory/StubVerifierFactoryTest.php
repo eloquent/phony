@@ -80,7 +80,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $stub = new Stub(null, null, '0');
-        $spy = new Spy(null, null, null, '0');
+        $spy = new Spy(null, '0');
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -107,7 +107,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateDefaults()
     {
         $stub = new Stub(null, null, '0', $this->matcherFactory, $this->matcherVerifier);
-        $spy = new Spy($stub, null, null, '0', $this->callFactory);
+        $spy = new Spy($stub, '0', null, null, $this->callFactory);
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -134,7 +134,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $callback = function () {};
         $thisValue = (object) array();
         $stub = new Stub($callback, $thisValue, '0', $this->matcherFactory, $this->matcherVerifier);
-        $spy = new Spy($stub, true, false, '0', $this->callFactory);
+        $spy = new Spy($stub, '0', false, true, $this->callFactory);
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -145,11 +145,11 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer,
             $this->invoker
         );
-        $actual = $this->subject->createFromCallback($callback, $thisValue, true, false);
+        $actual = $this->subject->createFromCallback($callback, $thisValue, false, true);
 
         $this->assertEquals($expected, $actual);
-        $this->assertTrue($actual->useTraversableSpies());
         $this->assertFalse($actual->useGeneratorSpies());
+        $this->assertTrue($actual->useTraversableSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());

@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Factory;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
@@ -29,14 +31,24 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->assertionRenderer = new AssertionRenderer();
+        $this->assertionRecorder = new AssertionRecorder();
         $this->wildcardMatcher = new WildcardMatcher();
-        $this->subject = new ProxyFactory($this->stubFactory, $this->stubVerifierFactory, $this->wildcardMatcher);
+        $this->subject = new ProxyFactory(
+            $this->stubFactory,
+            $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
+            $this->wildcardMatcher
+        );
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
+        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
     }
 
@@ -46,6 +58,8 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
+        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
     }
 
@@ -58,13 +72,18 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $proxyProperty->setValue($mock, null);
         $expected = new StubbingProxy(
             $mock,
-            null,
-            'id',
+            (object) array(
+                'stubs' => (object) array(),
+                'isFull' => false,
+                'label' => 'label',
+            ),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
-        $actual = $this->subject->createStubbing($mock, 'id');
+        $actual = $this->subject->createStubbing($mock, 'label');
 
         $this->assertEquals($expected, $actual);
     }
@@ -114,7 +133,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($stubbingProxy->mock(), $actual->mock());
         $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
         $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
-        $this->assertSame($stubbingProxy->id(), $actual->id());
+        $this->assertSame($stubbingProxy->label(), $actual->label());
     }
 
     public function testCreateVerificationAdapt()
@@ -137,7 +156,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($stubbingProxy->mock(), $actual->mock());
         $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
         $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
-        $this->assertSame($stubbingProxy->id(), $actual->id());
+        $this->assertSame($stubbingProxy->label(), $actual->label());
     }
 
     public function testCreateStubbingStaticNew()
@@ -152,6 +171,8 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
             null,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
         $actual = $this->subject->createStubbingStatic($class);

@@ -11,8 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
+use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
+use Exception;
 use ReflectionClass;
 use stdClass;
 
@@ -57,20 +59,6 @@ interface ProxyInterface
     public function isFull();
 
     /**
-     * Returns true if this proxy has a parent implementation.
-     *
-     * @return boolean True if this proxy has a parent implementation.
-     */
-    public function hasParent();
-
-    /**
-     * Returns true if this proxy supports magic calls.
-     *
-     * @return boolean True if this proxy supports magic calls.
-     */
-    public function isMagic();
-
-    /**
      * Get the stubs.
      *
      * @return stdClass The stubs.
@@ -106,6 +94,21 @@ interface ProxyInterface
      * @throws MockExceptionInterface If the spy does not exist.
      */
     public function spy($name);
+
+    /**
+     * Checks if there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface|null The result.
+     */
+    public function checkNoInteraction();
+
+    /**
+     * Throws an exception unless there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function noInteraction();
 
     /**
      * Reset the mock to its initial state.

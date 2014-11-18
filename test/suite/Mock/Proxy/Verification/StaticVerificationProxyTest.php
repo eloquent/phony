@@ -11,6 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Verification;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Event\CallEventCollection;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
@@ -25,18 +29,24 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->state = (object) array('stubs' => (object) array(), 'isFull' => true);
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->assertionRenderer = new AssertionRenderer();
+        $this->assertionRecorder = new AssertionRecorder();
         $this->wildcardMatcher = new WildcardMatcher();
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
-    protected function setUpWith($className)
+    protected function setUpWith($className, $mockClassName = null)
     {
-        $this->mockBuilder = new MockBuilder($className);
+        $this->mockBuilder = new MockBuilder($className, null, $mockClassName);
         $this->class = $this->mockBuilder->build(true);
         $this->subject = new StaticVerificationProxy(
             $this->class,
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
 
@@ -59,10 +69,10 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->state->stubs, $this->subject->stubs());
         $this->assertSame($this->state->isFull, $this->subject->isFull());
-        $this->assertTrue($this->subject->hasParent());
-        $this->assertTrue($this->subject->isMagic());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
+        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
     }
 
@@ -76,15 +86,9 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->isFull());
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
+        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
-    }
-
-    public function testConstructorWithNoParent()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
-
-        $this->assertFalse($this->subject->hasParent());
-        $this->assertFalse($this->subject->isMagic());
     }
 
     public function testFull()
@@ -165,6 +169,43 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA->spy());
     }
 
+    public function testCheckNoInteraction()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $className = $this->subject->className();
+
+        $this->assertTrue((boolean) $this->subject->checkNoInteraction());
+
+        $className::testClassAStaticMethodA();
+
+        $this->assertFalse((boolean) $this->subject->checkNoInteraction());
+    }
+
+    public function testNoInteraction()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertEquals(new CallEventCollection(), $this->subject->noInteraction());
+    }
+
+    public function testNoInteractionFailure()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA', 'PhonyMockStaticVerificationNoInteraction');
+        $className = $this->subject->className();
+        $className::testClassAStaticMethodA('a', 'b');
+        $className::testClassAStaticMethodB('c', 'd');
+        $className::testClassAStaticMethodA('e', 'f');
+        $expected = <<<'EOD'
+Expected no interaction with PhonyMockStaticVerificationNoInteraction[static]. Calls:
+    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodA('a', 'b')
+    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodB('c', 'd')
+    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodA('e', 'f')
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->noInteraction();
+    }
+
     public function testReset()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
@@ -205,6 +246,24 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->subject->testClassAStaticMethodA();
     }
 
+    public function testVerificationWithTraitMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
+        $this->subject->partial();
+        $className = $this->className;
+        $a = 'a';
+        $className::testClassAStaticMethodA($a, 'b');
+
+        $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA('a', 'b'));
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->testClassAStaticMethodA();
+    }
+
     public function testVerificationWithMagicMethod()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
@@ -238,7 +297,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
             array(
                 'static methodA' => function () {
                     return implode(func_get_args());
-                }
+                },
             )
         );
         $this->class = $this->mockBuilder->build(true);

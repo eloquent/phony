@@ -24,15 +24,15 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->idSequencer = new Sequencer();
+        $this->labelSequencer = new Sequencer();
         $this->generator = new MockGenerator();
         $this->proxyFactory = new ProxyFactory();
-        $this->subject = new MockFactory($this->idSequencer, $this->generator, $this->proxyFactory);
+        $this->subject = new MockFactory($this->labelSequencer, $this->generator, $this->proxyFactory);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->idSequencer, $this->subject->idSequencer());
+        $this->assertSame($this->labelSequencer, $this->subject->labelSequencer());
         $this->assertSame($this->generator, $this->subject->generator());
         $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
     }
@@ -41,7 +41,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MockFactory();
 
-        $this->assertSame(Sequencer::sequence('mock-id'), $this->subject->idSequencer());
+        $this->assertSame(Sequencer::sequence('mock-label'), $this->subject->labelSequencer());
         $this->assertSame(MockGenerator::instance(), $this->subject->generator());
         $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
     }
@@ -67,6 +67,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('ReflectionClass', $actual);
         $this->assertTrue($actual->implementsInterface('Eloquent\Phony\Mock\MockInterface'));
         $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassB'));
+        $this->assertSame($actual, $this->subject->createMockClass($builder));
         $this->assertSame('ab', PhonyMockFactoryTestCreateMockClass::testClassAStaticMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke(null, 'a', 'b'));
         $this->assertSame('static custom ab', PhonyMockFactoryTestCreateMockClass::methodA('a', 'b'));
@@ -83,7 +84,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateMockClassFailureSyntax()
     {
-        $this->subject = new MockFactory($this->idSequencer, new TestMockGenerator('{'));
+        $this->subject = new MockFactory($this->labelSequencer, new TestMockGenerator('{'));
         $builder = new MockBuilder();
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\MockGenerationFailedException');
@@ -113,7 +114,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertSame('0', $this->proxyFactory->createStubbing($actual)->id());
+        $this->assertSame('0', $this->proxyFactory->createStubbing($actual)->label());
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertSame('custom ab', $actual->methodB('a', 'b'));
@@ -129,11 +130,11 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
             null,
             __NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithConstructorArguments'
         );
-        $actual = $this->subject->createMock($builder, array('a', 'b'), 'id');
+        $actual = $this->subject->createMock($builder, array('a', 'b'), 'label');
         $class = new ReflectionClass($actual);
 
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);
-        $this->assertSame('id', $this->proxyFactory->createStubbing($actual)->id());
+        $this->assertSame('label', $this->proxyFactory->createStubbing($actual)->label());
     }
 
     public function testCreateMockWithConstructorArgumentsWithReferences()

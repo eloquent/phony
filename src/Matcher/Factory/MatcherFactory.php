@@ -180,12 +180,12 @@ class MatcherFactory implements MatcherFactoryInterface
             }
         }
 
-        switch ($value) {
-            case '*':
-                return $this->wildcard();
+        if ('*' === $value) {
+            return $this->wildcard();
+        }
 
-            case '~':
-                return $this->any();
+        if ('~' === $value) {
+            return $this->any();
         }
 
         return $this->equalTo($value);
@@ -201,6 +201,7 @@ class MatcherFactory implements MatcherFactoryInterface
     public function adaptAll(array $values)
     {
         $matchers = array();
+
         foreach ($values as $value) {
             $matchers[] = $this->adapt($value);
         }

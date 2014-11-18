@@ -7,15 +7,14 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
         'Countable',
         'ArrayAccess',
         'Eloquent\Phony\Test\TestTraitA',
-        'Eloquent\Phony\Test\TestTraitB'
+        'Eloquent\Phony\Test\TestTraitB',
     ),
     array(
         'const CONSTANT_A' => 'constantValueA',
         'const CONSTANT_B' => 444,
-        'static methodA' => function ($className, $first, &$second) {},
+        'static methodA' => function ($phonySelf, $first, &$second) {},
         'static methodB' =>
             function (
-                $className,
                 $first = null,
                 $second = 111,
                 $third = array(),
@@ -26,13 +25,13 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
         'static propertyB' => 222,
         'methodC' =>
             function (
-                Eloquent\Phony\Mock\MockInterface $self,
+                Eloquent\Phony\Mock\MockInterface $phonySelf,
                 Eloquent\Phony\Test\TestClassA $first,
                 Eloquent\Phony\Test\TestClassA $second = null,
                 array $third = array(),
                 array $fourth = null
             ) {},
-        'methodD' => function ($self) {},
+        'methodD' => function ($phonySelf) {},
         'propertyC' => 'valueC',
         'propertyD' => 333,
     ),

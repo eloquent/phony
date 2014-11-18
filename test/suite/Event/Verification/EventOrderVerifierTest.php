@@ -107,6 +107,24 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testCheckInOrderFailureInvalidArgument()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Cannot verify event order with supplied value of type integer.'
+        );
+        $this->subject->checkInOrder(111);
+    }
+
+    public function testCheckInOrderFailureInvalidArgumentObject()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            "Cannot verify event order with supplied value of type 'stdClass'."
+        );
+        $this->subject->checkInOrder((object) array());
+    }
+
     public function testInOrder()
     {
         $this->assertEquals(new CallEventCollection(), $this->subject->inOrder());
@@ -248,6 +266,24 @@ EOD;
         $this->subject->inOrder(new CallEventCollection());
     }
 
+    public function testInOrderFailureInvalidArgument()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Cannot verify event order with supplied value of type integer.'
+        );
+        $this->subject->inOrder(111);
+    }
+
+    public function testInOrderFailureInvalidArgumentObject()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            "Cannot verify event order with supplied value of type 'stdClass'."
+        );
+        $this->subject->inOrder((object) array());
+    }
+
     public function testCheckInOrderSequence()
     {
         $this->assertTrue((boolean) $this->subject->checkInOrderSequence(array()));
@@ -317,6 +353,24 @@ EOD;
                 )
             )
         );
+    }
+
+    public function testCheckInOrderSequenceFailureInvalidArgument()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Cannot verify event order with supplied value of type integer.'
+        );
+        $this->subject->checkInOrderSequence(array(111));
+    }
+
+    public function testCheckInOrderSequenceFailureInvalidArgumentObject()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            "Cannot verify event order with supplied value of type 'stdClass'."
+        );
+        $this->subject->checkInOrderSequence(array((object) array()));
     }
 
     public function testInOrderSequence()
@@ -473,6 +527,24 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->inOrderSequence(array(new CallEventCollection()));
+    }
+
+    public function testInOrderSequenceFailureInvalidArgument()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Cannot verify event order with supplied value of type integer.'
+        );
+        $this->subject->inOrderSequence(array(111));
+    }
+
+    public function testInOrderSequenceFailureInvalidArgumentObject()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            "Cannot verify event order with supplied value of type 'stdClass'."
+        );
+        $this->subject->inOrderSequence(array((object) array()));
     }
 
     public function testInstance()

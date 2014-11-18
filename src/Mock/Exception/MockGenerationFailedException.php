@@ -70,7 +70,8 @@ final class MockGenerationFailedException extends Exception implements
             );
         }
 
-        foreach ($lines as $lineNumber => $line) {}
+        foreach ($lines as $lineNumber => $line) {
+        }
 
         $padSize = strlen($lineNumber + 1) + 4;
         $renderedLines = '';

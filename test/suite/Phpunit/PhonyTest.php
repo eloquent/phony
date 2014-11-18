@@ -65,7 +65,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMock';
         $actual = Phony::mock($types, $arguments, $definition, $className);
 
@@ -81,7 +81,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMockWithNullArguments';
         $actual = Phony::mock($types, $arguments, $definition, $className);
 
@@ -119,7 +119,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMockFunction';
         $actual = mock($types, $arguments, $definition, $className);
 
@@ -135,7 +135,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMockFunctionWithNullArguments';
         $actual = mock($types, $arguments, $definition, $className);
 
@@ -172,7 +172,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testFullMock()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateFullMock';
         $actual = Phony::fullMock($types, $definition, $className);
 
@@ -188,7 +188,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testFullMockFunction()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateFullMockFunction';
         $actual = fullMock($types, $definition, $className);
 
@@ -300,22 +300,22 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testStub()
     {
-        $callback = function () {};
+        $callback = function () { return 'a'; };
         $actual = Phony::stub($callback);
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
         $this->assertEquals(new PhpunitAssertionRecorder(), $actual->callVerifierFactory()->assertionRecorder());
     }
 
     public function testStubFunction()
     {
-        $callback = function () {};
+        $callback = function () { return 'a'; };
         $actual = stub($callback);
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
         $this->assertEquals(new PhpunitAssertionRecorder(), $actual->callVerifierFactory()->assertionRecorder());
     }

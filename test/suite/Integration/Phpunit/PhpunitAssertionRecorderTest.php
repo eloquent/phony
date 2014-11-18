@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Integration\Phpunit;
 use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use PHPUnit_Framework_Assert;
-use PHPUnit_Framework_ExpectationFailedException;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -51,10 +50,9 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
     public function testCreateFailure()
     {
         $description = 'description';
-        $actual = $this->subject->createFailure($description);
 
-        $this->assertInstanceOf('PHPUnit_Framework_ExpectationFailedException', $actual);
-        $this->assertSame($description, $actual->getMessage());
+        $this->setExpectedException('Eloquent\Phony\Integration\Phpunit\PhpunitAssertionException', $description);
+        $this->subject->createFailure($description);
     }
 
     public function testInstance()

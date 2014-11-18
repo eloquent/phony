@@ -21,27 +21,22 @@ use Traversable;
 interface TraversableSpyFactoryInterface
 {
     /**
-     * Returns true if the supplied value is traversable.
+     * Returns true if the supplied value is supported by this factory.
      *
      * @param mixed $value The value to check.
      *
-     * @return boolean True if the supplied value is traversable.
+     * @return boolean True if the supplied value is supported.
      */
-    public function isTraversable($value);
+    public function isSupported($value);
 
     /**
      * Create a new traversable spy.
      *
-     * @param CallInterface     $call              The call from which the traversable originated.
-     * @param Traversable|array $traversable       The traversable.
-     * @param boolean|null      $useGeneratorSpies True if generator spies should be used.
+     * @param CallInterface     $call        The call from which the traversable originated.
+     * @param Traversable|array $traversable The traversable.
      *
      * @return Traversable              The newly created traversable spy.
      * @throws InvalidArgumentException If the supplied traversable is invalid.
      */
-    public function create(
-        CallInterface $call,
-        $traversable,
-        $useGeneratorSpies = null
-    );
+    public function create(CallInterface $call, $traversable);
 }

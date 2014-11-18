@@ -15,6 +15,8 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionMethod;
@@ -23,18 +25,21 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->signatureInspector = new FunctionSignatureInspector();
         $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = array(
             'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
+            'Eloquent\Phony\Test\TestInterfaceB',
             'Iterator',
         );
         $this->typeNamesTraits = array(
             'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
+            'Eloquent\Phony\Test\TestInterfaceB',
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
             'Iterator',
@@ -43,6 +48,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->interfaceNames = array(
             'Countable',
             'Eloquent\Phony\Test\TestInterfaceA',
+            'Eloquent\Phony\Test\TestInterfaceB',
             'Iterator',
         );
         $this->traitNames = array(
@@ -84,6 +90,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             $this->customStaticProperties,
             $this->customConstants,
             $this->className,
+            $this->signatureInspector,
             $this->featureDetector
         );
     }
@@ -99,6 +106,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->customStaticProperties, $this->subject->customStaticProperties());
         $this->assertSame($this->customConstants, $this->subject->customConstants());
         $this->assertSame($this->className, $this->subject->className());
+        $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertSame($this->typeNames, $this->subject->typeNames());
         $this->assertSame($this->parentClassName, $this->subject->parentClassName());
@@ -133,6 +141,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->customStaticProperties());
         $this->assertSame(array(), $this->subject->customConstants());
         $this->assertNull($this->subject->className());
+        $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertSame(array(), $this->subject->typeNames());
         $this->assertNull($this->subject->parentClassName());
@@ -230,7 +239,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA')
                 ),
                 'testClassAMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB')
                 ),
                 'testClassAMethodC' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC')
@@ -239,7 +248,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD')
                 ),
                 'testClassAStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA')
                 ),
                 'testClassAStaticMethodB' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB')
@@ -269,6 +278,20 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                 '__callStatic' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic')
                 ),
+            ),
+            array(
+                new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA')
+                ),
+                new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB')
+                ),
+                new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB')
+                ),
+                new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA')
+                ),
             )
         );
         $actual = $this->subject->methods();
@@ -294,5 +317,45 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($definitionC->isEqualTo($definitionA));
         $this->assertFalse($definitionB->isEqualTo($definitionC));
         $this->assertFalse($definitionC->isEqualTo($definitionB));
+    }
+
+    public function testIsEqualToWithInequalSignature()
+    {
+        $definitionA = new MockDefinition(
+            null,
+            array(
+                'methodA' => function ($a, $b) {},
+            )
+        );
+        $definitionB = new MockDefinition(
+            null,
+            array(
+                'methodA' => function ($a, array $b = null) {},
+            )
+        );
+
+        $this->assertFalse($definitionA->isEqualTo($definitionB));
+    }
+
+    public function testIsEqualToWithInequalSignatureStatic()
+    {
+        $definitionA = new MockDefinition(
+            null,
+            null,
+            null,
+            array(
+                'methodA' => function ($a, $b) {},
+            )
+        );
+        $definitionB = new MockDefinition(
+            null,
+            null,
+            null,
+            array(
+                'methodA' => function ($a, array $b = null) {},
+            )
+        );
+
+        $this->assertFalse($definitionA->isEqualTo($definitionB));
     }
 }

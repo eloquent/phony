@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
+use ReflectionMethod;
+
 /**
  * The interface implemented by method definition collections.
  */
@@ -64,4 +66,11 @@ interface MethodDefinitionCollectionInterface
      * @return array<string,MethodDefinitionInterface> The methods.
      */
     public function protectedMethods();
+
+    /**
+     * Get the trait methods.
+     *
+     * @return array<integer,ReflectionMethod> The trait methods.
+     */
+    public function traitMethods();
 }

@@ -4,7 +4,7 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
     null,
     array(
         'methodA' => function (
-            $self,
+            $phonySelf,
             Non\Existent $first,
             Non\Existent $second = null
         ) {},

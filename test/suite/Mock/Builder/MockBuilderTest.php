@@ -15,6 +15,7 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -23,13 +24,14 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->signatureInspector = new FunctionSignatureInspector();
         $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = array(
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
             'Iterator',
-            'Countable'
+            'Countable',
         );
         $this->typeNamesTraits = array(
             'Eloquent\Phony\Test\TestClassB',
@@ -69,6 +71,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             null,
             $this->factory,
             $this->proxyFactory,
+            $this->signatureInspector,
             $this->featureDetector
         );
     }
@@ -91,6 +94,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->typesFor($this->typeNames), $this->subject->types());
         $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
+        $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
@@ -151,6 +155,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->types());
         $this->assertSame(MockFactory::instance(), $this->subject->factory());
         $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
+        $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
@@ -530,7 +535,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $exception = null;
         try {
             $builder->build();
-        } catch (ClassExistsException $exception) {}
+        } catch (ClassExistsException $exception) {
+        }
 
         $this->assertNotNull($exception);
         $this->assertTrue($builder->isFinalized());
@@ -582,20 +588,20 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testCreateWith()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->createWith(array('a', 'b'), 'id');
+        $first = $this->subject->createWith(array('a', 'b'), 'label');
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('id', $this->proxyFactory->createStubbing($first)->id());
+        $this->assertSame('label', $this->proxyFactory->createStubbing($first)->label());
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
         $second = $this->subject->createWith(array());
 
         $this->assertNotSame($first, $second);
-        $this->assertSame('0', $this->proxyFactory->createStubbing($second)->id());
+        $this->assertSame('0', $this->proxyFactory->createStubbing($second)->label());
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
 
@@ -603,7 +609,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertNotSame($first, $third);
         $this->assertNotSame($second, $third);
-        $this->assertSame('1', $this->proxyFactory->createStubbing($third)->id());
+        $this->assertSame('1', $this->proxyFactory->createStubbing($third)->label());
         $this->assertNull($third->constructorArguments);
         $this->assertSame($third, $this->subject->get());
     }
@@ -611,13 +617,13 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testFull()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->full('id');
+        $first = $this->subject->full('label');
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('id', $this->proxyFactory->createStubbing($first)->id());
+        $this->assertSame('label', $this->proxyFactory->createStubbing($first)->label());
         $this->assertNull($first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
