@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e622ac397a3713e4d940c58732185efa",
+    "hash": "4c09aea96455b17cb94b7eab0cb482f0",
     "packages": [
         {
             "name": "sebastian/comparator",
@@ -762,20 +762,21 @@
         },
         {
             "name": "peridot-php/peridot",
-            "version": "1.8.1",
+            "version": "1.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/peridot-php/peridot.git",
-                "reference": "26bb783a7585e9a1d999db05846c90f38bc64821"
+                "reference": "95f30a20ac74c88b3cd5e20b93785ab0d40f5682"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/peridot-php/peridot/zipball/26bb783a7585e9a1d999db05846c90f38bc64821",
-                "reference": "26bb783a7585e9a1d999db05846c90f38bc64821",
+                "url": "https://api.github.com/repos/peridot-php/peridot/zipball/95f30a20ac74c88b3cd5e20b93785ab0d40f5682",
+                "reference": "95f30a20ac74c88b3cd5e20b93785ab0d40f5682",
                 "shasum": ""
             },
             "require": {
                 "evenement/evenement": "2.0.*",
+                "peridot-php/peridot-scope": "~1.0",
                 "php": ">=5.4.0",
                 "phpunit/php-timer": "~1.0",
                 "symfony/console": "~2.0"
@@ -815,7 +816,46 @@
                 "php",
                 "testing"
             ],
-            "time": "2014-11-11 17:57:11"
+            "time": "2014-11-16 20:58:14"
+        },
+        {
+            "name": "peridot-php/peridot-scope",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/peridot-php/peridot-scope.git",
+                "reference": "afb42609256aab00d6f014485a1790839cf8b613"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/peridot-php/peridot-scope/zipball/afb42609256aab00d6f014485a1790839cf8b613",
+                "reference": "afb42609256aab00d6f014485a1790839cf8b613",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "peridot-php/peridot-jumpstart": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Peridot\\Scope\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Scaturro",
+                    "email": "scaturrob@gmail.com"
+                }
+            ],
+            "description": "Scopes for function binding and mixins",
+            "time": "2014-11-16 20:22:55"
         },
         {
             "name": "phake/phake",
@@ -918,16 +958,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "v1.2.1",
+            "version": "v1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "ed9c0bcffe4639a5b0ff83e399eeb28e7fcc68f0"
+                "reference": "9ca52329bcdd1500de24427542577ebf3fc2f1c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/ed9c0bcffe4639a5b0ff83e399eeb28e7fcc68f0",
-                "reference": "ed9c0bcffe4639a5b0ff83e399eeb28e7fcc68f0",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/9ca52329bcdd1500de24427542577ebf3fc2f1c9",
+                "reference": "9ca52329bcdd1500de24427542577ebf3fc2f1c9",
                 "shasum": ""
             },
             "require": {
@@ -973,7 +1013,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2014-09-23 10:52:18"
+            "time": "2014-11-17 16:23:49"
         },
         {
             "name": "phpunit/php-code-coverage",
