@@ -121,13 +121,23 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
-     * Get the identifier.
+     * Set the label.
      *
-     * @return string|null The identifier.
+     * @param string|null $label The label.
      */
-    public function id()
+    public function setLabel($label)
     {
-        return $this->stub->id();
+        $this->stub->setLabel($label);
+    }
+
+    /**
+     * Get the lbel.
+     *
+     * @return string|null The lbel.
+     */
+    public function label()
+    {
+        return $this->stub->label();
     }
 
     /**

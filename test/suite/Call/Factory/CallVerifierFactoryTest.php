@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;

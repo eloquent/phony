@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
+use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
@@ -47,21 +49,23 @@ class StubFactory implements StubFactoryInterface
     /**
      * Construct a new stub factory.
      *
-     * @param SequencerInterface|null          $idSequencer        The identifier sequencer to use.
+     * @param SequencerInterface|null          $labelSequencer     The label sequencer to use.
      * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
      * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
      * @param InvokerInterface|null            $invoker            The invoker to use.
      * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
+     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
      */
     public function __construct(
-        SequencerInterface $idSequencer = null,
+        SequencerInterface $labelSequencer = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
-        InvocableInspectorInterface $invocableInspector = null
+        InvocableInspectorInterface $invocableInspector = null,
+        FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $idSequencer) {
-            $idSequencer = Sequencer::sequence('stub-id');
+        if (null === $labelSequencer) {
+            $labelSequencer = Sequencer::sequence('stub-label');
         }
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -75,22 +79,26 @@ class StubFactory implements StubFactoryInterface
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
+        if (null === $featureDetector) {
+            $featureDetector = FeatureDetector::instance();
+        }
 
-        $this->idSequencer = $idSequencer;
+        $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
+        $this->featureDetector = $featureDetector;
     }
 
     /**
-     * Get the identifier sequencer.
+     * Get the label sequencer.
      *
-     * @return SequencerInterface The identifier sequencer.
+     * @return SequencerInterface The label sequencer.
      */
-    public function idSequencer()
+    public function labelSequencer()
     {
-        return $this->idSequencer;
+        return $this->labelSequencer;
     }
 
     /**
@@ -134,6 +142,16 @@ class StubFactory implements StubFactoryInterface
     }
 
     /**
+     * Get the feature detector.
+     *
+     * @return FeatureDetectorInterface The feature detector.
+     */
+    public function featureDetector()
+    {
+        return $this->featureDetector;
+    }
+
+    /**
      * Create a new stub.
      *
      * @param callable|null $callback The callback, or null to create an unbound stub.
@@ -146,18 +164,20 @@ class StubFactory implements StubFactoryInterface
         return new Stub(
             $callback,
             $self,
-            strval($this->idSequencer->next()),
+            strval($this->labelSequencer->next()),
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector
+            $this->invocableInspector,
+            $this->featureDetector
         );
     }
 
     private static $instance;
-    private $idSequencer;
+    private $labelSequencer;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
+    private $featureDetector;
 }

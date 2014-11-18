@@ -11,13 +11,15 @@
 
 namespace Eloquent\Phony\Mock\Proxy\Factory;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy;
 use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy;
 use Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -27,16 +29,26 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->mockFactory = new MockFactory();
+        $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
+        $this->assertionRenderer = new AssertionRenderer();
+        $this->assertionRecorder = new AssertionRecorder();
         $this->wildcardMatcher = new WildcardMatcher();
-        $this->subject = new ProxyFactory($this->mockFactory, $this->stubVerifierFactory, $this->wildcardMatcher);
+        $this->subject = new ProxyFactory(
+            $this->stubFactory,
+            $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
+            $this->wildcardMatcher
+        );
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->mockFactory, $this->subject->mockFactory());
+        $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
+        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
+        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
     }
 
@@ -44,391 +56,239 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new ProxyFactory();
 
-        $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
+        $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
+        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
+        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
     }
 
-    public function testCreateStubbingStatic()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticStubbingProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createStubbingStatic($class);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateStubbingStaticNonMagic()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = null;
-        $expected = new StaticStubbingProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createStubbingStatic($class);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateStubbingStaticWithObject()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $mock = $mockBuilder->get();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticStubbingProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createStubbingStatic($mock);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateStubbingStaticWithString()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticStubbingProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createStubbingStatic($class->getName());
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateStubbingStaticWithProxy()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticStubbingProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createStubbingStatic($this->subject->createVerification($mockBuilder->get()));
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateStubbingStaticFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->createStubbingStatic('Nonexistent');
-    }
-
-    public function testCreateStubbingStaticFailureNonMockClass()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->createStubbingStatic(__CLASS__);
-    }
-
-    public function testCreateStubbing()
+    public function testCreateStubbingNew()
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->create();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = new ReflectionProperty($mock, '_stubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStubs');
-        $magicStubsProperty->setAccessible(true);
+        $proxyProperty = new ReflectionProperty($mock, '_proxy');
+        $proxyProperty->setAccessible(true);
+        $proxyProperty->setValue($mock, null);
         $expected = new StubbingProxy(
             $mock,
-            $class,
-            $stubsProperty->getValue($mock),
-            $magicStubsProperty,
-            $this->mockFactory,
+            (object) array(
+                'stubs' => (object) array(),
+                'isFull' => false,
+                'label' => 'label',
+            ),
+            $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
+        $actual = $this->subject->createStubbing($mock, 'label');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateStubbingAdapt()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mock = $mockBuilder->create();
+        $proxyProperty = new ReflectionProperty($mock, '_proxy');
+        $proxyProperty->setAccessible(true);
+        $expected = $proxyProperty->getValue($mock);
         $actual = $this->subject->createStubbing($mock);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+        $this->assertSame($actual, $this->subject->createStubbing($actual));
     }
 
-    public function testCreateStubbingNonMagic()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $mock = $mockBuilder->create();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = new ReflectionProperty($mock, '_stubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = null;
-        $expected = new StubbingProxy(
-            $mock,
-            $class,
-            $stubsProperty->getValue($mock),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createStubbing($mock);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateStubbingWithProxy()
+    public function testCreateStubbingFromVerifier()
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->create();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = new ReflectionProperty($mock, '_stubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StubbingProxy(
-            $mock,
-            $class,
-            $stubsProperty->getValue($mock),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createStubbing($this->subject->createVerification($mock));
+        $proxyProperty = new ReflectionProperty($mock, '_proxy');
+        $proxyProperty->setAccessible(true);
+        $expected = $proxyProperty->getValue($mock);
+        $verifierProxy = $this->subject->createVerification($mock);
+        $actual = $this->subject->createStubbing($verifierProxy);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
-    public function testCreateStubbingFailureNonMock()
+    public function testCreateStubbingFailureInvalid()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->createStubbing($this);
-    }
-
-    public function testCreateVerificationStatic()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticVerificationProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createVerificationStatic($class);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateVerificationStaticNonMagic()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = null;
-        $expected = new StaticVerificationProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createVerificationStatic($class);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateVerificationStaticWithObject()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $mock = $mockBuilder->get();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticVerificationProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createVerificationStatic($mock);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateVerificationStaticWithString()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticVerificationProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createVerificationStatic($class->getName());
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateVerificationStaticWithProxy()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $class = $mockBuilder->build();
-        $stubsProperty = $class->getProperty('_staticStubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStaticStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new StaticVerificationProxy(
-            $class,
-            $stubsProperty->getValue(null),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createVerificationStatic($this->subject->createStubbing($mockBuilder->get()));
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateVerificationStaticFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->createVerificationStatic('Nonexistent');
-    }
-
-    public function testCreateVerificationStaticFailureNonMockClass()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->createVerificationStatic(__CLASS__);
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidMockException');
+        $this->subject->createStubbing(null);
     }
 
     public function testCreateVerification()
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->create();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = new ReflectionProperty($mock, '_stubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new VerificationProxy(
-            $mock,
-            $class,
-            $stubsProperty->getValue($mock),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
+        $proxyProperty = new ReflectionProperty($mock, '_proxy');
+        $proxyProperty->setAccessible(true);
+        $stubbingProxy = $proxyProperty->getValue($mock);
         $actual = $this->subject->createVerification($mock);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy', $actual);
+        $this->assertSame($stubbingProxy->mock(), $actual->mock());
+        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
+        $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
+        $this->assertSame($stubbingProxy->label(), $actual->label());
     }
 
-    public function testCreateVerificationNonMagic()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $mock = $mockBuilder->create();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = new ReflectionProperty($mock, '_stubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = null;
-        $expected = new VerificationProxy(
-            $mock,
-            $class,
-            $stubsProperty->getValue($mock),
-            $magicStubsProperty,
-            $this->mockFactory,
-            $this->stubVerifierFactory,
-            $this->wildcardMatcher
-        );
-        $actual = $this->subject->createVerification($mock);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateVerificationWithProxy()
+    public function testCreateVerificationAdapt()
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->create();
-        $class = new ReflectionClass($mock);
-        $stubsProperty = new ReflectionProperty($mock, '_stubs');
-        $stubsProperty->setAccessible(true);
-        $magicStubsProperty = $class->getProperty('_magicStubs');
-        $magicStubsProperty->setAccessible(true);
-        $expected = new VerificationProxy(
-            $mock,
+        $actual = $this->subject->createVerification($mock);
+
+        $this->assertSame($actual, $this->subject->createVerification($actual));
+    }
+
+    public function testCreateVerificationFromStubbing()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mock = $mockBuilder->create();
+        $stubbingProxy = $this->subject->createStubbing($mock);
+        $actual = $this->subject->createVerification($mock);
+
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy', $actual);
+        $this->assertSame($stubbingProxy->mock(), $actual->mock());
+        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
+        $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
+        $this->assertSame($stubbingProxy->label(), $actual->label());
+    }
+
+    public function testCreateStubbingStaticNew()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+        $proxyProperty->setValue(null, null);
+        $expected = new StaticStubbingProxy(
             $class,
-            $stubsProperty->getValue($mock),
-            $magicStubsProperty,
-            $this->mockFactory,
+            null,
+            $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
             $this->wildcardMatcher
         );
-        $actual = $this->subject->createVerification($this->subject->createStubbing($mock));
+        $actual = $this->subject->createStubbingStatic($class);
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateVerificationFailureNonMock()
+    public function testCreateStubbingStaticAdapt()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+        $expected = $proxyProperty->getValue(null);
+        $actual = $this->subject->createStubbingStatic($class);
+
+        $this->assertSame($expected, $actual);
+        $this->assertSame($actual, $this->subject->createStubbingStatic($actual));
+    }
+
+    public function testCreateStubbingStaticFromVerifier()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+        $expected = $proxyProperty->getValue(null);
+        $verifierProxy = $this->subject->createVerificationStatic($class);
+        $actual = $this->subject->createStubbingStatic($verifierProxy);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testCreateStubbingStaticFromMock()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+        $expected = $proxyProperty->getValue(null);
+        $actual = $this->subject->createStubbingStatic($mockBuilder->create());
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testCreateStubbingStaticFromSting()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+        $expected = $proxyProperty->getValue(null);
+        $actual = $this->subject->createStubbingStatic($class->getName());
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testCreateStubbingStaticFailureUndefinedClass()
     {
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->createVerification($this);
+        $this->subject->createStubbingStatic('Undefined');
+    }
+
+    public function testCreateStubbingStaticFailureNonMockClass()
+    {
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
+        $this->subject->createStubbingStatic(new ReflectionClass('stdClass'));
+    }
+
+    public function testCreateStubbingStaticFailureNonMockClassString()
+    {
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
+        $this->subject->createStubbingStatic('Countable');
+    }
+
+    public function testCreateStubbingStaticFailureInvalid()
+    {
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidMockClassException');
+        $this->subject->createStubbingStatic(null);
+    }
+
+    public function testCreateVerificationStatic()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $proxyProperty = $class->getProperty('_staticProxy');
+        $proxyProperty->setAccessible(true);
+        $stubbingProxy = $proxyProperty->getValue(null);
+        $actual = $this->subject->createVerificationStatic($class);
+
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
+        $this->assertSame($stubbingProxy->clazz(), $actual->clazz());
+        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
+        $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
+    }
+
+    public function testCreateVerificationStaticAdapt()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $actual = $this->subject->createVerificationStatic($class);
+
+        $this->assertSame($actual, $this->subject->createVerificationStatic($actual));
+    }
+
+    public function testCreateVerificationStaticFromStubbing()
+    {
+        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $class = $mockBuilder->build(true);
+        $stubbingProxy = $this->subject->createStubbingStatic($class);
+        $actual = $this->subject->createVerificationStatic($class);
+
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
+        $this->assertSame($stubbingProxy->clazz(), $actual->clazz());
+        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
+        $this->assertSame($stubbingProxy->isFull(), $actual->isFull());
     }
 
     public function testInstance()

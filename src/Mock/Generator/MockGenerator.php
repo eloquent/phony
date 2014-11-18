@@ -11,13 +11,15 @@
 
 namespace Eloquent\Phony\Mock\Generator;
 
+use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
-use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionFunctionAbstract;
-use ReflectionParameter;
+use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
+use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Sequencer\SequencerInterface;
 
 /**
  * Generates mock classes.
@@ -42,119 +44,216 @@ class MockGenerator implements MockGeneratorInterface
 
     /**
      * Construct a new mock generator.
+     *
+     * @param SequencerInterface|null                  $labelSequencer     The label sequencer to use.
+     * @param FunctionSignatureInspectorInterface|null $signatureInspector The function signature inspector to use.
+     * @param FeatureDetectorInterface|null            $featureDetector    The feature detector to use.
      */
-    public function __construct()
+    public function __construct(
+        SequencerInterface $labelSequencer = null,
+        FunctionSignatureInspectorInterface $signatureInspector = null,
+        FeatureDetectorInterface $featureDetector = null
+    ) {
+        if (null === $labelSequencer) {
+            $labelSequencer = Sequencer::sequence('mock-class-label');
+        }
+        if (null === $signatureInspector) {
+            $signatureInspector = FunctionSignatureInspector::instance();
+        }
+        if (null === $featureDetector) {
+            $featureDetector = FeatureDetector::instance();
+        }
+
+        $this->labelSequencer = $labelSequencer;
+        $this->signatureInspector = $signatureInspector;
+        $this->featureDetector = $featureDetector;
+
+        $this->isClosureBindingSupported =
+            $this->featureDetector->isSupported('closure.bind');
+    }
+
+    /**
+     * Get the label sequencer.
+     *
+     * @return SequencerInterface The label sequencer.
+     */
+    public function labelSequencer()
     {
-        $reflectorReflector = new ReflectionClass('ReflectionParameter');
-        $this->isCallableTypeHintSupported =
-            $reflectorReflector->hasMethod('isCallable');
-        $this->isParameterConstantSupported =
-            $reflectorReflector->hasMethod('isDefaultValueConstant');
+        return $this->labelSequencer;
+    }
+
+    /**
+     * Get the function signature inspector.
+     *
+     * @return FunctionSignatureInspectorInterface The function signature inspector.
+     */
+    public function signatureInspector()
+    {
+        return $this->signatureInspector;
+    }
+
+    /**
+     * Get the feature detector.
+     *
+     * @return FeatureDetectorInterface The feature detector.
+     */
+    public function featureDetector()
+    {
+        return $this->featureDetector;
+    }
+
+    /**
+     * Generate a mock class name.
+     *
+     * @param MockDefinitionInterface $definition The definition.
+     *
+     * @return string The mock class name.
+     */
+    public function generateClassName(MockDefinitionInterface $definition)
+    {
+        $className = $definition->className();
+
+        if (null !== $className) {
+            return $className;
+        }
+
+        $className = 'PhonyMock';
+        $parentClassName = $definition->parentClassName();
+
+        if (null !== $parentClassName) {
+            $subject = $parentClassName;
+        } elseif ($interfaceNames = $definition->interfaceNames()) {
+            $subject = $interfaceNames[0];
+        } elseif ($traitNames = $definition->traitNames()) {
+            $subject = $traitNames[0];
+        } else {
+            $subject = null;
+        }
+
+        if ($subject) {
+            $subjectAtoms = preg_split('/[_\\\\]/', $subject);
+            $className .= '_' . array_pop($subjectAtoms);
+        }
+
+        $className .= '_' . $this->labelSequencer->next();
+
+        return $className;
     }
 
     /**
      * Generate a mock class and return the source code.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
+     * @param string|null             $className  The class name.
      *
      * @return string The source code.
      */
-    public function generate(MockBuilderInterface $builder)
-    {
-        $builder->finalize();
+    public function generate(
+        MockDefinitionInterface $definition,
+        $className = null
+    ) {
+        if (null === $className) {
+            $className = $this->generateClassName($definition);
+        }
 
-        return $this->generateHeader($builder) .
-            $this->generateConstants($builder) .
+        return $this->generateHeader($definition, $className) .
+            $this->generateConstants($definition) .
             $this->generateMethods(
-                $builder->methodDefinitions()->publicStaticMethods()
+                $definition->methods()->publicStaticMethods()
             ) .
-            $this->generateMagicCallStatic($builder) .
-            $this->generateConstructors($builder) .
+            $this->generateMagicCallStatic($definition) .
+            $this->generateConstructors($definition) .
+            $this->generateMethods($definition->methods()->publicMethods()) .
+            $this->generateMagicCall($definition) .
             $this->generateMethods(
-                $builder->methodDefinitions()->publicMethods()
+                $definition->methods()->protectedStaticMethods()
             ) .
-            $this->generateMagicCall($builder) .
-            $this->generateMethods(
-                $builder->methodDefinitions()->protectedStaticMethods()
-            ) .
-            $this->generateMethods(
-                $builder->methodDefinitions()->protectedMethods()
-            ) .
-            $this->generateCallParentMethods($builder) .
-            $this->generateProperties($builder) .
+            $this->generateMethods($definition->methods()->protectedMethods()) .
+            $this->generateCallParentMethods($definition) .
+            $this->generateProperties($definition) .
             "\n}\n";
     }
 
     /**
      * Generate the class header.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
+     * @param string                  $className  The class name.
      *
      * @return string The source code.
      */
-    protected function generateHeader(MockBuilderInterface $builder)
-    {
-        $template = <<<'EOD'
-%s/**
- * A mock class generated by Phony.%s
- *
- * This file is part of the Phony package.
- *
- * Copyright © 2014 Erin Millard
- *
- * For the full copyright and license information, please view the LICENSE file
- * that was distributed with the Phony source code.
- *
- * @link https://github.com/eloquent/phony
- */
-class %s
-EOD;
-
-        if ($types = $builder->types()) {
+    protected function generateHeader(
+        MockDefinitionInterface $definition,
+        $className
+    ) {
+        if ($typeNames = $definition->typeNames()) {
             $usedTypes = "\n *";
 
-            foreach ($types as $type) {
-                $usedTypes .= sprintf("\n * @uses \%s", $type);
+            foreach ($typeNames as $typeName) {
+                $usedTypes .= "\n * @uses \\" . $typeName;
             }
         } else {
             $usedTypes = '';
         }
 
-        $className = $builder->className();
         $classNameParts = explode('\\', $className);
 
         if (count($classNameParts) > 1) {
             $className = array_pop($classNameParts);
-            $namespace =
-                sprintf("namespace %s;\n\n", implode('\\', $classNameParts));
+            $namespace = 'namespace ' . implode('\\', $classNameParts) .
+                ";\n\n";
         } else {
             $namespace = '';
         }
 
-        $source = sprintf($template, $namespace, $usedTypes, $className);
+        $source = $namespace . 'class ' . $className;
 
-        $parentClassName = $builder->parentClassName();
-        $interfaceNames = $builder->interfaceNames();
-        $traitNames = $builder->traitNames();
+        $parentClassName = $definition->parentClassName();
+        $interfaceNames = $definition->interfaceNames();
+        $traitNames = $definition->traitNames();
 
         if (null !== $parentClassName) {
-            $source .= sprintf("\nextends \%s", $parentClassName);
+            $source .= "\nextends \\" . $parentClassName;
         }
 
         array_unshift($interfaceNames, 'Eloquent\Phony\Mock\MockInterface');
-        $source .= sprintf(
-            "\nimplements \%s",
-            implode(",\n           \\", $interfaceNames)
-        );
+        $source .= "\nimplements \\" .
+            implode(",\n           \\", $interfaceNames);
 
         $source .= "\n{";
 
         if ($traitNames) {
+            $traitName = array_shift($traitNames);
+            $source .= "\n    use \\" . $traitName;
+
             foreach ($traitNames as $traitName) {
-                $source .= sprintf("\n    use \%s;", $traitName);
+                $source .= ",\n        \\" . $traitName;
             }
 
-            $source .= "\n";
+            $source .= "\n    {";
+
+            $methods = $definition->methods();
+
+            foreach ($methods->traitMethods() as $method) {
+                $typeName = $method->method()->getDeclaringClass()->getName();
+                $methodName = $method->name();
+
+                $source .= "\n        \\" .
+                    $typeName .
+                    '::' .
+                    $methodName .
+                    "\n            as private _callTrait_" .
+                    str_replace(
+                        '\\',
+                        "\xc2\xa6",
+                        $typeName
+                    ) .
+                    "\xc2\xbb" .
+                    $methodName .
+                    ';';
+            }
+
+            $source .= "\n    }\n";
         }
 
         return $source;
@@ -163,22 +262,22 @@ EOD;
     /**
      * Generate the class constants.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateConstants(MockBuilderInterface $builder)
+    protected function generateConstants(MockDefinitionInterface $definition)
     {
-        $constants = $builder->constants();
+        $constants = $definition->customConstants();
         $source = '';
 
         if ($constants) {
             foreach ($constants as $name => $value) {
-                $source .= sprintf(
-                    "\n    const %s = %s;",
-                    $name,
-                    $this->renderValue($value)
-                );
+                $source .= "\n    const " .
+                    $name .
+                    ' = ' .
+                    (null === $value ? 'null' : $this->renderValue($value)) .
+                    ';';
             }
 
             $source .= "\n";
@@ -190,47 +289,69 @@ EOD;
     /**
      * Generate the __callStatic() method.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateMagicCallStatic(MockBuilderInterface $builder)
-    {
-        $methods = $builder->methodDefinitions()->publicStaticMethods();
+    protected function generateMagicCallStatic(
+        MockDefinitionInterface $definition
+    ) {
+        $methods = $definition->methods()->publicStaticMethods();
 
         if (!isset($methods['__callStatic'])) {
             return '';
         }
 
-        $body = <<<'EOD'
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
+        $source = <<<'EOD'
 
-        if (isset(self::$_magicStaticStubs[$a0])) {
-            return self::$_magicStaticStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagicStatic($a0, $arguments);
+    public static function __callStatic(
 EOD;
 
-        return $this->generateMethod($methods['__callStatic'], $body);
+        $signature = $this->signatureInspector
+            ->signature($methods['__callStatic']->method());
+        $index = -1;
+
+        foreach ($signature as $parameter) {
+            if (-1 !== $index) {
+                $source .= ',';
+            }
+
+            $source .= "\n        " .
+                $parameter[0] .
+                $parameter[1] .
+                '$a' .
+                ++$index .
+                $parameter[2];
+        }
+
+        $source .= <<<'EOD'
+
+    ) {
+        return self::$_staticProxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+    }
+
+EOD;
+
+        return $source;
     }
 
     /**
      * Generate the constructors.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateConstructors(MockBuilderInterface $builder)
+    protected function generateConstructors(MockDefinitionInterface $definition)
     {
-        $className = $builder->parentClassName();
+        $className = $definition->parentClassName();
 
         if (null === $className) {
             $constructor = null;
         } else {
-            $reflectors = $builder->reflectors();
-            $constructor = $reflectors[$className]->getConstructor();
+            $types = $definition->types();
+            $constructor = $types[$className]->getConstructor();
         }
 
         if (!$constructor) {
@@ -239,9 +360,6 @@ EOD;
 
         return <<<'EOD'
 
-    /**
-     * Construct a mock.
-     */
     public function __construct()
     {
     }
@@ -261,186 +379,178 @@ EOD;
         $source = '';
 
         foreach ($methods as $method) {
-            if (
-                '__call' === $method->name() ||
-                '__callStatic' === $method->name()
-            ) {
+            $name = $method->name();
+
+            if ('__call' === $name || '__callStatic' === $name) {
                 continue;
             }
 
-            if ($method->isStatic()) {
-                $body = <<<'EOD'
-        $argumentCount = func_num_args();
-        $arguments = array();%s
-
-        for ($i = %d; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        if (isset(self::$_staticStubs[__FUNCTION__])) {
-            return self::$_staticStubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
-EOD;
-            } else {
-                $body = <<<'EOD'
-        $argumentCount = func_num_args();
-        $arguments = array();%s
-
-        for ($i = %d; $i < $argumentCount; $i++) {
-            $arguments[] = func_get_arg($i);
-        }
-
-        if (isset($this->_stubs[__FUNCTION__])) {
-            return $this->_stubs[__FUNCTION__]->invokeWith(
-                new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-            );
-        }
-EOD;
-            }
-
-            $parameters = $method->method()->getParameters();
+            $signature =
+                $this->signatureInspector->signature($method->method());
 
             if ($method->isCustom()) {
-                array_shift($parameters);
+                $parameterName = null;
+
+                foreach ($signature as $parameterName => $parameter) {
+                    break;
+                }
+
+                if ('phonySelf' === $parameterName) {
+                    array_shift($signature);
+                }
             }
 
-            if ($parameters) {
+            $parameterCount = count($signature);
+
+            if ($signature) {
                 $argumentPacking = "\n";
+                $index = -1;
 
-                foreach ($parameters as $index => $parameter) {
-                    if ($parameter->isPassedByReference()) {
-                        $reference = '&';
-                    } else {
-                        $reference = '';
-                    }
-
-                    $argumentPacking .= sprintf(
-                        "\n        if (\$argumentCount > %d) " .
-                            "\$arguments[] = %s\$a%d;",
-                        $index,
-                        $reference,
-                        $index
-                    );
+                foreach ($signature as $parameter) {
+                    $argumentPacking .= "\n        if (\$argumentCount > " .
+                        ++$index .
+                        ") {\n            \$arguments[] = " .
+                        $parameter[1] .
+                        '$a' .
+                        $index .
+                        ";\n        }";
                 }
             } else {
                 $argumentPacking = '';
             }
 
-            $source .= $this->generateMethod(
-                $method,
-                sprintf($body, $argumentPacking, count($parameters))
-            );
+            $isStatic = $method->isStatic();
+
+            if ($isStatic) {
+                $body = "        \$argumentCount = \\func_num_args();\n" .
+                    "        \$arguments = array();" .
+                    $argumentPacking .
+                    "\n\n        for (\$i = " .
+                    $parameterCount .
+                    "; \$i < \$argumentCount; \$i++) {\n" .
+                    "            \$arguments[] = \\func_get_arg(\$i);\n" .
+                    "        }\n\n        return self::\$_staticProxy->spy" .
+                    "(__FUNCTION__)->invokeWith(\n            " .
+                    "new \Eloquent\Phony\Call\Argument\Arguments" .
+                    "(\$arguments)\n        );";
+            } else {
+                $body = "        \$argumentCount = \\func_num_args();\n" .
+                    "        \$arguments = array();" .
+                    $argumentPacking .
+                    "\n\n        for (\$i = " .
+                    $parameterCount .
+                    "; \$i < \$argumentCount; \$i++) {\n" .
+                    "            \$arguments[] = \\func_get_arg(\$i);\n" .
+                    "        }\n\n        return \$this->_proxy->spy" .
+                    "(__FUNCTION__)->invokeWith(\n            " .
+                    "new \Eloquent\Phony\Call\Argument\Arguments" .
+                    "(\$arguments)\n        );";
+            }
+
+            $source .= "\n    " .
+                $method->accessLevel() .
+                ' ' .
+                ($isStatic ? 'static ' : '') .
+                'function ' .
+                $name;
+
+            if ($signature) {
+                $index = -1;
+                $isFirst = true;
+
+                foreach ($signature as $parameter) {
+                    if ($isFirst) {
+                        $isFirst = false;
+                        $source .= "(\n        ";
+                    } else {
+                        $source .= ",\n        ";
+                    }
+
+                    $source .= $parameter[0] .
+                        $parameter[1] .
+                        '$a' .
+                        ++$index .
+                        $parameter[2];
+                }
+
+                $source .= "\n    ) {\n";
+            } else {
+                $source .= "()\n    {\n";
+            }
+
+            $source .= $body . "\n    }\n";
         }
 
         return $source;
     }
 
     /**
-     * Generate the supplied method.
-     *
-     * @param MethodDefinitionInterface $method The method.
-     * @param string                    $body   The method body.
-     *
-     * @return string The source code.
-     */
-    protected function generateMethod(MethodDefinitionInterface $method, $body)
-    {
-        $source = '';
-
-        if ($method->isCustom()) {
-            $commentTemplate = <<<'EOD'
-    /**
-     * Custom method '%s'.%s
-     */
-EOD;
-        } else {
-            $commentTemplate = <<<'EOD'
-    /**
-     * Inherited method '%%s'.
-     *
-     * @uses \%s::%s()%%s
-     */
-EOD;
-            $commentTemplate = sprintf(
-                $commentTemplate,
-                $method->method()->getDeclaringClass()->getName(),
-                $method->method()->getName()
-            );
-        }
-
-        $comment = sprintf(
-            $commentTemplate,
-            $method->name(),
-            $this->renderParametersDocumentation(
-                $method->method(),
-                $method->isCustom()
-            )
-        );
-
-        if ($method->isStatic()) {
-            $scope = 'static ';
-        } else {
-            $scope = '';
-        }
-
-        return sprintf(
-            "\n%s\n    %s %sfunction %s%s%s\n    }\n",
-            $comment,
-            $method->accessLevel(),
-            $scope,
-            $method->name(),
-            $this->renderParameters($method->method(), $method->isCustom()),
-            $body
-        );
-    }
-
-    /**
      * Generate the __call() method.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateMagicCall(MockBuilderInterface $builder)
+    protected function generateMagicCall(MockDefinitionInterface $definition)
     {
-        $methods = $builder->methodDefinitions()->publicMethods();
+        $methods = $definition->methods()->publicMethods();
 
         if (!isset($methods['__call'])) {
             return '';
         }
 
-        $body = <<<'EOD'
-        $arguments = new \Eloquent\Phony\Call\Argument\Arguments($a1);
+        $source = <<<'EOD'
 
-        if (isset($this->_magicStubs[$a0])) {
-            return $this->_magicStubs[$a0]->invokeWith($arguments);
-        }
-
-        return self::_callMagic($a0, $arguments);
+    public function __call(
 EOD;
 
-        return $this->generateMethod($methods['__call'], $body);
+        $signature = $this->signatureInspector
+            ->signature($methods['__call']->method());
+        $index = -1;
+
+        foreach ($signature as $parameter) {
+            if (-1 !== $index) {
+                $source .= ',';
+            }
+
+            $source .= "\n        " .
+                $parameter[0] .
+                $parameter[1] .
+                '$a' .
+                ++$index .
+                $parameter[2];
+        }
+
+        $source .= <<<'EOD'
+
+    ) {
+        return $this->_proxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+    }
+
+EOD;
+
+        return $source;
     }
 
     /**
      * Generate the call parent methods.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateCallParentMethods(MockBuilderInterface $builder)
-    {
-        $source = <<<'EOD'
+    protected function generateCallParentMethods(
+        MockDefinitionInterface $definition
+    ) {
+        $hasTraits = (boolean) $definition->traitNames();
+        $parentClassName = $definition->parentClassName();
+        $hasParentClass = null !== $parentClassName;
+        $source = '';
 
-    /**
-     * Call a static parent method.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
+        if ($hasParentClass) {
+            $source .= <<<'EOD'
+
     private static function _callParentStatic(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
@@ -452,39 +562,50 @@ EOD;
     }
 
 EOD;
+        }
 
-        $methods = $builder->methodDefinitions()->publicStaticMethods();
-
-        if (isset($methods['__callStatic'])) {
+        if ($hasTraits) {
             $source .= <<<'EOD'
 
-    /**
-     * Perform a magic call via the __callStatic stub.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
-    private static function _callMagicStatic(
+    private static function _callTraitStatic(
+        $traitName,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset(self::$_staticStubs['__callStatic'])) {
-            return self::$_staticStubs['__callStatic']
-                ->invoke($name, $arguments->all());
-        }
+        return \call_user_func_array(
+            array(
+                __CLASS__,
+                '_callTrait_' .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name,
+            ),
+            $arguments->all()
+        );
     }
 
 EOD;
         }
 
-        $source .= <<<'EOD'
+        $methods = $definition->methods()->publicStaticMethods();
 
-    /**
-     * Call a parent method.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
+        if (isset($methods['__callStatic'])) {
+            $source .= <<<'EOD'
+
+    private static function _callMagicStatic(
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return self::$_staticProxy
+            ->spy('__callStatic')->invoke($name, $arguments->all());
+    }
+
+EOD;
+        }
+
+        if ($hasParentClass) {
+            $source .= <<<'EOD'
+
     private function _callParent(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
@@ -497,24 +618,82 @@ EOD;
 
 EOD;
 
-        $methods = $builder->methodDefinitions()->publicMethods();
+            $types = $definition->types();
+            $parentClass = $types[$parentClassName];
+
+            if ($constructor = $parentClass->getConstructor()) {
+                $constructorName = $constructor->getName();
+
+                if ($constructor->isPrivate()) {
+                    if ($this->isClosureBindingSupported) {
+                        $source .= <<<EOD
+
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+    ) {
+        \$constructor = function () use (\$arguments) {
+            \call_user_func_array(
+                array(\$this, 'parent::$constructorName'),
+                \$arguments->all()
+            );
+        };
+        \$constructor = \$constructor->bindTo(\$this, '$parentClassName');
+        \$constructor();
+    }
+
+EOD;
+                    }
+                } else {
+                    $source .= <<<EOD
+
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+    ) {
+        \call_user_func_array(
+            array(\$this, 'parent::$constructorName'),
+            \$arguments->all()
+        );
+    }
+
+EOD;
+                }
+            }
+        }
+
+        if ($hasTraits) {
+            $source .= <<<'EOD'
+
+    private function _callTrait(
+        $traitName,
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return \call_user_func_array(
+            array(
+                $this,
+                '_callTrait_' .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name,
+            ),
+            $arguments->all()
+        );
+    }
+
+EOD;
+        }
+
+        $methods = $definition->methods()->publicMethods();
 
         if (isset($methods['__call'])) {
             $source .= <<<'EOD'
 
-    /**
-     * Perform a magic call via the __call stub.
-     *
-     * @param string                                           $name      The method name.
-     * @param \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments The arguments.
-     */
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        if (isset($this->_stubs['__call'])) {
-            return $this->_stubs['__call']->invoke($name, $arguments->all());
-        }
+        return $this->_proxy
+            ->spy('__call')->invoke($name, $arguments->all());
     }
 
 EOD;
@@ -526,262 +705,72 @@ EOD;
     /**
      * Generate the properties.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateProperties(MockBuilderInterface $builder)
+    protected function generateProperties(MockDefinitionInterface $definition)
     {
-        $staticProperties = $builder->staticProperties();
-        $properties = $builder->properties();
+        $staticProperties = $definition->customStaticProperties();
+        $properties = $definition->customProperties();
         $source = '';
 
         foreach ($staticProperties as $name => $value) {
-            $source .= sprintf(
-                "\n    public static \$%s = %s;",
-                $name,
-                $this->renderValue($value)
-            );
+            $source .=
+                "\n    public static \$" .
+                $name .
+                ' = ' .
+                (null === $value ? 'null' : $this->renderValue($value)) .
+                ';';
         }
 
         foreach ($properties as $name => $value) {
-            $source .= sprintf(
-                "\n    public \$%s = %s;",
-                $name,
-                $this->renderValue($value)
-            );
+            $source .=
+                "\n    public \$" .
+                $name .
+                ' = ' .
+                (null === $value ? 'null' : $this->renderValue($value)) .
+                ';';
         }
 
-        $source .= <<<'EOD'
+        $methods = $definition->methods()->allMethods();
+        $uncallableMethodNames = array();
+        $traitMethodNames = array();
 
-    private static $_staticStubs = array();
-    private static $_magicStaticStubs = array();
-    private $_stubs = array();
-    private $_magicStubs = array();
-    private $_mockId;
-EOD;
+        foreach ($methods as $methodName => $method) {
+            if (!$method->isCallable()) {
+                $uncallableMethodNames[$methodName] = true;
+            } elseif ($method instanceof TraitMethodDefinitionInterface) {
+                $traitMethodNames[$methodName] =
+                    $method->method()->getDeclaringClass()->getName();
+            }
+        }
+
+        $source .= "\n    private static \$_uncallableMethods = ";
+
+        if ($uncallableMethodNames) {
+            $source .= $this->renderValue($uncallableMethodNames);
+        } else {
+            $source .= 'array()';
+        }
+
+        $source .= ";\n    private static \$_traitMethods = ";
+
+        if ($traitMethodNames) {
+            $source .= $this->renderValue($traitMethodNames);
+        } else {
+            $source .= 'array()';
+        }
+
+        $source .= ";\n    private static \$_customMethods = array();" .
+            "\n    private static \$_staticProxy;" .
+            "\n    private \$_proxy;";
 
         return $source;
     }
 
     /**
-     * Render a parameter list compatible with the supplied function reflector.
-     *
-     * @param ReflectionFunctionAbstract $function            The function.
-     * @param boolean                    $stripFirstParameter True if the first parameter should not be rendered.
-     *
-     * @return string The rendered parameter list.
-     */
-    protected function renderParameters(
-        ReflectionFunctionAbstract $function,
-        $stripFirstParameter
-    ) {
-        $parameters = $function->getParameters();
-
-        if ($stripFirstParameter) {
-            array_shift($parameters);
-        }
-
-        foreach ($parameters as $index => $parameter) {
-            $renderedParameters[] =
-                $this->renderParameter($index, $parameter);
-        }
-
-        if ($parameters) {
-            return sprintf(
-                "(\n        %s\n    ) {\n",
-                implode(",\n        ",
-                    $renderedParameters)
-            );
-        }
-
-        return "()\n    {\n";
-    }
-
-    /**
-     * Render a parameter compatible with the supplied parameter reflector.
-     *
-     * @param integer             $index     The index at which the parameter appears.
-     * @param ReflectionParameter $parameter The reflector.
-     *
-     * @return string The rendered parameter.
-     */
-    protected function renderParameter($index, ReflectionParameter $parameter)
-    {
-        $typeHint = $this->parameterType($parameter);
-
-        if ('mixed' === $typeHint) {
-            $typeHint = '';
-        } else {
-            $typeHint .= ' ';
-        }
-
-        if ($parameter->isPassedByReference()) {
-            $reference = '&';
-        } else {
-            $reference = '';
-        }
-
-        if ($parameter->isOptional()) {
-            if (!$parameter->isDefaultValueAvailable()) {
-                $defaultValue = 'null';
-            } elseif (
-                $this->isParameterConstantSupported &&
-                $parameter->isDefaultValueConstant()
-            ) {
-                $constantName = $parameter->getDefaultValueConstantName();
-
-                if ('self:' === substr($constantName, 0, 5)) {
-                    $constantName = $parameter->getDeclaringClass()->getName() .
-                        substr($constantName, 4);
-                }
-
-                $defaultValue = '\\' . $constantName;
-            } else {
-                $defaultValue =
-                    $this->renderValue($parameter->getDefaultValue());
-            }
-
-            $defaultValue = sprintf(' = %s', $defaultValue);
-        } else {
-            $defaultValue = '';
-        }
-
-        return
-            sprintf('%s%s$a%d%s', $typeHint, $reference, $index, $defaultValue);
-    }
-
-    /**
-     * Render parameter documentation for a function reflector.
-     *
-     * @param ReflectionFunctionAbstract $function            The function.
-     * @param boolean                    $stripFirstParameter True if the first parameter should not be rendered.
-     *
-     * @return string The rendered documentation.
-     */
-    protected function renderParametersDocumentation(
-        ReflectionFunctionAbstract $function,
-        $stripFirstParameter
-    ) {
-        $parameters = $function->getParameters();
-
-        if ($stripFirstParameter) {
-            array_shift($parameters);
-        }
-
-        if (!$parameters) {
-            return '';
-        }
-
-        $renderedParameters = array();
-        $columnWidths = array(0, 0, 0);
-
-        foreach ($parameters as $index => $parameter) {
-            $renderedParameter =
-                $this->renderParameterDocumentation($index, $parameter);
-
-            foreach ($renderedParameter as $columnIndex => $value) {
-                $size = strlen($value);
-
-                if ($size > $columnWidths[$columnIndex]) {
-                    $columnWidths[$columnIndex] = $size;
-                }
-            }
-
-            $renderedParameters[] = $renderedParameter;
-        }
-
-        $rendered = "\n     *";
-
-        foreach ($renderedParameters as $renderedParameter) {
-            $rendered .= sprintf(
-                "\n     * @param %s %s %s",
-                str_pad($renderedParameter[0], $columnWidths[0]),
-                str_pad($renderedParameter[1], $columnWidths[1]),
-                $renderedParameter[2]
-            );
-        }
-
-        return $rendered;
-    }
-
-    /**
-     * Render documentation for a parameter.
-     *
-     * @param integer             $index     The index at which the parameter appears.
-     * @param ReflectionParameter $parameter The reflector.
-     *
-     * @return tuple<string,string,string> A 3-tuple of rendered type, name, and description.
-     */
-    protected function renderParameterDocumentation(
-        $index,
-        ReflectionParameter $parameter
-    ) {
-        $typeHint = $this->parameterType($parameter);
-
-        if ('mixed' !== $typeHint && $parameter->allowsNull()) {
-            $typeHint .= '|null';
-        }
-
-        if ($parameter->isPassedByReference()) {
-            $name = '&$a' . $index;
-        } else {
-            $name = '$a' . $index;
-        }
-
-        $description = sprintf(
-            'Was %s.',
-            var_export($parameter->getName(), true)
-        );
-
-        return array($typeHint, $name, $description);
-    }
-
-    /**
-     * Determine a parameter's type.
-     *
-     * @param ReflectionParameter $parameter The parameter.
-     *
-     * @return string The type.
-     */
-    protected function parameterType(ReflectionParameter $parameter)
-    {
-        if ($parameter->isArray()) {
-            return 'array';
-        } elseif (
-            $this->isCallableTypeHintSupported && $parameter->isCallable()
-        ) {
-            return 'callable';
-        } else {
-            try {
-                if ($class = $parameter->getClass()) {
-                    return '\\' . $class->getName();
-                }
-            } catch (ReflectionException $e) {
-                if (
-                    !$parameter->getDeclaringFunction()->isInternal() &&
-                    preg_match(
-                        sprintf(
-                            '/Class (%s) does not exist/',
-                            MockBuilder::SYMBOL_PATTERN
-                        ),
-                        $e->getMessage(),
-                        $matches
-                    )
-                ) {
-                    return '\\' . $matches[1];
-                }
-            }
-        }
-
-        return 'mixed';
-    }
-
-    /**
      * Render the supplied value.
-     *
-     * This method does not support recursive values, which will result in an
-     * infinite loop.
      *
      * @param mixed $value The value.
      *
@@ -789,36 +778,12 @@ EOD;
      */
     protected function renderValue($value)
     {
-        if (null === $value) {
-            return 'null';
-        }
-
-        if (is_array($value)) {
-            $isSequence = array_keys($value) === range(0, count($value) - 1);
-
-            $values = array();
-
-            if ($isSequence) {
-                foreach ($value as $subValue) {
-                    $values[] = $this->renderValue($subValue);
-                }
-            } else {
-                foreach ($value as $key => $subValue) {
-                    $values[] = sprintf(
-                        '%s => %s',
-                        $this->renderValue($key),
-                        $this->renderValue($subValue)
-                    );
-                }
-            }
-
-            return sprintf('array(%s)', implode(', ', $values));
-        }
-
-        return var_export($value, true);
+        return str_replace('array (', 'array(', var_export($value, true));
     }
 
-    protected $isCallableTypeHintSupported;
-    protected $isParameterConstantSupported;
     private static $instance;
+    private $labelSequencer;
+    private $signatureInspector;
+    private $featureDetector;
+    private $isClosureBindingSupported;
 }

@@ -1,5 +1,5 @@
 <phpunit
-    bootstrap="test/bootstrap.php"
+    bootstrap="vendor/autoload.php"
     convertErrorsToExceptions="true"
     convertNoticesToExceptions="true"
     convertWarningsToExceptions="true"
@@ -49,6 +49,9 @@
     <filter>
         <whitelist>
             <directory>src</directory>
+            <exclude>
+                <file>src/Spy/Factory/GeneratorSpyFactoryDetailHhvm.php</file>
+            </exclude>
         </whitelist>
     </filter>
 

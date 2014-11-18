@@ -31,8 +31,8 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->self = (object) array();
-        $this->id = 111;
-        $this->stub = new Stub($this->callback, $this->self, $this->id);
+        $this->label = 'label';
+        $this->stub = new Stub($this->callback, $this->self, $this->label);
         $this->spy = new Spy($this->stub);
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -172,7 +172,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     public function testProxyMethods()
     {
         $this->assertSame($this->self, $this->subject->self());
-        $this->assertSame($this->id, $this->subject->id());
+        $this->assertSame($this->label, $this->subject->label());
     }
 
     public function testSetSelf()
@@ -184,6 +184,17 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setSelf($this->self);
 
         $this->assertSame($this->self, $this->subject->self());
+    }
+
+    public function testSetLabel()
+    {
+        $this->subject->setLabel(null);
+
+        $this->assertNull($this->subject->label());
+
+        $this->subject->setLabel($this->label);
+
+        $this->assertSame($this->label, $this->subject->label());
     }
 
     public function testWith()
@@ -718,11 +729,11 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c - d', call_user_func($this->subject, ' - ', array('c', 'd')));
     }
 
-    public function forwardsSelfParameterAutoDetectionoDetectionData()
+    public function forwardsSelfParameterAutoDetectionData()
     {
         return array(
             'Exact match' => array(
-                function (TestClassA $self) {
+                function (TestClassA $phonySelf) {
                     return func_get_args();
                 },
                 new TestClassA(),
@@ -730,28 +741,20 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 array(new TestClassA(), 'a', 'b'),
             ),
             'Subclass' => array(
-                function (TestClassA $self) {
+                function (TestClassA $phonySelf) {
                     return func_get_args();
                 },
                 new TestClassB(),
                 array('a', 'b'),
                 array(new TestClassB(), 'a', 'b'),
             ),
-            'Superclass' => array(
-                function (TestClassB $self) {
-                    return func_get_args();
-                },
-                new TestClassA(),
-                array(new TestClassB(), 'a', 'b'),
-                array(new TestClassB(), 'a', 'b'),
-            ),
             'No hint' => array(
-                function ($self) {
+                function ($phonySelf) {
                     return func_get_args();
                 },
                 new TestClassA(),
                 array('a', 'b'),
-                array('a', 'b'),
+                array(new TestClassA(), 'a', 'b'),
             ),
             'Wrong name' => array(
                 function (TestClassA $a) {
@@ -775,19 +778,11 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 array(array('a', 'b')),
                 'ab',
             ),
-            'Self is not object' => array(
-                function (TestClassA $self) {
-                    return func_get_args();
-                },
-                'Eloquent\Phony\Test\TestClassA',
-                array(new TestClassA(), 'a', 'b'),
-                array(new TestClassA(), 'a', 'b'),
-            ),
         );
     }
 
     /**
-     * @dataProvider forwardsSelfParameterAutoDetectionoDetectionData
+     * @dataProvider forwardsSelfParameterAutoDetectionData
      */
     public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
     {

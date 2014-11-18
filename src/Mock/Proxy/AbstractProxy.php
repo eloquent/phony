@@ -11,20 +11,27 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
+use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
-use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
-use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
+use Eloquent\Phony\Mock\Method\WrappedMethod;
+use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
+use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Stub\Factory\StubFactory;
+use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
-use Eloquent\Phony\Stub\StubInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
-use ReflectionProperty;
+use ReflectionMethod;
+use stdClass;
 
 /**
  * An abstract base class for implementing proxies.
@@ -37,36 +44,125 @@ abstract class AbstractProxy implements ProxyInterface
      * Construct a new proxy.
      *
      * @param ReflectionClass                   $class               The class.
-     * @param array<string,StubInterface>       $stubs               The stubs.
-     * @param ReflectionProperty|null           $magicStubsProperty  The magic stubs property, or null if magic is not available.
-     * @param MockFactoryInterface|null         $mockFactory         The mock factory to use.
+     * @param stdClass|null                     $state               The state.
+     * @param ReflectionMethod|null             $callParentMethod    The call parent method, or null if no parent class exists.
+     * @param ReflectionMethod|null             $callTraitMethod     The call trait method, or null if no trait methods are implemented.
+     * @param ReflectionMethod|null             $callMagicMethod     The call magic method, or null if magic calls are not supported.
+     * @param MockInterface|null                $mock                The mock, or null if this is a static proxy.
+     * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
      */
     public function __construct(
         ReflectionClass $class,
-        array $stubs,
-        ReflectionProperty $magicStubsProperty = null,
-        MockFactoryInterface $mockFactory = null,
+        stdClass $state = null,
+        ReflectionMethod $callParentMethod = null,
+        ReflectionMethod $callTraitMethod = null,
+        ReflectionMethod $callMagicMethod = null,
+        MockInterface $mock = null,
+        StubFactoryInterface $stubFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
+        AssertionRendererInterface $assertionRenderer = null,
+        AssertionRecorderInterface $assertionRecorder = null,
         WildcardMatcherInterface $wildcardMatcher = null
     ) {
-        if (null === $mockFactory) {
-            $mockFactory = MockFactory::instance();
+        if (null === $state) {
+            $state = (object) array(
+                'stubs' => (object) array(),
+                'isFull' => false,
+            );
+        }
+        if (null === $stubFactory) {
+            $stubFactory = StubFactory::instance();
         }
         if (null === $stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
+        }
+        if (null === $assertionRenderer) {
+            $assertionRenderer = AssertionRenderer::instance();
+        }
+        if (null === $assertionRecorder) {
+            $assertionRecorder = AssertionRecorder::instance();
         }
         if (null === $wildcardMatcher) {
             $wildcardMatcher = WildcardMatcher::instance();
         }
 
+        $this->mock = $mock;
         $this->class = $class;
-        $this->stubs = $stubs;
-        $this->magicStubsProperty = $magicStubsProperty;
-        $this->mockFactory = $mockFactory;
+        $this->state = $state;
+        $this->callParentMethod = $callParentMethod;
+        $this->callTraitMethod = $callTraitMethod;
+        $this->callMagicMethod = $callMagicMethod;
+        $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->assertionRenderer = $assertionRenderer;
+        $this->assertionRecorder = $assertionRecorder;
         $this->wildcardMatcher = $wildcardMatcher;
+
+        $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
+        $uncallableMethodsProperty->setAccessible(true);
+        $this->uncallableMethods = $uncallableMethodsProperty->getValue(null);
+
+        $traitMethodsProperty = $class->getProperty('_traitMethods');
+        $traitMethodsProperty->setAccessible(true);
+        $this->traitMethods = $traitMethodsProperty->getValue(null);
+
+        $customMethodsProperty = $class->getProperty('_customMethods');
+        $customMethodsProperty->setAccessible(true);
+        $this->customMethods = $customMethodsProperty->getValue(null);
+    }
+
+    /**
+     * Get the stub factory.
+     *
+     * @return StubFactoryInterface The stub factory.
+     */
+    public function stubFactory()
+    {
+        return $this->stubFactory;
+    }
+
+    /**
+     * Get the stub verifier factory.
+     *
+     * @return StubVerifierFactoryInterface The stub verifier factory.
+     */
+    public function stubVerifierFactory()
+    {
+        return $this->stubVerifierFactory;
+    }
+
+    /**
+     * Get the assertion renderer.
+     *
+     * @return AssertionRendererInterface The assertion renderer.
+     */
+    public function assertionRenderer()
+    {
+        return $this->assertionRenderer;
+    }
+
+    /**
+     * Get the assertion recorder.
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
+     */
+    public function assertionRecorder()
+    {
+        return $this->assertionRecorder;
+    }
+
+    /**
+     * Get the wildcard matcher.
+     *
+     * @return WildcardMatcherInterface The wildcard matcher.
+     */
+    public function wildcardMatcher()
+    {
+        return $this->wildcardMatcher;
     }
 
     /**
@@ -74,7 +170,7 @@ abstract class AbstractProxy implements ProxyInterface
      *
      * @return ReflectionClass The class.
      */
-    public function reflector()
+    public function clazz()
     {
         return $this->class;
     }
@@ -90,63 +186,47 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
+     * Turn the mock into a full mock.
+     *
+     * @return ProxyInterface This proxy.
+     */
+    public function full()
+    {
+        $this->state->isFull = true;
+
+        return $this;
+    }
+
+    /**
+     * Turn the mock into a partial mock.
+     *
+     * @return ProxyInterface This proxy.
+     */
+    public function partial()
+    {
+        $this->state->isFull = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns true if the mock is a full mock.
+     *
+     * @return boolean True if the mock is a full mock.
+     */
+    public function isFull()
+    {
+        return $this->state->isFull;
+    }
+
+    /**
      * Get the stubs.
      *
-     * @return array<string,SpyInterface> The stubs.
+     * @return stdClass The stubs.
      */
     public function stubs()
     {
-        return $this->stubs;
-    }
-
-    /**
-     * Get the magic stubs.
-     *
-     * @return array<string,SpyInterface> The magic stubs.
-     */
-    public function magicStubs()
-    {
-        return $this->magicStubsProperty->getValue($this->mock);
-    }
-
-    /**
-     * Get the magic stubs property.
-     *
-     * @return ReflectionProperty|null The magic stubs property, or null if magic calls are not supported.
-     */
-    public function magicStubsProperty()
-    {
-        return $this->magicStubsProperty;
-    }
-
-    /**
-     * Get the mock factory.
-     *
-     * @return MockFactoryInterface The mock factory.
-     */
-    public function mockFactory()
-    {
-        return $this->mockFactory;
-    }
-
-    /**
-     * Get the stub verifier factory.
-     *
-     * @return StubVerifierFactoryInterface The stub verifier factory.
-     */
-    public function stubVerifierFactory()
-    {
-        return $this->stubVerifierFactory;
-    }
-
-    /**
-     * Get the wildcard matcher.
-     *
-     * @return WildcardMatcherInterface The wildcard matcher.
-     */
-    public function wildcardMatcher()
-    {
-        return $this->wildcardMatcher;
+        return $this->state->stubs;
     }
 
     /**
@@ -159,44 +239,11 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function stub($name)
     {
-        if (isset($this->stubs[$name])) {
-            $stub = $this->stubs[$name];
-
-            return $this->stubVerifierFactory->create($stub->callback(), $stub);
+        if (!isset($this->state->stubs->$name)) {
+            $this->state->stubs->$name = $this->createStub($name);
         }
 
-        return $this->magicStub($name);
-    }
-
-    /**
-     * Get a magic stub verifier.
-     *
-     * @param string $name The method name.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If magic calls are not supported.
-     */
-    public function magicStub($name)
-    {
-        if (null === $this->magicStubsProperty) {
-            throw new UndefinedMethodStubException(
-                $this->class->getName(),
-                $name
-            );
-        }
-
-        $magicStubs = $this->magicStubsProperty->getValue($this->mock);
-
-        if (!isset($magicStubs[$name])) {
-            $magicStubs[$name] = $this->wrapStub(
-                $this->mockFactory
-                    ->createMagicStub($this->class, $name, $this->mock)
-            );
-        }
-
-        $this->magicStubsProperty->setValue($this->mock, $magicStubs);
-
-        return $this->wrapStub($magicStubs[$name]);
+        return $this->state->stubs->$name;
     }
 
     /**
@@ -215,26 +262,166 @@ abstract class AbstractProxy implements ProxyInterface
             throw new UndefinedPropertyException(get_called_class(), $name, $e);
         }
 
-        return $stub;
+        return $stub->with($this->wildcardMatcher);
     }
 
     /**
-     * Wrap a stub in a stub verifier.
+     * Get a spy.
      *
-     * @param SpyInterface $stub The stub.
+     * @param string $name The method name.
      *
-     * @return StubVerifierInterface The stub verifier.
+     * @return SpyInterface           The stub.
+     * @throws MockExceptionInterface If the spy does not exist.
      */
-    protected function wrapStub(SpyInterface $stub)
+    public function spy($name)
     {
-        return $this->stubVerifierFactory->create($stub->callback(), $stub);
+        return $this->stub($name)->spy();
     }
 
-    protected $mock;
-    protected $class;
-    protected $stubs;
-    protected $magicStubsProperty;
-    protected $mockFactory;
-    protected $stubVerifierFactory;
-    protected $wildcardMatcher;
+    /**
+     * Checks if there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface|null The result.
+     */
+    public function checkNoInteraction()
+    {
+        foreach (get_object_vars($this->state->stubs) as $stub) {
+            if ($stub->checkCalled()) {
+                return null;
+            }
+        }
+
+        return $this->assertionRecorder->createSuccess();
+    }
+
+    /**
+     * Throws an exception unless there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function noInteraction()
+    {
+        if ($result = $this->checkNoInteraction()) {
+            return $result;
+        }
+
+        $calls = array();
+
+        foreach (get_object_vars($this->state->stubs) as $name => $stub) {
+            $calls = array_merge($calls, $stub->recordedCalls());
+        }
+
+        return $this->assertionRecorder->createFailure(
+            sprintf(
+                "Expected no interaction with %s. Calls:\n%s",
+                $this->assertionRenderer->renderMock($this),
+                $this->assertionRenderer->renderCalls($calls)
+            )
+        );
+    }
+
+    /**
+     * Reset the mock to its initial state.
+     *
+     * @return ProxyInterface This proxy.
+     */
+    public function reset()
+    {
+        foreach (get_object_vars($this->state->stubs) as $name => $stub) {
+            unset($this->state->stubs->$name);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the proxy state.
+     *
+     * @internal
+     *
+     * @return stdClass The state.
+     */
+    public function state()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Create a new stub verifier.
+     *
+     * @param string $name The method name.
+     *
+     * @return StubVerifierInterface  The stub verifier.
+     * @throws MockExceptionInterface If the method does not exist.
+     */
+    protected function createStub($name)
+    {
+        $isMagic = !$this->class->hasMethod($name);
+        $callMagicMethod = $this->callMagicMethod;
+
+        if ($isMagic && !$callMagicMethod) {
+            throw new UndefinedMethodStubException(
+                $this->class->getName(),
+                $name
+            );
+        }
+
+        $mock = $this->mock;
+
+        if ($isMagic) {
+            $stub = $this->stubFactory->create(
+                function () use ($callMagicMethod, $mock, $name) {
+                    return $callMagicMethod
+                        ->invoke($mock, $name, new Arguments(func_get_args()));
+                },
+                $mock
+            );
+        } elseif (isset($this->uncallableMethods[$name])) {
+            $stub = $this->stubFactory->create();
+        } elseif (isset($this->traitMethods[$name])) {
+            $stub = $this->stubFactory->create(
+                new WrappedTraitMethod(
+                    $this->callTraitMethod,
+                    $this->traitMethods[$name],
+                    $this->class->getMethod($name),
+                    $this
+                ),
+                $mock
+            );
+        } elseif (isset($this->customMethods[$name])) {
+            $stub = $this->stubFactory
+                ->create($this->customMethods[$name], $mock);
+        } else {
+            $stub = $this->stubFactory->create(
+                new WrappedMethod(
+                    $this->callParentMethod,
+                    $this->class->getMethod($name),
+                    $this
+                ),
+                $mock
+            );
+        }
+
+        if ($this->state->isFull) {
+            $stub->returns()->with($this->wildcardMatcher);
+        }
+
+        return $this->stubVerifierFactory->create($stub);
+    }
+
+    protected $state;
+    private $mock;
+    private $class;
+    private $uncallableMethods;
+    private $traitMethods;
+    private $callParentMethod;
+    private $callTraitMethod;
+    private $callMagicMethod;
+    private $stubFactory;
+    private $stubVerifierFactory;
+    private $assertionRenderer;
+    private $assertionRecorder;
+    private $wildcardMatcher;
+    private $customMethods;
 }

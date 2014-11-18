@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Generator;
 
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 
 /**
  * The interface implemented by mock generators.
@@ -19,11 +19,24 @@ use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 interface MockGeneratorInterface
 {
     /**
+     * Generate a mock class name.
+     *
+     * @param MockDefinitionInterface $definition The definition.
+     *
+     * @return string The mock class name.
+     */
+    public function generateClassName(MockDefinitionInterface $definition);
+
+    /**
      * Generate a mock class and return the source code.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param MockDefinitionInterface $definition The definition.
+     * @param string|null             $className  The class name.
      *
      * @return string The source code.
      */
-    public function generate(MockBuilderInterface $builder);
+    public function generate(
+        MockDefinitionInterface $definition,
+        $className = null
+    );
 }

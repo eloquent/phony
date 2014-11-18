@@ -18,6 +18,7 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactoryInterface;
 use Exception;
@@ -33,60 +34,46 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * Construct a new spy.
      *
      * @param callable|null                       $callback              The callback, or null to create an unbound spy.
-     * @param boolean|null                        $useTraversableSpies   True if traversable spies should be used.
+     * @param string|null                         $label                 The label.
      * @param boolean|null                        $useGeneratorSpies     True if generator spies should be used.
-     * @param integer|null                        $id                    The identifier.
+     * @param boolean|null                        $useTraversableSpies   True if traversable spies should be used.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
+     * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
         $callback = null,
-        $useTraversableSpies = null,
+        $label = null,
         $useGeneratorSpies = null,
-        $id = null,
+        $useTraversableSpies = null,
         CallFactoryInterface $callFactory = null,
+        TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
+        if (null === $useGeneratorSpies) {
+            $useGeneratorSpies = true;
+        }
         if (null === $useTraversableSpies) {
             $useTraversableSpies = false;
         }
-        if (null === $useGeneratorSpies) {
-            $useGeneratorSpies = !defined('HHVM_VERSION');
-        }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
+        }
+        if (null === $generatorSpyFactory) {
+            $generatorSpyFactory = GeneratorSpyFactory::instance();
         }
         if (null === $traversableSpyFactory) {
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
-        parent::__construct($callback, $id);
+        parent::__construct($callback, $label);
 
-        $this->useTraversableSpies = $useTraversableSpies;
         $this->useGeneratorSpies = $useGeneratorSpies;
+        $this->useTraversableSpies = $useTraversableSpies;
         $this->callFactory = $callFactory;
+        $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
         $this->calls = array();
-    }
-
-    /**
-     * Turn on or off the use of traversable spies.
-     *
-     * @param boolean $useTraversableSpies True to use traversable spies.
-     */
-    public function setUseTraversableSpies($useTraversableSpies)
-    {
-        $this->useTraversableSpies = $useTraversableSpies;
-    }
-
-    /**
-     * Returns true if this spy uses traversable spies.
-     *
-     * @return boolean True if this spy uses traversable spies.
-     */
-    public function useTraversableSpies()
-    {
-        return $this->useTraversableSpies;
     }
 
     /**
@@ -110,6 +97,26 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     }
 
     /**
+     * Turn on or off the use of traversable spies.
+     *
+     * @param boolean $useTraversableSpies True to use traversable spies.
+     */
+    public function setUseTraversableSpies($useTraversableSpies)
+    {
+        $this->useTraversableSpies = $useTraversableSpies;
+    }
+
+    /**
+     * Returns true if this spy uses traversable spies.
+     *
+     * @return boolean True if this spy uses traversable spies.
+     */
+    public function useTraversableSpies()
+    {
+        return $this->useTraversableSpies;
+    }
+
+    /**
      * Get the call factory.
      *
      * @return CallFactoryInterface The call factory.
@@ -117,6 +124,16 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function callFactory()
     {
         return $this->callFactory;
+    }
+
+    /**
+     * Get the generator spy factory.
+     *
+     * @return TraversableSpyFactoryInterface The generator spy factory.
+     */
+    public function generatorSpyFactory()
+    {
+        return $this->generatorSpyFactory;
     }
 
     /**
@@ -182,11 +199,17 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         $returnValue = $call->returnValue();
 
         if (
-            $this->useTraversableSpies &&
-            $this->traversableSpyFactory->isTraversable($returnValue)
+            $this->useGeneratorSpies &&
+            $this->generatorSpyFactory->isSupported($returnValue)
         ) {
-            return $this->traversableSpyFactory
-                ->create($call, $returnValue, $this->useGeneratorSpies);
+            return $this->generatorSpyFactory->create($call, $returnValue);
+        }
+
+        if (
+            $this->useTraversableSpies &&
+            $this->traversableSpyFactory->isSupported($returnValue)
+        ) {
+            return $this->traversableSpyFactory->create($call, $returnValue);
         }
 
         return $returnValue;

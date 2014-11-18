@@ -21,13 +21,6 @@ use Eloquent\Phony\Stub\StubVerifierInterface;
 interface StubbingProxyInterface extends ProxyInterface
 {
     /**
-     * Turn the mock into a full mock.
-     *
-     * @return StubbingProxyInterface This proxy.
-     */
-    public function full();
-
-    /**
      * Get a stub verifier, and modify its current criteria to match the
      * supplied arguments.
      *

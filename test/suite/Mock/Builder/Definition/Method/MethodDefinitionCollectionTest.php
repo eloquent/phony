@@ -29,14 +29,18 @@ class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
             'testClassAStaticMethodB' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodB')),
             'testClassAStaticMethodC' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC')),
             'testClassAStaticMethodD' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodD')),
-
         );
-        $this->subject = new MethodDefinitionCollection($this->methods);
+        $this->traitMethods = array(
+            new TraitMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA')),
+            new TraitMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodB')),
+        );
+        $this->subject = new MethodDefinitionCollection($this->methods, $this->traitMethods);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->methods, $this->subject->allMethods());
+        $this->assertSame($this->traitMethods, $this->subject->traitMethods());
         $this->assertSame(
             array(
                 'methodA' => $this->methods['methodA'],
@@ -87,5 +91,19 @@ class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
             ),
             $this->subject->protectedMethods()
         );
+    }
+
+    public function testConstructorDefaults()
+    {
+        $this->subject = new MethodDefinitionCollection();
+
+        $this->assertSame(array(), $this->subject->allMethods());
+        $this->assertSame(array(), $this->subject->staticMethods());
+        $this->assertSame(array(), $this->subject->methods());
+        $this->assertSame(array(), $this->subject->publicStaticMethods());
+        $this->assertSame(array(), $this->subject->publicMethods());
+        $this->assertSame(array(), $this->subject->protectedStaticMethods());
+        $this->assertSame(array(), $this->subject->protectedMethods());
+        $this->assertSame(array(), $this->subject->traitMethods());
     }
 }

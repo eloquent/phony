@@ -65,7 +65,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMock';
         $actual = Phony::mock($types, $arguments, $definition, $className);
 
@@ -81,7 +81,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMockWithNullArguments';
         $actual = Phony::mock($types, $arguments, $definition, $className);
 
@@ -119,7 +119,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMockFunction';
         $actual = mock($types, $arguments, $definition, $className);
 
@@ -135,7 +135,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateMockFunctionWithNullArguments';
         $actual = mock($types, $arguments, $definition, $className);
 
@@ -172,7 +172,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testFullMock()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateFullMock';
         $actual = Phony::fullMock($types, $definition, $className);
 
@@ -188,7 +188,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testFullMockFunction()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockPhpunitFacadeTestCreateFullMockFunction';
         $actual = fullMock($types, $definition, $className);
 
@@ -205,27 +205,27 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $class = Phony::mockBuilder()->build();
         $actual = Phony::onStatic($class);
-        $expected = $this->proxyFactory->createStubbingStatic($class);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy', $actual);
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testOnStaticFunction()
     {
         $class = mockBuilder()->build();
         $actual = onStatic($class);
-        $expected = $this->proxyFactory->createStubbingStatic($class);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy', $actual);
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testOn()
     {
         $mock = Phony::mockBuilder()->create();
         $actual = Phony::on($mock);
-        $expected = $this->proxyFactory->createStubbing($mock);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy', $actual);
+        $this->assertSame($mock, $actual->mock());
     }
 
     public function testOnFunction()
@@ -234,7 +234,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = on($mock);
         $expected = $this->proxyFactory->createStubbing($mock);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy', $actual);
+        $this->assertSame($mock, $actual->mock());
     }
 
     public function testVerifyStatic()
@@ -243,7 +244,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = Phony::verifyStatic($class);
         $expected = $this->proxyFactory->createVerificationStatic($class);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testVerifyStaticFunction()
@@ -252,7 +254,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = verifyStatic($class);
         $expected = $this->proxyFactory->createVerificationStatic($class);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
+        $this->assertSame($class, $actual->clazz());
     }
 
     public function testVerify()
@@ -261,7 +264,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = Phony::verify($mock);
         $expected = $this->proxyFactory->createVerification($mock);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy', $actual);
+        $this->assertSame($mock, $actual->mock());
     }
 
     public function testVerifyFunction()
@@ -270,7 +274,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = verify($mock);
         $expected = $this->proxyFactory->createVerification($mock);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy', $actual);
+        $this->assertSame($mock, $actual->mock());
     }
 
     public function testSpy()
@@ -295,22 +300,22 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testStub()
     {
-        $callback = function () {};
+        $callback = function () { return 'a'; };
         $actual = Phony::stub($callback);
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
         $this->assertEquals(new PhpunitAssertionRecorder(), $actual->callVerifierFactory()->assertionRecorder());
     }
 
     public function testStubFunction()
     {
-        $callback = function () {};
+        $callback = function () { return 'a'; };
         $actual = stub($callback);
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($callback, $actual->stub()->callback());
+        $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
         $this->assertEquals(new PhpunitAssertionRecorder(), $actual->callVerifierFactory()->assertionRecorder());
     }

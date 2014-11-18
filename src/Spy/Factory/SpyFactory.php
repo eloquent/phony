@@ -42,38 +42,44 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param SequencerInterface|null             $idSequencer           The identifier sequencer to use.
+     * @param SequencerInterface|null             $labelSequencer        The label sequencer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
+     * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
-        SequencerInterface $idSequencer = null,
+        SequencerInterface $labelSequencer = null,
         CallFactoryInterface $callFactory = null,
+        TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
-        if (null === $idSequencer) {
-            $idSequencer = Sequencer::sequence('spy-id');
+        if (null === $labelSequencer) {
+            $labelSequencer = Sequencer::sequence('spy-label');
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
+        }
+        if (null === $generatorSpyFactory) {
+            $generatorSpyFactory = GeneratorSpyFactory::instance();
         }
         if (null === $traversableSpyFactory) {
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
-        $this->idSequencer = $idSequencer;
+        $this->labelSequencer = $labelSequencer;
         $this->callFactory = $callFactory;
+        $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
     }
 
     /**
-     * Get the identifier sequencer.
+     * Get the label sequencer.
      *
-     * @return SequencerInterface The identifier sequencer.
+     * @return SequencerInterface The label sequencer.
      */
-    public function idSequencer()
+    public function labelSequencer()
     {
-        return $this->idSequencer;
+        return $this->labelSequencer;
     }
 
     /**
@@ -84,6 +90,16 @@ class SpyFactory implements SpyFactoryInterface
     public function callFactory()
     {
         return $this->callFactory;
+    }
+
+    /**
+     * Get the generator spy factory.
+     *
+     * @return TraversableSpyFactoryInterface The generator spy factory.
+     */
+    public function generatorSpyFactory()
+    {
+        return $this->generatorSpyFactory;
     }
 
     /**
@@ -100,28 +116,30 @@ class SpyFactory implements SpyFactoryInterface
      * Create a new spy.
      *
      * @param callable|null $callback            The callback, or null to create an unbound spy.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyInterface The newly created spy.
      */
     public function create(
         $callback = null,
-        $useTraversableSpies = null,
-        $useGeneratorSpies = null
+        $useGeneratorSpies = null,
+        $useTraversableSpies = null
     ) {
         return new Spy(
             $callback,
-            $useTraversableSpies,
+            strval($this->labelSequencer->next()),
             $useGeneratorSpies,
-            strval($this->idSequencer->next()),
+            $useTraversableSpies,
             $this->callFactory,
+            $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
     }
 
     private static $instance;
-    private $idSequencer;
+    private $labelSequencer;
     private $callFactory;
+    private $generatorSpyFactory;
     private $traversableSpyFactory;
 }

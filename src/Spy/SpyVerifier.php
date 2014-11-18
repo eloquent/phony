@@ -188,26 +188,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Turn on or off the use of traversable spies.
-     *
-     * @param boolean $useTraversableSpies True to use traversable spies.
-     */
-    public function setUseTraversableSpies($useTraversableSpies)
-    {
-        $this->spy->setUseTraversableSpies($useTraversableSpies);
-    }
-
-    /**
-     * Returns true if this spy uses traversable spies.
-     *
-     * @return boolean True if this spy uses traversable spies.
-     */
-    public function useTraversableSpies()
-    {
-        return $this->spy->useTraversableSpies();
-    }
-
-    /**
      * Turn on or off the use of generator spies.
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
@@ -228,13 +208,43 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Get the identifier.
+     * Turn on or off the use of traversable spies.
      *
-     * @return string|null The identifier.
+     * @param boolean $useTraversableSpies True to use traversable spies.
      */
-    public function id()
+    public function setUseTraversableSpies($useTraversableSpies)
     {
-        return $this->spy->id();
+        $this->spy->setUseTraversableSpies($useTraversableSpies);
+    }
+
+    /**
+     * Returns true if this spy uses traversable spies.
+     *
+     * @return boolean True if this spy uses traversable spies.
+     */
+    public function useTraversableSpies()
+    {
+        return $this->spy->useTraversableSpies();
+    }
+
+    /**
+     * Set the label.
+     *
+     * @param string|null $label The label.
+     */
+    public function setLabel($label)
+    {
+        $this->spy->setLabel($label);
+    }
+
+    /**
+     * Get the label.
+     *
+     * @return string|null The label.
+     */
+    public function label()
+    {
+        return $this->spy->label();
     }
 
     /**
@@ -401,7 +411,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * Throws an exception unless called.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function called()
     {
@@ -424,7 +434,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $renderedCardinality,
@@ -470,7 +480,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $argument,... The arguments.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith()
     {
@@ -497,11 +507,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected %s with arguments like:\n    %s\n%s",
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'call'),
+                $this->assertionRenderer->renderCardinality(
+                    $cardinality,
+                    'call on ' .
+                        $this->assertionRenderer->renderCallable($this->spy)
+                ),
                 $this->assertionRenderer->renderMatchers($matchers),
                 $renderedActual
             )
@@ -560,7 +573,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param object|null $value The possible $this value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledOn($value)
     {
@@ -589,7 +602,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 "Expected %s. %s",
                 $this->assertionRenderer
@@ -652,7 +665,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null)
     {
@@ -674,11 +687,16 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === $argumentCount) {
-            $renderedType = 'call to return';
+            $renderedType = sprintf('call on %s to return', $renderedSubject);
         } else {
-            $renderedType =
-                sprintf('call to return like %s', $value->describe());
+            $renderedType = sprintf(
+                'call on %s to return like %s',
+                $renderedSubject,
+                $value->describe()
+            );
         }
 
         $calls = $this->spy->recordedCalls();
@@ -692,7 +710,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -784,7 +802,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If the type is invalid.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null)
     {
@@ -794,22 +812,27 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (null === $type) {
-            $renderedType = 'call to throw';
+            $renderedType = sprintf('call on %s to throw', $renderedSubject);
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                'call to throw %s exception',
+                'call on %s to throw %s exception',
+                $renderedSubject,
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'call to throw exception equal to %s',
+                    'call on %s to throw exception equal to %s',
+                    $renderedSubject,
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'call to throw exception like %s',
+                    'call on %s to throw exception like %s',
+                    $renderedSubject,
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }
@@ -826,7 +849,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -917,7 +940,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value      The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -943,14 +966,20 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === $argumentCount) {
-            $renderedType = 'call to produce';
+            $renderedType = sprintf('call on %s to produce', $renderedSubject);
         } elseif (1 === $argumentCount) {
-            $renderedType =
-                sprintf('call to produce like %s', $value->describe());
+            $renderedType = sprintf(
+                'call on %s to produce like %s',
+                $renderedSubject,
+                $value->describe()
+            );
         } else {
             $renderedType = sprintf(
-                'call to produce like %s => %s',
+                'call on %s to produce like %s => %s',
+                $renderedSubject,
                 $key->describe(),
                 $value->describe()
             );
@@ -967,7 +996,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -1062,7 +1091,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $pairs,... The key-value pairs.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function producedAll()
     {
@@ -1088,10 +1117,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === func_num_args()) {
-            $renderedType = 'call to produce nothing. ';
+            $renderedType =
+                sprintf('call on %s to produce nothing. ', $renderedSubject);
         } else {
-            $renderedType = 'call to produce like:';
+            $renderedType =
+                sprintf('call on %s to produce like:', $renderedSubject);
 
             foreach ($pairs as $pair) {
                 if (is_array($pair)) {
@@ -1119,7 +1152,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s%s',
                 $this->assertionRenderer
@@ -1184,7 +1217,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $value The value.
      *
      * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null)
     {
@@ -1206,11 +1239,17 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (0 === $argumentCount) {
-            $renderedType = 'generator to receive value';
+            $renderedType = sprintf(
+                'generator returned by %s to receive value',
+                $renderedSubject
+            );
         } else {
             $renderedType = sprintf(
-                'generator to receive value like %s',
+                'generator returned by %s to receive value like %s',
+                $renderedSubject,
                 $value->describe()
             );
         }
@@ -1226,7 +1265,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer
@@ -1339,7 +1378,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @return CallEventCollectionInterface The result.
      * @throws InvalidArgumentException     If the type is invalid.
-     * @throws Exception                    If the assertion fails.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function receivedException($type = null)
     {
@@ -1349,22 +1388,30 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
+        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
+
         if (null === $type) {
-            $renderedType = 'generator to receive exception';
+            $renderedType = sprintf(
+                'generator returned by %s to receive exception',
+                $renderedSubject
+            );
         } elseif (is_string($type)) {
             $renderedType = sprintf(
-                'generator to receive %s exception',
+                'generator returned by %s to receive %s exception',
+                $renderedSubject,
                 $this->assertionRenderer->renderValue($type)
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
-                    'generator to receive exception equal to %s',
+                    'generator returned by %s to receive exception equal to %s',
+                    $renderedSubject,
                     $this->assertionRenderer->renderException($type)
                 );
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $renderedType = sprintf(
-                    'generator to receive exception like %s',
+                    'generator returned by %s to receive exception like %s',
+                    $renderedSubject,
                     $this->matcherFactory->adapt($type)->describe()
                 );
             }
@@ -1381,7 +1428,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         }
 
-        throw $this->assertionRecorder->createFailure(
+        return $this->assertionRecorder->createFailure(
             sprintf(
                 'Expected %s. %s',
                 $this->assertionRenderer

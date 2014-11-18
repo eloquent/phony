@@ -32,7 +32,8 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
-        $this->spy = new Spy($this->callback, false, $this->callFactory);
+        $this->label = 'label';
+        $this->spy = new Spy($this->callback, $this->label, false, false, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -192,7 +193,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to produce. Never called."
+            "Expected call on implode[label] to produce. Never called."
         );
         $this->subject->produced();
     }
@@ -201,7 +202,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to produce like <'x'>. Never called."
+            "Expected call on implode[label] to produce like <'x'>. Never called."
         );
         $this->subject->produced('x');
     }
@@ -210,7 +211,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to produce like <'x'> => <'y'>. Never called."
+            "Expected call on implode[label] to produce like <'x'> => <'y'>. Never called."
         );
         $this->subject->produced('x', 'y');
     }
@@ -219,7 +220,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call to produce. Responded:
+Expected call on implode[label] to produce. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -234,7 +235,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call to produce like <'x'>. Responded:
+Expected call on implode[label] to produce like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -249,7 +250,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call to produce like <'x'> => <'y'>. Responded:
+Expected call on implode[label] to produce like <'x'> => <'y'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -265,7 +266,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call to produce like <'x'>. Responded:
+Expected call on implode[label] to produce like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -290,7 +291,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call to produce like <'x'> => <'y'>. Responded:
+Expected call on implode[label] to produce like <'x'> => <'y'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -315,7 +316,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected every call to produce like <'n'>. Responded:
+Expected every call on implode[label] to produce like <'n'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -340,7 +341,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no call to produce like <'n'>. Responded:
+Expected no call on implode[label] to produce like <'n'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -458,7 +459,7 @@ EOD;
     public function testProducedAllFailureNeverCalled()
     {
         $expected = <<<'EOD'
-Expected call to produce like:
+Expected call on implode[label] to produce like:
     - <'a'>
     - <'b'> => <'c'>
 Never called.
@@ -472,7 +473,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call to produce like:
+Expected call on implode[label] to produce like:
     - <'a'>
     - <'b'> => <'c'>
 Responded:
@@ -491,7 +492,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call to produce like:
+Expected call on implode[label] to produce like:
     - <'a'>
     - <'b'> => <'c'>
 Responded:
@@ -519,7 +520,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no call to produce like:
+Expected no call on implode[label] to produce like:
     - <'n'>
     - <'q'>
     - <'s'>
@@ -548,7 +549,7 @@ EOD;
     {
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call to produce nothing. Responded:
+Expected call on implode[label] to produce nothing. Responded:
     - generated:
         - produced 'm' => 'n'
         - received 'o'
@@ -617,7 +618,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive value. Never called."
+            "Expected generator returned by implode[label] to receive value. Never called."
         );
         $this->subject->received();
     }
@@ -626,7 +627,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive value like <'x'>. Never called."
+            "Expected generator returned by implode[label] to receive value like <'x'>. Never called."
         );
         $this->subject->received('x');
     }
@@ -635,7 +636,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected generator to receive value. Responded:
+Expected generator returned by implode[label] to receive value. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -650,7 +651,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected generator to receive value like <'x'>. Responded:
+Expected generator returned by implode[label] to receive value like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -666,7 +667,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to receive value like <'x'>. Responded:
+Expected generator returned by implode[label] to receive value like <'x'>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -801,7 +802,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive exception. Never called."
+            "Expected generator returned by implode[label] to receive exception. Never called."
         );
         $this->subject->receivedException();
     }
@@ -810,7 +811,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive 'InvalidArgumentException' exception. Never called."
+            "Expected generator returned by implode[label] to receive 'InvalidArgumentException' exception. " .
+                "Never called."
         );
         $this->subject->receivedException('InvalidArgumentException');
     }
@@ -819,7 +821,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive exception equal to RuntimeException(). Never called."
+            "Expected generator returned by implode[label] to receive exception equal to RuntimeException(). " .
+                "Never called."
         );
         $this->subject->receivedException(new RuntimeException());
     }
@@ -828,7 +831,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive exception like <RuntimeException Object (...)>. Never called."
+            "Expected generator returned by implode[label] to receive exception like " .
+                "<RuntimeException Object (...)>. Never called."
         );
         $this->subject->receivedException(new EqualToMatcher(new RuntimeException()));
     }
@@ -838,7 +842,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to receive exception. Responded:
+Expected no generator returned by implode[label] to receive exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -863,7 +867,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected every generator to receive exception. Responded:
+Expected every generator returned by implode[label] to receive exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -888,7 +892,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to receive 'InvalidArgumentException' exception. Responded:
+Expected generator returned by implode[label] to receive 'InvalidArgumentException' exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -913,7 +917,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to receive 'RuntimeException' exception. Responded:
+Expected no generator returned by implode[label] to receive 'RuntimeException' exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -938,7 +942,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to receive 'InvalidArgumentException' exception. Responded:
+Expected generator returned by implode[label] to receive 'InvalidArgumentException' exception. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -963,7 +967,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to receive exception equal to RuntimeException(). Responded:
+Expected generator returned by implode[label] to receive exception equal to RuntimeException(). Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -988,7 +992,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to receive exception equal to RuntimeException('Consequences will never be the same.'). Responded:
+Expected no generator returned by implode[label] to receive exception equal to RuntimeException('Consequences will never be the same.'). Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -1013,7 +1017,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to receive exception equal to RuntimeException(). Responded:
+Expected generator returned by implode[label] to receive exception equal to RuntimeException(). Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -1038,7 +1042,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator to receive exception like <RuntimeException Object (...)>. Responded:
+Expected generator returned by implode[label] to receive exception like <RuntimeException Object (...)>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')
@@ -1063,7 +1067,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator to receive exception like <RuntimeException Object (...)>. Responded:
+Expected no generator returned by implode[label] to receive exception like <RuntimeException Object (...)>. Responded:
     - returned 'x'
     - returned 'y'
     - threw RuntimeException('You done goofed.')

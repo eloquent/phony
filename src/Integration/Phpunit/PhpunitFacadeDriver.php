@@ -11,20 +11,15 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
-use Eloquent\Phony\Event\Verification\EventOrderVerifier;
-use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Facade\FacadeDriverInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
  * A facade driver for PHPUnit.
  *
  * @internal
  */
-class PhpunitFacadeDriver extends FacadeDriver
+class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
 {
     /**
      * Get the static instance of this driver.
@@ -41,35 +36,13 @@ class PhpunitFacadeDriver extends FacadeDriver
     }
 
     /**
-     * Construct a new PHPUnit facade driver.
+     * Create the assertion recorder.
+     *
+     * @return AssertionRecorderInterface The assertion recorder.
      */
-    public function __construct()
+    protected function createAssertionRecorder()
     {
-        $assertionRecorder = PhpunitAssertionRecorder::instance();
-        $callVerifierFactory =
-            new CallVerifierFactory(null, null, $assertionRecorder);
-        $stubVerifierFactory = new StubVerifierFactory(
-            null,
-            null,
-            null,
-            null,
-            $callVerifierFactory,
-            $assertionRecorder
-        );
-
-        parent::__construct(
-            null,
-            new ProxyFactory(null, $stubVerifierFactory),
-            new SpyVerifierFactory(
-                null,
-                null,
-                null,
-                $callVerifierFactory,
-                $assertionRecorder
-            ),
-            $stubVerifierFactory,
-            new EventOrderVerifier($assertionRecorder)
-        );
+        return PhpunitAssertionRecorder::instance();
     }
 
     private static $instance;

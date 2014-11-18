@@ -17,9 +17,14 @@
         "sebastian/exporter": "~1"
     },
     "require-dev": {
+        "athletic/athletic": "~0.1",
         "counterpart/counterpart": "~1",
+        "danielstjules/pho": "~1",
+        "eloquent/fixie": "~0.2.0@dev",
         "hamcrest/hamcrest-php": "~1",
+        "icecave/isolator": "~3",
         "mockery/mockery": "~0",
+        "peridot-php/peridot": "~1",
         "phake/phake": "~1",
         "phpspec/prophecy": "~1",
         "phpunit/phpunit": "~4",
@@ -31,7 +36,22 @@
         },
         "files": [
             "src/functions.php",
-            "src/Phpunit/functions.php"
+            "src/Pho/functions.php",
+            "src/Phpunit/functions.php",
+            "src/Simpletest/functions.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Eloquent\\Phony\\": ["test/src", "test/benchmarks"]
+        },
+        "files": [
+            "test/src/TestClassOldConstructor.php"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.1.x-dev"
+        }
     }
 }

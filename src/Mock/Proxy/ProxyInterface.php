@@ -11,10 +11,12 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
+use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
-use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
+use Exception;
 use ReflectionClass;
+use stdClass;
 
 /**
  * The interface implemented by proxies.
@@ -26,7 +28,7 @@ interface ProxyInterface
      *
      * @return ReflectionClass The class.
      */
-    public function reflector();
+    public function clazz();
 
     /**
      * Get the class name.
@@ -36,18 +38,32 @@ interface ProxyInterface
     public function className();
 
     /**
-     * Get the stubs.
+     * Turn the mock into a full mock.
      *
-     * @return array<string,SpyInterface> The stubs.
+     * @return ProxyInterface This proxy.
      */
-    public function stubs();
+    public function full();
 
     /**
-     * Get the magic stubs.
+     * Turn the mock into a partial mock.
      *
-     * @return array<string,SpyInterface> The magic stubs.
+     * @return ProxyInterface This proxy.
      */
-    public function magicStubs();
+    public function partial();
+
+    /**
+     * Returns true if the mock is a full mock.
+     *
+     * @return boolean True if the mock is a full mock.
+     */
+    public function isFull();
+
+    /**
+     * Get the stubs.
+     *
+     * @return stdClass The stubs.
+     */
+    public function stubs();
 
     /**
      * Get a stub verifier.
@@ -60,16 +76,6 @@ interface ProxyInterface
     public function stub($name);
 
     /**
-     * Get a magic stub verifier.
-     *
-     * @param string $name The method name.
-     *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If magic calls are not supported.
-     */
-    public function magicStub($name);
-
-    /**
      * Get a stub verifier.
      *
      * @param string $name The method name.
@@ -78,4 +84,45 @@ interface ProxyInterface
      * @throws MockExceptionInterface If the stub does not exist.
      */
     public function __get($name);
+
+    /**
+     * Get a spy.
+     *
+     * @param string $name The method name.
+     *
+     * @return SpyInterface           The stub.
+     * @throws MockExceptionInterface If the spy does not exist.
+     */
+    public function spy($name);
+
+    /**
+     * Checks if there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface|null The result.
+     */
+    public function checkNoInteraction();
+
+    /**
+     * Throws an exception unless there was no interaction with the mock.
+     *
+     * @return CallEventCollectionInterface The result.
+     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function noInteraction();
+
+    /**
+     * Reset the mock to its initial state.
+     *
+     * @return ProxyInterface This proxy.
+     */
+    public function reset();
+
+    /**
+     * Get the proxy state.
+     *
+     * @internal
+     *
+     * @return stdClass The state.
+     */
+    public function state();
 }

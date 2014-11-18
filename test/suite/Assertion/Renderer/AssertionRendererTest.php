@@ -231,17 +231,17 @@ EOD;
                 $callFactory->create($callEventFactory->createCalled(new Spy())),
                 "{spy}()",
             ),
-            'Spy with identifier' => array(
-                $callFactory->create($callEventFactory->createCalled(new Spy(null, null, null, 111))),
-                "{spy 111}()",
+            'Spy with label' => array(
+                $callFactory->create($callEventFactory->createCalled(new Spy(null, 'label'))),
+                "{spy}[label]()",
             ),
             'Stub' => array(
                 $callFactory->create($callEventFactory->createCalled(new Stub())),
                 "{stub}()",
             ),
-            'Stub with identifier' => array(
-                $callFactory->create($callEventFactory->createCalled(new Stub(null, null, 111))),
-                "{stub 111}()",
+            'Stub with label' => array(
+                $callFactory->create($callEventFactory->createCalled(new Stub(null, null, 'label'))),
+                "{stub}[label]()",
             ),
             'With arguments' => array(
                 $callFactory->create($callEventFactory->createCalled('implode', array('a', 111))),

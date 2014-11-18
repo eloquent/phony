@@ -17,11 +17,11 @@ use Exception;
 use Generator;
 
 /**
- * A detail class for generator spy syntax not currently supported by HHVM.
+ * A detail class for generator spy syntax using an expression.
  *
  * @internal
  */
-abstract class TraversableSpyFactoryDetail
+abstract class GeneratorSpyFactoryDetailPhp
 {
     /**
      * Create a new generator spy.
@@ -65,7 +65,7 @@ abstract class TraversableSpyFactoryDetail
                     $callEventFactory->createThrew($thrown)
                 );
 
-                return;
+                throw $thrown;
             }
 
             $key = $generator->key();
@@ -85,7 +85,8 @@ abstract class TraversableSpyFactoryDetail
                 );
             } catch (Exception $receivedException) {
                 $call->addTraversableEvent(
-                    $callEventFactory->createReceivedException($receivedException)
+                    $callEventFactory
+                        ->createReceivedException($receivedException)
                 );
             }
 

@@ -31,9 +31,16 @@ interface WrappedInvocableInterface extends InvocableInterface
     public function callback();
 
     /**
-     * Get the identifier.
+     * Set the label.
      *
-     * @return string|null The identifier.
+     * @param string|null $label The label.
      */
-    public function id();
+    public function setLabel($label);
+
+    /**
+     * Get the label.
+     *
+     * @return string|null The label.
+     */
+    public function label();
 }

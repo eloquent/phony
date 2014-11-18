@@ -13,8 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Exception;
 use ReflectionMethod;
 
@@ -23,65 +22,33 @@ use ReflectionMethod;
  *
  * @internal
  */
-class WrappedMethod extends AbstractWrappedInvocable
+class WrappedMethod extends AbstractWrappedMethod
 {
     /**
      * Construct a new wrapped method.
      *
-     * @param ReflectionMethod   $callParentMethod The callParent() method.
-     * @param ReflectionMethod   $method           The method.
-     * @param MockInterface|null $mock             The mock.
+     * @param ReflectionMethod $callParentMethod The _callParent() method.
+     * @param ReflectionMethod $method           The method.
+     * @param ProxyInterface   $proxy            The proxy.
      */
     public function __construct(
         ReflectionMethod $callParentMethod,
         ReflectionMethod $method,
-        MockInterface $mock = null
+        ProxyInterface $proxy
     ) {
         $this->callParentMethod = $callParentMethod;
-        $this->method = $method;
-        $this->mock = $mock;
-        $this->name = $method->getName();
 
-        if ($this->method->isStatic()) {
-            $callback = array(
-                $method->getDeclaringClass()->getName(),
-                $this->name
-            );
-        } else {
-            $callback = array($mock, $this->name);
-        }
-
-        parent::__construct($callback);
+        parent::__construct($method, $proxy);
     }
 
     /**
-     * Get the callParent() method.
+     * Get the _callParent() method.
      *
-     * @return ReflectionMethod The callParent() method.
+     * @return ReflectionMethod The _callParent() method.
      */
     public function callParentMethod()
     {
         return $this->callParentMethod;
-    }
-
-    /**
-     * Get the method.
-     *
-     * @return ReflectionMethod The method.
-     */
-    public function method()
-    {
-        return $this->method;
-    }
-
-    /**
-     * Get the mock.
-     *
-     * @return MockInterface|null The mock.
-     */
-    public function mock()
-    {
-        return $this->mock;
     }
 
     /**
@@ -96,10 +63,6 @@ class WrappedMethod extends AbstractWrappedInvocable
      */
     public function invokeWith($arguments = null)
     {
-        if ($this->method->isAbstract()) {
-            return null;
-        }
-
         return $this->callParentMethod->invoke(
             $this->mock,
             $this->name,
@@ -108,7 +71,4 @@ class WrappedMethod extends AbstractWrappedInvocable
     }
 
     private $callParentMethod;
-    private $method;
-    private $mock;
-    private $name;
 }

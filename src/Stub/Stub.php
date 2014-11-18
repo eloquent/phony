@@ -11,8 +11,11 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Closure;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
@@ -26,8 +29,6 @@ use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Rule\StubRule;
 use Exception;
-use ReflectionClass;
-use ReflectionException;
 
 /**
  * Provides canned answers to function or method invocations.
@@ -41,20 +42,22 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * @param callable|null                    $callback           The callback, or null to create an unbound stub.
      * @param mixed                            $self               The self value.
-     * @param integer|null                     $id                 The identifier.
+     * @param string|null                      $label              The label.
      * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
      * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
      * @param InvokerInterface|null            $invoker            The invoker to use.
      * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
+     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
      */
     public function __construct(
         $callback = null,
         $self = null,
-        $id = null,
+        $label = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
-        InvocableInspectorInterface $invocableInspector = null
+        InvocableInspectorInterface $invocableInspector = null,
+        FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
@@ -68,23 +71,29 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
+        if (null === $featureDetector) {
+            $featureDetector = FeatureDetector::instance();
+        }
 
-        parent::__construct($callback, $id);
+        parent::__construct($callback, $label);
 
         if (null === $self) {
             $self = $this->callback;
         }
 
-        $this->self = $self;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
+        $this->featureDetector = $featureDetector;
 
         $this->answer = new Answer();
         $this->isNewRule = false;
         $this->rules = array();
+        $this->isClosureBindingSupported =
+            $this->featureDetector->isSupported('closure.bind');
 
+        $this->setSelf($self);
         $this->with($this->matcherFactory->wildcard());
     }
 
@@ -129,6 +138,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
+     * Get the feature detector.
+     *
+     * @return FeatureDetectorInterface The feature detector.
+     */
+    public function featureDetector()
+    {
+        return $this->featureDetector;
+    }
+
+    /**
      * Set the self value of this stub.
      *
      * This value is used by returnsThis().
@@ -137,6 +156,8 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function setSelf($self)
     {
+        $this->callback = $this->bind($this->callback, $self);
+
         if ($self === $this) {
             $self = null;
         }
@@ -219,7 +240,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     ) {
         $this->answer->addSecondaryRequest(
             new CallRequest(
-                $callback,
+                $this->bind($callback, $this->self),
                 Arguments::adapt($arguments),
                 $prefixSelf,
                 $suffixArgumentsArray,
@@ -409,7 +430,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         $this->answer->setPrimaryRequest(
             new CallRequest(
-                $callback,
+                $this->bind($callback, $this->self),
                 Arguments::adapt($arguments),
                 $prefixSelf,
                 $suffixArgumentsArray,
@@ -438,31 +459,12 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
-        if (
-            null === $prefixSelf &&
-            is_object($this->callback) &&
-            is_object($this->self)
-        ) {
-            $selfClass = new ReflectionClass($this->self);
+        if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
                 ->callbackReflector($this->callback)->getParameters();
 
-            if ($parameters && 'self' === $parameters[0]->getName()) {
-                try {
-                    if ($parameterClass = $parameters[0]->getClass()) {
-                        $parameterClassName = $parameterClass->getName();
-
-                        if (
-                            $selfClass->getName() === $parameterClassName ||
-                            $selfClass->isSubclassOf($parameterClassName)
-                        ) {
-                            $prefixSelf = true;
-                        }
-                    }
-                } catch (ReflectionException $e) {
-                    // ignore
-                }
-            }
+            $prefixSelf = $parameters &&
+                'phonySelf' === $parameters[0]->getName();
         }
 
         $invoker = $this->invoker;
@@ -657,13 +659,40 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
     }
 
+    /**
+     * Bind the supplied callback to the self value.
+     *
+     * @param callable $callback The callback.
+     * @param mixed    $self     The self value.
+     *
+     * @return callable The bound callback.
+     */
+    protected function bind($callback, $self)
+    {
+        if ($this->isClosureBindingSupported) {
+            if ($callback instanceof Closure) {
+                if (is_object($self)) {
+                    return $callback->bindTo($self, get_class($self));
+                }
+
+                if (is_string($self) && class_exists($self)) {
+                    return $callback->bindTo(null, $self);
+                }
+            }
+        }
+
+        return $callback;
+    }
+
     private $self;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
+    private $featureDetector;
     private $answer;
     private $isNewRule;
     private $rule;
     private $rules;
+    private $isClosureBindingSupported;
 }

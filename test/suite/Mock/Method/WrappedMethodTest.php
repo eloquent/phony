@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Test\TestClassA;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
@@ -24,38 +25,49 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodE');
         $this->mockBuilder = new MockBuilder();
         $this->mock = $this->mockBuilder->create();
-        $this->subject = new WrappedMethod($this->callParentMethod, $this->method, $this->mock);
+        $this->proxyFactory = new ProxyFactory();
+        $this->proxy = $this->proxyFactory->createStubbing($this->mock);
+        $this->subject = new WrappedMethod($this->callParentMethod, $this->method, $this->proxy);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->callParentMethod, $this->subject->callParentMethod());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(array($this->mock, 'testClassAMethodE'), $this->subject->callback());
-        $this->assertNull($this->subject->id());
+        $this->assertNull($this->subject->label());
     }
 
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodE');
-        $this->subject = new WrappedMethod($this->callParentMethod, $this->method);
+        $this->proxy = $this->proxyFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->subject = new WrappedMethod($this->callParentMethod, $this->method, $this->proxy);
 
         $this->assertSame($this->callParentMethod, $this->subject->callParentMethod());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'), $this->subject->callback());
-        $this->assertNull($this->subject->id());
+        $this->assertSame(
+            array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'),
+            $this->subject->callback()
+        );
+        $this->assertNull($this->subject->label());
     }
 
-    public function testConstructorDefaults()
+    public function testSetLabel()
     {
-        $this->subject = new WrappedMethod($this->callParentMethod, $this->method);
+        $this->subject->setLabel(null);
 
-        $this->assertNull($this->subject->mock());
-        $this->assertSame(array(null, $this->method->getName()), $this->subject->callback());
+        $this->assertNull($this->subject->label());
+
+        $this->subject->setLabel('label');
+
+        $this->assertSame('label', $this->subject->label());
     }
 
     public function testInvokeMethods()
@@ -66,7 +78,8 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $callParentMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodC');
         $mock = $mockBuilder->get();
-        $subject = new WrappedMethod($callParentMethod, $method, $mock);
+        $proxy = $this->proxyFactory->createStubbing($mock);
+        $subject = new WrappedMethod($callParentMethod, $method, $proxy);
 
         $this->assertSame('protected ab', $subject('a', 'b'));
         $this->assertSame('protected ab', $subject->invoke('a', 'b'));
@@ -81,27 +94,12 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $callParentMethod = $class->getMethod('_callParentStatic');
         $callParentMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC');
-        $subject = new WrappedMethod($callParentMethod, $method);
+        $proxy = $this->proxyFactory->createStubbingStatic($mockBuilder->build());
+        $subject = new WrappedMethod($callParentMethod, $method, $proxy);
 
         $this->assertSame('protected ab', $subject('a', 'b'));
         $this->assertSame('protected ab', $subject->invoke('a', 'b'));
         $this->assertSame('protected ab', $subject->invokeWith(array('a', 'b')));
         $this->assertSame('protected ', $subject->invokeWith());
-    }
-
-    public function testInvokeMethodsWithAbstract()
-    {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestInterfaceA');
-        $class = $mockBuilder->build();
-        $callParentMethod = $class->getMethod('_callParent');
-        $callParentMethod->setAccessible(true);
-        $method = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceA::testClassAMethodA');
-        $mock = $mockBuilder->get();
-        $subject = new WrappedMethod($callParentMethod, $method, $mock);
-
-        $this->assertNull($subject('a', 'b'));
-        $this->assertNull($subject->invoke('a', 'b'));
-        $this->assertNull($subject->invokeWith(array('a', 'b')));
-        $this->assertNull($subject->invokeWith());
     }
 }
