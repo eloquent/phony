@@ -153,6 +153,12 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                 switch ($defaultValue) {
                     case ' = NULL':
                         $defaultValue = ' = null';
+
+                        break;
+
+                    default:
+                        $defaultValue =
+                            str_replace('array (', 'array(', $defaultValue);
                 }
             } elseif ('optional' === $match[1]) {
                 $defaultValue = ' = null';

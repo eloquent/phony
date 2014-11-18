@@ -276,7 +276,7 @@ class MockGenerator implements MockGeneratorInterface
                 $source .= "\n    const " .
                     $name .
                     ' = ' .
-                    (null === $value ? 'null' : var_export($value, true)) .
+                    (null === $value ? 'null' : $this->renderValue($value)) .
                     ';';
             }
 
@@ -293,8 +293,9 @@ class MockGenerator implements MockGeneratorInterface
      *
      * @return string The source code.
      */
-    protected function generateMagicCallStatic(MockDefinitionInterface $definition)
-    {
+    protected function generateMagicCallStatic(
+        MockDefinitionInterface $definition
+    ) {
         $methods = $definition->methods()->publicStaticMethods();
 
         if (!isset($methods['__callStatic'])) {
@@ -408,11 +409,11 @@ EOD;
                 foreach ($signature as $parameter) {
                     $argumentPacking .= "\n        if (\$argumentCount > " .
                         ++$index .
-                        ') $arguments[] = ' .
+                        ") {\n            \$arguments[] = " .
                         $parameter[1] .
                         '$a' .
                         $index .
-                        ';';
+                        ";\n        }";
                 }
             } else {
                 $argumentPacking = '';
@@ -539,8 +540,9 @@ EOD;
      *
      * @return string The source code.
      */
-    protected function generateCallParentMethods(MockDefinitionInterface $definition)
-    {
+    protected function generateCallParentMethods(
+        MockDefinitionInterface $definition
+    ) {
         $hasTraits = (boolean) $definition->traitNames();
         $parentClassName = $definition->parentClassName();
         $hasParentClass = null !== $parentClassName;
@@ -576,7 +578,7 @@ EOD;
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
-                    $name
+                    $name,
             ),
             $arguments->all()
         );
@@ -672,7 +674,7 @@ EOD;
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
-                    $name
+                    $name,
             ),
             $arguments->all()
         );
@@ -718,7 +720,7 @@ EOD;
                 "\n    public static \$" .
                 $name .
                 ' = ' .
-                (null === $value ? 'null' : var_export($value, true)) .
+                (null === $value ? 'null' : $this->renderValue($value)) .
                 ';';
         }
 
@@ -727,7 +729,7 @@ EOD;
                 "\n    public \$" .
                 $name .
                 ' = ' .
-                (null === $value ? 'null' : var_export($value, true)) .
+                (null === $value ? 'null' : $this->renderValue($value)) .
                 ';';
         }
 
@@ -747,7 +749,7 @@ EOD;
         $source .= "\n    private static \$_uncallableMethods = ";
 
         if ($uncallableMethodNames) {
-            $source .= var_export($uncallableMethodNames, true);
+            $source .= $this->renderValue($uncallableMethodNames);
         } else {
             $source .= 'array()';
         }
@@ -755,7 +757,7 @@ EOD;
         $source .= ";\n    private static \$_traitMethods = ";
 
         if ($traitMethodNames) {
-            $source .= var_export($traitMethodNames, true);
+            $source .= $this->renderValue($traitMethodNames);
         } else {
             $source .= 'array()';
         }
@@ -765,6 +767,18 @@ EOD;
             "\n    private \$_proxy;";
 
         return $source;
+    }
+
+    /**
+     * Render the supplied value.
+     *
+     * @param mixed $value The value.
+     *
+     * @return string The rendered value.
+     */
+    protected function renderValue($value)
+    {
+        return str_replace('array (', 'array(', var_export($value, true));
     }
 
     private static $instance;

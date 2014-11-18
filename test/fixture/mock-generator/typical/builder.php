@@ -5,7 +5,7 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
         'Eloquent\Phony\Test\TestClassB',
         'Iterator',
         'Countable',
-        'ArrayAccess'
+        'ArrayAccess',
     ),
     array(
         'const CONSTANT_A' => 'constantValueA',

@@ -31,7 +31,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
             'Iterator',
-            'Countable'
+            'Countable',
         );
         $this->typeNamesTraits = array(
             'Eloquent\Phony\Test\TestClassB',
@@ -535,7 +535,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $exception = null;
         try {
             $builder->build();
-        } catch (ClassExistsException $exception) {}
+        } catch (ClassExistsException $exception) {
+        }
 
         $this->assertNotNull($exception);
         $this->assertTrue($builder->isFinalized());

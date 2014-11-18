@@ -324,13 +324,13 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $definitionA = new MockDefinition(
             null,
             array(
-                'methodA' => function ($a, $b) {}
+                'methodA' => function ($a, $b) {},
             )
         );
         $definitionB = new MockDefinition(
             null,
             array(
-                'methodA' => function ($a, array $b = null) {}
+                'methodA' => function ($a, array $b = null) {},
             )
         );
 
@@ -344,7 +344,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             null,
             null,
             array(
-                'methodA' => function ($a, $b) {}
+                'methodA' => function ($a, $b) {},
             )
         );
         $definitionB = new MockDefinition(
@@ -352,7 +352,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             null,
             null,
             array(
-                'methodA' => function ($a, array $b = null) {}
+                'methodA' => function ($a, array $b = null) {},
             )
         );
 

@@ -60,6 +60,5 @@ class CallEventCollection extends EventCollection implements
         }
 
         throw new UndefinedArgumentException($index);
-
     }
 }

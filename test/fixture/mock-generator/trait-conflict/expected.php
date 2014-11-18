@@ -27,7 +27,9 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        if ($argumentCount > 0) $arguments[] = &$a0;
+        if ($argumentCount > 0) {
+            $arguments[] = &$a0;
+        }
 
         for ($i = 1; $i < $argumentCount; $i++) {
             $arguments[] = \func_get_arg($i);
@@ -48,11 +50,21 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        if ($argumentCount > 0) $arguments[] = $a0;
-        if ($argumentCount > 1) $arguments[] = $a1;
-        if ($argumentCount > 2) $arguments[] = &$a2;
-        if ($argumentCount > 3) $arguments[] = &$a3;
-        if ($argumentCount > 4) $arguments[] = &$a4;
+        if ($argumentCount > 0) {
+            $arguments[] = $a0;
+        }
+        if ($argumentCount > 1) {
+            $arguments[] = $a1;
+        }
+        if ($argumentCount > 2) {
+            $arguments[] = &$a2;
+        }
+        if ($argumentCount > 3) {
+            $arguments[] = &$a3;
+        }
+        if ($argumentCount > 4) {
+            $arguments[] = &$a4;
+        }
 
         for ($i = 5; $i < $argumentCount; $i++) {
             $arguments[] = \func_get_arg($i);
@@ -88,7 +100,7 @@ implements \Eloquent\Phony\Mock\MockInterface
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
-                    $name
+                    $name,
             ),
             $arguments->all()
         );
@@ -105,16 +117,16 @@ implements \Eloquent\Phony\Mock\MockInterface
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
-                    $name
+                    $name,
             ),
             $arguments->all()
         );
     }
 
-    private static $_uncallableMethods = array (
+    private static $_uncallableMethods = array(
   'testTraitCMethodA' => true,
 );
-    private static $_traitMethods = array (
+    private static $_traitMethods = array(
   'testClassAStaticMethodA' => 'Eloquent\\Phony\\Test\\TestTraitA',
   'testClassAMethodB' => 'Eloquent\\Phony\\Test\\TestTraitB',
 );

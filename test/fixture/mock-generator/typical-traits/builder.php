@@ -7,7 +7,7 @@ return new Eloquent\Phony\Mock\Builder\MockBuilder(
         'Countable',
         'ArrayAccess',
         'Eloquent\Phony\Test\TestTraitA',
-        'Eloquent\Phony\Test\TestTraitB'
+        'Eloquent\Phony\Test\TestTraitB',
     ),
     array(
         'const CONSTANT_A' => 'constantValueA',

@@ -52,7 +52,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockFacadeTestCreateMock';
         $actual = Phony::mock($types, $arguments, $definition, $className);
 
@@ -68,7 +68,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockFacadeTestCreateMockWithNullArguments';
         $actual = Phony::mock($types, $arguments, $definition, $className);
 
@@ -106,7 +106,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockFacadeTestCreateMockFunction';
         $actual = mock($types, $arguments, $definition, $className);
 
@@ -122,7 +122,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockFacadeTestCreateMockFunctionWithNullArguments';
         $actual = mock($types, $arguments, $definition, $className);
 
@@ -159,7 +159,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testFullMock()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockFacadeTestCreateFullMock';
         $actual = Phony::fullMock($types, $definition, $className);
 
@@ -175,7 +175,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testFullMockFunction()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' =>'valueB');
+        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
         $className = 'PhonyMockFacadeTestCreateFullMockFunction';
         $actual = fullMock($types, $definition, $className);
 

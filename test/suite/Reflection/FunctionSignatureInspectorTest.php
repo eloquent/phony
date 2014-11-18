@@ -180,9 +180,13 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $expected);
     }
 
-    protected function methodA($a = ReflectionMethod::IS_FINAL, $b = self::CONSTANT_A) {}
+    protected function methodA($a = ReflectionMethod::IS_FINAL, $b = self::CONSTANT_A)
+    {
+    }
 
-    protected function methodB(self $a) {}
+    protected function methodB(self $a)
+    {
+    }
 
     public function testInstance()
     {

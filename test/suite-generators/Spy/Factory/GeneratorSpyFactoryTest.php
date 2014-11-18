@@ -120,7 +120,8 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             while ($spy->valid()) {
                 $spy->send(strtoupper($spy->current()));
             }
-        } catch (RuntimeException $caughtException) {}
+        } catch (RuntimeException $caughtException) {
+        }
         $this->callFactory->reset();
         $generatorEvents = array(
             $this->callEventFactory->createProduced(0, 'a'),
@@ -155,7 +156,8 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
 
                 try {
                     yield 'b';
-                } catch (RuntimeException $receivedException) {}
+                } catch (RuntimeException $receivedException) {
+                }
 
                 yield 'c';
             }
@@ -201,7 +203,8 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        foreach ($spy as $value) {}
+        foreach ($spy as $value) {
+        }
         $this->callFactory->reset();
         $generatorEvents = array();
         $endEvent = $this->callEventFactory->createReturned();
@@ -224,8 +227,10 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $spy = $this->subject->create($this->call, $generator, true);
         $caughtException = null;
         try {
-            foreach ($spy as $value) {}
-        } catch (RuntimeException $caughtException) {};
+            foreach ($spy as $value) {
+            }
+        } catch (RuntimeException $caughtException) {
+        };
         $this->callFactory->reset();
         $generatorEvents = array();
         $endEvent = $this->callEventFactory->createThrew($exception);

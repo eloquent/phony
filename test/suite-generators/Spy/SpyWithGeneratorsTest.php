@@ -63,8 +63,10 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
-        foreach ($spy->invoke('a', 'b') as $value) {}
-        foreach ($spy->invoke('c') as $value) {}
+        foreach ($spy->invoke('a', 'b') as $value) {
+        }
+        foreach ($spy->invoke('c') as $value) {
+        }
         $this->callFactory->reset();
         $expected = array(
             $this->callFactory->create(

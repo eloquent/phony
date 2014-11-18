@@ -332,7 +332,7 @@ EOD;
             array(
                 'methodA' => function () {
                     return implode(func_get_args());
-                }
+                },
             )
         );
         $this->class = $this->mockBuilder->build(true);
