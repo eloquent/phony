@@ -9,6 +9,7 @@
  * that was distributed with this source code.
  */
 
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
@@ -478,5 +479,46 @@ EOD;
         $proxy->testClassAMethodA->with(true)->returns('a');
 
         $this->assertNull($proxy->mock()->testClassAMethodA());
+    }
+
+    public function testAssertionExceptionTrimming()
+    {
+        $spy = x\spy();
+        $exception = null;
+
+        try {
+            $line = __LINE__; $spy->called();
+        } catch (Exception $exception) {}
+
+        $this->assertInstanceOf('Exception', $exception);
+        $this->assertSame(__FILE__, $exception->getFile());
+        $this->assertSame($line, $exception->getLine());
+        $this->assertSame(
+            array(
+                array(
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'function' => 'called',
+                    'class' => 'Eloquent\Phony\Spy\SpyVerifier',
+                    'type' => '->',
+                    'args' => array(),
+                ),
+            ),
+            $exception->getTrace()
+        );
+    }
+
+    public function testAssertionExceptionTrimmingWithEmptyTrace()
+    {
+        $exception = new Exception();
+        $reflector = new ReflectionClass('Exception');
+        $traceProperty = $reflector->getProperty('trace');
+        $traceProperty->setAccessible(true);
+        $traceProperty->setValue($exception, array());
+        AssertionException::trim($exception);
+
+        $this->assertNull($exception->getFile());
+        $this->assertNull($exception->getLine());
+        $this->assertSame(array(), $exception->getTrace());
     }
 }
