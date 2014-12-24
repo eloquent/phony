@@ -287,7 +287,7 @@ abstract class AbstractProxy implements ProxyInterface
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
             if ($stub->checkCalled()) {
-                return null;
+                return;
             }
         }
 

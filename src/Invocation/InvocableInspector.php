@@ -109,7 +109,7 @@ class InvocableInspector implements InvocableInspectorInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**

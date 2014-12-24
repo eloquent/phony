@@ -15,9 +15,9 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
-use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
@@ -416,7 +416,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         $endTime = $this->call->endTime();
 
         if (null === $endTime) {
-            return null;
+            return;
         }
 
         return $endTime - $this->call->time();
@@ -432,7 +432,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         $responseTime = $this->call->responseTime();
 
         if (null === $responseTime) {
-            return null;
+            return;
         }
 
         return $responseTime - $this->call->time();

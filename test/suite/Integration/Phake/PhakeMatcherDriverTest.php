@@ -13,8 +13,8 @@ namespace Eloquent\Phony\Integration\Phake;
 
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WrappedMatcher;
-use PHPUnit_Framework_TestCase;
 use Phake;
+use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
 class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase

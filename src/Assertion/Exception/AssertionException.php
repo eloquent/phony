@@ -94,7 +94,7 @@ final class AssertionException extends Exception implements
         }
 
         if (null === $index) {
-            return null;
+            return;
         }
 
         if (!$broke) {

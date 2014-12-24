@@ -112,7 +112,7 @@ class RealMethodDefinition implements MethodDefinitionInterface
      */
     public function callback()
     {
-        return null;
+        return;
     }
 
     private $method;

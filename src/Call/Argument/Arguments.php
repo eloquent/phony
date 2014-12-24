@@ -176,7 +176,7 @@ class Arguments implements ArgumentsInterface
     protected function normalizeIndex($index)
     {
         if ($this->count < 1) {
-            return null;
+            return;
         }
 
         if (null === $index) {
@@ -185,12 +185,12 @@ class Arguments implements ArgumentsInterface
             $index = $this->count + $index;
 
             if ($index < 0) {
-                return null;
+                return;
             }
         }
 
         if ($index >= $this->count) {
-            return null;
+            return;
         }
 
         return $index;

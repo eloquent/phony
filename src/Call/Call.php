@@ -13,8 +13,8 @@ namespace Eloquent\Phony\Call;
 
 use ArrayIterator;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
