@@ -61,4 +61,8 @@
             <group>exclude-from-coverage</group>
         </exclude>
     </groups>
+
+    <php>
+        <ini name="memory_limit" value="256M"/>
+    </php>
 </phpunit>
