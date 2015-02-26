@@ -6,6 +6,7 @@ if (!$detector->isSupported('runtime.hhvm')) {
     return false;
 }
 
-$message = 'Requires non-nightly HHVM 3.4.';
+$message = 'Requires HHVM 3.4.';
 
-return version_compare(HHVM_VERSION, '3.4.0-dev', '>=');
+return version_compare(HHVM_VERSION, '3.4.x', '>=') &&
+    version_compare(HHVM_VERSION, '3.5.x', '<');

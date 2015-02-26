@@ -115,8 +115,12 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 
             $typehint = $match[2];
 
-            if ($this->isHhvm && false !== strpos($typehint, 'HH\\')) { // @codeCoverageIgnoreStart
-                $typehint = '';
+            if ($this->isHhvm) { // @codeCoverageIgnoreStart
+                if (false !== strpos($typehint, 'HH\\')) {
+                    $typehint = '';
+                } elseif ('?' === $typehint[0]) {
+                    $typehint = substr($typehint, 1);
+                }
             } // @codeCoverageIgnoreEnd
 
             switch ($typehint) {
