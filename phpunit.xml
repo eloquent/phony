@@ -1,10 +1,5 @@
 <phpunit
     bootstrap="vendor/autoload.php"
-    strict="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    mapTestClassNameToCoveredClassName="true"
     verbose="true"
     colors="true"
 >
