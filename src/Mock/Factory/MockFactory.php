@@ -150,16 +150,18 @@ class MockFactory implements MockFactoryInterface
         }
 
         $class = new ReflectionClass($className);
+        $customMethods = array();
+
+        foreach ($definition->customStaticMethods() as $methodName => $method) {
+            $customMethods[strtolower($methodName)] = $method;
+        }
+        foreach ($definition->customMethods() as $methodName => $method) {
+            $customMethods[strtolower($methodName)] = $method;
+        }
 
         $customMethodsProperty = $class->getProperty('_customMethods');
         $customMethodsProperty->setAccessible(true);
-        $customMethodsProperty->setValue(
-            null,
-            array_merge(
-                $definition->customStaticMethods(),
-                $definition->customMethods()
-            )
-        );
+        $customMethodsProperty->setValue(null, $customMethods);
 
         $proxyProperty = $class->getProperty('_staticProxy');
         $proxyProperty->setAccessible(true);

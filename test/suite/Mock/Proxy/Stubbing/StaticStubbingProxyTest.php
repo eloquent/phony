@@ -116,7 +116,7 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($actual, $this->subject->stub('testClassAStaticMethodA'));
-        $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
     }
 
     public function testStubWithMagic()
@@ -144,7 +144,7 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($actual, $this->subject->testClassAStaticMethodA);
-        $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
     }
 
     public function testMagicPropertyFailure()
@@ -162,7 +162,7 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\Spy', $actual);
         $this->assertSame($actual, $this->subject->spy('testClassAStaticMethodA'));
-        $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA->spy());
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda->spy());
     }
 
     public function testCheckNoInteraction()
@@ -219,7 +219,7 @@ EOD;
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($actual, $this->subject->testClassAStaticMethodA);
-        $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
     }
 
     public function testMagicCallFailure()

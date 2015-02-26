@@ -521,4 +521,11 @@ EOD;
         $this->assertNull($exception->getLine());
         $this->assertSame(array(), $exception->getTrace());
     }
+
+    public function testProxyCaseInsensitivity()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertSame($proxy->testClassAMethodA, $proxy->testclassamethoda);
+    }
 }

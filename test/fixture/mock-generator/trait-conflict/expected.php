@@ -124,11 +124,11 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     private static $_uncallableMethods = array(
-  'testTraitCMethodA' => true,
+  'testtraitcmethoda' => true,
 );
     private static $_traitMethods = array(
-  'testClassAStaticMethodA' => 'Eloquent\\Phony\\Test\\TestTraitA',
-  'testClassAMethodB' => 'Eloquent\\Phony\\Test\\TestTraitB',
+  'testclassastaticmethoda' => 'Eloquent\\Phony\\Test\\TestTraitA',
+  'testclassamethodb' => 'Eloquent\\Phony\\Test\\TestTraitB',
 );
     private static $_customMethods = array();
     private static $_staticProxy;

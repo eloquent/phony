@@ -296,9 +296,11 @@ class MockGenerator implements MockGeneratorInterface
     protected function generateMagicCallStatic(
         MockDefinitionInterface $definition
     ) {
-        $methods = $definition->methods()->publicStaticMethods();
+        $methods = $definition->methods();
+        $callStaticName = $methods->methodName('__callstatic');
+        $methods = $methods->publicStaticMethods();
 
-        if (!isset($methods['__callStatic'])) {
+        if (null === $callStaticName) {
             return '';
         }
 
@@ -308,7 +310,7 @@ class MockGenerator implements MockGeneratorInterface
 EOD;
 
         $signature = $this->signatureInspector
-            ->signature($methods['__callStatic']->method());
+            ->signature($methods[$callStaticName]->method());
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -380,8 +382,9 @@ EOD;
 
         foreach ($methods as $method) {
             $name = $method->name();
+            $nameLower = strtolower($name);
 
-            if ('__call' === $name || '__callStatic' === $name) {
+            if ('__call' === $nameLower || '__callstatic' === $nameLower) {
                 continue;
             }
 
@@ -493,9 +496,11 @@ EOD;
      */
     protected function generateMagicCall(MockDefinitionInterface $definition)
     {
-        $methods = $definition->methods()->publicMethods();
+        $methods = $definition->methods();
+        $callName = $methods->methodName('__call');
+        $methods = $methods->publicMethods();
 
-        if (!isset($methods['__call'])) {
+        if (null === $callName) {
             return '';
         }
 
@@ -505,7 +510,7 @@ EOD;
 EOD;
 
         $signature = $this->signatureInspector
-            ->signature($methods['__call']->method());
+            ->signature($methods[$callName]->method());
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -587,9 +592,7 @@ EOD;
 EOD;
         }
 
-        $methods = $definition->methods()->publicStaticMethods();
-
-        if (isset($methods['__callStatic'])) {
+        if (null !== $definition->methods()->methodName('__callstatic')) {
             $source .= <<<'EOD'
 
     private static function _callMagicStatic(
@@ -683,9 +686,7 @@ EOD;
 EOD;
         }
 
-        $methods = $definition->methods()->publicMethods();
-
-        if (isset($methods['__call'])) {
+        if (null !== $definition->methods()->methodName('__call')) {
             $source .= <<<'EOD'
 
     private function _callMagic(
@@ -738,6 +739,8 @@ EOD;
         $traitMethodNames = array();
 
         foreach ($methods as $methodName => $method) {
+            $methodName = strtolower($methodName);
+
             if (!$method->isCallable()) {
                 $uncallableMethodNames[$methodName] = true;
             } elseif ($method instanceof TraitMethodDefinitionInterface) {

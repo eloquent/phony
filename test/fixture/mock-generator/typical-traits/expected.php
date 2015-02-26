@@ -640,10 +640,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
   'valid' => true,
   'rewind' => true,
   'count' => true,
-  'offsetExists' => true,
-  'offsetGet' => true,
-  'offsetSet' => true,
-  'offsetUnset' => true,
+  'offsetexists' => true,
+  'offsetget' => true,
+  'offsetset' => true,
+  'offsetunset' => true,
 );
     private static $_traitMethods = array();
     private static $_customMethods = array();

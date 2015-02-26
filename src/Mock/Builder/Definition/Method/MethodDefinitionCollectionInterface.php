@@ -19,6 +19,15 @@ use ReflectionMethod;
 interface MethodDefinitionCollectionInterface
 {
     /**
+     * Get the canonical method name for the supplied method name.
+     *
+     * @param string $name The method name.
+     *
+     * @return string|null The canonical method name, or null if no such method exists.
+     */
+    public function methodName($name);
+
+    /**
      * Get the methods.
      *
      * @return array<string,MethodDefinitionInterface> The methods.
