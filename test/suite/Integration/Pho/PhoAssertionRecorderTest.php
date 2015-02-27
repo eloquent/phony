@@ -21,6 +21,9 @@ class PhoAssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->subject = new PhoAssertionRecorder();
     }
 
+    /**
+     * @requires PHP 5.3.4-dev
+     */
     public function testCreateFailure()
     {
         $description = 'description';
