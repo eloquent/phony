@@ -42,6 +42,30 @@ class SimpletestAssertionRecorder extends AssertionRecorder
     }
 
     /**
+     * Construct a new SimpleTest assertion recorder.
+     *
+     * @param SimpleTestContext|null $simpletestContext The SimpleTest context to use.
+     */
+    public function __construct(SimpleTestContext $simpletestContext = null)
+    {
+        if (null === $simpletestContext) {
+            $simpletestContext = SimpleTest::getContext();
+        }
+
+        $this->simpletestContext = $simpletestContext;
+    }
+
+    /**
+     * Get the SimpleTest context.
+     *
+     * @return SimpleTestContext The context.
+     */
+    public function simpletestContext()
+    {
+        return SimpleTest::getContext();
+    }
+
+    /**
      * Record that a successful assertion occurred.
      *
      * @param array<integer,EventInterface>|null $events The events.
@@ -50,7 +74,7 @@ class SimpletestAssertionRecorder extends AssertionRecorder
      */
     public function createSuccess(array $events = null)
     {
-        $this->context()->getReporter()->paintPass('');
+        $this->simpletestContext->getReporter()->paintPass('');
 
         return parent::createSuccess($events);
     }
@@ -64,27 +88,22 @@ class SimpletestAssertionRecorder extends AssertionRecorder
      */
     public function createFailure($description)
     {
-        $call = AssertionException
-            ::tracePhonyCall(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+        $flags = 0;
 
-        if ($call) {
+        if (defined('DEBUG_BACKTRACE_IGNORE_ARGS')) {
+            $flags = DEBUG_BACKTRACE_IGNORE_ARGS;
+        }
+
+        $call = AssertionException::tracePhonyCall(\debug_backtrace($flags));
+
+        if ($call && isset($call['file']) && isset($call['line'])) {
             $description .= "\nat [$call[file] line $call[line]]";
         }
 
-        $this->context()->getReporter()
+        $this->simpletestContext->getReporter()
             ->paintFail(preg_replace('/(\R)/', '$1   ', $description));
     }
 
-    /**
-     * Get the SimpleTest context.
-     *
-     * @return SimpleTestContext The context.
-     */
-    protected function context()
-    {
-        return SimpleTest::getContext();
-    }
-
     private static $instance;
-    private $passesProperty;
+    private $simpletestContext;
 }
