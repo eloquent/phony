@@ -106,4 +106,12 @@ class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->protectedMethods());
         $this->assertSame(array(), $this->subject->traitMethods());
     }
+
+    public function testMethodName()
+    {
+        $this->assertSame('methodA', $this->subject->methodName('methodA'));
+        $this->assertSame('methodA', $this->subject->methodName('methoda'));
+        $this->assertSame('methodA', $this->subject->methodName('METHODA'));
+        $this->assertNull($this->subject->methodName('nonexistent'));
+    }
 }

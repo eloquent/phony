@@ -26,6 +26,7 @@ class CustomMethodDefinitionTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertTrue($this->subject->isCallable());
         $this->assertSame($this->isStatic, $this->subject->isStatic());
         $this->assertTrue($this->subject->isCustom());
         $this->assertSame('public', $this->subject->accessLevel());

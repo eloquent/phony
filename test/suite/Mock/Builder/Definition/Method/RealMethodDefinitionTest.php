@@ -22,6 +22,7 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
+        $this->assertTrue($this->subject->isCallable());
         $this->assertTrue($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
         $this->assertSame('public', $this->subject->accessLevel());
@@ -36,6 +37,7 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
+        $this->assertTrue($this->subject->isCallable());
         $this->assertFalse($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
         $this->assertSame('public', $this->subject->accessLevel());
@@ -50,6 +52,7 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
+        $this->assertTrue($this->subject->isCallable());
         $this->assertTrue($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
         $this->assertSame('protected', $this->subject->accessLevel());
@@ -64,6 +67,7 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
+        $this->assertTrue($this->subject->isCallable());
         $this->assertFalse($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
         $this->assertSame('protected', $this->subject->accessLevel());
@@ -72,11 +76,21 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->callback());
     }
 
+    public function testConstructorWithUncallable()
+    {
+        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceA::testClassAMethodA');
+        $this->name = 'name';
+        $this->subject = new RealMethodDefinition($this->method, $this->name);
+
+        $this->assertFalse($this->subject->isCallable());
+    }
+
     public function testConstructorDefaults()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA');
         $this->subject = new RealMethodDefinition($this->method);
 
+        $this->assertTrue($this->subject->isCallable());
         $this->assertTrue($this->subject->isStatic());
         $this->assertFalse($this->subject->isCustom());
         $this->assertSame('public', $this->subject->accessLevel());

@@ -1,17 +1,11 @@
 <phpunit
     bootstrap="vendor/autoload.php"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
     mapTestClassNameToCoveredClassName="true"
     verbose="true"
     colors="true"
     timeoutForSmallTests="60"
     timeoutForMediumTests="120"
     timeoutForLargeTests="300"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    checkForUnintentionallyCoveredCode="false"
-    beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
         <testsuite>

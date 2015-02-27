@@ -394,9 +394,9 @@ class MockDefinition implements MockDefinitionInterface
             if (
                 !is_array($tokens[$tokenIndex]) ||
                 $tokens[$tokenIndex][0] !== T_STRING
-            ) {
+            ) { // @codeCoverageIgnoreStart
                 unset($methods[$methodName]);
-            }
+            } // @codeCoverageIgnoreEnd
         }
 
         foreach ($this->customStaticMethods as $methodName => $callback) {
