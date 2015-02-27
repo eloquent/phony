@@ -336,12 +336,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @requires PHP 5.3.4-dev
+     */
     public function testInOrderMethodFailure()
     {
         $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
         Phony::inOrder($this->eventB, $this->eventA);
     }
 
+    /**
+     * @requires PHP 5.3.4-dev
+     */
     public function testInOrderSequenceMethodFailure()
     {
         $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
@@ -364,12 +370,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @requires PHP 5.3.4-dev
+     */
     public function testInOrderFunctionFailure()
     {
         $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
         inOrder($this->eventB, $this->eventA);
     }
 
+    /**
+     * @requires PHP 5.3.4-dev
+     */
     public function testInOrderSequenceFunctionFailure()
     {
         $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
