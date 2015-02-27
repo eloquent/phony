@@ -487,8 +487,10 @@ EOD;
         $exception = null;
 
         try {
-            $line = __LINE__; $spy->called();
-        } catch (Exception $exception) {}
+            $line = __LINE__ + 1;
+            $spy->called();
+        } catch (Exception $exception) {
+        }
 
         $this->assertInstanceOf('Exception', $exception);
         $this->assertSame(__FILE__, $exception->getFile());

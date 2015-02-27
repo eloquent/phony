@@ -616,7 +616,7 @@ class MockBuilder implements MockBuilderInterface
             $this->types = array_merge(
                 array(
                     'IteratorAggregate' =>
-                        new ReflectionClass('IteratorAggregate')
+                        new ReflectionClass('IteratorAggregate'),
                 ),
                 $this->types
             );

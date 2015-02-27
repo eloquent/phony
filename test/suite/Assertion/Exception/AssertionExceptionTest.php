@@ -36,13 +36,13 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Vendor\Package\ClassA'
+                        'class' =>  'Vendor\Package\ClassA',
                     ),
                     array(
                         'file' => '/path/to/file/b',
                         'line' => 222,
                         'function' => 'methodB',
-                        'class' =>  'Vendor\Package\ClassB'
+                        'class' =>  'Vendor\Package\ClassB',
                     ),
                     array(
                         'file' => '/path/to/file/c',
@@ -56,7 +56,7 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                     'file' => '/path/to/file/b',
                     'line' => 222,
                     'function' => 'methodB',
-                    'class' =>  'Vendor\Package\ClassB'
+                    'class' =>  'Vendor\Package\ClassB',
                 ),
             ),
 
@@ -66,7 +66,7 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Vendor\Package\ClassA'
+                        'class' =>  'Vendor\Package\ClassA',
                     ),
                     array(
                         'file' => '/path/to/file/b',
@@ -93,7 +93,7 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Eloquent\Phony\ClassA'
+                        'class' =>  'Eloquent\Phony\ClassA',
                     ),
                     array(
                         'file' => '/path/to/file/b',
@@ -120,7 +120,7 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Vendor\Package\ClassA'
+                        'class' =>  'Vendor\Package\ClassA',
                     ),
                     array(
                         'file' => '/path/to/file/b',

@@ -370,7 +370,7 @@ EOD;
     }
 
     /**
-     * Generate the supplied methods
+     * Generate the supplied methods.
      *
      * @param array<string,MethodDefinitionInterface> The methods.
      *
