@@ -529,6 +529,39 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->build());
     }
 
+    public function testBuildWithTraversableOnly()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceC');
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->implementsInterface('Traversable'));
+        $this->assertTrue($actual->implementsInterface('IteratorAggregate'));
+    }
+
+    public function testBuildWithTraversableAndIterator()
+    {
+        $this->setUpWith(
+            array('Iterator', 'Eloquent\Phony\Test\TestInterfaceC')
+        );
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->implementsInterface('Traversable'));
+        $this->assertTrue($actual->implementsInterface('Iterator'));
+        $this->assertFalse($actual->implementsInterface('IteratorAggregate'));
+    }
+
+    public function testBuildWithTraversableAndIteratorAggregate()
+    {
+        $this->setUpWith(
+            array('IteratorAggregate', 'Eloquent\Phony\Test\TestInterfaceC')
+        );
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->implementsInterface('Traversable'));
+        $this->assertTrue($actual->implementsInterface('IteratorAggregate'));
+        $this->assertFalse($actual->implementsInterface('Iterator'));
+    }
+
     public function testBuildFailureClassExists()
     {
         $builder = new MockBuilder(null, null, __CLASS__);

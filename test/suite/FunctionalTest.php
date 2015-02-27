@@ -528,4 +528,9 @@ EOD;
 
         $this->assertSame($proxy->testClassAMethodA, $proxy->testclassamethoda);
     }
+
+    public function testTraversableInterfaceMocking()
+    {
+        x\mock('Eloquent\Phony\Test\TestInterfaceC');
+    }
 }
