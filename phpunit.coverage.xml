@@ -1,17 +1,11 @@
 <phpunit
     bootstrap="vendor/autoload.php"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
     mapTestClassNameToCoveredClassName="true"
     verbose="true"
     colors="true"
     timeoutForSmallTests="60"
     timeoutForMediumTests="120"
     timeoutForLargeTests="300"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    checkForUnintentionallyCoveredCode="false"
-    beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
         <testsuite>
@@ -61,4 +55,9 @@
             <group>exclude-from-coverage</group>
         </exclude>
     </groups>
+
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="memory_limit" value="256M"/>
+    </php>
 </phpunit>

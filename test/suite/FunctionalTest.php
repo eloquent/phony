@@ -3,12 +3,13 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
  */
 
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
@@ -429,6 +430,17 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassD', $proxy->mock());
     }
 
+    public function testCanMockTraitWithPrivateConstructor()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestTraitF', array('a', 'b'));
+
+        $this->assertSame(array('a', 'b'), $proxy->mock()->constructorArguments);
+    }
+
     public function testCanMockClassAndCallPrivateConstructor()
     {
         if (!$this->featureDetector->isSupported('closure.bind')) {
@@ -478,5 +490,87 @@ EOD;
         $proxy->testClassAMethodA->with(true)->returns('a');
 
         $this->assertNull($proxy->mock()->testClassAMethodA());
+    }
+
+    public function testAssertionExceptionTrimming()
+    {
+        $spy = x\spy();
+        $exception = null;
+
+        try {
+            $line = __LINE__ + 1;
+            $spy->called();
+        } catch (Exception $exception) {
+        }
+
+        $this->assertInstanceOf('Exception', $exception);
+        $this->assertSame(__FILE__, $exception->getFile());
+        $this->assertSame($line, $exception->getLine());
+        $this->assertSame(
+            array(
+                array(
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'function' => 'called',
+                    'class' => 'Eloquent\Phony\Spy\SpyVerifier',
+                    'type' => '->',
+                    'args' => array(),
+                ),
+            ),
+            $exception->getTrace()
+        );
+    }
+
+    public function testAssertionExceptionTrimmingWithEmptyTrace()
+    {
+        $exception = new Exception();
+        $reflector = new ReflectionClass('Exception');
+        $traceProperty = $reflector->getProperty('trace');
+        $traceProperty->setAccessible(true);
+        $traceProperty->setValue($exception, array());
+        AssertionException::trim($exception);
+
+        $this->assertNull($exception->getFile());
+        $this->assertNull($exception->getLine());
+        $this->assertSame(array(), $exception->getTrace());
+    }
+
+    public function testProxyCaseInsensitivity()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertSame($proxy->testClassAMethodA, $proxy->testclassamethoda);
+    }
+
+    public function testTraversableInterfaceMocking()
+    {
+        x\mock('Eloquent\Phony\Test\TestInterfaceC');
+
+        $this->assertTrue(true);
+    }
+
+    public function testTraitConstructorCalling()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestTraitD', array('a', 'b', 'c'));
+
+        $this->assertSame(array('a', 'b', 'c'), $proxy->mock()->constructorArguments);
+    }
+
+    public function testTraitConstructorConflictResolution()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(
+            array('Eloquent\Phony\Test\TestTraitD', 'Eloquent\Phony\Test\TestTraitE'),
+            array('a', 'b', 'c')
+        );
+
+        $this->assertSame(array('a', 'b', 'c'), $proxy->mock()->constructorArguments);
     }
 }

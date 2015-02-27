@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -37,6 +37,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
             $traitMethods = array();
         }
 
+        $this->methodNames = array();
         $this->allMethods = $methods;
         $this->traitMethods = $traitMethods;
         $this->staticMethods = array();
@@ -47,6 +48,8 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         $this->protectedMethods = array();
 
         foreach ($methods as $name => $method) {
+            $this->methodNames[strtolower($name)] = $name;
+
             $isStatic = $method->isStatic();
             $accessLevel = $method->accessLevel();
             $isPublic = 'public' === $accessLevel;
@@ -69,6 +72,24 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
                 }
             }
         }
+    }
+
+    /**
+     * Get the canonical method name for the supplied method name.
+     *
+     * @param string $name The method name.
+     *
+     * @return string|null The canonical method name, or null if no such method exists.
+     */
+    public function methodName($name)
+    {
+        $name = strtolower($name);
+
+        if (isset($this->methodNames[$name])) {
+            return $this->methodNames[$name];
+        }
+
+        return null;
     }
 
     /**
@@ -151,6 +172,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
         return $this->traitMethods;
     }
 
+    private $methodNames;
     private $allMethods;
     private $traitMethods;
     private $staticMethods;

@@ -6,7 +6,9 @@ return Symfony\CS\Config\Config::create()
     ->fixers(
         array(
             '-concat_without_spaces',
-            '-new_with_braces',
+            '-double_arrow_multiline_whitespaces',
+            '-empty_return',
+            '-phpdoc_separation',
             'concat_with_spaces',
             'ordered_use',
         )

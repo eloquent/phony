@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -120,7 +120,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($actual, $this->subject->stub('testClassAStaticMethodA'));
-        $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
     }
 
     public function testStubWithMagic()
@@ -148,7 +148,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($actual, $this->subject->testClassAStaticMethodA);
-        $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
     }
 
     public function testMagicPropertyFailure()
@@ -166,7 +166,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\Spy', $actual);
         $this->assertSame($actual, $this->subject->spy('testClassAStaticMethodA'));
-        $this->assertSame($actual, $this->subject->state()->stubs->testClassAStaticMethodA->spy());
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda->spy());
     }
 
     public function testCheckNoInteraction()

@@ -7,7 +7,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     public static function createFromFormat(
         $a0,
         $a1,
-        $a2 = null
+        \DateTimeZone $a2 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -50,7 +50,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     public function add(
-        $a0
+        \DateInterval $a0
     ) {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -272,7 +272,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     public function setTimezone(
-        $a0
+        \DateTimeZone $a0
     ) {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -291,7 +291,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     public function sub(
-        $a0
+        \DateInterval $a0
     ) {
         $argumentCount = \func_num_args();
         $arguments = array();

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -14,8 +14,8 @@ namespace Eloquent\Phony\Assertion\Renderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;

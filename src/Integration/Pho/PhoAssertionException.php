@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -31,12 +31,18 @@ final class PhoAssertionException extends ExpectationException
         parent::__construct($description);
 
         foreach ($this->getTrace() as $call) {
+            if (!isset($call['class'])) {
+                continue; // @codeCoverageIgnore
+            }
+
             if (0 !== strpos($call['class'], 'Eloquent\Phony\\')) {
                 break;
             }
 
-            $this->file = $call['file'];
-            $this->line = $call['line'];
+            if (isset($call['file']) && isset($call['line'])) {
+                $this->file = $call['file'];
+                $this->line = $call['line'];
+            }
         }
     }
 }

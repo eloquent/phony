@@ -1,5 +1,17 @@
 # Phony changelog
 
+## 0.2.1 (2015-02-28)
+
+- **[FIXED]** Cardinality checks for `received()` now work as expected ([#54]).
+- **[FIXED]** Methods names are correctly treated as case-insensitive ([#58]).
+- **[FIXED]** Can mock an interface that extends `Traversable` ([#59]).
+- **[FIXED]** Calling of trait constructors ([#61]).
+
+[#54]: https://github.com/eloquent/phony/issues/54
+[#58]: https://github.com/eloquent/phony/issues/58
+[#59]: https://github.com/eloquent/phony/issues/59
+[#61]: https://github.com/eloquent/phony/issues/61
+
 ## 0.2.0 (2014-11-18)
 
 - **[BC BREAK]** Renamed IDs to labels.

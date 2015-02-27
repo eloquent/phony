@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -443,6 +443,7 @@ class MockBuilder implements MockBuilderInterface
     public function finalize()
     {
         if (!$this->isFinalized) {
+            $this->normalizeDefinition();
             $this->isFinalized = true;
             $this->definition = $this->buildDefinition();
         }
@@ -586,6 +587,40 @@ class MockBuilder implements MockBuilderInterface
         $this->proxyFactory->createStubbing($mock)->full();
 
         return $mock;
+    }
+
+    /**
+     * Perform and last-minute modifications to the definition.
+     */
+    protected function normalizeDefinition()
+    {
+        $isTraversable = false;
+        $isIterator = false;
+
+        foreach ($this->types as $type) {
+            if (
+                $type->implementsInterface('Iterator') ||
+                $type->implementsInterface('IteratorAggregate')
+            ) {
+                $isIterator = true;
+
+                break;
+            }
+
+            if ($type->implementsInterface('Traversable')) {
+                $isTraversable = true;
+            }
+        }
+
+        if ($isTraversable && !$isIterator) {
+            $this->types = array_merge(
+                array(
+                    'IteratorAggregate' =>
+                        new ReflectionClass('IteratorAggregate'),
+                ),
+                $this->types
+            );
+        }
     }
 
     /**

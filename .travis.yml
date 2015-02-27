@@ -9,9 +9,10 @@ php:
     - hhvm-nightly
 matrix:
     allow_failures:
+        - php: hhvm
         - php: hhvm-nightly
     fast_finish: true
 install:
     - composer selfupdate --no-interaction
     - composer install --no-interaction --no-progress --ignore-platform-reqs
-script: vendor/bin/phpunit
+script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing % namespace...; echo; phpunit --stop-on-failure test/suite/%'"

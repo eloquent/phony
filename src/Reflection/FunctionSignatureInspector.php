@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -115,8 +115,12 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 
             $typehint = $match[2];
 
-            if ($this->isHhvm && false !== strpos($typehint, 'HH\\')) { // @codeCoverageIgnoreStart
-                $typehint = '';
+            if ($this->isHhvm) { // @codeCoverageIgnoreStart
+                if (false !== strpos($typehint, 'HH\\')) {
+                    $typehint = '';
+                } elseif ('?' === $typehint[0]) {
+                    $typehint = substr($typehint, 1);
+                }
             } // @codeCoverageIgnoreEnd
 
             switch ($typehint) {

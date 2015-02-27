@@ -1,10 +1,5 @@
 <phpunit
     bootstrap="vendor/autoload.php"
-    strict="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    mapTestClassNameToCoveredClassName="true"
     verbose="true"
     colors="true"
 >
@@ -20,4 +15,8 @@
             <group>exclude-by-default</group>
         </exclude>
     </groups>
+
+    <php>
+        <ini name="error_reporting" value="-1"/>
+    </php>
 </phpunit>

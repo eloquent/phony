@@ -1,2 +1,9 @@
-#!/usr/bin/env php
-<?php require __DIR__ . '/index.php';
+#!/bin/sh
+
+echo
+echo ===========================================================================
+echo SimpleTest
+echo ===========================================================================
+echo
+
+php test/integration/simpletest/index.php

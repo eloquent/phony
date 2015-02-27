@@ -20,6 +20,7 @@
         "athletic/athletic": "~0.1",
         "counterpart/counterpart": "~1",
         "danielstjules/pho": "~1",
+        "eloquent/asplode": "~2",
         "eloquent/fixie": "~0.2.0@dev",
         "hamcrest/hamcrest-php": "~1",
         "icecave/isolator": "~3",
@@ -51,7 +52,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.1.x-dev"
+            "dev-develop": "0.3.x-dev"
         }
     }
 }

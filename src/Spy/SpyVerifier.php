@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -907,14 +907,13 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                     if ($checkKey && !$key->matches($event->key())) {
                         continue;
                     }
+
                     if ($checkValue && !$value->matches($event->value())) {
                         continue;
                     }
 
                     $matchingEvents[] = $event;
                     $matchCount++;
-
-                    break;
                 }
             }
         }
@@ -1196,8 +1195,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                     if (!$checkValue || $value->matches($event->value())) {
                         $matchingEvents[] = $event;
                         $matchCount++;
-
-                        break;
                     }
                 }
             }
@@ -1301,8 +1298,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                     if ($event instanceof ReceivedExceptionEventInterface) {
                         $matchingEvents[] = $event;
                         $matchCount++;
-
-                        break;
                     }
                 }
             }
@@ -1315,8 +1310,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                         if (is_a($event->exception(), $type)) {
                             $matchingEvents[] = $event;
                             $matchCount++;
-
-                            break;
                         }
                     }
                 }
@@ -1331,8 +1324,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                             if ($event->exception() == $type) {
                                 $matchingEvents[] = $event;
                                 $matchCount++;
-
-                                break;
                             }
                         }
                     }
@@ -1347,8 +1338,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                             if ($type->matches($event->exception())) {
                                 $matchingEvents[] = $event;
                                 $matchCount++;
-
-                                break;
                             }
                         }
                     }

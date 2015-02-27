@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -18,6 +18,15 @@ use ReflectionMethod;
  */
 interface MethodDefinitionCollectionInterface
 {
+    /**
+     * Get the canonical method name for the supplied method name.
+     *
+     * @param string $name The method name.
+     *
+     * @return string|null The canonical method name, or null if no such method exists.
+     */
+    public function methodName($name);
+
     /**
      * Get the methods.
      *

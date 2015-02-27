@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2014 Erin Millard
+ * Copyright © 2015 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -239,11 +239,13 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function stub($name)
     {
-        if (!isset($this->state->stubs->$name)) {
-            $this->state->stubs->$name = $this->createStub($name);
+        $key = strtolower($name);
+
+        if (!isset($this->state->stubs->$key)) {
+            $this->state->stubs->$key = $this->createStub($name);
         }
 
-        return $this->state->stubs->$name;
+        return $this->state->stubs->$key;
     }
 
     /**
@@ -287,7 +289,7 @@ abstract class AbstractProxy implements ProxyInterface
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
             if ($stub->checkCalled()) {
-                return null;
+                return;
             }
         }
 
@@ -308,7 +310,7 @@ abstract class AbstractProxy implements ProxyInterface
 
         $calls = array();
 
-        foreach (get_object_vars($this->state->stubs) as $name => $stub) {
+        foreach (get_object_vars($this->state->stubs) as $stub) {
             $calls = array_merge($calls, $stub->recordedCalls());
         }
 
@@ -368,6 +370,7 @@ abstract class AbstractProxy implements ProxyInterface
         }
 
         $mock = $this->mock;
+        $key = strtolower($name);
 
         if ($isMagic) {
             $stub = $this->stubFactory->create(
@@ -377,21 +380,21 @@ abstract class AbstractProxy implements ProxyInterface
                 },
                 $mock
             );
-        } elseif (isset($this->uncallableMethods[$name])) {
+        } elseif (isset($this->uncallableMethods[$key])) {
             $stub = $this->stubFactory->create();
-        } elseif (isset($this->traitMethods[$name])) {
+        } elseif (isset($this->traitMethods[$key])) {
             $stub = $this->stubFactory->create(
                 new WrappedTraitMethod(
                     $this->callTraitMethod,
-                    $this->traitMethods[$name],
+                    $this->traitMethods[$key],
                     $this->class->getMethod($name),
                     $this
                 ),
                 $mock
             );
-        } elseif (isset($this->customMethods[$name])) {
+        } elseif (isset($this->customMethods[$key])) {
             $stub = $this->stubFactory
-                ->create($this->customMethods[$name], $mock);
+                ->create($this->customMethods[$key], $mock);
         } else {
             $stub = $this->stubFactory->create(
                 new WrappedMethod(
