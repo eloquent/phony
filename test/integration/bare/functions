@@ -5,6 +5,8 @@ use Eloquent\Phony as x;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
+error_reporting(-1);
+
 // should record passing mock assertions
 $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
 $mock = $proxy->mock();
@@ -15,10 +17,5 @@ $proxy->testClassAMethodA->calledWith('a', 'b');
 // should record failing mock assertions
 $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
 $mock = $proxy->mock();
-$mock->testClassAMethodA('a', 'b');
-$mock->testClassAMethodA('c', 'd');
 
-x\inOrder(
-    $proxy->testClassAMethodA->calledWith('c', 'd'),
-    $proxy->testClassAMethodA->calledWith('a', 'b')
-);
+$proxy->testClassAMethodA->calledWith('a', 'b');

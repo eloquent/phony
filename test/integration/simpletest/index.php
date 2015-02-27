@@ -14,6 +14,8 @@ require __DIR__ . '/../../../vendor/simpletest/simpletest/autorun.php';
 
 use Eloquent\Phony\Simpletest\Phony;
 
+error_reporting(-1);
+
 class PhonyTest extends UnitTestCase
 {
     public function setUp()

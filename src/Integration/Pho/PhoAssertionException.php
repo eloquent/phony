@@ -31,12 +31,18 @@ final class PhoAssertionException extends ExpectationException
         parent::__construct($description);
 
         foreach ($this->getTrace() as $call) {
+            if (!isset($call['class'])) {
+                continue;
+            }
+
             if (0 !== strpos($call['class'], 'Eloquent\Phony\\')) {
                 break;
             }
 
-            $this->file = $call['file'];
-            $this->line = $call['line'];
+            if (isset($call['file']) && isset($call['line'])) {
+                $this->file = $call['file'];
+                $this->line = $call['line'];
+            }
         }
     }
 }

@@ -5,6 +5,8 @@ use Eloquent\Phony\Phony;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
+error_reporting(-1);
+
 // should record passing mock assertions (static)
 $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
 $mock = $proxy->mock();

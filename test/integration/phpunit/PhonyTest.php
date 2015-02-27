@@ -11,6 +11,8 @@
 
 use Eloquent\Phony\Phpunit\Phony;
 
+error_reporting(-1);
+
 class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
