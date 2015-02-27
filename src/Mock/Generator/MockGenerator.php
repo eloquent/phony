@@ -688,27 +688,7 @@ EOD;
                         "\xc2\xbb" .
                         $constructor->getName();
 
-                    if ($constructor->isPrivate()) {
-                        if ($this->isClosureBindingSupported) {
-                            $source .= <<<EOD
-
-    private function _callParentConstructor(
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
-    ) {
-        \$constructor = function () use (\$arguments) {
-            \call_user_func_array(
-                array(\$this, '$constructorName'),
-                \$arguments->all()
-            );
-        };
-        \$constructor = \$constructor->bindTo(\$this, '$constructorTraitName');
-        \$constructor();
-    }
-
-EOD;
-                        }
-                    } else {
-                        $source .= <<<EOD
+                    $source .= <<<EOD
 
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
@@ -723,7 +703,6 @@ EOD;
     }
 
 EOD;
-                    }
                 }
             }
 
