@@ -2,8 +2,8 @@
 
 echo
 echo ===========================================================================
-echo SimpleTest
+echo PHPUnit
 echo ===========================================================================
 echo
 
-php test/integration/simpletest/index.php
+vendor/bin/phpunit test/integration/phpunit

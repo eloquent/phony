@@ -2,8 +2,7 @@
 
 echo
 echo ===========================================================================
-echo SimpleTest
+echo Pho
 echo ===========================================================================
-echo
 
-php test/integration/simpletest/index.php
+vendor/bin/pho test/integration/pho

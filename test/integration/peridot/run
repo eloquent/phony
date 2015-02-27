@@ -2,8 +2,7 @@
 
 echo
 echo ===========================================================================
-echo SimpleTest
+echo Peridot
 echo ===========================================================================
-echo
 
-php test/integration/simpletest/index.php
+vendor/bin/peridot test/integration/peridot
