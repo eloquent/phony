@@ -1,10 +1,12 @@
 #!/usr/bin/env php
 <?php
 
+use Eloquent\Asplode\Asplode;
 use Eloquent\Phony\Phony;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
+Asplode::install();
 error_reporting(-1);
 
 // should record passing mock assertions (static)

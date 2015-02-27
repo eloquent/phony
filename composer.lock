@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4c09aea96455b17cb94b7eab0cb482f0",
+    "hash": "4e85dd08a0067a671f1f7326c15b9079",
     "packages": [
         {
             "name": "sebastian/comparator",
@@ -449,6 +449,57 @@
                 "instantiate"
             ],
             "time": "2014-10-13 12:58:55"
+        },
+        {
+            "name": "eloquent/asplode",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eloquent/asplode.git",
+                "reference": "6c15bfa11d72b76be9b0a31a145dc2b122db455b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eloquent/asplode/zipball/6c15bfa11d72b76be9b0a31a145dc2b122db455b",
+                "reference": "6c15bfa11d72b76be9b0a31a145dc2b122db455b",
+                "shasum": ""
+            },
+            "require": {
+                "icecave/isolator": "~2|~3",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "icecave/archer": "~1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Eloquent\\Asplode\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                }
+            ],
+            "description": "Drop-in exception-based error handling for PHP.",
+            "homepage": "https://github.com/eloquent/asplode",
+            "keywords": [
+                "error",
+                "errorexception",
+                "exception",
+                "failure",
+                "fault",
+                "handler",
+                "handling"
+            ],
+            "time": "2014-10-29 00:15:53"
         },
         {
             "name": "eloquent/fixie",
