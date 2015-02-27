@@ -62,7 +62,7 @@ class SimpletestAssertionRecorder extends AssertionRecorder
      */
     public function simpletestContext()
     {
-        return SimpleTest::getContext();
+        return $this->simpletestContext;
     }
 
     /**
@@ -96,9 +96,9 @@ class SimpletestAssertionRecorder extends AssertionRecorder
 
         $call = AssertionException::tracePhonyCall(\debug_backtrace($flags));
 
-        if ($call && isset($call['file']) && isset($call['line'])) {
+        if ($call && isset($call['file']) && isset($call['line'])) { // @codeCoverageIgnoreStart
             $description .= "\nat [$call[file] line $call[line]]";
-        }
+        } // @codeCoverageIgnoreEnd
 
         $this->simpletestContext->getReporter()
             ->paintFail(preg_replace('/(\R)/', '$1   ', $description));

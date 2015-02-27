@@ -15,7 +15,6 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Event\Verification\EventOrderVerifier;
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Facade\FacadeDriverInterface;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
@@ -30,20 +29,6 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
  */
 abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
 {
-    /**
-     * Get the static instance of this driver.
-     *
-     * @return FacadeDriverInterface The static driver.
-     */
-    public static function instance()
-    {
-        if (null === self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new PHPUnit facade driver.
      */
@@ -83,6 +68,4 @@ abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
      * @return AssertionRecorderInterface The assertion recorder.
      */
     abstract protected function createAssertionRecorder();
-
-    private static $instance;
 }
