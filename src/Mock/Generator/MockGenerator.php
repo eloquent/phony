@@ -347,13 +347,14 @@ EOD;
      */
     protected function generateConstructors(MockDefinitionInterface $definition)
     {
-        $className = $definition->parentClassName();
+        $constructor = null;
 
-        if (null === $className) {
-            $constructor = null;
-        } else {
-            $types = $definition->types();
-            $constructor = $types[$className]->getConstructor();
+        foreach ($definition->types() as $type) {
+            $constructor = $type->getConstructor();
+
+            if ($constructor) {
+                break;
+            }
         }
 
         if (!$constructor) {
@@ -384,8 +385,11 @@ EOD;
             $name = $method->name();
             $nameLower = strtolower($name);
 
-            if ('__call' === $nameLower || '__callstatic' === $nameLower) {
-                continue;
+            switch ($nameLower) {
+                case '__construct':
+                case '__call':
+                case '__callstatic':
+                    continue 2;
             }
 
             $signature =
@@ -548,9 +552,12 @@ EOD;
     protected function generateCallParentMethods(
         MockDefinitionInterface $definition
     ) {
-        $hasTraits = (boolean) $definition->traitNames();
+        $traitNames = $definition->traitNames();
+        $hasTraits = (boolean) $traitNames;
         $parentClassName = $definition->parentClassName();
         $hasParentClass = null !== $parentClassName;
+        $constructor = null;
+        $types = $definition->types();
         $source = '';
 
         if ($hasParentClass) {
@@ -621,7 +628,6 @@ EOD;
 
 EOD;
 
-            $types = $definition->types();
             $parentClass = $types[$parentClassName];
 
             if ($constructor = $parentClass->getConstructor()) {
@@ -664,6 +670,63 @@ EOD;
         }
 
         if ($hasTraits) {
+            if (!$constructor) {
+                $constructorTraitName = null;
+
+                foreach ($traitNames as $traitName) {
+                    $trait = $types[$traitName];
+
+                    if ($traitConstructor = $trait->getConstructor()) {
+                        $constructor = $traitConstructor;
+                        $constructorTraitName = $trait->getName();
+                    }
+                }
+
+                if ($constructor) {
+                    $constructorName = '_callTrait_' .
+                        \str_replace('\\', "\xc2\xa6", $constructorTraitName) .
+                        "\xc2\xbb" .
+                        $constructor->getName();
+
+                    if ($constructor->isPrivate()) {
+                        if ($this->isClosureBindingSupported) {
+                            $source .= <<<EOD
+
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+    ) {
+        \$constructor = function () use (\$arguments) {
+            \call_user_func_array(
+                array(\$this, '$constructorName'),
+                \$arguments->all()
+            );
+        };
+        \$constructor = \$constructor->bindTo(\$this, '$constructorTraitName');
+        \$constructor();
+    }
+
+EOD;
+                        }
+                    } else {
+                        $source .= <<<EOD
+
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+    ) {
+        \call_user_func_array(
+            array(
+                \$this,
+                '$constructorName',
+            ),
+            \$arguments->all()
+        );
+    }
+
+EOD;
+                    }
+                }
+            }
+
             $source .= <<<'EOD'
 
     private function _callTrait(

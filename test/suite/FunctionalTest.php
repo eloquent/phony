@@ -534,5 +534,32 @@ EOD;
     public function testTraversableInterfaceMocking()
     {
         x\mock('Eloquent\Phony\Test\TestInterfaceC');
+
+        $this->assertTrue(true);
+    }
+
+    public function testTraitConstructorCalling()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestTraitD', array('a', 'b', 'c'));
+
+        $this->assertSame(array('a', 'b', 'c'), $proxy->mock()->constructorArguments);
+    }
+
+    public function testTraitConstructorConflictResolution()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $proxy = x\mock(
+            array('Eloquent\Phony\Test\TestTraitD', 'Eloquent\Phony\Test\TestTraitE'),
+            array('a', 'b', 'c')
+        );
+
+        $this->assertSame(array('a', 'b', 'c'), $proxy->mock()->constructorArguments);
     }
 }

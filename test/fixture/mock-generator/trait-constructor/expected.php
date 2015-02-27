@@ -1,0 +1,69 @@
+<?php
+
+class MockGeneratorTraitConstructor
+implements \Eloquent\Phony\Mock\MockInterface
+{
+    use \Eloquent\Phony\Test\TestTraitD
+    {
+        \Eloquent\Phony\Test\TestTraitD::__construct
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitD»__construct;
+    }
+
+    public function __construct()
+    {
+    }
+
+    private static function _callTraitStatic(
+        $traitName,
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return \call_user_func_array(
+            array(
+                __CLASS__,
+                '_callTrait_' .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name,
+            ),
+            $arguments->all()
+        );
+    }
+
+    private function _callParentConstructor(
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        \call_user_func_array(
+            array(
+                $this,
+                '_callTrait_Eloquent¦Phony¦Test¦TestTraitD»__construct',
+            ),
+            $arguments->all()
+        );
+    }
+
+    private function _callTrait(
+        $traitName,
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return \call_user_func_array(
+            array(
+                $this,
+                '_callTrait_' .
+                    \str_replace('\\', "\xc2\xa6", $traitName) .
+                    "\xc2\xbb" .
+                    $name,
+            ),
+            $arguments->all()
+        );
+    }
+
+    private static $_uncallableMethods = array();
+    private static $_traitMethods = array(
+  '__construct' => 'Eloquent\\Phony\\Test\\TestTraitD',
+);
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
+}
