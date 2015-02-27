@@ -432,6 +432,10 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testCanMockTraitWithPrivateConstructor()
     {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
         $proxy = x\mock('Eloquent\Phony\Test\TestTraitF', array('a', 'b'));
 
         $this->assertSame(array('a', 'b'), $proxy->mock()->constructorArguments);

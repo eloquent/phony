@@ -17,6 +17,4 @@ trait TestTraitE
     {
         $this->constructorArguments = func_get_args();
     }
-
-    public $constructorArguments;
 }

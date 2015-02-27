@@ -15,4 +15,8 @@
             <group>exclude-by-default</group>
         </exclude>
     </groups>
+
+    <php>
+        <ini name="error_reporting" value="-1"/>
+    </php>
 </phpunit>
