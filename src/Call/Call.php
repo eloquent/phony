@@ -346,6 +346,19 @@ class Call implements CallInterface
     }
 
     /**
+     * Get an argument by index.
+     *
+     * @param integer|null $index The index, or null for the first argument.
+     *
+     * @return mixed                      The argument.
+     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
+     */
+    public function argument($index = null)
+    {
+        return $this->calledEvent->arguments()->get($index);
+    }
+
+    /**
      * Get the returned value.
      *
      * @return mixed The returned value.

@@ -51,6 +51,11 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
+        $this->assertSame('a', $this->subject->argument());
+        $this->assertSame('a', $this->subject->argument(0));
+        $this->assertSame('b', $this->subject->argument(1));
+        $this->assertSame('b', $this->subject->argument(-1));
+        $this->assertSame('a', $this->subject->argument(-2));
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
