@@ -15,4 +15,4 @@ matrix:
 install:
     - composer selfupdate --no-interaction
     - composer install --no-interaction --no-progress --ignore-platform-reqs
-script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing % namespace...; echo; phpunit --stop-on-failure test/suite/%'"
+script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing %...; echo; phpunit --stop-on-failure test/suite/%'"

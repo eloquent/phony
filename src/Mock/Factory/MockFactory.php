@@ -139,7 +139,10 @@ class MockFactory implements MockFactoryInterface
         }
 
         $source = $this->generator->generate($definition, $className);
-        @eval($source);
+
+        $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
+        eval($source);
+        error_reporting($reporting);
 
         if (!class_exists($className, false)) {
             throw new MockGenerationFailedException(

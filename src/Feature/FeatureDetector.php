@@ -357,13 +357,17 @@ class FeatureDetector implements FeatureDetectorInterface
             $useClosure = true;
         }
 
+        $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
+
         if ($useClosure) {
-            return true === @eval(
-                sprintf('function () {%s;};return true;', $source)
-            );
+            $result = eval(sprintf('function(){%s;};return true;', $source));
+        } else {
+            $result = eval(sprintf('%s;return true;', $source));
         }
 
-        return true === @eval(sprintf('%s;return true;', $source));
+        error_reporting($reporting);
+
+        return true === $result;
     }
 
     /**
