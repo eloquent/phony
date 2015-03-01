@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
@@ -194,9 +194,9 @@ function stub(
 /**
  * Checks if the supplied events happened in chronological order.
  *
- * @param CallEventCollectionInterface $events,... The events.
+ * @param EventCollectionInterface $events,... The events.
  *
- * @return CallEventCollectionInterface|null The result.
+ * @return EventCollectionInterface|null The result.
  */
 function checkInOrder()
 {
@@ -208,10 +208,10 @@ function checkInOrder()
  * Throws an exception unless the supplied events happened in chronological
  * order.
  *
- * @param CallEventCollectionInterface $events,... The events.
+ * @param EventCollectionInterface $events,... The events.
  *
- * @return CallEventCollectionInterface The result.
- * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollectionInterface The result.
+ * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrder()
 {
@@ -222,9 +222,9 @@ function inOrder()
 /**
  * Checks if the supplied event sequence happened in chronological order.
  *
- * @param mixed<CallEventCollectionInterface> $events The event sequence.
+ * @param mixed<EventCollectionInterface> $events The event sequence.
  *
- * @return CallEventCollectionInterface|null The result.
+ * @return EventCollectionInterface|null The result.
  */
 function checkInOrderSequence($events)
 {
@@ -236,10 +236,10 @@ function checkInOrderSequence($events)
  * Throws an exception unless the supplied event sequence happened in
  * chronological order.
  *
- * @param mixed<CallEventCollectionInterface> $events The event sequence.
+ * @param mixed<EventCollectionInterface> $events The event sequence.
  *
- * @return CallEventCollectionInterface The result.
- * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollectionInterface The result.
+ * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrderSequence($events)
 {

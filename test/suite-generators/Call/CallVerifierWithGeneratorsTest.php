@@ -15,9 +15,9 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -109,10 +109,10 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
 
-        $this->assertionResult = new CallEventCollection(array($this->call));
-        $this->returnedAssertionResult = new CallEventCollection(array($this->call->responseEvent()));
-        $this->threwAssertionResult = new CallEventCollection(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new CallEventCollection();
+        $this->assertionResult = new EventCollection(array($this->call));
+        $this->returnedAssertionResult = new EventCollection(array($this->call->responseEvent()));
+        $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
+        $this->emptyAssertionResult = new EventCollection();
 
         // additions for generators
 
@@ -173,7 +173,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->generatedEvent, $this->generatorSubject->responseEvent());
         $this->assertSame($this->generatorEvents, $this->generatorSubject->traversableEvents());
         $this->assertSame($this->generatorEndEvent, $this->generatorSubject->endEvent());
-        $this->assertSame($this->generatorCallEvents, $this->generatorSubject->events());
+        $this->assertSame($this->generatorCallEvents, $this->generatorSubject->allEvents());
         $this->assertTrue($this->generatorSubject->hasResponded());
         $this->assertTrue($this->generatorSubject->isGenerator());
         $this->assertTrue($this->generatorSubject->hasCompleted());
@@ -230,30 +230,30 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testProduced()
     {
         $this->assertEquals(
-            new CallEventCollection(
+            new EventCollection(
                 array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
             ),
             $this->generatorSubject->produced()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventA)),
+            new EventCollection(array($this->generatorEventA)),
             $this->generatorSubject->produced('n')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventA)),
+            new EventCollection(array($this->generatorEventA)),
             $this->generatorSubject->produced('m', 'n')
         );
         $this->assertEquals(
-            new CallEventCollection(
+            new EventCollection(
                 array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
             ),
             $this->generatorSubject->times(4)->produced()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventA)),
+            new EventCollection(array($this->generatorEventA)),
             $this->generatorSubject->once()->produced('n')
         );
-        $this->assertEquals(new CallEventCollection(), $this->generatorSubject->never()->produced('m'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->produced('m'));
     }
 
     public function testProducedFailureWithNoMatchers()
@@ -417,7 +417,7 @@ EOD;
 
     public function testProducedAll()
     {
-        $expected = new CallEventCollection(array($this->generatorEventG));
+        $expected = new EventCollection(array($this->generatorEventG));
 
         $this->assertEquals($expected, $this->generatorSubject->producedAll('n', 'q', 's', 'v'));
         $this->assertEquals(
@@ -428,9 +428,9 @@ EOD;
             $expected,
             $this->generatorSubject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
         );
-        $this->assertEquals(new CallEventCollection(), $this->generatorSubject->never()->producedAll('q', 's', 'v'));
-        $this->assertEquals(new CallEventCollection(), $this->generatorSubject->never()->producedAll('n', 's', 'v'));
-        $this->assertEquals(new CallEventCollection(), $this->generatorSubject->never()->producedAll('n', 'q', 's'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->producedAll('q', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->producedAll('n', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->producedAll('n', 'q', 's'));
     }
 
     public function testProducedAllFailureNothingProduced()
@@ -523,22 +523,22 @@ EOD;
     public function testReceived()
     {
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventB, $this->generatorEventF)),
+            new EventCollection(array($this->generatorEventB, $this->generatorEventF)),
             $this->generatorSubject->received()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventB)),
+            new EventCollection(array($this->generatorEventB)),
             $this->generatorSubject->received('o')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventB, $this->generatorEventF)),
+            new EventCollection(array($this->generatorEventB, $this->generatorEventF)),
             $this->generatorSubject->times(2)->received()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventB)),
+            new EventCollection(array($this->generatorEventB)),
             $this->generatorSubject->once()->received('o')
         );
-        $this->assertEquals(new CallEventCollection(), $this->generatorSubject->never()->received('x'));
+        $this->assertEquals(new EventCollection(), $this->generatorSubject->never()->received('x'));
     }
 
     public function testReceivedFailureNoMatcher()
@@ -675,27 +675,27 @@ EOD;
     public function testReceivedException()
     {
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD, $this->generatorEventH)),
+            new EventCollection(array($this->generatorEventD, $this->generatorEventH)),
             $this->generatorSubject->receivedException()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD, $this->generatorEventH)),
+            new EventCollection(array($this->generatorEventD, $this->generatorEventH)),
             $this->generatorSubject->receivedException('Exception')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD, $this->generatorEventH)),
+            new EventCollection(array($this->generatorEventD, $this->generatorEventH)),
             $this->generatorSubject->receivedException('RuntimeException')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD)),
+            new EventCollection(array($this->generatorEventD)),
             $this->generatorSubject->receivedException($this->receivedExceptionA)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventH)),
+            new EventCollection(array($this->generatorEventH)),
             $this->generatorSubject->receivedException($this->receivedExceptionB)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD)),
+            new EventCollection(array($this->generatorEventD)),
             $this->generatorSubject->receivedException(new EqualToMatcher($this->receivedExceptionA))
         );
     }

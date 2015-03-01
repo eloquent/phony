@@ -15,10 +15,10 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Cardinality\Cardinality;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -110,10 +110,10 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
 
-        $this->assertionResult = new CallEventCollection(array($this->call));
-        $this->returnedAssertionResult = new CallEventCollection(array($this->call->responseEvent()));
-        $this->threwAssertionResult = new CallEventCollection(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new CallEventCollection();
+        $this->assertionResult = new EventCollection(array($this->call));
+        $this->returnedAssertionResult = new EventCollection(array($this->call->responseEvent()));
+        $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
+        $this->emptyAssertionResult = new EventCollection();
     }
 
     public function testConstructor()
@@ -142,15 +142,19 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testProxyMethods()
     {
-        $this->assertSame($this->call, $this->subject->firstEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
-        $this->assertSame(1, count($this->subject));
+        $this->assertSame($this->calledEvent, $this->subject->eventAt(0));
+        $this->assertSame($this->call, $this->subject->callAt(0));
+        $this->assertTrue($this->subject->hasCalls());
+        $this->assertSame(2, $this->subject->eventCount());
+        $this->assertSame(1, $this->subject->callCount());
+        $this->assertSame(2, count($this->subject));
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->events, $this->subject->allEvents());
+        $this->assertSame(array($this->call), $this->subject->allCalls());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertFalse($this->subject->isTraversable());
         $this->assertFalse($this->subject->isGenerator());

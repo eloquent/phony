@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Proxy;
 
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
@@ -98,15 +98,15 @@ interface ProxyInterface
     /**
      * Checks if there was no interaction with the mock.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkNoInteraction();
 
     /**
      * Throws an exception unless there was no interaction with the mock.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction();
 

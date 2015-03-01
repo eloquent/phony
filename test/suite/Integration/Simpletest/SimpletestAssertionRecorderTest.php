@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Integration\Simpletest;
 
-use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -51,7 +51,7 @@ class SimpletestAssertionRecorderTest extends PHPUnit_Framework_TestCase
     public function testCreateSuccess()
     {
         $events = array(new ReturnedEvent(0, 0.0), new ReturnedEvent(1, 1.0));
-        $expected = new CallEventCollection($events);
+        $expected = new EventCollection($events);
         $beforeCount = $this->simpletestReporter->getPassCount();
         $actual = $this->subject->createSuccess($events);
         $afterCount = $this->simpletestReporter->getPassCount();
@@ -62,7 +62,7 @@ class SimpletestAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new CallEventCollection();
+        $expected = new EventCollection();
         $beforeCount = $this->simpletestReporter->getPassCount();
         $actual = $this->subject->createSuccess();
         $afterCount = $this->simpletestReporter->getPassCount();

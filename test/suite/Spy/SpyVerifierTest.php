@@ -13,10 +13,11 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Cardinality\Cardinality;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -41,7 +42,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
         $this->label = 'label';
-        $this->spy = new Spy($this->callback, $this->label, false, false, $this->callFactory);
+        $this->spy = new Spy($this->callback, $this->label, false, false, null, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -161,27 +162,134 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertSame($this->calls, $this->subject->spy()->recordedCalls());
+        $this->assertSame($this->calls, $this->subject->spy()->allCalls());
     }
 
     public function testAddCall()
     {
         $this->subject->addCall($this->callA);
 
-        $this->assertSame(array($this->callA), $this->subject->spy()->recordedCalls());
+        $this->assertSame(array($this->callA), $this->subject->spy()->allCalls());
 
         $this->subject->addCall($this->callB);
 
-        $this->assertSame(array($this->callA, $this->callB), $this->subject->spy()->recordedCalls());
+        $this->assertSame(array($this->callA, $this->callB), $this->subject->spy()->allCalls());
     }
 
-    public function testCalls()
+    public function testHasEvents()
     {
-        $this->assertSame(array(), $this->subject->recordedCalls());
+        $this->assertFalse($this->subject->hasEvents());
+
+        $this->subject->addCall($this->callA);
+
+        $this->assertTrue($this->subject->hasEvents());
+    }
+
+    public function testHasCalls()
+    {
+        $this->assertFalse($this->subject->hasCalls());
+
+        $this->subject->addCall($this->callA);
+
+        $this->assertTrue($this->subject->hasCalls());
+    }
+
+    public function testEventCount()
+    {
+        $this->assertSame(0, $this->subject->eventCount());
+
+        $this->subject->addCall($this->callA);
+
+        $this->assertSame(1, $this->subject->eventCount());
+    }
+
+    public function testCallCount()
+    {
+        $this->assertSame(0, $this->subject->callCount());
+        $this->assertSame(0, count($this->subject));
+
+        $this->subject->addCall($this->callA);
+
+        $this->assertSame(1, $this->subject->callCount());
+        $this->assertSame(1, count($this->subject));
+    }
+
+    public function testAllEvents()
+    {
+        $this->assertSame(array(), $this->subject->allEvents());
+
+        $this->subject->addCall($this->callA);
+
+        $this->assertSame(array($this->callA), $this->subject->allEvents());
+    }
+
+    public function testAllCalls()
+    {
+        $this->assertSame(array(), $this->subject->allCalls());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals($this->wrappedCalls, $this->subject->recordedCalls());
+        $this->assertEquals($this->wrappedCalls, $this->subject->allCalls());
+        $this->assertEquals($this->wrappedCalls, iterator_to_array($this->subject));
+    }
+
+    public function testEventAt()
+    {
+        $this->subject->addCall($this->callA);
+
+        $this->assertSame($this->callA, $this->subject->eventAt());
+        $this->assertSame($this->callA, $this->subject->eventAt(0));
+        $this->assertSame($this->callA, $this->subject->eventAt(-1));
+    }
+
+    public function testEventAtFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->subject->eventAt();
+    }
+
+    public function testCallAt()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals($this->wrappedCallA, $this->subject->callAt(0));
+        $this->assertEquals($this->wrappedCallB, $this->subject->callAt(1));
+    }
+
+    public function testCallAtFailureUndefined()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->callAt(0);
+    }
+
+    public function testArguments()
+    {
+        $arguments = Arguments::adapt(array('a', 1));
+        $this->subject->addCall($this->callFactory->create($this->callEventFactory->createCalled(null, $arguments)));
+
+        $this->assertSame($arguments, $this->subject->arguments());
+    }
+
+    public function testArgumentsFailureUndefined()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->arguments();
+    }
+
+    public function testArgument()
+    {
+        $arguments = Arguments::adapt(array('a', 1));
+        $this->subject->addCall($this->callFactory->create($this->callEventFactory->createCalled(null, $arguments)));
+
+        $this->assertSame('a', $this->subject->argument());
+        $this->assertSame('a', $this->subject->argument(0));
+        $this->assertSame('a', $this->subject->argument(-2));
+    }
+
+    public function testArgumentFailureUndefined()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
+        $this->subject->argument();
     }
 
     public function testInvokeMethods()
@@ -207,12 +315,12 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $this->spy->recordedCalls());
+        $this->assertEquals($expected, $this->spy->allCalls());
     }
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, '111', false, false, $this->callFactory);
+        $spy = new Spy(null, '111', false, false, null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $verifier->invokeWith(array('a'));
         $verifier->invoke('b', 'c');
@@ -233,7 +341,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->recordedCalls());
+        $this->assertEquals($expected, $spy->allCalls());
     }
 
     public function testInvokeWithExceptionThrown()
@@ -243,7 +351,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($callback, '111', false, false, $this->callFactory);
+        $spy = new Spy($callback, '111', false, false, null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $caughtExceptions = array();
         try {
@@ -277,7 +385,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $this->assertEquals($expected, $spy->recordedCalls());
+        $this->assertEquals($expected, $spy->allCalls());
     }
 
     public function testInvokeWithWithReferenceParameters()
@@ -285,62 +393,13 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $callback = function (&$argument) {
             $argument = 'x';
         };
-        $spy = new Spy($callback, '111', false, false, $this->callFactory);
+        $spy = new Spy($callback, '111', false, false, null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $value = null;
         $arguments = array(&$value);
         $verifier->invokeWith($arguments);
 
         $this->assertSame('x', $value);
-    }
-
-    public function testCallCount()
-    {
-        $this->assertSame(0, $this->subject->callCount());
-
-        $this->subject->setCalls($this->calls);
-
-        $this->assertSame(4, $this->subject->callCount());
-    }
-
-    public function testCallAt()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $this->assertEquals($this->wrappedCallA, $this->subject->callAt(0));
-        $this->assertEquals($this->wrappedCallB, $this->subject->callAt(1));
-    }
-
-    public function testCallAtFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Spy\Exception\UndefinedCallException');
-        $this->subject->callAt(0);
-    }
-
-    public function testFirstCall()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $this->assertEquals($this->wrappedCallA, $this->subject->firstCall());
-    }
-
-    public function testFirstCallFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Spy\Exception\UndefinedCallException');
-        $this->subject->firstCall();
-    }
-
-    public function testLastCall()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $this->assertEquals($this->wrappedCallD, $this->subject->lastCall());
-    }
-
-    public function testLastCallFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Spy\Exception\UndefinedCallException');
-        $this->subject->lastCall();
     }
 
     public function testCheckCalled()
@@ -355,7 +414,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalled()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new CallEventCollection($this->calls);
+        $expected = new EventCollection($this->calls);
 
         $this->assertEquals($expected, $this->subject->called());
     }
@@ -382,7 +441,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledOnce()
     {
         $this->subject->addCall($this->callA);
-        $expected = new CallEventCollection(array($this->callA));
+        $expected = new EventCollection(array($this->callA));
 
         $this->assertEquals($expected, $this->subject->once()->called());
     }
@@ -425,7 +484,7 @@ EOD;
     public function testCalledTimes()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new CallEventCollection($this->calls);
+        $expected = new EventCollection($this->calls);
 
         $this->assertEquals($expected, $this->subject->times(4)->called());
     }
@@ -506,7 +565,7 @@ EOD;
     public function testCalledWith()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new CallEventCollection(array($this->callA, $this->callC));
+        $expected = new EventCollection(array($this->callA, $this->callC));
 
         $this->assertEquals($expected, $this->subject->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -524,7 +583,7 @@ EOD;
             $this->subject->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
         );
         $this->assertEquals(
-            new CallEventCollection($this->calls),
+            new EventCollection($this->calls),
             $this->subject->calledWith($this->matcherFactory->wildcard())
         );
     }
@@ -575,7 +634,7 @@ EOD;
     public function testCalledOnceWith()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new CallEventCollection(array($this->callA));
+        $expected = new EventCollection(array($this->callA));
 
         $this->assertEquals($expected, $this->subject->once()->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -641,7 +700,7 @@ EOD;
     public function testCalledTimesWith()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new CallEventCollection(array($this->callA, $this->callC));
+        $expected = new EventCollection(array($this->callA, $this->callC));
 
         $this->assertEquals($expected, $this->subject->times(2)->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -654,7 +713,7 @@ EOD;
             $this->subject->times(2)->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
         );
 
-        $expected = new CallEventCollection($this->calls);
+        $expected = new EventCollection($this->calls);
 
         $this->assertEquals($expected, $this->subject->times(4)->calledWith($this->matcherFactory->wildcard()));
         $this->assertEquals($expected, $this->subject->times(4)->calledWith($this->matcherFactory->wildcard()));
@@ -752,7 +811,7 @@ EOD;
     public function testAlwaysCalledWith()
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new CallEventCollection(array($this->callA, $this->callA));
+        $expected = new EventCollection(array($this->callA, $this->callA));
 
         $this->assertEquals($expected, $this->subject->always()->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -836,7 +895,7 @@ EOD;
 
     public function testNeverCalledWith()
     {
-        $expected = new CallEventCollection();
+        $expected = new EventCollection();
 
         $this->assertEquals($expected, $this->subject->never()->calledWith());
 
@@ -904,14 +963,14 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals(new CallEventCollection(array($this->callD)), $this->subject->calledOn(null));
+        $this->assertEquals(new EventCollection(array($this->callD)), $this->subject->calledOn(null));
         $this->assertEquals(
-            new CallEventCollection(array($this->callA, $this->callC)),
+            new EventCollection(array($this->callA, $this->callC)),
             $this->subject->calledOn($this->thisValueA)
         );
-        $this->assertEquals(new CallEventCollection(array($this->callB)), $this->subject->calledOn($this->thisValueB));
+        $this->assertEquals(new EventCollection(array($this->callB)), $this->subject->calledOn($this->thisValueB));
         $this->assertEquals(
-            new CallEventCollection(array($this->callA, $this->callB, $this->callC)),
+            new EventCollection(array($this->callA, $this->callB, $this->callC)),
             $this->subject->calledOn(new EqualToMatcher($this->thisValueA))
         );
     }
@@ -992,7 +1051,7 @@ EOD;
     public function testAlwaysCalledOn()
     {
         $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new CallEventCollection(array($this->callC, $this->callC));
+        $expected = new EventCollection(array($this->callC, $this->callC));
 
         $this->assertEquals($expected, $this->subject->always()->calledOn($this->thisValueA));
         $this->assertEquals($expected, $this->subject->always()->calledOn(new EqualToMatcher($this->thisValueA)));
@@ -1070,19 +1129,19 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals(
-            new CallEventCollection(array($this->callAResponse, $this->callBResponse)),
+            new EventCollection(array($this->callAResponse, $this->callBResponse)),
             $this->subject->returned()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callAResponse)),
+            new EventCollection(array($this->callAResponse)),
             $this->subject->returned($this->returnValueA)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callBResponse)),
+            new EventCollection(array($this->callBResponse)),
             $this->subject->returned($this->returnValueB)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callAResponse)),
+            new EventCollection(array($this->callAResponse)),
             $this->subject->returned(new EqualToMatcher($this->returnValueA))
         );
     }
@@ -1157,7 +1216,7 @@ EOD;
     public function testAlwaysReturned()
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new CallEventCollection(array($this->callAResponse, $this->callAResponse));
+        $expected = new EventCollection(array($this->callAResponse, $this->callAResponse));
 
         $this->assertEquals($expected, $this->subject->always()->returned());
         $this->assertEquals($expected, $this->subject->always()->returned($this->returnValueA));
@@ -1255,27 +1314,27 @@ EOD;
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals(
-            new CallEventCollection(array($this->callCResponse, $this->callDResponse)),
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
             $this->subject->threw()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callCResponse, $this->callDResponse)),
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
             $this->subject->threw('Exception')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callCResponse, $this->callDResponse)),
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
             $this->subject->threw('RuntimeException')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callCResponse)),
+            new EventCollection(array($this->callCResponse)),
             $this->subject->threw($this->exceptionA)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callDResponse)),
+            new EventCollection(array($this->callDResponse)),
             $this->subject->threw($this->exceptionB)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->callCResponse)),
+            new EventCollection(array($this->callCResponse)),
             $this->subject->threw(new EqualToMatcher($this->exceptionA))
         );
     }
@@ -1306,36 +1365,36 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected call on implode[label] to throw Eloquent\Phony\Spy\Exception\UndefinedCallException exception. Responded:
+Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+        $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testThrewFailureExpectingTypeWithNoCalls()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to throw Eloquent\Phony\Spy\Exception\UndefinedCallException exception. ' .
+            'Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. ' .
                 'Never called.'
         );
-        $this->subject->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+        $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testThrewFailureExpectingTypeWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected call on implode[label] to throw Eloquent\Phony\Spy\Exception\UndefinedCallException exception. Responded:
+Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
     - returned "x"
     - returned "y"
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+        $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testThrewFailureExpectingException()
@@ -1473,7 +1532,7 @@ EOD;
     public function testAlwaysThrew()
     {
         $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new CallEventCollection(array($this->callCResponse, $this->callCResponse));
+        $expected = new EventCollection(array($this->callCResponse, $this->callCResponse));
 
         $this->assertEquals($expected, $this->subject->always()->threw());
         $this->assertEquals($expected, $this->subject->always()->threw('Exception'));
@@ -1523,13 +1582,13 @@ EOD;
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
         $expected = <<<'EOD'
-Expected every call on implode[label] to throw Eloquent\Phony\Spy\Exception\UndefinedCallException exception. Responded:
+Expected every call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+        $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testAlwaysThrewFailureExpectingTypeWithNoCalls()
@@ -1537,22 +1596,22 @@ EOD;
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'Expected every call on implode[label] to throw ' .
-                'Eloquent\Phony\Spy\Exception\UndefinedCallException exception. Never called.'
+                'Eloquent\Phony\Call\Exception\UndefinedCallException exception. Never called.'
         );
-        $this->subject->always()->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+        $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testAlwaysThrewFailureExpectingTypeWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
         $expected = <<<'EOD'
-Expected every call on implode[label] to throw Eloquent\Phony\Spy\Exception\UndefinedCallException exception. Responded:
+Expected every call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
     - returned "x"
     - returned "y"
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
+        $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testAlwaysThrewFailureExpectingException()

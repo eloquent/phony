@@ -12,12 +12,15 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 
 /**
  * The interface implemented by spies.
  */
-interface SpyInterface extends WrappedInvocableInterface
+interface SpyInterface extends
+    WrappedInvocableInterface,
+    EventCollectionInterface
 {
     /**
      * Turn on or off the use of generator spies.
@@ -50,7 +53,7 @@ interface SpyInterface extends WrappedInvocableInterface
     /**
      * Set the calls.
      *
-     * @param array<CallInterface> $calls The calls.
+     * @param array<integer,CallInterface> $calls The calls.
      */
     public function setCalls(array $calls);
 
@@ -60,11 +63,4 @@ interface SpyInterface extends WrappedInvocableInterface
      * @param CallInterface $call The call.
      */
     public function addCall(CallInterface $call);
-
-    /**
-     * Get the recorded calls.
-     *
-     * @return array<CallInterface> The recorded calls.
-     */
-    public function recordedCalls();
 }

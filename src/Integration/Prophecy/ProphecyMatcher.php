@@ -29,6 +29,6 @@ class ProphecyMatcher extends WrappedMatcher
      */
     public function matches($value)
     {
-        return $this->matcher->scoreArgument($value) && true;
+        return (boolean) $this->matcher->scoreArgument($value);
     }
 }

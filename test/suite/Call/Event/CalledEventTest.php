@@ -36,9 +36,7 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertNull($this->subject->call());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame(array($this->subject), $this->subject->events());
-        $this->assertSame($this->subject, $this->subject->firstEvent());
-        $this->assertSame($this->subject, $this->subject->lastEvent());
+        $this->assertSame(array($this->subject), $this->subject->allEvents());
         $this->assertSame(1, count($this->subject));
     }
 
@@ -62,5 +60,18 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->subject->setCall($call);
 
         $this->assertSame($call, $this->subject->call());
+    }
+
+    public function testEventAt()
+    {
+        $this->assertSame($this->subject, $this->subject->eventAt());
+        $this->assertSame($this->subject, $this->subject->eventAt(0));
+        $this->assertSame($this->subject, $this->subject->eventAt(-1));
+    }
+
+    public function testEventAtFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->subject->eventAt(1);
     }
 }

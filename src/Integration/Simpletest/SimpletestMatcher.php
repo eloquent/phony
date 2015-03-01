@@ -29,7 +29,7 @@ class SimpletestMatcher extends WrappedMatcher
      */
     public function matches($value)
     {
-        return $this->matcher->test($value) && true;
+        return (boolean) $this->matcher->test($value);
     }
 
     /**

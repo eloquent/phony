@@ -30,7 +30,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
 
-        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments()->all());
         $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         $proxy->reset()->full();
@@ -47,7 +47,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
-        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments()->all());
         $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         $proxy->reset()->full();
@@ -540,5 +540,15 @@ EOD;
         );
 
         $this->assertSame(array('a', 'b', 'c'), $proxy->mock()->constructorArguments);
+    }
+
+    public function testCallAtWithAssertionResult()
+    {
+        $spy = x\spy();
+        $spy('a', 1);
+        $spy('b', 1);
+        $spy('a', 2);
+
+        $this->assertSame(array('a', 2), $spy->calledWith('a', '*')->callAt(1)->arguments()->all());
     }
 }

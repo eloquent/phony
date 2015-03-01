@@ -13,6 +13,9 @@ namespace Eloquent\Phony\Call\Argument;
 
 use ArrayIterator;
 use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Collection\Exception\UndefinedIndexException;
+use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Iterator;
 
 /**
@@ -41,16 +44,33 @@ class Arguments implements ArgumentsInterface
     /**
      * Construct a new set of call arguments.
      *
-     * @param array<integer,mixed>|null $arguments The arguments.
+     * @param array<integer,mixed>|null     $arguments       The arguments.
+     * @param IndexNormalizerInterface|null $indexNormalizer The index normalizer to use.
      */
-    public function __construct(array $arguments = null)
-    {
+    public function __construct(
+        array $arguments = null,
+        IndexNormalizerInterface $indexNormalizer = null
+    ) {
         if (null === $arguments) {
             $arguments = array();
         }
+        if (null === $indexNormalizer) {
+            $indexNormalizer = IndexNormalizer::instance();
+        }
 
         $this->arguments = $arguments;
+        $this->indexNormalizer = $indexNormalizer;
         $this->count = count($arguments);
+    }
+
+    /**
+     * Get the index normalizer.
+     *
+     * @return IndexNormalizerInterface The index normalizer.
+     */
+    public function indexNormalizer()
+    {
+        return $this->indexNormalizer;
     }
 
     /**
@@ -106,10 +126,11 @@ class Arguments implements ArgumentsInterface
             $value = $indexOrValue;
         }
 
-        $normalized = $this->normalizeIndex($index);
-
-        if (null === $normalized) {
-            throw new UndefinedArgumentException($index);
+        try {
+            $normalized = $this->indexNormalizer
+                ->normalize($this->count, $index);
+        } catch (UndefinedIndexException $e) {
+            throw new UndefinedArgumentException($index, $e);
         }
 
         $this->arguments[$normalized] = $value;
@@ -124,7 +145,11 @@ class Arguments implements ArgumentsInterface
      */
     public function has($index = null)
     {
-        return null !== $this->normalizeIndex($index);
+        if ($this->indexNormalizer->tryNormalize($this->count, $index)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -137,10 +162,11 @@ class Arguments implements ArgumentsInterface
      */
     public function get($index = null)
     {
-        $normalized = $this->normalizeIndex($index);
-
-        if (null === $normalized) {
-            throw new UndefinedArgumentException($index);
+        try {
+            $normalized = $this->indexNormalizer
+                ->normalize($this->count, $index);
+        } catch (UndefinedIndexException $e) {
+            throw new UndefinedArgumentException($index, $e);
         }
 
         return $this->arguments[$normalized];
@@ -166,36 +192,7 @@ class Arguments implements ArgumentsInterface
         return new ArrayIterator($this->arguments);
     }
 
-    /**
-     * Returns a normalized index.
-     *
-     * @param integer|null The index.
-     *
-     * @return integer|null The normalized index.
-     */
-    protected function normalizeIndex($index)
-    {
-        if ($this->count < 1) {
-            return;
-        }
-
-        if (null === $index) {
-            $index = 0;
-        } elseif ($index < 0) {
-            $index = $this->count + $index;
-
-            if ($index < 0) {
-                return;
-            }
-        }
-
-        if ($index >= $this->count) {
-            return;
-        }
-
-        return $index;
-    }
-
     private $arguments;
+    private $indexNormalizer;
     private $count;
 }

@@ -47,7 +47,7 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $actual = $this->subject->record($callback, $arguments, $spy, true);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(array($expected), $spy->recordedCalls());
+        $this->assertEquals(array($expected), $spy->allCalls());
     }
 
     public function testCreateGeneratedEvent()

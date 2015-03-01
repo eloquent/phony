@@ -11,10 +11,8 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Call\CallVerifierInterface;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
-use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Cardinality\Verification\CardinalityVerifierInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Exception;
 use InvalidArgumentException;
 
@@ -25,50 +23,17 @@ interface SpyVerifierInterface extends SpyInterface,
     CardinalityVerifierInterface
 {
     /**
-     * Get the number of calls.
-     *
-     * @return integer The number of calls.
-     */
-    public function callCount();
-
-    /**
-     * Get the call at a specific index.
-     *
-     * @param integer $index The call index.
-     *
-     * @return CallVerifierInterface  The call.
-     * @throws UndefinedCallException If there is no call at the index.
-     */
-    public function callAt($index);
-
-    /**
-     * Get the first call.
-     *
-     * @return CallVerifierInterface  The call.
-     * @throws UndefinedCallException If there is no first call.
-     */
-    public function firstCall();
-
-    /**
-     * Get the last call.
-     *
-     * @return CallVerifierInterface  The call.
-     * @throws UndefinedCallException If there is no last call.
-     */
-    public function lastCall();
-
-    /**
      * Checks if called.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkCalled();
 
     /**
      * Throws an exception unless called.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function called();
 
@@ -77,7 +42,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkCalledWith();
 
@@ -86,8 +51,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith();
 
@@ -96,7 +61,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param object|null $value The possible $this value.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkCalledOn($value);
 
@@ -106,8 +71,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param object|null $value The possible $this value.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledOn($value);
 
@@ -119,7 +84,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkReturned($value = null);
 
@@ -131,8 +96,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null);
 
@@ -141,8 +106,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface|null The result.
-     * @throws InvalidArgumentException          If the type is invalid.
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If the type is invalid.
      */
     public function checkThrew($type = null);
 
@@ -151,9 +116,9 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws InvalidArgumentException     If the type is invalid.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If the type is invalid.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null);
 
@@ -172,7 +137,7 @@ interface SpyVerifierInterface extends SpyInterface,
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkProduced($keyOrValue = null, $value = null);
 
@@ -191,8 +156,8 @@ interface SpyVerifierInterface extends SpyInterface,
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null);
 
@@ -202,7 +167,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkProducedAll();
 
@@ -212,8 +177,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function producedAll();
 
@@ -225,7 +190,7 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkReceived($value = null);
 
@@ -237,8 +202,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null);
 
@@ -247,8 +212,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface|null The result.
-     * @throws InvalidArgumentException          If the type is invalid.
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If the type is invalid.
      */
     public function checkReceivedException($type = null);
 
@@ -258,9 +223,9 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws InvalidArgumentException     If the type is invalid.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If the type is invalid.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function receivedException($type = null);
 }

@@ -11,17 +11,26 @@
 
 namespace Eloquent\Phony\Spy;
 
+use ArrayIterator;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
+use Eloquent\Phony\Collection\Exception\UndefinedIndexException;
+use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Collection\IndexNormalizerInterface;
+use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactoryInterface;
 use Exception;
+use Iterator;
 
 /**
  * Spies on a function or method.
@@ -37,6 +46,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * @param string|null                         $label                 The label.
      * @param boolean|null                        $useGeneratorSpies     True if generator spies should be used.
      * @param boolean|null                        $useTraversableSpies   True if traversable spies should be used.
+     * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
@@ -46,6 +56,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         $label = null,
         $useGeneratorSpies = null,
         $useTraversableSpies = null,
+        IndexNormalizerInterface $indexNormalizer = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
@@ -55,6 +66,9 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         }
         if (null === $useTraversableSpies) {
             $useTraversableSpies = false;
+        }
+        if (null === $indexNormalizer) {
+            $indexNormalizer = IndexNormalizer::instance();
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
@@ -70,6 +84,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
         $this->useGeneratorSpies = $useGeneratorSpies;
         $this->useTraversableSpies = $useTraversableSpies;
+        $this->indexNormalizer = $indexNormalizer;
         $this->callFactory = $callFactory;
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
@@ -117,6 +132,16 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     }
 
     /**
+     * Get the index normalizer.
+     *
+     * @return IndexNormalizerInterface The index normalizer.
+     */
+    public function indexNormalizer()
+    {
+        return $this->indexNormalizer;
+    }
+
+    /**
      * Get the call factory.
      *
      * @return CallFactoryInterface The call factory.
@@ -149,7 +174,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     /**
      * Set the calls.
      *
-     * @param array<CallInterface> $calls The calls.
+     * @param array<integer,CallInterface> $calls The calls.
      */
     public function setCalls(array $calls)
     {
@@ -167,13 +192,157 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     }
 
     /**
-     * Get the recorded calls.
+     * Returns true if this collection contains any events.
      *
-     * @return array<CallInterface> The recorded calls.
+     * @return boolean True if this collection contains any events.
      */
-    public function recordedCalls()
+    public function hasEvents()
+    {
+        return (boolean) $this->calls;
+    }
+
+    /**
+     * Returns true if this collection contains any calls.
+     *
+     * @return boolean True if this collection contains any calls.
+     */
+    public function hasCalls()
+    {
+        return (boolean) $this->calls;
+    }
+
+    /**
+     * Get the number of events.
+     *
+     * @return integer The event count.
+     */
+    public function eventCount()
+    {
+        return count($this->calls);
+    }
+
+    /**
+     * Get the number of calls.
+     *
+     * @return integer The call count.
+     */
+    public function callCount()
+    {
+        return count($this->calls);
+    }
+
+    /**
+     * Get the event count.
+     *
+     * @return integer The event count.
+     */
+    public function count()
+    {
+        return count($this->calls);
+    }
+
+    /**
+     * Get all events as an array.
+     *
+     * @return array<integer,EventInterface> The events.
+     */
+    public function allEvents()
     {
         return $this->calls;
+    }
+
+    /**
+     * Get all calls as an array.
+     *
+     * @return array<integer,CallInterface> The calls.
+     */
+    public function allCalls()
+    {
+        return $this->calls;
+    }
+
+    /**
+     * Get an event by index.
+     *
+     * @param integer|null $index The index, or null for the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If the requested event is undefined, or there are no events.
+     */
+    public function eventAt($index = null)
+    {
+        $count = count($this->calls);
+
+        try {
+            $normalized = $this->indexNormalizer->normalize($count, $index);
+        } catch (UndefinedIndexException $e) {
+            throw new UndefinedEventException($index, $e);
+        }
+
+        return $this->calls[$normalized];
+    }
+
+    /**
+     * Get a call by index.
+     *
+     * @param integer|null $index The index, or null for the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
+     */
+    public function callAt($index = null)
+    {
+        $count = count($this->calls);
+
+        try {
+            $normalized = $this->indexNormalizer->normalize($count, $index);
+        } catch (UndefinedIndexException $e) {
+            throw new UndefinedCallException($index, $e);
+        }
+
+        return $this->calls[$normalized];
+    }
+
+    /**
+     * Get the arguments.
+     *
+     * @return ArgumentsInterface|null The arguments.
+     * @throws UndefinedCallException  If there are no calls.
+     */
+    public function arguments()
+    {
+        foreach ($this->calls as $call) {
+            return $call->arguments();
+        }
+
+        throw new UndefinedCallException(0);
+    }
+
+    /**
+     * Get an argument by index.
+     *
+     * @param integer|null $index The index, or null for the first argument.
+     *
+     * @return mixed                      The argument.
+     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
+     */
+    public function argument($index = null)
+    {
+        foreach ($this->calls as $call) {
+            return $call->arguments()->get($index);
+        }
+
+        throw new UndefinedArgumentException($index);
+    }
+
+    /**
+     * Get an iterator for this collection.
+     *
+     * @return Iterator The iterator.
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->calls);
     }
 
     /**
@@ -215,9 +384,11 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         return $returnValue;
     }
 
-    private $useTraversableSpies;
     private $useGeneratorSpies;
+    private $useTraversableSpies;
+    private $indexNormalizer;
     private $callFactory;
+    private $generatorSpyFactory;
     private $traversableSpyFactory;
     private $calls;
 }

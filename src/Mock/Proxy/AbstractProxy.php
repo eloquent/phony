@@ -16,6 +16,7 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
@@ -283,7 +284,7 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Checks if there was no interaction with the mock.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkNoInteraction()
     {
@@ -299,8 +300,8 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Throws an exception unless there was no interaction with the mock.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction()
     {
@@ -311,7 +312,7 @@ abstract class AbstractProxy implements ProxyInterface
         $calls = array();
 
         foreach (get_object_vars($this->state->stubs) as $stub) {
-            $calls = array_merge($calls, $stub->recordedCalls());
+            $calls = array_merge($calls, $stub->allCalls());
         }
 
         return $this->assertionRecorder->createFailure(

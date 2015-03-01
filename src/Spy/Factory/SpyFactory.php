@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
+use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Spy\Spy;
@@ -43,18 +45,23 @@ class SpyFactory implements SpyFactoryInterface
      * Construct a new spy factory.
      *
      * @param SequencerInterface|null             $labelSequencer        The label sequencer to use.
+     * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
         SequencerInterface $labelSequencer = null,
+        IndexNormalizerInterface $indexNormalizer = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
         if (null === $labelSequencer) {
             $labelSequencer = Sequencer::sequence('spy-label');
+        }
+        if (null === $indexNormalizer) {
+            $indexNormalizer = IndexNormalizer::instance();
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
@@ -67,6 +74,7 @@ class SpyFactory implements SpyFactoryInterface
         }
 
         $this->labelSequencer = $labelSequencer;
+        $this->indexNormalizer = $indexNormalizer;
         $this->callFactory = $callFactory;
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
@@ -80,6 +88,16 @@ class SpyFactory implements SpyFactoryInterface
     public function labelSequencer()
     {
         return $this->labelSequencer;
+    }
+
+    /**
+     * Get the index normalizer.
+     *
+     * @return IndexNormalizerInterface The index normalizer.
+     */
+    public function indexNormalizer()
+    {
+        return $this->indexNormalizer;
     }
 
     /**
@@ -131,6 +149,7 @@ class SpyFactory implements SpyFactoryInterface
             strval($this->labelSequencer->next()),
             $useGeneratorSpies,
             $useTraversableSpies,
+            $this->indexNormalizer,
             $this->callFactory,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
@@ -139,6 +158,7 @@ class SpyFactory implements SpyFactoryInterface
 
     private static $instance;
     private $labelSequencer;
+    private $indexNormalizer;
     private $callFactory;
     private $generatorSpyFactory;
     private $traversableSpyFactory;

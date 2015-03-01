@@ -552,7 +552,7 @@ class AssertionRenderer implements AssertionRendererInterface
     {
         $rendered = array();
 
-        foreach ($events->events() as $event) {
+        foreach ($events->allEvents() as $event) {
             if ($event instanceof CallEventInterface) {
                 if ($call = $event->call()) {
                     $call = $this->renderCall($call);

@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
+use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Test\TestCallEventFactory;
@@ -28,7 +29,8 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->eventFactory = new TestCallEventFactory();
         $this->invoker = new Invoker();
-        $this->subject = new CallFactory($this->eventFactory, $this->invoker);
+        $this->indexNormalizer = new IndexNormalizer();
+        $this->subject = new CallFactory($this->eventFactory, $this->invoker, $this->indexNormalizer);
 
         $this->exception = new RuntimeException('You done goofed.');
     }
@@ -37,6 +39,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->eventFactory, $this->subject->eventFactory());
         $this->assertSame($this->invoker, $this->subject->invoker());
+        $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
     }
 
     public function testConstructorDefaults()
@@ -45,6 +48,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(CallEventFactory::instance(), $this->subject->eventFactory());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
+        $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
     }
 
     public function testRecord()
@@ -61,7 +65,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(array($expected), $spy->recordedCalls());
+        $this->assertEquals(array($expected), $spy->allCalls());
     }
 
     public function testRecordWithoutSpy()
@@ -99,6 +103,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $actual = $this->subject->create($calledEvent, $returnedEvent);
 
         $this->assertEquals($expected, $actual);
+        $this->assertSame($this->indexNormalizer, $actual->indexNormalizer());
     }
 
     public function testCreateDefaults()

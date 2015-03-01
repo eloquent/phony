@@ -48,7 +48,7 @@ class WrappedMatcher extends AbstractMatcher implements
      */
     public function matches($value)
     {
-        return $this->matcher->matches($value) && true;
+        return (boolean) $this->matcher->matches($value);
     }
 
     /**

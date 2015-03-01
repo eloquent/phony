@@ -345,7 +345,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $index = $indexOrValue;
         } else {
             $index = 0;
-            $normalized = 0;
             $value = $indexOrValue;
         }
 

@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Assertion\Recorder;
 
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
 
@@ -25,7 +25,7 @@ interface AssertionRecorderInterface
      *
      * @param array<integer,EventInterface>|null $events The events.
      *
-     * @return CallEventCollectionInterface The result.
+     * @return EventCollectionInterface The result.
      */
     public function createSuccess(array $events = null);
 

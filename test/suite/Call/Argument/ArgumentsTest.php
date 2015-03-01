@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Argument;
 
+use Eloquent\Phony\Collection\IndexNormalizer;
 use PHPUnit_Framework_TestCase;
 
 class ArgumentsTest extends PHPUnit_Framework_TestCase
@@ -20,7 +21,8 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->a = 'a';
         $this->b = 'b';
         $this->arguments = array(&$this->a, &$this->b);
-        $this->subject = new Arguments($this->arguments);
+        $this->indexNormalizer = new IndexNormalizer();
+        $this->subject = new Arguments($this->arguments, $this->indexNormalizer);
     }
 
     public function testConstructor()
@@ -28,6 +30,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->arguments, $this->subject->all());
         $this->assertSame($this->arguments, iterator_to_array($this->subject));
         $this->assertSame(2, count($this->subject));
+        $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
     }
 
     public function testConstructorDefaults()
@@ -35,6 +38,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->subject = new Arguments();
 
         $this->assertSame(array(), $this->subject->all());
+        $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
     }
 
     public function testCopy()

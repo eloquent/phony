@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Proxy\Verification;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Call\Event\CallEventCollection;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
@@ -185,7 +185,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->assertEquals(new CallEventCollection(), $this->subject->noInteraction());
+        $this->assertEquals(new EventCollection(), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()

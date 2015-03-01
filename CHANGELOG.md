@@ -3,11 +3,14 @@
 ## Next release
 
 - **[NEW]** PHP 7 support.
+- **[NEW]** Implemented `eventAt()` and `callAt()` for verification results
+  ([#17]).
 - **[NEW]** Implemented `Call::argument()` ([#56]).
 - **[NEW]** Implemented `MockBuilder::source()` for easier debugging ([#45]).
 - **[IMPROVED]** Optimizations to the equal to matcher ([#69]).
 - **[IMPROVED]** Calls to eval() no longer use @ suppression.
 
+[#17]: https://github.com/eloquent/phony/issues/17
 [#45]: https://github.com/eloquent/phony/issues/45
 [#56]: https://github.com/eloquent/phony/issues/56
 [#69]: https://github.com/eloquent/phony/issues/69

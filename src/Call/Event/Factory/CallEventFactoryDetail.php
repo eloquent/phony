@@ -21,7 +21,7 @@ use Generator;
 abstract class CallEventFactoryDetail
 {
     /**
-     * Create a new 'returned' event for a generator.
+     * Create a new empty generator.
      *
      * @return Generator The newly created generator.
      */

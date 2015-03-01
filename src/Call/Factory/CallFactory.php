@@ -20,6 +20,8 @@ use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
+use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Spy\SpyInterface;
@@ -50,12 +52,14 @@ class CallFactory implements CallFactoryInterface
     /**
      * Construct a new call factory.
      *
-     * @param CallEventFactoryInterface|null $eventFactory The call event factory to use.
-     * @param InvokerInterface|null          $invoker      The invoker to use.
+     * @param CallEventFactoryInterface|null $eventFactory    The call event factory to use.
+     * @param InvokerInterface|null          $invoker         The invoker to use.
+     * @param IndexNormalizerInterface|null  $indexNormalizer The index normalizer to use.
      */
     public function __construct(
         CallEventFactoryInterface $eventFactory = null,
-        InvokerInterface $invoker = null
+        InvokerInterface $invoker = null,
+        IndexNormalizerInterface $indexNormalizer = null
     ) {
         if (null === $eventFactory) {
             $eventFactory = CallEventFactory::instance();
@@ -63,9 +67,13 @@ class CallFactory implements CallFactoryInterface
         if (null === $invoker) {
             $invoker = Invoker::instance();
         }
+        if (null === $indexNormalizer) {
+            $indexNormalizer = IndexNormalizer::instance();
+        }
 
         $this->eventFactory = $eventFactory;
         $this->invoker = $invoker;
+        $this->indexNormalizer = $indexNormalizer;
     }
 
     /**
@@ -86,6 +94,16 @@ class CallFactory implements CallFactoryInterface
     public function invoker()
     {
         return $this->invoker;
+    }
+
+    /**
+     * Get the index normalizer.
+     *
+     * @return IndexNormalizerInterface The index normalizer.
+     */
+    public function indexNormalizer()
+    {
+        return $this->indexNormalizer;
     }
 
     /**
@@ -156,11 +174,17 @@ class CallFactory implements CallFactoryInterface
             $calledEvent = $this->eventFactory->createCalled();
         }
 
-        return
-            new Call($calledEvent, $responseEvent, $traversableEvents, $endEvent);
+        return new Call(
+            $calledEvent,
+            $responseEvent,
+            $traversableEvents,
+            $endEvent,
+            $this->indexNormalizer
+        );
     }
 
     private static $instance;
     private $eventFactory;
     private $invoker;
+    private $indexNormalizer;
 }
