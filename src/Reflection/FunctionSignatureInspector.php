@@ -24,7 +24,7 @@ use ReflectionFunctionAbstract;
  */
 class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 {
-    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(?:or NULL )?(&)?\$(\S+)( = [^\]]+)? ]$/m';
+    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(?:or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^\]]+)? ]$/m';
 
     /**
      * Get the static instance of this inspector.
@@ -63,6 +63,8 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             ->isSupported('reflection.function.export.default.array');
         $this->isExportReferenceSupported = $featureDetector
             ->isSupported('reflection.function.export.reference');
+        $this->isSplatOperatorSupported = $featureDetector
+            ->isSupported('parameter.splat');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
@@ -143,6 +145,14 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                 $byReference = $parameter->isPassedByReference() ? '&' : '';
             } // @codeCoverageIgnoreEnd
 
+            if ($this->isSplatOperatorSupported && $parameter->isVariadic()) {
+                $splat = '...';
+                $optional = false;
+            } else {
+                $splat = '';
+                $optional = 'optional' === $match[1];
+            }
+
             if (isset($match[5])) {
                 if (
                     !$this->isExportDefaultArraySupported &&
@@ -164,14 +174,14 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                         $defaultValue =
                             str_replace('array (', 'array(', $defaultValue);
                 }
-            } elseif ('optional' === $match[1]) {
+            } elseif ($optional) {
                 $defaultValue = ' = null';
             } else {
                 $defaultValue = '';
             }
 
             $signature[$match[4]] =
-                array($typehint, $byReference, $defaultValue);
+                array($typehint, $byReference, $splat, $defaultValue);
         }
 
         return $signature;

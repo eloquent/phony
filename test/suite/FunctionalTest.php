@@ -111,6 +111,25 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertNotInstanceOf(get_class($mockMock->mock()), $mock->mock());
     }
 
+    public function testSplatOperatorMocking()
+    {
+        if (!$this->featureDetector->isSupported('parameter.splat')) {
+            $this->markTestSkipped('Requires splat operator.');
+        }
+
+        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithSplat');
+        $mock->method->does(
+            function () {
+                return func_get_args();
+            }
+        );
+
+        $this->assertSame(
+            array(1, 2, 3),
+            $mock->mock()->method(1, 2, 3)
+        );
+    }
+
     public function testSpyStatic()
     {
         $spy = Phony::spy();

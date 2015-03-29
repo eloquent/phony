@@ -323,7 +323,7 @@ EOD;
                 $parameter[1] .
                 '$a' .
                 ++$index .
-                $parameter[2];
+                $parameter[3];
         }
 
         $source .= <<<'EOD'
@@ -408,19 +408,24 @@ EOD;
             }
 
             $parameterCount = count($signature);
+            $variadic       = false;
 
             if ($signature) {
                 $argumentPacking = "\n";
                 $index = -1;
 
                 foreach ($signature as $parameter) {
-                    $argumentPacking .= "\n        if (\$argumentCount > " .
-                        ++$index .
-                        ") {\n            \$arguments[] = " .
-                        $parameter[1] .
-                        '$a' .
-                        $index .
-                        ";\n        }";
+                    if ($parameter[2]) {
+                        $parameterCount--;
+                    } else {
+                        $argumentPacking .= "\n        if (\$argumentCount > " .
+                            ++$index .
+                            ") {\n            \$arguments[] = " .
+                            $parameter[1] .
+                            '$a' .
+                            $index .
+                            ";\n        }";
+                    }
                 }
             } else {
                 $argumentPacking = '';
@@ -475,9 +480,10 @@ EOD;
 
                     $source .= $parameter[0] .
                         $parameter[1] .
+                        $parameter[2] .
                         '$a' .
                         ++$index .
-                        $parameter[2];
+                        $parameter[3];
                 }
 
                 $source .= "\n    ) {\n";
