@@ -283,6 +283,31 @@ class FeatureDetector implements FeatureDetectorInterface
                     ->checkInternalMethod('ReflectionParameter', 'isCallable');
             },
 
+            'parameter.variadic' => function ($detector) {
+                return $detector->checkStatement('function (...$a) {};');
+            },
+
+            'parameter.variadic.reference' => function ($detector) {
+                // syntax causes fatal on HHVM
+                // @codeCoverageIgnoreStart
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return false;
+                } // @codeCoverageIgnoreEnd
+
+                return $detector->checkStatement('function (&...$a) {};');
+            },
+
+            'parameter.variadic.type' => function ($detector) {
+                // syntax causes fatal on HHVM
+                // @codeCoverageIgnoreStart
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return false;
+                } // @codeCoverageIgnoreEnd
+
+                return $detector
+                    ->checkStatement('function (stdClass ...$a) {};');
+            },
+
             'reflection.function.export.default.array' => function ($detector) {
                 $function =
                     new ReflectionFunction(function ($a0 = array('a')) {});

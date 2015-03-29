@@ -323,7 +323,7 @@ EOD;
                 $parameter[1] .
                 '$a' .
                 ++$index .
-                $parameter[2];
+                $parameter[3];
         }
 
         $source .= <<<'EOD'
@@ -408,19 +408,28 @@ EOD;
             }
 
             $parameterCount = count($signature);
+            $variadicIndex = -1;
+            $variadicReference = '';
 
             if ($signature) {
                 $argumentPacking = "\n";
                 $index = -1;
 
                 foreach ($signature as $parameter) {
-                    $argumentPacking .= "\n        if (\$argumentCount > " .
-                        ++$index .
-                        ") {\n            \$arguments[] = " .
-                        $parameter[1] .
-                        '$a' .
-                        $index .
-                        ";\n        }";
+                    if ($parameter[2]) {
+                        --$parameterCount;
+
+                        $variadicIndex = ++$index;
+                        $variadicReference = $parameter[1];
+                    } else {
+                        $argumentPacking .= "\n        if (\$argumentCount > " .
+                            ++$index .
+                            ") {\n            \$arguments[] = " .
+                            $parameter[1] .
+                            '$a' .
+                            $index .
+                            ";\n        }";
+                    }
                 }
             } else {
                 $argumentPacking = '';
@@ -429,14 +438,21 @@ EOD;
             $isStatic = $method->isStatic();
 
             if ($isStatic) {
+                $proxy = 'self::$_staticProxy';
+            } else {
+                $proxy = '$this->_proxy';
+            }
+
+            if ($variadicIndex > -1) {
                 $body = "        \$argumentCount = \\func_num_args();\n" .
                     "        \$arguments = array();" .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
                     "; \$i < \$argumentCount; ++\$i) {\n" .
-                    "            \$arguments[] = \\func_get_arg(\$i);\n" .
-                    "        }\n\n        return self::\$_staticProxy->spy" .
+                    "            \$arguments[] = $variadicReference\$a" .
+                    "${variadicIndex}[\$i - $variadicIndex];\n" .
+                    "        }\n\n        return ${proxy}->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
                     "(\$arguments)\n        );";
@@ -448,7 +464,7 @@ EOD;
                     $parameterCount .
                     "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = \\func_get_arg(\$i);\n" .
-                    "        }\n\n        return \$this->_proxy->spy" .
+                    "        }\n\n        return ${proxy}->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
                     "(\$arguments)\n        );";
@@ -475,9 +491,10 @@ EOD;
 
                     $source .= $parameter[0] .
                         $parameter[1] .
+                        $parameter[2] .
                         '$a' .
                         ++$index .
-                        $parameter[2];
+                        $parameter[3];
                 }
 
                 $source .= "\n    ) {\n";

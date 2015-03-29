@@ -111,6 +111,59 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertNotInstanceOf(get_class($mockMock->mock()), $mock->mock());
     }
 
+    public function testVariadicParameterMocking()
+    {
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
+        $proxy->method->does(
+            function () {
+                return func_get_args();
+            }
+        );
+
+        $this->assertSame(array(1, 2), $proxy->mock()->method(1, 2));
+    }
+
+    public function testVariadicParameterMockingWithType()
+    {
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
+        $proxy->method->does(
+            function () {
+                return func_get_args();
+            }
+        );
+        $a = (object) array();
+        $b = (object) array();
+
+        $this->assertSame(array($a, $b), $proxy->mock()->method($a, $b));
+    }
+
+    public function testVariadicParameterMockingByReference()
+    {
+        if (!$this->featureDetector->isSupported('parameter.variadic.reference')) {
+            $this->markTestSkipped('Requires by-reference variadic parameters.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameterByReference');
+        $proxy->method
+            ->setsArgument(0, 'a')
+            ->setsArgument(1, 'b')
+            ->returns();
+        $a = null;
+        $b = null;
+        $proxy->mock()->method($a, $b);
+
+        $this->assertSame('a', $a);
+        $this->assertSame('b', $b);
+    }
+
     public function testSpyStatic()
     {
         $spy = Phony::spy();
