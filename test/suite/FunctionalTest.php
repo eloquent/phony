@@ -111,13 +111,13 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertNotInstanceOf(get_class($mockMock->mock()), $mock->mock());
     }
 
-    public function testSplatOperatorMocking()
+    public function testVariadicParameterMocking()
     {
-        if (!$this->featureDetector->isSupported('parameter.splat')) {
-            $this->markTestSkipped('Requires splat operator.');
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
         }
 
-        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithSplat');
+        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
         $mock->method->does(
             function () {
                 return func_get_args();

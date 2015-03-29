@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Test;
 
-interface TestInterfaceWithSplat
+interface TestInterfaceWithVariadicParameter
 {
     public function method(...$arguments);
 }

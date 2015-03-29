@@ -180,10 +180,10 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $expected);
     }
 
-    public function testSignatureWithSplatOperator()
+    public function testSignatureWithVariadicParameter()
     {
-        if (!$this->featureDetector->isSupported('parameter.splat')) {
-            $this->markTestSkipped('Requires splat operator.');
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
         }
 
         $code     = 'return function (...$a) { return $args; };';

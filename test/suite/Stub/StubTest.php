@@ -1097,10 +1097,10 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('d', $d);
     }
 
-    public function testStubWithSplatOperator()
+    public function testStubWithVariadicParameter()
     {
-        if (!$this->featureDetector->isSupported('parameter.splat')) {
-            $this->markTestSkipped('Requires splat operator.');
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
         }
 
         $code     = 'return function (...$args) { return $args; };';

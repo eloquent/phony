@@ -273,7 +273,7 @@ class FeatureDetector implements FeatureDetectorInterface
                     ->checkInternalMethod('ReflectionParameter', 'isCallable');
             },
 
-            'parameter.splat' => function ($detector) {
+            'parameter.variadic' => function ($detector) {
                 return $detector
                     ->checkStatement('function (...$a) {};');
             },

@@ -63,8 +63,8 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             ->isSupported('reflection.function.export.default.array');
         $this->isExportReferenceSupported = $featureDetector
             ->isSupported('reflection.function.export.reference');
-        $this->isSplatOperatorSupported = $featureDetector
-            ->isSupported('parameter.splat');
+        $this->isVariadicParameterSupported = $featureDetector
+            ->isSupported('parameter.variadic');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
@@ -145,11 +145,11 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                 $byReference = $parameter->isPassedByReference() ? '&' : '';
             } // @codeCoverageIgnoreEnd
 
-            if ($this->isSplatOperatorSupported && $parameter->isVariadic()) {
-                $splat = '...';
+            if ($this->isVariadicParameterSupported && $parameter->isVariadic()) {
+                $variadic = '...';
                 $optional = false;
             } else {
-                $splat = '';
+                $variadic = '';
                 $optional = 'optional' === $match[1];
             }
 
@@ -181,7 +181,7 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             }
 
             $signature[$match[4]] =
-                array($typehint, $byReference, $splat, $defaultValue);
+                array($typehint, $byReference, $variadic, $defaultValue);
         }
 
         return $signature;
