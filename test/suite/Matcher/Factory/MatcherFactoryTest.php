@@ -167,6 +167,13 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testEqualTo()
+    {
+        $expected = new EqualToMatcher('x');
+
+        $this->assertEquals($expected, $this->subject->equalTo('x'));
+    }
+
     public function testWildcard()
     {
         $expected = new WildcardMatcher(new EqualToMatcher('x'), 111, 222);

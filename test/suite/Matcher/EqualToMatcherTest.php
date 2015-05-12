@@ -46,6 +46,19 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->matches('y'));
     }
 
+    public function testMatchesObjectOptimizations()
+    {
+        $objectA = (object) array();
+        $objectB = (object) array();
+        $objectC = (object) array('c' => 1);
+        $matcher = new EqualToMatcher($objectA, $this->comparatorFactory, $this->exporter);
+
+        $this->assertTrue($matcher->matches($objectA));
+        $this->assertTrue($matcher->matches($objectB));
+        $this->assertFalse($matcher->matches($objectC));
+        $this->assertFalse($matcher->matches('a'));
+    }
+
     public function testDescribe()
     {
         $this->assertSame("<'x'>", $this->subject->describe());

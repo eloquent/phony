@@ -42,6 +42,11 @@ class EqualToMatcher extends AbstractMatcher
         }
 
         $this->value = $value;
+
+        if (is_object($value)) {
+            $this->valueClass = get_class($value);
+        }
+
         $this->comparatorFactory = $comparatorFactory;
         $this->exporter = $exporter;
     }
@@ -85,6 +90,14 @@ class EqualToMatcher extends AbstractMatcher
      */
     public function matches($value)
     {
+        if ($value === $this->value) {
+            return true;
+        }
+
+        if ($this->valueClass && !$value instanceof $this->valueClass) {
+            return false;
+        }
+
         $comparator = $this->comparatorFactory
             ->getComparatorFor($this->value, $value);
 
@@ -108,6 +121,7 @@ class EqualToMatcher extends AbstractMatcher
     }
 
     private $value;
+    private $valueClass;
     private $comparatorFactory;
     private $exporter;
 }

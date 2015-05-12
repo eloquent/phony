@@ -18,11 +18,13 @@ class WrappedMatcherTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new WrappedMatcher(new TestExternalMatcher());
+        $this->matcher = new TestExternalMatcher();
+        $this->subject = new WrappedMatcher($this->matcher);
     }
 
     public function testConstructor()
     {
+        $this->assertSame($this->matcher, $this->subject->matcher());
         $this->assertSame('<Eloquent\Phony\Test\TestExternalMatcher>', $this->subject->describe());
         $this->assertSame('<Eloquent\Phony\Test\TestExternalMatcher>', strval($this->subject));
     }

@@ -181,14 +181,14 @@ class MatcherFactory implements MatcherFactoryInterface
         }
 
         if ('*' === $value) {
-            return $this->wildcard();
+            return $this->wildcardAnyMatcher;
         }
 
         if ('~' === $value) {
-            return $this->any();
+            return $this->anyMatcher;
         }
 
-        return $this->equalTo($value);
+        return new EqualToMatcher($value);
     }
 
     /**
@@ -250,7 +250,7 @@ class MatcherFactory implements MatcherFactoryInterface
         }
 
         if (null === $value) {
-            $value = $this->any();
+            $value = $this->anyMatcher;
         } else {
             $value = $this->adapt($value);
         }
