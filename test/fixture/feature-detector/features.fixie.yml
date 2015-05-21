@@ -22,6 +22,7 @@ data:
  Can yield no value:                                               [generator.yield.nothing,                   '5.5.x',   '999',   [],      '3.4.x',     '999',       []         ]
  Can use a constant as a parameter default value:                  [parameter.default.constant,                '5.4.6.x', '999',   [],      '999',       '0.x',       []         ]
  Can type hint a parameter as callable:                            [parameter.type.callable,                   '5.4.x',   '999',   [],      '0.x',       '999',       []         ]
+ Can use variadic parameters:                                      [parameter.variadic,                           '5.6.x',   '999',   [],      '3.3.x',     '999',       []         ]
  Reflection function exports include full array default value:     [reflection.function.export.default.array,  '999',     '0.x',   [],      '3.2.x',     '999',       []         ]
  Reflection function exports include by-reference information:     [reflection.function.export.reference,      '0.x',     '999',   [],      '3.4.x',     '999',       []         ]
  HHVM runtime:                                                     [runtime.hhvm,                              '999',     '0.x',   [],      '0.x',       '999',       []         ]

@@ -1096,4 +1096,22 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
     }
+
+    public function testStubWithVariadicParameter()
+    {
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
+        }
+
+        $code     = 'return function (...$args) { return $args; };';
+        $callback = eval($code);
+
+        $this->subject = new Stub($callback);
+        $this->subject->forwards();
+
+        $this->assertSame(
+            array(1, 2, 3),
+            call_user_func($this->subject, 1, 2, 3)
+        );
+    }
 }
