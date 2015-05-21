@@ -14,8 +14,8 @@ namespace Eloquent\Phony\Assertion\Renderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
@@ -24,6 +24,8 @@ use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\NullEventInterface;
+use Eloquent\Phony\Exporter\ExporterInterface;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\WrappedInvocableInterface;
@@ -35,7 +37,6 @@ use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
 use Exception;
 use ReflectionMethod;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * Renders various data for use in assertion messages.
@@ -62,17 +63,17 @@ class AssertionRenderer implements AssertionRendererInterface
      * Construct a new call renderer.
      *
      * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
-     * @param Exporter|null                    $exporter           The exporter to use.
+     * @param ExporterInterface|null           $exporter           The exporter to use.
      */
     public function __construct(
         InvocableInspectorInterface $invocableInspector = null,
-        Exporter $exporter = null
+        ExporterInterface $exporter = null
     ) {
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
         if (null === $exporter) {
-            $exporter = new Exporter();
+            $exporter = InlineExporter::instance();
         }
 
         $this->invocableInspector = $invocableInspector;
@@ -108,11 +109,7 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderValue($value)
     {
-        if (is_string($value)) {
-            return $this->exporter->export($value);
-        }
-
-        return $this->exporter->shortenedExport($value);
+        return $this->exporter->export($value);
     }
 
     /**
@@ -384,9 +381,10 @@ class AssertionRenderer implements AssertionRendererInterface
                         $this->indent($this->renderProduced($call))
                     );
                 } else {
+                    $returnValue = $call->returnValue();
                     $rendered[] = sprintf(
                         "    - returned %s producing:\n%s",
-                        $this->renderValue($call->returnValue()),
+                        $this->exporter->export($returnValue, 0),
                         $this->indent($this->renderProduced($call))
                     );
                 }
@@ -477,7 +475,7 @@ class AssertionRenderer implements AssertionRendererInterface
         foreach ($call->traversableEvents() as $event) {
             if ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
-                    '    - produced %s => %s',
+                    "    - produced %s: %s",
                     $this->renderValue($event->key()),
                     $this->renderValue($event->value())
                 );
@@ -536,8 +534,8 @@ class AssertionRenderer implements AssertionRendererInterface
         if ('' === $exception->getMessage()) {
             $renderedMessage = '';
         } else {
-            $renderedMessage = $this->exporter
-                ->shortenedExport($exception->getMessage());
+            $message = $exception->getMessage();
+            $renderedMessage = $this->exporter->export($message, 0);
         }
 
         return sprintf('%s(%s)', get_class($exception), $renderedMessage);
@@ -585,7 +583,7 @@ class AssertionRenderer implements AssertionRendererInterface
                 );
             } elseif ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
-                    '    - produced %s => %s from %s',
+                    '    - produced %s: %s from %s',
                     $this->renderValue($event->key()),
                     $this->renderValue($event->value()),
                     $call

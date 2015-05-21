@@ -820,7 +820,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $renderedType = sprintf(
                 'call on %s to throw %s exception',
                 $renderedSubject,
-                $this->assertionRenderer->renderValue($type)
+                $type
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
@@ -977,7 +977,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             );
         } else {
             $renderedType = sprintf(
-                'call on %s to produce like %s => %s',
+                'call on %s to produce like %s: %s',
                 $renderedSubject,
                 $key->describe(),
                 $value->describe()
@@ -1128,7 +1128,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             foreach ($pairs as $pair) {
                 if (is_array($pair)) {
                     $renderedType .= sprintf(
-                        "\n    - %s => %s",
+                        "\n    - %s: %s",
                         $pair[0]->describe(),
                         $pair[1]->describe()
                     );
@@ -1388,7 +1388,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $renderedType = sprintf(
                 'generator returned by %s to receive %s exception',
                 $renderedSubject,
-                $this->assertionRenderer->renderValue($type)
+                $type
             );
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {

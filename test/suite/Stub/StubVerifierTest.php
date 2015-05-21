@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -24,11 +25,17 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 
 class StubVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), false);
+
         $this->callback = 'implode';
         $this->self = (object) array();
         $this->label = 'label';

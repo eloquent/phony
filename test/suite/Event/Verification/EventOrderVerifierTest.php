@@ -165,13 +165,13 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('a')
-    - called implode('c')
-    - called implode('b')
+    - called implode("a")
+    - called implode("c")
+    - called implode("b")
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -182,11 +182,11 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('b')
-    - called implode('a')
+    - called implode("b")
+    - called implode("a")
 Order:
-    - called implode('a')
-    - called implode('b')
+    - called implode("a")
+    - called implode("b")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -197,12 +197,12 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('b')
-    - called implode('a')
+    - called implode("b")
+    - called implode("a")
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -216,12 +216,12 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('c')
-    - called implode('b')
+    - called implode("c")
+    - called implode("b")
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -235,14 +235,14 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('c')
-    - called implode('a')
-    - called implode('c')
+    - called implode("c")
+    - called implode("a")
+    - called implode("c")
     - <none>
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -422,13 +422,13 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('a')
-    - called implode('c')
-    - called implode('b')
+    - called implode("a")
+    - called implode("c")
+    - called implode("b")
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -439,11 +439,11 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('b')
-    - called implode('a')
+    - called implode("b")
+    - called implode("a")
 Order:
-    - called implode('a')
-    - called implode('b')
+    - called implode("a")
+    - called implode("b")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -454,12 +454,12 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('b')
-    - called implode('a')
+    - called implode("b")
+    - called implode("a")
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -475,12 +475,12 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('c')
-    - called implode('b')
+    - called implode("c")
+    - called implode("b")
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -496,14 +496,14 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected events in order:
-    - called implode('c')
-    - called implode('a')
-    - called implode('c')
+    - called implode("c")
+    - called implode("a")
+    - called implode("c")
     - <none>
 Order:
-    - called implode('a')
-    - called implode('b')
-    - called implode('c')
+    - called implode("a")
+    - called implode("b")
+    - called implode("c")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Event\Verification\EventOrderVerifier;
 use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
+use Eloquent\Phony\Exporter\ExporterInterface;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
@@ -55,6 +57,7 @@ class FacadeDriver implements FacadeDriverInterface
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param EventOrderVerifierInterface|null  $eventOrderVerifier  The event order verifier to use.
      * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
+     * @param ExporterInterface|null            $exporter            The exporter to use.
      */
     public function __construct(
         MockBuilderFactoryInterface $mockBuilderFactory = null,
@@ -62,7 +65,8 @@ class FacadeDriver implements FacadeDriverInterface
         SpyVerifierFactoryInterface $spyVerifierFactory = null,
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         EventOrderVerifierInterface $eventOrderVerifier = null,
-        MatcherFactoryInterface $matcherFactory = null
+        MatcherFactoryInterface $matcherFactory = null,
+        ExporterInterface $exporter = null
     ) {
         if (null === $mockBuilderFactory) {
             $mockBuilderFactory = MockBuilderFactory::instance();
@@ -82,6 +86,9 @@ class FacadeDriver implements FacadeDriverInterface
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
+        if (null === $exporter) {
+            $exporter = InlineExporter::instance();
+        }
 
         $this->mockBuilderFactory = $mockBuilderFactory;
         $this->proxyFactory = $proxyFactory;
@@ -89,6 +96,7 @@ class FacadeDriver implements FacadeDriverInterface
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->eventOrderVerifier = $eventOrderVerifier;
         $this->matcherFactory = $matcherFactory;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -151,6 +159,16 @@ class FacadeDriver implements FacadeDriverInterface
         return $this->matcherFactory;
     }
 
+    /**
+     * Get the exporter.
+     *
+     * @return ExporterInterface The exporter.
+     */
+    public function exporter()
+    {
+        return $this->exporter;
+    }
+
     private static $instance;
     private $mockBuilderFactory;
     private $proxyFactory;
@@ -158,4 +176,5 @@ class FacadeDriver implements FacadeDriverInterface
     private $stubVerifierFactory;
     private $eventOrderVerifier;
     private $matcherFactory;
+    private $exporter;
 }

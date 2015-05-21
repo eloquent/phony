@@ -11,19 +11,25 @@
 
 namespace Eloquent\Phony\Assertion\Renderer;
 
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 use RuntimeException;
-use SebastianBergmann\Exporter\Exporter;
 
 class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), false);
+
         $this->invocableInspector = new InvocableInspector();
-        $this->exporter = new Exporter();
+        $this->exporter = new InlineExporter();
         $this->subject = new AssertionRenderer($this->invocableInspector, $this->exporter);
 
         $this->callFactory = new TestCallFactory();
@@ -61,9 +67,9 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testRenderResponsesWithGenerators()
     {
         $expected = <<<'EOD'
-    - returned 'x'
-    - returned Generator Object ()
-    - threw RuntimeException('You done goofed.')
+    - returned "x"
+    - returned Generator#0{}
+    - threw RuntimeException("You done goofed.")
 EOD;
 
         $this->assertSame(
@@ -75,15 +81,15 @@ EOD;
     public function testRenderResponsesWithGeneratorsExpandedTraversables()
     {
         $expected = <<<'EOD'
-    - returned 'x'
+    - returned "x"
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-    - threw RuntimeException('You done goofed.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+    - threw RuntimeException("You done goofed.")
 EOD;
 
         $this->assertSame(
@@ -95,12 +101,12 @@ EOD;
     public function testRenderProduced()
     {
         $expected = <<<'EOD'
-    - produced 'm' => 'n'
-    - received 'o'
-    - produced 'p' => 'q'
-    - received exception RuntimeException('Consequences will never be the same.')
-    - produced 'r' => 's'
-    - received 't'
+    - produced "m": "n"
+    - received "o"
+    - produced "p": "q"
+    - received exception RuntimeException("Consequences will never be the same.")
+    - produced "r": "s"
+    - received "t"
 EOD;
 
         $this->assertSame($expected, $this->subject->renderProduced($this->generatorCall));

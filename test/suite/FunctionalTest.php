@@ -427,9 +427,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('a', 'b');
         $expected = <<<'EOD'
 Expected call on {spy}[example] with arguments like:
-    <'c'>, <'d'>
+    "c", "d"
 Calls:
-    - 'a', 'b'
+    - "a", "b"
 EOD;
 
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
@@ -443,9 +443,9 @@ EOD;
         $proxy->mock()->testClassAMethodA('a', 'b');
         $expected = <<<'EOD'
 Expected call on PhonyMockAssertionFailure[example]->testClassAMethodA with arguments like:
-    <'c'>, <'d'>
+    "c", "d"
 Calls:
-    - 'a', 'b'
+    - "a", "b"
 EOD;
 
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);

@@ -796,10 +796,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         if (null === $type) {
             $renderedType = 'exception';
         } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                '%s exception',
-                $this->assertionRenderer->renderValue($type)
-            );
+            $renderedType = sprintf('%s exception', $type);
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
@@ -935,7 +932,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 sprintf('call to produce like %s', $value->describe());
         } else {
             $renderedType = sprintf(
-                'call to produce like %s => %s',
+                'call to produce like %s: %s',
                 $key->describe(),
                 $value->describe()
             );
@@ -1064,7 +1061,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             foreach ($pairs as $pair) {
                 if (is_array($pair)) {
                     $renderedType .= sprintf(
-                        "\n    - %s => %s",
+                        "\n    - %s: %s",
                         $pair[0]->describe(),
                         $pair[1]->describe()
                     );
@@ -1312,10 +1309,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         if (null === $type) {
             $renderedType = 'generator to receive exception';
         } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                'generator to receive %s exception',
-                $this->assertionRenderer->renderValue($type)
-            );
+            $renderedType = sprintf('generator to receive %s exception', $type);
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(

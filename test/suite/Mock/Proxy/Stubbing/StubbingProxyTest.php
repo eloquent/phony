@@ -205,9 +205,9 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->mock->testClassAMethodA('e', 'f');
         $expected = <<<'EOD'
 Expected no interaction with PhonyMockStubbingNoInteraction[label]. Calls:
-    - PhonyMockStubbingNoInteraction[label]->testClassAMethodA('a', 'b')
-    - PhonyMockStubbingNoInteraction[label]->testClassAMethodB('c', 'd')
-    - PhonyMockStubbingNoInteraction[label]->testClassAMethodA('e', 'f')
+    - PhonyMockStubbingNoInteraction[label]->testClassAMethodA("a", "b")
+    - PhonyMockStubbingNoInteraction[label]->testClassAMethodB("c", "d")
+    - PhonyMockStubbingNoInteraction[label]->testClassAMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

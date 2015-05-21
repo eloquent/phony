@@ -14,11 +14,12 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CallEventCollection;
+use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Cardinality\Cardinality;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -26,12 +27,18 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 use RuntimeException;
 
 class CallVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), false);
+
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callEventFactory->sequencer()->set(111);
@@ -291,9 +298,9 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $expected = <<<'EOD'
 Expected call with arguments like:
-    <'b'>, <'c'>
+    "b", "c"
 Arguments:
-    'a', 'b', 'c'
+    "a", "b", "c"
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->calledWith('b', 'c');
@@ -303,9 +310,9 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected no call with arguments like:
-    <'a'>, <any>*
+    "a", <any>*
 Arguments:
-    'a', 'b', 'c'
+    "a", "b", "c"
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->never()->calledWith('a', $this->matcherFactory->wildcard());
@@ -315,7 +322,7 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call with arguments like:
-    <'b'>, <'c'>
+    "b", "c"
 Arguments:
     <none>
 EOD;
@@ -352,7 +359,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Not called on supplied object. Object was stdClass Object ().'
+            'Not called on supplied object. Object was #0{}.'
         );
         $this->subject->calledOn((object) array());
     }
@@ -361,7 +368,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Called on supplied object. Object was stdClass Object ().'
+            'Called on supplied object. Object was #0{}.'
         );
         $this->subject->never()->calledOn($this->thisValue);
     }
@@ -370,7 +377,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Not called on object like <stdClass Object (...)>. Object was stdClass Object ().'
+            'Not called on object like #0{property: "value"}. Object was #0{}.'
         );
         $this->subject->calledOn(new EqualToMatcher((object) array('property' => 'value')));
     }
@@ -379,7 +386,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Called on object like <stdClass Object ()>. Object was stdClass Object ().'
+            'Called on object like #0{}. Object was #0{}.'
         );
         $this->subject->never()->calledOn(new EqualToMatcher($this->thisValue));
     }
@@ -422,7 +429,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return like <'x'>. Returned 'abc'."
+            'Expected return like "x". Returned "abc".'
         );
         $this->subject->returned('x');
     }
@@ -431,7 +438,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected no return like <'abc'>. Returned 'abc'."
+            'Expected no return like "abc". Returned "abc".'
         );
         $this->subject->never()->returned('abc');
     }
@@ -440,7 +447,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected no return. Returned 'abc'."
+            'Expected no return. Returned "abc".'
         );
         $this->subject->never()->returned();
     }
@@ -449,7 +456,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return like <'x'>. Threw RuntimeException('You done goofed.')."
+            'Expected return like "x". Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->returned('x');
     }
@@ -458,7 +465,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return. Threw RuntimeException('You done goofed.')."
+            'Expected return. Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->returned();
     }
@@ -467,7 +474,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return like <'x'>. Never responded."
+            'Expected return like "x". Never responded.'
         );
         $this->subjectWithNoResponse->returned('x');
     }
@@ -529,7 +536,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            'Unable to match exceptions against stdClass Object ().'
+            "Unable to match exceptions against #0{}."
         );
         $this->subjectWithException->checkThrew((object) array());
     }
@@ -552,7 +559,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected exception. Returned 'abc'."
+            'Expected exception. Returned "abc".'
         );
         $this->subject->threw();
     }
@@ -570,7 +577,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected no exception. Threw RuntimeException('You done goofed.')."
+            'Expected no exception. Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->never()->threw();
     }
@@ -579,7 +586,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected 'InvalidArgumentException' exception. Threw RuntimeException('You done goofed.')."
+            'Expected InvalidArgumentException exception. Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->threw('InvalidArgumentException');
     }
@@ -588,7 +595,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected no 'RuntimeException' exception. Threw RuntimeException('You done goofed.')."
+            'Expected no RuntimeException exception. Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->never()->threw('RuntimeException');
     }
@@ -597,7 +604,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected 'InvalidArgumentException' exception. Returned 'abc'."
+            'Expected InvalidArgumentException exception. Returned "abc".'
         );
         $this->subject->threw('InvalidArgumentException');
     }
@@ -606,7 +613,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected exception equal to RuntimeException(). Threw RuntimeException('You done goofed.')."
+            'Expected exception equal to RuntimeException(). Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->threw(new RuntimeException());
     }
@@ -615,8 +622,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected no exception equal to RuntimeException('You done goofed.'). " .
-                "Threw RuntimeException('You done goofed.')."
+            'Expected no exception equal to RuntimeException("You done goofed."). ' .
+                'Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->never()->threw($this->exception);
     }
@@ -625,7 +632,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected exception equal to RuntimeException(). Returned 'abc'."
+            'Expected exception equal to RuntimeException(). Returned "abc".'
         );
         $this->subject->threw(new RuntimeException());
     }
@@ -634,7 +641,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected exception like <RuntimeException Object (...)>. Threw RuntimeException('You done goofed.')."
+            'Expected exception like RuntimeException#0{}. ' .
+                'Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->threw(new EqualToMatcher(new RuntimeException()));
     }
@@ -643,26 +651,21 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected no exception like <RuntimeException Object (...)>. Threw RuntimeException('You done goofed.')."
+            'Expected no exception like RuntimeException#0{message: "You done goofed."}. ' .
+                'Threw RuntimeException("You done goofed.").'
         );
         $this->subjectWithException->never()->threw(new EqualToMatcher($this->exception));
     }
 
     public function testThrewFailureInvalidInput()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Unable to match exceptions against 111.'
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against 111.');
         $this->subjectWithException->threw(111);
     }
 
     public function testThrewFailureInvalidInputObject()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Unable to match exceptions against stdClass Object ().'
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
         $this->subjectWithException->threw((object) array());
     }
 

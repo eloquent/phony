@@ -193,9 +193,9 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
         $className::testClassAStaticMethodA('e', 'f');
         $expected = <<<'EOD'
 Expected no interaction with PhonyMockStaticStubbingNoInteraction[static]. Calls:
-    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodA('a', 'b')
-    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodB('c', 'd')
-    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodA('e', 'f')
+    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodA("a", "b")
+    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodB("c", "d")
+    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

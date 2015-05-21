@@ -13,8 +13,7 @@
     ],
     "require": {
         "php": ">=5.3",
-        "sebastian/comparator": "^1",
-        "sebastian/exporter": "^1"
+        "sebastian/comparator": "^1"
     },
     "require-dev": {
         "athletic/athletic": "^0.1",
@@ -44,7 +43,10 @@
     "autoload-dev": {
         "psr-4": {
             "Eloquent\\Phony\\": ["test/src", "test/benchmarks"]
-        }
+        },
+        "files": [
+            "test/src/TestClass.php"
+        ]
     },
     "extra": {
         "branch-alias": {

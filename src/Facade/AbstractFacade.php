@@ -292,4 +292,18 @@ abstract class AbstractFacade
         return static::driver()->matcherFactory()
             ->wildcard($value, $minimumArguments, $maximumArguments);
     }
+
+    /**
+     * Set the default export depth.
+     *
+     * Negative depths are treated as infinite depth.
+     *
+     * @param integer $depth The depth.
+     *
+     * @return integer The previous depth.
+     */
+    public static function setExportDepth($depth)
+    {
+        return static::driver()->exporter()->setDepth($depth);
+    }
 }
