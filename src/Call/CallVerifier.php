@@ -867,7 +867,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         foreach ($this->call->traversableEvents() as $event) {
             if ($event instanceof ProducedEventInterface) {
-                $totalCount++;
+                ++$totalCount;
 
                 if ($checkKey && !$key->matches($event->key())) {
                     continue;
@@ -877,7 +877,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 }
 
                 $matchingEvents[] = $event;
-                $matchCount++;
+                ++$matchCount;
             }
         }
 
@@ -1124,14 +1124,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         foreach ($this->call->traversableEvents() as $event) {
             if ($event instanceof ReceivedEventInterface) {
-                $totalCount++;
+                ++$totalCount;
 
                 if (!$checkValue || $value->matches($event->value())) {
                     $matchingEvents[] = $event;
-                    $matchCount++;
+                    ++$matchCount;
                 }
             } elseif ($event instanceof ReceivedExceptionEventInterface) {
-                $totalCount++;
+                ++$totalCount;
             }
         }
 
@@ -1221,11 +1221,11 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
             foreach ($traversableEvents as $event) {
                 if ($event instanceof ReceivedExceptionEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
                     $matchingEvents[] = $event;
-                    $matchCount++;
+                    ++$matchCount;
                 } elseif ($event instanceof ReceivedEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
                 }
             }
         } elseif (is_string($type)) {
@@ -1233,14 +1233,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
             foreach ($traversableEvents as $event) {
                 if ($event instanceof ReceivedExceptionEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
 
                     if (is_a($event->exception(), $type)) {
                         $matchingEvents[] = $event;
-                        $matchCount++;
+                        ++$matchCount;
                     }
                 } elseif ($event instanceof ReceivedEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
                 }
             }
         } elseif (is_object($type)) {
@@ -1249,14 +1249,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
                 foreach ($traversableEvents as $event) {
                     if ($event instanceof ReceivedExceptionEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
 
                         if ($event->exception() == $type) {
                             $matchingEvents[] = $event;
-                            $matchCount++;
+                            ++$matchCount;
                         }
                     } elseif ($event instanceof ReceivedEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
                     }
                 }
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -1265,14 +1265,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
                 foreach ($traversableEvents as $event) {
                     if ($event instanceof ReceivedExceptionEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
 
                         if ($type->matches($event->exception())) {
                             $matchingEvents[] = $event;
-                            $matchCount++;
+                            ++$matchCount;
                         }
                     } elseif ($event instanceof ReceivedEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
                     }
                 }
             }

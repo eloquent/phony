@@ -25,7 +25,7 @@ class UndefinedMethodStubExceptionTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($className, $exception->className());
         $this->assertSame($name, $exception->name());
-        $this->assertSame("The requested method stub ClassName::method() does not exist.", $exception->getMessage());
+        $this->assertSame('The requested method stub ClassName::method() does not exist.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

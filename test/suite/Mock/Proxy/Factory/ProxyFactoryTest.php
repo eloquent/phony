@@ -17,8 +17,6 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy;
-use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy;
-use Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;

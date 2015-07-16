@@ -1229,7 +1229,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against 111."
+            'Unable to match exceptions against 111.'
         );
         $this->subject->checkThrew(111);
     }
@@ -1238,7 +1238,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
+            'Unable to match exceptions against stdClass Object ().'
         );
         $this->subject->checkThrew((object) array());
     }
@@ -1313,7 +1313,7 @@ EOD;
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException'" .
-                " exception. Never called."
+                ' exception. Never called.'
         );
         $this->subject->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
     }
@@ -1405,7 +1405,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against 111."
+            'Unable to match exceptions against 111.'
         );
         $this->subject->threw(111);
     }
@@ -1414,7 +1414,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
+            'Unable to match exceptions against stdClass Object ().'
         );
         $this->subject->threw((object) array());
     }
@@ -1530,7 +1530,7 @@ EOD;
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected every call on implode[label] to throw 'Eloquent\Phony\Spy\Exception\UndefinedCallException'" .
-                " exception. Never called."
+                ' exception. Never called.'
         );
         $this->subject->always()->threw('Eloquent\Phony\Spy\Exception\UndefinedCallException');
     }

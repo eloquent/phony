@@ -21,7 +21,7 @@ class FinalizedMockExceptionTest extends PHPUnit_Framework_TestCase
         $cause = new Exception();
         $exception = new FinalizedMockException($cause);
 
-        $this->assertSame("Unable to modify a finalized mock.", $exception->getMessage());
+        $this->assertSame('Unable to modify a finalized mock.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

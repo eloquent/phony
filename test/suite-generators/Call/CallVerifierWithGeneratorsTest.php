@@ -253,7 +253,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call to produce. Produced nothing."
+            'Expected call to produce. Produced nothing.'
         );
         $this->subject->produced();
     }
@@ -538,7 +538,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive value. Produced nothing."
+            'Expected generator to receive value. Produced nothing.'
         );
         $this->subject->received();
     }
@@ -657,7 +657,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against 111."
+            'Unable to match exceptions against 111.'
         );
         $this->generatorSubject->checkReceivedException(111);
     }
@@ -666,7 +666,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
+            'Unable to match exceptions against stdClass Object ().'
         );
         $this->generatorSubject->checkReceivedException((object) array());
     }
@@ -703,7 +703,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive exception. Produced nothing."
+            'Expected generator to receive exception. Produced nothing.'
         );
         $this->subject->receivedException();
     }
@@ -712,7 +712,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator to receive exception. Produced nothing."
+            'Expected generator to receive exception. Produced nothing.'
         );
         $this->subject->receivedException();
     }
@@ -901,7 +901,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against 111."
+            'Unable to match exceptions against 111.'
         );
         $this->generatorSubject->receivedException(111);
     }
@@ -910,7 +910,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
+            'Unable to match exceptions against stdClass Object ().'
         );
         $this->generatorSubject->receivedException((object) array());
     }

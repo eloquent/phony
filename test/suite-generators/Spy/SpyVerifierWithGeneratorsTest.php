@@ -202,7 +202,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call on implode[label] to produce. Never called."
+            'Expected call on implode[label] to produce. Never called.'
         );
         $this->subject->produced();
     }
@@ -630,7 +630,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive value. Never called."
+            'Expected generator returned by implode[label] to receive value. Never called.'
         );
         $this->subject->received();
     }
@@ -814,7 +814,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive exception. Never called."
+            'Expected generator returned by implode[label] to receive exception. Never called.'
         );
         $this->subject->receivedException();
     }
@@ -824,7 +824,7 @@ EOD;
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             "Expected generator returned by implode[label] to receive 'InvalidArgumentException' exception. " .
-                "Never called."
+                'Never called.'
         );
         $this->subject->receivedException('InvalidArgumentException');
     }
@@ -833,8 +833,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive exception equal to RuntimeException(). " .
-                "Never called."
+            'Expected generator returned by implode[label] to receive exception equal to RuntimeException(). ' .
+                'Never called.'
         );
         $this->subject->receivedException(new RuntimeException());
     }
@@ -843,8 +843,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive exception like " .
-                "<RuntimeException Object (...)>. Never called."
+            'Expected generator returned by implode[label] to receive exception like ' .
+                '<RuntimeException Object (...)>. Never called.'
         );
         $this->subject->receivedException(new EqualToMatcher(new RuntimeException()));
     }
@@ -1103,7 +1103,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against 111."
+            'Unable to match exceptions against 111.'
         );
         $this->subject->receivedException(111);
     }
@@ -1112,7 +1112,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
+            'Unable to match exceptions against stdClass Object ().'
         );
         $this->subject->receivedException((object) array());
     }

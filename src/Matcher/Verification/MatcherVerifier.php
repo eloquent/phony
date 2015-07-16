@@ -54,7 +54,7 @@ class MatcherVerifier implements MatcherVerifierInterface
                 $matchCount = 0;
 
                 while ($pair && $matcher->matcher()->matches($pair[1])) {
-                    $matchCount++;
+                    ++$matchCount;
                     $pair = each($arguments);
                 }
 

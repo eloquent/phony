@@ -67,7 +67,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
     public function testRenderValue()
     {
         $this->assertSame("'x'", $this->subject->renderValue('x'));
-        $this->assertSame("111", $this->subject->renderValue(111));
+        $this->assertSame('111', $this->subject->renderValue(111));
         $this->assertSame("'x\ny'", $this->subject->renderValue("x\ny"));
         $this->assertSame(
             "'12345678901234567890123456789012345678901234567890'",
@@ -80,7 +80,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $matcherA = new EqualToMatcher('a');
         $matcherB = new EqualToMatcher(111);
 
-        $this->assertSame("<none>", $this->subject->renderMatchers(array()));
+        $this->assertSame('<none>', $this->subject->renderMatchers(array()));
         $this->assertSame("<'a'>", $this->subject->renderMatchers(array($matcherA)));
         $this->assertSame("<'a'>, <111>", $this->subject->renderMatchers(array($matcherA, $matcherB)));
     }
@@ -217,11 +217,11 @@ EOD;
             ),
             'Static method' => array(
                 $callFactory->create($callEventFactory->createCalled('ReflectionMethod::export')),
-                "ReflectionMethod::export()",
+                'ReflectionMethod::export()',
             ),
             'Function' => array(
                 $callFactory->create($callEventFactory->createCalled('implode')),
-                "implode()",
+                'implode()',
             ),
             'Closure' => array(
                 $callFactory->create($callEventFactory->createCalled(function () {})),
@@ -229,19 +229,19 @@ EOD;
             ),
             'Spy' => array(
                 $callFactory->create($callEventFactory->createCalled(new Spy())),
-                "{spy}()",
+                '{spy}()',
             ),
             'Spy with label' => array(
                 $callFactory->create($callEventFactory->createCalled(new Spy(null, 'label'))),
-                "{spy}[label]()",
+                '{spy}[label]()',
             ),
             'Stub' => array(
                 $callFactory->create($callEventFactory->createCalled(new Stub())),
-                "{stub}()",
+                '{stub}()',
             ),
             'Stub with label' => array(
                 $callFactory->create($callEventFactory->createCalled(new Stub(null, null, 'label'))),
-                "{stub}[label]()",
+                '{stub}[label]()',
             ),
             'With arguments' => array(
                 $callFactory->create($callEventFactory->createCalled('implode', array('a', 111))),
@@ -277,7 +277,7 @@ EOD;
             ),
             'Never responded' => array(
                 $callFactory->create($callEventFactory->createCalled()),
-                "Never responded.",
+                'Never responded.',
             ),
         );
     }
@@ -292,9 +292,9 @@ EOD;
 
     public function testRenderException()
     {
-        $this->assertSame("<none>", $this->subject->renderException());
-        $this->assertSame("Exception()", $this->subject->renderException(new Exception()));
-        $this->assertSame("RuntimeException()", $this->subject->renderException(new RuntimeException()));
+        $this->assertSame('<none>', $this->subject->renderException());
+        $this->assertSame('Exception()', $this->subject->renderException(new Exception()));
+        $this->assertSame('RuntimeException()', $this->subject->renderException(new RuntimeException()));
         $this->assertSame(
             "Exception('You done goofed.')",
             $this->subject->renderException(new Exception('You done goofed.'))

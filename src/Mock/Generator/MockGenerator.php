@@ -434,7 +434,7 @@ EOD;
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
-                    "; \$i < \$argumentCount; \$i++) {\n" .
+                    "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = \\func_get_arg(\$i);\n" .
                     "        }\n\n        return self::\$_staticProxy->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
@@ -446,7 +446,7 @@ EOD;
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
-                    "; \$i < \$argumentCount; \$i++) {\n" .
+                    "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = \\func_get_arg(\$i);\n" .
                     "        }\n\n        return \$this->_proxy->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .

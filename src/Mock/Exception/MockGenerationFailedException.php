@@ -61,9 +61,9 @@ final class MockGenerationFailedException extends Exception implements
             $lines = array_slice($lines, $startLine, $contextLineCount, true);
 
             $message = sprintf(
-                "Mock class %s generation failed: " .
+                'Mock class %s generation failed: ' .
                     "%s in generated code on line %d.\n" .
-                    "Relevant lines:%%s",
+                    'Relevant lines:%%s',
                 $definition->className(),
                 $error['message'],
                 $errorLineNumber

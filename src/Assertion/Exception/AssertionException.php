@@ -98,7 +98,7 @@ final class AssertionException extends Exception implements
         }
 
         if (!$broke) {
-            $index++;
+            ++$index;
         }
 
         return $trace[$index - 1];

@@ -25,7 +25,7 @@ class InvalidDefinitionExceptionTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($name, $exception->name());
         $this->assertSame($value, $exception->value());
-        $this->assertSame("Invalid mock definition 111 => (string).", $exception->getMessage());
+        $this->assertSame('Invalid mock definition 111 => (string).', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

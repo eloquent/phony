@@ -477,18 +477,18 @@ class AssertionRenderer implements AssertionRendererInterface
         foreach ($call->traversableEvents() as $event) {
             if ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
-                    "    - produced %s => %s",
+                    '    - produced %s => %s',
                     $this->renderValue($event->key()),
                     $this->renderValue($event->value())
                 );
             } elseif ($event instanceof ReceivedEventInterface) {
                 $rendered[] = sprintf(
-                    "    - received %s",
+                    '    - received %s',
                     $this->renderValue($event->value())
                 );
             } elseif ($event instanceof ReceivedExceptionEventInterface) {
                 $rendered[] = sprintf(
-                    "    - received exception %s",
+                    '    - received exception %s',
                     $this->renderException($event->exception())
                 );
             }

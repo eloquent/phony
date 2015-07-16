@@ -352,7 +352,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Not called on supplied object. Object was stdClass Object ()."
+            'Not called on supplied object. Object was stdClass Object ().'
         );
         $this->subject->calledOn((object) array());
     }
@@ -361,7 +361,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Called on supplied object. Object was stdClass Object ()."
+            'Called on supplied object. Object was stdClass Object ().'
         );
         $this->subject->never()->calledOn($this->thisValue);
     }
@@ -370,7 +370,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Not called on object like <stdClass Object (...)>. Object was stdClass Object ()."
+            'Not called on object like <stdClass Object (...)>. Object was stdClass Object ().'
         );
         $this->subject->calledOn(new EqualToMatcher((object) array('property' => 'value')));
     }
@@ -379,7 +379,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Called on object like <stdClass Object ()>. Object was stdClass Object ()."
+            'Called on object like <stdClass Object ()>. Object was stdClass Object ().'
         );
         $this->subject->never()->calledOn(new EqualToMatcher($this->thisValue));
     }
@@ -476,7 +476,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected return. Never responded."
+            'Expected return. Never responded.'
         );
         $this->subjectWithNoResponse->returned();
     }
@@ -520,7 +520,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against 111."
+            'Unable to match exceptions against 111.'
         );
         $this->subjectWithException->checkThrew(111);
     }
@@ -529,7 +529,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
+            'Unable to match exceptions against stdClass Object ().'
         );
         $this->subjectWithException->checkThrew((object) array());
     }
@@ -561,7 +561,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected exception. Never responded."
+            'Expected exception. Never responded.'
         );
         $this->subjectWithNoResponse->threw();
     }
@@ -652,7 +652,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against 111."
+            'Unable to match exceptions against 111.'
         );
         $this->subjectWithException->threw(111);
     }
@@ -661,7 +661,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
+            'Unable to match exceptions against stdClass Object ().'
         );
         $this->subjectWithException->threw((object) array());
     }

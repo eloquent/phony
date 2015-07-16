@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Test\TestClassA;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
 

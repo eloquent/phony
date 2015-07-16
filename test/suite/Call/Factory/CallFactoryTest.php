@@ -15,7 +15,6 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
-use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Test\TestCallEventFactory;

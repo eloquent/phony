@@ -32,9 +32,9 @@ use ReflectionClass;
 /**
  * Create a new mock builder.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
- * @param array|object|null                       $definition The definition.
- * @param string|null                             $className  The class name.
+ * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+ * @param array|object|null                                                                                   $definition The definition.
+ * @param string|null                                                                                         $className  The class name.
  *
  * @return MockBuilderInterface The mock builder.
  */
@@ -47,10 +47,10 @@ function mockBuilder($types = null, $definition = null, $className = null)
 /**
  * Create a new mock.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
- * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
- * @param array|object|null                       $definition The definition.
- * @param string|null                             $className  The class name.
+ * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+ * @param ArgumentsInterface|array<integer,mixed>|null                                                        $arguments  The constructor arguments, or null to bypass the constructor.
+ * @param array|object|null                                                                                   $definition The definition.
+ * @param string|null                                                                                         $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
@@ -74,9 +74,9 @@ function mock(
 /**
  * Create a new full mock.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
- * @param array|object|null                       $definition The definition.
- * @param string|null                             $className  The class name.
+ * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+ * @param array|object|null                                                                                   $definition The definition.
+ * @param string|null                                                                                         $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
@@ -147,7 +147,7 @@ function verifyStatic($class)
 /**
  * Create a new spy verifier for the supplied callback.
  *
- * @param callable|null $callback The callback, or null to create an unbound spy verifier.
+ * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
  * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
  * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
  *
@@ -169,8 +169,8 @@ function spy(
 /**
  * Create a new stub verifier for the supplied callback.
  *
- * @param callable|null $callback  The callback, or null to create an unbound stub verifier.
- * @param object|null   $thisValue The $this value.
+ * @param callable|null $callback            The callback, or null to create an unbound stub verifier.
+ * @param object|null   $thisValue           The $this value.
  * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
  * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
  *
@@ -211,7 +211,7 @@ function checkInOrder()
  * @param CallEventCollectionInterface $events,... The events.
  *
  * @return CallEventCollectionInterface The result.
- * @throws Exception If the assertion fails, and the assertion recorder throws exceptions.
+ * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrder()
 {
@@ -239,7 +239,7 @@ function checkInOrderSequence($events)
  * @param mixed<CallEventCollectionInterface> $events The event sequence.
  *
  * @return CallEventCollectionInterface The result.
- * @throws Exception If the assertion fails, and the assertion recorder throws exceptions.
+ * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrderSequence($events)
 {
