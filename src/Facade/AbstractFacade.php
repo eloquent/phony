@@ -55,32 +55,6 @@ abstract class AbstractFacade
     }
 
     /**
-     * Create a new mock.
-     *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
-     *
-     * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
-     */
-    public static function mock(
-        $types = null,
-        $arguments = null,
-        $definition = null,
-        $className = null
-    ) {
-        if (func_num_args() > 1) {
-            $mock = static::driver()->mockBuilderFactory()
-                ->createMock($types, $arguments, $definition, $className);
-        } else {
-            $mock = static::driver()->mockBuilderFactory()->createMock($types);
-        }
-
-        return static::on($mock);
-    }
-
-    /**
      * Create a new full mock.
      *
      * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
@@ -89,7 +63,7 @@ abstract class AbstractFacade
      *
      * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
      */
-    public static function fullMock(
+    public static function mock(
         $types = null,
         $definition = null,
         $className = null
@@ -98,6 +72,37 @@ abstract class AbstractFacade
             static::driver()->mockBuilderFactory()
                 ->createFullMock($types, $definition, $className)
         );
+    }
+
+    /**
+     * Create a new partial mock.
+     *
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null                                                                                   $definition The definition.
+     * @param string|null                                                                                         $className  The class name.
+     *
+     * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
+     */
+    public static function partialMock(
+        $types = null,
+        $arguments = null,
+        $definition = null,
+        $className = null
+    ) {
+        if (func_num_args() > 1) {
+            $mock = static::driver()->mockBuilderFactory()->createPartialMock(
+                $types,
+                $arguments,
+                $definition,
+                $className
+            );
+        } else {
+            $mock = static::driver()->mockBuilderFactory()
+                ->createPartialMock($types);
+        }
+
+        return static::on($mock);
     }
 
     /**

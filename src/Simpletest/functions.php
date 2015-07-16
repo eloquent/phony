@@ -45,6 +45,23 @@ function mockBuilder($types = null, $definition = null, $className = null)
 }
 
 /**
+ * Create a new full mock.
+ *
+ * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+ * @param array|object|null                                                                                   $definition The definition.
+ * @param string|null                                                                                         $className  The class name.
+ *
+ * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
+ */
+function mock($types = null, $definition = null, $className = null)
+{
+    return on(
+        SimpletestFacadeDriver::instance()->mockBuilderFactory()
+            ->createFullMock($types, $definition, $className)
+    );
+}
+
+/**
  * Create a new mock.
  *
  * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
@@ -54,7 +71,7 @@ function mockBuilder($types = null, $definition = null, $className = null)
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
-function mock(
+function partialMock(
     $types = null,
     $arguments = null,
     $definition = null,
@@ -62,30 +79,13 @@ function mock(
 ) {
     if (func_num_args() > 1) {
         $mock = SimpletestFacadeDriver::instance()->mockBuilderFactory()
-            ->createMock($types, $arguments, $definition, $className);
+            ->createPartialMock($types, $arguments, $definition, $className);
     } else {
         $mock = SimpletestFacadeDriver::instance()->mockBuilderFactory()
-            ->createMock($types);
+            ->createPartialMock($types);
     }
 
     return on($mock);
-}
-
-/**
- * Create a new full mock.
- *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
- * @param array|object|null                                                                                   $definition The definition.
- * @param string|null                                                                                         $className  The class name.
- *
- * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
- */
-function fullMock($types = null, $definition = null, $className = null)
-{
-    return on(
-        SimpletestFacadeDriver::instance()->mockBuilderFactory()
-            ->createFullMock($types, $definition, $className)
-    );
 }
 
 /**

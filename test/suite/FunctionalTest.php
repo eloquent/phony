@@ -23,7 +23,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockingStatic()
     {
-        $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
+        $proxy = Phony::partialMock('Eloquent\Phony\Test\TestClassA');
         $proxy->testClassAMethodA('a', 'b')->returns('x');
         $mock = $proxy->mock();
 
@@ -41,7 +41,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockingFunctions()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassA');
         $proxy->testClassAMethodA('a', 'b')->returns('x');
         $mock = $proxy->mock();
 
@@ -58,7 +58,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockCalls()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassB', array('A', 'B'))->mock();
+        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB', array('A', 'B'))->mock();
         $e = 'e';
         $n = 'n';
         $q = 'q';
@@ -84,7 +84,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMagicMethodMocking()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestClassB')->mock();
+        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB')->mock();
 
         $this->assertSame('static magic nonexistent ab', $mock::nonexistent('a', 'b'));
         $this->assertSame('magic nonexistent ab', $mock->nonexistent('a', 'b'));
@@ -100,8 +100,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockMocking()
     {
-        $mock = x\mock();
-        $mockMock = x\mock($mock->className());
+        $mock = x\partialMock();
+        $mockMock = x\partialMock($mock->className());
 
         $this->assertInstanceOf(get_class($mock->mock()), $mockMock->mock());
         $this->assertNotInstanceOf(get_class($mockMock->mock()), $mock->mock());
@@ -303,7 +303,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultStubAnswerCanBeOverridden()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassA');
         $proxy->testClassAMethodA('a', 'b')->returns(123);
         $mock = $proxy->mock();
 
@@ -314,7 +314,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testFullMockDefaultStubAnswerCanBeOverridden()
     {
-        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassA');
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
         $mock = $proxy->mock();
         $proxy->testClassAMethodA('a', 'b')->returns(123);
 
@@ -325,7 +325,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMagicMockDefaultStubAnswerCanBeOverridden()
     {
-        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassB');
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassB');
         $mock = $proxy->mock();
         $proxy->nonexistentA('a', 'b')->returns(123);
 
@@ -336,7 +336,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testCanChainVerificationProxyCalls()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassA');
         $mock = $proxy->mock();
         $mock->testClassAMethodA('a', 'b');
         $mock->testClassAMethodA('c', 'd');
@@ -346,7 +346,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testDoesntCallParentOnInterfaceOnlyMock()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceA');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestInterfaceA');
         $mock = $proxy->mock();
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
@@ -354,7 +354,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultArgumentsNotRecorded()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassC');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassC');
         $proxy->mock()->methodB('a');
 
         $proxy->methodB->calledWith('a');
@@ -362,7 +362,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testProxyStubOverriding()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassA');
         $proxy->testClassAMethodA->returns('x');
         $proxy->testClassAMethodA->returns('y', 'z');
 
@@ -373,14 +373,14 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testCanCallMockedInterfaceMethod()
     {
-        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestInterfaceA'));
+        $proxy = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestInterfaceA'));
 
         $this->assertNull($proxy->mock()->testClassAMethodA('a', 'b'));
     }
 
     public function testCanCallMockedInterfaceMethodWithoutParentClass()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceA');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestInterfaceA');
 
         $this->assertNull($proxy->mock()->testClassAMethodA('a', 'b'));
     }
@@ -391,7 +391,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestTraitA'));
+        $proxy = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestTraitA'));
 
         $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
     }
@@ -402,7 +402,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA'));
+        $proxy = x\partialMock(array('Eloquent\Phony\Test\TestTraitA'));
 
         $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
     }
@@ -413,7 +413,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock(array('stdClass', 'Eloquent\Phony\Test\TestTraitC'));
+        $proxy = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestTraitC'));
 
         $this->assertNull($proxy->mock()->testTraitCMethodA('a', 'b'));
     }
@@ -424,7 +424,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitC'));
+        $proxy = x\partialMock(array('Eloquent\Phony\Test\TestTraitC'));
 
         $this->assertNull($proxy->mock()->testTraitCMethodA('a', 'b'));
     }
@@ -435,14 +435,14 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock(array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestInterfaceA'));
+        $proxy = x\partialMock(array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestInterfaceA'));
 
         $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
     }
 
     public function testCanMockClassWithPrivateConstructor()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassD');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassD');
 
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassD', $proxy->mock());
     }
@@ -453,7 +453,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock('Eloquent\Phony\Test\TestTraitF', array('a', 'b'));
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestTraitF', array('a', 'b'));
 
         $this->assertSame(array('a', 'b'), $proxy->mock()->constructorArguments);
     }
@@ -464,7 +464,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires closure binding.');
         }
 
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassD', array('a', 'b'));
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassD', array('a', 'b'));
 
         $this->assertSame(array('a', 'b'), $proxy->mock()->constructorArguments);
     }
@@ -487,7 +487,7 @@ EOD;
 
     public function testMockAssertionFailureOutput()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassA', null, null, 'PhonyMockAssertionFailure');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassA', null, null, 'PhonyMockAssertionFailure');
         $proxy->setLabel('example');
         $proxy->mock()->testClassAMethodA('a', 'b');
         $expected = <<<'EOD'
@@ -503,7 +503,7 @@ EOD;
 
     public function testMatcherAdaptationForBooleanValues()
     {
-        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassA');
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
         $proxy->testClassAMethodA->with(true)->returns('a');
 
         $this->assertNull($proxy->mock()->testClassAMethodA());
@@ -554,14 +554,14 @@ EOD;
 
     public function testProxyCaseInsensitivity()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassA');
 
         $this->assertSame($proxy->testClassAMethodA, $proxy->testclassamethoda);
     }
 
     public function testTraversableInterfaceMocking()
     {
-        x\mock('Eloquent\Phony\Test\TestInterfaceC');
+        x\partialMock('Eloquent\Phony\Test\TestInterfaceC');
 
         $this->assertTrue(true);
     }
@@ -572,7 +572,7 @@ EOD;
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock('Eloquent\Phony\Test\TestTraitD', array('a', 'b', 'c'));
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestTraitD', array('a', 'b', 'c'));
 
         $this->assertSame(array('a', 'b', 'c'), $proxy->mock()->constructorArguments);
     }
@@ -583,7 +583,7 @@ EOD;
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\mock(
+        $proxy = x\partialMock(
             array('Eloquent\Phony\Test\TestTraitD', 'Eloquent\Phony\Test\TestTraitE'),
             array('a', 'b', 'c')
         );
@@ -641,7 +641,7 @@ EOD;
 
     public function testCanForwardToMagicCallAfterFullMock()
     {
-        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassB');
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassB');
         $mock = $proxy->mock();
 
         $this->assertNull($mock->nonexistent());
@@ -658,7 +658,7 @@ EOD;
 
     public function testCanForwardToMagicCallAfterPartialMock()
     {
-        $proxy = x\mock('Eloquent\Phony\Test\TestClassB');
+        $proxy = x\partialMock('Eloquent\Phony\Test\TestClassB');
         $mock = $proxy->mock();
 
         $this->assertSame('magic nonexistent a', $mock->nonexistent('a'));
