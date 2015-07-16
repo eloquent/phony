@@ -45,7 +45,7 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
      */
     protected function matcherClassName()
     {
-        return 'Phake_Matchers_IArgumentMatcher';
+        return 'Phake_Matchers_IChainableArgumentMatcher';
     }
 
     /**
