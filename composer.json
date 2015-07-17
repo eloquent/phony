@@ -44,10 +44,7 @@
     "autoload-dev": {
         "psr-4": {
             "Eloquent\\Phony\\": ["test/src", "test/benchmarks"]
-        },
-        "files": [
-            "test/src/TestClassOldConstructor.php"
-        ]
+        }
     },
     "extra": {
         "branch-alias": {

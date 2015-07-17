@@ -122,16 +122,11 @@ class FeatureDetector implements FeatureDetectorInterface
     {
         return array(
             'object.constructor.php4' => function ($detector) {
-                $symbolName = $detector->uniqueSymbolName();
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return true;
+                }
 
-                return $detector->checkStatement(
-                    sprintf(
-                        'class %s{function %s(){}}',
-                        $symbolName,
-                        $symbolName
-                    ),
-                    false
-                );
+                return version_compare(PHP_VERSION, '7.x', '<');
             },
 
             'closure' => function ($detector) {
