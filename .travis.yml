@@ -12,8 +12,6 @@ matrix:
         - php: nightly
         - php: hhvm
     fast_finish: true
-install:
-    - composer selfupdate --no-interaction
-    - composer install --no-interaction --no-progress --ignore-platform-reqs
-script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing %...; echo; phpunit --stop-on-failure test/suite/%'"
+install: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
+# script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing %...; echo; phpunit --stop-on-failure test/suite/%'"
 sudo: false

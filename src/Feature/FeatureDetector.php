@@ -121,6 +121,19 @@ class FeatureDetector implements FeatureDetectorInterface
     public function standardFeatures()
     {
         return array(
+            'object.constructor.php4' => function ($detector) {
+                $symbolName = $detector->uniqueSymbolName();
+
+                return $detector->checkStatement(
+                    sprintf(
+                        'class %s{function %s(){}}',
+                        $symbolName,
+                        $symbolName
+                    ),
+                    false
+                );
+            },
+
             'closure' => function ($detector) {
                 return $detector->checkInternalClass('Closure');
             },
