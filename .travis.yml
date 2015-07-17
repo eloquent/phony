@@ -13,5 +13,4 @@ matrix:
         - php: hhvm
     fast_finish: true
 install: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
-# script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing %...; echo; phpunit --stop-on-failure test/suite/%'"
-sudo: false
+script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing %...; echo; phpunit --stop-on-failure test/suite/%'"
