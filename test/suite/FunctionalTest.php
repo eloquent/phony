@@ -222,38 +222,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame($callback, $stub());
     }
 
-    public function testStubThisBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this;
-        };
-
-        $stub = x\stub($callback)->forwards();
-
-        $this->assertSame($callback, $stub());
-    }
-
-    public function testStubClassBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return self::testClassAStaticMethodC('a', 'b');
-        };
-
-        $stub = x\stub($callback);
-        $stub->setSelf('Eloquent\Phony\Test\TestClassA');
-        $stub->forwards();
-
-        $this->assertSame('protected ab', $stub());
-    }
-
     public function testTraversableSpyingStatic()
     {
         $stub = Phony::stub(null, null, null, true);

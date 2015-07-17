@@ -11,8 +11,6 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
-use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
@@ -54,15 +52,13 @@ class StubFactory implements StubFactoryInterface
      * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
      * @param InvokerInterface|null            $invoker            The invoker to use.
      * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
-     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
      */
     public function __construct(
         SequencerInterface $labelSequencer = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
-        InvocableInspectorInterface $invocableInspector = null,
-        FeatureDetectorInterface $featureDetector = null
+        InvocableInspectorInterface $invocableInspector = null
     ) {
         if (null === $labelSequencer) {
             $labelSequencer = Sequencer::sequence('stub-label');
@@ -79,16 +75,12 @@ class StubFactory implements StubFactoryInterface
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
-        if (null === $featureDetector) {
-            $featureDetector = FeatureDetector::instance();
-        }
 
         $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
-        $this->featureDetector = $featureDetector;
     }
 
     /**
@@ -142,16 +134,6 @@ class StubFactory implements StubFactoryInterface
     }
 
     /**
-     * Get the feature detector.
-     *
-     * @return FeatureDetectorInterface The feature detector.
-     */
-    public function featureDetector()
-    {
-        return $this->featureDetector;
-    }
-
-    /**
      * Create a new stub.
      *
      * @param callable|null $callback The callback, or null to create an unbound stub.
@@ -168,8 +150,7 @@ class StubFactory implements StubFactoryInterface
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
     }
 
@@ -179,5 +160,4 @@ class StubFactory implements StubFactoryInterface
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
-    private $featureDetector;
 }

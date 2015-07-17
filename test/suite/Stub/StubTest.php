@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -34,7 +33,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = new FeatureDetector();
         $this->subject = new Stub(
             $this->callback,
             $this->self,
@@ -42,8 +40,7 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
 
         $this->callsA = array();
@@ -148,7 +145,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
     }
 
     public function testConstructorDefaults()
@@ -164,7 +160,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
     public function testSetSelf()
@@ -383,41 +378,6 @@ class StubTest extends PHPUnit_Framework_TestCase
             ),
             $this->callsB
         );
-    }
-
-    public function testCallsWithThisBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $result = null;
-        $callback = function () use (&$result) {
-            $result = $this->testClassAMethodC('a', 'b');
-        };
-        $this->self = new TestClassA();
-        $this->subject = new Stub(null, $this->self);
-        $this->subject->callsWith($callback)->returns();
-        call_user_func($this->subject);
-
-        $this->assertSame('protected ab', $result);
-    }
-
-    public function testCallsWithStaticBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $result = null;
-        $callback = function () use (&$result) {
-            $result = self::testClassAStaticMethodC('a', 'b');
-        };
-        $this->subject = new Stub(null, 'Eloquent\Phony\Test\TestClassA');
-        $this->subject->callsWith($callback)->returns();
-        call_user_func($this->subject);
-
-        $this->assertSame('protected ab', $result);
     }
 
     public function testCallsWithWithReferenceParameters()
@@ -670,37 +630,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('C', 'g', 'h'), call_user_func($this->subject, 'g', 'h'));
     }
 
-    public function testDoesThisBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this->testClassAMethodC('a', 'b');
-        };
-        $this->self = new TestClassA();
-        $this->subject = new Stub(null, $this->self);
-        $this->subject->does($callback);
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
-    public function testDoesStaticBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return self::testClassAStaticMethodC('a', 'b');
-        };
-        $this->subject = new Stub(null, 'Eloquent\Phony\Test\TestClassA');
-        $this->subject->does($callback);
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
     public function testDoesWithReferenceParameters()
     {
         $a = null;
@@ -847,49 +776,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $subject->forwards();
 
         $this->assertEquals($expected, call_user_func_array($subject, $arguments));
-    }
-
-    public function testForwardsThisBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this->testClassAMethodC('a', 'b');
-        };
-        $this->self = new TestClassA();
-        $this->subject = new Stub($callback, $this->self);
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
-    public function testForwardsStaticBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return self::testClassAStaticMethodC('a', 'b');
-        };
-        $this->subject = new Stub($callback, 'Eloquent\Phony\Test\TestClassA');
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
-    public function testForwardsWithUnbindableSelf()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this;
-        };
-        $this->subject = new Stub($callback, 111);
-
-        $this->assertSame($this, call_user_func($this->subject));
     }
 
     public function testForwardsWithReferenceParameters()

@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -30,14 +29,12 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = new FeatureDetector();
         $this->subject = new StubFactory(
             $this->labelSequencer,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
     }
 
@@ -48,7 +45,6 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
     }
 
     public function testConstructorDefaults()
@@ -60,7 +56,6 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
     public function testCreate()
@@ -74,8 +69,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
         $actual = $this->subject->create($callback, $self);
 
@@ -86,7 +80,6 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->invoker, $actual->invoker());
         $this->assertSame($this->invocableInspector, $actual->invocableInspector());
-        $this->assertSame($this->featureDetector, $actual->featureDetector());
     }
 
     public function testInstance()
