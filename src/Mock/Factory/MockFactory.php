@@ -24,6 +24,7 @@ use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use ParseError;
 use ParseException;
 use ReflectionClass;
 
@@ -145,6 +146,15 @@ class MockFactory implements MockFactoryInterface
 
         try { // @codeCoverageIgnore
             eval($source);
+        } catch (ParseError $e) {
+            // @codeCoverageIgnoreStart
+            throw new MockGenerationFailedException(
+                $definition,
+                $source,
+                error_get_last(),
+                $e
+            );
+            // @codeCoverageIgnoreEnd
         } catch (ParseException $e) {
             // @codeCoverageIgnoreStart
             throw new MockGenerationFailedException(

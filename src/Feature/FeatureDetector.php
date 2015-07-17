@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Feature;
 
 use Eloquent\Phony\Feature\Exception\UndefinedFeatureException;
+use ParseError;
 use ParseException;
 use ReflectionClass;
 use ReflectionFunction;
@@ -366,12 +367,16 @@ class FeatureDetector implements FeatureDetectorInterface
         if ($useClosure) {
             try { // @codeCoverageIgnore
                 $result = eval(sprintf('function(){%s;};return true;', $source));
+            } catch (ParseError $e) {
+                $result = false; // @codeCoverageIgnore
             } catch (ParseException $e) {
                 $result = false; // @codeCoverageIgnore
             }
         } else {
             try { // @codeCoverageIgnore
                 $result = eval(sprintf('%s;return true;', $source));
+            } catch (ParseError $e) {
+                $result = false; // @codeCoverageIgnore
             } catch (ParseException $e) {
                 $result = false; // @codeCoverageIgnore
             }
