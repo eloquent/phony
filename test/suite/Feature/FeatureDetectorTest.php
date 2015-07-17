@@ -129,8 +129,6 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
 
     public function testCheckStatement()
     {
-        $this->markTestIncomplete('Needs re-work for PHP7.');
-
         $this->assertTrue($this->subject->checkStatement(''));
         $this->assertTrue($this->subject->checkStatement('return'));
         $this->assertFalse($this->subject->checkStatement('{'));

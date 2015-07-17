@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Feature;
 
 use Eloquent\Phony\Feature\Exception\UndefinedFeatureException;
+use ParseException;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -123,7 +124,7 @@ class FeatureDetector implements FeatureDetectorInterface
         return array(
             'object.constructor.php4' => function ($detector) {
                 if ($detector->isSupported('runtime.hhvm')) {
-                    return true;
+                    return true; // @codeCoverageIgnore
                 }
 
                 return version_compare(PHP_VERSION, '7.x', '<');
@@ -363,9 +364,17 @@ class FeatureDetector implements FeatureDetectorInterface
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
 
         if ($useClosure) {
-            $result = eval(sprintf('function(){%s;};return true;', $source));
+            try { // @codeCoverageIgnore
+                $result = eval(sprintf('function(){%s;};return true;', $source));
+            } catch (ParseException $e) {
+                $result = false; // @codeCoverageIgnore
+            }
         } else {
-            $result = eval(sprintf('%s;return true;', $source));
+            try { // @codeCoverageIgnore
+                $result = eval(sprintf('%s;return true;', $source));
+            } catch (ParseException $e) {
+                $result = false; // @codeCoverageIgnore
+            }
         }
 
         error_reporting($reporting);

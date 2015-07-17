@@ -24,6 +24,7 @@ use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use ParseException;
 use ReflectionClass;
 
 /**
@@ -141,7 +142,20 @@ class MockFactory implements MockFactoryInterface
         $source = $this->generator->generate($definition, $className);
 
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
-        eval($source);
+
+        try { // @codeCoverageIgnore
+            eval($source);
+        } catch (ParseException $e) {
+            // @codeCoverageIgnoreStart
+            throw new MockGenerationFailedException(
+                $definition,
+                $source,
+                error_get_last(),
+                $e
+            );
+            // @codeCoverageIgnoreEnd
+        }
+
         error_reporting($reporting);
 
         if (!class_exists($className, false)) {
