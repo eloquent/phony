@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Feature;
 
-use Eloquent\Fixie\Reader\FixtureReader;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -80,37 +79,37 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->subject->isSupported('x');
     }
 
-    // public function featureData()
-    // {
-    //     $reader = new FixtureReader();
+    public function featureData()
+    {
+        $json = file_get_contents(__DIR__ . '/../../fixture/feature-detector/features.json');
 
-    //     return $reader->openFile(__DIR__ . '/../../fixture/feature-detector/features.fixie.yml');
-    // }
+        return json_decode($json, true);
+    }
 
-    // /**
-    //  * @dataProvider featureData
-    //  */
-    // public function testFeatureDetection(
-    //     $feature,
-    //     $minimum,
-    //     $maximum,
-    //     $exclude,
-    //     $hhvmMinimum,
-    //     $hhmvMaximum,
-    //     $hhvmExclude
-    // ) {
-    //     if (defined('HHVM_VERSION')) {
-    //         $expected = version_compare(HHVM_VERSION, $hhvmMinimum, '>=') &&
-    //             version_compare(HHVM_VERSION, $hhmvMaximum, '<') &&
-    //             $this->checkVersionIncluded(HHVM_VERSION, $hhvmExclude);
-    //     } else {
-    //         $expected = version_compare(PHP_VERSION, $minimum, '>=') &&
-    //             version_compare(PHP_VERSION, $maximum, '<') &&
-    //             $this->checkVersionIncluded(PHP_VERSION, $exclude);
-    //     }
+    /**
+     * @dataProvider featureData
+     */
+    public function testFeatureDetection(
+        $feature,
+        $minimum,
+        $maximum,
+        $exclude,
+        $hhvmMinimum,
+        $hhmvMaximum,
+        $hhvmExclude
+    ) {
+        if (defined('HHVM_VERSION')) {
+            $expected = version_compare(HHVM_VERSION, $hhvmMinimum, '>=') &&
+                version_compare(HHVM_VERSION, $hhmvMaximum, '<') &&
+                $this->checkVersionIncluded(HHVM_VERSION, $hhvmExclude);
+        } else {
+            $expected = version_compare(PHP_VERSION, $minimum, '>=') &&
+                version_compare(PHP_VERSION, $maximum, '<') &&
+                $this->checkVersionIncluded(PHP_VERSION, $exclude);
+        }
 
-    //     $this->assertSame($expected, $this->subject->isSupported($feature));
-    // }
+        $this->assertSame($expected, $this->subject->isSupported($feature));
+    }
 
     public function testRuntime()
     {
