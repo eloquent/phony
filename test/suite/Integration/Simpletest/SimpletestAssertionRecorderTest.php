@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Integration\Simpletest;
 
 use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
+use Eloquent\Phony\Feature\FeatureDetector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use SimpleReporter;
@@ -23,6 +24,12 @@ class SimpletestAssertionRecorderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->featureDetector = FeatureDetector::instance();
+
+        if (!$this->featureDetector->isSupported('object.constructor.php4')) {
+            $this->markTestSkipped('Requires PHP4-style constructors.');
+        }
+
         $this->simpletestContext = new SimpleTestContext();
         $this->simpletestReporter = new SimpleReporter();
         $this->simpletestContext->setReporter($this->simpletestReporter);
