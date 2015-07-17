@@ -103,6 +103,10 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testGenerate($testName)
     {
+        if ($this->featureDetector->isSupported('object.constructor.php4')) {
+            require_once __DIR__ . '/../../../src/TestClassOldConstructor.php';
+        }
+
         $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
 
         $detector = FeatureDetector::instance();
