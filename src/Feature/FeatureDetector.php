@@ -322,12 +322,7 @@ class FeatureDetector implements FeatureDetectorInterface
     public function runtime()
     {
         if (null === $this->runtime) {
-            if (
-                false === strpos(
-                    $this->captureOutput('phpinfo', array(0)),
-                    'HipHop'
-                )
-            ) {
+            if (false === strpos(phpversion(), 'hhvm')) {
                 $this->runtime = 'php';
             } else {
                 $this->runtime = 'hhvm'; // @codeCoverageIgnore
@@ -424,28 +419,6 @@ class FeatureDetector implements FeatureDetectorInterface
         }
 
         return false;
-    }
-
-    /**
-     * Capture the output produced by a callback.
-     *
-     * @param callable                  $callback  The callback.
-     * @param array<integer,mixed>|null $arguments Arguments to pass to the callback.
-     *
-     * @return string The captured output.
-     */
-    public function captureOutput($callback, array $arguments = null)
-    {
-        if (null === $arguments) {
-            $arguments = array();
-        }
-
-        ob_start();
-        call_user_func_array($callback, $arguments);
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        return $output;
     }
 
     /**

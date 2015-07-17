@@ -149,12 +149,6 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->checkInternalMethod('ReflectionClass', 'nonexistent'));
     }
 
-    public function testCaptureOutput()
-    {
-        $this->assertSame('ab', $this->subject->captureOutput('printf', array('%s%s', 'a', 'b')));
-        $this->assertSame('c', $this->subject->captureOutput(function () { echo 'c'; }));
-    }
-
     public function testUniqueSymbolName()
     {
         $actual = $this->subject->uniqueSymbolName();
