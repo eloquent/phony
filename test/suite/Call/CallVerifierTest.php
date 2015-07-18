@@ -14,8 +14,8 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Cardinality\Cardinality;
@@ -536,7 +536,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against #0{}."
+            'Unable to match exceptions against #0{}.'
         );
         $this->subjectWithException->checkThrew((object) array());
     }

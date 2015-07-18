@@ -75,6 +75,6 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new EqualToMatcher(111);
 
-        $this->assertSame("111", $this->subject->describe());
+        $this->assertSame('111', $this->subject->describe());
     }
 }

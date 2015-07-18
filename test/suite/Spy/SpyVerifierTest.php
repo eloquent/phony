@@ -1245,7 +1245,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against #0{}."
+            'Unable to match exceptions against #0{}.'
         );
         $this->subject->checkThrew((object) array());
     }
@@ -1421,7 +1421,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Unable to match exceptions against #0{}."
+            'Unable to match exceptions against #0{}.'
         );
         $this->subject->threw((object) array());
     }

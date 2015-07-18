@@ -14,8 +14,8 @@ namespace Eloquent\Phony\Assertion\Renderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
@@ -475,7 +475,7 @@ class AssertionRenderer implements AssertionRendererInterface
         foreach ($call->traversableEvents() as $event) {
             if ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
-                    "    - produced %s: %s",
+                    '    - produced %s: %s',
                     $this->renderValue($event->key()),
                     $this->renderValue($event->value())
                 );
