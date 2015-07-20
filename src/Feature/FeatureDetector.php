@@ -365,21 +365,21 @@ class FeatureDetector implements FeatureDetectorInterface
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
 
         if ($useClosure) {
-            try { // @codeCoverageIgnore
+            try {
                 $result = eval(sprintf('function(){%s;};return true;', $source));
-            } catch (ParseError $e) {
-                $result = false; // @codeCoverageIgnore
+            } catch (ParseError $e) { // @codeCoverageIgnoreStart
+                $result = false;
             } catch (ParseException $e) {
-                $result = false; // @codeCoverageIgnore
-            }
+                $result = false;
+            } // @codeCoverageIgnoreEnd
         } else {
-            try { // @codeCoverageIgnore
+            try {
                 $result = eval(sprintf('%s;return true;', $source));
-            } catch (ParseError $e) {
-                $result = false; // @codeCoverageIgnore
+            } catch (ParseError $e) { // @codeCoverageIgnoreStart
+                $result = false;
             } catch (ParseException $e) {
-                $result = false; // @codeCoverageIgnore
-            }
+                $result = false;
+            } // @codeCoverageIgnoreEnd
         }
 
         error_reporting($reporting);

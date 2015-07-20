@@ -144,27 +144,23 @@ class MockFactory implements MockFactoryInterface
 
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
 
-        try { // @codeCoverageIgnore
+        try {
             eval($source);
-        } catch (ParseError $e) {
-            // @codeCoverageIgnoreStart
+        } catch (ParseError $e) { // @codeCoverageIgnoreStart
             throw new MockGenerationFailedException(
                 $definition,
                 $source,
                 error_get_last(),
                 $e
             );
-            // @codeCoverageIgnoreEnd
         } catch (ParseException $e) {
-            // @codeCoverageIgnoreStart
             throw new MockGenerationFailedException(
                 $definition,
                 $source,
                 error_get_last(),
                 $e
             );
-            // @codeCoverageIgnoreEnd
-        }
+        } // @codeCoverageIgnoreEnd
 
         error_reporting($reporting);
 

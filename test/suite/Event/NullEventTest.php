@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Event;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
 class NullEventTest extends PHPUnit_Framework_TestCase
