@@ -38,23 +38,33 @@ class ProphecyMatcherDriver extends AbstractMatcherDriver
     }
 
     /**
-     * Get the matcher class name.
+     * Returns true if this matcher driver's classes or interfaces exist.
      *
-     * @return string The matcher class name.
+     * @return boolean True if available.
      */
-    protected function matcherClassName()
+    public function isAvailable()
     {
-        return 'Prophecy\Argument\Token\TokenInterface';
+        return interface_exists('Prophecy\Argument\Token\TokenInterface');
     }
 
     /**
-     * Wrap the supplied matcher in a Phony matcher.
+     * Get the supported matcher class names.
+     *
+     * @return array<string> The matcher class names.
+     */
+    public function matcherClassNames()
+    {
+        return array('Prophecy\Argument\Token\TokenInterface');
+    }
+
+    /**
+     * Wrap the supplied third party matcher.
      *
      * @param object $matcher The matcher to wrap.
      *
      * @return MatcherInterface The wrapped matcher.
      */
-    protected function wrapMatcher($matcher)
+    public function wrapMatcher($matcher)
     {
         if (is_a($matcher, 'Prophecy\Argument\Token\AnyValuesToken')) {
             return WildcardMatcher::instance();

@@ -7,12 +7,14 @@
   ([#17]).
 - **[NEW]** Implemented `Call::argument()` ([#56]).
 - **[NEW]** Implemented `MockBuilder::source()` for easier debugging ([#45]).
+- **[IMPROVED]** Optimizations to the matcher driver system ([#67]).
 - **[IMPROVED]** Optimizations to the equal to matcher ([#69]).
 - **[IMPROVED]** Calls to eval() no longer use @ suppression.
 
 [#17]: https://github.com/eloquent/phony/issues/17
 [#45]: https://github.com/eloquent/phony/issues/45
 [#56]: https://github.com/eloquent/phony/issues/56
+[#67]: https://github.com/eloquent/phony/issues/67
 [#69]: https://github.com/eloquent/phony/issues/69
 
 ## 0.2.1 (2015-02-28)

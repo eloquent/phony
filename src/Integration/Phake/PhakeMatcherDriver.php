@@ -39,23 +39,37 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
     }
 
     /**
-     * Get the matcher class name.
+     * Returns true if this matcher driver's classes or interfaces exist.
      *
-     * @return string The matcher class name.
+     * @return boolean True if available.
      */
-    protected function matcherClassName()
+    public function isAvailable()
     {
-        return 'Phake_Matchers_IChainableArgumentMatcher';
+        return interface_exists('Phake_Matchers_IArgumentMatcher') ||
+            interface_exists('Phake_Matchers_IChainableArgumentMatcher');
     }
 
     /**
-     * Wrap the supplied matcher in a Phony matcher.
+     * Get the supported matcher class names.
+     *
+     * @return array<string> The matcher class names.
+     */
+    public function matcherClassNames()
+    {
+        return array(
+            'Phake_Matchers_IArgumentMatcher',
+            'Phake_Matchers_IChainableArgumentMatcher',
+        );
+    }
+
+    /**
+     * Wrap the supplied third party matcher.
      *
      * @param object $matcher The matcher to wrap.
      *
      * @return MatcherInterface The wrapped matcher.
      */
-    protected function wrapMatcher($matcher)
+    public function wrapMatcher($matcher)
     {
         if (is_a($matcher, 'Phake_Matchers_AnyParameters')) {
             return WildcardMatcher::instance();

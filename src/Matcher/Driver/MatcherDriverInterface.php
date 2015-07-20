@@ -11,34 +11,33 @@
 
 namespace Eloquent\Phony\Matcher\Driver;
 
+use Eloquent\Phony\Matcher\MatcherInterface;
+
 /**
  * The interface implemented by matcher drivers.
  */
 interface MatcherDriverInterface
 {
     /**
-     * Returns true if the matchers supported by this driver are available.
+     * Returns true if this matcher driver's classes or interfaces exist.
      *
      * @return boolean True if available.
      */
     public function isAvailable();
 
     /**
-     * Returns true if the supplied matcher is supported by this driver.
+     * Get the supported matcher class names.
      *
-     * @param object $matcher The matcher to test.
-     *
-     * @return boolean True if supported.
+     * @return array<string> The matcher class names.
      */
-    public function isSupported($matcher);
+    public function matcherClassNames();
 
     /**
-     * If the supplied matcher is supported, replace it with an equivalent Phony
-     * matcher.
+     * Wrap the supplied third party matcher.
      *
-     * @param object &$matcher The matcher to adapt.
+     * @param object $matcher The matcher to wrap.
      *
-     * @return boolean True if the matcher is supported.
+     * @return MatcherInterface The wrapped matcher.
      */
-    public function adapt(&$matcher);
+    public function wrapMatcher($matcher);
 }

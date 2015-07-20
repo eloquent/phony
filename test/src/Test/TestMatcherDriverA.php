@@ -21,19 +21,13 @@ class TestMatcherDriverA implements MatcherDriverInterface
         return true;
     }
 
-    public function isSupported($matcher)
+    public function matcherClassNames()
     {
-        return $matcher instanceof TestMatcherA;
+        return array('Eloquent\Phony\Test\TestMatcherA');
     }
 
-    public function adapt(&$matcher)
+    public function wrapMatcher($matcher)
     {
-        if ($this->isSupported($matcher)) {
-            $matcher = new EqualToMatcher('a');
-
-            return true;
-        }
-
-        return false;
+        return new EqualToMatcher('a');
     }
 }

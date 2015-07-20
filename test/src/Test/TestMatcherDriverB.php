@@ -18,22 +18,16 @@ class TestMatcherDriverB implements MatcherDriverInterface
 {
     public function isAvailable()
     {
-        return false;
+        return true;
     }
 
-    public function isSupported($matcher)
+    public function matcherClassNames()
     {
-        return $matcher instanceof TestMatcherB;
+        return array('Eloquent\Phony\Test\TestMatcherB');
     }
 
-    public function adapt(&$matcher)
+    public function wrapMatcher($matcher)
     {
-        if ($this->isSupported($matcher)) {
-            $matcher = new EqualToMatcher('b');
-
-            return true;
-        }
-
-        return false;
+        return new EqualToMatcher('b');
     }
 }

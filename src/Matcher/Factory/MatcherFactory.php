@@ -41,7 +41,7 @@ class MatcherFactory implements MatcherFactoryInterface
     {
         if (null === self::$instance) {
             self::$instance = new self();
-            self::$instance->addAvailableMatcherDrivers();
+            self::$instance->addDefaultMatcherDrivers();
         }
 
         return self::$instance;
@@ -69,19 +69,14 @@ class MatcherFactory implements MatcherFactoryInterface
             $wildcardAnyMatcher = WildcardMatcher::instance();
         }
 
-        $this->drivers = $drivers;
+        $this->drivers = array();
+        $this->driverIndex = array();
         $this->anyMatcher = $anyMatcher;
         $this->wildcardAnyMatcher = $wildcardAnyMatcher;
-    }
 
-    /**
-     * Set the matcher drivers.
-     *
-     * @param array<MatcherDriverInterface> $drivers The matcher drivers.
-     */
-    public function setMatcherDrivers(array $drivers)
-    {
-        $this->drivers = $drivers;
+        foreach ($drivers as $driver) {
+            $this->addMatcherDriver($driver);
+        }
     }
 
     /**
@@ -93,33 +88,27 @@ class MatcherFactory implements MatcherFactoryInterface
     {
         if (!in_array($driver, $this->drivers, true)) {
             $this->drivers[] = $driver;
+
+            if ($driver->isAvailable()) {
+                foreach ($driver->matcherClassNames() as $className) {
+                    $this->driverIndex[$className] = $driver;
+                }
+            }
         }
     }
 
     /**
-     * Add a matcher driver, only if the relevant matchers are available.
-     *
-     * @param MatcherDriverInterface $driver The matcher driver.
+     * Add the default matcher drivers.
      */
-    public function addMatcherDriverIfAvailable(MatcherDriverInterface $driver)
+    public function addDefaultMatcherDrivers()
     {
-        if ($driver->isAvailable()) {
-            $this->addMatcherDriver($driver);
-        }
-    }
-
-    /**
-     * Add any matcher drivers for which the relevant matchers are available.
-     */
-    public function addAvailableMatcherDrivers()
-    {
-        $this->addMatcherDriverIfAvailable(HamcrestMatcherDriver::instance());
-        $this->addMatcherDriverIfAvailable(CounterpartMatcherDriver::instance());
-        $this->addMatcherDriverIfAvailable(PhpunitMatcherDriver::instance());
-        $this->addMatcherDriverIfAvailable(SimpletestMatcherDriver::instance());
-        $this->addMatcherDriverIfAvailable(PhakeMatcherDriver::instance());
-        $this->addMatcherDriverIfAvailable(ProphecyMatcherDriver::instance());
-        $this->addMatcherDriverIfAvailable(MockeryMatcherDriver::instance());
+        $this->addMatcherDriver(HamcrestMatcherDriver::instance());
+        $this->addMatcherDriver(CounterpartMatcherDriver::instance());
+        $this->addMatcherDriver(PhpunitMatcherDriver::instance());
+        $this->addMatcherDriver(SimpletestMatcherDriver::instance());
+        $this->addMatcherDriver(PhakeMatcherDriver::instance());
+        $this->addMatcherDriver(ProphecyMatcherDriver::instance());
+        $this->addMatcherDriver(MockeryMatcherDriver::instance());
     }
 
     /**
@@ -146,8 +135,8 @@ class MatcherFactory implements MatcherFactoryInterface
         }
 
         if (is_object($value)) {
-            foreach ($this->drivers as $driver) {
-                if ($driver->isSupported($value)) {
+            foreach ($this->driverIndex as $className => $driver) {
+                if (is_a($value, $className)) {
                     return true;
                 }
             }
@@ -173,9 +162,9 @@ class MatcherFactory implements MatcherFactoryInterface
         }
 
         if (is_object($value)) {
-            foreach ($this->drivers as $driver) {
-                if ($driver->adapt($value)) {
-                    return $value;
+            foreach ($this->driverIndex as $className => $driver) {
+                if (is_a($value, $className)) {
+                    return $driver->wrapMatcher($value);
                 }
             }
         }
@@ -203,7 +192,32 @@ class MatcherFactory implements MatcherFactoryInterface
         $matchers = array();
 
         foreach ($values as $value) {
-            $matchers[] = $this->adapt($value);
+            if (
+                $value instanceof MatcherInterface ||
+                $value instanceof WildcardMatcherInterface
+            ) {
+                $matchers[] = $value;
+
+                continue;
+            }
+
+            if (is_object($value)) {
+                foreach ($this->driverIndex as $className => $driver) {
+                    if (is_a($value, $className)) {
+                        $matchers[] = $driver->wrapMatcher($value);
+
+                        continue 2;
+                    }
+                }
+            }
+
+            if ('*' === $value) {
+                $matchers[] = $this->wildcardAnyMatcher;
+            } elseif ('~' === $value) {
+                $matchers[] = $this->anyMatcher;
+            } else {
+                $matchers[] = new EqualToMatcher($value);
+            }
         }
 
         return $matchers;
@@ -261,6 +275,7 @@ class MatcherFactory implements MatcherFactoryInterface
 
     private static $instance;
     private $drivers;
+    private $driverIndex;
     private $anyMatcher;
     private $wildcardAnyMatcher;
 }
