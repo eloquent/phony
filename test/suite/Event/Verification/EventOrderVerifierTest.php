@@ -56,7 +56,6 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckInOrder()
     {
-        $this->assertTrue((boolean) $this->subject->checkInOrder());
         $this->assertTrue((boolean) $this->subject->checkInOrder($this->callA));
         $this->assertTrue((boolean) $this->subject->checkInOrder($this->callA, $this->callB, $this->callC));
         $this->assertTrue(
@@ -78,6 +77,7 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
                 new EventCollection(array($this->callA, $this->callC))
             )
         );
+        $this->assertFalse((boolean) $this->subject->checkInOrder());
         $this->assertFalse((boolean) $this->subject->checkInOrder($this->callB, $this->callA));
         $this->assertFalse((boolean) $this->subject->checkInOrder($this->callC, $this->callB));
         $this->assertFalse((boolean) $this->subject->checkInOrder($this->callA, $this->callA));
@@ -127,7 +127,6 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testInOrder()
     {
-        $this->assertEquals(new EventCollection(), $this->subject->inOrder());
         $this->assertEquals(new EventCollection(array($this->callA)), $this->subject->inOrder($this->callA));
         $this->assertEquals(
             new EventCollection(array($this->callA, $this->callB, $this->callC)),
@@ -176,6 +175,15 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->inOrder($this->callA, $this->callC, $this->callB);
+    }
+
+    public function testInOrderFailureEmpty()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected events. No events recorded.'
+        );
+        $this->subject->inOrder();
     }
 
     public function testInOrderFailureOnlySuppliedEvents()
@@ -286,7 +294,6 @@ EOD;
 
     public function testCheckInOrderSequence()
     {
-        $this->assertTrue((boolean) $this->subject->checkInOrderSequence(array()));
         $this->assertTrue((boolean) $this->subject->checkInOrderSequence(array($this->callA)));
         $this->assertTrue(
             (boolean) $this->subject->checkInOrderSequence(array($this->callA, $this->callB, $this->callC))
@@ -318,6 +325,7 @@ EOD;
                 )
             )
         );
+        $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array()));
         $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array($this->callB, $this->callA)));
         $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array($this->callC, $this->callB)));
         $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array($this->callA, $this->callA)));
@@ -375,7 +383,6 @@ EOD;
 
     public function testInOrderSequence()
     {
-        $this->assertEquals(new EventCollection(), $this->subject->inOrderSequence(array()));
         $this->assertEquals(
             new EventCollection(array($this->callA)),
             $this->subject->inOrderSequence(array($this->callA))
@@ -433,6 +440,15 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->inOrderSequence(array($this->callA, $this->callC, $this->callB));
+    }
+
+    public function testInOrderSequenceFailureEmpty()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected events. No events recorded.'
+        );
+        $this->subject->inOrderSequence(array());
     }
 
     public function testInOrderSequenceFailureOnlySuppliedEvents()
@@ -545,6 +561,73 @@ EOD;
             "Cannot verify event order with supplied value of type 'stdClass'."
         );
         $this->subject->inOrderSequence(array((object) array()));
+    }
+
+    public function testCheckAnyOrder()
+    {
+        $this->assertTrue((boolean) $this->subject->checkAnyOrder($this->callA));
+        $this->assertTrue((boolean) $this->subject->checkAnyOrder($this->callA, $this->callB, $this->callC));
+        $this->assertTrue((boolean) $this->subject->checkAnyOrder($this->callC, $this->callB, $this->callA));
+        $this->assertFalse((boolean) $this->subject->checkAnyOrder());
+    }
+
+    public function testAnyOrder()
+    {
+        $this->assertEquals(new EventCollection(array($this->callA)), $this->subject->anyOrder($this->callA));
+        $this->assertEquals(
+            new EventCollection(array($this->callA, $this->callB, $this->callC)),
+            $this->subject->anyOrder($this->callA, $this->callB, $this->callC)
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->callA, $this->callB, $this->callC)),
+            $this->subject->anyOrder($this->callC, $this->callB, $this->callA)
+        );
+    }
+
+    public function testAnyOrderFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected events. No events recorded.'
+        );
+        $this->subject->anyOrder();
+    }
+
+    public function testCheckAnyOrderSequence()
+    {
+        $this->assertTrue((boolean) $this->subject->checkAnyOrderSequence(array($this->callA)));
+        $this->assertTrue(
+            (boolean) $this->subject->checkAnyOrderSequence(array($this->callA, $this->callB, $this->callC))
+        );
+        $this->assertTrue(
+            (boolean) $this->subject->checkAnyOrderSequence(array($this->callC, $this->callB, $this->callA))
+        );
+        $this->assertFalse((boolean) $this->subject->checkAnyOrderSequence(array()));
+    }
+
+    public function testAnyOrderSequence()
+    {
+        $this->assertEquals(
+            new EventCollection(array($this->callA)),
+            $this->subject->anyOrderSequence(array($this->callA))
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->callA, $this->callB, $this->callC)),
+            $this->subject->anyOrderSequence(array($this->callA, $this->callB, $this->callC))
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->callA, $this->callB, $this->callC)),
+            $this->subject->anyOrderSequence(array($this->callC, $this->callB, $this->callA))
+        );
+    }
+
+    public function testAnyOrderSequenceFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected events. No events recorded.'
+        );
+        $this->subject->anyOrderSequence(array());
     }
 
     public function testInstance()

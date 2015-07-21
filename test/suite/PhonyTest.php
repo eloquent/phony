@@ -317,6 +317,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             new EventCollection(array($this->eventA, $this->eventB)),
             Phony::inOrderSequence(array($this->eventA, $this->eventB))
         );
+        $this->assertTrue((boolean) Phony::checkAnyOrder($this->eventA, $this->eventB));
+        $this->assertFalse((boolean) Phony::checkAnyOrder());
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            Phony::anyOrder($this->eventA, $this->eventB)
+        );
+        $this->assertTrue((boolean) Phony::checkAnyOrderSequence(array($this->eventA, $this->eventB)));
+        $this->assertFalse((boolean) Phony::checkAnyOrderSequence(array()));
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            Phony::anyOrderSequence(array($this->eventA, $this->eventB))
+        );
     }
 
     public function testInOrderMethodFailure()
@@ -329,6 +341,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         Phony::inOrderSequence(array($this->eventB, $this->eventA));
+    }
+
+    public function testAnyOrderMethodFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        Phony::anyOrder();
+    }
+
+    public function testAnyOrderSequenceMethodFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        Phony::anyOrderSequence(array());
     }
 
     public function testEventOrderFunctions()
@@ -345,6 +369,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             new EventCollection(array($this->eventA, $this->eventB)),
             inOrderSequence(array($this->eventA, $this->eventB))
         );
+        $this->assertTrue((boolean) checkAnyOrder($this->eventA, $this->eventB));
+        $this->assertFalse((boolean) checkAnyOrder());
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrder($this->eventA, $this->eventB)
+        );
+        $this->assertTrue((boolean) checkAnyOrderSequence(array($this->eventA, $this->eventB)));
+        $this->assertFalse((boolean) checkAnyOrderSequence(array()));
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrderSequence(array($this->eventA, $this->eventB))
+        );
     }
 
     public function testInOrderFunctionFailure()
@@ -357,6 +393,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         inOrderSequence(array($this->eventB, $this->eventA));
+    }
+
+    public function testAnyOrderFunctionFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        anyOrder();
+    }
+
+    public function testAnyOrderSequenceFunctionFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        anyOrderSequence(array());
     }
 
     public function testAny()

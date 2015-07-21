@@ -254,6 +254,65 @@ abstract class AbstractFacade
     }
 
     /**
+     * Checks that at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public static function checkAnyOrder()
+    {
+        return static::driver()->eventOrderVerifier()
+            ->checkAnyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Throws an exception unless at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public static function anyOrder()
+    {
+        return static::driver()->eventOrderVerifier()
+            ->anyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Checks if the supplied event sequence contains at least one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public static function checkAnyOrderSequence($events)
+    {
+        return static::driver()->eventOrderVerifier()
+            ->checkAnyOrderSequence($events);
+    }
+
+    /**
+     * Throws an exception unless the supplied event sequence contains at least
+     * one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public static function anyOrderSequence($events)
+    {
+        return static::driver()->eventOrderVerifier()
+            ->anyOrderSequence($events);
+    }
+
+    /**
      * Create a new matcher that matches anything.
      *
      * @return MatcherInterface The newly created matcher.

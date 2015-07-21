@@ -8,6 +8,7 @@
   ([#17]).
 - **[NEW]** Implemented `Call::argument()` ([#56]).
 - **[NEW]** Implemented `MockBuilder::source()` for easier debugging ([#45]).
+- **[NEW]** Implemented `anyOrder()` ([#60]).
 - **[IMPROVED]** Vast improvements to verification failure output ([#66]).
 - **[IMPROVED]** Allow use of phonySelf parameter everywhere ([#63]).
 - **[IMPROVED]** Optimizations to the matcher driver system ([#67]).
@@ -17,6 +18,7 @@
 [#17]: https://github.com/eloquent/phony/issues/17
 [#45]: https://github.com/eloquent/phony/issues/45
 [#56]: https://github.com/eloquent/phony/issues/56
+[#60]: https://github.com/eloquent/phony/issues/60
 [#63]: https://github.com/eloquent/phony/issues/63
 [#64]: https://github.com/eloquent/phony/pull/64
 [#66]: https://github.com/eloquent/phony/issues/66

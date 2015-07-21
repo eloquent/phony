@@ -624,4 +624,22 @@ EOD;
         $this->assertSame($proxy->mock(), $proxy->mock()->testClassAMethodA());
         $this->assertSame(array($proxy->mock()), $callArguments);
     }
+
+    public function testOrderVerification()
+    {
+        $spy = x\spy();
+        $spy('a');
+        $spy('b');
+        $spy('c');
+        $spy('d');
+
+        x\inOrder(
+            $spy->calledWith('a'),
+            x\anyOrder(
+                $spy->calledWith('c'),
+                $spy->calledWith('b')
+            ),
+            $spy->calledWith('d')
+        );
+    }
 }

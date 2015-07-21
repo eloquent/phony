@@ -381,6 +381,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             new EventCollection(array($this->eventA, $this->eventB)),
             inOrderSequence(array($this->eventA, $this->eventB))
         );
+        $this->assertTrue((boolean) checkAnyOrder($this->eventA, $this->eventB));
+        $this->assertFalse((boolean) checkAnyOrder());
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrder($this->eventA, $this->eventB)
+        );
+        $this->assertTrue((boolean) checkAnyOrderSequence(array($this->eventA, $this->eventB)));
+        $this->assertFalse((boolean) checkAnyOrderSequence(array()));
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrderSequence(array($this->eventA, $this->eventB))
+        );
     }
 
     public function testAny()

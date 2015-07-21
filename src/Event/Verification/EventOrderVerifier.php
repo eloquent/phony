@@ -122,7 +122,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     public function checkInOrderSequence($events)
     {
         if (!count($events)) {
-            return $this->assertionRecorder->createSuccess();
+            return null;
         }
 
         $isMatch = true;
@@ -209,6 +209,11 @@ class EventOrderVerifier implements EventOrderVerifierInterface
             return $result;
         }
 
+        if (!count($events)) {
+            return $this->assertionRecorder
+                ->createFailure('Expected events. No events recorded.');
+        }
+
         $mergedEvents = $this->mergeEvents($events);
 
         if ($mergedEvents->hasEvents()) {
@@ -228,6 +233,71 @@ class EventOrderVerifier implements EventOrderVerifierInterface
                 $renderedActual
             )
         );
+    }
+
+    /**
+     * Checks that at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public function checkAnyOrder()
+    {
+        return $this->checkAnyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Throws an exception unless at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function anyOrder()
+    {
+        return $this->anyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Checks if the supplied event sequence contains at least one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public function checkAnyOrderSequence($events)
+    {
+        if (!count($events)) {
+            return null;
+        }
+
+        return $this->assertionRecorder
+            ->createSuccess($this->mergeEvents($events)->allEvents());
+    }
+
+    /**
+     * Throws an exception unless the supplied event sequence contains at least
+     * one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function anyOrderSequence($events)
+    {
+        if ($result = $this->checkAnyOrderSequence($events)) {
+            return $result;
+        }
+
+        return $this->assertionRecorder
+            ->createFailure('Expected events. No events recorded.');
     }
 
     /**
@@ -296,7 +366,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
 
         ksort($merged);
 
-        return new EventCollection($merged);
+        return new EventCollection(array_values($merged));
     }
 
     private static $instance;

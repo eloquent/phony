@@ -62,4 +62,47 @@ interface EventOrderVerifierInterface
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrderSequence($events);
+
+    /**
+     * Checks that at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public function checkAnyOrder();
+
+    /**
+     * Throws an exception unless at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function anyOrder();
+
+    /**
+     * Checks if the supplied event sequence contains at least one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public function checkAnyOrderSequence($events);
+
+    /**
+     * Throws an exception unless the supplied event sequence contains at least
+     * one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function anyOrderSequence($events);
 }
