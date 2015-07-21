@@ -215,6 +215,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
+        if (null === $prefixSelf) {
+            $parameters = $this->invocableInspector
+                ->callbackReflector($callback)->getParameters();
+
+            $prefixSelf = $parameters &&
+                'phonySelf' === $parameters[0]->getName();
+        }
+
         $this->answer->addSecondaryRequest(
             new CallRequest(
                 $callback,
@@ -398,6 +406,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $suffixArgumentsArray = null,
         $suffixArguments = null
     ) {
+        if (null === $prefixSelf) {
+            $parameters = $this->invocableInspector
+                ->callbackReflector($callback)->getParameters();
+
+            $prefixSelf = $parameters &&
+                'phonySelf' === $parameters[0]->getName();
+        }
+
         if ($this->isNewRule) {
             $this->isNewRule = false;
 

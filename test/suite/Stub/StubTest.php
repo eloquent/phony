@@ -380,6 +380,22 @@ class StubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testCallsWithSelfParameterAutoDetection()
+    {
+        $self = (object) array();
+        $subject = new Stub(null, $self);
+        $actual = null;
+        $subject->callsWith(
+                function ($phonySelf) use (&$actual) {
+                    $actual = func_get_args();
+                }
+            )
+            ->returns();
+        $subject('a', 'b');
+
+        $this->assertSame(array($self, 'a', 'b'), $actual);
+    }
+
     public function testCallsWithWithReferenceParameters()
     {
         $a = null;
@@ -676,6 +692,21 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('A', 'a', 'b'), call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(array('B', 'c', 'd'), call_user_func($this->subject, 'c', 'd'));
         $this->assertSame(array('B', 'e', 'f'), call_user_func($this->subject, 'e', 'f'));
+    }
+
+    public function testDoesWithSelfParameterAutoDetection()
+    {
+        $self = (object) array();
+        $subject = new Stub(null, $self);
+        $actual = null;
+        $subject->doesWith(
+            function ($phonySelf) use (&$actual) {
+                $actual = func_get_args();
+            }
+        );
+        $subject('a', 'b');
+
+        $this->assertSame(array($self, 'a', 'b'), $actual);
     }
 
     public function testDoesWithWithReferenceParameters()

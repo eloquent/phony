@@ -551,4 +551,24 @@ EOD;
 
         $this->assertSame(array('a', 2), $spy->calledWith('a', '*')->callAt(1)->arguments()->all());
     }
+
+    public function testPhonySelfMagicParameter()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $callArguments = null;
+        $proxy->testClassAMethodA
+            ->calls(
+                function ($phonySelf) use (&$callArguments) {
+                    $callArguments = func_get_args();
+                }
+            )
+            ->does(
+                function ($phonySelf) {
+                    return $phonySelf;
+                }
+            );
+
+        $this->assertSame($proxy->mock(), $proxy->mock()->testClassAMethodA());
+        $this->assertSame(array($proxy->mock()), $callArguments);
+    }
 }
