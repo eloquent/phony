@@ -3,6 +3,7 @@
 ## Next release
 
 - **[NEW]** PHP 7 support.
+- **[NEW]** Support for variadic functions ([#64] - thanks [@jmalloc]).
 - **[NEW]** Implemented `eventAt()` and `callAt()` for verification results
   ([#17]).
 - **[NEW]** Implemented `Call::argument()` ([#56]).
@@ -17,9 +18,11 @@
 [#45]: https://github.com/eloquent/phony/issues/45
 [#56]: https://github.com/eloquent/phony/issues/56
 [#63]: https://github.com/eloquent/phony/issues/63
+[#64]: https://github.com/eloquent/phony/pull/64
 [#66]: https://github.com/eloquent/phony/issues/66
 [#67]: https://github.com/eloquent/phony/issues/67
 [#69]: https://github.com/eloquent/phony/issues/69
+[@jmalloc]: https://github.com/jmalloc
 
 ## 0.2.1 (2015-02-28)
 
