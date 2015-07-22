@@ -174,7 +174,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     /**
      * Set the calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      */
     public function setCalls(array $calls)
     {
@@ -244,7 +244,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     /**
      * Get all events as an array.
      *
-     * @return array<integer,EventInterface> The events.
+     * @return array<EventInterface> The events.
      */
     public function allEvents()
     {
@@ -254,7 +254,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     /**
      * Get all calls as an array.
      *
-     * @return array<integer,CallInterface> The calls.
+     * @return array<CallInterface> The calls.
      */
     public function allCalls()
     {
@@ -350,7 +350,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.

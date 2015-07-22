@@ -23,8 +23,8 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinitionInterface>|null       $methods      The methods.
-     * @param array<integer,TraitMethodDefinitionInterface>|null $traitMethods The trait methods.
+     * @param array<string,MethodDefinitionInterface>|null $methods      The methods.
+     * @param array<TraitMethodDefinitionInterface>|null   $traitMethods The trait methods.
      */
     public function __construct(
         array $methods = null,
@@ -165,7 +165,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the trait methods.
      *
-     * @return array<integer,ReflectionMethod> The trait methods.
+     * @return array<ReflectionMethod> The trait methods.
      */
     public function traitMethods()
     {

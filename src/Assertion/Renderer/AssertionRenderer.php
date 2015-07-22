@@ -208,7 +208,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of matchers.
      *
-     * @param array<integer,MatcherInterface> $matchers The matchers.
+     * @param array<MatcherInterface> $matchers The matchers.
      *
      * @return string The rendered matchers.
      */
@@ -288,7 +288,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      *
      * @return string The rendered calls.
      */
@@ -313,7 +313,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the $this values of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      *
      * @return string The rendered call $this values.
      */
@@ -336,7 +336,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the arguments of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      *
      * @return string The rendered call arguments.
      */
@@ -354,8 +354,8 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the responses of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls              The calls.
-     * @param boolean|null                 $expandTraversables True if traversable events should be rendered.
+     * @param array<CallInterface> $calls              The calls.
+     * @param boolean|null         $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered call responses.
      */
@@ -498,7 +498,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     * @param ArgumentsInterface|array|null $arguments The arguments.
      *
      * @return string The rendered arguments.
      */

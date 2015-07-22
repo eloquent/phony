@@ -24,8 +24,8 @@ interface StubbingProxyInterface extends ProxyInterface
      * Get a stub verifier, and modify its current criteria to match the
      * supplied arguments.
      *
-     * @param string               $name      The method name.
-     * @param array<integer,mixed> $arguments The arguments.
+     * @param string $name      The method name.
+     * @param array  $arguments The arguments.
      *
      * @return StubVerifierInterface  The stub verifier.
      * @throws MockExceptionInterface If the stub does not exist.

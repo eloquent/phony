@@ -31,8 +31,8 @@ class EventCollection implements EventCollectionInterface
     /**
      * Construct a new event collection.
      *
-     * @param array<integer,EventInterface>|null $events          The events.
-     * @param IndexNormalizerInterface|null      $indexNormalizer The index normalizer to use.
+     * @param array<EventInterface>|null    $events          The events.
+     * @param IndexNormalizerInterface|null $indexNormalizer The index normalizer to use.
      */
     public function __construct(
         array $events = null,
@@ -113,7 +113,7 @@ class EventCollection implements EventCollectionInterface
     /**
      * Get all events as an array.
      *
-     * @return array<integer,EventInterface> The events.
+     * @return array<EventInterface> The events.
      */
     public function allEvents()
     {
@@ -123,7 +123,7 @@ class EventCollection implements EventCollectionInterface
     /**
      * Get all calls as an array.
      *
-     * @return array<integer,CallInterface> The calls.
+     * @return array<CallInterface> The calls.
      */
     public function allCalls()
     {

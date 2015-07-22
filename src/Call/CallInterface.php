@@ -60,7 +60,7 @@ interface CallInterface extends EventInterface
     /**
      * Get the traversable events.
      *
-     * @return array<integer,TraversableEventInterface> The traversable events.
+     * @return array<TraversableEventInterface> The traversable events.
      */
     public function traversableEvents();
 

@@ -109,9 +109,9 @@ class CallFactory implements CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null                                $callback  The callback.
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
-     * @param SpyInterface|null                            $spy       The spy to record the call to.
+     * @param callable|null                 $callback  The callback.
+     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param SpyInterface|null             $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
@@ -156,10 +156,10 @@ class CallFactory implements CallFactoryInterface
     /**
      * Create a new call.
      *
-     * @param CalledEventInterface|null                     $calledEvent       The 'called' event.
-     * @param ResponseEventInterface|null                   $responseEvent     The response event, or null if the call has not yet responded.
-     * @param array<integer,TraversableEventInterface>|null $traversableEvents The traversable events.
-     * @param ResponseEventInterface|null                   $endEvent          The end event, or null if the call has not yet completed.
+     * @param CalledEventInterface|null             $calledEvent       The 'called' event.
+     * @param ResponseEventInterface|null           $responseEvent     The response event, or null if the call has not yet responded.
+     * @param array<TraversableEventInterface>|null $traversableEvents The traversable events.
+     * @param ResponseEventInterface|null           $endEvent          The end event, or null if the call has not yet completed.
      *
      * @return CallInterface            The newly created call.
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.

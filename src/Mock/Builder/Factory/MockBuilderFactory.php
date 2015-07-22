@@ -111,7 +111,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
      * Create a new mock.
      *
      * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param ArgumentsInterface|array<integer,mixed>|null                                                        $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
      * @param array|object|null                                                                                   $definition The definition.
      * @param string|null                                                                                         $className  The class name.
      *

@@ -32,7 +32,7 @@ interface ArgumentsInterface extends Countable, IteratorAggregate
      *
      * This method supports reference parameters.
      *
-     * @return array<integer,mixed> The arguments.
+     * @return array The arguments.
      */
     public function all();
 

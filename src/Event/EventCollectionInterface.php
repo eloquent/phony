@@ -55,14 +55,14 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
     /**
      * Get all events as an array.
      *
-     * @return array<integer,EventInterface> The events.
+     * @return array<EventInterface> The events.
      */
     public function allEvents();
 
     /**
      * Get all calls as an array.
      *
-     * @return array<integer,CallInterface> The calls.
+     * @return array<CallInterface> The calls.
      */
     public function allCalls();
 

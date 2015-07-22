@@ -28,7 +28,7 @@ class Arguments implements ArgumentsInterface
     /**
      * Adapt a set of call arguments.
      *
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     * @param ArgumentsInterface|array|null $arguments The arguments.
      *
      * @return ArgumentsInterface The adapted arguments.
      */
@@ -44,7 +44,7 @@ class Arguments implements ArgumentsInterface
     /**
      * Construct a new set of call arguments.
      *
-     * @param array<integer,mixed>|null     $arguments       The arguments.
+     * @param array|null                    $arguments       The arguments.
      * @param IndexNormalizerInterface|null $indexNormalizer The index normalizer to use.
      */
     public function __construct(
@@ -94,7 +94,7 @@ class Arguments implements ArgumentsInterface
      *
      * This method supports reference parameters.
      *
-     * @return array<integer,mixed> The arguments.
+     * @return array The arguments.
      */
     public function all()
     {

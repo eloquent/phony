@@ -305,7 +305,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the traversable events.
      *
-     * @return array<integer,TraversableEventInterface> The traversable events.
+     * @return array<TraversableEventInterface> The traversable events.
      */
     public function traversableEvents()
     {
@@ -337,7 +337,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get all events as an array.
      *
-     * @return array<integer,EventInterface> The events.
+     * @return array<EventInterface> The events.
      */
     public function allEvents()
     {
@@ -347,7 +347,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get all calls as an array.
      *
-     * @return array<integer,CallInterface> The calls.
+     * @return array<CallInterface> The calls.
      */
     public function allCalls()
     {
@@ -1398,7 +1398,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @param EventInterface|null $event       The event.
      * @param boolean             $checkResult The check result.
      *
-     * @return tuple<integer,array<integer,EventInterface>> The match details.
+     * @return tuple<array<EventInterface>> The match details.
      */
     protected function matchIf(EventInterface $event = null, $checkResult)
     {

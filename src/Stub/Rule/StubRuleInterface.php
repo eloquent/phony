@@ -37,7 +37,7 @@ interface StubRuleInterface
     /**
      * Returns true if this rule's criteria match the supplied arguments.
      *
-     * @param ArgumentsInterface|array<integer,mixed> $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return boolean True if the criteria matches.
      */

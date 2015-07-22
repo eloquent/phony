@@ -24,8 +24,8 @@ interface VerificationProxyInterface extends ProxyInterface
      * Throws an exception unless the specified method was called with the
      * supplied arguments.
      *
-     * @param string               $name      The method name.
-     * @param array<integer,mixed> $arguments The arguments.
+     * @param string $name      The method name.
+     * @param array  $arguments The arguments.
      *
      * @return VerificationProxyInterface This proxy.
      * @throws MockExceptionInterface     If the stub does not exist.
