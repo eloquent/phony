@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.3.0 (2015-07-22)
 
 - **[NEW]** PHP 7 support.
 - **[NEW]** Support for variadic functions ([#64] - thanks [@jmalloc]).
