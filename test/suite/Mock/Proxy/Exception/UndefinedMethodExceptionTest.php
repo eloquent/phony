@@ -25,7 +25,7 @@ class UndefinedMethodExceptionTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($className, $exception->className());
         $this->assertSame($name, $exception->name());
-        $this->assertSame("Call to undefined method ClassName::method().", $exception->getMessage());
+        $this->assertSame('Call to undefined method ClassName::method().', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

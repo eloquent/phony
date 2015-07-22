@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Integration\Simpletest;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Exception;
 use SimpleTest;
@@ -70,7 +70,7 @@ class SimpletestAssertionRecorder extends AssertionRecorder
      *
      * @param array<integer,EventInterface>|null $events The events.
      *
-     * @return CallEventCollectionInterface The result.
+     * @return EventCollectionInterface The result.
      */
     public function createSuccess(array $events = null)
     {

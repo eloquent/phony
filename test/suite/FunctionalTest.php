@@ -30,7 +30,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
 
-        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments()->all());
         $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         $proxy->reset()->full();
@@ -47,7 +47,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
-        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments());
+        $this->assertSame(array('a', 'b'), $proxy->testClassAMethodA->calledWith('a', '*')->arguments()->all());
         $this->assertSame('b', $proxy->testClassAMethodA->calledWith('a', '*')->argument(1));
 
         $proxy->reset()->full();
@@ -109,6 +109,59 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(get_class($mock->mock()), $mockMock->mock());
         $this->assertNotInstanceOf(get_class($mockMock->mock()), $mock->mock());
+    }
+
+    public function testVariadicParameterMocking()
+    {
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
+        $proxy->method->does(
+            function () {
+                return func_get_args();
+            }
+        );
+
+        $this->assertSame(array(1, 2), $proxy->mock()->method(1, 2));
+    }
+
+    public function testVariadicParameterMockingWithType()
+    {
+        if (!$this->featureDetector->isSupported('parameter.variadic')) {
+            $this->markTestSkipped('Requires variadic parameters.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
+        $proxy->method->does(
+            function () {
+                return func_get_args();
+            }
+        );
+        $a = (object) array();
+        $b = (object) array();
+
+        $this->assertSame(array($a, $b), $proxy->mock()->method($a, $b));
+    }
+
+    public function testVariadicParameterMockingByReference()
+    {
+        if (!$this->featureDetector->isSupported('parameter.variadic.reference')) {
+            $this->markTestSkipped('Requires by-reference variadic parameters.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameterByReference');
+        $proxy->method
+            ->setsArgument(0, 'a')
+            ->setsArgument(1, 'b')
+            ->returns();
+        $a = null;
+        $b = null;
+        $proxy->mock()->method($a, $b);
+
+        $this->assertSame('a', $a);
+        $this->assertSame('b', $b);
     }
 
     public function testSpyStatic()
@@ -220,38 +273,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub = x\stub($callback)->forwards();
 
         $this->assertSame($callback, $stub());
-    }
-
-    public function testStubThisBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this;
-        };
-
-        $stub = x\stub($callback)->forwards();
-
-        $this->assertSame($callback, $stub());
-    }
-
-    public function testStubClassBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return self::testClassAStaticMethodC('a', 'b');
-        };
-
-        $stub = x\stub($callback);
-        $stub->setSelf('Eloquent\Phony\Test\TestClassA');
-        $stub->forwards();
-
-        $this->assertSame('protected ab', $stub());
     }
 
     public function testTraversableSpyingStatic()
@@ -459,9 +480,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('a', 'b');
         $expected = <<<'EOD'
 Expected call on {spy}[example] with arguments like:
-    <'c'>, <'d'>
+    "c", "d"
 Calls:
-    - 'a', 'b'
+    - "a", "b"
 EOD;
 
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
@@ -475,9 +496,9 @@ EOD;
         $proxy->mock()->testClassAMethodA('a', 'b');
         $expected = <<<'EOD'
 Expected call on PhonyMockAssertionFailure[example]->testClassAMethodA with arguments like:
-    <'c'>, <'d'>
+    "c", "d"
 Calls:
-    - 'a', 'b'
+    - "a", "b"
 EOD;
 
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
@@ -572,5 +593,53 @@ EOD;
         );
 
         $this->assertSame(array('a', 'b', 'c'), $proxy->mock()->constructorArguments);
+    }
+
+    public function testCallAtWithAssertionResult()
+    {
+        $spy = x\spy();
+        $spy('a', 1);
+        $spy('b', 1);
+        $spy('a', 2);
+
+        $this->assertSame(array('a', 2), $spy->calledWith('a', '*')->callAt(1)->arguments()->all());
+    }
+
+    public function testPhonySelfMagicParameter()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $callArguments = null;
+        $proxy->testClassAMethodA
+            ->calls(
+                function ($phonySelf) use (&$callArguments) {
+                    $callArguments = func_get_args();
+                }
+            )
+            ->does(
+                function ($phonySelf) {
+                    return $phonySelf;
+                }
+            );
+
+        $this->assertSame($proxy->mock(), $proxy->mock()->testClassAMethodA());
+        $this->assertSame(array($proxy->mock()), $callArguments);
+    }
+
+    public function testOrderVerification()
+    {
+        $spy = x\spy();
+        $spy('a');
+        $spy('b');
+        $spy('c');
+        $spy('d');
+
+        x\inOrder(
+            $spy->calledWith('a'),
+            x\anyOrder(
+                $spy->calledWith('c'),
+                $spy->calledWith('b')
+            ),
+            $spy->calledWith('d')
+        );
     }
 }

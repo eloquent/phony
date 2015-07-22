@@ -56,20 +56,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcard());
     }
 
-    public function testSetMatcherDrivers()
-    {
-        $this->subject->setMatcherDrivers(array());
-
-        $this->assertSame(array(), $this->subject->drivers());
-
-        $this->subject->setMatcherDrivers($this->drivers);
-
-        $this->assertSame($this->drivers, $this->subject->drivers());
-    }
-
     public function testAddMatcherDriver()
     {
-        $this->subject->setMatcherDrivers(array());
+        $this->subject = new MatcherFactory(null, $this->anyMatcher, $this->wildcardAnyMatcher);
         $this->subject->addMatcherDriver($this->driverA);
 
         $this->assertSame(array($this->driverA), $this->subject->drivers());
@@ -79,25 +68,13 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->drivers, $this->subject->drivers());
     }
 
-    public function testAddMatcherDriverIfAvailable()
-    {
-        $this->subject->setMatcherDrivers(array());
-        $this->subject->addMatcherDriverIfAvailable($this->driverA);
-
-        $this->assertSame(array($this->driverA), $this->subject->drivers());
-
-        $this->subject->addMatcherDriverIfAvailable($this->driverB);
-
-        $this->assertSame(array($this->driverA), $this->subject->drivers());
-    }
-
     /**
      * @requires PHP 5.4.0-dev
      */
-    public function testAddAvailableMatcherDrivers()
+    public function testAddDefaultMatcherDrivers()
     {
-        $this->subject->setMatcherDrivers(array());
-        $this->subject->addAvailableMatcherDrivers();
+        $this->subject = new MatcherFactory(null, $this->anyMatcher, $this->wildcardAnyMatcher);
+        $this->subject->addDefaultMatcherDrivers();
 
         $this->assertSame(
             array(
@@ -158,13 +135,34 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptAll()
     {
-        $valueA = 'a';
         $valueB = new EqualToMatcher('b');
-        $values = array($valueA, $valueB);
+        $valueC = (object) array();
+        $values = array(
+            'a',
+            $valueB,
+            $valueC,
+            new TestMatcherA(),
+            '*',
+            '~',
+        );
         $actual = $this->subject->adaptAll($values);
-        $expected = array(new EqualToMatcher($valueA), $valueB);
+        $expected = array(
+            new EqualToMatcher('a'),
+            $valueB,
+            new EqualToMatcher($valueC),
+            new EqualToMatcher('a'),
+            WildcardMatcher::instance(),
+            $this->anyMatcher,
+        );
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testEqualTo()
+    {
+        $expected = new EqualToMatcher('x');
+
+        $this->assertEquals($expected, $this->subject->equalTo('x'));
     }
 
     public function testWildcard()

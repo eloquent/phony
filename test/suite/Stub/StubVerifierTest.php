@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -24,11 +25,17 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 
 class StubVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), false);
+
         $this->callback = 'implode';
         $this->self = (object) array();
         $this->label = 'label';
@@ -58,7 +65,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callbackA = function () use (&$callsA, &$callCountA) {
             $arguments = func_get_args();
             $callsA[] = $arguments;
-            $callCountA++;
+            ++$callCountA;
 
             array_unshift($arguments, 'A');
 
@@ -72,7 +79,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callbackB = function () use (&$callsB, &$callCountB) {
             $arguments = func_get_args();
             $callsB[] = $arguments;
-            $callCountB++;
+            ++$callCountB;
 
             array_unshift($arguments, 'B');
 
@@ -86,7 +93,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callbackC = function () use (&$callsC, &$callCountC) {
             $arguments = func_get_args();
             $callsC[] = $arguments;
-            $callCountC++;
+            ++$callCountC;
 
             array_unshift($arguments, 'C');
 
@@ -100,7 +107,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callbackD = function () use (&$callsD, &$callCountD) {
             $arguments = func_get_args();
             $callsD[] = $arguments;
-            $callCountD++;
+            ++$callCountD;
 
             array_unshift($arguments, 'D');
 
@@ -114,7 +121,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callbackE = function () use (&$callsE, &$callCountE) {
             $arguments = func_get_args();
             $callsE[] = $arguments;
-            $callCountE++;
+            ++$callCountE;
 
             array_unshift($arguments, 'E');
 
@@ -128,7 +135,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callbackF = function () use (&$callsF, &$callCountF) {
             $arguments = func_get_args();
             $callsF[] = $arguments;
-            $callCountF++;
+            ++$callCountF;
 
             array_unshift($arguments, 'F');
 
@@ -859,7 +866,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->throws());
 
         $thrownExceptions = array();
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; ++$i) {
             try {
                 call_user_func($this->subject);
             } catch (Exception $thrownException) {
@@ -877,7 +884,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->throws($exceptionA, $exceptionB));
 
         $thrownExceptions = array();
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; ++$i) {
             try {
                 call_user_func($this->subject);
             } catch (Exception $thrownException) {
@@ -909,7 +916,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('e', call_user_func($this->subject, 'b'));
         $this->assertSame('f', call_user_func($this->subject, 'b'));
         $thrownExceptions = array();
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; ++$i) {
             try {
                 call_user_func($this->subject, 'b');
             } catch (Exception $thrownException) {
@@ -950,11 +957,11 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     {
         $callCountA = 0;
         $callbackA = function () use (&$callCountA) {
-            $callCountA++;
+            ++$callCountA;
         };
         $callCountB = 0;
         $callbackB = function () use (&$callCountB) {
-            $callCountB++;
+            ++$callCountB;
         };
 
         $this->assertSame(

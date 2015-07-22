@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Proxy\Verification;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Call\Event\CallEventCollection;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
@@ -200,7 +200,7 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->assertEquals(new CallEventCollection(), $this->subject->noInteraction());
+        $this->assertEquals(new EventCollection(), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()
@@ -211,9 +211,9 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->mock->testClassAMethodA('e', 'f');
         $expected = <<<'EOD'
 Expected no interaction with PhonyMockVerificationNoInteraction[label]. Calls:
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA('a', 'b')
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodB('c', 'd')
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA('e', 'f')
+    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA("a", "b")
+    - PhonyMockVerificationNoInteraction[label]->testClassAMethodB("c", "d")
+    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

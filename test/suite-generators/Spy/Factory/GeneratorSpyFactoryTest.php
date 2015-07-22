@@ -246,7 +246,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->setExpectedException('InvalidArgumentException', "Unsupported traversable of type NULL.");
+        $this->setExpectedException('InvalidArgumentException', 'Unsupported traversable of type NULL.');
         $this->subject->create($this->call, null);
     }
 

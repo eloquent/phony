@@ -11,9 +11,10 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\ExporterInterface;
+use Eloquent\Phony\Exporter\InlineExporter;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\Factory;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * A matcher that tests if the value is equal to (==) another value.
@@ -27,21 +28,26 @@ class EqualToMatcher extends AbstractMatcher
      *
      * @param mixed $value The value to check against.
      * @param Factory|null The comparator factory to use.
-     * @param Exporter|null The exporter to use.
+     * @param ExporterInterface|null The exporter to use.
      */
     public function __construct(
         $value,
         Factory $comparatorFactory = null,
-        Exporter $exporter = null
+        ExporterInterface $exporter = null
     ) {
         if (null === $comparatorFactory) {
             $comparatorFactory = new Factory();
         }
         if (null === $exporter) {
-            $exporter = new Exporter();
+            $exporter = InlineExporter::instance();
         }
 
         $this->value = $value;
+
+        if (is_object($value)) {
+            $this->valueClass = get_class($value);
+        }
+
         $this->comparatorFactory = $comparatorFactory;
         $this->exporter = $exporter;
     }
@@ -69,7 +75,7 @@ class EqualToMatcher extends AbstractMatcher
     /**
      * Get the exporter.
      *
-     * @return Exporter The exporter.
+     * @return ExporterInterface The exporter.
      */
     public function exporter()
     {
@@ -85,6 +91,14 @@ class EqualToMatcher extends AbstractMatcher
      */
     public function matches($value)
     {
+        if ($value === $this->value) {
+            return true;
+        }
+
+        if ($this->valueClass && !$value instanceof $this->valueClass) {
+            return false;
+        }
+
         $comparator = $this->comparatorFactory
             ->getComparatorFor($this->value, $value);
 
@@ -104,10 +118,11 @@ class EqualToMatcher extends AbstractMatcher
      */
     public function describe()
     {
-        return '<' . $this->exporter->shortenedExport($this->value) . '>';
+        return $this->exporter->export($this->value);
     }
 
     private $value;
+    private $valueClass;
     private $comparatorFactory;
     private $exporter;
 }

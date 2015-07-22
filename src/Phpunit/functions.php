@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
@@ -32,9 +32,9 @@ use ReflectionClass;
 /**
  * Create a new mock builder.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
- * @param array|object|null                       $definition The definition.
- * @param string|null                             $className  The class name.
+ * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+ * @param array|object|null                                                                                   $definition The definition.
+ * @param string|null                                                                                         $className  The class name.
  *
  * @return MockBuilderInterface The mock builder.
  */
@@ -47,10 +47,10 @@ function mockBuilder($types = null, $definition = null, $className = null)
 /**
  * Create a new mock.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
- * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
- * @param array|object|null                       $definition The definition.
- * @param string|null                             $className  The class name.
+ * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+ * @param ArgumentsInterface|array<integer,mixed>|null                                                        $arguments  The constructor arguments, or null to bypass the constructor.
+ * @param array|object|null                                                                                   $definition The definition.
+ * @param string|null                                                                                         $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
@@ -74,9 +74,9 @@ function mock(
 /**
  * Create a new full mock.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types        The types to mock.
- * @param array|object|null                       $definition The definition.
- * @param string|null                             $className  The class name.
+ * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+ * @param array|object|null                                                                                   $definition The definition.
+ * @param string|null                                                                                         $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
@@ -147,7 +147,7 @@ function verifyStatic($class)
 /**
  * Create a new spy verifier for the supplied callback.
  *
- * @param callable|null $callback The callback, or null to create an unbound spy verifier.
+ * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
  * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
  * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
  *
@@ -169,8 +169,8 @@ function spy(
 /**
  * Create a new stub verifier for the supplied callback.
  *
- * @param callable|null $callback  The callback, or null to create an unbound stub verifier.
- * @param object|null   $thisValue The $this value.
+ * @param callable|null $callback            The callback, or null to create an unbound stub verifier.
+ * @param object|null   $thisValue           The $this value.
  * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
  * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
  *
@@ -194,9 +194,9 @@ function stub(
 /**
  * Checks if the supplied events happened in chronological order.
  *
- * @param CallEventCollectionInterface $events,... The events.
+ * @param EventCollectionInterface $events,... The events.
  *
- * @return CallEventCollectionInterface|null The result.
+ * @return EventCollectionInterface|null The result.
  */
 function checkInOrder()
 {
@@ -208,10 +208,10 @@ function checkInOrder()
  * Throws an exception unless the supplied events happened in chronological
  * order.
  *
- * @param CallEventCollectionInterface $events,... The events.
+ * @param EventCollectionInterface $events,... The events.
  *
- * @return CallEventCollectionInterface The result.
- * @throws Exception If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollectionInterface The result.
+ * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrder()
 {
@@ -222,9 +222,9 @@ function inOrder()
 /**
  * Checks if the supplied event sequence happened in chronological order.
  *
- * @param mixed<CallEventCollectionInterface> $events The event sequence.
+ * @param mixed<EventCollectionInterface> $events The event sequence.
  *
- * @return CallEventCollectionInterface|null The result.
+ * @return EventCollectionInterface|null The result.
  */
 function checkInOrderSequence($events)
 {
@@ -236,15 +236,74 @@ function checkInOrderSequence($events)
  * Throws an exception unless the supplied event sequence happened in
  * chronological order.
  *
- * @param mixed<CallEventCollectionInterface> $events The event sequence.
+ * @param mixed<EventCollectionInterface> $events The event sequence.
  *
- * @return CallEventCollectionInterface The result.
- * @throws Exception If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollectionInterface The result.
+ * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrderSequence($events)
 {
     return PhpunitFacadeDriver::instance()->eventOrderVerifier()
         ->inOrderSequence($events);
+}
+
+/**
+ * Checks that at least one event is supplied.
+ *
+ * @param EventCollectionInterface $events,... The events.
+ *
+ * @return EventCollectionInterface|null The result.
+ * @throws InvalidArgumentException      If invalid input is supplied.
+ */
+function checkAnyOrder()
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->checkAnyOrderSequence(func_get_args());
+}
+
+/**
+ * Throws an exception unless at least one event is supplied.
+ *
+ * @param EventCollectionInterface $events,... The events.
+ *
+ * @return EventCollectionInterface The result.
+ * @throws InvalidArgumentException If invalid input is supplied.
+ * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+ */
+function anyOrder()
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->anyOrderSequence(func_get_args());
+}
+
+/**
+ * Checks if the supplied event sequence contains at least one event.
+ *
+ * @param mixed<EventCollectionInterface> $events The event sequence.
+ *
+ * @return EventCollectionInterface|null The result.
+ * @throws InvalidArgumentException      If invalid input is supplied.
+ */
+function checkAnyOrderSequence($events)
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->checkAnyOrderSequence($events);
+}
+
+/**
+ * Throws an exception unless the supplied event sequence contains at least
+ * one event.
+ *
+ * @param mixed<EventCollectionInterface> $events The event sequence.
+ *
+ * @return EventCollectionInterface The result.
+ * @throws InvalidArgumentException If invalid input is supplied.
+ * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+ */
+function anyOrderSequence($events)
+{
+    return PhpunitFacadeDriver::instance()->eventOrderVerifier()
+        ->anyOrderSequence($events);
 }
 
 /**

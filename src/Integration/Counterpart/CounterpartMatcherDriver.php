@@ -36,13 +36,23 @@ class CounterpartMatcherDriver extends AbstractMatcherDriver
     }
 
     /**
-     * Get the matcher class name.
+     * Returns true if this matcher driver's classes or interfaces exist.
      *
-     * @return string The matcher class name.
+     * @return boolean True if available.
      */
-    protected function matcherClassName()
+    public function isAvailable()
     {
-        return 'Counterpart\Matcher';
+        return interface_exists('Counterpart\Matcher');
+    }
+
+    /**
+     * Get the supported matcher class names.
+     *
+     * @return array<string> The matcher class names.
+     */
+    public function matcherClassNames()
+    {
+        return array('Counterpart\Matcher');
     }
 
     private static $instance;

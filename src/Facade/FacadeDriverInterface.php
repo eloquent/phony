@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
+use Eloquent\Phony\Exporter\ExporterInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactoryInterface;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
@@ -64,4 +65,11 @@ interface FacadeDriverInterface
      * @return MatcherFactoryInterface The matcher factory.
      */
     public function matcherFactory();
+
+    /**
+     * Get the exporter.
+     *
+     * @return ExporterInterface The exporter.
+     */
+    public function exporter();
 }

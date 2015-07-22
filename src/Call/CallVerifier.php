@@ -15,16 +15,18 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -180,33 +182,33 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Get the first event.
+     * Returns true if this collection contains any calls.
      *
-     * @return EventInterface|null The first event, or null if there are no events.
+     * @return boolean True if this collection contains any calls.
      */
-    public function firstEvent()
+    public function hasCalls()
     {
-        return $this->call->firstEvent();
+        return $this->call->hasCalls();
     }
 
     /**
-     * Get the last event.
+     * Get the number of events.
      *
-     * @return EventInterface|null The last event, or null if there are no events.
+     * @return integer The event count.
      */
-    public function lastEvent()
+    public function eventCount()
     {
-        return $this->call->lastEvent();
+        return $this->call->eventCount();
     }
 
     /**
-     * Get an iterator for this collection.
+     * Get the number of calls.
      *
-     * @return Iterator The iterator.
+     * @return integer The call count.
      */
-    public function getIterator()
+    public function callCount()
     {
-        return $this->call->getIterator();
+        return $this->call->callCount();
     }
 
     /**
@@ -217,6 +219,42 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     public function count()
     {
         return $this->call->count();
+    }
+
+    /**
+     * Get an event by index.
+     *
+     * @param integer|null $index The index, or null for the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If the requested event is undefined, or there are no events.
+     */
+    public function eventAt($index = null)
+    {
+        return $this->call->eventAt($index);
+    }
+
+    /**
+     * Get a call by index.
+     *
+     * @param integer|null $index The index, or null for the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
+     */
+    public function callAt($index = null)
+    {
+        return $this->call->callAt($index);
+    }
+
+    /**
+     * Get an iterator for this collection.
+     *
+     * @return Iterator The iterator.
+     */
+    public function getIterator()
+    {
+        return $this->call->getIterator();
     }
 
     /**
@@ -297,13 +335,23 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Get all events.
+     * Get all events as an array.
      *
-     * @return array<integer,CallEventInterface> The events.
+     * @return array<integer,EventInterface> The events.
      */
-    public function events()
+    public function allEvents()
     {
-        return $this->call->events();
+        return $this->call->allEvents();
+    }
+
+    /**
+     * Get all calls as an array.
+     *
+     * @return array<integer,CallInterface> The calls.
+     */
+    public function allCalls()
+    {
+        return $this->call->allCalls();
     }
 
     /**
@@ -364,6 +412,19 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     public function arguments()
     {
         return $this->call->arguments();
+    }
+
+    /**
+     * Get an argument by index.
+     *
+     * @param integer|null $index The index, or null for the first argument.
+     *
+     * @return mixed                      The argument.
+     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
+     */
+    public function argument($index = null)
+    {
+        return $this->call->argument($index);
     }
 
     /**
@@ -453,7 +514,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return CallEventCollectionInterface|null    The result.
+     * @return EventCollectionInterface|null        The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkCalledWith()
@@ -477,7 +538,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $argument,... The arguments.
      *
-     * @return CallEventCollectionInterface         The result.
+     * @return EventCollectionInterface             The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -511,7 +572,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param object|null $value The possible $this value.
      *
-     * @return CallEventCollectionInterface|null    The result.
+     * @return EventCollectionInterface|null        The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkCalledOn($value)
@@ -548,7 +609,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param object|null $value The possible $this value.
      *
-     * @return CallEventCollectionInterface         The result.
+     * @return EventCollectionInterface             The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -602,7 +663,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface|null    The result.
+     * @return EventCollectionInterface|null        The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function checkReturned($value = null)
@@ -644,7 +705,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface         The result.
+     * @return EventCollectionInterface             The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -689,7 +750,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface|null    The result.
+     * @return EventCollectionInterface|null        The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws InvalidArgumentException             If the type is invalid.
      */
@@ -766,7 +827,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface         The result.
+     * @return EventCollectionInterface             The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      * @throws InvalidArgumentException             If the type is invalid.
      * @throws Exception                            If the assertion fails, and the assertion recorder throws exceptions.
@@ -782,10 +843,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         if (null === $type) {
             $renderedType = 'exception';
         } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                '%s exception',
-                $this->assertionRenderer->renderValue($type)
-            );
+            $renderedType = sprintf('%s exception', $type);
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(
@@ -825,7 +883,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkProduced($keyOrValue = null, $value = null)
     {
@@ -853,7 +911,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         foreach ($this->call->traversableEvents() as $event) {
             if ($event instanceof ProducedEventInterface) {
-                $totalCount++;
+                ++$totalCount;
 
                 if ($checkKey && !$key->matches($event->key())) {
                     continue;
@@ -863,7 +921,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 }
 
                 $matchingEvents[] = $event;
-                $matchCount++;
+                ++$matchCount;
             }
         }
 
@@ -887,8 +945,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -921,7 +979,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
                 sprintf('call to produce like %s', $value->describe());
         } else {
             $renderedType = sprintf(
-                'call to produce like %s => %s',
+                'call to produce like %s: %s',
                 $key->describe(),
                 $value->describe()
             );
@@ -952,7 +1010,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkProducedAll()
     {
@@ -1015,8 +1073,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $pairs,... The key-value pairs.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function producedAll()
     {
@@ -1050,7 +1108,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             foreach ($pairs as $pair) {
                 if (is_array($pair)) {
                     $renderedType .= sprintf(
-                        "\n    - %s => %s",
+                        "\n    - %s: %s",
                         $pair[0]->describe(),
                         $pair[1]->describe()
                     );
@@ -1089,7 +1147,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkReceived($value = null)
     {
@@ -1110,14 +1168,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         foreach ($this->call->traversableEvents() as $event) {
             if ($event instanceof ReceivedEventInterface) {
-                $totalCount++;
+                ++$totalCount;
 
                 if (!$checkValue || $value->matches($event->value())) {
                     $matchingEvents[] = $event;
-                    $matchCount++;
+                    ++$matchCount;
                 }
             } elseif ($event instanceof ReceivedExceptionEventInterface) {
-                $totalCount++;
+                ++$totalCount;
             }
         }
 
@@ -1134,8 +1192,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null)
     {
@@ -1190,7 +1248,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public function checkReceivedException($type = null)
     {
@@ -1207,11 +1265,11 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
             foreach ($traversableEvents as $event) {
                 if ($event instanceof ReceivedExceptionEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
                     $matchingEvents[] = $event;
-                    $matchCount++;
+                    ++$matchCount;
                 } elseif ($event instanceof ReceivedEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
                 }
             }
         } elseif (is_string($type)) {
@@ -1219,14 +1277,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
             foreach ($traversableEvents as $event) {
                 if ($event instanceof ReceivedExceptionEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
 
                     if (is_a($event->exception(), $type)) {
                         $matchingEvents[] = $event;
-                        $matchCount++;
+                        ++$matchCount;
                     }
                 } elseif ($event instanceof ReceivedEventInterface) {
-                    $totalCount++;
+                    ++$totalCount;
                 }
             }
         } elseif (is_object($type)) {
@@ -1235,14 +1293,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
                 foreach ($traversableEvents as $event) {
                     if ($event instanceof ReceivedExceptionEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
 
                         if ($event->exception() == $type) {
                             $matchingEvents[] = $event;
-                            $matchCount++;
+                            ++$matchCount;
                         }
                     } elseif ($event instanceof ReceivedEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
                     }
                 }
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -1251,14 +1309,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
                 foreach ($traversableEvents as $event) {
                     if ($event instanceof ReceivedExceptionEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
 
                         if ($type->matches($event->exception())) {
                             $matchingEvents[] = $event;
-                            $matchCount++;
+                            ++$matchCount;
                         }
                     } elseif ($event instanceof ReceivedEventInterface) {
-                        $totalCount++;
+                        ++$totalCount;
                     }
                 }
             }
@@ -1284,8 +1342,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function receivedException($type = null)
     {
@@ -1298,10 +1356,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         if (null === $type) {
             $renderedType = 'generator to receive exception';
         } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                'generator to receive %s exception',
-                $this->assertionRenderer->renderValue($type)
-            );
+            $renderedType = sprintf('generator to receive %s exception', $type);
         } elseif (is_object($type)) {
             if ($type instanceof Exception) {
                 $renderedType = sprintf(

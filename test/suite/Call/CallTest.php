@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Call;
 
 use ArrayIterator;
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -28,7 +29,8 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnValue = 'ab';
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
-        $this->subject = new Call($this->calledEvent, $this->returnedEvent);
+        $this->indexNormalizer = new IndexNormalizer();
+        $this->subject = new Call($this->calledEvent, $this->returnedEvent, null, null, $this->indexNormalizer);
 
         $this->events = array($this->calledEvent, $this->returnedEvent);
     }
@@ -37,26 +39,34 @@ class CallTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
-        $this->assertSame($this->subject, $this->subject->firstEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
-        $this->assertSame(1, count($this->subject));
+        $this->assertTrue($this->subject->hasCalls());
+        $this->assertSame(2, $this->subject->eventCount());
+        $this->assertSame(1, $this->subject->callCount());
+        $this->assertSame(2, count($this->subject));
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame(array($this->subject), $this->subject->allCalls());
+        $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertFalse($this->subject->isTraversable());
         $this->assertFalse($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->arguments, $this->subject->arguments());
+        $this->assertSame('a', $this->subject->argument());
+        $this->assertSame('a', $this->subject->argument(0));
+        $this->assertSame('b', $this->subject->argument(1));
+        $this->assertSame('b', $this->subject->argument(-1));
+        $this->assertSame('a', $this->subject->argument(-2));
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertNull($this->subject->exception());
         $this->assertEquals($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertEquals($this->returnedEvent->time(), $this->subject->endTime());
+        $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
     }
 
     public function testConstructorWithReturnedArrayEvent()
@@ -69,14 +79,12 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
-        $this->assertSame($this->subject, $this->subject->firstEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
-        $this->assertSame(1, count($this->subject));
+        $this->assertSame(2, count($this->subject));
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertTrue($this->subject->isTraversable());
         $this->assertFalse($this->subject->isGenerator());
@@ -101,14 +109,12 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
-        $this->assertSame($this->subject, $this->subject->firstEvent());
-        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
-        $this->assertSame(1, count($this->subject));
+        $this->assertSame(2, count($this->subject));
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertTrue($this->subject->isTraversable());
         $this->assertFalse($this->subject->isGenerator());
@@ -132,14 +138,12 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
-        $this->assertSame($this->subject, $this->subject->firstEvent());
-        $this->assertSame($threwEvent, $this->subject->lastEvent());
-        $this->assertSame(1, count($this->subject));
+        $this->assertSame(2, count($this->subject));
         $this->assertSame($threwEvent, $this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($threwEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertFalse($this->subject->isTraversable());
         $this->assertFalse($this->subject->isGenerator());
@@ -161,14 +165,12 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
-        $this->assertSame($this->subject, $this->subject->firstEvent());
-        $this->assertSame($this->subject, $this->subject->lastEvent());
         $this->assertSame(1, count($this->subject));
         $this->assertNull($this->subject->responseEvent());
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertNull($this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame($this->events, $this->subject->events());
+        $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertFalse($this->subject->hasResponded());
         $this->assertFalse($this->subject->isTraversable());
         $this->assertFalse($this->subject->isGenerator());
@@ -181,6 +183,40 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->exception());
         $this->assertNull($this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
+    }
+
+    public function testConstructorDefaultIndexNormalizer()
+    {
+        $this->subject = new Call($this->calledEvent);
+
+        $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
+    }
+
+    public function testEventAt()
+    {
+        $this->assertSame($this->calledEvent, $this->subject->eventAt());
+        $this->assertSame($this->calledEvent, $this->subject->eventAt(0));
+        $this->assertSame($this->returnedEvent, $this->subject->eventAt(1));
+        $this->assertSame($this->returnedEvent, $this->subject->eventAt(-1));
+    }
+
+    public function testEventAtFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->subject->eventAt(2);
+    }
+
+    public function testCallAt()
+    {
+        $this->assertSame($this->subject, $this->subject->callAt());
+        $this->assertSame($this->subject, $this->subject->callAt(0));
+        $this->assertSame($this->subject, $this->subject->callAt(-1));
+    }
+
+    public function testCallAtFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->callAt(1);
     }
 
     public function testIteration()

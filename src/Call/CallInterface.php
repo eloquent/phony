@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call;
 
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
@@ -115,13 +114,6 @@ interface CallInterface extends EventInterface
      * @return callable The callback.
      */
     public function callback();
-
-    /**
-     * Get the received arguments.
-     *
-     * @return ArgumentsInterface The received arguments.
-     */
-    public function arguments();
 
     /**
      * Get the returned value.

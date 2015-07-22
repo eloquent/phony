@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -34,7 +33,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = new FeatureDetector();
         $this->subject = new Stub(
             $this->callback,
             $this->self,
@@ -42,8 +40,7 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
 
         $this->callsA = array();
@@ -53,7 +50,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->callbackA = function () use (&$callsA, &$callCountA) {
             $arguments = func_get_args();
             $callsA[] = $arguments;
-            $callCountA++;
+            ++$callCountA;
 
             array_unshift($arguments, 'A');
 
@@ -67,7 +64,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->callbackB = function () use (&$callsB, &$callCountB) {
             $arguments = func_get_args();
             $callsB[] = $arguments;
-            $callCountB++;
+            ++$callCountB;
 
             array_unshift($arguments, 'B');
 
@@ -81,7 +78,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->callbackC = function () use (&$callsC, &$callCountC) {
             $arguments = func_get_args();
             $callsC[] = $arguments;
-            $callCountC++;
+            ++$callCountC;
 
             array_unshift($arguments, 'C');
 
@@ -95,7 +92,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->callbackD = function () use (&$callsD, &$callCountD) {
             $arguments = func_get_args();
             $callsD[] = $arguments;
-            $callCountD++;
+            ++$callCountD;
 
             array_unshift($arguments, 'D');
 
@@ -109,7 +106,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->callbackE = function () use (&$callsE, &$callCountE) {
             $arguments = func_get_args();
             $callsE[] = $arguments;
-            $callCountE++;
+            ++$callCountE;
 
             array_unshift($arguments, 'E');
 
@@ -123,7 +120,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->callbackF = function () use (&$callsF, &$callCountF) {
             $arguments = func_get_args();
             $callsF[] = $arguments;
-            $callCountF++;
+            ++$callCountF;
 
             array_unshift($arguments, 'F');
 
@@ -148,7 +145,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
     }
 
     public function testConstructorDefaults()
@@ -164,7 +160,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
     public function testSetSelf()
@@ -385,39 +380,20 @@ class StubTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testCallsWithThisBinding()
+    public function testCallsWithSelfParameterAutoDetection()
     {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
+        $self = (object) array();
+        $subject = new Stub(null, $self);
+        $actual = null;
+        $subject->callsWith(
+                function ($phonySelf) use (&$actual) {
+                    $actual = func_get_args();
+                }
+            )
+            ->returns();
+        $subject('a', 'b');
 
-        $result = null;
-        $callback = function () use (&$result) {
-            $result = $this->testClassAMethodC('a', 'b');
-        };
-        $this->self = new TestClassA();
-        $this->subject = new Stub(null, $this->self);
-        $this->subject->callsWith($callback)->returns();
-        call_user_func($this->subject);
-
-        $this->assertSame('protected ab', $result);
-    }
-
-    public function testCallsWithStaticBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $result = null;
-        $callback = function () use (&$result) {
-            $result = self::testClassAStaticMethodC('a', 'b');
-        };
-        $this->subject = new Stub(null, 'Eloquent\Phony\Test\TestClassA');
-        $this->subject->callsWith($callback)->returns();
-        call_user_func($this->subject);
-
-        $this->assertSame('protected ab', $result);
+        $this->assertSame(array($self, 'a', 'b'), $actual);
     }
 
     public function testCallsWithWithReferenceParameters()
@@ -670,37 +646,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('C', 'g', 'h'), call_user_func($this->subject, 'g', 'h'));
     }
 
-    public function testDoesThisBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this->testClassAMethodC('a', 'b');
-        };
-        $this->self = new TestClassA();
-        $this->subject = new Stub(null, $this->self);
-        $this->subject->does($callback);
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
-    public function testDoesStaticBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return self::testClassAStaticMethodC('a', 'b');
-        };
-        $this->subject = new Stub(null, 'Eloquent\Phony\Test\TestClassA');
-        $this->subject->does($callback);
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
     public function testDoesWithReferenceParameters()
     {
         $a = null;
@@ -747,6 +692,21 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('A', 'a', 'b'), call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(array('B', 'c', 'd'), call_user_func($this->subject, 'c', 'd'));
         $this->assertSame(array('B', 'e', 'f'), call_user_func($this->subject, 'e', 'f'));
+    }
+
+    public function testDoesWithSelfParameterAutoDetection()
+    {
+        $self = (object) array();
+        $subject = new Stub(null, $self);
+        $actual = null;
+        $subject->doesWith(
+            function ($phonySelf) use (&$actual) {
+                $actual = func_get_args();
+            }
+        );
+        $subject('a', 'b');
+
+        $this->assertSame(array($self, 'a', 'b'), $actual);
     }
 
     public function testDoesWithWithReferenceParameters()
@@ -849,49 +809,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, call_user_func_array($subject, $arguments));
     }
 
-    public function testForwardsThisBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this->testClassAMethodC('a', 'b');
-        };
-        $this->self = new TestClassA();
-        $this->subject = new Stub($callback, $this->self);
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
-    public function testForwardsStaticBinding()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return self::testClassAStaticMethodC('a', 'b');
-        };
-        $this->subject = new Stub($callback, 'Eloquent\Phony\Test\TestClassA');
-
-        $this->assertSame('protected ab', call_user_func($this->subject));
-    }
-
-    public function testForwardsWithUnbindableSelf()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $callback = function () {
-            return $this;
-        };
-        $this->subject = new Stub($callback, 111);
-
-        $this->assertSame($this, call_user_func($this->subject));
-    }
-
     public function testForwardsWithReferenceParameters()
     {
         $this->subject = new Stub($this->referenceCallback, $this->self);
@@ -957,7 +874,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->throws());
 
         $thrownExceptions = array();
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; ++$i) {
             try {
                 call_user_func($this->subject);
             } catch (Exception $thrownException) {
@@ -975,7 +892,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->throws($exceptionA, $exceptionB));
 
         $thrownExceptions = array();
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; ++$i) {
             try {
                 call_user_func($this->subject);
             } catch (Exception $thrownException) {
@@ -1007,7 +924,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('e', call_user_func($this->subject, 'b'));
         $this->assertSame('f', call_user_func($this->subject, 'b'));
         $thrownExceptions = array();
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; ++$i) {
             try {
                 call_user_func($this->subject, 'b');
             } catch (Exception $thrownException) {
@@ -1049,11 +966,11 @@ class StubTest extends PHPUnit_Framework_TestCase
     {
         $callCountA = 0;
         $callbackA = function () use (&$callCountA) {
-            $callCountA++;
+            ++$callCountA;
         };
         $callCountB = 0;
         $callbackB = function () use (&$callCountB) {
-            $callCountB++;
+            ++$callCountB;
         };
 
         $this->assertSame(

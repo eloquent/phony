@@ -23,7 +23,7 @@ class UndefinedArgumentExceptionTest extends PHPUnit_Framework_TestCase
         $exception = new UndefinedArgumentException($index, $cause);
 
         $this->assertSame($index, $exception->index());
-        $this->assertSame("No argument defined for index 111.", $exception->getMessage());
+        $this->assertSame('No argument defined for index 111.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

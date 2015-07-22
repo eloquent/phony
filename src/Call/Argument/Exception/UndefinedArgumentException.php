@@ -29,7 +29,10 @@ final class UndefinedArgumentException extends Exception
         $this->index = $index;
 
         parent::__construct(
-            sprintf('No argument defined for index %d.', $index),
+            sprintf(
+                'No argument defined for index %s.',
+                var_export($index, true)
+            ),
             0,
             $cause
         );

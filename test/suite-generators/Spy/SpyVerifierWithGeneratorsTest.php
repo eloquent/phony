@@ -14,8 +14,8 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -33,7 +33,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
         $this->label = 'label';
-        $this->spy = new Spy($this->callback, $this->label, false, false, $this->callFactory);
+        $this->spy = new Spy($this->callback, $this->label, false, false, null, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -169,29 +169,29 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->addCall($this->generatorCall);
 
         $this->assertEquals(
-            new CallEventCollection(
+            new EventCollection(
                 array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
             ),
             $this->subject->produced()
         );
-        $this->assertEquals(new CallEventCollection(array($this->generatorEventA)), $this->subject->produced('n'));
-        $this->assertEquals(new CallEventCollection(array($this->generatorEventA)), $this->subject->produced('m', 'n'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->produced('n'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventA)), $this->subject->produced('m', 'n'));
         $this->assertEquals(
-            new CallEventCollection(
+            new EventCollection(
                 array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
             ),
             $this->subject->times(4)->produced()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventA)),
+            new EventCollection(array($this->generatorEventA)),
             $this->subject->once()->produced('n')
         );
-        $this->assertEquals(new CallEventCollection(), $this->subject->never()->produced('m'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->produced('m'));
 
         $this->subject->setCalls(array($this->generatorCall));
 
         $this->assertEquals(
-            new CallEventCollection(
+            new EventCollection(
                 array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
             ),
             $this->subject->always()->produced()
@@ -202,7 +202,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call on implode[label] to produce. Never called."
+            'Expected call on implode[label] to produce. Never called.'
         );
         $this->subject->produced();
     }
@@ -211,7 +211,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call on implode[label] to produce like <'x'>. Never called."
+            'Expected call on implode[label] to produce like "x". Never called.'
         );
         $this->subject->produced('x');
     }
@@ -220,7 +220,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected call on implode[label] to produce like <'x'> => <'y'>. Never called."
+            'Expected call on implode[label] to produce like "x": "y". Never called.'
         );
         $this->subject->produced('x', 'y');
     }
@@ -230,10 +230,10 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on implode[label] to produce. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -244,11 +244,11 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call on implode[label] to produce like <'x'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected call on implode[label] to produce like "x". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -259,11 +259,11 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call on implode[label] to produce like <'x'> => <'y'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected call on implode[label] to produce like "x": "y". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -275,20 +275,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call on implode[label] to produce like <'x'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected call on implode[label] to produce like "x". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -300,20 +300,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected call on implode[label] to produce like <'x'> => <'y'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected call on implode[label] to produce like "x": "y". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -325,20 +325,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected every call on implode[label] to produce like <'n'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected every call on implode[label] to produce like "n". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -350,20 +350,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no call on implode[label] to produce like <'n'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected no call on implode[label] to produce like "n". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -443,34 +443,34 @@ EOD;
         $this->subject->addCall($this->generatorCall);
 
         $this->assertEquals(
-            new CallEventCollection(
+            new EventCollection(
                 array($this->callAResponse, $this->callBResponse, $this->callCResponse, $this->callDResponse)
             ),
             $this->subject->producedAll()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventG)),
+            new EventCollection(array($this->generatorEventG)),
             $this->subject->producedAll('n', 'q', 's', 'v')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventG)),
+            new EventCollection(array($this->generatorEventG)),
             $this->subject->producedAll('n', array('p', 'q'), 's', array('u', 'v'))
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventG)),
+            new EventCollection(array($this->generatorEventG)),
             $this->subject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
         );
-        $this->assertEquals(new CallEventCollection(), $this->subject->never()->producedAll('q', 's', 'v'));
-        $this->assertEquals(new CallEventCollection(), $this->subject->never()->producedAll('n', 's', 'v'));
-        $this->assertEquals(new CallEventCollection(), $this->subject->never()->producedAll('n', 'q', 's'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('q', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('n', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('n', 'q', 's'));
     }
 
     public function testProducedAllFailureNeverCalled()
     {
         $expected = <<<'EOD'
 Expected call on implode[label] to produce like:
-    - <'a'>
-    - <'b'> => <'c'>
+    - "a"
+    - "b": "c"
 Never called.
 EOD;
 
@@ -483,13 +483,13 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on implode[label] to produce like:
-    - <'a'>
-    - <'b'> => <'c'>
+    - "a"
+    - "b": "c"
 Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -502,22 +502,22 @@ EOD;
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
 Expected call on implode[label] to produce like:
-    - <'a'>
-    - <'b'> => <'c'>
+    - "a"
+    - "b": "c"
 Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -530,24 +530,24 @@ EOD;
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
 Expected no call on implode[label] to produce like:
-    - <'n'>
-    - <'q'>
-    - <'s'>
-    - <'v'>
+    - "n"
+    - "q"
+    - "s"
+    - "v"
 Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -560,14 +560,14 @@ EOD;
         $expected = <<<'EOD'
 Expected call on implode[label] to produce nothing. Responded:
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -611,26 +611,26 @@ EOD;
         $this->subject->addCall($this->generatorCall);
 
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventB, $this->generatorEventF)),
+            new EventCollection(array($this->generatorEventB, $this->generatorEventF)),
             $this->subject->received()
         );
-        $this->assertEquals(new CallEventCollection(array($this->generatorEventB)), $this->subject->received('o'));
+        $this->assertEquals(new EventCollection(array($this->generatorEventB)), $this->subject->received('o'));
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventB, $this->generatorEventF)),
+            new EventCollection(array($this->generatorEventB, $this->generatorEventF)),
             $this->subject->times(2)->received()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventB)),
+            new EventCollection(array($this->generatorEventB)),
             $this->subject->once()->received('o')
         );
-        $this->assertEquals(new CallEventCollection(), $this->subject->never()->received('x'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->received('x'));
     }
 
     public function testReceivedFailureNoCallsNoMatcher()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive value. Never called."
+            'Expected generator returned by implode[label] to receive value. Never called.'
         );
         $this->subject->received();
     }
@@ -639,7 +639,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive value like <'x'>. Never called."
+            'Expected generator returned by implode[label] to receive value like "x". Never called.'
         );
         $this->subject->received('x');
     }
@@ -649,10 +649,10 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected generator returned by implode[label] to receive value. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -663,11 +663,11 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected generator returned by implode[label] to receive value like <'x'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected generator returned by implode[label] to receive value like "x". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -679,20 +679,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator returned by implode[label] to receive value like <'x'>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected generator returned by implode[label] to receive value like "x". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -781,31 +781,31 @@ EOD;
         $this->subject->addCall($this->generatorCall);
 
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD, $this->generatorEventH)),
+            new EventCollection(array($this->generatorEventD, $this->generatorEventH)),
             $this->subject->receivedException()
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD, $this->generatorEventH)),
+            new EventCollection(array($this->generatorEventD, $this->generatorEventH)),
             $this->subject->receivedException('Exception')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD, $this->generatorEventH)),
+            new EventCollection(array($this->generatorEventD, $this->generatorEventH)),
             $this->subject->receivedException('RuntimeException')
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD)),
+            new EventCollection(array($this->generatorEventD)),
             $this->subject->receivedException($this->receivedExceptionA)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventH)),
+            new EventCollection(array($this->generatorEventH)),
             $this->subject->receivedException($this->receivedExceptionB)
         );
         $this->assertEquals(
-            new CallEventCollection(array($this->generatorEventD)),
+            new EventCollection(array($this->generatorEventD)),
             $this->subject->receivedException(new EqualToMatcher($this->receivedExceptionA))
         );
         $this->assertEquals(
-            new CallEventCollection(),
+            new EventCollection(),
             $this->subject->never()->receivedException('InvalidArgumentException')
         );
     }
@@ -814,7 +814,7 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive exception. Never called."
+            'Expected generator returned by implode[label] to receive exception. Never called.'
         );
         $this->subject->receivedException();
     }
@@ -823,8 +823,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive 'InvalidArgumentException' exception. " .
-                "Never called."
+            'Expected generator returned by implode[label] to receive InvalidArgumentException exception. ' .
+                'Never called.'
         );
         $this->subject->receivedException('InvalidArgumentException');
     }
@@ -833,8 +833,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive exception equal to RuntimeException(). " .
-                "Never called."
+            'Expected generator returned by implode[label] to receive exception equal to RuntimeException(). ' .
+                'Never called.'
         );
         $this->subject->receivedException(new RuntimeException());
     }
@@ -843,8 +843,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            "Expected generator returned by implode[label] to receive exception like " .
-                "<RuntimeException Object (...)>. Never called."
+            'Expected generator returned by implode[label] to receive exception like ' .
+                'RuntimeException#0{}. Never called.'
         );
         $this->subject->receivedException(new EqualToMatcher(new RuntimeException()));
     }
@@ -855,19 +855,19 @@ EOD;
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
 Expected no generator returned by implode[label] to receive exception. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -880,19 +880,19 @@ EOD;
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
 Expected every generator returned by implode[label] to receive exception. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -904,20 +904,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator returned by implode[label] to receive 'InvalidArgumentException' exception. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected generator returned by implode[label] to receive InvalidArgumentException exception. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -929,20 +929,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator returned by implode[label] to receive 'RuntimeException' exception. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected no generator returned by implode[label] to receive RuntimeException exception. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -954,20 +954,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator returned by implode[label] to receive 'InvalidArgumentException' exception. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected generator returned by implode[label] to receive InvalidArgumentException exception. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -980,19 +980,19 @@ EOD;
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
 Expected generator returned by implode[label] to receive exception equal to RuntimeException(). Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1004,20 +1004,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator returned by implode[label] to receive exception equal to RuntimeException('Consequences will never be the same.'). Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected no generator returned by implode[label] to receive exception equal to RuntimeException("Consequences will never be the same."). Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1030,19 +1030,19 @@ EOD;
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
 Expected generator returned by implode[label] to receive exception equal to RuntimeException(). Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1054,20 +1054,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected generator returned by implode[label] to receive exception like <RuntimeException Object (...)>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected generator returned by implode[label] to receive exception like RuntimeException#0{}. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1079,20 +1079,20 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->generatorCall);
         $expected = <<<'EOD'
-Expected no generator returned by implode[label] to receive exception like <RuntimeException Object (...)>. Responded:
-    - returned 'x'
-    - returned 'y'
-    - threw RuntimeException('You done goofed.')
-    - threw RuntimeException('Consequences will never be the same.')
+Expected no generator returned by implode[label] to receive exception like RuntimeException#0{message: "Consequences will never be the same."}. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
     - generated:
-        - produced 'm' => 'n'
-        - received 'o'
-        - produced 'p' => 'q'
-        - received exception RuntimeException('Consequences will never be the same.')
-        - produced 'r' => 's'
-        - received 't'
-        - produced 'u' => 'v'
-        - received exception RuntimeException('Because I backtraced it.')
+        - produced "m": "n"
+        - received "o"
+        - produced "p": "q"
+        - received exception RuntimeException("Consequences will never be the same.")
+        - produced "r": "s"
+        - received "t"
+        - produced "u": "v"
+        - received exception RuntimeException("Because I backtraced it.")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1101,19 +1101,13 @@ EOD;
 
     public function testReceivedExceptionFailureInvalidInput()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            "Unable to match exceptions against 111."
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against 111.');
         $this->subject->receivedException(111);
     }
 
     public function testReceivedExceptionFailureInvalidInputObject()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            "Unable to match exceptions against stdClass Object ()."
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
         $this->subject->receivedException((object) array());
     }
 }

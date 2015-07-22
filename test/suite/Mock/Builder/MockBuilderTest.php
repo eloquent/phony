@@ -667,6 +667,26 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($second, $this->subject->get());
     }
 
+    public function testSource()
+    {
+        $this->subject = new MockBuilder(null, null, 'PhonyMockBuilderTestSourceMethod');
+        $expected = <<<'EOD'
+class PhonyMockBuilderTestSourceMethod
+implements \Eloquent\Phony\Mock\MockInterface
+{
+    private static $_uncallableMethods = array();
+    private static $_traitMethods = array();
+    private static $_customMethods = array();
+    private static $_staticProxy;
+    private $_proxy;
+}
+
+EOD;
+
+        $this->assertSame($expected, $this->subject->source());
+        $this->assertTrue($this->subject->isFinalized());
+    }
+
     public function testMockedConstructorWithReferenceParameters()
     {
         $first = null;

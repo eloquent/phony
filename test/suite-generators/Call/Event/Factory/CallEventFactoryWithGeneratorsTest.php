@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call\Event\Factory;
 
-use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;

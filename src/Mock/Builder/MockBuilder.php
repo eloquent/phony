@@ -26,6 +26,8 @@ use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
+use Eloquent\Phony\Mock\Generator\MockGenerator;
+use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
@@ -482,7 +484,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
      *
-     * @return ReflectionClass The class.
+     * @return ReflectionClass        The class.
+     * @throws MockExceptionInterface If the mock generation fails.
      */
     public function build($createNew = null)
     {
@@ -500,7 +503,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
      *
-     * @return string The class name.
+     * @return string                 The class name.
+     * @throws MockExceptionInterface If the mock generation fails.
      */
     public function className($createNew = null)
     {
@@ -515,7 +519,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @return MockInterface The mock instance.
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
      */
     public function get()
     {
@@ -536,7 +541,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param mixed $arguments,... The constructor arguments.
      *
-     * @return MockInterface The mock instance.
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
      */
     public function create()
     {
@@ -556,7 +562,8 @@ class MockBuilder implements MockBuilderInterface
      * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      * @param string|null                                  $label     The label.
      *
-     * @return MockInterface The mock instance.
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
      */
     public function createWith($arguments = null, $label = null)
     {
@@ -579,7 +586,8 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param string|null $label The label.
      *
-     * @return MockInterface The mock instance.
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
      */
     public function full($label = null)
     {
@@ -587,6 +595,27 @@ class MockBuilder implements MockBuilderInterface
         $this->proxyFactory->createStubbing($mock)->full();
 
         return $mock;
+    }
+
+    /**
+     * Get the generated source code of the mock class.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @internal
+     *
+     * @param MockGeneratorInterface|null $generator The mock generator to use.
+     *
+     * @return string                 The source code.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function source(MockGeneratorInterface $generator = null)
+    {
+        if (null === $generator) {
+            $generator = MockGenerator::instance();
+        }
+
+        return $generator->generate($this->definition());
     }
 
     /**

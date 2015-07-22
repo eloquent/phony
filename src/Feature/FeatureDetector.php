@@ -12,6 +12,8 @@
 namespace Eloquent\Phony\Feature;
 
 use Eloquent\Phony\Feature\Exception\UndefinedFeatureException;
+use ParseError;
+use ParseException;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -121,6 +123,14 @@ class FeatureDetector implements FeatureDetectorInterface
     public function standardFeatures()
     {
         return array(
+            'object.constructor.php4' => function ($detector) {
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return true; // @codeCoverageIgnore
+                }
+
+                return version_compare(PHP_VERSION, '7.x', '<');
+            },
+
             'closure' => function ($detector) {
                 return $detector->checkInternalClass('Closure');
             },
@@ -273,6 +283,31 @@ class FeatureDetector implements FeatureDetectorInterface
                     ->checkInternalMethod('ReflectionParameter', 'isCallable');
             },
 
+            'parameter.variadic' => function ($detector) {
+                return $detector->checkStatement('function (...$a) {};');
+            },
+
+            'parameter.variadic.reference' => function ($detector) {
+                // syntax causes fatal on HHVM
+                // @codeCoverageIgnoreStart
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return false;
+                } // @codeCoverageIgnoreEnd
+
+                return $detector->checkStatement('function (&...$a) {};');
+            },
+
+            'parameter.variadic.type' => function ($detector) {
+                // syntax causes fatal on HHVM
+                // @codeCoverageIgnoreStart
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return false;
+                } // @codeCoverageIgnoreEnd
+
+                return $detector
+                    ->checkStatement('function (stdClass ...$a) {};');
+            },
+
             'reflection.function.export.default.array' => function ($detector) {
                 $function =
                     new ReflectionFunction(function ($a0 = array('a')) {});
@@ -309,12 +344,7 @@ class FeatureDetector implements FeatureDetectorInterface
     public function runtime()
     {
         if (null === $this->runtime) {
-            if (
-                false === strpos(
-                    $this->captureOutput('phpinfo', array(0)),
-                    'HipHop'
-                )
-            ) {
+            if (false === strpos(phpversion(), 'hhvm')) {
                 $this->runtime = 'php';
             } else {
                 $this->runtime = 'hhvm'; // @codeCoverageIgnore
@@ -357,13 +387,29 @@ class FeatureDetector implements FeatureDetectorInterface
             $useClosure = true;
         }
 
+        $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
+
         if ($useClosure) {
-            return true === @eval(
-                sprintf('function () {%s;};return true;', $source)
-            );
+            try {
+                $result = eval(sprintf('function(){%s;};return true;', $source));
+            } catch (ParseError $e) { // @codeCoverageIgnoreStart
+                $result = false;
+            } catch (ParseException $e) {
+                $result = false;
+            } // @codeCoverageIgnoreEnd
+        } else {
+            try {
+                $result = eval(sprintf('%s;return true;', $source));
+            } catch (ParseError $e) { // @codeCoverageIgnoreStart
+                $result = false;
+            } catch (ParseException $e) {
+                $result = false;
+            } // @codeCoverageIgnoreEnd
         }
 
-        return true === @eval(sprintf('%s;return true;', $source));
+        error_reporting($reporting);
+
+        return true === $result;
     }
 
     /**
@@ -407,28 +453,6 @@ class FeatureDetector implements FeatureDetectorInterface
         }
 
         return false;
-    }
-
-    /**
-     * Capture the output produced by a callback.
-     *
-     * @param callable                  $callback  The callback.
-     * @param array<integer,mixed>|null $arguments Arguments to pass to the callback.
-     *
-     * @return string The captured output.
-     */
-    public function captureOutput($callback, array $arguments = null)
-    {
-        if (null === $arguments) {
-            $arguments = array();
-        }
-
-        ob_start();
-        call_user_func_array($callback, $arguments);
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        return $output;
     }
 
     /**

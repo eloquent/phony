@@ -74,7 +74,7 @@ class StubRule implements StubRuleInterface
     public function addAnswer(AnswerInterface $answer)
     {
         $this->answers[] = $answer;
-        $this->answerCount++;
+        ++$this->answerCount;
     }
 
     /**
@@ -114,7 +114,7 @@ class StubRule implements StubRuleInterface
             $index = $this->calledCount;
         }
 
-        $this->calledCount++;
+        ++$this->calledCount;
 
         if (
             !isset($this->answers[$index]) ||

@@ -12,7 +12,7 @@
 namespace Eloquent\Phony;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Event\CallEventCollection;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -308,14 +308,26 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertTrue((boolean) Phony::checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) Phony::checkInOrder($this->eventB, $this->eventA));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             Phony::inOrder($this->eventA, $this->eventB)
         );
         $this->assertTrue((boolean) Phony::checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) Phony::checkInOrderSequence(array($this->eventB, $this->eventA)));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             Phony::inOrderSequence(array($this->eventA, $this->eventB))
+        );
+        $this->assertTrue((boolean) Phony::checkAnyOrder($this->eventA, $this->eventB));
+        $this->assertFalse((boolean) Phony::checkAnyOrder());
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            Phony::anyOrder($this->eventA, $this->eventB)
+        );
+        $this->assertTrue((boolean) Phony::checkAnyOrderSequence(array($this->eventA, $this->eventB)));
+        $this->assertFalse((boolean) Phony::checkAnyOrderSequence(array()));
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            Phony::anyOrderSequence(array($this->eventA, $this->eventB))
         );
     }
 
@@ -331,19 +343,43 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         Phony::inOrderSequence(array($this->eventB, $this->eventA));
     }
 
+    public function testAnyOrderMethodFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        Phony::anyOrder();
+    }
+
+    public function testAnyOrderSequenceMethodFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        Phony::anyOrderSequence(array());
+    }
+
     public function testEventOrderFunctions()
     {
         $this->assertTrue((boolean) checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) checkInOrder($this->eventB, $this->eventA));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             inOrder($this->eventA, $this->eventB)
         );
         $this->assertTrue((boolean) checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) checkInOrderSequence(array($this->eventB, $this->eventA)));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             inOrderSequence(array($this->eventA, $this->eventB))
+        );
+        $this->assertTrue((boolean) checkAnyOrder($this->eventA, $this->eventB));
+        $this->assertFalse((boolean) checkAnyOrder());
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrder($this->eventA, $this->eventB)
+        );
+        $this->assertTrue((boolean) checkAnyOrderSequence(array($this->eventA, $this->eventB)));
+        $this->assertFalse((boolean) checkAnyOrderSequence(array()));
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrderSequence(array($this->eventA, $this->eventB))
         );
     }
 
@@ -357,6 +393,18 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         inOrderSequence(array($this->eventB, $this->eventA));
+    }
+
+    public function testAnyOrderFunctionFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        anyOrder();
+    }
+
+    public function testAnyOrderSequenceFunctionFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        anyOrderSequence(array());
     }
 
     public function testAny()
@@ -405,5 +453,11 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $actual = wildcard('a', 1, 2);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testSetExportDepth()
+    {
+        $this->assertSame(1, Phony::setExportDepth(111));
+        $this->assertSame(111, Phony::setExportDepth(1));
     }
 }

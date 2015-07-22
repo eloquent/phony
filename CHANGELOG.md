@@ -1,5 +1,31 @@
 # Phony changelog
 
+## 0.3.0 (2015-07-22)
+
+- **[NEW]** PHP 7 support.
+- **[NEW]** Support for variadic functions ([#64] - thanks [@jmalloc]).
+- **[NEW]** Implemented `eventAt()` and `callAt()` for verification results
+  ([#17]).
+- **[NEW]** Implemented `Call::argument()` ([#56]).
+- **[NEW]** Implemented `MockBuilder::source()` for easier debugging ([#45]).
+- **[NEW]** Implemented `anyOrder()` ([#60]).
+- **[IMPROVED]** Vast improvements to verification failure output ([#66]).
+- **[IMPROVED]** Allow use of phonySelf parameter everywhere ([#63]).
+- **[IMPROVED]** Optimizations to the matcher driver system ([#67]).
+- **[IMPROVED]** Optimizations to the equal to matcher ([#69]).
+- **[IMPROVED]** Calls to eval() no longer use @ suppression.
+
+[#17]: https://github.com/eloquent/phony/issues/17
+[#45]: https://github.com/eloquent/phony/issues/45
+[#56]: https://github.com/eloquent/phony/issues/56
+[#60]: https://github.com/eloquent/phony/issues/60
+[#63]: https://github.com/eloquent/phony/issues/63
+[#64]: https://github.com/eloquent/phony/pull/64
+[#66]: https://github.com/eloquent/phony/issues/66
+[#67]: https://github.com/eloquent/phony/issues/67
+[#69]: https://github.com/eloquent/phony/issues/69
+[@jmalloc]: https://github.com/jmalloc
+
 ## 0.2.1 (2015-02-28)
 
 - **[FIXED]** Cardinality checks for `received()` now work as expected ([#54]).

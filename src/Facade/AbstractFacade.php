@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
@@ -201,9 +201,9 @@ abstract class AbstractFacade
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param CallEventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface $events,... The events.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public static function checkInOrder()
     {
@@ -215,10 +215,10 @@ abstract class AbstractFacade
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param CallEventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface $events,... The events.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrder()
     {
@@ -229,9 +229,9 @@ abstract class AbstractFacade
     /**
      * Checks if the supplied event sequence happened in chronological order.
      *
-     * @param mixed<CallEventCollectionInterface> $events The event sequence.
+     * @param mixed<EventCollectionInterface> $events The event sequence.
      *
-     * @return CallEventCollectionInterface|null The result.
+     * @return EventCollectionInterface|null The result.
      */
     public static function checkInOrderSequence($events)
     {
@@ -243,14 +243,73 @@ abstract class AbstractFacade
      * Throws an exception unless the supplied event sequence happened in
      * chronological order.
      *
-     * @param mixed<CallEventCollectionInterface> $events The event sequence.
+     * @param mixed<EventCollectionInterface> $events The event sequence.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrderSequence($events)
     {
         return static::driver()->eventOrderVerifier()->inOrderSequence($events);
+    }
+
+    /**
+     * Checks that at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public static function checkAnyOrder()
+    {
+        return static::driver()->eventOrderVerifier()
+            ->checkAnyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Throws an exception unless at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public static function anyOrder()
+    {
+        return static::driver()->eventOrderVerifier()
+            ->anyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Checks if the supplied event sequence contains at least one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public static function checkAnyOrderSequence($events)
+    {
+        return static::driver()->eventOrderVerifier()
+            ->checkAnyOrderSequence($events);
+    }
+
+    /**
+     * Throws an exception unless the supplied event sequence contains at least
+     * one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public static function anyOrderSequence($events)
+    {
+        return static::driver()->eventOrderVerifier()
+            ->anyOrderSequence($events);
     }
 
     /**
@@ -291,5 +350,19 @@ abstract class AbstractFacade
     ) {
         return static::driver()->matcherFactory()
             ->wildcard($value, $minimumArguments, $maximumArguments);
+    }
+
+    /**
+     * Set the default export depth.
+     *
+     * Negative depths are treated as infinite depth.
+     *
+     * @param integer $depth The depth.
+     *
+     * @return integer The previous depth.
+     */
+    public static function setExportDepth($depth)
+    {
+        return static::driver()->exporter()->setDepth($depth);
     }
 }

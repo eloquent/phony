@@ -29,20 +29,14 @@ class SimpletestMatcherDriverTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isAvailable());
     }
 
-    public function testIsSupported()
+    public function testMatcherClassNames()
     {
-        $this->assertTrue($this->subject->isSupported($this->matcher));
-        $this->assertFalse($this->subject->isSupported((object) array()));
+        $this->assertSame(array('SimpleExpectation'), $this->subject->matcherClassNames());
     }
 
-    public function testAdapt()
+    public function testWrapMatcher()
     {
-        $object = (object) array();
-        $expected = new SimpletestMatcher($this->matcher);
-
-        $this->assertTrue($this->subject->adapt($this->matcher));
-        $this->assertEquals($expected, $this->matcher);
-        $this->assertFalse($this->subject->adapt($object));
+        $this->assertEquals(new SimpletestMatcher($this->matcher), $this->subject->wrapMatcher($this->matcher));
     }
 
     public function testInstance()

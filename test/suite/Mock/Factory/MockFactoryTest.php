@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Factory;
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
@@ -28,6 +29,8 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->generator = new MockGenerator();
         $this->proxyFactory = new ProxyFactory();
         $this->subject = new MockFactory($this->labelSequencer, $this->generator, $this->proxyFactory);
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testConstructor()
@@ -155,6 +158,12 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateMockWithOldConstructor()
     {
+        if (!$this->featureDetector->isSupported('object.constructor.php4')) {
+            $this->markTestSkipped('Requires PHP4-style constructors.');
+        }
+
+        require_once __DIR__ . '/../../../src/TestClassOldConstructor.php';
+
         $builder = new MockBuilder(
             'TestClassOldConstructor',
             null,

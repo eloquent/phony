@@ -1,11 +1,17 @@
 <?php
 
-if (defined('HHVM_VERSION')) {
-    $message = 'Requires non-HHVM runtime.';
+$message = 'Requires traits.';
 
+if (!$detector->isSupported('trait')) {
     return false;
 }
 
-$message = 'Requires traits.';
+$message = 'Requires non-HHVM runtime.';
 
-return $detector->isSupported('trait');
+if (defined('HHVM_VERSION')) {
+    return false;
+}
+
+$message = 'Requires non-HHVM runtime (less than PHP 7).';
+
+return version_compare(PHP_VERSION, '7.x', '<');

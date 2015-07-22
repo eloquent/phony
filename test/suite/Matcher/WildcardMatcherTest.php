@@ -44,12 +44,12 @@ class WildcardMatcherTest extends PHPUnit_Framework_TestCase
     {
         //                                        matcher                  minimum maximum expected
         return array(
-            'Any amount of anything'     => array(AnyMatcher::instance(),  null,   null,   "<any>*"),
-            'Any amount of equal to'     => array(new EqualToMatcher('x'), null,   null,   "<'x'>*"),
-            'Minimum amount of anything' => array(AnyMatcher::instance(),  111,    null,   "<any>{111,}"),
-            'Maximum amount of anything' => array(AnyMatcher::instance(),  null,   111,    "<any>{,111}"),
-            'Range of anything'          => array(AnyMatcher::instance(),  111,    222,    "<any>{111,222}"),
-            'Exact amount of anything'   => array(AnyMatcher::instance(),  111,    111,    "<any>{111}"),
+            'Any amount of anything'     => array(AnyMatcher::instance(),  null,   null,   '<any>*'),
+            'Any amount of equal to'     => array(new EqualToMatcher('x'), null,   null,   '"x"*'),
+            'Minimum amount of anything' => array(AnyMatcher::instance(),  111,    null,   '<any>{111,}'),
+            'Maximum amount of anything' => array(AnyMatcher::instance(),  null,   111,    '<any>{,111}'),
+            'Range of anything'          => array(AnyMatcher::instance(),  111,    222,    '<any>{111,222}'),
+            'Exact amount of anything'   => array(AnyMatcher::instance(),  111,    111,    '<any>{111}'),
         );
     }
 

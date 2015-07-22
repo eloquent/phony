@@ -12,8 +12,9 @@
 namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Event\CallEventCollection;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -30,6 +31,12 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->featureDetector = FeatureDetector::instance();
+
+        if (!$this->featureDetector->isSupported('object.constructor.php4')) {
+            $this->markTestSkipped('Requires PHP4-style constructors.');
+        }
+
         $this->simpletestContext = new SimpleTestContext();
         $this->simpletestReporter = new SimpleReporter();
         $this->simpletestContext->setReporter($this->simpletestReporter);
@@ -349,13 +356,13 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertTrue((boolean) Phony::checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) Phony::checkInOrder($this->eventB, $this->eventA));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             Phony::inOrder($this->eventA, $this->eventB)
         );
         $this->assertTrue((boolean) Phony::checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) Phony::checkInOrderSequence(array($this->eventB, $this->eventA)));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             Phony::inOrderSequence(array($this->eventA, $this->eventB))
         );
     }
@@ -365,14 +372,26 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertTrue((boolean) checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) checkInOrder($this->eventB, $this->eventA));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             inOrder($this->eventA, $this->eventB)
         );
         $this->assertTrue((boolean) checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) checkInOrderSequence(array($this->eventB, $this->eventA)));
         $this->assertEquals(
-            new CallEventCollection(array($this->eventA, $this->eventB)),
+            new EventCollection(array($this->eventA, $this->eventB)),
             inOrderSequence(array($this->eventA, $this->eventB))
+        );
+        $this->assertTrue((boolean) checkAnyOrder($this->eventA, $this->eventB));
+        $this->assertFalse((boolean) checkAnyOrder());
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrder($this->eventA, $this->eventB)
+        );
+        $this->assertTrue((boolean) checkAnyOrderSequence(array($this->eventA, $this->eventB)));
+        $this->assertFalse((boolean) checkAnyOrderSequence(array()));
+        $this->assertEquals(
+            new EventCollection(array($this->eventA, $this->eventB)),
+            anyOrderSequence(array($this->eventA, $this->eventB))
         );
     }
 

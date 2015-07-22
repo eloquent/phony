@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Spy\Exception;
+namespace Eloquent\Phony\Call\Exception;
 
 use Exception;
 
@@ -29,7 +29,7 @@ final class UndefinedCallException extends Exception
         $this->index = $index;
 
         parent::__construct(
-            sprintf('No call defined for index %d.', $index),
+            sprintf('No call defined for index %s.', var_export($index, true)),
             0,
             $cause
         );

@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\InlineExporter;
 use PHPUnit_Framework_TestCase;
 use SebastianBergmann\Comparator\Factory;
-use SebastianBergmann\Exporter\Exporter;
 
 class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 {
@@ -21,7 +21,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     {
         $this->value = 'x';
         $this->comparatorFactory = new Factory();
-        $this->exporter = new Exporter();
+        $this->exporter = new InlineExporter(false);
         $this->subject = new EqualToMatcher($this->value, $this->comparatorFactory, $this->exporter);
     }
 
@@ -37,7 +37,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $this->subject = new EqualToMatcher($this->value);
 
         $this->assertEquals($this->comparatorFactory, $this->subject->comparatorFactory());
-        $this->assertEquals($this->exporter, $this->subject->exporter());
+        $this->assertSame(InlineExporter::instance(), $this->subject->exporter());
     }
 
     public function testMatches()
@@ -46,22 +46,35 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->matches('y'));
     }
 
+    public function testMatchesObjectOptimizations()
+    {
+        $objectA = (object) array();
+        $objectB = (object) array();
+        $objectC = (object) array('c' => 1);
+        $matcher = new EqualToMatcher($objectA, $this->comparatorFactory, $this->exporter);
+
+        $this->assertTrue($matcher->matches($objectA));
+        $this->assertTrue($matcher->matches($objectB));
+        $this->assertFalse($matcher->matches($objectC));
+        $this->assertFalse($matcher->matches('a'));
+    }
+
     public function testDescribe()
     {
-        $this->assertSame("<'x'>", $this->subject->describe());
+        $this->assertSame('"x"', $this->subject->describe());
     }
 
     public function testDescribeWithMultilineString()
     {
         $this->subject = new EqualToMatcher("line\nline");
 
-        $this->assertSame("<'line\\nline'>", $this->subject->describe());
+        $this->assertSame('"line\nline"', $this->subject->describe());
     }
 
     public function testDescribeWithNonString()
     {
         $this->subject = new EqualToMatcher(111);
 
-        $this->assertSame("<111>", $this->subject->describe());
+        $this->assertSame('111', $this->subject->describe());
     }
 }

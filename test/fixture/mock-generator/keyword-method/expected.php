@@ -13,7 +13,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -32,7 +32,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -46,7 +46,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -65,7 +65,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -84,7 +84,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -98,7 +98,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -121,7 +121,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a1;
         }
 
-        for ($i = 2; $i < $argumentCount; $i++) {
+        for ($i = 2; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -140,7 +140,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -154,7 +154,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -181,7 +181,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a2;
         }
 
-        for ($i = 3; $i < $argumentCount; $i++) {
+        for ($i = 3; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -200,7 +200,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -227,7 +227,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a2;
         }
 
-        for ($i = 3; $i < $argumentCount; $i++) {
+        for ($i = 3; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -250,7 +250,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a1;
         }
 
-        for ($i = 2; $i < $argumentCount; $i++) {
+        for ($i = 2; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -273,7 +273,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a1;
         }
 
-        for ($i = 2; $i < $argumentCount; $i++) {
+        for ($i = 2; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -296,7 +296,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a1;
         }
 
-        for ($i = 2; $i < $argumentCount; $i++) {
+        for ($i = 2; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -310,7 +310,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -329,7 +329,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -348,7 +348,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
 
-        for ($i = 1; $i < $argumentCount; $i++) {
+        for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -375,7 +375,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a2;
         }
 
-        for ($i = 3; $i < $argumentCount; $i++) {
+        for ($i = 3; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -389,7 +389,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -403,7 +403,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $argumentCount = \func_num_args();
         $arguments = array();
 
-        for ($i = 0; $i < $argumentCount; $i++) {
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 

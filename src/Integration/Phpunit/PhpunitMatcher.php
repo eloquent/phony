@@ -29,7 +29,7 @@ class PhpunitMatcher extends WrappedMatcher
      */
     public function matches($value)
     {
-        return $this->matcher->evaluate($value, null, true) && true;
+        return (boolean) $this->matcher->evaluate($value, null, true);
     }
 
     /**

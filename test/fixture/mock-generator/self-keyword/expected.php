@@ -18,7 +18,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a1;
         }
 
-        for ($i = 2; $i < $argumentCount; $i++) {
+        for ($i = 2; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -45,7 +45,7 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a2;
         }
 
-        for ($i = 3; $i < $argumentCount; $i++) {
+        for ($i = 3; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 

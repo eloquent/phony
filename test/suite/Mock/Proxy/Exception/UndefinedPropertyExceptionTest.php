@@ -25,7 +25,7 @@ class UndefinedPropertyExceptionTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($className, $exception->className());
         $this->assertSame($name, $exception->name());
-        $this->assertSame("Undefined property ClassName::property().", $exception->getMessage());
+        $this->assertSame('Undefined property ClassName::property().', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

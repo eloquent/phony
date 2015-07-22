@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Feature;
 
-use Eloquent\Fixie\Reader\FixtureReader;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -82,9 +81,9 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
 
     public function featureData()
     {
-        $reader = new FixtureReader();
+        $json = file_get_contents(__DIR__ . '/../../fixture/feature-detector/features.json');
 
-        return $reader->openFile(__DIR__ . '/../../fixture/feature-detector/features.fixie.yml');
+        return json_decode($json, true);
     }
 
     /**
@@ -148,12 +147,6 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->checkInternalMethod(__CLASS__, __FUNCTION__));
         $this->assertFalse($this->subject->checkInternalMethod('Nonexistent', 'nonexistent'));
         $this->assertFalse($this->subject->checkInternalMethod('ReflectionClass', 'nonexistent'));
-    }
-
-    public function testCaptureOutput()
-    {
-        $this->assertSame('ab', $this->subject->captureOutput('printf', array('%s%s', 'a', 'b')));
-        $this->assertSame('c', $this->subject->captureOutput(function () { echo 'c'; }));
     }
 
     public function testUniqueSymbolName()

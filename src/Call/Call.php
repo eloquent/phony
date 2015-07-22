@@ -14,12 +14,16 @@ namespace Eloquent\Phony\Call;
 use ArrayIterator;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\CallEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Collection\Exception\UndefinedIndexException;
+use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Exception;
 use Generator;
 use InvalidArgumentException;
@@ -40,6 +44,7 @@ class Call implements CallInterface
      * @param ResponseEventInterface|null                   $responseEvent     The response event, or null if the call has not yet responded.
      * @param array<integer,TraversableEventInterface>|null $traversableEvents The traversable events.
      * @param ResponseEventInterface|null                   $endEvent          The end event, or null if the call has not yet completed.
+     * @param IndexNormalizerInterface|null                 $indexNormalizer   The index normalizer to use.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
@@ -47,8 +52,15 @@ class Call implements CallInterface
         CalledEventInterface $calledEvent,
         ResponseEventInterface $responseEvent = null,
         array $traversableEvents = null,
-        ResponseEventInterface $endEvent = null
+        ResponseEventInterface $endEvent = null,
+        IndexNormalizerInterface $indexNormalizer = null
     ) {
+        if (null === $indexNormalizer) {
+            $indexNormalizer = IndexNormalizer::instance();
+        }
+
+        $this->indexNormalizer = $indexNormalizer;
+
         $calledEvent->setCall($this);
         $this->calledEvent = $calledEvent;
 
@@ -67,6 +79,16 @@ class Call implements CallInterface
         if ($endEvent) {
             $this->setEndEvent($endEvent);
         }
+    }
+
+    /**
+     * Get the index normalizer.
+     *
+     * @return IndexNormalizerInterface The index normalizer.
+     */
+    public function indexNormalizer()
+    {
+        return $this->indexNormalizer;
     }
 
     /**
@@ -100,36 +122,86 @@ class Call implements CallInterface
     }
 
     /**
-     * Get the first event.
+     * Returns true if this collection contains any calls.
      *
-     * @return EventInterface|null The first event, or null if there are no events.
+     * @return boolean True if this collection contains any calls.
      */
-    public function firstEvent()
+    public function hasCalls()
     {
-        return $this;
+        return true;
     }
 
     /**
-     * Get the last event.
+     * Get the number of events.
      *
-     * @return EventInterface|null The last event, or null if there are no events.
+     * @return integer The event count.
      */
-    public function lastEvent()
+    public function eventCount()
     {
-        if ($this->endEvent) {
-            return $this->endEvent;
+        $events = $this->allEvents();
+
+        return count($events);
+    }
+
+    /**
+     * Get the number of calls.
+     *
+     * @return integer The call count.
+     */
+    public function callCount()
+    {
+        return 1;
+    }
+
+    /**
+     * Get the event count.
+     *
+     * @return integer The event count.
+     */
+    public function count()
+    {
+        $events = $this->allEvents();
+
+        return count($events);
+    }
+
+    /**
+     * Get an event by index.
+     *
+     * @param integer|null $index The index, or null for the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If the requested event is undefined, or there are no events.
+     */
+    public function eventAt($index = null)
+    {
+        $events = $this->allEvents();
+        $count = count($events);
+
+        try {
+            $normalized = $this->indexNormalizer->normalize($count, $index);
+        } catch (UndefinedIndexException $e) {
+            throw new UndefinedEventException($index, $e);
         }
 
-        if ($this->traversableEvents) {
-            return
-                $this->traversableEvents[count($this->traversableEvents) - 1];
+        return $events[$normalized];
+    }
+
+    /**
+     * Get a call by index.
+     *
+     * @param integer|null $index The index, or null for the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
+     */
+    public function callAt($index = null)
+    {
+        if (null === $index || 0 === $index || -1 === $index) {
+            return $this;
         }
 
-        if ($this->responseEvent) {
-            return $this->responseEvent;
-        }
-
-        return $this;
+        throw new UndefinedCallException($index);
     }
 
     /**
@@ -140,16 +212,6 @@ class Call implements CallInterface
     public function getIterator()
     {
         return new ArrayIterator(array($this));
-    }
-
-    /**
-     * Get the event count.
-     *
-     * @return integer The event count.
-     */
-    public function count()
-    {
-        return 1;
     }
 
     /**
@@ -257,11 +319,11 @@ class Call implements CallInterface
     }
 
     /**
-     * Get the events.
+     * Get all events as an array.
      *
-     * @return array<integer,CallEventInterface> The events.
+     * @return array<integer,EventInterface> The events.
      */
-    public function events()
+    public function allEvents()
     {
         $events = $this->traversableEvents();
 
@@ -279,13 +341,23 @@ class Call implements CallInterface
     }
 
     /**
+     * Get all calls as an array.
+     *
+     * @return array<integer,CallInterface> The calls.
+     */
+    public function allCalls()
+    {
+        return array($this);
+    }
+
+    /**
      * Returns true if this call has responded.
      *
      * @return boolean True if this call has responded.
      */
     public function hasResponded()
     {
-        return $this->responseEvent && true;
+        return (boolean) $this->responseEvent;
     }
 
     /**
@@ -322,7 +394,7 @@ class Call implements CallInterface
      */
     public function hasCompleted()
     {
-        return $this->endEvent && true;
+        return (boolean) $this->endEvent;
     }
 
     /**
@@ -343,6 +415,19 @@ class Call implements CallInterface
     public function arguments()
     {
         return $this->calledEvent->arguments();
+    }
+
+    /**
+     * Get an argument by index.
+     *
+     * @param integer|null $index The index, or null for the first argument.
+     *
+     * @return mixed                      The argument.
+     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
+     */
+    public function argument($index = null)
+    {
+        return $this->calledEvent->arguments()->get($index);
     }
 
     /**
@@ -397,4 +482,5 @@ class Call implements CallInterface
     private $responseEvent;
     private $traversableEvents;
     private $endEvent;
+    private $indexNormalizer;
 }

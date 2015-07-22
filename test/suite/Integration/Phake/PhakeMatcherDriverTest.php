@@ -31,28 +31,27 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isAvailable());
     }
 
-    public function testIsSupported()
+    public function testMatcherClassNames()
     {
-        $this->assertTrue($this->subject->isSupported($this->matcher));
-        $this->assertFalse($this->subject->isSupported((object) array()));
+        $this->assertSame(
+            array(
+                'Phake_Matchers_IArgumentMatcher',
+                'Phake_Matchers_IChainableArgumentMatcher',
+            ),
+            $this->subject->matcherClassNames()
+        );
     }
 
-    public function testAdapt()
+    public function testWrapMatcher()
     {
-        $object = (object) array();
-        $expected = new WrappedMatcher($this->matcher);
-
-        $this->assertTrue($this->subject->adapt($this->matcher));
-        $this->assertEquals($expected, $this->matcher);
-        $this->assertFalse($this->subject->adapt($object));
+        $this->assertEquals(new WrappedMatcher($this->matcher), $this->subject->wrapMatcher($this->matcher));
     }
 
-    public function testAdaptWildcard()
+    public function testWrapMatcherWildcard()
     {
         $this->matcher = Phake::anyParameters();
 
-        $this->assertTrue($this->subject->adapt($this->matcher));
-        $this->assertSame(WildcardMatcher::instance(), $this->matcher);
+        $this->assertSame(WildcardMatcher::instance(), $this->subject->wrapMatcher($this->matcher));
     }
 
     public function testInstance()

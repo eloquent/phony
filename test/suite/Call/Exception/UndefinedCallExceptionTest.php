@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Spy\Exception;
+namespace Eloquent\Phony\Call\Exception;
 
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -23,7 +23,7 @@ class UndefinedCallExceptionTest extends PHPUnit_Framework_TestCase
         $exception = new UndefinedCallException($index, $cause);
 
         $this->assertSame($index, $exception->index());
-        $this->assertSame("No call defined for index 111.", $exception->getMessage());
+        $this->assertSame('No call defined for index 111.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertSame($cause, $exception->getPrevious());
     }

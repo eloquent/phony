@@ -15,8 +15,7 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Call\Event\CallEventCollection;
-use Eloquent\Phony\Call\Event\CallEventCollectionInterface;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\NullEvent;
@@ -87,10 +86,10 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param CallEventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface $events,... The events.
      *
-     * @return CallEventCollectionInterface|null The result.
-     * @throws InvalidArgumentException          If invalid input is supplied.
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
      */
     public function checkInOrder()
     {
@@ -101,11 +100,11 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param CallEventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface $events,... The events.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws InvalidArgumentException     If invalid input is supplied.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrder()
     {
@@ -115,15 +114,15 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks if the supplied event sequence happened in chronological order.
      *
-     * @param mixed<CallEventCollectionInterface> $events The event sequence.
+     * @param mixed<EventCollectionInterface> $events The event sequence.
      *
-     * @return CallEventCollectionInterface|null The result.
-     * @throws InvalidArgumentException          If invalid input is supplied.
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
      */
     public function checkInOrderSequence($events)
     {
         if (!count($events)) {
-            return $this->assertionRecorder->createSuccess();
+            return null;
         }
 
         $isMatch = true;
@@ -169,17 +168,13 @@ class EventOrderVerifier implements EventOrderVerifierInterface
                     continue;
                 }
             } else {
-                if (null === $earliestEvent) {
-                    $matchingEvents[] = $earliestEvent =
-                        $eventCollection->firstEvent();
-
-                    continue;
-                }
-
-                foreach ($eventCollection->events() as $event) {
+                foreach ($eventCollection->allEvents() as $event) {
                     if (
-                        $event->sequenceNumber() >
-                        $earliestEvent->sequenceNumber()
+                        null === $earliestEvent ||
+                        (
+                            $event->sequenceNumber() >
+                            $earliestEvent->sequenceNumber()
+                        )
                     ) {
                         $matchingEvents[] = $earliestEvent = $event;
 
@@ -202,16 +197,21 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Throws an exception unless the supplied event sequence happened in
      * chronological order.
      *
-     * @param mixed<CallEventCollectionInterface> $events The event sequence.
+     * @param mixed<EventCollectionInterface> $events The event sequence.
      *
-     * @return CallEventCollectionInterface The result.
-     * @throws InvalidArgumentException     If invalid input is supplied.
-     * @throws Exception                    If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrderSequence($events)
     {
         if ($result = $this->checkInOrderSequence($events)) {
             return $result;
+        }
+
+        if (!count($events)) {
+            return $this->assertionRecorder
+                ->createFailure('Expected events. No events recorded.');
         }
 
         $mergedEvents = $this->mergeEvents($events);
@@ -236,12 +236,77 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     }
 
     /**
+     * Checks that at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public function checkAnyOrder()
+    {
+        return $this->checkAnyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Throws an exception unless at least one event is supplied.
+     *
+     * @param EventCollectionInterface $events,... The events.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function anyOrder()
+    {
+        return $this->anyOrderSequence(func_get_args());
+    }
+
+    /**
+     * Checks if the supplied event sequence contains at least one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface|null The result.
+     * @throws InvalidArgumentException      If invalid input is supplied.
+     */
+    public function checkAnyOrderSequence($events)
+    {
+        if (!count($events)) {
+            return null;
+        }
+
+        return $this->assertionRecorder
+            ->createSuccess($this->mergeEvents($events)->allEvents());
+    }
+
+    /**
+     * Throws an exception unless the supplied event sequence contains at least
+     * one event.
+     *
+     * @param mixed<EventCollectionInterface> $events The event sequence.
+     *
+     * @return EventCollectionInterface The result.
+     * @throws InvalidArgumentException If invalid input is supplied.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function anyOrderSequence($events)
+    {
+        if ($result = $this->checkAnyOrderSequence($events)) {
+            return $result;
+        }
+
+        return $this->assertionRecorder
+            ->createFailure('Expected events. No events recorded.');
+    }
+
+    /**
      * Attempts to normalize the supplied event order expectation into a
      * meaningful sequence of singular events.
      *
-     * @param mixed<CallEventCollectionInterface> $events The event sequence.
+     * @param mixed<EventCollectionInterface> $events The event sequence.
      *
-     * @return CallCallEventCollectionInterface The normalized events.
+     * @return EventCollectionInterface The normalized events.
      */
     protected function expectedEvents($events)
     {
@@ -254,16 +319,15 @@ class EventOrderVerifier implements EventOrderVerifierInterface
             } else {
                 $event = null;
 
-                if (null === $earliestEvent) {
-                    $event = $eventCollection->firstEvent();
-                } else {
-                    foreach ($eventCollection->events() as $event) {
-                        if (
+                foreach ($eventCollection->allEvents() as $event) {
+                    if (
+                        null === $earliestEvent ||
+                        (
                             $event->sequenceNumber() >
                             $earliestEvent->sequenceNumber()
-                        ) {
-                            break;
-                        }
+                        )
+                    ) {
+                        break;
                     }
                 }
 
@@ -275,16 +339,16 @@ class EventOrderVerifier implements EventOrderVerifierInterface
             }
         }
 
-        return new CallEventCollection($expected);
+        return new EventCollection($expected);
     }
 
     /**
      * Merge the supplied event sequence into a single event collection, in
      * chronological order.
      *
-     * @param mixed<CallEventCollectionInterface> $events The event sequence.
+     * @param mixed<EventCollectionInterface> $events The event sequence.
      *
-     * @param CallCallEventCollectionInterface $events The ordered events.
+     * @param EventCollectionInterface $events The ordered events.
      */
     protected function mergeEvents($events)
     {
@@ -294,7 +358,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
             if ($eventCollection instanceof EventInterface) {
                 $merged[$eventCollection->sequenceNumber()] = $eventCollection;
             } else {
-                foreach ($eventCollection->events() as $thisEvent) {
+                foreach ($eventCollection->allEvents() as $thisEvent) {
                     $merged[$thisEvent->sequenceNumber()] = $thisEvent;
                 }
             }
@@ -302,7 +366,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
 
         ksort($merged);
 
-        return new CallEventCollection($merged);
+        return new EventCollection(array_values($merged));
     }
 
     private static $instance;

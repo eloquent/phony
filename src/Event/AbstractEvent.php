@@ -12,6 +12,10 @@
 namespace Eloquent\Phony\Event;
 
 use ArrayIterator;
+use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Iterator;
 
 /**
@@ -64,33 +68,118 @@ abstract class AbstractEvent implements EventInterface
     }
 
     /**
-     * Get the events.
+     * Returns true if this collection contains any calls.
+     *
+     * @return boolean True if this collection contains any calls.
+     */
+    public function hasCalls()
+    {
+        return false;
+    }
+
+    /**
+     * Get the number of events.
+     *
+     * @return integer The event count.
+     */
+    public function eventCount()
+    {
+        return 1;
+    }
+
+    /**
+     * Get the number of calls.
+     *
+     * @return integer The call count.
+     */
+    public function callCount()
+    {
+        return 0;
+    }
+
+    /**
+     * Get the event count.
+     *
+     * @return integer The event count.
+     */
+    public function count()
+    {
+        return $this->eventCount();
+    }
+
+    /**
+     * Get all events as an array.
      *
      * @return array<integer,EventInterface> The events.
      */
-    public function events()
+    public function allEvents()
     {
         return array($this);
     }
 
     /**
-     * Get the first event.
+     * Get all calls as an array.
      *
-     * @return EventInterface|null The first event, or null if there are no events.
+     * @return array<integer,CallInterface> The calls.
      */
-    public function firstEvent()
+    public function allCalls()
     {
-        return $this;
+        return array();
     }
 
     /**
-     * Get the last event.
+     * Get an event by index.
      *
-     * @return EventInterface|null The last event, or null if there are no events.
+     * @param integer|null $index The index, or null for the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function lastEvent()
+    public function eventAt($index = null)
     {
-        return $this;
+        if (null === $index || 0 === $index || -1 === $index) {
+            return $this;
+        }
+
+        throw new UndefinedEventException($index);
+    }
+
+    /**
+     * Get a call by index.
+     *
+     * @param integer|null $index The index, or null for the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
+     */
+    public function callAt($index = null)
+    {
+        throw new UndefinedCallException($index);
+    }
+
+    /**
+     * Get the arguments.
+     *
+     * @return ArgumentsInterface|null The arguments.
+     * @throws UndefinedCallException  If there are no calls.
+     */
+    public function arguments()
+    {
+        throw new UndefinedCallException(0);
+    }
+
+    /**
+     * Get an argument by index.
+     *
+     * @param integer|null $index The index, or null for the first argument.
+     *
+     * @return mixed                      The argument.
+     * @throws UndefinedCallException     If there are no calls.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
+     */
+    public function argument($index = null)
+    {
+        throw new UndefinedCallException(0);
     }
 
     /**
@@ -101,16 +190,6 @@ abstract class AbstractEvent implements EventInterface
     public function getIterator()
     {
         return new ArrayIterator(array($this));
-    }
-
-    /**
-     * Get the event count.
-     *
-     * @return integer The event count.
-     */
-    public function count()
-    {
-        return 1;
     }
 
     private $sequenceNumber;

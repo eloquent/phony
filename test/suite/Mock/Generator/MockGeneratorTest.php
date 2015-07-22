@@ -103,6 +103,10 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testGenerate($testName)
     {
+        if ($this->featureDetector->isSupported('object.constructor.php4')) {
+            require_once __DIR__ . '/../../../src/TestClassOldConstructor.php';
+        }
+
         $fixturePath = __DIR__ . '/../../../fixture/mock-generator';
 
         $detector = FeatureDetector::instance();
@@ -113,15 +117,14 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
         }
 
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
-        $definition = $builder->definition();
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
-        $actual = $this->subject->generate($definition);
+        $actual = $builder->source($this->subject);
 
         $this->assertSame($expected, "<?php\n\n" . $actual);
 
         eval($actual);
 
-        $this->assertTrue(class_exists($definition->className()));
+        $this->assertTrue(class_exists($builder->definition()->className()));
     }
 
     public function testInstance()

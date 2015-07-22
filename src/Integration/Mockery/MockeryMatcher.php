@@ -29,7 +29,7 @@ class MockeryMatcher extends WrappedMatcher
      */
     public function matches($value)
     {
-        return $this->matcher->match($value) && true;
+        return (boolean) $this->matcher->match($value);
     }
 
     /**
