@@ -752,8 +752,10 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return $this->_proxy
-            ->spy('__call')->invoke($name, $arguments->all());
+        return \call_user_func_array(
+            array($this, 'parent::__call'),
+            array($name, $arguments->all())
+        );
     }
 
 EOD;

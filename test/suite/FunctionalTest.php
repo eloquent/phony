@@ -89,15 +89,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('static magic nonexistent ab', $mock::nonexistent('a', 'b'));
         $this->assertSame('magic nonexistent ab', $mock->nonexistent('a', 'b'));
 
-        x\onStatic($mock)->__callStatic->with('nonexistent', array('a', 'b'))->returns('w');
         x\onStatic($mock)->nonexistent('c', 'd')->returns('x');
-        x\on($mock)->__call->with('nonexistent', array('a', 'b'))->returns('y');
         x\on($mock)->nonexistent('c', 'd')->returns('z');
 
-        $this->assertSame('w', $mock::nonexistent('a', 'b'));
         $this->assertSame('x', $mock::nonexistent('c', 'd'));
         $this->assertSame('static magic nonexistent ef', $mock::nonexistent('e', 'f'));
-        $this->assertSame('y', $mock->nonexistent('a', 'b'));
         $this->assertSame('z', $mock->nonexistent('c', 'd'));
         $this->assertSame('magic nonexistent ef', $mock->nonexistent('e', 'f'));
     }
@@ -641,5 +637,39 @@ EOD;
             ),
             $spy->calledWith('d')
         );
+    }
+
+    public function testCanForwardToMagicCallAfterFullMock()
+    {
+        $proxy = x\fullMock('Eloquent\Phony\Test\TestClassB');
+        $mock = $proxy->mock();
+
+        $this->assertNull($mock->nonexistent());
+
+        $proxy->nonexistent->returns('a');
+
+        $this->assertSame('a', $mock->nonexistent());
+
+        $proxy->__call->forwards();
+        $proxy->nonexistent->forwards();
+
+        $this->assertSame('magic nonexistent a', $mock->nonexistent('a'));
+    }
+
+    public function testCanForwardToMagicCallAfterPartialMock()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassB');
+        $mock = $proxy->mock();
+
+        $this->assertSame('magic nonexistent a', $mock->nonexistent('a'));
+
+        $proxy->nonexistent->returns('a');
+
+        $this->assertSame('a', $mock->nonexistent());
+
+        $proxy->__call->forwards();
+        $proxy->nonexistent->forwards();
+
+        $this->assertSame('magic nonexistent a', $mock->nonexistent('a'));
     }
 }
