@@ -20,6 +20,7 @@ use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use ReflectionMethod;
 
 /**
  * Generates mock classes.
@@ -390,6 +391,17 @@ EOD;
                 case '__call':
                 case '__callstatic':
                     continue 2;
+
+                case 'inittrace':
+                    $methodReflector = $method->method();
+
+                    if (
+                        $methodReflector instanceof ReflectionMethod &&
+                        'Exception' ===
+                            $methodReflector->getDeclaringClass()->getName()
+                    ) {
+                        continue 2;
+                    }
             }
 
             $signature =

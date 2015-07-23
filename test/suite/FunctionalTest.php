@@ -672,4 +672,11 @@ EOD;
 
         $this->assertSame('magic nonexistent a', $mock->nonexistent('a'));
     }
+
+    public function testCanMockExceptions()
+    {
+        $proxy = x\mock('Exception');
+
+        $this->assertInstanceOf('Exception', $proxy->mock());
+    }
 }
