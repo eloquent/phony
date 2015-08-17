@@ -66,9 +66,9 @@
   ([#52]).
 - **[IMPROVED]** Magic 'self' parameter detection ([#48]).
 
-[Peridot]: https://github.com/peridot-php/peridot
-[Pho]: https://github.com/danielstjules/pho
-[SimpleTest]: https://github.com/lox/simpletest
+[peridot]: https://github.com/peridot-php/peridot
+[pho]: https://github.com/danielstjules/pho
+[simpletest]: https://github.com/lox/simpletest
 [#20]: https://github.com/eloquent/phony/issues/20
 [#27]: https://github.com/eloquent/phony/issues/27
 [#29]: https://github.com/eloquent/phony/issues/29

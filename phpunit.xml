@@ -1,22 +1,8 @@
-<phpunit
-    bootstrap="vendor/autoload.php"
-    verbose="true"
-    colors="true"
->
+<phpunit bootstrap="vendor/autoload.php" verbose="true" colors="true">
     <testsuites>
         <testsuite>
             <directory>test/suite</directory>
-            <directory phpVersion="5.5.0-dev">test/suite-generators</directory>
+            <directory phpVersion="5.5-dev">test/suite-generators</directory>
         </testsuite>
     </testsuites>
-
-    <groups>
-        <exclude>
-            <group>exclude-by-default</group>
-        </exclude>
-    </groups>
-
-    <php>
-        <ini name="error_reporting" value="-1"/>
-    </php>
 </phpunit>
