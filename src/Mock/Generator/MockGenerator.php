@@ -457,7 +457,7 @@ EOD;
 
             if ($variadicIndex > -1) {
                 $body = "        \$argumentCount = \\func_num_args();\n" .
-                    "        \$arguments = array();" .
+                    '        $arguments = array();' .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
@@ -470,7 +470,7 @@ EOD;
                     "(\$arguments)\n        );";
             } else {
                 $body = "        \$argumentCount = \\func_num_args();\n" .
-                    "        \$arguments = array();" .
+                    '        $arguments = array();' .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
