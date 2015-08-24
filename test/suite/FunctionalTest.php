@@ -491,7 +491,7 @@ EOD;
         $proxy->setLabel('example');
         $proxy->mock()->testClassAMethodA('a', 'b');
         $expected = <<<'EOD'
-Expected call on PhonyMockAssertionFailure[example]->testClassAMethodA with arguments like:
+Expected call on TestClassA[example]->testClassAMethodA with arguments like:
     "c", "d"
 Calls:
     - "a", "b"
@@ -678,5 +678,94 @@ EOD;
         $proxy = x\mock('Exception');
 
         $this->assertInstanceOf('Exception', $proxy->mock());
+    }
+
+    public function testMockMethodAssertionRenderingWithRealMethod()
+    {
+        $mock =
+            x\mockBuilder('Eloquent\Phony\Test\TestClassA')->named('PhonyMockAssertionRenderingWithRealMethod')->get();
+        $proxy = x\on($mock);
+        $proxy->setLabel('label');
+
+        $error = null;
+
+        try {
+            $proxy->testClassAMethodA->calledWith('a');
+        } catch (Exception $error) {
+        }
+
+        $this->assertNotNull($error);
+        $this->assertContains(
+            'Expected call on TestClassA[label]->testClassAMethodA with arguments like',
+            $error->getMessage()
+        );
+    }
+
+    public function testMockMethodAssertionRenderingWithMagicMethod()
+    {
+        $mock =
+            x\mockBuilder('Eloquent\Phony\Test\TestClassB')->named('PhonyMockAssertionRenderingWithMagicMethod')->get();
+        $proxy = x\on($mock);
+        $proxy->setLabel('label');
+
+        $error = null;
+
+        try {
+            $proxy->magicMethod->calledWith('a');
+        } catch (Exception $error) {
+        }
+
+        $this->assertNotNull($error);
+        $this->assertContains(
+            'Expected call on TestClassB[label]->magicMethod with arguments like',
+            $error->getMessage()
+        );
+    }
+
+    public function testMockMethodAssertionRenderingWithUncallableMethod()
+    {
+        $mock = x\mockBuilder('IteratorAggregate')->named('PhonyMockAssertionRenderingWithUncallableMethod')->get();
+        $proxy = x\on($mock);
+        $proxy->setLabel('label');
+
+        $error = null;
+
+        try {
+            $proxy->getIterator->calledWith('a');
+        } catch (Exception $error) {
+        }
+
+        $this->assertNotNull($error);
+        $this->assertContains(
+            'Expected call on IteratorAggregate[label]->getIterator with arguments like',
+            $error->getMessage()
+        );
+    }
+
+    public function testMockMethodAssertionRenderingWithCustomMethod()
+    {
+        $mock = x\mockBuilder()->named('PhonyMockAssertionRenderingWithCustomMethod')->addMethod('customMethod')->get();
+        $proxy = x\on($mock);
+        $proxy->setLabel('label');
+
+        $error = null;
+
+        try {
+            $proxy->customMethod->calledWith('a');
+        } catch (Exception $error) {
+        }
+
+        $this->assertNotNull($error);
+        $this->assertContains(
+            'Expected call on PhonyMockAssertionRenderingWithCustomMethod[label]->customMethod with arguments like',
+            $error->getMessage()
+        );
+    }
+
+    public function testMockWithUncallableMagicMethod()
+    {
+        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceD')->mock();
+
+        $this->assertNull($mock->nonexistent());
     }
 }

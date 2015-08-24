@@ -196,10 +196,10 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $className::testClassAStaticMethodB('c', 'd');
         $className::testClassAStaticMethodA('e', 'f');
         $expected = <<<'EOD'
-Expected no interaction with PhonyMockStaticVerificationNoInteraction[static]. Calls:
-    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodA("a", "b")
-    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodB("c", "d")
-    - PhonyMockStaticVerificationNoInteraction::testClassAStaticMethodA("e", "f")
+Expected no interaction with TestClassA[static]. Calls:
+    - TestClassA::testClassAStaticMethodA("a", "b")
+    - TestClassA::testClassAStaticMethodB("c", "d")
+    - TestClassA::testClassAStaticMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

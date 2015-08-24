@@ -55,11 +55,11 @@ final class AssertionException extends Exception implements
                 $exception,
                 isset($call['line']) ? $call['line'] : null
             );
-        } else {
+        } else { // @codeCoverageIgnoreStart
             $traceProperty->setValue($exception, array());
             $fileProperty->setValue($exception, null);
             $lineProperty->setValue($exception, null);
-        }
+        } // @codeCoverageIgnoreEnd
     }
 
     /**

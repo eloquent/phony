@@ -20,6 +20,13 @@ use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 interface WrappedMethodInterface
 {
     /**
+     * Get the name.
+     *
+     * @return string The name.
+     */
+    public function name();
+
+    /**
      * Get the proxy.
      *
      * @return ProxyInterface The proxy.

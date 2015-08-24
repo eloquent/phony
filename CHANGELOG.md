@@ -2,10 +2,12 @@
 
 ## Next release
 
+- **[IMPROVED]** Improved rendering of assertion failure messages ([#71]).
 - **[IMPROVED]** String messages now allowed by `throws()` ([#76]).
 - **[FIXED]** Fixed magic method mocking bug ([#74]).
 - **[FIXED]** Fixed mocking of exceptions under HHVM ([#75]).
 
+[#71]: https://github.com/eloquent/phony/issues/71
 [#74]: https://github.com/eloquent/phony/issues/74
 [#75]: https://github.com/eloquent/phony/issues/75
 [#76]: https://github.com/eloquent/phony/issues/76

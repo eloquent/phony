@@ -36,7 +36,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
         $this->proxy = $proxy;
         $this->name = $method->getName();
 
-        if ($this->method->isStatic()) {
+        if ($method->isStatic()) {
             $this->mock = null;
             $callback = array(
                 $method->getDeclaringClass()->getName(),
@@ -58,6 +58,16 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
     public function method()
     {
         return $this->method;
+    }
+
+    /**
+     * Get the name.
+     *
+     * @return string The name.
+     */
+    public function name()
+    {
+        return $this->name;
     }
 
     /**

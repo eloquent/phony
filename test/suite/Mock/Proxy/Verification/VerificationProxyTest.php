@@ -210,10 +210,10 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->mock->testClassAMethodB('c', 'd');
         $this->mock->testClassAMethodA('e', 'f');
         $expected = <<<'EOD'
-Expected no interaction with PhonyMockVerificationNoInteraction[label]. Calls:
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA("a", "b")
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodB("c", "d")
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA("e", "f")
+Expected no interaction with TestClassA[label]. Calls:
+    - TestClassA[label]->testClassAMethodA("a", "b")
+    - TestClassA[label]->testClassAMethodB("c", "d")
+    - TestClassA[label]->testClassAMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);

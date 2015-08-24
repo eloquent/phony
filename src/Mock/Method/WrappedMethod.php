@@ -63,11 +63,8 @@ class WrappedMethod extends AbstractWrappedMethod
      */
     public function invokeWith($arguments = null)
     {
-        return $this->callParentMethod->invoke(
-            $this->mock,
-            $this->name,
-            Arguments::adapt($arguments)
-        );
+        return $this->callParentMethod
+            ->invoke($this->mock, $this->name, Arguments::adapt($arguments));
     }
 
     private $callParentMethod;
