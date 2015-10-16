@@ -20,6 +20,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
+use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
 use Eloquent\Phony\Mock\Method\WrappedMagicMethod;
@@ -438,12 +439,17 @@ abstract class AbstractProxy implements ProxyInterface
                 $mock
             );
         } else {
+            $method = $this->class->getMethod($name);
+
+            if ($method->isFinal()) {
+                throw new FinalMethodStubException(
+                    $this->class->getName(),
+                    $name
+                );
+            }
+
             $stub = $this->stubFactory->create(
-                new WrappedMethod(
-                    $this->callParentMethod,
-                    $this->class->getMethod($name),
-                    $this
-                ),
+                new WrappedMethod($this->callParentMethod, $method, $this),
                 $mock
             );
         }

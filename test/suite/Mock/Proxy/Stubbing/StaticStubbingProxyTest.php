@@ -280,6 +280,30 @@ EOD;
         $this->assertNull($className::testClassAStaticMethodA('c', 'd'));
     }
 
+    public function testStubbingFailureWithFinalMethod()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassF');
+        $this->subject->partial();
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->subject->testClassFStaticMethodA;
+    }
+
+    public function testStubbingWithTraitFinalMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
+        $this->subject->partial();
+        $className = $this->className;
+        $this->subject->testTraitGStaticMethodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $className::testTraitGStaticMethodA('a', 'b'));
+        $this->assertSame('cd', $className::testTraitGStaticMethodA('c', 'd'));
+    }
+
     public function testStubbingWithCustomMethod()
     {
         $this->mockBuilder = new MockBuilder(

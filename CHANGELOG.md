@@ -6,11 +6,13 @@
 - **[IMPROVED]** String messages now allowed by `throws()` ([#76]).
 - **[FIXED]** Fixed magic method mocking bug ([#74]).
 - **[FIXED]** Fixed mocking of exceptions under HHVM ([#75]).
+- **[FIXED]** Attempting to stub a final method now throws an exception ([#77]).
 
 [#71]: https://github.com/eloquent/phony/issues/71
 [#74]: https://github.com/eloquent/phony/issues/74
 [#75]: https://github.com/eloquent/phony/issues/75
 [#76]: https://github.com/eloquent/phony/issues/76
+[#77]: https://github.com/eloquent/phony/issues/77
 
 ## 0.3.0 (2015-07-22)
 
