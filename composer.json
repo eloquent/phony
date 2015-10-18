@@ -12,8 +12,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3",
-        "sebastian/comparator": "^1"
+        "php": ">=5.3"
     },
     "require-dev": {
         "athletic/athletic": "^0.1",
@@ -27,6 +26,7 @@
         "phake/phake": "^2",
         "phpspec/prophecy": "^1",
         "phpunit/phpunit": "^4",
+        "sebastian/comparator": "^1",
         "simpletest/simpletest": "^1"
     },
     "autoload": {
