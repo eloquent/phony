@@ -27,7 +27,7 @@
         "phpspec/prophecy": "^1",
         "phpunit/phpunit": "^4",
         "sebastian/comparator": "^1",
-        "simpletest/simpletest": "^1"
+        "simpletest/simpletest": "dev-master"
     },
     "autoload": {
         "psr-4": {

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d2a016d6d086150830958ae4f30cd3b1",
-    "content-hash": "3f35de833ecd7d69c2e74442f0b1e559",
+    "hash": "3dc8d22eb3875a1a9e39a022a0735aed",
+    "content-hash": "48aa7c49f8e91c1c2a876dc5221dcef7",
     "packages": [],
     "packages-dev": [
         {
@@ -1624,20 +1624,24 @@
         },
         {
             "name": "simpletest/simpletest",
-            "version": "v1.1.6",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simpletest/simpletest.git",
-                "reference": "43d947f842b7295c091a57c979a4533d3d6e9212"
+                "reference": "2f8c466c114bdb9c11028a0c3e6d1380ae6a18dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simpletest/simpletest/zipball/43d947f842b7295c091a57c979a4533d3d6e9212",
-                "reference": "43d947f842b7295c091a57c979a4533d3d6e9212",
+                "url": "https://api.github.com/repos/simpletest/simpletest/zipball/2f8c466c114bdb9c11028a0c3e6d1380ae6a18dc",
+                "reference": "2f8c466c114bdb9c11028a0c3e6d1380ae6a18dc",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.0.5"
+            },
+            "replace": {
+                "lastcraft/simpletest": "self.version",
+                "vierbergenlars/simpletest": "self.version"
             },
             "type": "library",
             "autoload": {
@@ -1685,14 +1689,11 @@
             "keywords": [
                 "SimpleTest",
                 "code-coverage",
-                "junit",
-                "php",
                 "selenium",
                 "testing",
-                "unit-test",
-                "xunit"
+                "unit-test"
             ],
-            "time": "2013-09-21 21:04:19"
+            "time": "2015-09-21 18:19:52"
         },
         {
             "name": "symfony/console",
@@ -1843,7 +1844,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "simpletest/simpletest": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
