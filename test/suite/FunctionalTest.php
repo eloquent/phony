@@ -639,6 +639,22 @@ EOD;
         );
     }
 
+    public function testCanForwardAfterFullMock()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestClassA');
+        $mock = $proxy->mock();
+
+        $this->assertNull($mock->testClassAMethodA('a', 'b'));
+
+        $proxy->testClassAMethodA->returns('x');
+
+        $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
+
+        $proxy->testClassAMethodA->forwards();
+
+        $this->assertSame('ab', $mock->testClassAMethodA('a', 'b'));
+    }
+
     public function testCanForwardToMagicCallAfterFullMock()
     {
         $proxy = x\mock('Eloquent\Phony\Test\TestClassB');
