@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Exporter;
 
+use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -23,6 +26,8 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
     {
         $this->depth = -1;
         $this->subject = new InlineExporter($this->depth);
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testSetDepth()
@@ -138,6 +143,51 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             'Eloquent\Phony\Test\TestClassE#0{privateProperty: "private"}',
             $this->subject->export($value)
+        );
+    }
+
+    public function testExportInaccessibleIneritedProperties()
+    {
+        $value = new TestDerivedClassA();
+
+        if (
+            !$this->featureDetector->isSupported('runtime.hhvm') &&
+            version_compare(PHP_VERSION, '5.4.x', '>=')
+        ) {
+            $expected = 'Eloquent\Phony\Test\Properties\TestDerivedClassA#0{' .
+                'derivedPublic: "<derived-public>", ' .
+                'derivedPrivate: "<derived-private>", ' .
+                'basePrivate: "<derived-base-private>", ' .
+                'derivedProtected: "<derived-protected>", ' .
+                'basePublic: "<base-public>", ' .
+                'baseProtected: "<base-protected>", ' .
+                'Eloquent\Phony\Test\Properties\TestBaseClass.basePrivate: "<base-private>"}';
+        } else {
+            $expected = 'Eloquent\Phony\Test\Properties\TestDerivedClassA#0{' .
+                'derivedPublic: "<derived-public>", ' .
+                'derivedPrivate: "<derived-private>", ' .
+                'basePrivate: "<derived-base-private>", ' .
+                'derivedProtected: "<derived-protected>", ' .
+                'basePublic: "<base-public>", ' .
+                'Eloquent\Phony\Test\Properties\TestBaseClass.basePrivate: "<base-private>", ' .
+                'baseProtected: "<base-protected>"}';
+        }
+
+        $this->assertSame($expected, $this->subject->export($value));
+    }
+
+    public function testExportMocks()
+    {
+        $mock = MockBuilderFactory::instance()->createFullMock(
+            'Eloquent\Phony\Test\Properties\TestBaseClass',
+            null,
+            'PhonyMockInlineExporterExportMocks'
+        );
+
+        $this->assertSame(
+            'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
+                'baseProtected: "<base-protected>"}',
+            $this->subject->export($mock)
         );
     }
 

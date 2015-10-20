@@ -1,5 +1,12 @@
 # Phony changelog
 
+## Next release
+
+- **[IMPROVED]** Prevent exporter and matcher from traversing into mock
+  internals ([#82]).
+
+[#82]: https://github.com/eloquent/phony/issues/82
+
 ## 0.5.0 (2015-10-20)
 
 - **[BC BREAK]** Removed `fullMock()`, changed `mock()` to create full mocks,
