@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.5.0 (2015-10-20)
 
 - **[BC BREAK]** Removed `fullMock()`, changed `mock()` to create full mocks,
   and added `partialMock()` for creating partial mocks ([#73]).
