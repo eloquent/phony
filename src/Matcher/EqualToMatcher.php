@@ -134,6 +134,7 @@ class EqualToMatcher extends AbstractMatcher
             if (isset($left[self::ARRAY_ID_KEY])) {
                 $leftId = $left[self::ARRAY_ID_KEY];
             } else {
+                reset($left);
                 $leftId = count($markedArrays) + 1;
                 $left[self::ARRAY_ID_KEY] = $leftId;
                 $markedArrays[] = &$left;
@@ -143,6 +144,7 @@ class EqualToMatcher extends AbstractMatcher
             if (isset($right[self::ARRAY_ID_KEY])) {
                 $rightId = $right[self::ARRAY_ID_KEY];
             } else {
+                reset($right);
                 $rightId = count($markedArrays) + 1;
                 $right[self::ARRAY_ID_KEY] = $rightId;
                 $markedArrays[] = &$right;
