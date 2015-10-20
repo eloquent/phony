@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
@@ -31,6 +32,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertionRenderer = new AssertionRenderer();
         $this->assertionRecorder = new AssertionRecorder();
         $this->wildcardMatcher = new WildcardMatcher();
+        $this->invoker = new Invoker();
 
         $this->featureDetector = FeatureDetector::instance();
     }
@@ -47,7 +49,8 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
             $this->stubVerifierFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
-            $this->wildcardMatcher
+            $this->wildcardMatcher,
+            $this->invoker
         );
 
         $this->className = $this->class->getName();
@@ -73,6 +76,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
+        $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
     public function testConstructorDefaults()
@@ -89,6 +93,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
+        $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
     public function testSetLabel()
