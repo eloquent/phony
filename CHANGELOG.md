@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.4.0 (2015-10-20)
 
 - **[IMPROVED]** Implemented new 'equal to' matcher ([#70] - thanks [@jmalloc]).
 - **[IMPROVED]** Improved rendering of assertion failure messages ([#71]).
