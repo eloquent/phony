@@ -436,6 +436,17 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($matcher->matches($right));
     }
 
+    public function testMatchesResetsArrayPointers()
+    {
+        $left = array('foo', 'bar', 'spam');
+        $right = array('foo', 'bar', 'spam');
+
+        next($left);
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
+    }
+
     public function testDescribe()
     {
         $this->assertSame('"x"', $this->subject->describe());
