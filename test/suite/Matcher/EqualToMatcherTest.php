@@ -12,23 +12,25 @@
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Test\Matcher\TestDerivedClassA;
+use Eloquent\Phony\Test\Matcher\TestDerivedClassB;
+use Eloquent\Phony\Test\Matcher\TestDerivedClassWithTraitA;
+use Eloquent\Phony\Test\Matcher\TestDerivedClassWithTraitB;
+use Exception;
 use PHPUnit_Framework_TestCase;
-use SebastianBergmann\Comparator\Factory;
 
 class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    protected function setUp($value = '<string>')
     {
         $this->value = 'x';
-        $this->comparatorFactory = new Factory();
         $this->exporter = new InlineExporter(false);
-        $this->subject = new EqualToMatcher($this->value, $this->comparatorFactory, $this->exporter);
+        $this->subject = new EqualToMatcher($this->value, $this->exporter);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->value, $this->subject->value());
-        $this->assertSame($this->comparatorFactory, $this->subject->comparatorFactory());
         $this->assertSame($this->exporter, $this->subject->exporter());
     }
 
@@ -36,27 +38,402 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new EqualToMatcher($this->value);
 
-        $this->assertEquals($this->comparatorFactory, $this->subject->comparatorFactory());
         $this->assertSame(InlineExporter::instance(), $this->subject->exporter());
     }
 
-    public function testMatches()
+    public function problematicScalarValues()
     {
-        $this->assertTrue($this->subject->matches($this->value));
-        $this->assertFalse($this->subject->matches('y'));
+        return array(
+            true,
+            false,
+            null,
+            "",
+            "0",
+            "1",
+            "-1",
+            0,
+            1,
+            -1,
+            0.0,
+            1.0,
+            -1.0,
+            array(),
+        );
     }
 
-    public function testMatchesObjectOptimizations()
+    public function matchesEqualData()
     {
-        $objectA = (object) array();
-        $objectB = (object) array();
-        $objectC = (object) array('c' => 1);
-        $matcher = new EqualToMatcher($objectA, $this->comparatorFactory, $this->exporter);
+        $result = array(
+            'scalar'             => array('foo'),
+            'array - sequence'   => array(array('foo', 'bar')),
+            'array - assoc'      => array(array('foo' => 'bar', 'baz' => 'qux')),
+            'array - nested'     => array(array('foo' => array('bar' => 'baz'))),
+            'object - anonymous' => array((object) array('foo' => 'bar', 'baz' => 'qux')),
+            'object - declared'  => array(new TestDerivedClassA()),
+        );
 
-        $this->assertTrue($matcher->matches($objectA));
-        $this->assertTrue($matcher->matches($objectB));
-        $this->assertFalse($matcher->matches($objectC));
-        $this->assertFalse($matcher->matches('a'));
+        foreach ($this->problematicScalarValues() as $value) {
+            $result[] = array($value, $value);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @dataProvider matchesEqualData
+     */
+    public function testMatchesEqual($left)
+    {
+        // deep clone
+        $snapshot = unserialize(serialize($left));
+        $right = unserialize(serialize($left));
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
+
+        // ensure that the comparison does not modify the arguments in any way
+        $this->assertEquals(
+            $snapshot,
+            $left
+        );
+
+        $this->assertEquals(
+            $snapshot,
+            $right
+        );
+    }
+
+    /**
+     * @requires PHP 5.4.0-dev
+     */
+    public function testMatchesEqualWithTraits()
+    {
+        $left = new TestDerivedClassWithTraitA();
+        $right = new TestDerivedClassWithTraitA();
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
+    }
+
+    public function matchesNotEqualData()
+    {
+        $result = array(
+            'scalar' => array('foo', 'XXX'),
+
+            'array - sequence' => array(
+                array('foo', 'bar'),
+                array('foo', 'XXX'),
+            ),
+
+            'array - sequence (different lengths)' => array(
+                array('foo'),
+                array('foo', 'bar'),
+            ),
+
+            'array - sequence (different order)' => array(
+                array('foo', 'bar'),
+                array('bar', 'foo'),
+            ),
+
+            'array - assoc (different key)' => array(
+                array('foo' => 'bar'),
+                array('XXX' => 'bar'),
+            ),
+
+            'array - assoc (different value)' => array(
+                array('foo' => 'bar'),
+                array('foo' => 'XXX'),
+            ),
+
+            'array - assoc (different lengths)' => array(
+                array('foo' => 'bar'),
+                array('foo' => 'bar', 'baz' => 'qux'),
+            ),
+
+            'object - anonymous (different key)' => array(
+                (object) array('foo' => 'bar'),
+                (object) array('XXX' => 'bar'),
+            ),
+
+            'object - anonymous (different value)' => array(
+                (object) array('foo' => 'bar'),
+                (object) array('foo' => 'XXX'),
+            ),
+
+            'object - declared (different public property)' => array(
+                new TestDerivedClassA(),
+                new TestDerivedClassA('XXX'),
+            ),
+
+            'object - declared (different private property)' => array(
+                new TestDerivedClassA(),
+                new TestDerivedClassA(null, 'XXX'),
+            ),
+
+            'object - declared (different protected property)' => array(
+                new TestDerivedClassA(),
+                new TestDerivedClassA(null, null, 'XXX'),
+            ),
+
+            'object - declared (same properties, different class)' => array(
+                new TestDerivedClassA(),
+                new TestDerivedClassB(),
+            ),
+        );
+
+        $values = $this->problematicScalarValues();
+        $count = count($values);
+
+        for ($i = 0; $i < $count; ++$i) {
+            for ($j = $i + 1; $j < $count; ++$j) {
+                $result[] = array(
+                    $values[$i],
+                    $values[$j],
+                );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @dataProvider matchesNotEqualData
+     */
+    public function testMatchesNotEqual($left, $right)
+    {
+        $matcher = new EqualToMatcher($left);
+        $this->assertFalse($matcher->matches($right));
+    }
+
+    /**
+     * @dataProvider matchesNotEqualData
+     */
+    public function testMatchesNotEqualInverse($left, $right)
+    {
+        $matcher = new EqualToMatcher($right);
+        $this->assertFalse($matcher->matches($left));
+    }
+
+    /**
+     * @requires PHP 5.4.0-dev
+     */
+    public function testMatchesNotEqualWithTraits()
+    {
+        $left = new TestDerivedClassWithTraitA();
+        $matcher = new EqualToMatcher($left);
+
+        // different public property
+        $right = new TestDerivedClassWithTraitA('XXX');
+        $this->assertFalse($matcher->matches($right));
+
+        // different private property
+        $right = new TestDerivedClassWithTraitA(null, 'XXX');
+        $this->assertFalse($matcher->matches($right));
+
+        // different protected property
+        $right = new TestDerivedClassWithTraitA(null, null, 'XXX');
+        $this->assertFalse($matcher->matches($right));
+
+        // same properties, different class
+        $right = new TestDerivedClassWithTraitB();
+        $this->assertFalse($matcher->matches($right));
+    }
+
+    public function testMatchesEqualWithDirectObjectCycles()
+    {
+        $left = (object) array();
+        $left->before = 'foo';
+        $left->cycle = $left;
+        $left->after = 'bar';
+
+        $right = (object) array();
+        $right->before = 'foo';
+        $right->cycle = $right;
+        $right->after = 'bar';
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
+    }
+
+    public function testMatchesNotEqualWithDirectObjectCycles()
+    {
+        $left = (object) array();
+        $left->before = 'foo';
+        $left->cycle = $left;
+        $left->after = 'bar';
+
+        $right = (object) array();
+        $right->before = 'foo';
+        $right->cycle = $right;
+        $right->after = 'XXX';
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertFalse($matcher->matches($right));
+    }
+
+    public function testMatchesEqualWithIndirectObjectCycles()
+    {
+        $leftA = (object) array();
+        $leftA->before = 'foo';
+        $leftA->cycle = $leftA;
+        $leftA->after = 'bar';
+
+        $leftB = (object) array();
+        $leftB->cycle = $leftA;
+        $leftA->cycle = $leftB;
+
+        $rightA = (object) array();
+        $rightA->before = 'foo';
+        $rightA->cycle = $rightA;
+        $rightA->after = 'bar';
+
+        $rightB = (object) array();
+        $rightB->cycle = $rightA;
+        $rightA->cycle = $rightB;
+
+        $matcher = new EqualToMatcher($leftA);
+        $this->assertTrue($matcher->matches($rightA));
+    }
+
+    public function testMatchesNotEqualWithIndirectObjectCycles()
+    {
+        $leftA = (object) array();
+        $leftA->before = 'foo';
+        $leftA->cycle = $leftA;
+        $leftA->after = 'bar';
+
+        $leftB = (object) array();
+        $leftB->cycle = $leftA;
+        $leftA->cycle = $leftB;
+
+        $rightA = (object) array();
+        $rightA->before = 'foo';
+        $rightA->cycle = $rightA;
+        $rightA->after = 'XXX';
+
+        $rightB = (object) array();
+        $rightB->cycle = $rightA;
+        $rightA->cycle = $rightB;
+
+        $matcher = new EqualToMatcher($leftA);
+        $this->assertFalse($matcher->matches($rightA));
+    }
+
+    public function testMatchesEqualWithDirectArrayCycles()
+    {
+        $left = array();
+        $left['before'] = 'foo';
+        $left['cycle'] = &$left;
+        $left['after'] = 'bar';
+
+        $right = array();
+        $right['before'] = 'foo';
+        $right['cycle'] = &$right;
+        $right['after'] = 'bar';
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
+    }
+
+    public function testMatchesNotEqualWithDirectArrayCycles()
+    {
+        $left = array();
+        $left['before'] = 'foo';
+        $left['cycle'] = &$left;
+        $left['after'] = 'bar';
+
+        $right = array();
+        $right['before'] = 'foo';
+        $right['cycle'] = &$right;
+        $right['after'] = 'XXX';
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertFalse($matcher->matches($right));
+    }
+
+    public function testMatchesEqualWithIndirectArrayCycles()
+    {
+        $leftA = array();
+        $leftA['before'] = 'foo';
+        $leftA['cycle'] = &$leftA;
+        $leftA['after'] = 'bar';
+
+        $leftB = array();
+        $leftB['cycle'] = &$leftA;
+        $leftA['cycle'] = &$leftB;
+
+        $rightA = array();
+        $rightA['before'] = 'foo';
+        $rightA['cycle'] = &$rightA;
+        $rightA['after'] = 'bar';
+
+        $rightB = array();
+        $rightB['cycle'] = &$rightA;
+        $rightA['cycle'] = &$rightB;
+
+        $matcher = new EqualToMatcher($leftA);
+        $this->assertTrue($matcher->matches($rightA));
+    }
+
+    public function testMatchesNotEqualWithIndirectArrayCycles()
+    {
+        $leftA = array();
+        $leftA['before'] = 'foo';
+        $leftA['cycle'] = &$leftA;
+        $leftA['after'] = 'bar';
+
+        $leftB = array();
+        $leftB['cycle'] = &$leftA;
+        $leftA['cycle'] = &$leftB;
+
+        $rightA = array();
+        $rightA['before'] = 'foo';
+        $rightA['cycle'] = &$rightA;
+        $rightA['after'] = 'XXX';
+
+        $rightB = array();
+        $rightB['cycle'] = &$rightA;
+        $rightA['cycle'] = &$rightB;
+
+        $matcher = new EqualToMatcher($leftA);
+        $this->assertFalse($matcher->matches($rightA));
+    }
+
+    public function testMatchesEqualWithArrayAndObjectCycle()
+    {
+        $leftArray = array();
+        $rightArray = array();
+
+        $left  = (object) array();
+        $right = (object) array();
+
+        $left->array = &$leftArray;
+        $right->array = &$rightArray;
+
+        $leftArray['object'] = $left;
+        $rightArray['object'] = $right;
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
+    }
+
+    public function testMatchesArraysContainingReferencesToSameArray()
+    {
+        $shared = array('foo', 'bar');
+        $left  = array(&$shared);
+        $right = array(&$shared);
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
+    }
+
+    public function testMatchesExceptions()
+    {
+        $left  = new Exception('The message.', 123);
+        $right = new Exception('The message.', 123);
+
+        $matcher = new EqualToMatcher($left);
+        $this->assertTrue($matcher->matches($right));
     }
 
     public function testDescribe()
