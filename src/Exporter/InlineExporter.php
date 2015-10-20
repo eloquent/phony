@@ -149,11 +149,11 @@ class InlineExporter implements ExporterInterface
                     break;
 
                 case 'array':
-                    if (isset($value['__phony__'])) {
-                        $id = $value['__phony__'];
+                    if (isset($value[self::ARRAY_ID_KEY])) {
+                        $id = $value[self::ARRAY_ID_KEY];
                         $displayId = $id;
                     } else {
-                        $id = $value['__phony__'] = '#' . $arrayId++;
+                        $id = $value[self::ARRAY_ID_KEY] = '#' . $arrayId++;
 
                         if ($this->incrementIds) {
                             $displayId = $id;
@@ -190,7 +190,7 @@ class InlineExporter implements ExporterInterface
                     $sequenceKey = 0;
 
                     foreach ($value as $key => &$childValue) {
-                        if ('__phony__' === $key) {
+                        if (self::ARRAY_ID_KEY === $key) {
                             continue;
                         }
 
@@ -361,11 +361,13 @@ class InlineExporter implements ExporterInterface
         }
 
         foreach ($seenArrays as &$value) {
-            unset($value['__phony__']);
+            unset($value[self::ARRAY_ID_KEY]);
         }
 
         return $final->final;
     }
+
+    const ARRAY_ID_KEY = "\0__phony__\0";
 
     private static $instance;
     private $depth;

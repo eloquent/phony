@@ -27,8 +27,8 @@ class EqualToMatcher extends AbstractMatcher
     /**
      * Construct a new equal to matcher.
      *
-     * @param mixed $value The value to check against.
-     * @param ExporterInterface|null The exporter to use.
+     * @param mixed                  $value    The value to check against.
+     * @param ExporterInterface|null $exporter The exporter to use.
      */
     public function __construct(
         $value,
@@ -74,9 +74,8 @@ class EqualToMatcher extends AbstractMatcher
         $left = $this->value;
         $right = $value;
 
-        /**
-         * @var array<string, boolean> The set of object comparisons that have
-         *                             been made.
+        /*
+         * @var array<string, boolean> The set of object comparisons that have been made.
          *
          * Keys are of the format "<left spl hash>:<right spl hash>"; values are
          * always TRUE. This set is used to detect comparisons that have already
@@ -85,18 +84,17 @@ class EqualToMatcher extends AbstractMatcher
          */
         $visitedObjects = array();
 
-        /**
-         * @var array<string, boolean> The set of array comparisons that have
-         *                             been made.
+        /*
+         * @var array<string, boolean> The set of array comparisons that have been made.
          *
-         * Keys are of the format "<left id>:<right id>"; values are always TRUE.
-         * This set is used to detect comparisons that have already been made in
-         * order to avoid infinite recursion when comparing cyclic data
+         * Keys are of the format "<left id>:<right id>"; values are always
+         * TRUE. This set is used to detect comparisons that have already been
+         * made in order to avoid infinite recursion when comparing cyclic data
          * structures.
          */
         $visitedArrays = array();
 
-        /**
+        /*
          * @var array<&array> Arrays that have been marked with an internal ID.
          *
          * In order to detect cyclic arrays we need to mark them with an ID.
@@ -104,7 +102,7 @@ class EqualToMatcher extends AbstractMatcher
          */
         $markedArrays = array();
 
-        /**
+        /*
          * @var array<&array> Stacks of values that are currently being compared.
          *
          * We maintain our own stack in order to:
@@ -120,7 +118,7 @@ class EqualToMatcher extends AbstractMatcher
         $leftStack = array();
         $rightStack = array();
 
-        /**
+        /*
          * @var integer The number of elements on the stacks.
          */
         $stackSize = 0;
@@ -170,7 +168,8 @@ class EqualToMatcher extends AbstractMatcher
             // ---------------------------------
             compareNextArrayElement:
 
-            // Get the current key for each array, skipping our internal ID value.
+            // Get the current key for each array, skipping our internal ID
+            // value.
             $leftKey = key($left);
             next($left);
 
@@ -236,46 +235,49 @@ class EqualToMatcher extends AbstractMatcher
         // Record the comparison.
         $visitedObjects[$comparisonId] = true;
 
-        // Cast the objects as arrays and start comparing them.
-        // Importantly, the array cast operator maintains private and protected
-        // properties, as well as arbitrary properties added to the object after
-        // construction.
-        //
-        // Some special properties are removed for the purposes of comparison.
-        //
-        // @link https://github.com/php/php-src/commit/5721132
+        /*
+         * Cast the objects as arrays and start comparing them.
+         *
+         * Importantly, the array cast operator maintains private and protected
+         * properties, as well as arbitrary properties added to the object after
+         * construction.
+         *
+         * Some special properties are removed for the purposes of comparison.
+         *
+         * @see https://github.com/php/php-src/commit/5721132
+         */
         if ($left instanceof Exception) {
             $left = (array) $left;
             // @codeCoverageIgnoreStart
             unset(
-                $left["\x00gcdata"],
-                $left["\x00*\x00file"],
-                $left["\x00*\x00line"],
-                $left["\x00Exception\x00trace"],
-                $left["\x00Exception\x00string"],
-                $left["\x00Exception\x00xdebug_message"]
+                $left["\0gcdata"],
+                $left["\0*\0file"],
+                $left["\0*\0line"],
+                $left["\0Exception\0trace"],
+                $left["\0Exception\0string"],
+                $left["\0Exception\0xdebug_message"]
             );
             // @codeCoverageIgnoreEnd
         } else {
             $left = (array) $left;
-            unset($left["\x00gcdata"]);
+            unset($left["\0gcdata"]);
         }
 
         if ($right instanceof Exception) {
             $right = (array) $right;
             // @codeCoverageIgnoreStart
             unset(
-                $right["\x00gcdata"],
-                $right["\x00*\x00file"],
-                $right["\x00*\x00line"],
-                $right["\x00Exception\x00trace"],
-                $right["\x00Exception\x00string"],
-                $right["\x00Exception\x00xdebug_message"]
+                $right["\0gcdata"],
+                $right["\0*\0file"],
+                $right["\0*\0line"],
+                $right["\0Exception\0trace"],
+                $right["\0Exception\0string"],
+                $right["\0Exception\0xdebug_message"]
             );
             // @codeCoverageIgnoreEnd
         } else {
             $right = (array) $right;
-            unset($right["\x00gcdata"]);
+            unset($right["\0gcdata"]);
         }
 
         goto compareNextArrayElement;
@@ -289,11 +291,12 @@ class EqualToMatcher extends AbstractMatcher
         if ($stackSize--) {
             $left = &$leftStack[$stackSize];
             $right = &$rightStack[$stackSize];
+
             goto compareNextArrayElement;
         }
 
-        // Stack is empty, there's nothing left to compare. Clean up the injected
-        // array IDs and return
+        // Stack is empty, there's nothing left to compare. Clean up the
+        // injected array IDs and return
         foreach ($markedArrays as &$array) {
             unset($array[self::ARRAY_ID_KEY]);
         }
@@ -311,7 +314,7 @@ class EqualToMatcher extends AbstractMatcher
         return $this->exporter->export($this->value);
     }
 
-    const ARRAY_ID_KEY = "\x00__phony__\x00";
+    const ARRAY_ID_KEY = "\0__phony__\0";
 
     private $value;
     private $exporter;

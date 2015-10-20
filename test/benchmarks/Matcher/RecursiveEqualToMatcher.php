@@ -89,7 +89,6 @@ class RecursiveEqualToMatcher extends AbstractMatcher
     private function compare(&$left, &$right)
     {
         if (is_array($left) && is_array($right)) {
-
             if ($this->isNested($left, $right)) {
                 return true;
             }
@@ -138,7 +137,6 @@ class RecursiveEqualToMatcher extends AbstractMatcher
         } elseif ($this->isNested($left, $right)) {
             return true; // ???
         } else {
-
             if ($left instanceof Exception) {
                 $left = (array) $left;
                 // @codeCoverageIgnoreStart

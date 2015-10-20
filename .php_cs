@@ -5,11 +5,6 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude(
         array(
             'artifacts',
-            'assets',
-            'bower_components',
-            'build',
-            'node_modules',
-            'src-web',
             'vendor',
         )
     );
