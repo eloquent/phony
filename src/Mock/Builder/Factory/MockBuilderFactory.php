@@ -108,30 +108,6 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     }
 
     /**
-     * Create a new mock.
-     *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
-     *
-     * @return MockInterface The mock.
-     */
-    public function createMock(
-        $types = null,
-        $arguments = null,
-        $definition = null,
-        $className = null
-    ) {
-        if (null !== $arguments || func_num_args() < 2) {
-            $arguments = Arguments::adapt($arguments);
-        }
-
-        return $this->create($types, $definition, $className)
-            ->createWith($arguments);
-    }
-
-    /**
      * Create a new full mock.
      *
      * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
@@ -146,6 +122,30 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
         $className = null
     ) {
         return $this->create($types, $definition, $className)->full();
+    }
+
+    /**
+     * Create a new partial mock.
+     *
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null                                                                                   $definition The definition.
+     * @param string|null                                                                                         $className  The class name.
+     *
+     * @return MockInterface The mock.
+     */
+    public function createPartialMock(
+        $types = null,
+        $arguments = null,
+        $definition = null,
+        $className = null
+    ) {
+        if (null !== $arguments || func_num_args() < 2) {
+            $arguments = Arguments::adapt($arguments);
+        }
+
+        return $this->create($types, $definition, $className)
+            ->createWith($arguments);
     }
 
     private static $instance;

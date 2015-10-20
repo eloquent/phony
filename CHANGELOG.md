@@ -1,5 +1,12 @@
 # Phony changelog
 
+## 0.5.0 (2015-10-20)
+
+- **[BC BREAK]** Removed `fullMock()`, changed `mock()` to create full mocks,
+  and added `partialMock()` for creating partial mocks ([#73]).
+
+[#73]: https://github.com/eloquent/phony/issues/73
+
 ## 0.4.0 (2015-10-20)
 
 - **[IMPROVED]** Implemented new 'equal to' matcher ([#70] - thanks [@jmalloc]).

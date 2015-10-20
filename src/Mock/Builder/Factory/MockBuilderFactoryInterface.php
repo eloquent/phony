@@ -37,23 +37,6 @@ interface MockBuilderFactoryInterface
     );
 
     /**
-     * Create a new mock.
-     *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
-     *
-     * @return MockInterface The mock.
-     */
-    public function createMock(
-        $types = null,
-        $arguments = null,
-        $definition = null,
-        $className = null
-    );
-
-    /**
      * Create a new full mock.
      *
      * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
@@ -64,6 +47,23 @@ interface MockBuilderFactoryInterface
      */
     public function createFullMock(
         $types = null,
+        $definition = null,
+        $className = null
+    );
+
+    /**
+     * Create a new partial mock.
+     *
+     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
+     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null                                                                                   $definition The definition.
+     * @param string|null                                                                                         $className  The class name.
+     *
+     * @return MockInterface The mock.
+     */
+    public function createPartialMock(
+        $types = null,
+        $arguments = null,
         $definition = null,
         $className = null
     );
