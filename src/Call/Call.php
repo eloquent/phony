@@ -40,11 +40,11 @@ class Call implements CallInterface
     /**
      * Construct a new call.
      *
-     * @param CalledEventInterface                          $calledEvent       The 'called' event.
-     * @param ResponseEventInterface|null                   $responseEvent     The response event, or null if the call has not yet responded.
-     * @param array<integer,TraversableEventInterface>|null $traversableEvents The traversable events.
-     * @param ResponseEventInterface|null                   $endEvent          The end event, or null if the call has not yet completed.
-     * @param IndexNormalizerInterface|null                 $indexNormalizer   The index normalizer to use.
+     * @param CalledEventInterface                  $calledEvent       The 'called' event.
+     * @param ResponseEventInterface|null           $responseEvent     The response event, or null if the call has not yet responded.
+     * @param array<TraversableEventInterface>|null $traversableEvents The traversable events.
+     * @param ResponseEventInterface|null           $endEvent          The end event, or null if the call has not yet completed.
+     * @param IndexNormalizerInterface|null         $indexNormalizer   The index normalizer to use.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
@@ -279,7 +279,7 @@ class Call implements CallInterface
     /**
      * Get the traversable events.
      *
-     * @return array<integer,TraversableEventInterface> The traversable events.
+     * @return array<TraversableEventInterface> The traversable events.
      */
     public function traversableEvents()
     {
@@ -321,7 +321,7 @@ class Call implements CallInterface
     /**
      * Get all events as an array.
      *
-     * @return array<integer,EventInterface> The events.
+     * @return array<EventInterface> The events.
      */
     public function allEvents()
     {
@@ -343,7 +343,7 @@ class Call implements CallInterface
     /**
      * Get all calls as an array.
      *
-     * @return array<integer,CallInterface> The calls.
+     * @return array<CallInterface> The calls.
      */
     public function allCalls()
     {

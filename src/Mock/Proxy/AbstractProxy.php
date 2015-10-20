@@ -15,13 +15,18 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
+use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
+use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
+use Eloquent\Phony\Mock\Method\WrappedMagicMethod;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
+use Eloquent\Phony\Mock\Method\WrappedUncallableMethod;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Spy\SpyInterface;
@@ -55,6 +60,7 @@ abstract class AbstractProxy implements ProxyInterface
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
      * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
+     * @param InvokerInterface|null             $wildcardMatcher     The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,
@@ -67,7 +73,8 @@ abstract class AbstractProxy implements ProxyInterface
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         AssertionRendererInterface $assertionRenderer = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        WildcardMatcherInterface $wildcardMatcher = null
+        WildcardMatcherInterface $wildcardMatcher = null,
+        InvokerInterface $invoker = null
     ) {
         if (null === $state) {
             $state = (object) array(
@@ -90,6 +97,9 @@ abstract class AbstractProxy implements ProxyInterface
         if (null === $wildcardMatcher) {
             $wildcardMatcher = WildcardMatcher::instance();
         }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
+        }
 
         $this->mock = $mock;
         $this->class = $class;
@@ -102,6 +112,7 @@ abstract class AbstractProxy implements ProxyInterface
         $this->assertionRenderer = $assertionRenderer;
         $this->assertionRecorder = $assertionRecorder;
         $this->wildcardMatcher = $wildcardMatcher;
+        $this->invoker = $invoker;
 
         $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
         $uncallableMethodsProperty->setAccessible(true);
@@ -164,6 +175,16 @@ abstract class AbstractProxy implements ProxyInterface
     public function wildcardMatcher()
     {
         return $this->wildcardMatcher;
+    }
+
+    /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
     }
 
     /**
@@ -374,15 +395,29 @@ abstract class AbstractProxy implements ProxyInterface
         $key = strtolower($name);
 
         if ($isMagic) {
+            if ($mock) {
+                $magicKey = '__call';
+            } else {
+                $magicKey = '__callstatic';
+            }
+
             $stub = $this->stubFactory->create(
-                function () use ($callMagicMethod, $mock, $name) {
-                    return $callMagicMethod
-                        ->invoke($mock, $name, new Arguments(func_get_args()));
-                },
+                new WrappedMagicMethod(
+                    $name,
+                    $this->callMagicMethod,
+                    isset($this->uncallableMethods[$magicKey]),
+                    $this
+                ),
                 $mock
             );
         } elseif (isset($this->uncallableMethods[$key])) {
-            $stub = $this->stubFactory->create();
+            $stub = $this->stubFactory->create(
+                new WrappedUncallableMethod(
+                    $this->class->getMethod($name),
+                    $this
+                ),
+                $mock
+            );
         } elseif (isset($this->traitMethods[$key])) {
             $stub = $this->stubFactory->create(
                 new WrappedTraitMethod(
@@ -393,16 +428,28 @@ abstract class AbstractProxy implements ProxyInterface
                 ),
                 $mock
             );
-        } elseif (isset($this->customMethods[$key])) {
-            $stub = $this->stubFactory
-                ->create($this->customMethods[$key], $mock);
-        } else {
+        } elseif (array_key_exists($key, $this->customMethods)) {
             $stub = $this->stubFactory->create(
-                new WrappedMethod(
-                    $this->callParentMethod,
+                new WrappedCustomMethod(
+                    $this->customMethods[$key],
                     $this->class->getMethod($name),
-                    $this
+                    $this,
+                    $this->invoker
                 ),
+                $mock
+            );
+        } else {
+            $method = $this->class->getMethod($name);
+
+            if ($method->isFinal()) {
+                throw new FinalMethodStubException(
+                    $this->class->getName(),
+                    $name
+                );
+            }
+
+            $stub = $this->stubFactory->create(
+                new WrappedMethod($this->callParentMethod, $method, $this),
                 $mock
             );
         }
@@ -427,5 +474,6 @@ abstract class AbstractProxy implements ProxyInterface
     private $assertionRenderer;
     private $assertionRecorder;
     private $wildcardMatcher;
+    private $invoker;
     private $customMethods;
 }

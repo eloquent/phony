@@ -79,7 +79,7 @@ interface MethodDefinitionCollectionInterface
     /**
      * Get the trait methods.
      *
-     * @return array<integer,ReflectionMethod> The trait methods.
+     * @return array<ReflectionMethod> The trait methods.
      */
     public function traitMethods();
 }

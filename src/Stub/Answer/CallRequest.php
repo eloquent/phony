@@ -24,11 +24,11 @@ class CallRequest implements CallRequestInterface
     /**
      * Construct a call request.
      *
-     * @param callable                                     $callback              The callback.
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments             The arguments.
-     * @param boolean|null                                 $prefixSelf            True if the self value should be prefixed.
-     * @param boolean|null                                 $suffixArgumentsObject True if arguments object should be appended.
-     * @param boolean|null                                 $suffixArguments       True if arguments should be appended.
+     * @param callable                      $callback              The callback.
+     * @param ArgumentsInterface|array|null $arguments             The arguments.
+     * @param boolean|null                  $prefixSelf            True if the self value should be prefixed.
+     * @param boolean|null                  $suffixArgumentsObject True if arguments object should be appended.
+     * @param boolean|null                  $suffixArguments       True if arguments should be appended.
      */
     public function __construct(
         $callback,
@@ -67,8 +67,8 @@ class CallRequest implements CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object                                       $self      The self value.
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The incoming arguments.
+     * @param object                        $self      The self value.
+     * @param ArgumentsInterface|array|null $arguments The incoming arguments.
      *
      * @return ArgumentsInterface The final arguments.
      */

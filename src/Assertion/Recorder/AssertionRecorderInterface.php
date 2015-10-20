@@ -23,7 +23,7 @@ interface AssertionRecorderInterface
     /**
      * Record that a successful assertion occurred.
      *
-     * @param array<integer,EventInterface>|null $events The events.
+     * @param array<EventInterface>|null $events The events.
      *
      * @return EventCollectionInterface The result.
      */

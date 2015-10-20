@@ -903,6 +903,22 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array($exceptionA, $exceptionB, $exceptionB), $thrownExceptions);
     }
 
+    public function testThrowsWithMessage()
+    {
+        $this->assertSame($this->subject, $this->subject->throws('a', 'b'));
+
+        $thrownExceptions = array();
+        for ($i = 0; $i < 3; ++$i) {
+            try {
+                call_user_func($this->subject);
+            } catch (Exception $thrownException) {
+                $thrownExceptions[] = $thrownException;
+            }
+        }
+
+        $this->assertEquals(array(new Exception('a'), new Exception('b'), new Exception('b')), $thrownExceptions);
+    }
+
     public function testMultipleRules()
     {
         $this->assertSame(

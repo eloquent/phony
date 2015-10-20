@@ -20,6 +20,7 @@ use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use ReflectionMethod;
 
 /**
  * Generates mock classes.
@@ -390,6 +391,17 @@ EOD;
                 case '__call':
                 case '__callstatic':
                     continue 2;
+
+                case 'inittrace':
+                    $methodReflector = $method->method();
+
+                    if (
+                        $methodReflector instanceof ReflectionMethod &&
+                        'Exception' ===
+                            $methodReflector->getDeclaringClass()->getName()
+                    ) {
+                        continue 2;
+                    }
             }
 
             $signature =
@@ -445,7 +457,7 @@ EOD;
 
             if ($variadicIndex > -1) {
                 $body = "        \$argumentCount = \\func_num_args();\n" .
-                    "        \$arguments = array();" .
+                    '        $arguments = array();' .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
@@ -458,7 +470,7 @@ EOD;
                     "(\$arguments)\n        );";
             } else {
                 $body = "        \$argumentCount = \\func_num_args();\n" .
-                    "        \$arguments = array();" .
+                    '        $arguments = array();' .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
                     $parameterCount .
@@ -752,8 +764,10 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return $this->_proxy
-            ->spy('__call')->invoke($name, $arguments->all());
+        return \call_user_func_array(
+            array($this, 'parent::__call'),
+            array($name, $arguments->all())
+        );
     }
 
 EOD;

@@ -254,7 +254,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Set the calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      */
     public function setCalls(array $calls)
     {
@@ -314,7 +314,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get all events as an array.
      *
-     * @return array<integer,EventInterface> The events.
+     * @return array<EventInterface> The events.
      */
     public function allEvents()
     {
@@ -324,7 +324,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get all calls as an array.
      *
-     * @return array<integer,CallVerifierInterface> The calls.
+     * @return array<CallVerifierInterface> The calls.
      */
     public function allCalls()
     {
@@ -406,7 +406,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.

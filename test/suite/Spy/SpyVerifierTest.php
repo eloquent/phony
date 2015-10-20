@@ -460,9 +460,9 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call, exactly 1 time. Calls:
-    - Eloquent\Phony\Test\TestClassA->testClassAMethodA("a", "b", "c")
-    - Eloquent\Phony\Test\TestClassA->testClassAMethodA()
-    - Eloquent\Phony\Test\TestClassA->testClassAMethodA("a", "b", "c")
+    - TestClassA->testClassAMethodA("a", "b", "c")
+    - TestClassA->testClassAMethodA()
+    - TestClassA->testClassAMethodA("a", "b", "c")
     - implode()
 EOD;
 
@@ -494,9 +494,9 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call, exactly 2 times. Calls:
-    - Eloquent\Phony\Test\TestClassA->testClassAMethodA("a", "b", "c")
-    - Eloquent\Phony\Test\TestClassA->testClassAMethodA()
-    - Eloquent\Phony\Test\TestClassA->testClassAMethodA("a", "b", "c")
+    - TestClassA->testClassAMethodA("a", "b", "c")
+    - TestClassA->testClassAMethodA()
+    - TestClassA->testClassAMethodA("a", "b", "c")
     - implode()
 EOD;
 

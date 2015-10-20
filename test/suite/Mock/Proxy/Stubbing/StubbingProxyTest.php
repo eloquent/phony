@@ -204,10 +204,10 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->mock->testClassAMethodB('c', 'd');
         $this->mock->testClassAMethodA('e', 'f');
         $expected = <<<'EOD'
-Expected no interaction with PhonyMockStubbingNoInteraction[label]. Calls:
-    - PhonyMockStubbingNoInteraction[label]->testClassAMethodA("a", "b")
-    - PhonyMockStubbingNoInteraction[label]->testClassAMethodB("c", "d")
-    - PhonyMockStubbingNoInteraction[label]->testClassAMethodA("e", "f")
+Expected no interaction with TestClassA[label]. Calls:
+    - TestClassA[label]->testClassAMethodA("a", "b")
+    - TestClassA[label]->testClassAMethodB("c", "d")
+    - TestClassA[label]->testClassAMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -323,6 +323,29 @@ EOD;
 
         $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
         $this->assertNull($this->mock->testClassAMethodA('c', 'd'));
+    }
+
+    public function testStubbingFailureWithFinalMethod()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassF');
+        $this->subject->partial();
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->subject->testClassFMethodA;
+    }
+
+    public function testStubbingWithTraitFinalMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
+        $this->subject->partial();
+        $this->subject->testTraitGMethodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $this->mock->testTraitGMethodA('a', 'b'));
+        $this->assertSame('cd', $this->mock->testTraitGMethodA('c', 'd'));
     }
 
     public function testStubbingWithCustomMethod()

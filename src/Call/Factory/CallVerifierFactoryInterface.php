@@ -33,9 +33,9 @@ interface CallVerifierFactoryInterface
      * Wrap the supplied calls in verifiers, or return unchanged if already
      * wrapped.
      *
-     * @param array<integer,CallInterface|CallVerifierInterface> $calls The calls.
+     * @param array<CallInterface|CallVerifierInterface> $calls The calls.
      *
-     * @return array<integer,CallVerifierInterface> The call verifiers.
+     * @return array<CallVerifierInterface> The call verifiers.
      */
     public function adaptAll(array $calls);
 }

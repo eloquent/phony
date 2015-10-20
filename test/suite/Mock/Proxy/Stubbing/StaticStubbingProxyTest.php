@@ -192,10 +192,10 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
         $className::testClassAStaticMethodB('c', 'd');
         $className::testClassAStaticMethodA('e', 'f');
         $expected = <<<'EOD'
-Expected no interaction with PhonyMockStaticStubbingNoInteraction[static]. Calls:
-    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodA("a", "b")
-    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodB("c", "d")
-    - PhonyMockStaticStubbingNoInteraction::testClassAStaticMethodA("e", "f")
+Expected no interaction with TestClassA[static]. Calls:
+    - TestClassA::testClassAStaticMethodA("a", "b")
+    - TestClassA::testClassAStaticMethodB("c", "d")
+    - TestClassA::testClassAStaticMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -278,6 +278,30 @@ EOD;
 
         $this->assertSame('x', $className::testClassAStaticMethodA('a', 'b'));
         $this->assertNull($className::testClassAStaticMethodA('c', 'd'));
+    }
+
+    public function testStubbingFailureWithFinalMethod()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassF');
+        $this->subject->partial();
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->subject->testClassFStaticMethodA;
+    }
+
+    public function testStubbingWithTraitFinalMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
+        $this->subject->partial();
+        $className = $this->className;
+        $this->subject->testTraitGStaticMethodA('a', 'b')->returns('x');
+
+        $this->assertSame('x', $className::testTraitGStaticMethodA('a', 'b'));
+        $this->assertSame('cd', $className::testTraitGStaticMethodA('c', 'd'));
     }
 
     public function testStubbingWithCustomMethod()

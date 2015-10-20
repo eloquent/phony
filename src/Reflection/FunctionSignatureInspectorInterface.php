@@ -25,7 +25,7 @@ interface FunctionSignatureInspectorInterface
      *
      * @param ReflectionFunctionAbstract $function The function.
      *
-     * @return array<string,array<integer,string>> The function signature.
+     * @return array<string,array<string>> The function signature.
      */
     public function signature(ReflectionFunctionAbstract $function);
 
@@ -34,7 +34,7 @@ interface FunctionSignatureInspectorInterface
      *
      * @param callable $callback The callback.
      *
-     * @return array<string,array<integer,string>> The callback signature.
+     * @return array<string,array<string>> The callback signature.
      */
     public function callbackSignature($callback);
 }

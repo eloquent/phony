@@ -28,8 +28,8 @@ interface CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object                                       $self      The self value.
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The incoming arguments.
+     * @param object                        $self      The self value.
+     * @param ArgumentsInterface|array|null $arguments The incoming arguments.
      *
      * @return ArgumentsInterface The final arguments.
      */

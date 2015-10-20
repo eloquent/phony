@@ -210,10 +210,10 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->mock->testClassAMethodB('c', 'd');
         $this->mock->testClassAMethodA('e', 'f');
         $expected = <<<'EOD'
-Expected no interaction with PhonyMockVerificationNoInteraction[label]. Calls:
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA("a", "b")
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodB("c", "d")
-    - PhonyMockVerificationNoInteraction[label]->testClassAMethodA("e", "f")
+Expected no interaction with TestClassA[label]. Calls:
+    - TestClassA[label]->testClassAMethodA("a", "b")
+    - TestClassA[label]->testClassAMethodB("c", "d")
+    - TestClassA[label]->testClassAMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -335,6 +335,31 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->testClassAMethodA();
+    }
+
+    public function testVerificationFailureWithFinalMethod()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassF');
+        $this->subject->partial();
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->subject->testClassFMethodA;
+    }
+
+    public function testVerificationWithTraitFinalMethod()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
+        $this->subject->partial();
+        $this->mock->testTraitGMethodA('a', 'b');
+
+        $this->assertSame($this->subject, $this->subject->testTraitGMethodA('a', 'b'));
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->testTraitGMethodA();
     }
 
     public function testVerificationWithCustomMethod()

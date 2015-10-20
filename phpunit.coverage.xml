@@ -1,11 +1,11 @@
 <phpunit
     bootstrap="vendor/autoload.php"
-    mapTestClassNameToCoveredClassName="true"
     verbose="true"
     colors="true"
-    timeoutForSmallTests="60"
-    timeoutForMediumTests="120"
-    timeoutForLargeTests="300"
+    beStrictAboutChangesToGlobalState="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    mapTestClassNameToCoveredClassName="true"
 >
     <testsuites>
         <testsuite>
@@ -15,29 +15,8 @@
     </testsuites>
 
     <logging>
-        <log
-            type="tap"
-            target="artifacts/tests/report.tap"
-        />
-        <log
-            type="junit"
-            target="artifacts/tests/report.junit.xml"
-        />
-        <log
-            type="coverage-html"
-            target="artifacts/tests/coverage"
-            charset="UTF-8"
-            yui="true"
-            highlight="true"
-        />
-        <log
-            type="coverage-clover"
-            target="artifacts/tests/coverage/coverage.xml"
-        />
-        <log
-            type="coverage-text"
-            target="artifacts/tests/coverage/coverage.txt"
-        />
+        <log type="coverage-html" target="artifacts/tests/coverage" charset="UTF-8" yui="true" highlight="true" />
+        <log type="coverage-clover" target="artifacts/tests/coverage/coverage.xml" />
     </logging>
 
     <filter>
@@ -49,15 +28,7 @@
         </whitelist>
     </filter>
 
-    <groups>
-        <exclude>
-            <group>exclude-by-default</group>
-            <group>exclude-from-coverage</group>
-        </exclude>
-    </groups>
-
     <php>
-        <ini name="error_reporting" value="-1"/>
         <ini name="memory_limit" value="256M"/>
     </php>
 </phpunit>

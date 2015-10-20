@@ -125,7 +125,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     /**
      * Call the original constructor.
      *
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     * @param ArgumentsInterface|array|null $arguments The arguments.
      *
      * @return ProxyInterface This proxy.
      */

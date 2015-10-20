@@ -110,7 +110,7 @@ abstract class AbstractEvent implements EventInterface
     /**
      * Get all events as an array.
      *
-     * @return array<integer,EventInterface> The events.
+     * @return array<EventInterface> The events.
      */
     public function allEvents()
     {
@@ -120,7 +120,7 @@ abstract class AbstractEvent implements EventInterface
     /**
      * Get all calls as an array.
      *
-     * @return array<integer,CallInterface> The calls.
+     * @return array<CallInterface> The calls.
      */
     public function allCalls()
     {

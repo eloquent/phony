@@ -1,5 +1,21 @@
 # Phony changelog
 
+## 0.4.0 (2015-10-20)
+
+- **[IMPROVED]** Implemented new 'equal to' matcher ([#70] - thanks [@jmalloc]).
+- **[IMPROVED]** Improved rendering of assertion failure messages ([#71]).
+- **[IMPROVED]** String messages now allowed by `throws()` ([#76]).
+- **[FIXED]** Fixed magic method mocking bug ([#74]).
+- **[FIXED]** Fixed mocking of exceptions under HHVM ([#75]).
+- **[FIXED]** Attempting to stub a final method now throws an exception ([#77]).
+
+[#70]: https://github.com/eloquent/phony/issues/70
+[#71]: https://github.com/eloquent/phony/issues/71
+[#74]: https://github.com/eloquent/phony/issues/74
+[#75]: https://github.com/eloquent/phony/issues/75
+[#76]: https://github.com/eloquent/phony/issues/76
+[#77]: https://github.com/eloquent/phony/issues/77
+
 ## 0.3.0 (2015-07-22)
 
 - **[NEW]** PHP 7 support.
@@ -24,7 +40,6 @@
 [#66]: https://github.com/eloquent/phony/issues/66
 [#67]: https://github.com/eloquent/phony/issues/67
 [#69]: https://github.com/eloquent/phony/issues/69
-[@jmalloc]: https://github.com/jmalloc
 
 ## 0.2.1 (2015-02-28)
 
@@ -56,9 +71,9 @@
   ([#52]).
 - **[IMPROVED]** Magic 'self' parameter detection ([#48]).
 
-[Peridot]: https://github.com/peridot-php/peridot
-[Pho]: https://github.com/danielstjules/pho
-[SimpleTest]: https://github.com/lox/simpletest
+[peridot]: https://github.com/peridot-php/peridot
+[pho]: https://github.com/danielstjules/pho
+[simpletest]: https://github.com/lox/simpletest
 [#20]: https://github.com/eloquent/phony/issues/20
 [#27]: https://github.com/eloquent/phony/issues/27
 [#29]: https://github.com/eloquent/phony/issues/29
@@ -89,3 +104,5 @@
 ## 0.1.0 (2014-10-21)
 
 - **[NEW]** Initial implementation.
+
+[@jmalloc]: https://github.com/jmalloc

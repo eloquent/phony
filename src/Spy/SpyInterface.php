@@ -53,7 +53,7 @@ interface SpyInterface extends
     /**
      * Set the calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      */
     public function setCalls(array $calls);
 

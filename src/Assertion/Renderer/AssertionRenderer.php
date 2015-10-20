@@ -36,6 +36,7 @@ use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
 use Exception;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
@@ -121,7 +122,14 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderMock(ProxyInterface $proxy)
     {
-        $rendered = $proxy->className();
+        $class = $proxy->clazz();
+
+        if ($parentClass = $class->getParentClass()) {
+            $class = $parentClass;
+        }
+
+        $atoms = explode('\\', $class->getName());
+        $rendered = array_pop($atoms);
 
         if ($proxy instanceof InstanceProxyInterface) {
             $label = $proxy->label();
@@ -172,9 +180,30 @@ class AssertionRenderer implements AssertionRendererInterface
                 ->callbackReflector($callback);
 
             if ($reflector instanceof ReflectionMethod) {
-                $rendered = $reflector->getDeclaringClass()->getName();
+                $class = $reflector->getDeclaringClass();
+
+                if (
+                    $class->implementsInterface(
+                        'Eloquent\Phony\Mock\MockInterface'
+                    )
+                ) {
+                    if ($parentClass = $class->getParentClass()) {
+                        $class = $parentClass;
+                    } else {
+                        try {
+                            $prototype = $reflector->getPrototype();
+                            $class = $prototype->getDeclaringClass();
+                        } catch (ReflectionException $e) {
+                            // ignore
+                        }
+                    }
+                }
+
+                $atoms = explode('\\', $class->getName());
+                $rendered = array_pop($atoms);
 
                 if ($wrappedCallback instanceof WrappedMethodInterface) {
+                    $name = $wrappedCallback->name();
                     $proxy = $wrappedCallback->proxy();
 
                     if ($proxy instanceof InstanceProxyInterface) {
@@ -184,6 +213,8 @@ class AssertionRenderer implements AssertionRendererInterface
                             $rendered .= '[' . $mockLabel . ']';
                         }
                     }
+                } else {
+                    $name = $reflector->getName();
                 }
 
                 if ($reflector->isStatic()) {
@@ -192,7 +223,7 @@ class AssertionRenderer implements AssertionRendererInterface
                     $callOperator = '->';
                 }
 
-                $rendered .= $callOperator . $reflector->getName();
+                $rendered .= $callOperator . $name;
             } else {
                 $rendered = $reflector->getName();
             }
@@ -208,7 +239,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of matchers.
      *
-     * @param array<integer,MatcherInterface> $matchers The matchers.
+     * @param array<MatcherInterface> $matchers The matchers.
      *
      * @return string The rendered matchers.
      */
@@ -288,7 +319,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      *
      * @return string The rendered calls.
      */
@@ -313,7 +344,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the $this values of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      *
      * @return string The rendered call $this values.
      */
@@ -336,7 +367,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the arguments of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      *
      * @return string The rendered call arguments.
      */
@@ -354,8 +385,8 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render the responses of a sequence of calls.
      *
-     * @param array<integer,CallInterface> $calls              The calls.
-     * @param boolean|null                 $expandTraversables True if traversable events should be rendered.
+     * @param array<CallInterface> $calls              The calls.
+     * @param boolean|null         $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered call responses.
      */
@@ -498,7 +529,7 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     * @param ArgumentsInterface|array|null $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
@@ -538,7 +569,10 @@ class AssertionRenderer implements AssertionRendererInterface
             $renderedMessage = $this->exporter->export($message, 0);
         }
 
-        return sprintf('%s(%s)', get_class($exception), $renderedMessage);
+        $atoms = explode('\\', get_class($exception));
+        $class = array_pop($atoms);
+
+        return sprintf('%s(%s)', $class, $renderedMessage);
     }
 
     /**

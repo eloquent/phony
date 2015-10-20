@@ -28,8 +28,8 @@ class StubRule implements StubRuleInterface
     /**
      * Construct a new stub rule.
      *
-     * @param array<integer,MatcherInterface> $criteria        The criteria.
-     * @param MatcherVerifierInterface|null   $matcherVerifier The matcher verifier to use.
+     * @param array<MatcherInterface>       $criteria        The criteria.
+     * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
      */
     public function __construct(
         array $criteria,
@@ -49,7 +49,7 @@ class StubRule implements StubRuleInterface
     /**
      * Get the criteria.
      *
-     * @return array<integer,MatcherInterface> The criteria.
+     * @return array<MatcherInterface> The criteria.
      */
     public function criteria()
     {
@@ -90,7 +90,7 @@ class StubRule implements StubRuleInterface
     /**
      * Returns true if this rule's criteria match the supplied arguments.
      *
-     * @param ArgumentsInterface|array<integer,mixed> $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return boolean True if the criteria matches.
      */

@@ -39,9 +39,9 @@ interface MockFactoryInterface
     /**
      * Create a new mock instance for the supplied builder.
      *
-     * @param MockBuilderInterface                         $builder   The builder.
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null                                  $label     The label.
+     * @param MockBuilderInterface          $builder   The builder.
+     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param string|null                   $label     The label.
      *
      * @return MockInterface          The newly created mock.
      * @throws MockExceptionInterface If the mock generation fails.

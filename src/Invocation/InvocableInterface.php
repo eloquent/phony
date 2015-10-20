@@ -24,7 +24,7 @@ interface InvocableInterface
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array<integer,mixed>|null The arguments.
+     * @param ArgumentsInterface|array|null The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Exception If an error occurs.

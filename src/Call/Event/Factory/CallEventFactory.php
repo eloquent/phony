@@ -97,8 +97,8 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null                                $callback  The callback.
-     * @param ArgumentsInterface|array<integer,mixed>|null $arguments The arguments.
+     * @param callable|null                 $callback  The callback.
+     * @param ArgumentsInterface|array|null $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */

@@ -40,9 +40,9 @@ interface MatcherFactoryInterface
     /**
      * Create new matchers for the all supplied values.
      *
-     * @param array<integer,mixed> $values The values to create matchers for.
+     * @param array $values The values to create matchers for.
      *
-     * @return array<integer,MatcherInterface> The newly created matchers.
+     * @return array<MatcherInterface> The newly created matchers.
      */
     public function adaptAll(array $values);
 
