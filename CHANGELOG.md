@@ -2,12 +2,14 @@
 
 ## Next release
 
+- **[IMPROVED]** Implemented new 'equal to' matcher ([#70] - thanks [@jmalloc]).
 - **[IMPROVED]** Improved rendering of assertion failure messages ([#71]).
 - **[IMPROVED]** String messages now allowed by `throws()` ([#76]).
 - **[FIXED]** Fixed magic method mocking bug ([#74]).
 - **[FIXED]** Fixed mocking of exceptions under HHVM ([#75]).
 - **[FIXED]** Attempting to stub a final method now throws an exception ([#77]).
 
+[#70]: https://github.com/eloquent/phony/issues/70
 [#71]: https://github.com/eloquent/phony/issues/71
 [#74]: https://github.com/eloquent/phony/issues/74
 [#75]: https://github.com/eloquent/phony/issues/75
@@ -38,7 +40,6 @@
 [#66]: https://github.com/eloquent/phony/issues/66
 [#67]: https://github.com/eloquent/phony/issues/67
 [#69]: https://github.com/eloquent/phony/issues/69
-[@jmalloc]: https://github.com/jmalloc
 
 ## 0.2.1 (2015-02-28)
 
@@ -103,3 +104,5 @@
 ## 0.1.0 (2014-10-21)
 
 - **[NEW]** Initial implementation.
+
+[@jmalloc]: https://github.com/jmalloc
