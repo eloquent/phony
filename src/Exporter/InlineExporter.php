@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Exporter;
 
 use Eloquent\Phony\Mock\MockInterface;
 use Exception;
-use ReflectionObject;
 use SplObjectStorage;
 
 /**
