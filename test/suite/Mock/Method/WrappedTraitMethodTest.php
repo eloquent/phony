@@ -42,6 +42,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callTraitMethod, $this->subject->callTraitMethod());
         $this->assertSame($this->traitName, $this->subject->traitName());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame('testClassAMethodB', $this->subject->name());
         $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
@@ -57,6 +58,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->callTraitMethod, $this->subject->callTraitMethod());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame('testClassAStaticMethodA', $this->subject->name());
         $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());

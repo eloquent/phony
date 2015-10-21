@@ -70,6 +70,16 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
     }
 
     /**
+     * Returns true if uncallable.
+     *
+     * @return boolean True if uncallable.
+     */
+    public function isUncallable()
+    {
+        return $this->isUncallable;
+    }
+
+    /**
      * Get the name.
      *
      * @return string The name.

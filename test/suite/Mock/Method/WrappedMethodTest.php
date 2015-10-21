@@ -33,6 +33,7 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->callParentMethod, $this->subject->callParentMethod());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame('testClassAMethodE', $this->subject->name());
         $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
@@ -48,6 +49,7 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->callParentMethod, $this->subject->callParentMethod());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertSame('testClassAStaticMethodE', $this->subject->name());
         $this->assertSame($this->proxy, $this->subject->proxy());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
