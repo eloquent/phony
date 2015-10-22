@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.5.1 (2015-10-22)
 
 - **[IMPROVED]** Prevent exporter and matcher from traversing into mock
   internals ([#82]).
