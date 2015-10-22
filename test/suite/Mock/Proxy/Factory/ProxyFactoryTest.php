@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Proxy\Factory;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
@@ -32,12 +33,14 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertionRenderer = new AssertionRenderer();
         $this->assertionRecorder = new AssertionRecorder();
         $this->wildcardMatcher = new WildcardMatcher();
+        $this->invoker = new Invoker();
         $this->subject = new ProxyFactory(
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
-            $this->wildcardMatcher
+            $this->wildcardMatcher,
+            $this->invoker
         );
     }
 
@@ -48,6 +51,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
         $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
+        $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
     public function testConstructorDefaults()
@@ -59,6 +63,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
         $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
+        $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
     public function testCreateStubbingNew()
@@ -79,7 +84,8 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
             $this->stubVerifierFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
-            $this->wildcardMatcher
+            $this->wildcardMatcher,
+            $this->invoker
         );
         $actual = $this->subject->createStubbing($mock, 'label');
 
@@ -171,7 +177,8 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
             $this->stubVerifierFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
-            $this->wildcardMatcher
+            $this->wildcardMatcher,
+            $this->invoker
         );
         $actual = $this->subject->createStubbingStatic($class);
 

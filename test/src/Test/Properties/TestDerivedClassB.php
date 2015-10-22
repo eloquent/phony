@@ -9,9 +9,9 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Test\Matcher;
+namespace Eloquent\Phony\Test\Properties;
 
-class TestDerivedClassA extends TestBaseClass
+class TestDerivedClassB extends TestBaseClass
 {
     public function __construct(
         $publicValue = null,

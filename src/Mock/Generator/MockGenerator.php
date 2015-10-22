@@ -392,6 +392,7 @@ EOD;
                 case '__callstatic':
                     continue 2;
 
+                // @codeCoverageIgnoreStart
                 case 'inittrace':
                     $methodReflector = $method->method();
 
@@ -402,7 +403,7 @@ EOD;
                     ) {
                         continue 2;
                     }
-            }
+            } // @codeCoverageIgnoreEnd
 
             $signature =
                 $this->signatureInspector->signature($method->method());

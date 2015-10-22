@@ -37,7 +37,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder
         );
-        $this->proxyFactory = new ProxyFactory(null, $this->stubVerifierFactory);
+        $this->proxyFactory = new ProxyFactory(null, $this->stubVerifierFactory, null, $this->assertionRecorder);
 
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);

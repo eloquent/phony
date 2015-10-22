@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\ExporterInterface;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Mock\MockInterface;
 use Exception;
 
 /**
@@ -222,8 +223,11 @@ class EqualToMatcher extends AbstractMatcher
             return false;
         }
 
+        $leftClass = get_class($left);
+        $rightClass = get_class($right);
+
         // The class names do not match.
-        if (get_class($left) !== get_class($right)) {
+        if ($leftClass !== $rightClass) {
             return false;
         }
 
@@ -248,11 +252,20 @@ class EqualToMatcher extends AbstractMatcher
          *
          * @see https://github.com/php/php-src/commit/5721132
          */
-        if ($left instanceof Exception) {
-            $left = (array) $left;
+
+        $leftIsMock = $left instanceof MockInterface;
+        $leftIsException = $left instanceof Exception;
+
+        $left = (array) $left;
+        unset($left["\0gcdata"]);
+
+        if ($leftIsMock) {
+            unset($left["\0" . $leftClass . "\0_proxy"]);
+        }
+
+        if ($leftIsException) {
             // @codeCoverageIgnoreStart
             unset(
-                $left["\0gcdata"],
                 $left["\0*\0file"],
                 $left["\0*\0line"],
                 $left["\0Exception\0trace"],
@@ -260,16 +273,21 @@ class EqualToMatcher extends AbstractMatcher
                 $left["\0Exception\0xdebug_message"]
             );
             // @codeCoverageIgnoreEnd
-        } else {
-            $left = (array) $left;
-            unset($left["\0gcdata"]);
         }
 
-        if ($right instanceof Exception) {
-            $right = (array) $right;
+        $rightIsMock = $right instanceof MockInterface;
+        $rightIsException = $right instanceof Exception;
+
+        $right = (array) $right;
+        unset($right["\0gcdata"]);
+
+        if ($rightIsMock) {
+            unset($right["\0" . $rightClass . "\0_proxy"]);
+        }
+
+        if ($rightIsException) {
             // @codeCoverageIgnoreStart
             unset(
-                $right["\0gcdata"],
                 $right["\0*\0file"],
                 $right["\0*\0line"],
                 $right["\0Exception\0trace"],
@@ -277,9 +295,6 @@ class EqualToMatcher extends AbstractMatcher
                 $right["\0Exception\0xdebug_message"]
             );
             // @codeCoverageIgnoreEnd
-        } else {
-            $right = (array) $right;
-            unset($right["\0gcdata"]);
         }
 
         goto compareNextArrayElement;

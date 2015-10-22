@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Exporter;
 
+use Eloquent\Phony\Mock\MockInterface;
 use Exception;
-use ReflectionObject;
 use SplObjectStorage;
 
 /**
@@ -233,41 +233,90 @@ class InlineExporter implements ExporterInterface
                     }
 
                     $result->type = get_class($value);
+                    $isException = $value instanceof Exception;
+                    $phpValues = (array) $value;
 
-                    $reflector = new ReflectionObject($value);
-                    $values = array();
+                    unset($phpValues["\0gcdata"]);
 
-                    foreach ($reflector->getProperties() as $property) {
-                        if ($property->isStatic()) {
-                            continue;
-                        }
-
-                        $property->setAccessible(true);
-
-                        $values[$property->getName()] =
-                            $property->getValue($value);
+                    if ($value instanceof MockInterface) {
+                        unset($phpValues["\0" . $result->type . "\0_proxy"]);
                     }
 
-                    if ($value instanceof Exception) {
-                        $originalValues = $values;
-                        $values = array();
+                    if ($isException) {
+                        // @codeCoverageIgnoreStart
+                        unset(
+                            $phpValues["\0*\0file"],
+                            $phpValues["\0*\0line"],
+                            $phpValues["\0Exception\0trace"],
+                            $phpValues["\0Exception\0string"],
+                            $phpValues["\0Exception\0xdebug_message"]
+                        );
+                        // @codeCoverageIgnoreEnd
+                    }
 
-                        if ('' !== $originalValues['message']) {
-                            $values['message'] = $originalValues['message'];
-                        }
-                        if (0 !== $originalValues['code']) {
-                            $values['code'] = $originalValues['code'];
-                        }
-                        if ($previous = $value->getPrevious()) {
-                            $values['previous'] = $previous;
+                    $properties = array();
+                    $propertyCounts = array();
+
+                    foreach ($phpValues as $propertyName => $propertyValue) {
+                        if (
+                            preg_match(
+                                '/^\x00([^\x00]+)\x00([^\x00]+)$/',
+                                $propertyName,
+                                $matches
+                            )
+                        ) {
+                            if (
+                                '*' === $matches[1] ||
+                                $result->type === $matches[1]
+                            ) {
+                                $propertyName = $realName = $matches[2];
+                            } else {
+                                $propertyName = $matches[2];
+                                $realName = $matches[1] . '.' . $propertyName;
+                            }
+
+                            $properties[] = array(
+                                $propertyName,
+                                $realName,
+                                $propertyValue,
+                            );
+                        } else {
+                            $properties[] = array(
+                                $propertyName,
+                                $propertyName,
+                                $propertyValue,
+                            );
                         }
 
-                        unset($originalValues['message']);
-                        unset($originalValues['code']);
-                        unset($originalValues['file']);
-                        unset($originalValues['line']);
+                        if (isset($propertyCounts[$propertyName])) {
+                            $propertyCounts[$propertyName] += 1;
+                        } else {
+                            $propertyCounts[$propertyName] = 1;
+                        }
+                    }
 
-                        $values = array_merge($values, $originalValues);
+                    $values = array();
+
+                    foreach ($properties as $property) {
+                        list($shortName, $realName, $propertyValue) = $property;
+
+                        if ($propertyCounts[$shortName] > 1) {
+                            $values[$realName] = $propertyValue;
+                        } else {
+                            $values[$shortName] = $propertyValue;
+                        }
+                    }
+
+                    if ($isException) {
+                        if ('' === $values['message']) {
+                            unset($values['message']);
+                        }
+                        if (0 === $values['code']) {
+                            unset($values['code']);
+                        }
+                        if (!$values['previous']) {
+                            unset($values['previous']);
+                        }
                     }
 
                     if ('stdClass' === $result->type) {

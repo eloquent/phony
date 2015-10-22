@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Test\Matcher;
+namespace Eloquent\Phony\Test\Properties;
 
 trait TestTrait
 {
