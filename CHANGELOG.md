@@ -4,8 +4,10 @@
 
 - **[IMPROVED]** Prevent exporter and matcher from traversing into mock
   internals ([#82]).
+- **[FIXED]** Fixed assertion recording bug with `noInteraction()` ([#83]).
 
 [#82]: https://github.com/eloquent/phony/issues/82
+[#83]: https://github.com/eloquent/phony/issues/83
 
 ## 0.5.0 (2015-10-20)
 

@@ -784,4 +784,11 @@ EOD;
 
         $this->assertNull($mock->nonexistent());
     }
+
+    public function testNoInteraction()
+    {
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceD');
+
+        $proxy->noInteraction();
+    }
 }

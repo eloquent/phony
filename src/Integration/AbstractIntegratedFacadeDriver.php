@@ -45,7 +45,12 @@ abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
             $callVerifierFactory,
             $assertionRecorder
         );
-        $proxyFactory = new ProxyFactory(null, $stubVerifierFactory);
+        $proxyFactory = new ProxyFactory(
+            null,
+            $stubVerifierFactory,
+            null,
+            $assertionRecorder
+        );
 
         parent::__construct(
             new MockBuilderFactory(new MockFactory(null, null, $proxyFactory)),
