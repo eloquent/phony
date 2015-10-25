@@ -1,4 +1,5 @@
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /.travis.* export-ignore
+/doc/ export-ignore
 /test/ export-ignore

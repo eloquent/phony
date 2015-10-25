@@ -9,7 +9,6 @@ php:
     - hhvm
 matrix:
     allow_failures:
-        - php: nightly
         - php: hhvm
     fast_finish: true
 install: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
