@@ -1,5 +1,9 @@
-/.gitattributes export-ignore
-/.gitignore export-ignore
-/.travis.* export-ignore
-/doc/ export-ignore
+# archer start
+.gitattributes export-ignore
+.gitignore export-ignore
+.travis.* export-ignore
+/.archer/ export-ignore
 /test/ export-ignore
+# archer end
+
+/doc/ export-ignore
