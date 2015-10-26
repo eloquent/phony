@@ -363,12 +363,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/archer.git",
-                "reference": "cb72f0f46796c1b9834affa6cd1cb340b9bd89d1"
+                "reference": "9f8e421fb064f68e38ec6dd011d4a0b632824e41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/cb72f0f46796c1b9834affa6cd1cb340b9bd89d1",
-                "reference": "cb72f0f46796c1b9834affa6cd1cb340b9bd89d1",
+                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/9f8e421fb064f68e38ec6dd011d4a0b632824e41",
+                "reference": "9f8e421fb064f68e38ec6dd011d4a0b632824e41",
                 "shasum": ""
             },
             "require": {
@@ -431,7 +431,7 @@
                 "testing",
                 "unit"
             ],
-            "time": "2015-10-26 00:14:07"
+            "time": "2015-10-26 00:28:57"
         },
         {
             "name": "icecave/isolator",
