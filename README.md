@@ -17,7 +17,9 @@
 
 - Available as [Composer] package [eloquent/phony].
 - Read the [manual].
+- Read the [API documentation].
 
+[api documentation]: http://lqnt.co/phony/artifacts/documentation/api/
 [composer]: http://getcomposer.org/
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 
