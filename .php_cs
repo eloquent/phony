@@ -5,7 +5,6 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude(
         array(
             'artifacts',
-            'doc',
             'vendor',
         )
     );
