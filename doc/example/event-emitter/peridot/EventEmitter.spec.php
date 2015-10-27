@@ -26,7 +26,7 @@ describe('EventEmitter', function () {
     });
 
     describe('once()', function () {
-        it('only calls the listener once', function () {
+        it('removes the listener once it is called', function () {
             $this->emitter->once('eventA', $this->spyA);
 
             $this->emitter->emit('eventA', 1, 2);
