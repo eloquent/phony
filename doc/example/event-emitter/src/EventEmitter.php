@@ -4,68 +4,43 @@ class EventEmitter
 {
     public function on($event, $listener)
     {
-        if (!isset($this->listeners[$event])) {
-            $this->listeners[$event] = array();
+        if (isset($this->listeners[$event])) {
+            $this->listeners[$event][] = $listener;
+        } else {
+            $this->listeners[$event] = array($listener);
         }
-
-        $this->listeners[$event][] = $listener;
-        $this->emit('newListener', $event, $listener);
-
-        return $this;
     }
 
     public function once($event, $listener)
     {
         $emitter = $this;
-        $onceListener = null;
-        $onceListener = function () use (
-            &$onceListener, // @codeCoverageIgnore
-            $emitter,
-            $event,
-            $listener
-        ) {
-            $emitter->removeListener($event, $onceListener);
+        $once = function () use (&$once, $emitter, $event, $listener) {
+            $emitter->removeListener($event, $once);
 
             call_user_func_array($listener, func_get_args());
         };
 
-        return $this->on($event, $onceListener);
+        $this->on($event, $once);
     }
 
     public function removeListener($event, $listener)
     {
-        if (!isset($this->listeners[$event])) {
-            return $this;
-        }
+        if (isset($this->listeners[$event])) {
+            $index = array_search($listener, $this->listeners[$event], true);
 
-        for ($i = count($this->listeners[$event]) - 1; $i >= 0; --$i) {
-            if ($listener !== $this->listeners[$event][$i]) {
-                continue;
+            if (false !== $index) {
+                array_splice($this->listeners[$event], $index, 1);
             }
-
-            $this->doRemoveListener($event, $i);
-
-            break;
         }
-
-        return $this;
     }
 
     public function removeAllListeners($event = null)
     {
         if (null === $event) {
-            $events = array_keys($this->listeners);
+            $this->listeners = array();
         } else {
-            $events = array($event);
+            unset($this->listeners[$event]);
         }
-
-        foreach ($events as $event) {
-            for ($i = count($this->listeners[$event]) - 1; $i >= 0; --$i) {
-                $this->doRemoveListener($event, $i);
-            }
-        }
-
-        return $this;
     }
 
     public function listeners($event)
@@ -77,44 +52,16 @@ class EventEmitter
         return array();
     }
 
-    public function listenerCount($event)
-    {
-        if (isset($this->listeners[$event])) {
-            return count($this->listeners[$event]);
-        }
-
-        return 0;
-    }
-
     public function emit($event)
     {
-        if (!isset($this->listeners[$event])) {
-            return false;
+        if (isset($this->listeners[$event])) {
+            $arguments = func_get_args();
+            $event = array_shift($arguments);
+
+            foreach ($this->listeners[$event] as $listener) {
+                call_user_func_array($listener, $arguments);
+            }
         }
-
-        $arguments = func_get_args();
-        $event = array_shift($arguments);
-
-        for ($i = count($this->listeners[$event]) - 1; $i >= 0; --$i) {
-            call_user_func_array($this->listeners[$event][$i], $arguments);
-        }
-
-        return true;
-    }
-
-    private function doRemoveListener($event, $index)
-    {
-        $listener = $this->listeners[$event][$index];
-
-        if (count($this->listeners[$event]) < 2) {
-            unset($this->listeners[$event]);
-        } else {
-            array_splice($this->listeners[$event], $index, 1);
-        }
-
-        $this->emit('removeListener', $event, $listener);
-
-        return $this;
     }
 
     private $listeners = array();

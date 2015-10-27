@@ -2,6 +2,7 @@
 
 use Eloquent\Phony\Phony;
 use Evenement\EventEmitterInterface;
+use Peridot\Console\Version;
 
 require __DIR__ . '/../../../../vendor/autoload.php';
 require __DIR__ . '/../src/EventEmitter.php';
@@ -21,7 +22,14 @@ return function (EventEmitterInterface $emitter) {
     });
 
     $emitter->on('runner.end', function () use ($coverage) {
-        $report = new PHP_CodeCoverage_Report_HTML();
+        $name = Version::NAME;
+        $version = Version::NUMBER;
+
+        $report = new PHP_CodeCoverage_Report_HTML(
+            50,
+            90,
+            " and <a href=\"http://peridot-php.github.io/\">$name $version</a>"
+        );
         $report->process($coverage, __DIR__ . '/coverage');
     });
 };
