@@ -2,25 +2,16 @@
 
 class EventEmitter
 {
-    public function addListener($event, $listener)
+    public function on($event, $listener)
     {
         if (!isset($this->listeners[$event])) {
             $this->listeners[$event] = array();
-        }
-
-        if (count($this->listeners[$event]) >= $this->maxListeners) {
-            throw new OverflowException('Max listeners exceeded.');
         }
 
         $this->listeners[$event][] = $listener;
         $this->emit('newListener', $event, $listener);
 
         return $this;
-    }
-
-    public function on($event, $listener)
-    {
-        return $this->addListener($event, $listener);
     }
 
     public function once($event, $listener)
@@ -38,7 +29,7 @@ class EventEmitter
             call_user_func_array($listener, func_get_args());
         };
 
-        return $this->addListener($event, $onceListener);
+        return $this->on($event, $onceListener);
     }
 
     public function removeListener($event, $listener)
@@ -111,11 +102,6 @@ class EventEmitter
         return true;
     }
 
-    public function setMaxListeners($maxListeners)
-    {
-        $this->maxListeners = $maxListeners;
-    }
-
     private function doRemoveListener($event, $index)
     {
         $listener = $this->listeners[$event][$index];
@@ -132,5 +118,4 @@ class EventEmitter
     }
 
     private $listeners = array();
-    private $maxListeners = 10;
 }

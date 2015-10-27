@@ -12,13 +12,13 @@ describe('EventEmitter', function () {
         $this->spyD = x\spy();
     });
 
-    describe('addListener()', function () {
+    describe('on()', function () {
         it('adds listeners to the correct events', function () {
             $newListener = x\spy();
             $this->emitter->on('newListener', $newListener);
 
-            expect($this->emitter->addListener('eventA', $this->spyA))->to->be->equal($this->emitter);
-            expect($this->emitter->addListener('eventB', $this->spyB))->to->be->equal($this->emitter);
+            expect($this->emitter->on('eventA', $this->spyA))->to->be->equal($this->emitter);
+            expect($this->emitter->on('eventB', $this->spyB))->to->be->equal($this->emitter);
             expect($this->emitter->on('eventA', $this->spyC))->to->be->equal($this->emitter);
             expect($this->emitter->on('eventB', $this->spyD))->to->be->equal($this->emitter);
             expect($this->emitter->on('eventA', $this->spyA))->to->be->equal($this->emitter);
@@ -30,28 +30,6 @@ describe('EventEmitter', function () {
             $newListener->calledWith('eventB', $this->spyB);
             $newListener->calledWith('eventA', $this->spyC);
             $newListener->calledWith('eventB', $this->spyD);
-        });
-
-        it('prevents adding too many listeners', function () {
-            for ($i = 0; $i < 10; ++$i) {
-                $this->emitter->on('event', function () {});
-            }
-
-            expect(function () {
-                $this->emitter->addListener('event', function () {});
-            })->to->throw('OverflowException', 'Max listeners exceeded.');
-        });
-    });
-
-    describe('on()', function () {
-        it('prevents adding too many listeners', function () {
-            for ($i = 0; $i < 10; ++$i) {
-                $this->emitter->addListener('event', function () {});
-            }
-
-            expect(function () {
-                $this->emitter->on('event', function () {});
-            })->to->throw('OverflowException', 'Max listeners exceeded.');
         });
     });
 
@@ -108,7 +86,7 @@ describe('EventEmitter', function () {
     });
 
     describe('removeAllListeners()', function () {
-        it('removes all listeners for a specific event', function () {
+        it('removes all listeners from a specific event', function () {
             $removeListener = x\spy();
             $this->emitter->on('removeListener', $removeListener);
 
@@ -131,7 +109,7 @@ describe('EventEmitter', function () {
             );
         });
 
-        it('removes all listeners for all events', function () {
+        it('removes all listeners from all events', function () {
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventA', $this->spyB);
             $this->emitter->on('eventA', $this->spyA);
@@ -177,21 +155,10 @@ describe('EventEmitter', function () {
         });
     });
 
-    describe('setMaxListeners()', function () {
-        it('changes how many listeners can be added', function () {
-            $this->emitter->on('event', function () {});
-            $this->emitter->setMaxListeners(1);
-
-            expect(function () {
-                $this->emitter->on('event', function () {});
-            })->to->throw('OverflowException', 'Max listeners exceeded.');
-        });
-    });
-
     describe('emit()', function () {
         it('emits events to the correct handlers', function () {
-            expect($this->emitter->addListener('eventA', $this->spyA))->to->be->equal($this->emitter);
-            expect($this->emitter->addListener('eventB', $this->spyB))->to->be->equal($this->emitter);
+            expect($this->emitter->on('eventA', $this->spyA))->to->be->equal($this->emitter);
+            expect($this->emitter->on('eventB', $this->spyB))->to->be->equal($this->emitter);
             expect($this->emitter->on('eventA', $this->spyC))->to->be->equal($this->emitter);
             expect($this->emitter->on('eventB', $this->spyD))->to->be->equal($this->emitter);
             expect($this->emitter->on('eventA', $this->spyA))->to->be->equal($this->emitter);

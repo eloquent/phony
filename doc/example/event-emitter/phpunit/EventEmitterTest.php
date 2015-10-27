@@ -14,13 +14,13 @@ class EventEmitterTest extends PHPUnit_Framework_TestCase
         $this->spyD = Phony::spy();
     }
 
-    public function testAddListener()
+    public function testOn()
     {
         $newListener = Phony::spy();
         $this->emitter->on('newListener', $newListener);
 
-        $this->assertSame($this->emitter, $this->emitter->addListener('eventA', $this->spyA));
-        $this->assertSame($this->emitter, $this->emitter->addListener('eventB', $this->spyB));
+        $this->assertSame($this->emitter, $this->emitter->on('eventA', $this->spyA));
+        $this->assertSame($this->emitter, $this->emitter->on('eventB', $this->spyB));
         $this->assertSame($this->emitter, $this->emitter->on('eventA', $this->spyC));
         $this->assertSame($this->emitter, $this->emitter->on('eventB', $this->spyD));
         $this->assertSame($this->emitter, $this->emitter->on('eventA', $this->spyA));
@@ -32,26 +32,6 @@ class EventEmitterTest extends PHPUnit_Framework_TestCase
         $newListener->calledWith('eventB', $this->spyB);
         $newListener->calledWith('eventA', $this->spyC);
         $newListener->calledWith('eventB', $this->spyD);
-    }
-
-    public function testAddListenerFailureMaxListeners()
-    {
-        for ($i = 0; $i < 10; ++$i) {
-            $this->emitter->on('event', function () {});
-        }
-
-        $this->setExpectedException('OverflowException', 'Max listeners exceeded.');
-        $this->emitter->addListener('event', function () {});
-    }
-
-    public function testOnFailureMaxListeners()
-    {
-        for ($i = 0; $i < 10; ++$i) {
-            $this->emitter->addListener('event', function () {});
-        }
-
-        $this->setExpectedException('OverflowException', 'Max listeners exceeded.');
-        $this->emitter->on('event', function () {});
     }
 
     public function testOnce()
@@ -172,19 +152,10 @@ class EventEmitterTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, $this->emitter->listenerCount('eventB'));
     }
 
-    public function testSetMaxListeners()
-    {
-        $this->emitter->on('event', function () {});
-        $this->emitter->setMaxListeners(1);
-
-        $this->setExpectedException('OverflowException', 'Max listeners exceeded.');
-        $this->emitter->on('event', function () {});
-    }
-
     public function testEmit()
     {
-        $this->assertSame($this->emitter, $this->emitter->addListener('eventA', $this->spyA));
-        $this->assertSame($this->emitter, $this->emitter->addListener('eventB', $this->spyB));
+        $this->assertSame($this->emitter, $this->emitter->on('eventA', $this->spyA));
+        $this->assertSame($this->emitter, $this->emitter->on('eventB', $this->spyB));
         $this->assertSame($this->emitter, $this->emitter->on('eventA', $this->spyC));
         $this->assertSame($this->emitter, $this->emitter->on('eventB', $this->spyD));
         $this->assertSame($this->emitter, $this->emitter->on('eventA', $this->spyA));
