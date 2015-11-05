@@ -1,2 +1,7 @@
+# archer start
 /artifacts/
 /vendor/
+# archer end
+
+/doc/*.html
+/doc/example/**/coverage/

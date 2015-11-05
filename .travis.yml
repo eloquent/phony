@@ -1,17 +1,19 @@
-language: php
-php:
-    - "5.3.3"
-    - "5.3"
-    - "5.4"
-    - "5.5"
-    - "5.6"
-    - nightly
-    - hhvm
-matrix:
-    allow_failures:
-        - php: nightly
-        - php: hhvm
-    fast_finish: true
-install: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
-script: "ls test/suite | xargs -I % sh -c 'echo; echo Testing %...; echo; phpunit --stop-on-failure test/suite/%'"
 sudo: false
+language: php
+
+php: ["5.3", "5.4", "5.5", "5.6", "7.0", "hhvm"]
+
+matrix:
+    allow_failures: [{"php": "hhvm"}]
+    fast_finish: true
+
+env:
+  global:
+    - ARCHER_PUBLISH_VERSION=5.6
+    - secure: "O3gWqnPXJHfHcaZscfK7RnHsLOChbPTMPd3Siw4pJBU4JluhJRto0S+EnOErce1cKLrD4zHdfPTEXEBLg8dFj2eOCbGDEuJHCguwow3UeeSQ6qnUNZOZlXIb2ajZRJtC4bB+CevyHqVYSUcGxcWmUu0faG26/xh8cHpXK3Daris="
+
+install:
+  - ./.archer/travis.install
+
+script:
+  - ./vendor/bin/archer travis:build

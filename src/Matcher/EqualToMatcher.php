@@ -270,7 +270,7 @@ class EqualToMatcher extends AbstractMatcher
                 $left["\0*\0line"],
                 $left["\0Exception\0trace"],
                 $left["\0Exception\0string"],
-                $left["\0Exception\0xdebug_message"]
+                $left["xdebug_message"]
             );
             // @codeCoverageIgnoreEnd
         }
@@ -292,7 +292,7 @@ class EqualToMatcher extends AbstractMatcher
                 $right["\0*\0line"],
                 $right["\0Exception\0trace"],
                 $right["\0Exception\0string"],
-                $right["\0Exception\0xdebug_message"]
+                $right["xdebug_message"]
             );
             // @codeCoverageIgnoreEnd
         }

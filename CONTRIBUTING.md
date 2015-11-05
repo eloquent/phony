@@ -26,13 +26,11 @@ As a guideline, please follow this process:
 
 ## Tests
 
-- Run the tests with `vendor/bin/phpunit path/to/tests`, or simply
-  `vendor/bin/phpunit` to run the entire suite.
-- Generate a coverage report with
-  `vendor/bin/phpunit -c phpunit.coverage.xml path/to/tests`, or simply
-  `vendor/bin/phpunit -c phpunit.coverage.xml` to generate coverage for the
-  entire suite. The coverage report will be created at
-  `artifacts/tests/coverage/index.html`.
+- Run the tests with `vendor/bin/archer t path/to/tests`, or simply
+  `vendor/bin/archer` to run the entire suite.
+- Generate a coverage report with `vendor/bin/archer c path/to/tests`, or simply
+  `vendor/bin/archer c` to generate coverage for the entire suite. The coverage
+  report will be created at `artifacts/tests/coverage/index.html`.
 - Run the integration tests with `test/integration/run-all`. Each test suite has
   one passing, and one failing test. This demonstrates *Phony*'s output.
 - Run the benchmarks with `vendor/bin/athletic -p test/benchmarks`. This
