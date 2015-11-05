@@ -1,8 +1,12 @@
 # Phony changelog
 
-## Next release
+## 0.5.2 (2015-11-05)
 
+- **[FIXED]** Fixed stripping of exception xdebug message in exporter and equal
+  to matcher ([#87]).
 - **[DOCUMENTATION]** Added documentation.
+
+[#87]: https://github.com/eloquent/phony/pull/87
 
 ## 0.5.1 (2015-10-22)
 
