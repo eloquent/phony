@@ -249,7 +249,7 @@ class InlineExporter implements ExporterInterface
                             $phpValues["\0*\0line"],
                             $phpValues["\0Exception\0trace"],
                             $phpValues["\0Exception\0string"],
-                            $phpValues["\0Exception\0xdebug_message"]
+                            $phpValues["xdebug_message"]
                         );
                         // @codeCoverageIgnoreEnd
                     }
