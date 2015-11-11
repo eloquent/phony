@@ -29,6 +29,9 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->self = (object) array();
         $this->label = 'label';
+        $this->defaultAnswerCallback = function ($stub) {
+            $stub->returns('default answer');
+        };
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
@@ -37,6 +40,7 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->callback,
             $this->self,
             $this->label,
+            $this->defaultAnswerCallback,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
@@ -141,6 +145,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->self, $this->subject->self());
         $this->assertSame($this->label, $this->subject->label());
+        $this->assertSame($this->defaultAnswerCallback, $this->subject->defaultAnswerCallback());
         $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
         $this->assertSame($this->invoker, $this->subject->invoker());
@@ -156,6 +161,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertTrue(is_callable($this->subject->self()));
         $this->assertNull($this->subject->label());
+        $this->assertNull($this->subject->defaultAnswerCallback());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
@@ -980,6 +986,46 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testDanglingRules()
     {
+        $callCountA = 0;
+        $callbackA = function () use (&$callCountA) {
+            ++$callCountA;
+        };
+        $callCountB = 0;
+        $callbackB = function () use (&$callCountB) {
+            ++$callCountB;
+        };
+
+        $this->assertSame(
+            $this->subject,
+            $this->subject
+                ->with(array('a', 'b'))->calls($callbackA)
+                ->with(array('c', 'd'))->calls($callbackA, $callbackB)
+        );
+        $this->assertSame('default answer', call_user_func($this->subject, array('a', 'b')));
+        $this->assertSame(1, $callCountA);
+        $this->assertSame(0, $callCountB);
+        $this->assertSame('default answer', call_user_func($this->subject, array('c', 'd')));
+        $this->assertSame(2, $callCountA);
+        $this->assertSame(1, $callCountB);
+        $this->assertSame('default answer', call_user_func($this->subject, array('e', 'f')));
+        $this->assertSame(2, $callCountA);
+        $this->assertSame(1, $callCountB);
+    }
+
+    public function testDanglingRulesWithNullDefaultAnswerCallback()
+    {
+        $this->defaultAnswerCallback = null;
+        $this->subject = new Stub(
+            $this->callback,
+            $this->self,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector
+        );
+
         $callCountA = 0;
         $callbackA = function () use (&$callCountA) {
             ++$callCountA;

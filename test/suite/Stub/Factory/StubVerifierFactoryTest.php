@@ -106,7 +106,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateDefaults()
     {
-        $stub = new Stub(null, null, '0', $this->matcherFactory, $this->matcherVerifier);
+        $stub = new Stub(null, null, '0', null, $this->matcherFactory, $this->matcherVerifier);
         $spy = new Spy($stub, '0', null, null, null, $this->callFactory);
         $expected = new StubVerifier(
             $stub,
@@ -133,7 +133,15 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     {
         $callback = function () {};
         $thisValue = (object) array();
-        $stub = new Stub($callback, $thisValue, '0', $this->matcherFactory, $this->matcherVerifier);
+        $defaultAnswerCallback = function () {};
+        $stub = new Stub(
+            $callback,
+            $thisValue,
+            '0',
+            $defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier
+        );
         $spy = new Spy($stub, '0', false, true, null, $this->callFactory);
         $expected = new StubVerifier(
             $stub,
@@ -145,7 +153,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer,
             $this->invoker
         );
-        $actual = $this->subject->createFromCallback($callback, $thisValue, false, true);
+        $actual = $this->subject->createFromCallback($callback, $thisValue, $defaultAnswerCallback, false, true);
 
         $this->assertEquals($expected, $actual);
         $this->assertFalse($actual->useGeneratorSpies());
@@ -155,6 +163,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
+        $this->assertSame($defaultAnswerCallback, $actual->stub()->defaultAnswerCallback());
         $this->assertSame($this->matcherFactory, $actual->stub()->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->stub()->matcherVerifier());
         $this->assertSame($this->invoker, $actual->invoker());

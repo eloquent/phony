@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Fixed full mock default answer bug (#89).
+
+[#89]: https://github.com/eloquent/phony/issues/89
+
 ## 0.5.2 (2015-11-05)
 
 - **[FIXED]** Fixed stripping of exception xdebug message in exporter and equal

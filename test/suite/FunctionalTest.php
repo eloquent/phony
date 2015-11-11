@@ -273,7 +273,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testTraversableSpyingStatic()
     {
-        $stub = Phony::stub(null, null, null, true);
+        $stub = Phony::stub(null, null, null, null, true);
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 
@@ -288,7 +288,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testTraversableSpyingFunction()
     {
-        $stub = x\stub(null, null, null, true);
+        $stub = x\stub(null, null, null, null, true);
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 
@@ -790,5 +790,15 @@ EOD;
         $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceD');
 
         $proxy->noInteraction();
+    }
+
+    public function testCallsArgumentWithFullMockImplicitReturns()
+    {
+        $proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
+        $proxy->testClassAMethodA->callsArgument(0);
+        $spy = Phony::spy();
+
+        $this->assertNull($proxy->mock()->testClassAMethodA($spy));
+        $spy->called();
     }
 }

@@ -34,6 +34,7 @@ use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
+use Eloquent\Phony\Stub\StubInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
 use ReflectionMethod;
@@ -372,6 +373,20 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
+     * Create the default answer for the supplied stub.
+     *
+     * @param StubInterface $stub The stub.
+     */
+    public function defaultAnswer(StubInterface $stub)
+    {
+        if ($this->state->isFull) {
+            $stub->returns();
+        } else {
+            $stub->forwards();
+        }
+    }
+
+    /**
      * Create a new stub verifier.
      *
      * @param string $name The method name.
@@ -408,7 +423,8 @@ abstract class AbstractProxy implements ProxyInterface
                     isset($this->uncallableMethods[$magicKey]),
                     $this
                 ),
-                $mock
+                $mock,
+                array($this, 'defaultAnswer')
             );
         } elseif (isset($this->uncallableMethods[$key])) {
             $stub = $this->stubFactory->create(
@@ -416,7 +432,8 @@ abstract class AbstractProxy implements ProxyInterface
                     $this->class->getMethod($name),
                     $this
                 ),
-                $mock
+                $mock,
+                array($this, 'defaultAnswer')
             );
         } elseif (isset($this->traitMethods[$key])) {
             $stub = $this->stubFactory->create(
@@ -426,7 +443,8 @@ abstract class AbstractProxy implements ProxyInterface
                     $this->class->getMethod($name),
                     $this
                 ),
-                $mock
+                $mock,
+                array($this, 'defaultAnswer')
             );
         } elseif (array_key_exists($key, $this->customMethods)) {
             $stub = $this->stubFactory->create(
@@ -436,7 +454,8 @@ abstract class AbstractProxy implements ProxyInterface
                     $this,
                     $this->invoker
                 ),
-                $mock
+                $mock,
+                array($this, 'defaultAnswer')
             );
         } else {
             $method = $this->class->getMethod($name);
@@ -450,12 +469,9 @@ abstract class AbstractProxy implements ProxyInterface
 
             $stub = $this->stubFactory->create(
                 new WrappedMethod($this->callParentMethod, $method, $this),
-                $mock
+                $mock,
+                array($this, 'defaultAnswer')
             );
-        }
-
-        if ($this->state->isFull) {
-            $stub->returns()->with($this->wildcardMatcher);
         }
 
         return $this->stubVerifierFactory->create($stub);

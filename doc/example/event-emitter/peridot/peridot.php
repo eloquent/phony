@@ -1,6 +1,5 @@
 <?php
 
-use Eloquent\Phony\Phony;
 use Evenement\EventEmitterInterface;
 use Peridot\Console\Version;
 
