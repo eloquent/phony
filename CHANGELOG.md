@@ -1,7 +1,8 @@
 # Phony changelog
 
-## Next release
+## 0.6.0
 
+- **[NEW]** Support for stub default answer callbacks.
 - **[FIXED]** Fixed full mock default answer bug (#89).
 
 [#89]: https://github.com/eloquent/phony/issues/89
