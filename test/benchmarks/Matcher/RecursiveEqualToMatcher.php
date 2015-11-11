@@ -146,7 +146,7 @@ class RecursiveEqualToMatcher extends AbstractMatcher
                     $left["\x00*\x00line"],
                     $left["\x00Exception\x00trace"],
                     $left["\x00Exception\x00string"],
-                    $left["xdebug_message"]
+                    $left['xdebug_message']
                 );
                 // @codeCoverageIgnoreEnd
             } else {
@@ -163,7 +163,7 @@ class RecursiveEqualToMatcher extends AbstractMatcher
                     $right["\x00*\x00line"],
                     $right["\x00Exception\x00trace"],
                     $right["\x00Exception\x00string"],
-                    $right["xdebug_message"]
+                    $right['xdebug_message']
                 );
                 // @codeCoverageIgnoreEnd
             } else {

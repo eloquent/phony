@@ -136,17 +136,22 @@ class StubFactory implements StubFactoryInterface
     /**
      * Create a new stub.
      *
-     * @param callable|null $callback The callback, or null to create an unbound stub.
-     * @param mixed         $self     The self value.
+     * @param callable|null $callback              The callback, or null to create an unbound stub.
+     * @param mixed         $self                  The self value.
+     * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
      *
      * @return StubInterface The newly created stub.
      */
-    public function create($callback = null, $self = null)
-    {
+    public function create(
+        $callback = null,
+        $self = null,
+        $defaultAnswerCallback = null
+    ) {
         return new Stub(
             $callback,
             $self,
             strval($this->labelSequencer->next()),
+            $defaultAnswerCallback,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,

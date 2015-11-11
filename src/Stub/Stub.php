@@ -37,18 +37,20 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Construct a new stub.
      *
-     * @param callable|null                    $callback           The callback, or null to create an unbound stub.
-     * @param mixed                            $self               The self value.
-     * @param string|null                      $label              The label.
-     * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
-     * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
-     * @param InvokerInterface|null            $invoker            The invoker to use.
-     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
+     * @param callable|null                    $callback              The callback, or null to create an unbound stub.
+     * @param mixed                            $self                  The self value.
+     * @param string|null                      $label                 The label.
+     * @param callable|null                    $defaultAnswerCallback The callback to use when creating a default answer.
+     * @param MatcherFactoryInterface|null     $matcherFactory        The matcher factory to use.
+     * @param MatcherVerifierInterface|null    $matcherVerifier       The matcher verifier to use.
+     * @param InvokerInterface|null            $invoker               The invoker to use.
+     * @param InvocableInspectorInterface|null $invocableInspector    The invocable inspector to use.
      */
     public function __construct(
         $callback = null,
         $self = null,
         $label = null,
+        $defaultAnswerCallback = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
@@ -73,6 +75,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $self = $this->callback;
         }
 
+        $this->defaultAnswerCallback = $defaultAnswerCallback;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
@@ -84,6 +87,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         $this->setSelf($self);
         $this->with($this->matcherFactory->wildcard());
+    }
+
+    /**
+     * Get the default answer callback.
+     *
+     * @return callable|null The default answer callback.
+     */
+    public function defaultAnswerCallback()
+    {
+        return $this->defaultAnswerCallback;
     }
 
     /**
@@ -651,11 +664,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         if (!$this->rules || $this->answer->secondaryRequests()) {
-            $this->forwards();
+            if ($this->defaultAnswerCallback) {
+                call_user_func($this->defaultAnswerCallback, $this);
+            } else {
+                $this->forwards();
+            }
         }
     }
 
     private $self;
+    private $defaultAnswerCallback;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;

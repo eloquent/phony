@@ -62,16 +62,18 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
     {
         $callback = function () { return 'a'; };
         $self = (object) array();
+        $defaultAnswerCallback = function ($stub) { $stub->forwards(); };
         $expected = new Stub(
             $callback,
             $self,
             0,
+            $defaultAnswerCallback,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector
         );
-        $actual = $this->subject->create($callback, $self);
+        $actual = $this->subject->create($callback, $self, $defaultAnswerCallback);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame('a', call_user_func($actual->callback()));

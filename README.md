@@ -2,7 +2,7 @@
 
 *Mocks, stubs, and spies for PHP.*
 
-[![The most recent stable version is 0.5.2][version-image]][semantic versioning]
+[![The most recent stable version is 0.6.0][version-image]][semantic versioning]
 [![Current build status image][build-image]][current build status]
 [![Current coverage status image][coverage-image]][current coverage status]
 
@@ -11,7 +11,7 @@
 [coverage-image]: https://img.shields.io/codecov/c/github/eloquent/phony/develop.svg?style=flat-square "Current test coverage for the develop branch"
 [current coverage status]: https://codecov.io/github/eloquent/phony
 [semantic versioning]: http://semver.org/
-[version-image]: http://img.shields.io/:semver-0.5.2-yellow.svg?style=flat-square "This project uses semantic versioning"
+[version-image]: http://img.shields.io/:semver-0.6.0-yellow.svg?style=flat-square "This project uses semantic versioning"
 
 ## Installation and documentation
 
