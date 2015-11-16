@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.6.1 (2015-11-16)
 
 - **[IMPROVED]** Mock instances labels are now compared by the equal to matcher
   (#91).
