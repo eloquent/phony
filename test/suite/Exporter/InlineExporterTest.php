@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Exporter;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
 use PHPUnit_Framework_TestCase;
@@ -178,15 +179,16 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
 
     public function testExportMocks()
     {
-        $mock = MockBuilderFactory::instance()->createFullMock(
+        $builder = MockBuilderFactory::instance()->create(
             'Eloquent\Phony\Test\Properties\TestBaseClass',
             null,
             'PhonyMockInlineExporterExportMocks'
         );
+        $mock = MockFactory::instance()->createMock($builder, null, 'label');
 
         $this->assertSame(
             'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
-                'baseProtected: "<base-protected>"}',
+                'baseProtected: "<base-protected>", phony.label: "label"}',
             $this->subject->export($mock)
         );
     }

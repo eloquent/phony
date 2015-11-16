@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassB;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitA;
@@ -444,26 +445,26 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($matcher->matches($right));
     }
 
-    public function testMatchesMocks()
+    public function testMockMatching()
     {
         $mockBuilderFactory = MockBuilderFactory::instance();
-        $left = $mockBuilderFactory->createFullMock(
-            'Eloquent\Phony\Test\Properties\TestBaseClass',
-            null,
-            'PhonyMockEqualToMatcherMatchesMocks'
-        );
-        $right = $mockBuilderFactory->createFullMock(
-            'Eloquent\Phony\Test\Properties\TestBaseClass',
-            null,
-            'PhonyMockEqualToMatcherMatchesMocks'
-        );
-        $matcher = new EqualToMatcher($left);
+        $mockFactory = MockFactory::instance();
+        $className = 'PhonyMockEqualToMatcherMatchesMocks';
+        $builder = $mockBuilderFactory->create('Eloquent\Phony\Test\Properties\TestBaseClass', null, $className);
+        $mockA1 = $mockFactory->createMock($builder, null, 'a');
+        $mockA2 = $mockFactory->createMock($builder, null, 'a');
+        $mockB1 = $mockFactory->createMock($builder, null, 'b');
+        $mockX1 = new $className();
 
-        $this->assertTrue($matcher->matches($right));
+        $matcher = new EqualToMatcher($mockA1);
 
-        $right->basePublic = 'x';
+        $this->assertTrue($matcher->matches($mockA2));
+        $this->assertFalse($matcher->matches($mockB1));
+        $this->assertFalse($matcher->matches($mockX1));
 
-        $this->assertFalse($matcher->matches($right));
+        $mockA2->basePublic = 'x';
+
+        $this->assertFalse($matcher->matches($mockA2));
     }
 
     public function testMatchesExceptions()

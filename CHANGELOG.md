@@ -1,5 +1,13 @@
 # Phony changelog
 
+## Next release
+
+- **[IMPROVED]** Mock instances labels are now compared by the equal to matcher
+  (#91).
+- **[IMPROVED]** The inline exporter now outputs mock labels (#91).
+
+[#91]: https://github.com/eloquent/phony/issues/91
+
 ## 0.6.0
 
 - **[NEW]** Support for stub default answer callbacks.
