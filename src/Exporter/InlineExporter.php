@@ -239,7 +239,14 @@ class InlineExporter implements ExporterInterface
                     unset($phpValues["\0gcdata"]);
 
                     if ($value instanceof MockInterface) {
-                        unset($phpValues["\0" . $result->type . "\0_proxy"]);
+                        $proxyProperty = "\0" . $result->type . "\0_proxy";
+
+                        if ($phpValues[$proxyProperty]) {
+                            $phpValues['phony.label'] =
+                                $phpValues[$proxyProperty]->label();
+                        }
+
+                        unset($phpValues[$proxyProperty]);
                     }
 
                     if ($isException) {

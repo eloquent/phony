@@ -260,7 +260,14 @@ class EqualToMatcher extends AbstractMatcher
         unset($left["\0gcdata"]);
 
         if ($leftIsMock) {
-            unset($left["\0" . $leftClass . "\0_proxy"]);
+            $proxyProperty = "\0" . $leftClass . "\0_proxy";
+
+            if ($left[$proxyProperty]) {
+                $left["\0" . $leftClass . "\0_label"] =
+                    $left[$proxyProperty]->label();
+            }
+
+            unset($left[$proxyProperty]);
         }
 
         if ($leftIsException) {
@@ -282,7 +289,14 @@ class EqualToMatcher extends AbstractMatcher
         unset($right["\0gcdata"]);
 
         if ($rightIsMock) {
-            unset($right["\0" . $rightClass . "\0_proxy"]);
+            $proxyProperty = "\0" . $rightClass . "\0_proxy";
+
+            if ($right[$proxyProperty]) {
+                $right["\0" . $rightClass . "\0_label"] =
+                    $right[$proxyProperty]->label();
+            }
+
+            unset($right[$proxyProperty]);
         }
 
         if ($rightIsException) {
