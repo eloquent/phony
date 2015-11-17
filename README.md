@@ -7,10 +7,10 @@
 [![Current coverage status image][coverage-image]][current coverage status]
 
 [build-image]: http://img.shields.io/travis/eloquent/phony/develop.svg?style=flat-square "Current build status for the develop branch"
-[current build status]: https://travis-ci.org/eloquent/phony
 [coverage-image]: https://img.shields.io/codecov/c/github/eloquent/phony/develop.svg?style=flat-square "Current test coverage for the develop branch"
+[current build status]: https://travis-ci.org/eloquent/phony
 [current coverage status]: https://codecov.io/github/eloquent/phony
-[semantic versioning]: http://semver.org/
+[current version]: https://packagist.org/packages/eloquent/phony
 [version-image]: https://img.shields.io/packagist/v/eloquent/phony.svg?style=flat-square "This project uses semantic versioning"
 
 ## Installation and documentation
