@@ -75,22 +75,30 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
-            $this->callEventFactory->createReturned($this->returnValueA)
+            ($responseEvent = $this->callEventFactory->createReturned($this->returnValueA)),
+            null,
+            $responseEvent
         );
         $this->callAResponse = $this->callA->responseEvent();
         $this->callB = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueB, 'testClassAMethodA')),
-            $this->callEventFactory->createReturned($this->returnValueB)
+            ($responseEvent = $this->callEventFactory->createReturned($this->returnValueB)),
+            null,
+            $responseEvent
         );
         $this->callBResponse = $this->callB->responseEvent();
         $this->callC = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
-            $this->callEventFactory->createThrew($this->exceptionA)
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionA)),
+            null,
+            $responseEvent
         );
         $this->callCResponse = $this->callC->responseEvent();
         $this->callD = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode'),
-            $this->callEventFactory->createThrew($this->exceptionB)
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionB)),
+            null,
+            $responseEvent
         );
         $this->callDResponse = $this->callD->responseEvent();
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
@@ -336,15 +344,21 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('a'))),
-                $this->callEventFactory->createReturned('a')
+                ($responseEvent = $this->callEventFactory->createReturned('a')),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('b', 'c'))),
-                $this->callEventFactory->createReturned('bc')
+                ($responseEvent = $this->callEventFactory->createReturned('bc')),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('d'))),
-                $this->callEventFactory->createReturned('d')
+                ($responseEvent = $this->callEventFactory->createReturned('d')),
+                null,
+                $responseEvent
             ),
         );
 
@@ -362,15 +376,21 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('a')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('b', 'c')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('d')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
         );
 
@@ -406,15 +426,21 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('a')),
-                $this->callEventFactory->createThrew($exceptions[0])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[0])),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('b', 'c')),
-                $this->callEventFactory->createThrew($exceptions[1])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[1])),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('d')),
-                $this->callEventFactory->createThrew($exceptions[2])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[2])),
+                null,
+                $responseEvent
             ),
         );
 
@@ -1382,12 +1408,16 @@ EOD;
         $this->exceptionB = new Error('Consequences will never be the same.');
         $this->callC = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
-            $this->callEventFactory->createThrew($this->exceptionA)
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionA)),
+            null,
+            $responseEvent
         );
         $this->callCResponse = $this->callC->responseEvent();
         $this->callD = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode'),
-            $this->callEventFactory->createThrew($this->exceptionB)
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionB)),
+            null,
+            $responseEvent
         );
         $this->callDResponse = $this->callD->responseEvent();
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);

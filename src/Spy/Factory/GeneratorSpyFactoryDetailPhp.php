@@ -55,7 +55,7 @@ abstract class GeneratorSpyFactoryDetailPhp
                 }
 
                 if (!$generator->valid()) {
-                    $call->setEndEvent($callEventFactory->createReturned());
+                    $call->setEndEvent($callEventFactory->createConsumed());
 
                     break;
                 }

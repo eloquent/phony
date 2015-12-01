@@ -64,21 +64,29 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
+            $this->callEventFactory->createReturned($this->returnValueA),
+            null,
             $this->callEventFactory->createReturned($this->returnValueA)
         );
         $this->callAResponse = $this->callA->responseEvent();
         $this->callB = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueB, 'testClassAMethodA')),
+            $this->callEventFactory->createReturned($this->returnValueB),
+            null,
             $this->callEventFactory->createReturned($this->returnValueB)
         );
         $this->callBResponse = $this->callB->responseEvent();
         $this->callC = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
+            $this->callEventFactory->createThrew($this->exceptionA),
+            null,
             $this->callEventFactory->createThrew($this->exceptionA)
         );
         $this->callCResponse = $this->callC->responseEvent();
         $this->callD = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode'),
+            $this->callEventFactory->createThrew($this->exceptionB),
+            null,
             $this->callEventFactory->createThrew($this->exceptionB)
         );
         $this->callDResponse = $this->callD->responseEvent();

@@ -50,7 +50,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->returnValue = 'abc';
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
-        $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent);
+        $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -74,7 +74,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->exception = new RuntimeException('You done goofed.');
         $this->threwEvent = $this->callEventFactory->createThrew($this->exception);
-        $this->callWithException = $this->callFactory->create($this->calledEvent, $this->threwEvent);
+        $this->callWithException =
+            $this->callFactory->create($this->calledEvent, $this->threwEvent, null, $this->threwEvent);
         $this->subjectWithException = new CallVerifier(
             $this->callWithException,
             $this->matcherFactory,
@@ -86,7 +87,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->calledEventWithNoArguments = $this->callEventFactory->createCalled($this->callback);
         $this->callWithNoArguments = $this->callFactory
-            ->create($this->calledEventWithNoArguments, $this->returnedEvent);
+            ->create($this->calledEventWithNoArguments, $this->returnedEvent, null, $this->returnedEvent);
         $this->subjectWithNoArguments = new CallVerifier(
             $this->callWithNoArguments,
             $this->matcherFactory,
@@ -96,7 +97,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->invocableInspector
         );
 
-        $this->calledEventWithNoArguments = $this->callEventFactory->createCalled($this->callback);
         $this->callWithNoResponse = $this->callFactory->create($this->calledEvent);
         $this->subjectWithNoResponse = new CallVerifier(
             $this->callWithNoResponse,
@@ -190,7 +190,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->subjectWithNoResponse->setResponseEvent($this->returnedEvent);
 
         $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->responseEvent());
-        $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->endEvent());
+        $this->assertNull($this->subjectWithNoResponse->endEvent());
     }
 
     public function testSetEndEvent()

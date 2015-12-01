@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Call\Event;
 
 /**
- * The interface used to identify response events.
+ * Represents the end of iteration of a returned value.
  */
-interface ResponseEventInterface extends EndEventInterface
+class ConsumedEvent extends AbstractCallEvent implements ConsumedEventInterface
 {
 }

@@ -15,6 +15,8 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\ConsumedEvent;
+use Eloquent\Phony\Call\Event\ConsumedEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEvent;
 use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
@@ -243,6 +245,19 @@ class CallEventFactory implements CallEventFactoryInterface
             $this->sequencer->next(),
             $this->clock->time(),
             $exception
+        );
+    }
+
+    /**
+     * Create a new 'consumed' event.
+     *
+     * @return ConsumedEventInterface The newly created event.
+     */
+    public function createConsumed()
+    {
+        return new ConsumedEvent(
+            $this->sequencer->next(),
+            $this->clock->time()
         );
     }
 

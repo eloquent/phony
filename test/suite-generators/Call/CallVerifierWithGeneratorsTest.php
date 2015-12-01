@@ -47,7 +47,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->returnValue = 'abc';
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
-        $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent);
+        $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -71,7 +71,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         $this->exception = new RuntimeException('You done goofed.');
         $this->threwEvent = $this->callEventFactory->createThrew($this->exception);
-        $this->callWithException = $this->callFactory->create($this->calledEvent, $this->threwEvent);
+        $this->callWithException =
+            $this->callFactory->create($this->calledEvent, $this->threwEvent, null, $this->threwEvent);
         $this->subjectWithException = new CallVerifier(
             $this->callWithException,
             $this->matcherFactory,
