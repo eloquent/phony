@@ -48,6 +48,18 @@ class NullEventTest extends PHPUnit_Framework_TestCase
         $this->subject->eventAt(1);
     }
 
+    public function testFirstCallFailureUndefined()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->firstCall();
+    }
+
+    public function testLastCallFailureUndefined()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->lastCall();
+    }
+
     public function testCallAtFailureUndefined()
     {
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');

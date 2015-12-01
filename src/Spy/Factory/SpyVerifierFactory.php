@@ -29,8 +29,6 @@ use Eloquent\Phony\Spy\SpyVerifierInterface;
 
 /**
  * Creates spy verifiers.
- *
- * @internal
  */
 class SpyVerifierFactory implements SpyVerifierFactoryInterface
 {

@@ -25,8 +25,6 @@ use stdClass;
 
 /**
  * An abstract base class for implementing instance proxies.
- *
- * @internal
  */
 abstract class AbstractInstanceProxy extends AbstractProxy implements
     InstanceProxyInterface
@@ -117,9 +115,9 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     /**
      * Call the original constructor.
      *
-     * @param mixed $arguments,... The arguments.
+     * @param mixed ...$arguments The arguments.
      *
-     * @return ProxyInterface This proxy.
+     * @return $this This proxy.
      */
     public function construct()
     {
@@ -131,7 +129,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      *
      * @param ArgumentsInterface|array|null $arguments The arguments.
      *
-     * @return ProxyInterface This proxy.
+     * @return $this This proxy.
      */
     public function constructWith($arguments = null)
     {
@@ -147,10 +145,14 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      * Set the label.
      *
      * @param string|null $label The label.
+     *
+     * @return $this This proxy.
      */
     public function setLabel($label)
     {
         $this->state->label = $label;
+
+        return $this;
     }
 
     /**

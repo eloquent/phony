@@ -25,7 +25,6 @@ class IndexNormalizerTest extends PHPUnit_Framework_TestCase
     {
         //                            count index normalized
         return array(
-            'Null'           => array(3,    null, 0),
             'Zero'           => array(3,    0,    0),
             'Positive'       => array(3,    1,    1),
             'Negative last'  => array(3,    -1,   2),
@@ -37,7 +36,6 @@ class IndexNormalizerTest extends PHPUnit_Framework_TestCase
     {
         //                                   count index
         return array(
-            'Null when empty'       => array(0,    null),
             'Zero when empty'       => array(0,    0),
             'Positive'              => array(1,    1),
             'Negative'              => array(0,    -1),

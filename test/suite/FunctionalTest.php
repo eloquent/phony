@@ -815,4 +815,25 @@ EOD;
         $this->assertNull($proxy->mock()->testClassAMethodA($spy));
         $spy->called();
     }
+
+    public function testAlwaysWithNoEvents()
+    {
+        $spy = x\spy();
+
+        $this->assertTrue((boolean) $spy->atLeast(0)->always()->checkCalledWith('a'));
+    }
+
+    public function testIncompleteCalls()
+    {
+        $test = $this;
+        $context = (object) array('spy' => null);
+        $context->spy = $spy = x\spy(
+            function () use ($test, $context) {
+                $test->assertFalse($context->spy->callAt(0)->hasResponded());
+                $test->assertFalse($context->spy->callAt(0)->hasCompleted());
+            }
+        );
+
+        $spy();
+    }
 }

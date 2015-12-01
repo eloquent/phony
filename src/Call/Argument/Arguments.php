@@ -20,8 +20,6 @@ use Iterator;
 
 /**
  * Represents a set of call arguments.
- *
- * @internal
  */
 class Arguments implements ArgumentsInterface
 {
@@ -94,7 +92,7 @@ class Arguments implements ArgumentsInterface
      *
      * This method supports reference parameters.
      *
-     * @return array The arguments.
+     * @return array<mixed> The arguments.
      */
     public function all()
     {
@@ -106,10 +104,10 @@ class Arguments implements ArgumentsInterface
      *
      * If called with no arguments, sets the first argument to null.
      *
-     * If called with one argument, sets the first argument to $indexOrValue.
+     * If called with one argument, sets the first argument to `$indexOrValue`.
      *
-     * If called with two arguments, sets the argument at $indexOrValue to
-     * $value.
+     * If called with two arguments, sets the argument at `$indexOrValue` to
+     * `$value`.
      *
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
@@ -127,8 +125,8 @@ class Arguments implements ArgumentsInterface
         }
 
         try {
-            $normalized = $this->indexNormalizer
-                ->normalize($this->count, $index);
+            $normalized =
+                $this->indexNormalizer->normalize($this->count, $index);
         } catch (UndefinedIndexException $e) {
             throw new UndefinedArgumentException($index, $e);
         }
@@ -139,11 +137,14 @@ class Arguments implements ArgumentsInterface
     /**
      * Returns true if the argument index exists.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return boolean True if the argument exists.
      */
-    public function has($index = null)
+    public function has($index = 0)
     {
         if ($this->indexNormalizer->tryNormalize($this->count, $index)) {
             return true;
@@ -155,12 +156,17 @@ class Arguments implements ArgumentsInterface
     /**
      * Get an argument by index.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @api
+     *
+     * @param integer $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function get($index = null)
+    public function get($index = 0)
     {
         try {
             $normalized = $this->indexNormalizer

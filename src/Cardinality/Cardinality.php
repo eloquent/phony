@@ -17,39 +17,29 @@ use Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException;
 
 /**
  * Represents the cardinality of a verification.
- *
- * @internal
  */
 class Cardinality implements CardinalityInterface
 {
     /**
      * Construct a new cardinality.
      *
-     * @param integer|null $minimum  The minimum, or null for no minimum.
+     * @param integer      $minimum  The minimum.
      * @param integer|null $maximum  The maximum, or null for no maximum.
-     * @param boolean|null $isAlways True if 'always' should be enabled.
+     * @param boolean      $isAlways True if 'always' should be enabled.
      *
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function __construct(
-        $minimum = null,
+        $minimum = 0,
         $maximum = null,
-        $isAlways = null
+        $isAlways = false
     ) {
-        if (null === $minimum) {
-            $minimum = 0;
-        }
-
         if ($minimum < 0 || $maximum < 0) {
             throw new InvalidCardinalityException();
         }
 
         if (null !== $maximum && $minimum > $maximum) {
             throw new InvalidCardinalityException();
-        }
-
-        if (null === $isAlways) {
-            $isAlways = false;
         }
 
         $this->minimum = $minimum;
@@ -60,7 +50,7 @@ class Cardinality implements CardinalityInterface
     /**
      * Get the minimum.
      *
-     * @return integer|null The minimum.
+     * @return integer The minimum.
      */
     public function minimum()
     {
@@ -144,7 +134,7 @@ class Cardinality implements CardinalityInterface
      * Asserts that this cardinality is suitable for events that can only happen
      * once or not at all.
      *
-     * @return CardinalityInterface                 This cardinality.
+     * @return $this                                This cardinality.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function assertSingular()

@@ -22,7 +22,7 @@ interface EventOrderVerifierInterface
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -33,7 +33,7 @@ interface EventOrderVerifierInterface
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.
@@ -66,7 +66,7 @@ interface EventOrderVerifierInterface
     /**
      * Checks that at least one event is supplied.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -76,7 +76,7 @@ interface EventOrderVerifierInterface
     /**
      * Throws an exception unless at least one event is supplied.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.

@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Mock\Builder\Factory;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use ReflectionClass;
 
 /**
  * The interface implemented by mock builder factories.
@@ -24,9 +23,16 @@ interface MockBuilderFactoryInterface
     /**
      * Create a new mock builder.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @param mixed             $types      The types to mock.
+     * @param array|object|null $definition The definition.
+     * @param string|null       $className  The class name.
      *
      * @return MockBuilderInterface The mock builder.
      */
@@ -39,9 +45,16 @@ interface MockBuilderFactoryInterface
     /**
      * Create a new full mock.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @param mixed             $types      The types to mock.
+     * @param array|object|null $definition The definition.
+     * @param string|null       $className  The class name.
      *
      * @return MockInterface The mock.
      */
@@ -54,10 +67,17 @@ interface MockBuilderFactoryInterface
     /**
      * Create a new partial mock.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @param mixed                         $types      The types to mock.
+     * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null             $definition The definition.
+     * @param string|null                   $className  The class name.
      *
      * @return MockInterface The mock.
      */

@@ -14,13 +14,12 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Error;
 use Exception;
 use ReflectionMethod;
 
 /**
  * A wrapper that allows calling of the trait method in mocks.
- *
- * @internal
  */
 class WrappedTraitMethod extends AbstractWrappedMethod
 {
@@ -71,8 +70,8 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      *
      * @param ArgumentsInterface|array|null The arguments.
      *
-     * @return mixed     The result of invocation.
-     * @throws Exception If an error occurs.
+     * @return mixed           The result of invocation.
+     * @throws Exception|Error If an error occurs.
      */
     public function invokeWith($arguments = null)
     {

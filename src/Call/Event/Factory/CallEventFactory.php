@@ -29,13 +29,12 @@ use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use Error;
 use Exception;
 use Generator;
 
 /**
  * Creates call events.
- *
- * @internal
  */
 class CallEventFactory implements CallEventFactoryInterface
 {
@@ -115,20 +114,26 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new response event.
      *
-     * @param mixed          $returnValue The return value.
-     * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
+     * @param mixed                $returnValue The return value.
+     * @param Exception|Error|null $exception   The thrown exception, or null if no exception was thrown.
      *
      * @return ResponseEventInterface The newly created event.
      */
-    public function createResponse(
-        $returnValue = null,
-        Exception $exception = null
-    ) {
+    public function createResponse($returnValue = null, $exception = null)
+    {
         if ($exception) {
-            return $this->createThrew($exception);
+            return new ThrewEvent(
+                $this->sequencer->next(),
+                $this->clock->time(),
+                $exception
+            );
         }
 
-        return $this->createReturned($returnValue);
+        return new ReturnedEvent(
+            $this->sequencer->next(),
+            $this->clock->time(),
+            $returnValue
+        );
     }
 
     /**
@@ -166,11 +171,11 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'thrown' event.
      *
-     * @param Exception|null $exception The thrown exception.
+     * @param Exception|Error|null $exception The thrown exception.
      *
      * @return ThrewEventInterface The newly created event.
      */
-    public function createThrew(Exception $exception = null)
+    public function createThrew($exception = null)
     {
         return new ThrewEvent(
             $this->sequencer->next(),
@@ -228,11 +233,11 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'received exception' event.
      *
-     * @param Exception|null $exception The received exception.
+     * @param Exception|Error|null $exception The received exception.
      *
      * @return ReceivedExceptionEventInterface The newly created event.
      */
-    public function createReceivedException(Exception $exception = null)
+    public function createReceivedException($exception = null)
     {
         return new ReceivedExceptionEvent(
             $this->sequencer->next(),

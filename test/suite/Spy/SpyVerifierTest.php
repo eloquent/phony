@@ -19,12 +19,14 @@ use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Error;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -99,6 +101,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
 
         $this->callFactory->reset();
+
+        $this->featureDetector = new FeatureDetector();
     }
 
     public function testConstructor()
@@ -135,8 +139,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testSetLabel()
     {
-        $this->subject->setLabel(null);
-
+        $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
 
         $this->subject->setLabel($this->label);
@@ -246,6 +249,36 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->eventAt();
+    }
+
+    public function testFirstCall()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals($this->wrappedCallA, $this->subject->firstCall());
+    }
+
+    public function testFirstCallFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->firstCall();
+    }
+
+    public function testLastCall()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals($this->wrappedCallD, $this->subject->lastCall());
+    }
+
+    public function testLastCallFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->lastCall();
     }
 
     public function testCallAt()
@@ -1336,6 +1369,36 @@ EOD;
         $this->assertEquals(
             new EventCollection(array($this->callCResponse)),
             $this->subject->threw(new EqualToMatcher($this->exceptionA))
+        );
+    }
+
+    public function testThrewWithEngineErrorException()
+    {
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            $this->markTestSkipped('Requires engine error exceptions.');
+        }
+
+        $this->exceptionA = new Error('You done goofed.');
+        $this->exceptionB = new Error('Consequences will never be the same.');
+        $this->callC = $this->callFactory->create(
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
+            $this->callEventFactory->createThrew($this->exceptionA)
+        );
+        $this->callCResponse = $this->callC->responseEvent();
+        $this->callD = $this->callFactory->create(
+            $this->callEventFactory->createCalled('implode'),
+            $this->callEventFactory->createThrew($this->exceptionB)
+        );
+        $this->callDResponse = $this->callD->responseEvent();
+        $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
+        $this->wrappedCallC = $this->callVerifierFactory->adapt($this->callC);
+        $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
+        $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals(
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
+            $this->subject->threw()
         );
     }
 

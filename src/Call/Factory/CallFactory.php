@@ -27,11 +27,10 @@ use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Exception;
 use InvalidArgumentException;
+use Throwable;
 
 /**
  * Creates calls.
- *
- * @internal
  */
 class CallFactory implements CallFactoryInterface
 {
@@ -143,6 +142,7 @@ class CallFactory implements CallFactoryInterface
 
         try {
             $returnValue = $this->invoker->callWith($callback, $arguments);
+        } catch (Throwable $exception) {
         } catch (Exception $exception) {
         }
 

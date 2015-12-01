@@ -11,13 +11,10 @@
 
 namespace Eloquent\Phony\Integration\Pho;
 
-use Exception;
 use pho\Exception\ExpectationException;
 
 /**
  * Emulates Pho's expectation exception for improved assertion failure output.
- *
- * @internal
  */
 final class PhoAssertionException extends ExpectationException
 {

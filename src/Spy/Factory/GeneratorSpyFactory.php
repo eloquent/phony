@@ -22,8 +22,6 @@ use Traversable;
 
 /**
  * Creates generator spies.
- *
- * @internal
  */
 class GeneratorSpyFactory implements TraversableSpyFactoryInterface
 {

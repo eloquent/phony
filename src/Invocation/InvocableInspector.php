@@ -20,8 +20,6 @@ use ReflectionMethod;
 
 /**
  * Utilities for inspecting invocables.
- *
- * @internal
  */
 class InvocableInspector implements InvocableInspectorInterface
 {

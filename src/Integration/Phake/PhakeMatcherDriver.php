@@ -19,8 +19,6 @@ use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher driver for Phake matchers.
- *
- * @internal
  */
 class PhakeMatcherDriver extends AbstractMatcherDriver
 {

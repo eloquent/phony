@@ -31,8 +31,6 @@ use Eloquent\Phony\Stub\StubVerifier;
 
 /**
  * Creates stub verifiers.
- *
- * @internal
  */
 class StubVerifierFactory implements StubVerifierFactoryInterface
 {

@@ -13,11 +13,14 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Cardinality\Verification\CardinalityVerifierInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
+use Error;
 use Exception;
 use InvalidArgumentException;
 
 /**
  * The interface implemented by spy verifiers.
+ *
+ * @api
  */
 interface SpyVerifierInterface extends SpyInterface,
     CardinalityVerifierInterface
@@ -25,12 +28,16 @@ interface SpyVerifierInterface extends SpyInterface,
     /**
      * Checks if called.
      *
+     * @api
+     *
      * @return EventCollectionInterface|null The result.
      */
     public function checkCalled();
 
     /**
      * Throws an exception unless called.
+     *
+     * @api
      *
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -40,7 +47,9 @@ interface SpyVerifierInterface extends SpyInterface,
     /**
      * Checks if called with the supplied arguments.
      *
-     * @param mixed $argument,... The arguments.
+     * @api
+     *
+     * @param mixed ...$argument The arguments.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -49,7 +58,9 @@ interface SpyVerifierInterface extends SpyInterface,
     /**
      * Throws an exception unless called with the supplied arguments.
      *
-     * @param mixed $argument,... The arguments.
+     * @api
+     *
+     * @param mixed ...$argument The arguments.
      *
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -58,6 +69,8 @@ interface SpyVerifierInterface extends SpyInterface,
 
     /**
      * Checks if the $this value is the same as the supplied value.
+     *
+     * @api
      *
      * @param object|null $value The possible $this value.
      *
@@ -68,6 +81,8 @@ interface SpyVerifierInterface extends SpyInterface,
     /**
      * Throws an exception unless the $this value is the same as the supplied
      * value.
+     *
+     * @api
      *
      * @param object|null $value The possible $this value.
      *
@@ -82,6 +97,8 @@ interface SpyVerifierInterface extends SpyInterface,
      * When called with no arguments, this method simply checks that the spy
      * returned any value.
      *
+     * @api
+     *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface|null The result.
@@ -94,6 +111,8 @@ interface SpyVerifierInterface extends SpyInterface,
      * When called with no arguments, this method simply checks that the spy
      * returned any value.
      *
+     * @api
+     *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface The result.
@@ -104,7 +123,9 @@ interface SpyVerifierInterface extends SpyInterface,
     /**
      * Checks if an exception of the supplied type was thrown.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If the type is invalid.
@@ -114,7 +135,9 @@ interface SpyVerifierInterface extends SpyInterface,
     /**
      * Throws an exception unless an exception of the supplied type was thrown.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If the type is invalid.
@@ -133,6 +156,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * With two arguments, it checks that a key and value matching the
      * respective arguments were produced together.
+     *
+     * @api
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
@@ -153,6 +178,8 @@ interface SpyVerifierInterface extends SpyInterface,
      * With two arguments, it checks that a key and value matching the
      * respective arguments were produced together.
      *
+     * @api
+     *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
@@ -165,7 +192,9 @@ interface SpyVerifierInterface extends SpyInterface,
      * Checks if this spy produced all of the supplied key-value pairs, in the
      * supplied order.
      *
-     * @param mixed $pairs,... The key-value pairs.
+     * @api
+     *
+     * @param mixed ...$pairs The key-value pairs.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -175,7 +204,9 @@ interface SpyVerifierInterface extends SpyInterface,
      * Throws an exception unless this spy produced all of the supplied
      * key-value pairs, in the supplied order.
      *
-     * @param mixed $pairs,... The key-value pairs.
+     * @api
+     *
+     * @param mixed ...$pairs The key-value pairs.
      *
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -187,6 +218,8 @@ interface SpyVerifierInterface extends SpyInterface,
      *
      * When called with no arguments, this method simply checks that the spy
      * received any value.
+     *
+     * @api
      *
      * @param mixed $value The value.
      *
@@ -200,6 +233,8 @@ interface SpyVerifierInterface extends SpyInterface,
      * When called with no arguments, this method simply checks that the spy
      * received any value.
      *
+     * @api
+     *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface The result.
@@ -210,7 +245,9 @@ interface SpyVerifierInterface extends SpyInterface,
     /**
      * Checks if this spy received an exception of the supplied type.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If the type is invalid.
@@ -221,7 +258,9 @@ interface SpyVerifierInterface extends SpyInterface,
      * Throws an exception unless this spy received an exception of the
      * supplied type.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If the type is invalid.

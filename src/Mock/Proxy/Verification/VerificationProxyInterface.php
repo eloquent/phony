@@ -17,6 +17,8 @@ use Exception;
 
 /**
  * The interface implemented by verification proxies.
+ *
+ * @api
  */
 interface VerificationProxyInterface extends ProxyInterface
 {
@@ -24,12 +26,14 @@ interface VerificationProxyInterface extends ProxyInterface
      * Throws an exception unless the specified method was called with the
      * supplied arguments.
      *
+     * @api
+     *
      * @param string $name      The method name.
      * @param array  $arguments The arguments.
      *
-     * @return VerificationProxyInterface This proxy.
-     * @throws MockExceptionInterface     If the stub does not exist.
-     * @throws Exception                  If the assertion fails, and the assertion recorder throws exceptions.
+     * @return $this                  This proxy.
+     * @throws MockExceptionInterface If the stub does not exist.
+     * @throws Exception              If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function __call($name, array $arguments);
 }

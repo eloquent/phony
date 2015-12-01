@@ -16,8 +16,6 @@ use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
  * A facade driver for PHPUnit.
- *
- * @internal
  */
 class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
 {

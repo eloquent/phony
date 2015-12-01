@@ -17,8 +17,6 @@ use Eloquent\Phony\Matcher\MatcherInterface;
 
 /**
  * A matcher driver for Mockery matchers.
- *
- * @internal
  */
 class MockeryMatcherDriver extends AbstractMatcherDriver
 {

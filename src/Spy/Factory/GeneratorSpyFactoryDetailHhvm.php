@@ -15,11 +15,10 @@ use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
 use Exception;
 use Generator;
+use Throwable;
 
 /**
  * A detail class for generator spy syntax using an expression.
- *
- * @internal
  */
 abstract class GeneratorSpyFactoryDetailHhvm
 {
@@ -62,7 +61,11 @@ abstract class GeneratorSpyFactoryDetailHhvm
 
                     break;
                 }
+            } catch (Throwable $thrown) {
             } catch (Exception $thrown) {
+            }
+
+            if ($thrown) {
                 $call->setEndEvent(
                     $callEventFactory->createThrew($thrown)
                 );

@@ -15,8 +15,6 @@ use ReflectionMethod;
 
 /**
  * Represents a collection of methods.
- *
- * @internal
  */
 class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
 {

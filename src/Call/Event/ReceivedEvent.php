@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Call\Event;
 
 /**
  * Represents a value received by a generator.
- *
- * @internal
  */
 class ReceivedEvent extends AbstractCallEvent implements ReceivedEventInterface
 {

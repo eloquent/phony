@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * The specified feature is undefined.
- *
- * @internal
  */
 final class UndefinedFeatureException extends Exception
 {

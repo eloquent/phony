@@ -19,8 +19,6 @@ use Exception;
 
 /**
  * An assertion recorder that simply throws the supplied exceptions.
- *
- * @internal
  */
 class AssertionRecorder implements AssertionRecorderInterface
 {

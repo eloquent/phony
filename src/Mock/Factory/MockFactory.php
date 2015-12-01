@@ -30,8 +30,6 @@ use ReflectionClass;
 
 /**
  * Creates mock instances.
- *
- * @internal
  */
 class MockFactory implements MockFactoryInterface
 {

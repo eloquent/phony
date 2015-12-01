@@ -24,8 +24,6 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 /**
  * An abstract base class for implementing facade drivers that integrate with
  * third party testing frameworks.
- *
- * @internal
  */
 abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
 {

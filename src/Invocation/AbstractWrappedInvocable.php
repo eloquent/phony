@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Invocation;
 
 /**
  * An abstract base class for implementing wrapped invocables.
- *
- * @internal
  */
 abstract class AbstractWrappedInvocable extends AbstractInvocable implements
     WrappedInvocableInterface
@@ -62,10 +60,14 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      * Set the label.
      *
      * @param string|null $label The label.
+     *
+     * @return $this This invocable.
      */
     public function setLabel($label)
     {
         $this->label = $label;
+
+        return $this;
     }
 
     /**

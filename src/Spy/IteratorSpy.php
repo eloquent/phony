@@ -18,8 +18,6 @@ use Iterator;
 
 /**
  * Spies on an iterator.
- *
- * @internal
  */
 class IteratorSpy implements IteratorSpyInterface
 {

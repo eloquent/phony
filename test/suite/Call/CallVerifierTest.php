@@ -20,11 +20,13 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
+use Error;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -114,6 +116,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->returnedAssertionResult = new EventCollection(array($this->call->responseEvent()));
         $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
         $this->emptyAssertionResult = new EventCollection();
+
+        $this->featureDetector = new FeatureDetector();
     }
 
     public function testConstructor()
@@ -143,6 +147,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testProxyMethods()
     {
         $this->assertSame($this->calledEvent, $this->subject->eventAt(0));
+        $this->assertSame($this->call, $this->subject->firstCall());
+        $this->assertSame($this->call, $this->subject->lastCall());
         $this->assertSame($this->call, $this->subject->callAt(0));
         $this->assertTrue($this->subject->hasCalls());
         $this->assertSame(2, $this->subject->eventCount());
@@ -557,6 +563,28 @@ EOD;
         );
 
         $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->threw());
+    }
+
+    public function testThrewWithEngineErrorException()
+    {
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            $this->markTestSkipped('Requires engine error exceptions.');
+        }
+
+        $this->exception = new Error('You done goofed.');
+        $this->threwEvent = $this->callEventFactory->createThrew($this->exception);
+        $this->callWithException = $this->callFactory->create($this->calledEvent, $this->threwEvent);
+        $this->subjectWithException = new CallVerifier(
+            $this->callWithException,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+        $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
+
+        $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw());
     }
 
     public function testThrewFailureExpectingAnyNoneThrown()

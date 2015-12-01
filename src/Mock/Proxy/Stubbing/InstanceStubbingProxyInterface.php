@@ -15,6 +15,8 @@ use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
 
 /**
  * The interface implemented by instance stubbing proxies.
+ *
+ * @api
  */
 interface InstanceStubbingProxyInterface extends InstanceProxyInterface,
     StubbingProxyInterface

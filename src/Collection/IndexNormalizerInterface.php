@@ -21,8 +21,8 @@ interface IndexNormalizerInterface
     /**
      * Normalize the supplied index.
      *
-     * @param integer      $size  The size of the collection.
-     * @param integer|null $index The index.
+     * @param integer $size  The size of the collection.
+     * @param integer $index The index.
      *
      * @return integer                 The normalized index.
      * @throws UndefinedIndexException If the index is invalid.
@@ -32,9 +32,9 @@ interface IndexNormalizerInterface
     /**
      * Normalize the supplied index.
      *
-     * @param integer      $size        The size of the collection.
-     * @param integer|null $index       The index.
-     * @param mixed        &$normalized Set to the normalized index if successful.
+     * @param integer $size        The size of the collection.
+     * @param integer $index       The index.
+     * @param mixed   &$normalized Set to the normalized index if successful.
      *
      * @return boolean True if the index can be normalized.
      */

@@ -15,6 +15,8 @@ use Eloquent\Phony\Spy\SpyVerifierInterface;
 
 /**
  * The interface implemented by stub verifiers.
+ *
+ * @api
  */
 interface StubVerifierInterface extends StubInterface, SpyVerifierInterface
 {

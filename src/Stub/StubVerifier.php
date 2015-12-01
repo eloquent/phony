@@ -23,13 +23,12 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Spy\SpyVerifier;
+use Error;
 use Exception;
 
 /**
  * Pairs a stub and a spy, and provides convenience methods for verifying
  * interactions with the spy.
- *
- * @internal
  */
 class StubVerifier extends SpyVerifier implements StubVerifierInterface
 {
@@ -124,10 +123,14 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      * Set the label.
      *
      * @param string|null $label The label.
+     *
+     * @return $this This invocable.
      */
     public function setLabel($label)
     {
         $this->stub->setLabel($label);
+
+        return $this;
     }
 
     /**
@@ -143,9 +146,9 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Modify the current criteria to match the supplied arguments.
      *
-     * @param mixed $argument,... The arguments.
+     * @param mixed ...$argument The arguments.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function with()
     {
@@ -160,10 +163,10 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks.
+     * @param callable $callback The callback.
+     * @param callable ...$additionalCallbacks Additional callbacks.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function calls($callback)
     {
@@ -207,16 +210,17 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an argument callback to be called as part of an answer.
      *
-     * Negative indices are equivalent to $argumentCount - $index.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null $index                 The argument index, or null to call the first argument.
-     * @param integer|null $additionalIndices,... Additional argument indices to call.
+     * @param integer $index The argument index.
+     * @param integer ...$additionalIndices Additional argument indices to call.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
-    public function callsArgument($index = null)
+    public function callsArgument($index = 0)
     {
         $this->invoker
             ->callWith(array($this->stub, __FUNCTION__), func_get_args());
@@ -227,23 +231,24 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an argument callback to be called as part of an answer.
      *
-     * Negative indices are equivalent to $argumentCount - $index.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
      *
      * This method supports reference parameters in the supplied arguments, but
      * not in the invocation arguments.
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer|null                  $index                The argument index, or null to call the first argument.
+     * @param integer                       $index                The argument index.
      * @param ArgumentsInterface|array|null $arguments            The arguments.
      * @param boolean|null                  $prefixSelf           True if the self value should be prefixed.
      * @param boolean|null                  $suffixArgumentsArray True if arguments should be appended as an array.
      * @param boolean|null                  $suffixArguments      True if arguments should be appended.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function callsArgumentWith(
-        $index = null,
+        $index = 0,
         $arguments = null,
         $prefixSelf = null,
         $suffixArgumentsArray = null,
@@ -273,7 +278,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function setsArgument($indexOrValue = null, $value = null)
     {
@@ -289,10 +294,10 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callback                The callback.
-     * @param callable $additionalCallbacks,... Additional callbacks for subsequent invocations.
+     * @param callable $callback The callback.
+     * @param callable ...$additionalCallbacks Additional callbacks for subsequent invocations.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function does($callback)
     {
@@ -311,7 +316,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      * @param boolean|null                  $suffixArgumentsArray True if arguments should be appended as an array.
      * @param boolean|null                  $suffixArguments      True if arguments should be appended.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function doesWith(
         $callback,
@@ -339,7 +344,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      * @param boolean|null                  $suffixArgumentsArray True if arguments should be appended as an array.
      * @param boolean|null                  $suffixArguments      True if arguments should be appended.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function forwards(
         $arguments = null,
@@ -360,10 +365,10 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an answer that returns a value.
      *
-     * @param mixed $value                The return value.
-     * @param mixed $additionalValues,... Additional return values for subsequent invocations.
+     * @param mixed $value The return value.
+     * @param mixed ...$additionalValues Additional return values for subsequent invocations.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function returns($value = null)
     {
@@ -376,13 +381,14 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an answer that returns an argument.
      *
-     * Negative indices are equivalent to $argumentCount - $index.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer|null $index The argument index, or null to return the first argument.
+     * @param integer $index The argument index.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
-    public function returnsArgument($index = null)
+    public function returnsArgument($index = 0)
     {
         $this->stub->returnsArgument($index);
 
@@ -392,7 +398,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an answer that returns the self value.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function returnsSelf()
     {
@@ -404,10 +410,10 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an answer that throws an exception.
      *
-     * @param Exception|string|null $exception                The exception, or message, or null to throw a generic exception.
-     * @param Exception|string      $additionalExceptions,... Additional exceptions, or messages, for subsequent invocations.
+     * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
+     * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
-     * @return StubInterface This stub.
+     * @return $this This stub.
      */
     public function throws($exception = null)
     {

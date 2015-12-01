@@ -20,8 +20,6 @@ use Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException;
 
 /**
  * Represents a set of criteria and associated answers.
- *
- * @internal
  */
 class StubRule implements StubRuleInterface
 {

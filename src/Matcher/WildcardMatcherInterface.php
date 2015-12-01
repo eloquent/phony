@@ -13,11 +13,15 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * The interface implemented by wildcard matchers.
+ *
+ * @api
  */
 interface WildcardMatcherInterface extends SelfDescribingMatcherInterface
 {
     /**
      * Get the matcher to use for each argument.
+     *
+     * @api
      *
      * @return MatcherInterface The matcher.
      */
@@ -26,12 +30,16 @@ interface WildcardMatcherInterface extends SelfDescribingMatcherInterface
     /**
      * Get the minimum number of arguments to match.
      *
+     * @api
+     *
      * @return integer The minimum number of arguments.
      */
     public function minimumArguments();
 
     /**
      * Get the maximum number of arguments to match.
+     *
+     * @api
      *
      * @return integer|null The maximum number of arguments.
      */

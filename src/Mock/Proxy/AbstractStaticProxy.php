@@ -22,8 +22,6 @@ use stdClass;
 
 /**
  * An abstract base class for implementing static proxies.
- *
- * @internal
  */
 abstract class AbstractStaticProxy extends AbstractProxy implements
     StaticProxyInterface

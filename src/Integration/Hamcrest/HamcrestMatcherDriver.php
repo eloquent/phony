@@ -16,8 +16,6 @@ use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 
 /**
  * A matcher driver for Hamcrest matchers.
- *
- * @internal
  */
 class HamcrestMatcherDriver extends AbstractMatcherDriver
 {

@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * Unable to modify a finalized mock.
- *
- * @internal
  */
 final class FinalizedMockException extends Exception implements
     MockExceptionInterface

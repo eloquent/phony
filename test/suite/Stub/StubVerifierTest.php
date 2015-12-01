@@ -195,8 +195,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testSetLabel()
     {
-        $this->subject->setLabel(null);
-
+        $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
 
         $this->subject->setLabel($this->label);
@@ -421,8 +420,8 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->subject,
             $this->subject
                 ->callsArgument(111, -111)->returns()
-                ->callsArgument(null)->returns()
-                ->callsArgument(1)->callsArgument(2, null)->returns()
+                ->callsArgument()->returns()
+                ->callsArgument(1)->callsArgument(2, 0)->returns()
         );
 
         $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
@@ -456,7 +455,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->callsArgumentWith(111)
                 ->callsArgumentWith(-111)
                 ->returns()
-                ->callsArgumentWith(null, array('A', 'B'), true, true, true)
+                ->callsArgumentWith(0, array('A', 'B'), true, true, true)
                 ->returns()
                 ->callsArgumentWith(0, array('C', 'D'), true, true, true)
                 ->callsArgumentWith(1, array('E', 'F'), true, true, true)
@@ -579,7 +578,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->callsArgumentWith(null)->returns()
+                ->callsArgumentWith()->returns()
                 ->callsArgumentWith(0)->callsArgumentWith(1)->returns()
         );
 

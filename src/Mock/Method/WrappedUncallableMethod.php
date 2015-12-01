@@ -11,12 +11,11 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Error;
 use Exception;
 
 /**
  * A wrapper for uncallable methods.
- *
- * @internal
  */
 class WrappedUncallableMethod extends AbstractWrappedMethod
 {
@@ -27,8 +26,8 @@ class WrappedUncallableMethod extends AbstractWrappedMethod
      *
      * @param ArgumentsInterface|array|null The arguments.
      *
-     * @return mixed     The result of invocation.
-     * @throws Exception If an error occurs.
+     * @return mixed           The result of invocation.
+     * @throws Exception|Error If an error occurs.
      */
     public function invokeWith($arguments = null)
     {

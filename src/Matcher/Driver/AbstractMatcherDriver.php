@@ -16,8 +16,6 @@ use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * An abstract base class for implementing matcher drivers.
- *
- * @internal
  */
 abstract class AbstractMatcherDriver implements MatcherDriverInterface
 {

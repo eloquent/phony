@@ -20,8 +20,6 @@ use ReflectionMethod;
 
 /**
  * Detects support for language features in the current runtime environment.
- *
- * @internal
  */
 class FeatureDetector implements FeatureDetectorInterface
 {
@@ -123,14 +121,6 @@ class FeatureDetector implements FeatureDetectorInterface
     public function standardFeatures()
     {
         return array(
-            'object.constructor.php4' => function ($detector) {
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return true; // @codeCoverageIgnore
-                }
-
-                return version_compare(PHP_VERSION, '7.x', '<');
-            },
-
             'closure' => function ($detector) {
                 return $detector->checkInternalClass('Closure');
             },
@@ -201,6 +191,10 @@ class FeatureDetector implements FeatureDetectorInterface
                 );
             },
 
+            'error.exception.engine' => function ($detector) {
+                return $detector->checkInternalClass('Error');
+            },
+
             'generator' => function ($detector) {
                 return $detector->checkInternalClass('Generator');
             },
@@ -267,6 +261,14 @@ class FeatureDetector implements FeatureDetectorInterface
             'generator.yield.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
                     $detector->checkStatement('yield');
+            },
+
+            'object.constructor.php4' => function ($detector) {
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return true; // @codeCoverageIgnore
+                }
+
+                return version_compare(PHP_VERSION, '7.x', '<');
             },
 
             'parameter.default.constant' => function ($detector) {

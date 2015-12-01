@@ -16,8 +16,6 @@ use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
 
 /**
  * A matcher driver for Counterpart matchers.
- *
- * @internal
  */
 class CounterpartMatcherDriver extends AbstractMatcherDriver
 {

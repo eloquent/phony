@@ -26,8 +26,6 @@ use ReflectionClass;
 
 /**
  * Represents a mock class definition.
- *
- * @internal
  */
 class MockDefinition implements MockDefinitionInterface
 {

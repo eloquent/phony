@@ -22,8 +22,6 @@ use SimpleTestContext;
 
 /**
  * An assertion recorder for SimpleTest.
- *
- * @internal
  */
 class SimpletestAssertionRecorder extends AssertionRecorder
 {

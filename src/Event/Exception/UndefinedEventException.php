@@ -38,6 +38,8 @@ final class UndefinedEventException extends Exception
     /**
      * Get the index.
      *
+     * @api
+     *
      * @return integer The index.
      */
     public function index()

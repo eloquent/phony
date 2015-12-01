@@ -43,8 +43,6 @@ use ReflectionException;
 
 /**
  * Creates proxies.
- *
- * @internal
  */
 class ProxyFactory implements ProxyFactoryInterface
 {

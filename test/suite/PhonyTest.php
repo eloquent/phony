@@ -460,4 +460,10 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(1, Phony::setExportDepth(111));
         $this->assertSame(111, Phony::setExportDepth(1));
     }
+
+    public function testSetExportDepthFunction()
+    {
+        $this->assertSame(1, setExportDepth(111));
+        $this->assertSame(111, setExportDepth(1));
+    }
 }

@@ -22,8 +22,6 @@ use Eloquent\Phony\Spy\SpyInterface;
 
 /**
  * Creates spies.
- *
- * @internal
  */
 class SpyFactory implements SpyFactoryInterface
 {

@@ -13,11 +13,15 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * The interface implemented by matchers.
+ *
+ * @api
  */
 interface MatcherInterface extends SelfDescribingMatcherInterface
 {
     /**
-     * Returns true if the supplied value matches.
+     * Returns `true` if `$value` matches this matcher's criteria.
+     *
+     * @api
      *
      * @param mixed $value The value to check.
      *

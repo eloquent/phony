@@ -18,8 +18,6 @@ use PHPUnit_Framework_ExpectationFailedException;
 /**
  * Wraps PHPUnit's expectation failed exception for improved assertion failure
  * output.
- *
- * @internal
  */
 final class PhpunitAssertionException extends
     PHPUnit_Framework_ExpectationFailedException
