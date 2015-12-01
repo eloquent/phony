@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Call\Factory;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Spy\SpyInterface;
@@ -45,7 +46,7 @@ interface CallFactoryInterface
      * @param CalledEventInterface|null             $calledEvent       The 'called' event.
      * @param ResponseEventInterface|null           $responseEvent     The response event, or null if the call has not yet responded.
      * @param array<TraversableEventInterface>|null $traversableEvents The traversable events.
-     * @param ResponseEventInterface|null           $endEvent          The end event, or null if the call has not yet completed.
+     * @param EndEventInterface|null                $endEvent          The end event, or null if the call has not yet completed.
      *
      * @return CallInterface            The newly created call.
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
@@ -54,6 +55,6 @@ interface CallFactoryInterface
         CalledEventInterface $calledEvent = null,
         ResponseEventInterface $responseEvent = null,
         array $traversableEvents = null,
-        ResponseEventInterface $endEvent = null
+        EndEventInterface $endEvent = null
     );
 }

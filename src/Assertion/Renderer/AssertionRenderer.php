@@ -16,6 +16,7 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\ConsumedEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
@@ -502,6 +503,7 @@ class AssertionRenderer implements AssertionRendererInterface
     public function renderProduced(CallInterface $call)
     {
         $rendered = array();
+
         foreach ($call->traversableEvents() as $event) {
             if ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
@@ -520,6 +522,12 @@ class AssertionRenderer implements AssertionRendererInterface
                     $this->renderException($event->exception())
                 );
             }
+        }
+
+        if ($call->endEvent()) {
+            $rendered[] = '    - finished iterating';
+        } else {
+            $rendered[] = '    - did not finish iterating';
         }
 
         return implode("\n", $rendered);
@@ -633,6 +641,8 @@ class AssertionRenderer implements AssertionRendererInterface
                     $this->renderException($event->exception()),
                     $call
                 );
+            } elseif ($event instanceof ConsumedEventInterface) {
+                $rendered[] = sprintf('    - %s finished iterating', $call);
             } elseif ($event instanceof NullEventInterface) {
                 $rendered[] = '    - <none>';
             } else {

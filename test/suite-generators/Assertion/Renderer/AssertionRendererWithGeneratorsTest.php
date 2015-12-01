@@ -36,11 +36,15 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callA = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this, 'setUp'), array('a', 'b')),
-            $this->callEventFactory->createReturned('x')
+            ($responseEvent = $this->callEventFactory->createReturned('x')),
+            null,
+            $responseEvent
         );
         $this->callB = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode'),
-            $this->callEventFactory->createThrew(new RuntimeException('You done goofed.'))
+            ($responseEvent = $this->callEventFactory->createThrew(new RuntimeException('You done goofed.'))),
+            null,
+            $responseEvent
         );
         $this->callC = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode')
@@ -89,6 +93,7 @@ EOD;
         - received exception RuntimeException("Consequences will never be the same.")
         - produced "r": "s"
         - received "t"
+        - finished iterating
     - threw RuntimeException("You done goofed.")
 EOD;
 
@@ -107,6 +112,7 @@ EOD;
     - received exception RuntimeException("Consequences will never be the same.")
     - produced "r": "s"
     - received "t"
+    - finished iterating
 EOD;
 
         $this->assertSame($expected, $this->subject->renderProduced($this->generatorCall));

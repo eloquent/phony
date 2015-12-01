@@ -65,15 +65,16 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $traversableEvents = array(
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
-            $this->callEventFactory->createProduced('a', 'b'),
-            $this->callEventFactory->createProduced('c', 'd'),
         );
         foreach ($traversableEvents as $traversableEvent) {
             $traversableEvent->setCall($this->call);
         }
+        $endEvent = $this->callEventFactory->createConsumed();
+        $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Traversable', $spy);
         $this->assertEquals($traversableEvents, $this->call->traversableEvents());
+        $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($values, $actual);
     }
 
@@ -95,15 +96,16 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $traversableEvents = array(
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
-            $this->callEventFactory->createProduced('a', 'b'),
-            $this->callEventFactory->createProduced('c', 'd'),
         );
         foreach ($traversableEvents as $traversableEvent) {
             $traversableEvent->setCall($this->call);
         }
+        $endEvent = $this->callEventFactory->createConsumed();
+        $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Traversable', $spy);
         $this->assertEquals($traversableEvents, $this->call->traversableEvents());
+        $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($values, $actual);
     }
 
@@ -125,15 +127,16 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $traversableEvents = array(
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
-            $this->callEventFactory->createProduced('a', 'b'),
-            $this->callEventFactory->createProduced('c', 'd'),
         );
         foreach ($traversableEvents as $traversableEvent) {
             $traversableEvent->setCall($this->call);
         }
+        $endEvent = $this->callEventFactory->createConsumed();
+        $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Traversable', $spy);
         $this->assertEquals($traversableEvents, $this->call->traversableEvents());
+        $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($values, $actual);
     }
 

@@ -280,15 +280,21 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('a'))),
-                $this->callEventFactory->createReturned('a')
+                ($responseEvent = $this->callEventFactory->createReturned('a')),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('b', 'c'))),
-                $this->callEventFactory->createReturned('bc')
+                ($responseEvent = $this->callEventFactory->createReturned('bc')),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('d'))),
-                $this->callEventFactory->createReturned('d')
+                ($responseEvent = $this->callEventFactory->createReturned('d')),
+                null,
+                $responseEvent
             ),
         );
 
@@ -305,15 +311,21 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('a')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('b', 'c')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('d')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
         );
 
@@ -348,15 +360,21 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('a')),
-                $this->callEventFactory->createThrew($exceptions[0])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[0])),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('b', 'c')),
-                $this->callEventFactory->createThrew($exceptions[1])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[1])),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('d')),
-                $this->callEventFactory->createThrew($exceptions[2])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[2])),
+                null,
+                $responseEvent
             ),
         );
 
@@ -374,7 +392,9 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy),
-                $this->callEventFactory->createReturned('x')
+                ($responseEvent = $this->callEventFactory->createReturned('x')),
+                null,
+                $responseEvent
             ),
         );
 

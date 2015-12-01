@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Call\Event\Factory;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\ConsumedEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
@@ -104,4 +105,11 @@ interface CallEventFactoryInterface
      * @return ReceivedExceptionEventInterface The newly created event.
      */
     public function createReceivedException($exception = null);
+
+    /**
+     * Create a new 'consumed' event.
+     *
+     * @return ConsumedEventInterface The newly created event.
+     */
+    public function createConsumed();
 }

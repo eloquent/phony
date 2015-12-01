@@ -822,4 +822,20 @@ EOD;
 
         $spy();
     }
+
+    public function testCallRespondedAndCompleted()
+    {
+        $stub = x\stub();
+        $stub->returns([], []);
+        $stub();
+        $stub->setUseTraversableSpies(true);
+        $stub();
+        $callA = $stub->callAt(0);
+        $callB = $stub->callAt(1);
+
+        $this->assertTrue($callA->hasResponded());
+        $this->assertTrue($callA->hasCompleted());
+        $this->assertTrue($callB->hasResponded());
+        $this->assertFalse($callB->hasCompleted());
+    }
 }

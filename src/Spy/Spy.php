@@ -17,6 +17,7 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
@@ -397,13 +398,15 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     {
         $call = $this->callFactory
             ->record($this->callback, Arguments::adapt($arguments), $this);
-        $exception = $call->exception();
+        $responseEvent = $call->responseEvent();
 
-        if ($exception) {
-            throw $exception;
+        if ($responseEvent instanceof ThrewEventInterface) {
+            $call->setEndEvent($responseEvent);
+
+            throw $responseEvent->exception();
         }
 
-        $returnValue = $call->returnValue();
+        $returnValue = $responseEvent->value();
 
         if (
             $this->useGeneratorSpies &&
@@ -418,6 +421,8 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         ) {
             return $this->traversableSpyFactory->create($call, $returnValue);
         }
+
+        $call->setEndEvent($call->responseEvent());
 
         return $returnValue;
     }

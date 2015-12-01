@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Call;
 use ArrayIterator;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
@@ -42,7 +43,7 @@ class Call implements CallInterface
      * @param CalledEventInterface                  $calledEvent       The 'called' event.
      * @param ResponseEventInterface|null           $responseEvent     The response event, or null if the call has not yet responded.
      * @param array<TraversableEventInterface>|null $traversableEvents The traversable events.
-     * @param ResponseEventInterface|null           $endEvent          The end event, or null if the call has not yet completed.
+     * @param EndEventInterface|null                $endEvent          The end event, or null if the call has not yet completed.
      * @param IndexNormalizerInterface|null         $indexNormalizer   The index normalizer to use.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
@@ -51,7 +52,7 @@ class Call implements CallInterface
         CalledEventInterface $calledEvent,
         ResponseEventInterface $responseEvent = null,
         array $traversableEvents = null,
-        ResponseEventInterface $endEvent = null,
+        EndEventInterface $endEvent = null,
         IndexNormalizerInterface $indexNormalizer = null
     ) {
         if (null === $indexNormalizer) {
@@ -270,10 +271,6 @@ class Call implements CallInterface
 
         $responseEvent->setCall($this);
         $this->responseEvent = $responseEvent;
-
-        if (!$this->isGenerator()) {
-            $this->endEvent = $responseEvent;
-        }
     }
 
     /**
@@ -320,11 +317,11 @@ class Call implements CallInterface
     /**
      * Set the end event.
      *
-     * @param ResponseEventInterface $endEvent The end event.
+     * @param EndEventInterface $endEvent The end event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function setEndEvent(ResponseEventInterface $endEvent)
+    public function setEndEvent(EndEventInterface $endEvent)
     {
         if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
@@ -342,7 +339,7 @@ class Call implements CallInterface
     /**
      * Get the end event.
      *
-     * @return ResponseEventInterface|null The end event, or null if the call has not yet completed.
+     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
      */
     public function endEvent()
     {
@@ -384,6 +381,8 @@ class Call implements CallInterface
     /**
      * Returns true if this call has responded.
      *
+     * A call that has responded has returned a value, or thrown an exception.
+     *
      * @return boolean True if this call has responded.
      */
     public function hasResponded()
@@ -420,6 +419,14 @@ class Call implements CallInterface
 
     /**
      * Returns true if this call has completed.
+     *
+     * When generator spies are in use, a call that returns a generator will not
+     * be considered complete until the generator has been completey consumed
+     * via iteration.
+     *
+     * Similarly, when traversable spies are in use, a call that returns a
+     * traversable will not be considered complete until the traversable has
+     * been completely consumed via iteration.
      *
      * @return boolean True if this call has completed.
      */
@@ -491,6 +498,8 @@ class Call implements CallInterface
     /**
      * Get the time at which the call responded.
      *
+     * A call that has responded has returned a value, or thrown an exception.
+     *
      * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
     public function responseTime()
@@ -502,6 +511,14 @@ class Call implements CallInterface
 
     /**
      * Get the time at which the call completed.
+     *
+     * When generator spies are in use, a call that returns a generator will not
+     * be considered complete until the generator has been completey consumed
+     * via iteration.
+     *
+     * Similarly, when traversable spies are in use, a call that returns a
+     * traversable will not be considered complete until the traversable has
+     * been completely consumed via iteration.
      *
      * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */

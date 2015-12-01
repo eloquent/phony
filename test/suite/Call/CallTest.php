@@ -30,7 +30,8 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->returnValue = 'ab';
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->indexNormalizer = new IndexNormalizer();
-        $this->subject = new Call($this->calledEvent, $this->returnedEvent, null, null, $this->indexNormalizer);
+        $this->subject =
+            new Call($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent, $this->indexNormalizer);
 
         $this->events = array($this->calledEvent, $this->returnedEvent);
     }
@@ -74,7 +75,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $exception = new RuntimeException('You done goofed.');
         $this->returnValue = array();
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
-        $this->subject = new Call($this->calledEvent, $this->returnedEvent);
+        $this->subject = new Call($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
         $this->events = array($this->calledEvent, $this->returnedEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
@@ -104,7 +105,7 @@ class CallTest extends PHPUnit_Framework_TestCase
         $exception = new RuntimeException('You done goofed.');
         $this->returnValue = new ArrayIterator();
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
-        $this->subject = new Call($this->calledEvent, $this->returnedEvent);
+        $this->subject = new Call($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
         $this->events = array($this->calledEvent, $this->returnedEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
@@ -133,7 +134,7 @@ class CallTest extends PHPUnit_Framework_TestCase
     {
         $exception = new RuntimeException('You done goofed.');
         $threwEvent = $this->callEventFactory->createThrew($exception);
-        $this->subject = new Call($this->calledEvent, $threwEvent);
+        $this->subject = new Call($this->calledEvent, $threwEvent, null, $threwEvent);
         $this->events = array($this->calledEvent, $threwEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
@@ -262,8 +263,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame($this->subject, $this->subject->responseEvent()->call());
-        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
-        $this->assertSame($this->subject, $this->subject->endEvent()->call());
+        $this->assertNull($this->subject->endEvent());
     }
 
     public function testSetResponseEventFailureAlreadySet()

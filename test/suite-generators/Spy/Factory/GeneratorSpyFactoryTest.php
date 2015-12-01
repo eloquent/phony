@@ -61,7 +61,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isSupported($generator));
     }
 
-    public function testCreateWithReturnedEnd()
+    public function testCreateWithConsumedEnd()
     {
         $generator = call_user_func(
             function () {
@@ -90,7 +90,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createReturned();
+        $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -186,7 +186,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createReturned();
+        $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -207,7 +207,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = array();
-        $endEvent = $this->callEventFactory->createReturned();
+        $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);

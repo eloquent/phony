@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Event\EventInterface;
@@ -28,6 +29,8 @@ interface CallInterface extends EventInterface
 {
     /**
      * Returns true if this call has responded.
+     *
+     * A call that has responded has returned a value, or thrown an exception.
      *
      * @api
      *
@@ -55,6 +58,14 @@ interface CallInterface extends EventInterface
 
     /**
      * Returns true if this call has completed.
+     *
+     * When generator spies are in use, a call that returns a generator will not
+     * be considered complete until the generator has been completey consumed
+     * via iteration.
+     *
+     * Similarly, when traversable spies are in use, a call that returns a
+     * traversable will not be considered complete until the traversable has
+     * been completely consumed via iteration.
      *
      * @api
      *
@@ -90,6 +101,8 @@ interface CallInterface extends EventInterface
     /**
      * Get the time at which the call responded.
      *
+     * A call that has responded has returned a value, or thrown an exception.
+     *
      * @api
      *
      * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
@@ -98,6 +111,14 @@ interface CallInterface extends EventInterface
 
     /**
      * Get the time at which the call completed.
+     *
+     * When generator spies are in use, a call that returns a generator will not
+     * be considered complete until the generator has been completey consumed
+     * via iteration.
+     *
+     * Similarly, when traversable spies are in use, a call that returns a
+     * traversable will not be considered complete until the traversable has
+     * been completely consumed via iteration.
      *
      * @api
      *
@@ -149,16 +170,16 @@ interface CallInterface extends EventInterface
     /**
      * Set the end event.
      *
-     * @param ResponseEventInterface $endEvent The end event.
+     * @param EndEventInterface $endEvent The end event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function setEndEvent(ResponseEventInterface $endEvent);
+    public function setEndEvent(EndEventInterface $endEvent);
 
     /**
      * Get the end event.
      *
-     * @return ResponseEventInterface|null The end event, or null if the call has not yet completed.
+     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
      */
     public function endEvent();
 }
