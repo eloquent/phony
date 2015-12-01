@@ -300,6 +300,29 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->methods());
     }
 
+    public function testMethodsWithFinalMethods()
+    {
+        $this->setUpWith(
+            array(
+                'Eloquent\Phony\Test\TestClassF',
+                'Eloquent\Phony\Test\TestInterfaceF',
+            )
+        );
+
+        $expected = new MethodDefinitionCollection(
+            array(
+                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
+                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
+                'methodC' => new CustomMethodDefinition(true, 'methodC', $this->callbackC),
+                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
+            )
+        );
+        $actual = $this->subject->methods();
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($actual, $this->subject->methods());
+    }
+
     public function testIsEqualTo()
     {
         $this->setUpWith($this->typeNames);
