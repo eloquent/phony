@@ -337,19 +337,21 @@ class MockDefinition implements MockDefinitionInterface
         }
 
         $methods = array();
+        $unmockable = array();
 
         if ($typeName = $this->parentClassName()) {
             foreach ($this->types[$typeName]->getMethods() as $method) {
-                if (
-                    $method->isPrivate() ||
-                    $method->isConstructor() ||
-                    $method->isFinal()
-                ) {
+                if ($method->isPrivate()) {
                     continue;
                 }
 
-                $methods[$method->getName()] =
-                    new RealMethodDefinition($method);
+                $methodName = $method->getName();
+
+                if ($method->isConstructor() || $method->isFinal()) {
+                    $unmockable[$methodName] = true;
+                } else {
+                    $methods[$methodName] = new RealMethodDefinition($method);
+                }
             }
         }
 
@@ -364,6 +366,10 @@ class MockDefinition implements MockDefinitionInterface
                     $traitMethods[] = $methodDefinition;
                 }
 
+                if (isset($unmockable[$methodName])) {
+                    continue;
+                }
+
                 if (!isset($methods[$methodName])) {
                     $methods[$methodName] = $methodDefinition;
                 }
@@ -373,6 +379,10 @@ class MockDefinition implements MockDefinitionInterface
         foreach ($this->interfaceNames() as $typeName) {
             foreach ($this->types[$typeName]->getMethods() as $method) {
                 $methodName = $method->getName();
+
+                if (isset($unmockable[$methodName])) {
+                    continue;
+                }
 
                 if (!isset($methods[$methodName])) {
                     $methods[$methodName] = new RealMethodDefinition($method);

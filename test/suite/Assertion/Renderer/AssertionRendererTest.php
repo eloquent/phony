@@ -191,7 +191,7 @@ EOD;
 
     public function testRenderResponsesExpandedTraversables()
     {
-        $traversableCall = $this->callFactory->create(
+        $traversableCallA = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
             $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd')),
             array(
@@ -200,12 +200,22 @@ EOD;
             ),
             $this->callEventFactory->createConsumed()
         );
+        $traversableCallB = $this->callFactory->create(
+            $this->callEventFactory->createCalled(),
+            $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd')),
+            array(
+                $this->callEventFactory->createProduced('a', 'b'),
+            )
+        );
         $expected = <<<'EOD'
     - returned "x"
     - returned #0[:2] producing:
         - produced "a": "b"
         - produced "c": "d"
         - finished iterating
+    - returned #0[:2] producing:
+        - produced "a": "b"
+        - did not finish iterating
     - threw RuntimeException("You done goofed.")
     - <none>
 EOD;
@@ -213,8 +223,10 @@ EOD;
         $this->assertSame('', $this->subject->renderResponses(array(), true));
         $this->assertSame(
             $expected,
-            $this->subject
-                ->renderResponses(array($this->callA, $traversableCall, $this->callB, $this->callC), true)
+            $this->subject->renderResponses(
+                array($this->callA, $traversableCallA, $traversableCallB, $this->callB, $this->callC),
+                true
+            )
         );
     }
 
@@ -326,6 +338,7 @@ EOD;
                 $this->callEventFactory->createReceived('z'),
                 $this->callEventFactory
                     ->createReceivedException(new RuntimeException('Consequences will never be the same.')),
+                $this->callEventFactory->createConsumed(),
                 NullEvent::instance(),
                 new TestEvent(0, 0.0),
             )
@@ -338,6 +351,7 @@ EOD;
     - produced "x": "y" from unknown call
     - received "z" in unknown call
     - received exception RuntimeException("Consequences will never be the same.") in unknown call
+    - unknown call finished iterating
     - <none>
     - "Eloquent\\Phony\\Test\\TestEvent" event
 EOD;
