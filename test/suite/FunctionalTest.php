@@ -840,7 +840,7 @@ EOD;
     public function testCallRespondedAndCompleted()
     {
         $stub = x\stub();
-        $stub->returns([], []);
+        $stub->returns(array(), array());
         $stub();
         $stub->setUseTraversableSpies(true);
         $stub();
