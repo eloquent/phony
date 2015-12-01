@@ -573,7 +573,8 @@ EOD;
 
         $this->exception = new Error('You done goofed.');
         $this->threwEvent = $this->callEventFactory->createThrew($this->exception);
-        $this->callWithException = $this->callFactory->create($this->calledEvent, $this->threwEvent);
+        $this->callWithException =
+            $this->callFactory->create($this->calledEvent, $this->threwEvent, null, $this->threwEvent);
         $this->subjectWithException = new CallVerifier(
             $this->callWithException,
             $this->matcherFactory,
