@@ -27,8 +27,6 @@ use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
  * Creates matchers.
- *
- * @internal
  */
 class MatcherFactory implements MatcherFactoryInterface
 {
@@ -249,14 +247,14 @@ class MatcherFactory implements MatcherFactoryInterface
      * Create a new matcher that matches multiple arguments.
      *
      * @param mixed        $value            The value to check for each argument.
-     * @param integer|null $minimumArguments The minimum number of arguments.
+     * @param integer      $minimumArguments The minimum number of arguments.
      * @param integer|null $maximumArguments The maximum number of arguments.
      *
      * @return WildcardMatcherInterface The newly created wildcard matcher.
      */
     public function wildcard(
         $value = null,
-        $minimumArguments = null,
+        $minimumArguments = 0,
         $maximumArguments = null
     ) {
         if (0 === func_num_args()) {

@@ -16,8 +16,6 @@ use ReflectionMethod;
 
 /**
  * Represents a real method definition.
- *
- * @internal
  */
 class RealMethodDefinition implements MethodDefinitionInterface
 {

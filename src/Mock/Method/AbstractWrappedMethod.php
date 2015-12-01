@@ -18,8 +18,6 @@ use ReflectionMethod;
 
 /**
  * An abstract base class for implementing wrapped methods.
- *
- * @internal
  */
 abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
     WrappedMethodInterface

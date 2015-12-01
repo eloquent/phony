@@ -16,8 +16,6 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 
 /**
  * Represents a call request.
- *
- * @internal
  */
 class CallRequest implements CallRequestInterface
 {

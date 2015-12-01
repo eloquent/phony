@@ -35,14 +35,13 @@ use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
+use Error;
 use Exception;
 use ReflectionException;
 use ReflectionMethod;
 
 /**
  * Renders various data for use in assertion messages.
- *
- * @internal
  */
 class AssertionRenderer implements AssertionRendererInterface
 {
@@ -552,11 +551,11 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render an exception.
      *
-     * @param Exception|null The exception.
+     * @param Exception|Error|null The exception.
      *
      * @return string The rendered exception.
      */
-    public function renderException(Exception $exception = null)
+    public function renderException($exception = null)
     {
         if (null === $exception) {
             return '<none>';

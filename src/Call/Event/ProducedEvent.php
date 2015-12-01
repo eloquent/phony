@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Call\Event;
 
 /**
  * Represents a produced key-value pair.
- *
- * @internal
  */
 class ProducedEvent extends AbstractCallEvent implements ProducedEventInterface
 {

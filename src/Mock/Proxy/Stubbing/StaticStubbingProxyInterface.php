@@ -15,6 +15,8 @@ use Eloquent\Phony\Mock\Proxy\StaticProxyInterface;
 
 /**
  * The interface used to identify static stubbing proxies.
+ *
+ * @api
  */
 interface StaticStubbingProxyInterface extends StaticProxyInterface,
     StubbingProxyInterface

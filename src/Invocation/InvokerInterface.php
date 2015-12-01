@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+use Error;
 use Exception;
 
 /**
@@ -25,8 +26,8 @@ interface InvokerInterface
      * @param callable                      $callback  The callback.
      * @param ArgumentsInterface|array|null $arguments The arguments.
      *
-     * @return mixed     The result of invocation.
-     * @throws Exception If an error occurs.
+     * @return mixed           The result of invocation.
+     * @throws Exception|Error If an error occurs.
      */
     public function callWith($callback, $arguments = null);
 }

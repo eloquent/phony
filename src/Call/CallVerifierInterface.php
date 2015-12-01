@@ -19,12 +19,16 @@ use InvalidArgumentException;
 
 /**
  * The interface implemented by call verifiers.
+ *
+ * @api
  */
 interface CallVerifierInterface extends CallInterface,
     CardinalityVerifierInterface
 {
     /**
      * Get the call duration.
+     *
+     * @api
      *
      * @return float|null The call duration in seconds, or null if the call has not yet completed.
      */
@@ -33,12 +37,16 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Get the call response duration.
      *
+     * @api
+     *
      * @return float|null The call response duration in seconds, or null if the call has not yet responded.
      */
     public function responseDuration();
 
     /**
      * Get the number of arguments.
+     *
+     * @api
      *
      * @return integer The number of arguments.
      */
@@ -47,7 +55,9 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Checks if called with the supplied arguments.
      *
-     * @param mixed $argument,... The arguments.
+     * @api
+     *
+     * @param mixed ...$argument The arguments.
      *
      * @return EventCollectionInterface|null        The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
@@ -57,7 +67,9 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Throws an exception unless called with the supplied arguments.
      *
-     * @param mixed $argument,... The arguments.
+     * @api
+     *
+     * @param mixed ...$argument The arguments.
      *
      * @return EventCollectionInterface             The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
@@ -67,6 +79,8 @@ interface CallVerifierInterface extends CallInterface,
 
     /**
      * Checks if the $this value is equal to the supplied value.
+     *
+     * @api
      *
      * @param object|null $value The possible $this value.
      *
@@ -78,6 +92,8 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Throws an exception unless the $this value is equal to the supplied
      * value.
+     *
+     * @api
      *
      * @param object|null $value The possible $this value.
      *
@@ -93,6 +109,8 @@ interface CallVerifierInterface extends CallInterface,
      * When called with no arguments, this method simply checks that the call
      * returned any value.
      *
+     * @api
+     *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface|null        The result.
@@ -106,6 +124,8 @@ interface CallVerifierInterface extends CallInterface,
      * When called with no arguments, this method simply checks that the call
      * returned any value.
      *
+     * @api
+     *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface             The result.
@@ -117,7 +137,9 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Checks if an exception of the supplied type was thrown.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null        The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
@@ -129,7 +151,9 @@ interface CallVerifierInterface extends CallInterface,
      * Throws an exception unless this call threw an exception of the supplied
      * type.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface             The result.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
@@ -150,6 +174,8 @@ interface CallVerifierInterface extends CallInterface,
      * With two arguments, it checks that a key and value matching the
      * respective arguments were produced together.
      *
+     * @api
+     *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
@@ -169,6 +195,8 @@ interface CallVerifierInterface extends CallInterface,
      * With two arguments, it checks that a key and value matching the
      * respective arguments were produced together.
      *
+     * @api
+     *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
@@ -181,7 +209,9 @@ interface CallVerifierInterface extends CallInterface,
      * Checks if this call produced all of the supplied key-value pairs, in the
      * supplied order.
      *
-     * @param mixed $pairs,... The key-value pairs.
+     * @api
+     *
+     * @param mixed ...$pairs The key-value pairs.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -191,7 +221,9 @@ interface CallVerifierInterface extends CallInterface,
      * Throws an exception unless this call produced all of the supplied
      * key-value pairs, in the supplied order.
      *
-     * @param mixed $pairs,... The key-value pairs.
+     * @api
+     *
+     * @param mixed ...$pairs The key-value pairs.
      *
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -203,6 +235,8 @@ interface CallVerifierInterface extends CallInterface,
      *
      * When called with no arguments, this method simply checks that the call
      * received any value.
+     *
+     * @api
      *
      * @param mixed $value The value.
      *
@@ -216,6 +250,8 @@ interface CallVerifierInterface extends CallInterface,
      * When called with no arguments, this method simply checks that the call
      * received any value.
      *
+     * @api
+     *
      * @param mixed $value The value.
      *
      * @return EventCollectionInterface The result.
@@ -226,7 +262,9 @@ interface CallVerifierInterface extends CallInterface,
     /**
      * Checks if this call received an exception of the supplied type.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If the type is invalid.
@@ -237,7 +275,9 @@ interface CallVerifierInterface extends CallInterface,
      * Throws an exception unless this call received an exception of the
      * supplied type.
      *
-     * @param Exception|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @api
+     *
+     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If the type is invalid.

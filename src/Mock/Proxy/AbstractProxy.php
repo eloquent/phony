@@ -42,8 +42,6 @@ use stdClass;
 
 /**
  * An abstract base class for implementing proxies.
- *
- * @internal
  */
 abstract class AbstractProxy implements ProxyInterface
 {
@@ -211,7 +209,7 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Turn the mock into a full mock.
      *
-     * @return ProxyInterface This proxy.
+     * @return $this This proxy.
      */
     public function full()
     {
@@ -223,7 +221,7 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Turn the mock into a partial mock.
      *
-     * @return ProxyInterface This proxy.
+     * @return $this This proxy.
      */
     public function partial()
     {
@@ -349,7 +347,7 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Reset the mock to its initial state.
      *
-     * @return ProxyInterface This proxy.
+     * @return $this This proxy.
      */
     public function reset()
     {
@@ -362,8 +360,6 @@ abstract class AbstractProxy implements ProxyInterface
 
     /**
      * Get the proxy state.
-     *
-     * @internal
      *
      * @return stdClass The state.
      */

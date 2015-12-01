@@ -17,8 +17,6 @@ use Exception;
 
 /**
  * An assertion recorder for Pho.
- *
- * @internal
  */
 class PhoAssertionRecorder extends AssertionRecorder
 {

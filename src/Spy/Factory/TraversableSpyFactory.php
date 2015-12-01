@@ -22,8 +22,6 @@ use Traversable;
 
 /**
  * Creates traversable spies.
- *
- * @internal
  */
 class TraversableSpyFactory implements TraversableSpyFactoryInterface
 {

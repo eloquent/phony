@@ -13,9 +13,31 @@ namespace Eloquent\Phony\Invocation;
 
 /**
  * The interface implemented by wrapped invocables.
+ *
+ * @api
  */
 interface WrappedInvocableInterface extends InvocableInterface
 {
+    /**
+     * Set the label.
+     *
+     * @api
+     *
+     * @param string|null $label The label.
+     *
+     * @return $this This invocable.
+     */
+    public function setLabel($label);
+
+    /**
+     * Get the label.
+     *
+     * @api
+     *
+     * @return string|null The label.
+     */
+    public function label();
+
     /**
      * Returns true if anonymous.
      *
@@ -29,18 +51,4 @@ interface WrappedInvocableInterface extends InvocableInterface
      * @return callable The callback.
      */
     public function callback();
-
-    /**
-     * Set the label.
-     *
-     * @param string|null $label The label.
-     */
-    public function setLabel($label);
-
-    /**
-     * Get the label.
-     *
-     * @return string|null The label.
-     */
-    public function label();
 }

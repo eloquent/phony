@@ -35,8 +35,8 @@ class IndexNormalizer implements IndexNormalizerInterface
     /**
      * Normalize the supplied index.
      *
-     * @param integer      $size  The size of the collection.
-     * @param integer|null $index The index.
+     * @param integer $size  The size of the collection.
+     * @param integer $index The index.
      *
      * @return integer                 The normalized index.
      * @throws UndefinedIndexException If the index is invalid.
@@ -45,10 +45,6 @@ class IndexNormalizer implements IndexNormalizerInterface
     {
         if ($size < 1) {
             throw new UndefinedIndexException($index);
-        }
-
-        if (null === $index) {
-            return 0;
         }
 
         if ($index < 0) {
@@ -71,9 +67,9 @@ class IndexNormalizer implements IndexNormalizerInterface
     /**
      * Normalize the supplied index.
      *
-     * @param integer      $size        The size of the collection.
-     * @param integer|null $index       The index.
-     * @param mixed        &$normalized Set to the normalized index if successful.
+     * @param integer $size        The size of the collection.
+     * @param integer $index       The index.
+     * @param mixed   &$normalized Set to the normalized index if successful.
      *
      * @return boolean True if the index can be normalized.
      */
@@ -83,12 +79,6 @@ class IndexNormalizer implements IndexNormalizerInterface
 
         if ($size < 1) {
             return false;
-        }
-
-        if (null === $index) {
-            $normalized = 0;
-
-            return true;
         }
 
         if ($index < 0) {

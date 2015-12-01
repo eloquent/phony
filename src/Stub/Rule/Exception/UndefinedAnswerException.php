@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * No answer was defined, or the answer is incomplete.
- *
- * @internal
  */
 final class UndefinedAnswerException extends Exception
 {

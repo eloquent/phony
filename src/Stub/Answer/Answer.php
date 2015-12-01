@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Stub\Answer;
 
 /**
  * Represents a stub answer.
- *
- * @internal
  */
 class Answer implements AnswerInterface
 {

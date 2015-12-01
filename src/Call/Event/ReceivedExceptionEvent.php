@@ -11,12 +11,11 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Error;
 use Exception;
 
 /**
  * Represents an exception received by a generator.
- *
- * @internal
  */
 class ReceivedExceptionEvent extends AbstractCallEvent implements
     ReceivedExceptionEventInterface
@@ -24,15 +23,12 @@ class ReceivedExceptionEvent extends AbstractCallEvent implements
     /**
      * Construct a 'received exception' event.
      *
-     * @param integer        $sequenceNumber The sequence number.
-     * @param float          $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param Exception|null $exception      The received exception.
+     * @param integer              $sequenceNumber The sequence number.
+     * @param float                $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param Exception|Error|null $exception      The received exception.
      */
-    public function __construct(
-        $sequenceNumber,
-        $time,
-        Exception $exception = null
-    ) {
+    public function __construct($sequenceNumber, $time, $exception = null)
+    {
         if (null === $exception) {
             $exception = new Exception();
         }
@@ -45,7 +41,7 @@ class ReceivedExceptionEvent extends AbstractCallEvent implements
     /**
      * Get the received exception.
      *
-     * @return Exception The received exception.
+     * @return Exception|Error The received exception.
      */
     public function exception()
     {

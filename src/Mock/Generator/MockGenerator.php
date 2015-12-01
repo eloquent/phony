@@ -24,8 +24,6 @@ use ReflectionMethod;
 
 /**
  * Generates mock classes.
- *
- * @internal
  */
 class MockGenerator implements MockGeneratorInterface
 {
@@ -396,12 +394,16 @@ EOD;
                 case 'inittrace':
                     $methodReflector = $method->method();
 
-                    if (
-                        $methodReflector instanceof ReflectionMethod &&
-                        'Exception' ===
-                            $methodReflector->getDeclaringClass()->getName()
-                    ) {
-                        continue 2;
+                    if ($methodReflector instanceof ReflectionMethod) {
+                        $declaringClass =
+                            $methodReflector->getDeclaringClass()->getName();
+
+                        if (
+                            'Exception' === $declaringClass ||
+                            'Error' === $declaringClass
+                        ) {
+                            continue 2;
+                        }
                     }
             } // @codeCoverageIgnoreEnd
 

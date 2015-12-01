@@ -27,8 +27,6 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 
 /**
  * Creates call verifiers.
- *
- * @internal
  */
 class CallVerifierFactory implements CallVerifierFactoryInterface
 {

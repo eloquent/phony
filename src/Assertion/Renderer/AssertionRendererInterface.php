@@ -18,6 +18,7 @@ use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Error;
 use Exception;
 
 /**
@@ -159,11 +160,11 @@ interface AssertionRendererInterface
     /**
      * Render an exception.
      *
-     * @param Exception|null The exception.
+     * @param Exception|Error|null The exception.
      *
      * @return string The rendered exception.
      */
-    public function renderException(Exception $exception = null);
+    public function renderException($exception = null);
 
     /**
      * Render an arbitrary sequence of events.

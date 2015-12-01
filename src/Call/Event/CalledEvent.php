@@ -16,8 +16,6 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 
 /**
  * Represents the start of a call.
- *
- * @internal
  */
 class CalledEvent extends AbstractCallEvent implements CalledEventInterface
 {

@@ -83,8 +83,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testSetLabel()
     {
-        $this->subject->setLabel(null);
-
+        $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
 
         $this->subject->setLabel($this->label);
@@ -194,6 +193,36 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->eventAt();
+    }
+
+    public function testFirstCall()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertSame($this->callA, $this->subject->firstCall());
+    }
+
+    public function testFirstCallFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->firstCall();
+    }
+
+    public function testLastCall()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertSame($this->callB, $this->subject->lastCall());
+    }
+
+    public function testLastCallFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->lastCall();
     }
 
     public function testCallAt()

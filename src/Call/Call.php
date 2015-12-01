@@ -24,6 +24,7 @@ use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
+use Error;
 use Exception;
 use Generator;
 use InvalidArgumentException;
@@ -32,8 +33,6 @@ use Traversable;
 
 /**
  * Represents a single call.
- *
- * @internal
  */
 class Call implements CallInterface
 {
@@ -93,6 +92,10 @@ class Call implements CallInterface
 
     /**
      * Get the sequence number.
+     *
+     * The sequence number is a unique number assigned to every event that Phony
+     * records. The numbers are assigned sequentially, meaning that sequence
+     * numbers can be used to determine event order.
      *
      * @return integer The sequence number.
      */
@@ -168,12 +171,15 @@ class Call implements CallInterface
     /**
      * Get an event by index.
      *
-     * @param integer|null $index The index, or null for the first event.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return EventInterface          The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = null)
+    public function eventAt($index = 0)
     {
         $events = $this->allEvents();
         $count = count($events);
@@ -188,16 +194,41 @@ class Call implements CallInterface
     }
 
     /**
+     * Get the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function firstCall()
+    {
+        return $this;
+    }
+
+    /**
+     * Get the last call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function lastCall()
+    {
+        return $this;
+    }
+
+    /**
      * Get a call by index.
      *
-     * @param integer|null $index The index, or null for the first call.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return CallInterface          The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = null)
+    public function callAt($index = 0)
     {
-        if (null === $index || 0 === $index || -1 === $index) {
+        if (0 === $index || -1 === $index) {
             return $this;
         }
 
@@ -420,12 +451,15 @@ class Call implements CallInterface
     /**
      * Get an argument by index.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
      */
-    public function argument($index = null)
+    public function argument($index = 0)
     {
         return $this->calledEvent->arguments()->get($index);
     }
@@ -445,7 +479,7 @@ class Call implements CallInterface
     /**
      * Get the thrown exception.
      *
-     * @return Exception|null The thrown exception, or null if no exception was thrown.
+     * @return Exception|Error|null The thrown exception, or null if no exception was thrown.
      */
     public function exception()
     {

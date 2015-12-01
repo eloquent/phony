@@ -25,8 +25,6 @@ use ReflectionClass;
 
 /**
  * Represents a mock class definition.
- *
- * @internal
  */
 class MockDefinition implements MockDefinitionInterface
 {
@@ -362,15 +360,20 @@ class MockDefinition implements MockDefinitionInterface
 
         if ($typeName = $this->parentClassName()) {
             foreach ($this->types[$typeName]->getMethods() as $method) {
+                $methodName = $method->getName();
+
                 if (
                     $method->isPrivate() ||
                     $method->isConstructor() ||
                     $method->isFinal()
                 ) {
+                    if (isset($methods[$methodName])) {
+                        unset($methods[$methodName]);
+                    }
+
                     continue;
                 }
 
-                $methodName = $method->getName();
                 $parameterCount = $method->getNumberOfParameters();
 
                 if (

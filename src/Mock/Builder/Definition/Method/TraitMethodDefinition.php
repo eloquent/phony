@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
 /**
  * Represents a trait method definition.
- *
- * @internal
  */
 class TraitMethodDefinition extends RealMethodDefinition implements
     TraitMethodDefinitionInterface

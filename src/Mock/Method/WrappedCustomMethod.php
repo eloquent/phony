@@ -16,13 +16,12 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Error;
 use Exception;
 use ReflectionMethod;
 
 /**
  * A wrapper for custom methods.
- *
- * @internal
  */
 class WrappedCustomMethod extends AbstractWrappedMethod
 {
@@ -77,8 +76,8 @@ class WrappedCustomMethod extends AbstractWrappedMethod
      *
      * @param ArgumentsInterface|array|null The arguments.
      *
-     * @return mixed     The result of invocation.
-     * @throws Exception If an error occurs.
+     * @return mixed           The result of invocation.
+     * @throws Exception|Error If an error occurs.
      */
     public function invokeWith($arguments = null)
     {

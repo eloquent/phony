@@ -16,8 +16,6 @@ use ReflectionFunctionAbstract;
 
 /**
  * Represents a custom method definition.
- *
- * @internal
  */
 class CustomMethodDefinition implements MethodDefinitionInterface
 {

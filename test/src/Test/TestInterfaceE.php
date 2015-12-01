@@ -9,13 +9,10 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Assertion\Exception;
+namespace Eloquent\Phony\Test;
 
-/**
- * The interface used to identify assertion exceptions.
- *
- * @api
- */
-interface AssertionExceptionInterface
+use Throwable;
+
+interface TestInterfaceE extends Throwable
 {
 }

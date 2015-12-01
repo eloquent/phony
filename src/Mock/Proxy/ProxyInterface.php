@@ -20,11 +20,15 @@ use stdClass;
 
 /**
  * The interface implemented by proxies.
+ *
+ * @api
  */
 interface ProxyInterface
 {
     /**
      * Get the class.
+     *
+     * @api
      *
      * @return ReflectionClass The class.
      */
@@ -33,6 +37,8 @@ interface ProxyInterface
     /**
      * Get the class name.
      *
+     * @api
+     *
      * @return string The class name.
      */
     public function className();
@@ -40,33 +46,34 @@ interface ProxyInterface
     /**
      * Turn the mock into a full mock.
      *
-     * @return ProxyInterface This proxy.
+     * @api
+     *
+     * @return $this This proxy.
      */
     public function full();
 
     /**
      * Turn the mock into a partial mock.
      *
-     * @return ProxyInterface This proxy.
+     * @api
+     *
+     * @return $this This proxy.
      */
     public function partial();
 
     /**
      * Returns true if the mock is a full mock.
      *
+     * @api
+     *
      * @return boolean True if the mock is a full mock.
      */
     public function isFull();
 
     /**
-     * Get the stubs.
-     *
-     * @return stdClass The stubs.
-     */
-    public function stubs();
-
-    /**
      * Get a stub verifier.
+     *
+     * @api
      *
      * @param string $name The method name.
      *
@@ -78,12 +85,49 @@ interface ProxyInterface
     /**
      * Get a stub verifier.
      *
+     * @api
+     *
      * @param string $name The method name.
      *
      * @return StubVerifierInterface  The stub verifier.
      * @throws MockExceptionInterface If the stub does not exist.
      */
     public function __get($name);
+
+    /**
+     * Checks if there was no interaction with the mock.
+     *
+     * @api
+     *
+     * @return EventCollectionInterface|null The result.
+     */
+    public function checkNoInteraction();
+
+    /**
+     * Throws an exception unless there was no interaction with the mock.
+     *
+     * @api
+     *
+     * @return EventCollectionInterface The result.
+     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function noInteraction();
+
+    /**
+     * Reset the mock to its initial state.
+     *
+     * @api
+     *
+     * @return $this This proxy.
+     */
+    public function reset();
+
+    /**
+     * Get the stubs.
+     *
+     * @return stdClass The stubs.
+     */
+    public function stubs();
 
     /**
      * Get a spy.
@@ -96,31 +140,7 @@ interface ProxyInterface
     public function spy($name);
 
     /**
-     * Checks if there was no interaction with the mock.
-     *
-     * @return EventCollectionInterface|null The result.
-     */
-    public function checkNoInteraction();
-
-    /**
-     * Throws an exception unless there was no interaction with the mock.
-     *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public function noInteraction();
-
-    /**
-     * Reset the mock to its initial state.
-     *
-     * @return ProxyInterface This proxy.
-     */
-    public function reset();
-
-    /**
      * Get the proxy state.
-     *
-     * @internal
      *
      * @return stdClass The state.
      */

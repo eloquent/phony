@@ -16,8 +16,6 @@ use Exception;
 
 /**
  * Call to undefined method.
- *
- * @internal
  */
 final class UndefinedMethodException extends Exception implements
     MockExceptionInterface

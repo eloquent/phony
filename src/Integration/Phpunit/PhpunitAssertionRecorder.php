@@ -20,8 +20,6 @@ use PHPUnit_Framework_Assert;
 
 /**
  * An assertion recorder for PHPUnit.
- *
- * @internal
  */
 class PhpunitAssertionRecorder extends AssertionRecorder
 {

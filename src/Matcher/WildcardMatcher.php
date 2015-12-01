@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * A matcher that tests any number of arguments against another matcher.
- *
- * @internal
  */
 class WildcardMatcher implements WildcardMatcherInterface
 {
@@ -36,19 +34,16 @@ class WildcardMatcher implements WildcardMatcherInterface
      * Construct a new wildcard matcher.
      *
      * @param MatcherInterface|null $matcher          The matcher to use for each argument.
-     * @param integer|null          $minimumArguments The minimum number of arguments.
+     * @param integer               $minimumArguments The minimum number of arguments.
      * @param integer|null          $maximumArguments The maximum number of arguments.
      */
     public function __construct(
         MatcherInterface $matcher = null,
-        $minimumArguments = null,
+        $minimumArguments = 0,
         $maximumArguments = null
     ) {
         if (null === $matcher) {
             $matcher = AnyMatcher::instance();
-        }
-        if (null === $minimumArguments) {
-            $minimumArguments = 0;
         }
 
         $this->matcher = $matcher;

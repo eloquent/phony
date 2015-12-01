@@ -15,8 +15,6 @@ use Generator;
 
 /**
  * A detail class for generator syntax not supported by earlier versions of PHP.
- *
- * @internal
  */
 abstract class CallEventFactoryDetail
 {

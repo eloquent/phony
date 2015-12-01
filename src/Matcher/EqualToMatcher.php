@@ -15,13 +15,12 @@ use Eloquent\Phony\Exporter\ExporterInterface;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\MockInterface;
 use Exception;
+use Throwable;
 
 /**
  * A matcher that tests if the value is strictly equal to (===) another
- * value. Arrays and objects are descending into, comparing each key/value
+ * value. Arrays and objects are descended into, comparing each key/value
  * pair individually.
- *
- * @internal
  */
 class EqualToMatcher extends AbstractMatcher
 {
@@ -64,7 +63,7 @@ class EqualToMatcher extends AbstractMatcher
     }
 
     /**
-     * Returns true if the supplied value matches.
+     * Returns `true` if `$value` matches this matcher's criteria.
      *
      * @param mixed $value The value to check.
      *
@@ -254,7 +253,8 @@ class EqualToMatcher extends AbstractMatcher
          */
 
         $leftIsMock = $left instanceof MockInterface;
-        $leftIsException = $left instanceof Exception;
+        $leftIsException =
+            $left instanceof Throwable || $left instanceof Exception;
 
         $left = (array) $left;
         unset($left["\0gcdata"]);
@@ -263,8 +263,7 @@ class EqualToMatcher extends AbstractMatcher
             $proxyProperty = "\0" . $leftClass . "\0_proxy";
 
             if ($left[$proxyProperty]) {
-                $left["\0" . $leftClass . "\0_label"] =
-                    $left[$proxyProperty]->label();
+                $left['phony.label'] = $left[$proxyProperty]->label();
             }
 
             unset($left[$proxyProperty]);
@@ -283,7 +282,8 @@ class EqualToMatcher extends AbstractMatcher
         }
 
         $rightIsMock = $right instanceof MockInterface;
-        $rightIsException = $right instanceof Exception;
+        $rightIsException =
+            $right instanceof Throwable || $right instanceof Exception;
 
         $right = (array) $right;
         unset($right["\0gcdata"]);
@@ -292,8 +292,7 @@ class EqualToMatcher extends AbstractMatcher
             $proxyProperty = "\0" . $rightClass . "\0_proxy";
 
             if ($right[$proxyProperty]) {
-                $right["\0" . $rightClass . "\0_label"] =
-                    $right[$proxyProperty]->label();
+                $right['phony.label'] = $right[$proxyProperty]->label();
             }
 
             unset($right[$proxyProperty]);

@@ -67,6 +67,32 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
         $this->subject->eventAt(111);
     }
 
+    public function testFirstCall()
+    {
+        $this->assertSame($this->eventB, $this->subject->firstCall());
+    }
+
+    public function testFirstCallFailureUndefined()
+    {
+        $this->subject = new EventCollection();
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->firstCall();
+    }
+
+    public function testLastCall()
+    {
+        $this->assertSame($this->eventD, $this->subject->lastCall());
+    }
+
+    public function testLastCallFailureUndefined()
+    {
+        $this->subject = new EventCollection();
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->lastCall();
+    }
+
     public function testCallAt()
     {
         $this->assertSame($this->eventB, $this->subject->callAt());

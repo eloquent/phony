@@ -17,12 +17,16 @@ use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
  * The interface implemented by stubbing proxies.
+ *
+ * @api
  */
 interface StubbingProxyInterface extends ProxyInterface
 {
     /**
      * Get a stub verifier, and modify its current criteria to match the
      * supplied arguments.
+     *
+     * @api
      *
      * @param string $name      The method name.
      * @param array  $arguments The arguments.

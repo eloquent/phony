@@ -23,8 +23,6 @@ use Iterator;
 
 /**
  * Represents a collection of events.
- *
- * @internal
  */
 class EventCollection implements EventCollectionInterface
 {
@@ -133,12 +131,15 @@ class EventCollection implements EventCollectionInterface
     /**
      * Get an event by index.
      *
-     * @param integer|null $index The index, or null for the first event.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return EventInterface          The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = null)
+    public function eventAt($index = 0)
     {
         try {
             $normalized = $this->indexNormalizer
@@ -151,14 +152,47 @@ class EventCollection implements EventCollectionInterface
     }
 
     /**
+     * Get the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function firstCall()
+    {
+        if (isset($this->calls[0])) {
+            return $this->calls[0];
+        }
+
+        throw new UndefinedCallException(0);
+    }
+
+    /**
+     * Get the last call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function lastCall()
+    {
+        if ($count = count($this->calls)) {
+            return $this->calls[$count - 1];
+        }
+
+        throw new UndefinedCallException(0);
+    }
+
+    /**
      * Get a call by index.
      *
-     * @param integer|null $index The index, or null for the first call.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return CallInterface          The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = null)
+    public function callAt($index = 0)
     {
         try {
             $normalized = $this->indexNormalizer
@@ -188,13 +222,16 @@ class EventCollection implements EventCollectionInterface
     /**
      * Get an argument by index.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedCallException     If there are no calls.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function argument($index = null)
+    public function argument($index = 0)
     {
         foreach ($this->calls as $call) {
             return $call->arguments()->get($index);

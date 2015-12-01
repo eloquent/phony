@@ -25,8 +25,6 @@ use Eloquent\Phony\Stub\Stub;
 
 /**
  * Creates stubs.
- *
- * @internal
  */
 class StubFactory implements StubFactoryInterface
 {

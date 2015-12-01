@@ -206,6 +206,16 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->subject->eventAt(2);
     }
 
+    public function testFirstCall()
+    {
+        $this->assertSame($this->subject, $this->subject->firstCall());
+    }
+
+    public function testLastCall()
+    {
+        $this->assertSame($this->subject, $this->subject->lastCall());
+    }
+
     public function testCallAt()
     {
         $this->assertSame($this->subject, $this->subject->callAt());

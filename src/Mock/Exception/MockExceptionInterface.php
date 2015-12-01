@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Mock\Exception;
 
 /**
  * The interface used to identify mock exceptions.
+ *
+ * @api
  */
 interface MockExceptionInterface
 {

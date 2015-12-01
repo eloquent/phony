@@ -38,8 +38,6 @@ use ReflectionException;
 
 /**
  * Builds mock classes.
- *
- * @internal
  */
 class MockBuilder implements MockBuilderInterface
 {
@@ -51,13 +49,20 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types              The types to mock.
-     * @param array|object|null                                                                                   $definition         The definition.
-     * @param string|null                                                                                         $className          The class name.
-     * @param MockFactoryInterface|null                                                                           $factory            The factory to use.
-     * @param ProxyFactoryInterface|null                                                                          $proxyFactory       The proxy factory to use.
-     * @param FunctionSignatureInspectorInterface|null                                                            $signatureInspector The function signature inspector to use.
-     * @param FeatureDetectorInterface|null                                                                       $featureDetector    The feature detector to use.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @param mixed                                    $types              The types to mock.
+     * @param array|object|null                        $definition         The definition.
+     * @param string|null                              $className          The class name.
+     * @param MockFactoryInterface|null                $factory            The factory to use.
+     * @param ProxyFactoryInterface|null               $proxyFactory       The proxy factory to use.
+     * @param FunctionSignatureInspectorInterface|null $signatureInspector The function signature inspector to use.
+     * @param FeatureDetectorInterface|null            $featureDetector    The feature detector to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
      */
@@ -161,10 +166,13 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add classes, interfaces, or traits.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface> $type      A type, or types to add.
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface> $types,... Additional types to add.
+     * Each `$type` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
      *
-     * @return MockBuilderInterface   This builder.
+     * @param mixed $type A type, or types to add.
+     * @param mixed ...$types Additional types to add.
+     *
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
      */
     public function like($type)
@@ -251,7 +259,7 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param array|object $definition The definition.
      *
-     * @return MockBuilderInterface   This builder.
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
      */
     public function define($definition)
@@ -306,7 +314,7 @@ class MockBuilder implements MockBuilderInterface
      * @param string        $name     The name.
      * @param callable|null $callback The callback.
      *
-     * @return MockBuilderInterface   This builder.
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addMethod($name, $callback = null)
@@ -326,7 +334,7 @@ class MockBuilder implements MockBuilderInterface
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return MockBuilderInterface   This builder.
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addProperty($name, $value = null)
@@ -346,7 +354,7 @@ class MockBuilder implements MockBuilderInterface
      * @param string        $name     The name.
      * @param callable|null $callback The callback.
      *
-     * @return MockBuilderInterface   This builder.
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addStaticMethod($name, $callback = null)
@@ -366,7 +374,7 @@ class MockBuilder implements MockBuilderInterface
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return MockBuilderInterface   This builder.
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addStaticProperty($name, $value = null)
@@ -386,7 +394,7 @@ class MockBuilder implements MockBuilderInterface
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return MockBuilderInterface   This builder.
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function addConstant($name, $value)
@@ -405,7 +413,7 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param string $className|null The class name, or null to use a generated name.
      *
-     * @return MockBuilderInterface   This builder.
+     * @return $this                  This builder.
      * @throws MockExceptionInterface If this builder is already finalized.
      */
     public function named($className = null)
@@ -440,7 +448,7 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Finalize the mock builder.
      *
-     * @return MockBuilderInterface This builder.
+     * @return $this This builder.
      */
     public function finalize()
     {
@@ -539,7 +547,7 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param mixed $arguments,... The constructor arguments.
+     * @param mixed ...$arguments The constructor arguments.
      *
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
@@ -602,8 +610,6 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @internal
-     *
      * @param MockGeneratorInterface|null $generator The mock generator to use.
      *
      * @return string                 The source code.
@@ -618,10 +624,7 @@ class MockBuilder implements MockBuilderInterface
         return $generator->generate($this->definition());
     }
 
-    /**
-     * Perform and last-minute modifications to the definition.
-     */
-    protected function normalizeDefinition()
+    private function normalizeDefinition()
     {
         $isTraversable = false;
         $isIterator = false;
@@ -650,7 +653,40 @@ class MockBuilder implements MockBuilderInterface
                 $this->types
             );
         }
-    }
+
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            return;
+        }
+
+        // @codeCoverageIgnoreStart
+
+        $isThrowable = false;
+
+        foreach ($this->types as $type) {
+            if (
+                $type->isSubclassOf('Exception') || $type->isSubclassOf('Error')
+            ) {
+                return;
+            }
+
+            $name = $type->getName();
+
+            if ('Exception' === $name || 'Error' === $type) {
+                return;
+            }
+
+            if ($type->implementsInterface('Throwable')) {
+                $isThrowable = true;
+            }
+        }
+
+        if ($isThrowable) {
+            $this->types = array_merge(
+                array('Exception' => new ReflectionClass('Exception')),
+                $this->types
+            );
+        }
+    } // @codeCoverageIgnoreEnd
 
     /**
      * Build the mock definitions.

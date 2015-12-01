@@ -19,8 +19,6 @@ use ReflectionFunctionAbstract;
 
 /**
  * Inspects functions to determine their signature.
- *
- * @internal
  */
 class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 {

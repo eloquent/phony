@@ -99,8 +99,8 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
     public function testSetLabel()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $this->subject->setLabel(null);
 
+        $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
 
         $this->subject->setLabel($this->state->label);

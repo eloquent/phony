@@ -17,13 +17,13 @@ use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 
 /**
  * A facade for Phony usage under PHPUnit.
+ *
+ * @api
  */
 class Phony extends AbstractFacade
 {
     /**
      * Get the facade driver.
-     *
-     * @internal
      *
      * @return FacadeDriverInterface The facade driver.
      */
