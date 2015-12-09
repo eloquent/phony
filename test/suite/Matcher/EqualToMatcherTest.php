@@ -152,6 +152,16 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
                 array('foo' => 'bar', 'baz' => 'qux'),
             ),
 
+            'array - compared to non array (lhs)' => array(
+                '<string>',
+                array('foo' => 'bar'),
+            ),
+
+            'array - compared to non array (rhs)' => array(
+                array('foo' => 'bar'),
+                '<string>',
+            ),
+
             'object - anonymous (different key)' => array(
                 (object) array('foo' => 'bar'),
                 (object) array('XXX' => 'bar'),
@@ -180,6 +190,16 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
             'object - declared (same properties, different class)' => array(
                 new TestDerivedClassA(),
                 new TestDerivedClassB(),
+            ),
+
+            'object - compared to non object (lhs)' => array(
+                '<string>',
+                (object) array('foo' => 'bar'),
+            ),
+
+            'object - compared to non object (rhs)' => array(
+                (object) array('foo' => 'bar'),
+                '<string>',
             ),
         );
 

@@ -219,7 +219,7 @@ class EqualToMatcher extends AbstractMatcher
         }
 
         // Non-objects are not identical.
-        if (!is_object($left) && !is_object($right)) {
+        if (!is_object($left) || !is_object($right)) {
             return false;
         }
 
