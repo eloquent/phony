@@ -1,96 +1,152 @@
 # Phony
 
-- [Installation](#installation)
-- [Usage](#usage)
-    - [Standalone usage](#standalone-usage)
-    - [Peridot usage](#peridot-usage)
-    - [Pho usage](#pho-usage)
-    - [PHPUnit usage](#phpunit-usage)
-    - [SimpleTest usage](#simpletest-usage)
-    - [Integration with test frameworks](#integration-with-test-frameworks)
-    - [Importing](#importing)
-- [Mocks](#mocks)
-    - [Mocking basics](#mocking-basics)
-    - [Partial mocks](#partial-mocks)
-    - [Mocking multiple types](#mocking-multiple-types)
-    - [Ad hoc mocks](#ad-hoc-mocks)
-    - [Static mocks](#static-mocks)
-    - [Custom class names](#custom-class-names)
-    - [Calling a constructor manually](#calling-a-constructor-manually)
-    - [Terminology](#terminology)
-- [Stubs](#stubs)
-    - [Stubbing an existing callable](#stubbing-an-existing-callable)
-    - [Anonymous stubs](#anonymous-stubs)
-    - [Stub rules and answers](#stub-rules-and-answers)
-        - [Multiple rules](#multiple-rules)
-        - [Multiple answers](#multiple-answers)
-        - [Overriding rules](#overriding-rules)
-        - [The default rule and answer](#the-default-rule-and-answer)
-    - [Matching stub arguments](#matching-stub-arguments)
-    - [Returning values](#returning-values)
-    - [Returning arguments](#returning-arguments)
-    - [Returning the 'self' value](#returning-the-self-value)
-    - [Throwing exceptions](#throwing-exceptions)
-    - [Using a callable as an answer](#using-a-callable-as-an-answer)
-    - [Forwarding to the original callable](#forwarding-to-the-original-callable)
-    - [Answers that perform multiple actions](#answers-that-perform-multiple-actions)
-        - [Setting passed-by-reference arguments](#setting-passed-by-reference-arguments)
-        - [Invoking arguments](#invoking-arguments)
-        - [Invoking callables](#invoking-callables)
-- [Spies](#spies)
-    - [Spying on an existing callable](#spying-on-an-existing-callable)
-    - [Anonymous spies](#anonymous-spies)
-    - [Call verification](#call-verification)
-        - [Call count](#call-count)
-        - [Individual calls](#individual-calls)
-    - [Verifying input](#verifying-input)
-        - [Verifying that a call was made](#verifying-that-a-call-was-made)
-        - [Verifying that a call was made with specific arguments](#verifying-that-a-call-was-made-with-specific-arguments)
-        - [Verifying closure binding](#verifying-closure-binding)
-    - [Verifying output](#verifying-output)
-        - [Verifying return values](#verifying-return-values)
-        - [Verifying exceptions](#verifying-exceptions)
-    - [Verifying generators and traversables](#verifying-generators-and-traversables)
-        - [Verifying produced values](#verifying-produced-values)
-        - [Verifying received values](#verifying-received-values)
-        - [Verifying received exceptions](#verifying-received-exceptions)
-- [Calls](#calls)
-    - [Retrieving calls from a spy](#retrieving-calls-from-a-spy)
-    - [Verifying input](#verifying-input-1)
-        - [Verifying that a call was made](#verifying-that-a-call-was-made-1)
-        - [Verifying that a call was made with specific arguments](#verifying-that-a-call-was-made-with-specific-arguments-1)
-        - [Verifying closure binding](#verifying-closure-binding-1)
-    - [Verifying output](#verifying-output-1)
-        - [Verifying return values](#verifying-return-values-1)
-        - [Verifying exceptions](#verifying-exceptions-1)
-    - [Verifying generators and traversables](#verifying-generators-and-traversables-1)
-        - [Verifying produced values](#verifying-produced-values-1)
-        - [Verifying received values](#verifying-received-values-1)
-        - [Verifying received exceptions](#verifying-received-exceptions-1)
-- [Matchers](#matchers)
-    - [Matcher integrations](#matcher-integrations)
-        - [Counterpart matchers](#counterpart-matchers)
-        - [Hamcrest matchers](#hamcrest-matchers)
-        - [Mockery matchers](#mockery-matchers)
-        - [Phake matchers](#phake-matchers)
-        - [PHPUnit constraints](#phpunit-constraints)
-        - [Prophecy argument tokens](#prophecy-argument-tokens)
-        - [SimpleTest expectations](#simpletest-expectations)
-    - [Shorthand matchers](#shorthand-matchers)
-    - [The 'any' matcher](#the-any-matcher)
-    - [The 'equal to' matcher](#the-equal-to-matcher)
-        - [When to use the 'equal to' matcher](#when-to-use-the-equal-to-matcher)
-    - [The 'wildcard' matcher](#the-wildcard-matcher)
-        - [Third-party wildcard matcher integrations](#third-party-wildcard-matcher-integrations)
-            - [Phake wildcard matchers](#phake-wildcard-matchers)
-            - [Prophecy wildcard matchers](#prophecy-wildcard-matchers)
+- [Installation]
+- [Usage]
+    - [Standalone usage]
+    - [Peridot usage]
+    - [Pho usage]
+    - [PHPUnit usage]
+    - [SimpleTest usage]
+    - [Integration with test frameworks]
+    - [Importing]
+        - [Importing with use function]
+        - [Importing without use function]
+        - [Importing a static facade]
+- [Mocks]
+    - [The mock API]
+    - [The mock builder API]
+    - [Mocking basics]
+    - [Partial mocks]
+    - [Mocking multiple types]
+    - [Ad hoc mocks]
+    - [Static mocks]
+    - [Custom class names]
+    - [Calling a constructor manually]
+    - [Resetting a mock]
+    - [Labeling mocks]
+    - [Mock handles]
+        - [Stubbing handles]
+        - [Verification handles]
+    - [Mock builders]
+        - [Customizing the mock class]
+        - [Creating mocks from a builder]
+        - [Generating mock classes from a builder]
+    - [Terminology]
+- [Stubs]
+    - [The stub API]
+    - [Stubbing an existing callable]
+    - [Anonymous stubs]
+    - [Stub rules and answers]
+        - [Multiple rules]
+        - [Multiple answers]
+        - [Overriding rules]
+        - [The default rule and answer]
+    - [Matching stub arguments]
+    - [Returning values]
+    - [Returning arguments]
+    - [Returning the "self" value]
+    - [Throwing exceptions]
+    - [Using a callable as an answer]
+    - [Forwarding to the original callable]
+    - [Answers that perform multiple actions]
+        - [Setting passed-by-reference arguments]
+        - [Invoking arguments]
+        - [Invoking callables]
+- [Spies]
+    - [The spy API]
+    - [Spying on an existing callable]
+    - [Anonymous spies]
+    - [Call verification]
+        - [Call count]
+        - [Individual calls]
+    - [Verifying spy input]
+        - [Verifying that a call was made]
+        - [Verifying that a spy was called with specific arguments]
+        - [Verifying spy closure binding]
+    - [Verifying spy output]
+        - [Verifying spy return values]
+        - [Verifying spy exceptions]
+    - [Verifying spies with generators or traversables]
+        - [Verifying values produced by spies]
+        - [Verifying values received by spies]
+        - [Verifying exceptions received by spies]
+    - [Verifying cardinality with spies]
+        - [Verifying that a spy event happened an exact number of times]
+        - [Verifying that a spy event happened a bounded number of times]
+        - [Verifying that all spy events happen the same way]
+    - [Labeling spies]
+    - [Invoking spies]
+- [Calls]
+    - [The call API]
+    - [The arguments API]
+    - [Retrieving calls from a spy]
+    - [Verifying call input]
+        - [Verifying that a call was made with specific arguments]
+        - [Verifying call closure binding]
+    - [Verifying call output]
+        - [Verifying call return values]
+        - [Verifying call exceptions]
+    - [Verifying calls with generators or traversables]
+        - [Verifying values produced by calls]
+        - [Verifying values received by calls]
+        - [Verifying exceptions received by calls]
+    - [Verifying cardinality with calls]
+        - [Verifying that a call event happened an exact number of times]
+        - [Verifying that a call event happened a bounded number of times]
+        - [Verifying that all call events happen the same way]
+- [Verification]
+    - [The verification result API]
+    - [The event API]
+    - [The order verification API]
+    - [Standard verification]
+    - [Check verification]
+    - [Order verification]
+        - [Dynamic order verification]
+        - [Order verification caveats]
+            - [Intermediate events in order verification]
+            - [Similar events in order verification]
+    - [Verifying that there was no interaction with a mock]
+- [Matchers]
+    - [The matcher API]
+    - [The wildcard matcher API]
+    - [Matcher integrations]
+        - [Counterpart matchers]
+        - [Hamcrest matchers]
+        - [Mockery matchers]
+        - [Phake matchers]
+        - [PHPUnit constraints]
+        - [Prophecy argument tokens]
+        - [SimpleTest expectations]
+    - [Shorthand matchers]
+    - [The "any" matcher]
+    - [The "equal to" matcher]
+        - [When to use the "equal to" matcher]
+        - [Special cases for the "equal to" matcher]
+            - [Comparing exceptions]
+            - [Comparing mocks]
+    - [The "wildcard" matcher]
+        - [Third-party wildcard matcher integrations]
+            - [Phake wildcard matchers]
+            - [Prophecy wildcard matchers]
+- [The exporter]
+    - [The exporter API]
+    - [The export format]
+        - [Export identifiers and references]
+        - [Exporting recursive values]
+        - [Exporter special cases]
+            - [Exporting exceptions]
+            - [Exporting mocks]
+    - [Export depth]
+        - [Setting the export depth]
+- [Exception APIs]
+    - [AssertionException]
+    - [UndefinedArgumentException]
+    - [UndefinedCallException]
+    - [UndefinedEventException]
 
 ## Installation
 
-- Available as [Composer] package [eloquent/phony].
-
-[composer]: http://getcomposer.org/
-[eloquent/phony]: https://packagist.org/packages/eloquent/phony
+Available as [Composer] package [eloquent/phony].
 
 ## Usage
 
@@ -108,7 +164,7 @@ assert($mock->methodA('argument') === 'value');
 $handle->methodA->calledWith('argument');
 ```
 
-### Peridot usage
+### [Peridot] usage
 
 ```php
 use function Eloquent\Phony\mock;
@@ -126,7 +182,7 @@ describe('Phony', function () {
 });
 ```
 
-### Pho usage
+### [Pho] usage
 
 ```php
 use function Eloquent\Phony\Pho\mock;
@@ -144,7 +200,7 @@ describe('Phony', function () {
 });
 ```
 
-### PHPUnit usage
+### [PHPUnit] usage
 
 ```php
 use Eloquent\Phony\Phpunit\Phony;
@@ -164,7 +220,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-### SimpleTest usage
+### [SimpleTest] usage
 
 ```php
 use Eloquent\Phony\Simpletest\Phony;
@@ -195,13 +251,12 @@ importing the most appropriate namespace for the framework in use:
 - For [SimpleTest], use `Eloquent\Phony\Simpletest`.
 - For [Peridot], other frameworks, or standalone usage, use `Eloquent\Phony`.
 
-[peridot]: http://peridot-php.github.io/
-[pho]: https://github.com/danielstjules/pho
-
 ### Importing
 
 There are three ways to import *Phony*'s API. The most appropriate choice will
 depend on the test framework in use, and the user's preferred coding style.
+
+#### Importing with [use function]
 
 If the version of PHP in use supports [use function], the top-level functions
 can be imported from the appropriate namespace and used directly:
@@ -212,6 +267,8 @@ use function Eloquent\Phony\mock;
 $handle = mock('ClassA');
 ```
 
+#### Importing without [use function]
+
 When [use function] is unavailable, the namespace itself can be imported, and an
 alias can be used to make short references to the same functions:
 
@@ -220,6 +277,8 @@ use Eloquent\Phony as x;
 
 $handle = x\mock('ClassA');
 ```
+
+#### Importing a static facade
 
 A static facade implementation is also provided for those who prefer a more
 traditional approach:
@@ -230,16 +289,475 @@ use Eloquent\Phony\Phony;
 $handle = Phony::mock('ClassA');
 ```
 
-[use function]: http://php.net/language.namespaces.importing
-
 ## Mocks
 
 *Mocks* are objects that can be used as a substitute for another object. This
 can be useful when a "real" object becomes difficult to use in a test.
 
+### The mock API
+
+<a name="facade.mock" />
+
+----
+
+> *[handle][mock-api]* [**mock**](#facade.mock)($types = [], $definition = [], $className = null) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**mock**](#facade.mock)($types = [], $definition = [], $className = null) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**mock**](#facade.mock)($types = [], $definition = [], $className = null) *(static)*
+
+Create a new [full mock], and return a [stubbing handle].
+
+*The `$types` argument may be a class name, a reflection class, or a
+[mock builder]. It may also be an array of any of these.*
+
+*If `$types` is empty, or `null`, no existing type will be used when generating
+the mock class. This is useful in the case of [ad hoc mocks], where mocks need
+not imitate an existing type.*
+
+*See [Mocking basics].*
+
+<a name="facade.partialMock" />
+
+----
+
+> *[handle][mock-api]* [**partialMock**](#facade.partialMock)($types = [], $arguments = [], $definition = [], $className = null) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**partialMock**](#facade.partialMock)($types = [], $arguments = [], $definition = [], $className = null) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**partialMock**](#facade.partialMock)($types = [], $arguments = [], $definition = [], $className = null) *(static)*
+
+Create a new [partial mock], and return a [stubbing handle].
+
+*The `$types` argument may be a class name, a reflection class, or a
+[mock builder]. It may also be an array of any of these.*
+
+*If `$types` is empty, or `null`, no existing type will be used when generating
+the mock class. This is useful in the case of [ad hoc mocks], where mocks need
+not imitate an existing type.*
+
+*See [Partial mocks].*
+
+<a name="facade.on" />
+
+----
+
+> *[handle][mock-api]* [**on**](#facade.on)($mock) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**on**](#facade.on)($mock) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**on**](#facade.on)($mock) *(static)*
+
+Returns a [stubbing handle] for `$mock`.
+
+<a name="facade.verify" />
+
+----
+
+> *[handle][mock-api]* [**verify**](#facade.verify)($mock) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**verify**](#facade.verify)($mock) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**verify**](#facade.verify)($mock) *(static)*
+
+Returns a [verification handle] for `$mock`.
+
+<a name="facade.onStatic" />
+
+----
+
+> *[handle][mock-api]* [**onStatic**](#facade.onStatic)($class) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**onStatic**](#facade.onStatic)($class) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**onStatic**](#facade.onStatic)($class) *(static)*
+
+Returns a static [stubbing handle] for `$class`.
+
+*See [Static mocks].*
+
+<a name="facade.verifyStatic" />
+
+----
+
+> *[handle][mock-api]* [**verifyStatic**](#facade.verifyStatic)($class) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**verifyStatic**](#facade.verifyStatic)($class) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**verifyStatic**](#facade.verifyStatic)($class) *(static)*
+
+Returns a static [verification handle] for `$class`.
+
+*See [Static mocks].*
+
+<a name="handle.mock" />
+
+----
+
+> *mock* $handle->[**mock**](#handle.mock)()
+
+Get the [mock].
+
+*This method is not available on [static mock handles].*
+
+*See [Mocking basics], [Mock handles].*
+
+<a name="handle.__call" />
+
+----
+
+> *[stub][stub-api]* $handle->[**$method**](#handle.__call)(...$arguments) (on a [stubbing handle])<br />
+> *fluent* $handle->[**$method**](#handle.__call)(...$arguments) (on a [verification handle])
+
+**When called on a [stubbing handle]:**
+
+Get a stub, and modify its current criteria to match the supplied arguments.
+
+*This is equivalent to `$handle->$method->with(...$arguments)`.*
+
+*See [Mocking basics], [Stubbing handles].*
+
+**When called on a [verification handle]:**
+
+Throws an exception unless the specified method was called with the supplied
+arguments.
+
+*This is equivalent to `$handle->$method->calledWith(...$arguments)`, except
+that it returns `$handle`, allowing a fluent interface for multiple
+verifications.*
+
+*See [Verification handles].*
+
+<a name="handle.stub" />
+<a name="handle.__get" />
+
+----
+
+> *[stub][stub-api]* $handle->[**stub**](#handle.stub)($method) or
+> $handle->[**$method**](#handle.__get)
+
+Get the [stub] for `$method`.
+
+*See [Mocking basics].*
+
+<a name="handle.label" />
+
+----
+
+> *string* $handle->[**label**](#handle.label)()
+
+Get the [label][labeling mocks].
+
+*This method is not available on [static mock handles].*
+
+<a name="handle.setLabel" />
+
+----
+
+> *fluent* $handle->[**setLabel**](#handle.setLabel)()
+
+Set the [label][labeling mocks].
+
+*This method is not available on [static mock handles].*
+
+<a name="handle.construct" />
+
+----
+
+> *fluent* $handle->[**construct**](#handle.construct)(...$arguments)
+
+Call the original constructor.
+
+*This method does not support reference parameters.*
+
+*This method is not available on [static mock handles].*
+
+*See [Calling a constructor manually].*
+
+<a name="handle.constructWith" />
+
+----
+
+> *fluent* $handle->[**constructWith**](#handle.constructWith)($arguments = [])
+
+Call the original constructor.
+
+*This method supports reference parameters.*
+
+*This method is not available on [static mock handles].*
+
+*See [Calling a constructor manually].*
+
+<a name="handle.clazz" />
+
+----
+
+> *[ReflectionClass]* $handle->[**clazz**](#handle.clazz)()
+
+Get the generated mock class.
+
+<a name="handle.className" />
+
+----
+
+> *string* $handle->[**className**](#handle.className)()
+
+Get the class name of the generated mock class.
+
+<a name="handle.full" />
+
+----
+
+> *fluent* $handle->[**full**](#handle.full)()
+
+Turn the mock into a [full mock].
+
+<a name="handle.partial" />
+
+----
+
+> *fluent* $handle->[**partial**](#handle.partial)()
+
+Turn the mock into a [partial mock].
+
+<a name="handle.reset" />
+
+----
+
+> *fluent* $handle->[**reset**](#handle.reset)()
+
+Reset the mock to its initial state.
+
+*See [Resetting a mock].*
+
+<a name="handle.noInteraction" />
+
+----
+
+> *[verification][verification-api]* $handle->[**noInteraction**](#handle.noInteraction)()
+> throws [AssertionException]
+
+Throws an exception unless there was no interaction with the mock.
+
+*See [Verifying that there was no interaction with a mock].*
+
+<a name="handle.checkNoInteraction" />
+
+----
+
+> *[verification][verification-api]|null* $handle->[**checkNoInteraction**](#handle.checkNoInteraction)()
+
+Checks if there was no interaction with the mock.
+
+*See [Verifying that there was no interaction with a mock],
+[Check verification].*
+
+### The mock builder API
+
+<a name="facade.mockBuilder" />
+
+----
+
+> *[builder][mock-builder-api]* [**mockBuilder**](#facade.mockBuilder)() *(with [use function])*<br />
+> *[builder][mock-builder-api]* x\\[**mockBuilder**](#facade.mockBuilder)() *(without [use function])*<br />
+> *[builder][mock-builder-api]* Phony::[**mockBuilder**](#facade.mockBuilder)() *(static)*
+
+Create a new [mock builder].
+
+<a name="builder.types" />
+
+----
+
+> *array\<string,[ReflectionClass]>* $builder->[**types**](#builder.types)()
+
+Get the types that will be mocked.
+
+*Returns a map of class name to class.*
+
+<a name="builder.like" />
+
+----
+
+> *fluent* $builder->[**like**](#builder.like)($type, ...$additionalTypes)
+
+Add classes, interfaces, or traits.
+
+*Each `$type` argument may be a class name, a reflection class, or another
+[mock builder]. It may also be an array of any of these.*
+
+<a name="builder.define" />
+
+----
+
+> *fluent* $builder->[**define**](#builder.define)($definition)
+
+Add custom methods and properties via an [ad hoc mock] definition.
+
+<a name="builder.addMethod" />
+
+----
+
+> *fluent* $builder->[**addMethod**](#builder.addMethod)($name, $callback = null)
+
+Add a custom method.
+
+*See [Customizing the mock class].*
+
+<a name="builder.addProperty" />
+
+----
+
+> *fluent* $builder->[**addProperty**](#builder.addProperty)($name, $value = null)
+
+Add a custom property.
+
+*See [Customizing the mock class].*
+
+<a name="builder.addStaticMethod" />
+
+----
+
+> *fluent* $builder->[**addStaticMethod**](#builder.addStaticMethod)($name, $callback = null)
+
+Add a custom static method.
+
+*See [Customizing the mock class].*
+
+<a name="builder.addStaticProperty" />
+
+----
+
+> *fluent* $builder->[**addStaticProperty**](#builder.addStaticProperty)($name, $value = null)
+
+Add a custom static property.
+
+*See [Customizing the mock class].*
+
+<a name="builder.addConstant" />
+
+----
+
+> *fluent* $builder->[**addConstant**](#builder.addConstant)($name, $value = null)
+
+Add a custom class constant.
+
+*See [Customizing the mock class].*
+
+<a name="builder.named" />
+
+----
+
+> *fluent* $builder->[**named**](#builder.named)($className = null)
+
+Set the class name.
+
+*See [Customizing the mock class].*
+
+<a name="builder.isFinalized" />
+
+----
+
+> *boolean* $builder->[**isFinalized**](#builder.isFinalized)()
+
+Returns `true` if this builder is finalized.
+
+<a name="builder.finalize" />
+
+----
+
+> *fluent* $builder->[**finalize**](#builder.finalize)()
+
+Finalize the mock builder.
+
+<a name="builder.isBuilt" />
+
+----
+
+> *boolean* $builder->[**isBuilt**](#builder.isBuilt)()
+
+Returns `true` if the mock class has been built.
+
+<a name="builder.build" />
+
+----
+
+> *[ReflectionClass]* $builder->[**build**](#builder.build)($createNew = false)
+
+Generate and define the mock class.
+
+*Calling this method will finalize the mock builder.*
+
+*See [Generating mock classes from a builder].*
+
+<a name="builder.className" />
+
+----
+
+> *string* $builder->[**className**](#builder.className)()
+
+Generate and define the mock class, and return the class name.
+
+*Calling this method will finalize the mock builder.*
+
+*See [Generating mock classes from a builder].*
+
+<a name="builder.get" />
+
+----
+
+> *mock* $builder->[**get**](#builder.get)()
+
+Get a mock.
+
+*This method will return the last created mock, only creating a new mock if no
+existing mock is available.*
+
+*Calling this method will finalize the mock builder.*
+
+*See [Creating mocks from a builder].*
+
+<a name="builder.create" />
+
+----
+
+> *mock* $builder->[**create**](#builder.create)(...$arguments)
+
+Create a new [partial mock].
+
+*The constructor will be called with `$arguments`.*
+
+*This method will always create a new mock.*
+
+*Calling this method will finalize the mock builder.*
+
+*This method does not support reference parameters.*
+
+*See [Creating mocks from a builder].*
+
+<a name="builder.createWith" />
+
+----
+
+> *mock* $builder->[**createWith**](#builder.createWith)($arguments = [], $label = null)
+
+Create a new [partial mock].
+
+*The constructor will be called with `$arguments`.*
+
+*This method will always create a new mock.*
+
+*Calling this method will finalize the mock builder.*
+
+*This method supports reference parameters.*
+
+*See [Creating mocks from a builder].*
+
+<a name="builder.full" />
+
+----
+
+> *mock* $builder->[**full**](#builder.full)()
+
+Create a new [full mock].
+
+*This method will always create a new mock.*
+
+*Calling this method will finalize the mock builder.*
+
+*See [Creating mocks from a builder].*
+
 ### Mocking basics
 
-Any class, interface, or trait can be mocked. To create a mock, use `mock()`:
+Any class, interface, or trait can be mocked. To create a mock, use
+[`mock()`](#facade.mock):
 
 ```php
 $handle = mock('ClassA');        // with `use function`
@@ -247,39 +765,44 @@ $handle = x\mock('ClassA');      // without `use function`
 $handle = Phony::mock('ClassA'); // static
 ```
 
-The object returned by `mock()` is **not** the mock object itself, but a handle
-object. This handle provides a [stub][stubs] for each method of the type being
-mocked. Each stub is exposed as a property of the same name as the stubbed
-method, and implements both [the stub API][stubs], and [the spy API][spies]:
+The object returned by [`mock()`](#facade.mock) is **not** the mock object
+itself, but a [mock handle]. This handle provides a [stub] for each method of
+the type being mocked. Each stub is exposed as a [property](#handle.__get) of
+the same name as the stubbed method, and implements both [the stub API], and
+[the spy API]:
 
 ```php
 // stubbing
 $handle->methodA->returns('1337 h4x');
-$handle->methodB('bad', 'input')->throws('You done goofed.');
+$handle->methodB->with('bad', 'input')->throws('You done goofed.');
 
 // verification
 $handle->methodA->calledWith('swiggity', 'swooty');
 $handle->methodB->called();
 ```
 
-To access the actual mock object, call the `mock()` method of the handle:
+The mock handle returned by [`mock()`](#facade.mock) is a type of handle called
+a [stubbing handle], which means it implements magic
+[`__call()`](#handle.__call) methods that are equivalent to a call to
+[`with()`](#stub.with):
+
+```php
+// these two statements are equivalent
+$handle->methodA('a', 'b')->returns('c');
+$handle->methodA->with('a', 'b')->returns('c');
+```
+
+To access the actual mock object, call the [`mock()`](#handle.mock) method of
+the handle:
 
 ```php
 $mock = $handle->mock();
 ```
 
-To get a handle from a mock, use `on()`:
-
-```php
-$handle = on($mock);        // with `use function`
-$handle = x\on($mock);      // without `use function`
-$handle = Phony::on($mock); // static
-```
-
 ### Partial mocks
 
 *Phony* supports "partial mocks", or mocks that do not override methods by
-default. To create a partial mock, use `partialMock()`:
+default. To create a partial mock, use [`partialMock()`](#facade.partialMock):
 
 ```php
 $handle = partialMock('ClassA');        // with `use function`
@@ -287,7 +810,8 @@ $handle = x\partialMock('ClassA');      // without `use function`
 $handle = Phony::partialMock('ClassA'); // static
 ```
 
-Constructor arguments can be passed to `partialMock()` as the second parameter:
+Constructor arguments can be passed to [`partialMock()`](#facade.partialMock) as
+the second parameter:
 
 ```php
 $handle = partialMock('ClassA', ['argumentA', 'argumentB']);
@@ -296,7 +820,8 @@ $handle = partialMock('ClassA', ['argumentA', 'argumentB']);
 ### Mocking multiple types
 
 Multiple interfaces and/or traits can be mocked simultaneously by passing an
-array of types as the first argument to `mock()` or `partialMock()`:
+array of types as the first argument to [`mock()`](#facade.mock) or
+[`partialMock()`](#facade.partialMock):
 
 ```php
 $handle = mock(['InterfaceA', 'InterfaceB', 'TraitA']);        // with `use function`
@@ -317,7 +842,8 @@ $handle = Phony::mock(['ClassA', 'InterfaceA', 'TraitA']); // static
 *Phony* supports the creation of mock objects with methods and/or properties
 that are not pre-defined in some other class, interface, or trait. It does so
 using a special "definition" value, which can be passed as the second argument
-to `mock()` (or the third argument to `partialMock()`):
+to [`mock()`](#facade.mock) (or the third argument to
+[`partialMock()`](#facade.partialMock)):
 
 ```php
 $handle = mock(
@@ -397,19 +923,25 @@ echo $mock->f(', ', ['a', 'b']); // outputs 'a, b'
 ### Static mocks
 
 *Phony* can be used to stub the behavior of static methods of generated mock
-classes. To modify the behavior of a static method, use `onStatic()` to obtain a
-static stubbing handle from either an existing handle, or a mock instance:
+classes. To modify the behavior of a static method, use
+[`onStatic()`](#facade.onStatic) to obtain a static stubbing handle from either
+an existing handle, or a mock instance:
 
 ```php
 $handle = mock('DateTime');
+$mock = $handle->mock();
 
 $static = onStatic($handle);        // with `use function`
 $static = x\onStatic($handle);      // without `use function`
 $static = Phony::onStatic($handle); // static
+
+$static = onStatic($mock);        // with `use function`
+$static = x\onStatic($mock);      // without `use function`
+$static = Phony::onStatic($mock); // static
 ```
 
-This static handle is just like a normal stubbing handle, except that it refers
-to static methods instead of instance methods:
+This static handle is just like a normal [stubbing handle], except that it
+refers to static methods instead of instance methods:
 
 ```php
 $static->createFromFormat->returns(new DateTime('2001-02-03T04:05:06Z'));
@@ -426,16 +958,34 @@ The static handle can also be used to verify interactions with static methods:
 $static->createFromFormat->calledWith('format', 'time');
 ```
 
+There is also a static variant of the normal [verification handle], which can
+be created from either an existing handle, or a mock instance, using
+[`verifyStatic()`](#facade.verifyStatic):
+
+```php
+$handle = mock('DateTime');
+$mock = $handle->mock();
+
+$static = verifyStatic($handle);        // with `use function`
+$static = x\verifyStatic($handle);      // without `use function`
+$static = Phony::verifyStatic($handle); // static
+
+$static = verifyStatic($mock);        // with `use function`
+$static = x\verifyStatic($mock);      // without `use function`
+$static = Phony::verifyStatic($mock); // static
+```
+
 ### Custom class names
 
 To use a specific class name for a generated mock class, pass the class name as
-the third argument to `mock()` (or the fourth argument to `partialMock()`):
+the third argument to [`mock()`](#facade.mock) (or the fourth argument to
+[`partialMock()`](#facade.partialMock)):
 
 ```php
 $handle = mock('ClassA', null, 'CustomClassName');
 $mock = $handle->mock();
 
-echo get_class($handle); // outputs 'CustomClassName'
+echo get_class($mock); // outputs 'CustomClassName'
 ```
 
 ### Calling a constructor manually
@@ -443,7 +993,8 @@ echo get_class($handle); // outputs 'CustomClassName'
 In order to stub methods called in the constructor of a partial mock, it is
 necessary to defer construction of the mock object. To accomplish this using
 *Phony*, a normal mock is created, then converted to a partial mock using
-`partial()`. This diverts the calling of the mock constructor:
+[`partial()`](#handle.partial). This diverts the calling of the mock
+constructor:
 
 ```php
 $handle = mock('ClassA')->partial();
@@ -455,12 +1006,305 @@ Behavior can then be defined before the constructor is called:
 $handle->methodA->returns(true);
 ```
 
-Finally, the constructor can be manually called using `construct()`, or
-`constructWith()`:
+Finally, the constructor can be manually called using
+[`construct()`](#handle.construct), or
+[`constructWith()`](#handle.constructWith):
 
 ```php
 $handle->construct('argumentA', 'argumentB');       // variable arguments
 $handle->constructWith(['argumentA', 'argumentB']); // array arguments
+```
+
+The [`constructWith()`](#handle.constructWith) additionally supports arguments
+passed by reference:
+
+```php
+$a = null;
+$b = null;
+
+$handle->constructWith([&$a, &$b]);
+```
+
+### Resetting a mock
+
+A mock's internal state can be cleared at any time by using
+[`reset()`](#handle.reset) on any mock handle:
+
+```php
+$handle = mock('ClassA');
+$mock = $handle->mock();
+
+$mock->methodA();
+$mock->methodB();
+
+$handle->reset();
+
+$handle->noInteraction(); // passes
+```
+
+Resetting clears any configured stub behaviors, and/or recorded interactions.
+
+### Labeling mocks
+
+Every mock has a label, which is a free-form string used to help identify the
+mock in verification failure messages. By default, each mock is assigned a
+unique sequential integer label upon creation.
+
+The label can be changed at any time by using [`setLabel()`](#handle.setLabel)
+on any mock handle associated with the mock:
+
+```php
+$handle = mock('ClassA');
+$mock = $handle->mock();
+
+$handle->setLabel('a');
+
+echo $handle->label(); // outputs 'a'
+echo on($mock)->label(); // outputs 'a'
+```
+
+The [`setLabel()`](#handle.setLabel) method is also fluent, meaning that mock
+creation and label setting can be done in a single expression:
+
+```php
+$mock = mock('ClassA')->setLabel('a')->mock();
+```
+
+When a verification fails for a labeled mock, the output is similar to the
+following:
+
+    Expected call on ClassA[label]->methodA with arguments like:
+        "x", "y"
+    Calls:
+        - "x", "z"
+
+### Mock handles
+
+Mock handles come in two varieties. [Stubbing handles] are the default type
+returned when using [`mock()`](#facade.mock), but there are also
+[verification handles] that are designed to make multiple verifications easier.
+
+Despite their names, both types of handles provide stubs that implement both
+[the stub API] for stubbing, and [the spy API] for verification. The difference
+is *only* in the handle's implementation of the magic
+[`__call()`](#handle.__call) methods. These magic methods are tailored for
+convenience when stubbing or verifying, depending on which type of handle is in
+use.
+
+#### Stubbing handles
+
+Stubbing handles are the default handle type. They are returned when
+[`mock()`](#facade.mock) or [`partialMock()`](#facade.partialMock) is called:
+
+```php
+$stubbingHandle = mock('ClassA');
+$stubbingHandle = partialMock('ClassA');
+```
+
+They can also be retrieved at any time from a mock instance, or another handle,
+by using [`on()`](#facade.on):
+
+```php
+$stubbingHandle = on($mock);        // with `use function`
+$stubbingHandle = x\on($mock);      // without `use function`
+$stubbingHandle = Phony::on($mock); // static
+
+$stubbingHandle = on($otherHandle);        // with `use function`
+$stubbingHandle = x\on($otherHandle);      // without `use function`
+$stubbingHandle = Phony::on($otherHandle); // static
+```
+
+To access the actual mock object, call the [`mock()`](#handle.mock) method of
+the handle:
+
+```php
+$mock = $stubbingHandle->mock();
+```
+
+Stubbing handles implement magic [`__call()`](#handle.__call) methods that are
+equivalent to a call to [`with()`](#stub.with):
+
+```php
+// these two statements are equivalent
+$stubbingHandle->methodA('a', 'b')->returns('c');
+$stubbingHandle->methodA->with('a', 'b')->returns('c');
+```
+
+This provides the most convenience when setting up mock behaviors.
+
+Note that a static variant of the stubbing handle exists. See [Static mocks].
+
+#### Verification handles
+
+Verification handles are a type of handle that provides the ability to make
+verifications using a fluent interface.
+
+A verification handle can also be created at any time from a mock instance, or
+another handle, by using [`verify()`](#facade.verify):
+
+```php
+$verificationHandle = verify($mock);        // with `use function`
+$verificationHandle = x\verify($mock);      // without `use function`
+$verificationHandle = Phony::verify($mock); // static
+
+$verificationHandle = verify($otherHandle);        // with `use function`
+$verificationHandle = x\verify($otherHandle);      // without `use function`
+$verificationHandle = Phony::verify($otherHandle); // static
+```
+
+To access the actual mock object, call the [`mock()`](#handle.mock) method of
+the handle:
+
+```php
+$mock = $verificationHandle->mock();
+```
+
+Verification handles implement magic [`__call()`](#handle.__call) methods that
+are equivalent to a call to [`calledWith()`](#stub.calledWith):
+
+```php
+// these two statements are equivalent
+$verificationHandle->methodA('a', 'b');
+$verificationHandle->methodA->calledWith('a', 'b');
+```
+
+These magic methods can be used in a fluent manner to perform multiple
+verifications easily:
+
+```php
+$verificationHandle
+    ->methodA('a', 'b')
+    ->methodB('c', 'd')
+    ->methodC('e', 'f');
+
+// the above is equivalent to these statements:
+$verificationHandle->methodA->calledWith('a', 'b');
+$verificationHandle->methodB->calledWith('c', 'd');
+$verificationHandle->methodC->calledWith('e', 'f');
+```
+
+Note that this does not verify the order of events. If order is important, use
+[order verification].
+
+Note that a static variant of the verification handle exists. See
+[Static mocks].
+
+### Mock builders
+
+Mock builders provide an alternative method for defining and creating mocks,
+when more fine-grained control is desired. To create a mock builder, use
+[`mockBuilder()`](#facade.mockBuilder):
+
+```php
+$builder = mockBuilder();        // with `use function`
+$builder = x\mockBuilder();      // without `use function`
+$builder = Phony::mockBuilder(); // static
+```
+
+#### Customizing the mock class
+
+Mock builders implement a fluent interface, with many methods for customizing
+the generated mock class:
+
+```php
+$builder
+    ->like('ClassA', 'InterfaceA')
+    ->named('CustomClassName')
+    ->addMethod(
+        'methodA',
+        function ($argumentA, &$argumentB) {
+            // ...
+        }
+    )
+    ->addProperty('propertyA', 'a')
+```
+
+This is only a small example of what is possible. For a full list of the
+available methods, see [the mock builder API].
+
+#### Creating mocks from a builder
+
+Once the builder is configured, there are several options for generating the
+mock class, or creating mock instances. All of these will internally "finalize"
+the mock builder, and no further customizations can be made.
+
+Use [`create()`](#builder.create) to create a new mock instance:
+
+```php
+$mock = $builder->create();
+```
+
+Constructor arguments can also be passed to [`create()`](#builder.create):
+
+```php
+$mock = $builder->create('a', 'b');
+```
+
+There is also a more advanced method, [`createWith()`](#builder.createWith),
+that accepts arguments passed by reference:
+
+```php
+$a = null;
+$b = null;
+
+$mock = $builder->createWith([&$a, &$b]);
+```
+
+To create a new "full" mock instance, use [`full()`](#builder.full):
+
+```php
+$mock = $builder->full();
+```
+
+All of the above methods for creating mock instances store the last created mock
+instance on the builder. To retrieve the last created mock instance, use
+[`get()`](#builder.get):
+
+```php
+$mockA = $builder->create();
+$mockB = $builder->get();
+
+echo $mockA === $mockB ? 'true' : 'false'; // outputs 'true'
+```
+
+If no mock instance already exists, [`get()`](#builder.get) will create one and
+return it.
+
+Note that unlike using [`mock()`](#facade.mock), these methods do not
+automatically wrap the returned mock in a [mock handle]. To obtain a stubbing
+handle, use [`on()`](#facade.on):
+
+```php
+$mock = $builder->mock();
+$handle = on($mock);
+```
+
+#### Generating mock classes from a builder
+
+The mock class can be generated without actually creating a mock instance. To
+generate and return a mock class, use [`build()`](#builder.build), (which
+returns a [ReflectionClass]):
+
+```php
+$class = $builder->build();
+```
+
+The [`build()`](#builder.build) method will normally return the same class for
+subsequent calls. To generate a new class each time, pass `true` as the first
+argument:
+
+```php
+$classA = $builder->build(true);
+$classB = $builder->build(true);
+```
+
+Note that this is not possible when a custom class name has been set.
+
+If only the class *name* is required, [`className()`](#builder.className) will
+generate the mock class, and return the class name as a string:
+
+```php
+$className = $builder->className();
 ```
 
 ### Terminology
@@ -476,12 +1320,777 @@ a callable that can be programmed to provide canned answers to incoming calls.
 ## Stubs
 
 *Stubs* are callable entities that can be configured to behave according to a
-set of rules when called. In *Phony*, every stub also implements
-[the spy API][spies].
+set of rules when called. In *Phony*, every stub also implements [the spy API].
+
+### The stub API
+
+<a name="facade.stub" />
+
+----
+
+> *[stub][stub-api]* [**stub**](#facade.stub)($callback = null) *(with [use function])*<br />
+> *[stub][stub-api]* x\\[**stub**](#facade.stub)($callback = null) *(without [use function])*<br />
+> *[stub][stub-api]* Phony::[**stub**](#facade.stub)($callback = null) *(static)*
+
+Create a new [stub].
+
+*See [Stubbing an existing callable], [Anonymous stubs].*
+
+<a name="stub.invoke" />
+<a name="stub.__invoke" />
+
+----
+
+> *mixed* $stub->[**invoke**](#stub.invoke)(...$arguments) or
+> [**$stub(...$arguments)**](#stub.__invoke)
+> throws [Exception], [Error]
+
+Invoke the stub, record the call, and return or throw the result.
+
+*This method does not support reference parameters.*
+
+*See [Invoking spies].*
+
+<a name="stub.invokeWith" />
+
+----
+
+> *mixed* $stub->[**invokeWith**](#stub.invokeWith)($arguments)
+> throws [Exception], [Error]
+
+Invoke the stub, record the call, and return or throw the result.
+
+*This method supports reference parameters.*
+
+*See [Invoking spies].*
+
+<a name="stub.label" />
+
+----
+
+> *string|null* $stub->[**label**](#stub.label)()
+
+Get the [label][labeling spies].
+
+<a name="stub.setLabel" />
+
+----
+
+> *fluent* $stub->[**setLabel**](#stub.setLabel)($label)
+
+Set the [label][labeling spies].
+
+<a name="stub.self" />
+
+----
+
+> *mixed* $stub->[**self**](#stub.self)()
+
+Get the [self value] of this stub.
+
+*This value is used by [returnsSelf()](#stub.returnsSelf).*
+
+<a name="stub.setSelf" />
+
+----
+
+> *void* $stub->[**setSelf**](#stub.setSelf)($self)
+
+Set the [self value] of this stub.
+
+*This value is used by [returnsSelf()](#stub.returnsSelf).*
+
+<a name="stub.with" />
+
+----
+
+> *fluent* $stub->[**with**](#stub.with)(...$arguments)
+
+Modify the current criteria to match the supplied arguments.
+
+*See [Matching stub arguments].*
+
+<a name="stub.calls" />
+
+----
+
+> *fluent* $stub->[**calls**](#stub.calls)($callback, ...$additionalCallbacks)
+
+Add callbacks to be called as part of an answer.
+
+*Note that all supplied callbacks will be called in the same invocation.*
+
+*This method does not support reference parameters.*
+
+*See [Invoking callables].*
+
+<a name="stub.callsWith" />
+
+----
+
+> *fluent* $stub->[**callsWith**](#stub.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+
+Add a callback to be called as part of an answer.
+
+*Note that all supplied callbacks will be called in the same invocation.*
+
+*This method supports reference parameters.*
+
+*See [Invoking callables].*
+
+<a name="stub.callsArgument" />
+
+----
+
+> *fluent* $stub->[**callsArgument**](#stub.callsArgument)($index = 0, ...$additionalIndices)
+
+Add argument callbacks to be called as part of an answer.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+*Note that all supplied callbacks will be called in the same invocation.*
+
+*This method does not support reference parameters.*
+
+*See [Invoking arguments].*
+
+<a name="stub.callsArgumentWith" />
+
+----
+
+> *fluent* $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+
+Add an argument callback to be called as part of an answer.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+*This method supports reference parameters.*
+
+*Note that all supplied callbacks will be called in the same invocation.*
+
+*See [Invoking arguments].*
+
+<a name="stub.setsArgument" />
+
+----
+
+> *fluent* $stub->[**setsArgument**](#stub.setsArgument)($indexOrValue = null, $value = null)
+
+Set the value of an argument passed by reference as part of an answer.
+
+*If called with no arguments, sets the first argument to `null`.*
+
+*If called with one argument, sets the first argument to `$indexOrValue`.*
+
+*If called with two arguments, sets the argument at `$indexOrValue` to
+`$value`.*
+
+*See [Setting passed-by-reference arguments].*
+
+<a name="stub.does" />
+
+----
+
+> *fluent* $stub->[**does**](#stub.does)($callback, ...$additionalCallbacks)
+
+Add callbacks as answers.
+
+*See [Using a callable as an answer].*
+
+<a name="stub.doesWith" />
+
+----
+
+> *fluent* $stub->[**doesWith**](#stub.doesWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+
+Add a callback as an answer.
+
+*The supplied arguments support reference parameters.*
+
+*See [Using a callable as an answer].*
+
+<a name="stub.forwards" />
+
+----
+
+> *fluent* $stub->[**forwards**](#stub.forwards)($arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+
+Add an answer that calls the wrapped callback.
+
+*The supplied arguments support reference parameters.*
+
+*See [Forwarding to the original callable].*
+
+<a name="stub.returns" />
+
+----
+
+> *fluent* $stub->[**returns**](#stub.returns)($value = null)
+
+Add answers that return values.
+
+*See [Returning values].*
+
+<a name="stub.returnsArgument" />
+
+----
+
+> *fluent* $stub->[**returnsArgument**](#stub.returnsArgument)($index = 0)
+
+Add an answer that returns an argument.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+*See [Returning arguments].*
+
+<a name="stub.returnsSelf" />
+
+----
+
+> *fluent* $stub->[**returnsSelf**](#stub.returnsSelf)()
+
+Add an answer that returns the self value.
+
+*See [Returning the "self" value].*
+
+<a name="stub.throws" />
+
+----
+
+> *fluent* $stub->[**throws**](#stub.throws)($exception = null, ...$additionalExceptions)
+
+Add answers that throw exceptions.
+
+*See [Throwing exceptions].*
+
+<a name="stub.useGeneratorSpies" />
+
+----
+
+> *boolean* $stub->[**useGeneratorSpies**](#stub.useGeneratorSpies)()
+
+Returns `true` if this stub uses [generator spies].
+
+<a name="stub.setUseGeneratorSpies" />
+
+----
+
+> *void* $stub->[**setUseGeneratorSpies**](#stub.setUseGeneratorSpies)($useGeneratorSpies)
+
+Turn on or off the use of [generator spies].
+
+<a name="stub.useTraversableSpies" />
+
+----
+
+> *boolean* $stub->[**useTraversableSpies**](#stub.useTraversableSpies)()
+
+Returns `true` if this stub uses [traversable spies].
+
+<a name="stub.setUseTraversableSpies" />
+
+----
+
+> *void* $stub->[**setUseTraversableSpies**](#stub.setUseTraversableSpies)($useTraversableSpies)
+
+Turn on or off the use of [traversable spies].
+
+<a name="stub.arguments" />
+
+----
+
+> *[arguments][arguments-api]* $stub->[**arguments**](#stub.arguments)()
+> throws [UndefinedCallException]
+
+Get the arguments of the first call.
+
+<a name="stub.argument" />
+
+----
+
+> *mixed* $stub->[**argument**](#stub.argument)($index = 0)
+> throws [UndefinedCallException], [UndefinedArgumentException]
+
+Get the argument of the first call at `$index`.
+
+<a name="stub.hasEvents" />
+
+----
+
+> *boolean* $stub->[**hasEvents**](#stub.hasEvents)()
+
+Returns `true` if this collection contains any events.
+
+<a name="stub.hasCalls" />
+
+----
+
+> *boolean* $stub->[**hasCalls**](#stub.hasCalls)()
+
+Returns `true` if this collection contains any calls.
+
+<a name="stub.eventCount" />
+
+----
+
+> *integer* $stub->[**eventCount**](#stub.eventCount)()
+
+Get the number of events.
+
+<a name="stub.callCount" />
+
+----
+
+> *integer* $stub->[**callCount**](#stub.callCount)()
+
+Get the number of calls.
+
+<a name="stub.allEvents" />
+
+----
+
+> *array\<[event][event-api]>* $stub->[**allEvents**](#stub.allEvents)()
+
+Get all events as an array.
+
+<a name="stub.allCalls" />
+
+----
+
+> *array\<[call][call-api]>* $stub->[**allCalls**](#stub.allCalls)()
+
+Get all calls as an array.
+
+<a name="stub.firstCall" />
+
+----
+
+> *[call][call-api]* $stub->[**firstCall**](#stub.firstCall)()
+> throws [UndefinedCallException]
+
+Get the first call.
+
+<a name="stub.lastCall" />
+
+----
+
+> *[call][call-api]* $stub->[**lastCall**](#stub.lastCall)()
+> throws [UndefinedCallException]
+
+Get the last call.
+
+<a name="stub.eventAt" />
+
+----
+
+> *[event][event-api]* $stub->[**eventAt**](#stub.eventAt)($index = 0)
+> throws [UndefinedEventException]
+
+Get the event at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="stub.callAt" />
+
+----
+
+> *[call][call-api]* $stub->[**callAt**](#stub.callAt)($index = 0)
+> throws [UndefinedCallException]
+
+Get the call at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="stub.called" />
+
+----
+
+> *[verification][verification-api]* $stub->[**called**](#stub.called)()
+> throws [AssertionException]
+
+Throws an exception unless called.
+
+*See [Verifying that a call was made].*
+
+<a name="stub.checkCalled" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkCalled**](#stub.checkCalled)()
+
+Checks if called.
+
+*See [Verifying that a call was made], [Check verification].*
+
+<a name="stub.calledWith" />
+
+----
+
+> *[verification][verification-api]* $stub->[**calledWith**](#stub.calledWith)(...$arguments)
+> throws [AssertionException]
+
+Throws an exception unless called.
+
+*See [Verifying that a call was made].*
+
+<a name="stub.checkCalledWith" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkCalledWith**](#stub.checkCalledWith)(...$arguments)
+
+Checks if called with the supplied arguments.
+
+*See [Verifying that a spy was called with specific arguments],
+[Check verification].*
+
+<a name="stub.calledWith" />
+
+----
+
+> *[verification][verification-api]* $stub->[**calledWith**](#stub.calledWith)(...$arguments)
+> throws [AssertionException]
+
+Throws an exception unless called with the supplied arguments.
+
+*See [Verifying that a spy was called with specific arguments].*
+
+<a name="stub.checkCalledOn" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkCalledOn**](#stub.checkCalledOn)($value)
+
+Checks if the bound `$this` value is equal to the supplied value.
+
+*See [Verifying spy closure binding], [Check verification].*
+
+<a name="stub.calledOn" />
+
+----
+
+> *[verification][verification-api]* $stub->[**calledOn**](#stub.calledOn)($value)
+> throws [AssertionException]
+
+Throws an exception unless the bound `$this` value is equal to the supplied
+value.
+
+*See [Verifying spy closure binding].*
+
+<a name="stub.checkReturned" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkReturned**](#stub.checkReturned)($value = null)
+
+Checks if this stub returned the supplied value.
+
+*When called with no arguments, this method simply checks that the stub returned
+any value.*
+
+*See [Verifying spy return values], [Check verification].*
+
+<a name="stub.returned" />
+
+----
+
+> *[verification][verification-api]* $stub->[**returned**](#stub.returned)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless this stub returned the supplied value.
+
+*When called with no arguments, this method simply checks that the stub returned
+any value.*
+
+*See [Verifying spy return values].*
+
+<a name="stub.checkThrew" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkThrew**](#stub.checkThrew)($type = null)
+
+Checks if an exception of the supplied type was thrown.
+
+*When called with no arguments, this method simply checks that the stub threw
+any exception.*
+
+*When called with a string, this method checks that the stub threw an exception
+that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the stub threw
+an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the stub threw an
+exception that matches the supplied matcher.*
+
+*See [Verifying spy exceptions], [Check verification].*
+
+<a name="stub.threw" />
+
+----
+
+> *[verification][verification-api]* $stub->[**threw**](#stub.threw)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless this stub threw an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the stub threw
+any exception.*
+
+*When called with a string, this method checks that the stub threw an exception
+that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the stub threw
+an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the stub threw an
+exception that matches the supplied matcher.*
+
+*See [Verifying spy exceptions].*
+
+<a name="stub.checkProduced" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkProduced**](#stub.checkProduced)($keyOrValue = null, $value = null)
+
+Checks if this stub produced the supplied values.
+
+*When called with no arguments, this method simply checks that the stub produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*See [Verifying values produced by spies], [Check verification].*
+
+<a name="stub.produced" />
+
+----
+
+> *[verification][verification-api]* $stub->[**produced**](#stub.produced)($keyOrValue = null, $value = null)
+> throws [AssertionException]
+
+Checks if this stub produced the supplied values.
+
+*When called with no arguments, this method simply checks that the stub produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*See [Verifying values produced by spies].*
+
+<a name="stub.checkProducedAll" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkProducedAll**](#stub.checkProducedAll)(...$pairs)
+
+Checks if this stub produced all of the supplied key-value pairs, in the
+supplied order, in a single call.
+
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`checkProduced()`](#stub.checkProduced).*
+
+*See [Verifying values produced by spies], [Check verification].*
+
+<a name="stub.producedAll" />
+
+----
+
+> *[verification][verification-api]* $stub->[**producedAll**](#stub.producedAll)(...$pairs)
+> throws [AssertionException]
+
+Throws an exception unless this stub produced all of the supplied key-value
+pairs, in the supplied order, in a single call.
+
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`produced()`](#stub.produced).*
+
+*See [Verifying values produced by spies].*
+
+<a name="stub.checkReceived" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkReceived**](#stub.checkReceived)($value = null)
+
+Checks if this stub received the supplied value.
+
+*When called with no arguments, this method simply checks that the stub received
+any value.*
+
+*See [Verifying values received by spies], [Check verification].*
+
+<a name="stub.received" />
+
+----
+
+> *[verification][verification-api]* $stub->[**received**](#stub.received)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless this stub received the supplied value.
+
+*When called with no arguments, this method simply checks that the stub received
+any value.*
+
+*See [Verifying values received by spies].*
+
+<a name="stub.checkReceivedException" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkReceivedException**](#stub.checkReceivedException)($type = null)
+
+Checks if this stub received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the stub received
+any exception.*
+
+*When called with a string, this method checks that the stub received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the stub
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the stub received an
+exception that matches the supplied matcher.*
+
+*See [Verifying exceptions received by spies], [Check verification].*
+
+<a name="stub.receivedException" />
+
+----
+
+> *[verification][verification-api]* $stub->[**receivedException**](#stub.receivedException)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless this call received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the stub received
+any exception.*
+
+*When called with a string, this method checks that the stub received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the stub
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the stub received an
+exception that matches the supplied matcher.*
+
+*See [Verifying exceptions received by spies].*
+
+<a name="stub.never" />
+
+----
+
+> *fluent* $stub->[**never**](#stub.never)()
+
+Requires that the next verification never matches.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="stub.once" />
+
+----
+
+> *fluent* $stub->[**once**](#stub.once)()
+
+Requires that the next verification matches only once.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="stub.twice" />
+
+----
+
+> *fluent* $stub->[**twice**](#stub.twice)()
+
+Requires that the next verification matches exactly two times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="stub.thrice" />
+
+----
+
+> *fluent* $stub->[**thrice**](#stub.thrice)()
+
+Requires that the next verification matches exactly three times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="stub.times" />
+
+----
+
+> *fluent* $stub->[**times**](#stub.times)($times)
+
+Requires that the next verification matches exactly `$times` times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="stub.atLeast" />
+
+----
+
+> *fluent* $stub->[**atLeast**](#stub.atLeast)($minimum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`.
+
+*See [Verifying that a spy event happened a bounded number of times].*
+
+<a name="stub.atMost" />
+
+----
+
+> *fluent* $stub->[**atMost**](#stub.atMost)($maximum)
+
+Requires that the next verification matches a number of times less than or equal
+to `$maximum`.
+
+*See [Verifying that a spy event happened a bounded number of times].*
+
+<a name="stub.between" />
+
+----
+
+> *fluent* $stub->[**between**](#stub.between)($minimum, $maximum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`, and less than or equal to `$maximum`.
+
+*See [Verifying that a spy event happened a bounded number of times].*
+
+<a name="stub.always" />
+
+----
+
+> *fluent* $stub->[**always**](#stub.always)()
+
+Requires that the next verification matches for all possible items.
+
+*See [Verifying that all spy events happen the same way].*
 
 ### Stubbing an existing callable
 
-Any callable can be stubbed:
+Any callable can be stubbed, by passing the callable to
+[`stub()`](#facade.stub):
 
 ```php
 $stub = stub($callable);        // with `use function`
@@ -519,7 +2128,7 @@ echo $stub(2, 3, 1); // outputs '9'
 ### Anonymous stubs
 
 *Anonymous stubs* are stubs that do not wrap an existing callable. An anonymous
-stub is created as follows:
+stub is created by calling [`stub()`](#facade.stub) without passing a callable:
 
 ```php
 $stub = stub();        // with `use function`
@@ -572,8 +2181,9 @@ echo $stub('a'); // outputs 'x'
 
 #### Multiple rules
 
-Each time `with()` is called (not to be confused with `calledWith()`, which is
-part of [the spy API][spies]), a new rule is started:
+Each time [`with()`](#stub.with) is called (not to be confused with
+[`calledWith()`](#spy.calledWith), which is part of [the spy API]), a new rule
+is started:
 
 ```php
 $stub
@@ -646,7 +2256,8 @@ echo $stub('a');      // outputs 'y'
 #### The default rule and answer
 
 When a new stub is created, the first rule is started implicitly, as if
-`with('*')` were called. For example, the two following stubs behave the same:
+[`with('*')`][shorthand matchers] were called. For example, the two following
+stubs behave the same:
 
 ```php
 $stubA = stub()
@@ -659,8 +2270,8 @@ $stubB = stub()
 ```
 
 If a new rule is started before any answers are defined, the stub behaves as if
-`returns()` were called, causing the stub to return `null` by default. For
-example, the two following stubs behave the same:
+[`returns()`](#stub.returns) were called, causing the stub to return `null` by
+default. For example, the two following stubs behave the same:
 
 ```php
 $stubA = stub()
@@ -674,9 +2285,10 @@ $stubB = stub()
 
 ### Matching stub arguments
 
-Stub arguments can be matched using `with()` (not to be confused with
-`calledWith()`, which is part of [the spy API][spies]). Arguments passed to
-`with()` can be literal values, or [matchers], including [shorthand matchers]:
+Stub arguments can be matched using [`with()`](#stub.with) (not to be confused
+with [`calledWith()`](#spy.calledWith), which is part of [the spy API]).
+Arguments passed to [`with()`](#stub.with) can be literal values, or [matchers],
+including [shorthand matchers]:
 
 ```php
 $stub
@@ -695,7 +2307,7 @@ echo $stub();              // outputs 'z'
 
 ### Returning values
 
-To return a value from a stub, use `returns()`:
+To return a value from a stub, use [`returns()`](#stub.returns):
 
 ```php
 $stubA = stub()->returns('x');
@@ -705,8 +2317,9 @@ echo $stubA();          // outputs 'x'
 echo gettype($stubB()); // outputs 'NULL'
 ```
 
-Calling `returns()` with multiple arguments is equivalent to calling it once
-with each argument. For example, the two following stubs behave the same:
+Calling [`returns()`](#stub.returns) with multiple arguments is equivalent to
+calling it once with each argument. For example, the two following stubs behave
+the same:
 
 ```php
 $stubA = stub()->returns('x', 'y');
@@ -722,7 +2335,8 @@ echo $stubB(); // outputs 'y'
 
 ### Returning arguments
 
-To return an argument from a stub, use `returnsArgument()`:
+To return an argument from a stub, use
+[`returnsArgument()`](#stub.returnsArgument):
 
 ```php
 $stubA = stub()->returnsArgument();   // returns the first argument
@@ -734,11 +2348,11 @@ echo $stubB('x', 'y', 'z'); // outputs 'y'
 echo $stubC('x', 'y', 'z'); // outputs 'z'
 ```
 
-### Returning the 'self' value
+### Returning the "self" value
 
-When stubs are retrieved from a mock, their 'self' value is automatically set to
+When stubs are retrieved from a mock, their "self" value is automatically set to
 the mock itself. This allows mocking of [fluent interfaces] with the
-`returnsSelf()` method:
+[`returnsSelf()`](#stub.returnsSelf) method:
 
 ```php
 interface FluentInterface
@@ -756,7 +2370,8 @@ $fluent = $handle->mock();
 echo $fluent->methodA()->methodB(); // outputs 'x'
 ```
 
-The self value can also be set manually by calling `setSelf()` on any stub:
+The self value can also be set manually by calling [`setSelf()`](#stub.setSelf)
+on any stub:
 
 ```php
 $stub = stub()->returnsSelf();
@@ -765,11 +2380,9 @@ $stub->setSelf('x');
 echo $stub(); // outputs 'x'
 ```
 
-[fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
-
 ### Throwing exceptions
 
-To throw an exception from a stub, use `throws()`:
+To throw an exception from a stub, use [`throws()`](#stub.throws):
 
 ```php
 $exception = new RuntimeException('You done goofed.');
@@ -781,8 +2394,9 @@ $stubA(); // throws $exception
 $stubB(); // throws a generic exception
 ```
 
-Calling `throws()` with multiple arguments is equivalent to calling it once
-with each argument. For example, the two following stubs behave the same:
+Calling [`throws()`](#stub.throws) with multiple arguments is equivalent to
+calling it once with each argument. For example, the two following stubs behave
+the same:
 
 ```php
 $exceptionA = new RuntimeException('You done goofed.');
@@ -801,7 +2415,7 @@ $stubB(); // throws $exceptionB
 
 ### Using a callable as an answer
 
-To use a callable as an answer, use `does()`:
+To use a callable as an answer, use [`does()`](#stub.does):
 
 ```php
 $stub = stub()->does('max');
@@ -809,8 +2423,9 @@ $stub = stub()->does('max');
 echo $stub(2, 3, 1); // outputs '3'
 ```
 
-Calling `does()` with multiple arguments is equivalent to calling it once with
-each argument. For example, the two following stubs behave the same:
+Calling [`does()`](#stub.does) with multiple arguments is equivalent to calling
+it once with each argument. For example, the two following stubs behave the
+same:
 
 ```php
 $stubA = stub()->does('min', 'max');
@@ -824,15 +2439,15 @@ echo $stubB(2, 3, 1); // outputs '1'
 echo $stubB(2, 3, 1); // outputs '3'
 ```
 
-There is also a more powerful version of `does()`, named `doesWith()`, that
-allows more control over which arguments are passed to the callable, and how
-they are passed:
+There is also a more powerful version of [`does()`](#stub.does), named
+[`doesWith()`](#stub.doesWith), that allows more control over which arguments
+are passed to the callable, and how they are passed:
 
 ```php
 $stub = stub()->doesWith(
     'implode', // callable
     [', '],    // fixed arguments
-    false,     // prefix the 'self' value?
+    false,     // prefix the "self" value?
     true,      // suffix the arguments as an array?
     false      // suffix the arguments normally?
 );
@@ -840,12 +2455,37 @@ $stub = stub()->doesWith(
 echo $stub('x', 'y', 'z'); // outputs 'x, y, z'
 ```
 
-For more details, see `Eloquent\Phony\Stub\StubInterface`.
+The [`doesWith()`](#stub.doesWith) method also supports arguments passed by
+reference:
+
+```php
+$a = null;
+$b = null;
+$c = null;
+$d = null;
+
+$stub = stub()->doesWith(
+    function (&$a, &$b, &$c, &$d) {
+        list($a, $b, $c, $d) = ['a', 'b', 'c', 'd'];
+    },
+    [&$a, &$b],
+    false,
+    false,
+    true
+);
+
+$stub->invokeWith([&$c, &$d]);
+
+echo $a; // outputs 'a'
+echo $b; // outputs 'b'
+echo $c; // outputs 'c'
+echo $d; // outputs 'd'
+```
 
 ### Forwarding to the original callable
 
-When stubbing an existing callable, the stub can 'forward' calls on to the
-original callable using `forwards()`:
+When stubbing an existing callable, the stub can "forward" calls on to the
+original callable using [`forwards()`](#stub.forwards):
 
 ```php
 $stub = stub('max')
@@ -879,9 +2519,48 @@ echo $cat->speak();     // outputs 'Meow.'
 echo $cat->speak(true); // outputs 'Cower in fear, mortal.'
 ```
 
+The [`forwards()`](#stub.forwards) method also supports advanced usage,
+including the ability to add to, and/or remove from, the arguments passed on to
+the original callable:
+
+```php
+$stub = stub('implode')->forwards(
+    [', '],    // fixed arguments
+    false,     // prefix the "self" value?
+    true,      // suffix the arguments as an array?
+    false      // suffix the arguments normally?
+);
+
+echo $stub('x', 'y', 'z'); // outputs 'x, y, z'
+```
+
+Arguments passed by reference are also supported:
+
+```php
+$a = null;
+$b = null;
+$c = null;
+$d = null;
+
+$stub = stub(
+    function (&$a, &$b, &$c, &$d) {
+        list($a, $b, $c, $d) = ['a', 'b', 'c', 'd'];
+    }
+);
+
+$stub->forwards([&$a, &$b], false, false, true);
+
+$stub->invokeWith([&$c, &$d]);
+
+echo $a; // outputs 'a'
+echo $b; // outputs 'b'
+echo $c; // outputs 'c'
+echo $d; // outputs 'd'
+```
+
 ### Answers that perform multiple actions
 
-Stubs can perform mulitple actions as part of a single answer. This allows
+Stubs can perform multiple actions as part of a single answer. This allows
 callables that have side effects other than return values or exceptions to be
 emulated.
 
@@ -891,7 +2570,8 @@ an event emitter implementation.
 
 #### Setting passed-by-reference arguments
 
-To set a reference argument as part of an answer, use `setsArgument()`:
+To set a reference argument as part of an answer, use
+[`setsArgument()`](#stub.setsArgument):
 
 ```php
 $stub = stub(function (&$a, &$b, &$c) {})
@@ -907,7 +2587,8 @@ echo $b; // outputs 'y'
 echo $c; // outputs 'z'
 ```
 
-If only one argument is passed to `setsArgument()`, it sets the first argument:
+If only one argument is passed to [`setsArgument()`](#stub.setsArgument), it
+sets the first argument:
 
 ```php
 $stub = stub(function (&$a) {})
@@ -920,8 +2601,8 @@ $stub($a);
 echo $a; // outputs 'x'
 ```
 
-If `setsArgument()` is called without any arguments, it sets the first argument
-to `null`:
+If [`setsArgument()`](#stub.setsArgument) is called without any arguments, it
+sets the first argument to `null`:
 
 ```php
 $stub = stub(function (&$a) {})
@@ -935,7 +2616,8 @@ echo gettype($a); // outputs 'NULL'
 
 #### Invoking arguments
 
-To invoke an argument as part of an answer, use `callsArgument()`:
+To invoke an argument as part of an answer, use
+[`callsArgument()`](#stub.callsArgument):
 
 ```php
 $stub = stub()
@@ -951,16 +2633,17 @@ $z = function () { echo 'z'; };
 $stub($x, $y, $z); // outputs 'xyz'
 ```
 
-There is also a more powerful version of `callsArgument()`, named
-`callsArgumentWith()`, that allows more control over which arguments are passed
-to the callable, and how they are passed:
+There is also a more powerful version of
+[`callsArgument()`](#stub.callsArgument), named
+[`callsArgumentWith()`](#stub.callsArgumentWith), that allows more control over
+which arguments are passed to the callable, and how they are passed:
 
 ```php
 $stub = stub()
     ->callsArgumentWith(
         1,              // argument to invoke
         ['%s, %s, %s'], // fixed arguments
-        false,          // prefix the 'self' value?
+        false,          // prefix the "self" value?
         true,           // suffix the arguments as an array?
         false           // suffix the arguments normally?
     )
@@ -969,11 +2652,38 @@ $stub = stub()
 $stub('x', 'printf', 'y'); // outputs 'x, printf, y'
 ```
 
-For more details, see `Eloquent\Phony\Stub\StubInterface`.
+The [`callsArgumentWith()`](#stub.callsArgumentWith) method also supports
+arguments passed by reference:
+
+```php
+$a = null;
+$b = null;
+$c = null;
+$d = null;
+
+$stub = stub()->callsArgumentWith(
+    -1,
+    [&$a, &$b],
+    false,
+    false,
+    true
+);
+
+$callback = function (&$a, &$b, &$c, &$d) {
+    list($a, $b, $c, $d) = ['a', 'b', 'c', 'd'];
+};
+
+$stub->invokeWith([&$c, &$d, $callback]);
+
+echo $a; // outputs 'a'
+echo $b; // outputs 'b'
+echo $c; // outputs 'c'
+echo $d; // outputs 'd'
+```
 
 #### Invoking callables
 
-To invoke a callable as part of an answer, use `calls()`:
+To invoke a callable as part of an answer, use [`calls()`](#stub.calls):
 
 ```php
 $stub = stub()->calls('printf')->returns();
@@ -981,8 +2691,9 @@ $stub = stub()->calls('printf')->returns();
 $stub('%s, %s', 'a', 'b'); // outputs 'a, b'
 ```
 
-Calling `calls()` with multiple arguments is equivalent to calling it once with
-each argument. For example, the two following stubs behave the same:
+Calling [`calls()`](#stub.calls) with multiple arguments is equivalent to
+calling it once with each argument. For example, the two following stubs behave
+the same:
 
 ```php
 $x = function () { echo 'x'; };
@@ -997,16 +2708,16 @@ $stubB = stub()->calls($x)->calls($y)->returns();
 echo $stubB(); // outputs 'xy'
 ```
 
-There is also a more powerful version of `calls()`, named `callsWith()`, that
-allows more control over which arguments are passed to the callable, and how
-they are passed:
+There is also a more powerful version of [`calls()`](#stub.calls), named
+[`callsWith()`](#stub.callsWith), that allows more control over which arguments
+are passed to the callable, and how they are passed:
 
 ```php
 $stub = stub()
     ->callsWith(
         'printf',   // argument to invoke
         ['%s, %s'], // fixed arguments
-        false,      // prefix the 'self' value?
+        false,      // prefix the "self" value?
         false,      // suffix the arguments as an array?
         true        // suffix the arguments normally?
     )
@@ -1015,21 +2726,613 @@ $stub = stub()
 $stub('x', 'y'); // outputs 'x, y'
 ```
 
-For more details, see `Eloquent\Phony\Stub\StubInterface`.
+The [`callsWith()`](#stub.callsWith) method also supports arguments passed by
+reference:
+
+```php
+$a = null;
+$b = null;
+$c = null;
+$d = null;
+
+$stub = stub()->callsWith(
+    function (&$a, &$b, &$c, &$d) {
+        list($a, $b, $c, $d) = ['a', 'b', 'c', 'd'];
+    },
+    [&$a, &$b],
+    false,
+    false,
+    true
+);
+
+$stub->invokeWith([&$c, &$d]);
+
+echo $a; // outputs 'a'
+echo $b; // outputs 'b'
+echo $c; // outputs 'c'
+echo $d; // outputs 'd'
+```
 
 ## Spies
 
 *Spies* record interactions with callable entities, such as functions, methods,
-closures, and objects with an [__invoke()] method. They can be used to verify
+closures, and objects with an [`__invoke()`] method. They can be used to verify
 both the *input*, and *output* of function calls.
 
-Most of the methods in the spy API are mirrored in [the call API][calls].
+Most of the methods in the spy API are mirrored in [the call API].
 
-[__invoke()]: http://php.net/language.oop5.magic#object.invoke
+### The spy API
+
+<a name="facade.spy" />
+
+----
+
+> *[spy][spy-api]* [**spy**](#facade.spy)($callback = null) *(with [use function])*<br />
+> *[spy][spy-api]* x\\[**spy**](#facade.spy)($callback = null) *(without [use function])*<br />
+> *[spy][spy-api]* Phony::[**spy**](#facade.spy)($callback = null) *(static)*
+
+Create a new [spy].
+
+*See [Spying on an existing callable], [Anonymous spies].*
+
+<a name="spy.invoke" />
+<a name="spy.__invoke" />
+
+----
+
+> *mixed* $spy->[**invoke**](#spy.invoke)(...$arguments) or
+> [**$spy(...$arguments)**](#spy.__invoke)
+> throws [Exception], [Error]
+
+Invoke the spy, record the call, and return or throw the result.
+
+*This method does not support reference parameters.*
+
+*See [Invoking spies].*
+
+<a name="spy.invokeWith" />
+
+----
+
+> *mixed* $spy->[**invokeWith**](#spy.invokeWith)($arguments)
+> throws [Exception], [Error]
+
+Invoke the spy, record the call, and return or throw the result.
+
+*This method supports reference parameters.*
+
+*See [Invoking spies].*
+
+<a name="spy.label" />
+
+----
+
+> *string|null* $spy->[**label**](#spy.label)()
+
+Get the [label][labeling spies].
+
+<a name="spy.setLabel" />
+
+----
+
+> *fluent* $spy->[**setLabel**](#spy.setLabel)($label)
+
+Set the [label][labeling spies].
+
+<a name="spy.useGeneratorSpies" />
+
+----
+
+> *boolean* $spy->[**useGeneratorSpies**](#spy.useGeneratorSpies)()
+
+Returns `true` if this spy uses [generator spies].
+
+<a name="spy.setUseGeneratorSpies" />
+
+----
+
+> *void* $spy->[**setUseGeneratorSpies**](#spy.setUseGeneratorSpies)($useGeneratorSpies)
+
+Turn on or off the use of [generator spies].
+
+<a name="spy.useTraversableSpies" />
+
+----
+
+> *boolean* $spy->[**useTraversableSpies**](#spy.useTraversableSpies)()
+
+Returns `true` if this spy uses [traversable spies].
+
+<a name="spy.setUseTraversableSpies" />
+
+----
+
+> *void* $spy->[**setUseTraversableSpies**](#spy.setUseTraversableSpies)($useTraversableSpies)
+
+Turn on or off the use of [traversable spies].
+
+<a name="spy.arguments" />
+
+----
+
+> *[arguments][arguments-api]* $spy->[**arguments**](#spy.arguments)()
+> throws [UndefinedCallException]
+
+Get the arguments of the first call.
+
+<a name="spy.argument" />
+
+----
+
+> *mixed* $spy->[**argument**](#spy.argument)($index = 0)
+> throws [UndefinedCallException], [UndefinedArgumentException]
+
+Get the argument of the first call at `$index`.
+
+<a name="spy.hasEvents" />
+
+----
+
+> *boolean* $spy->[**hasEvents**](#spy.hasEvents)()
+
+Returns `true` if this collection contains any events.
+
+<a name="spy.hasCalls" />
+
+----
+
+> *boolean* $spy->[**hasCalls**](#spy.hasCalls)()
+
+Returns `true` if this collection contains any calls.
+
+<a name="spy.eventCount" />
+
+----
+
+> *integer* $spy->[**eventCount**](#spy.eventCount)()
+
+Get the number of events.
+
+<a name="spy.callCount" />
+
+----
+
+> *integer* $spy->[**callCount**](#spy.callCount)()
+
+Get the number of calls.
+
+<a name="spy.allEvents" />
+
+----
+
+> *array\<[event][event-api]>* $spy->[**allEvents**](#spy.allEvents)()
+
+Get all events as an array.
+
+<a name="spy.allCalls" />
+
+----
+
+> *array\<[call][call-api]>* $spy->[**allCalls**](#spy.allCalls)()
+
+Get all calls as an array.
+
+<a name="spy.firstCall" />
+
+----
+
+> *[call][call-api]* $spy->[**firstCall**](#spy.firstCall)()
+> throws [UndefinedCallException]
+
+Get the first call.
+
+<a name="spy.lastCall" />
+
+----
+
+> *[call][call-api]* $spy->[**lastCall**](#spy.lastCall)()
+> throws [UndefinedCallException]
+
+Get the last call.
+
+<a name="spy.eventAt" />
+
+----
+
+> *[event][event-api]* $spy->[**eventAt**](#spy.eventAt)($index = 0)
+> throws [UndefinedEventException]
+
+Get the event at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="spy.callAt" />
+
+----
+
+> *[call][call-api]* $spy->[**callAt**](#spy.callAt)($index = 0)
+> throws [UndefinedCallException]
+
+Get the call at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="spy.checkCalled" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkCalled**](#spy.checkCalled)()
+
+Checks if called.
+
+*See [Verifying that a call was made], [Check verification].*
+
+<a name="spy.called" />
+
+----
+
+> *[verification][verification-api]* $spy->[**called**](#spy.called)()
+> throws [AssertionException]
+
+Throws an exception unless called.
+
+*See [Verifying that a call was made].*
+
+<a name="spy.checkCalledWith" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkCalledWith**](#spy.checkCalledWith)(...$arguments)
+
+Checks if called with the supplied arguments.
+
+*See [Verifying that a spy was called with specific arguments],
+[Check verification].*
+
+<a name="spy.calledWith" />
+
+----
+
+> *[verification][verification-api]* $spy->[**calledWith**](#spy.calledWith)(...$arguments)
+> throws [AssertionException]
+
+Throws an exception unless called with the supplied arguments.
+
+*See [Verifying that a spy was called with specific arguments].*
+
+<a name="spy.checkCalledOn" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkCalledOn**](#spy.checkCalledOn)($value)
+
+Checks if the bound `$this` value is equal to the supplied value.
+
+*See [Verifying spy closure binding], [Check verification].*
+
+<a name="spy.calledOn" />
+
+----
+
+> *[verification][verification-api]* $spy->[**calledOn**](#spy.calledOn)($value)
+> throws [AssertionException]
+
+Throws an exception unless the bound `$this` value is equal to the supplied
+value.
+
+*See [Verifying spy closure binding].*
+
+<a name="spy.checkReturned" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkReturned**](#spy.checkReturned)($value = null)
+
+Checks if this spy returned the supplied value.
+
+*When called with no arguments, this method simply checks that the spy returned
+any value.*
+
+*See [Verifying spy return values], [Check verification].*
+
+<a name="spy.returned" />
+
+----
+
+> *[verification][verification-api]* $spy->[**returned**](#spy.returned)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless this spy returned the supplied value.
+
+*When called with no arguments, this method simply checks that the spy returned
+any value.*
+
+*See [Verifying spy return values].*
+
+<a name="spy.checkThrew" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkThrew**](#spy.checkThrew)($type = null)
+
+Checks if an exception of the supplied type was thrown.
+
+*When called with no arguments, this method simply checks that the spy threw any
+exception.*
+
+*When called with a string, this method checks that the spy threw an exception
+that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the spy threw
+an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the spy threw an
+exception that matches the supplied matcher.*
+
+*See [Verifying spy exceptions], [Check verification].*
+
+<a name="spy.threw" />
+
+----
+
+> *[verification][verification-api]* $spy->[**threw**](#spy.threw)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless this spy threw an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the spy threw any
+exception.*
+
+*When called with a string, this method checks that the spy threw an exception
+that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the spy threw
+an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the spy threw an
+exception that matches the supplied matcher.*
+
+*See [Verifying spy exceptions].*
+
+<a name="spy.checkProduced" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkProduced**](#spy.checkProduced)($keyOrValue = null, $value = null)
+
+Checks if this spy produced the supplied values.
+
+*When called with no arguments, this method simply checks that the spy produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*See [Verifying values produced by spies], [Check verification].*
+
+<a name="spy.produced" />
+
+----
+
+> *[verification][verification-api]* $spy->[**produced**](#spy.produced)($keyOrValue = null, $value = null)
+> throws [AssertionException]
+
+Checks if this spy produced the supplied values.
+
+*When called with no arguments, this method simply checks that the spy produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*See [Verifying values produced by spies].*
+
+<a name="spy.checkProducedAll" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkProducedAll**](#spy.checkProducedAll)(...$pairs)
+
+Checks if this spy produced all of the supplied key-value pairs, in the supplied
+order, in a single call.
+
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`checkProduced()`](#spy.checkProduced).*
+
+*See [Verifying values produced by spies], [Check verification].*
+
+<a name="spy.producedAll" />
+
+----
+
+> *[verification][verification-api]* $spy->[**producedAll**](#spy.producedAll)(...$pairs)
+> throws [AssertionException]
+
+Throws an exception unless this spy produced all of the supplied key-value
+pairs, in the supplied order, in a single call.
+
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`produced()`](#spy.produced).*
+
+*See [Verifying values produced by spies].*
+
+<a name="spy.checkReceived" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkReceived**](#spy.checkReceived)($value = null)
+
+Checks if this spy received the supplied value.
+
+*When called with no arguments, this method simply checks that the spy received
+any value.*
+
+*See [Verifying values received by spies], [Check verification].*
+
+<a name="spy.received" />
+
+----
+
+> *[verification][verification-api]* $spy->[**received**](#spy.received)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless this spy received the supplied value.
+
+*When called with no arguments, this method simply checks that the spy received
+any value.*
+
+*See [Verifying values received by spies].*
+
+<a name="spy.checkReceivedException" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkReceivedException**](#spy.checkReceivedException)($type = null)
+
+Checks if this spy received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the spy received
+any exception.*
+
+*When called with a string, this method checks that the spy received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the spy
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the spy received an
+exception that matches the supplied matcher.*
+
+*See [Verifying exceptions received by spies], [Check verification].*
+
+<a name="spy.receivedException" />
+
+----
+
+> *[verification][verification-api]* $spy->[**receivedException**](#spy.receivedException)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless this call received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the spy received
+any exception.*
+
+*When called with a string, this method checks that the spy received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the spy
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the spy received an
+exception that matches the supplied matcher.*
+
+*See [Verifying exceptions received by spies].*
+
+<a name="spy.never" />
+
+----
+
+> *fluent* $spy->[**never**](#spy.never)()
+
+Requires that the next verification never matches.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="spy.once" />
+
+----
+
+> *fluent* $spy->[**once**](#spy.once)()
+
+Requires that the next verification matches only once.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="spy.twice" />
+
+----
+
+> *fluent* $spy->[**twice**](#spy.twice)()
+
+Requires that the next verification matches exactly two times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="spy.thrice" />
+
+----
+
+> *fluent* $spy->[**thrice**](#spy.thrice)()
+
+Requires that the next verification matches exactly three times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="spy.times" />
+
+----
+
+> *fluent* $spy->[**times**](#spy.times)($times)
+
+Requires that the next verification matches exactly `$times` times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="spy.atLeast" />
+
+----
+
+> *fluent* $spy->[**atLeast**](#spy.atLeast)($minimum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`.
+
+*See [Verifying that a spy event happened a bounded number of times].*
+
+<a name="spy.atMost" />
+
+----
+
+> *fluent* $spy->[**atMost**](#spy.atMost)($maximum)
+
+Requires that the next verification matches a number of times less than or equal
+to `$maximum`.
+
+*See [Verifying that a spy event happened a bounded number of times].*
+
+<a name="spy.between" />
+
+----
+
+> *fluent* $spy->[**between**](#spy.between)($minimum, $maximum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`, and less than or equal to `$maximum`.
+
+*See [Verifying that a spy event happened a bounded number of times].*
+
+<a name="spy.always" />
+
+----
+
+> *fluent* $spy->[**always**](#spy.always)()
+
+Requires that the next verification matches for all possible items.
+
+*See [Verifying that all spy events happen the same way].*
 
 ### Spying on an existing callable
 
-Any callable can be wrapped in a spy:
+Any callable can be wrapped in a spy, by passing the callable to
+[`spy()`](#facade.spy):
 
 ```php
 $spy = spy($callable);        // with `use function`
@@ -1048,7 +3351,8 @@ echo $spy(2, 3, 1); // outputs '3'
 ### Anonymous spies
 
 *Anonymous spies* are spies that do not wrap an existing callable. Their only
-purpose is to record input arguments. An anonymous spy is created as follows:
+purpose is to record input arguments. An anonymous spy is created by calling
+[`spy()`](#facade.spy) without passing a callable:
 
 ```php
 $spy = spy();        // with `use function`
@@ -1069,11 +3373,12 @@ echo gettype($spy('a')); // outputs 'NULL'
 *Phony* provides the ability to make verifications on individual recorded calls.
 The API for verifying calls mirrors the methods available for spy verification.
 
-See [the call API][calls] for more information.
+See [the call API] for more information.
 
 #### Call count
 
-The number of calls recorded by a spy can be retrieved using `callCount()`:
+The number of calls recorded by a spy can be retrieved using
+[`callCount()`](#spy.callCount):
 
 ```php
 $spy->callCount();
@@ -1081,19 +3386,19 @@ $spy->callCount();
 
 #### Individual calls
 
-To get the first call, use `firstCall()`:
+To get the first call, use [`firstCall()`](#spy.firstCall):
 
 ```php
 $spy->firstCall();
 ```
 
-To get the last call, use `lastCall()`:
+To get the last call, use [`lastCall()`](#spy.lastCall):
 
 ```php
 $spy->lastCall();
 ```
 
-To get a specific call by index, use `callAt()`:
+To get a specific call by index, use [`callAt()`](#spy.callAt):
 
 ```php
 $spy->callAt(0); // returns the first call
@@ -1102,21 +3407,21 @@ $spy->callAt(9); // returns the tenth call
 
 These methods will throw an exception if no call is found.
 
-### Verifying input
+### Verifying spy input
 
 #### Verifying that a call was made
 
-To verify that a spy was called, use `called()`:
+To verify that a spy was called, use [`called()`](#spy.called):
 
 ```php
 $spy->called();
 ```
 
-#### Verifying that a call was made with specific arguments
+#### Verifying that a spy was called with specific arguments
 
-To verify input arguments, use `calledWith()`. Arguments passed to
-`calledWith()` can be literal values, or [matchers], including
-[shorthand matchers]:
+To verify input arguments, use [`calledWith()`](#spy.calledWith). Arguments
+passed to [`calledWith()`](#spy.calledWith) can be literal values, or
+[matchers], including [shorthand matchers]:
 
 ```php
 $spy->calledWith();         // called with no arguments
@@ -1125,8 +3430,20 @@ $spy->calledWith('a', '*'); // called with 'a' followed by 0-n arguments
 $spy->calledWith('a', '~'); // called with 'a' followed by exactly 1 argument
 ```
 
-Arguments can also be retrieved by calling `arguments()` or `argument()` on any
-verification result:
+Arguments can be retrieved by calling [`arguments()`](#spy.arguments) or
+[`argument()`](#spy.argument) on a spy:
+
+```php
+$spy->arguments(); // all arguments as an array
+$spy->argument();  // first argument
+$spy->argument(1); // second argument
+```
+
+Note that this will return the arguments for the first call made on the spy.
+
+Arguments can also be retrieved by calling
+[`arguments()`](#verification.arguments) or
+[`argument()`](#verification.argument) on any [verification result]:
 
 ```php
 $spy->called()->arguments(); // all arguments as an array
@@ -1137,29 +3454,29 @@ $spy->called()->argument(1); // second argument
 Note that this will return the arguments for the first call that matches the
 verification in use.
 
-#### Verifying closure binding
+#### Verifying spy closure binding
 
 Where [closure binding] is supported, the bound object can be verified using
-`calledOn()`:
+[`calledOn()`](#spy.calledOn):
 
 ```php
 $spy->calledOn($object);
 ```
 
-### Verifying output
+### Verifying spy output
 
-#### Verifying return values
+#### Verifying spy return values
 
-To verify a spy's return value, use `returned()`:
+To verify a spy's return value, use [`returned()`](#spy.returned):
 
 ```php
 $spy->returned();    // returned anything
 $spy->returned('a'); // returned 'a'
 ```
 
-#### Verifying exceptions
+#### Verifying spy exceptions
 
-To verify that a spy threw an exception, use `threw()`:
+To verify that a spy threw an exception, use [`threw()`](#spy.threw):
 
 ```php
 $spy->threw();                                         // threw any exception
@@ -1167,7 +3484,7 @@ $spy->threw('RuntimeException');                       // threw a runtime except
 $spy->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
 
-### Verifying generators and traversables
+### Verifying spies with generators or traversables
 
 *Phony* records values and exceptions that are passed in and out of
 [generators]:
@@ -1185,7 +3502,8 @@ $spy->threw(new RuntimeException('You done goofed.')); // threw a runtime except
   exception*.
 
 This behavior is enabled by default for generators, and can optionally be
-enabled for other traversables by calling `setUseTraversableSpies()` on a spy:
+enabled for other traversables by calling
+[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) on a spy:
 
 ```php
 $spy->setUseTraversableSpies(true);
@@ -1194,9 +3512,16 @@ $spy->setUseTraversableSpies(true);
 For other traversables, such as arrays and iterators, the values are recorded as
 *produced values*.
 
-#### Verifying produced values
+To turn off generator spies, use
+[`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) on a spy:
 
-To verify that a value was produced by a spy, use `produced()`:
+```php
+$spy->setUseGeneratorSpies(false);
+```
+
+#### Verifying values produced by spies
+
+To verify that a value was produced by a spy, use [`produced()`](#spy.produced):
 
 ```php
 $spy->produced();         // produced anything
@@ -1204,8 +3529,8 @@ $spy->produced('a');      // produced 'a' with any key
 $spy->produced('a', 'b'); // produced 'b' with key 'a'
 ```
 
-To verify that a set of values were produced by a spy in a specific order, use
-`producedAll()`:
+To verify that a set of values were produced by a spy in a specific order, in a
+single call, use [`producedAll()`](#spy.producedAll):
 
 ```php
 $spy->producedAll();                // produced nothing (an empty traversable)
@@ -1213,18 +3538,19 @@ $spy->producedAll('a', 'b');        // produced 'a', then 'b', with any keys
 $spy->producedAll('a', ['b', 'c']); // produced 'a' with any key, then 'c' with key 'b'
 ```
 
-#### Verifying received values
+#### Verifying values received by spies
 
-To verify that a value was received by a spy, use `received()`:
+To verify that a value was received by a spy, use [`received()`](#spy.received):
 
 ```php
 $spy->received();    // received anything
 $spy->received('a'); // received 'a'
 ```
 
-#### Verifying received exceptions
+#### Verifying exceptions received by spies
 
-To verify that an exception was received by a spy, use `receivedException()`:
+To verify that an exception was received by a spy, use
+[`receivedException()`](#spy.receivedException):
 
 ```php
 $spy->receivedException();                                         // received any exception
@@ -1232,26 +3558,744 @@ $spy->receivedException('RuntimeException');                       // received a
 $spy->receivedException(new RuntimeException('You done goofed.')); // received a runtime exception with a specific message
 ```
 
+### Verifying cardinality with spies
+
+Cardinality modifiers change the amount of times a call, or other event, must
+meet the requirements of a subsequent verification.
+
+Cardinality must be specified **before** verification, and can be applied to
+any verification call:
+
+```php
+$spy->once()->called();        // called exactly 1 time
+$spy->once()->calledWith('a'); // called exactly 1 time with 'a'
+$spy->once()->returned('b');   // returned 'b' exactly 1 time
+```
+
+The default cardinality is `atLeast(1)`, meaning verifications will pass if at
+least one matching event was recorded.
+
+#### Verifying that a spy event happened an exact number of times
+
+To verify that an event happened an exact number of times, use one of
+[`never()`](#spy.never), [`once()`](#spy.once), [`twice()`](#spy.twice),
+[`thrice()`](#spy.thrice), or [`times()`](#spy.times):
+
+```php
+$spy->never()->called();   // never called
+$spy->once()->called();    // called exactly 1 time
+$spy->twice()->called();   // called exactly 2 times
+$spy->thrice()->called();  // called exactly 3 times
+$spy->times(10)->called(); // called exactly 10 times
+
+$spy->never()->returned('a');   // never returned 'a'
+$spy->once()->returned('a');    // returned 'a' exactly 1 time
+$spy->twice()->returned('a');   // returned 'a' exactly 2 times
+$spy->thrice()->returned('a');  // returned 'a' exactly 3 times
+$spy->times(10)->returned('a'); // returned 'a' exactly 10 times
+```
+
+#### Verifying that a spy event happened a bounded number of times
+
+To verify that an event happened a bounded number of times, use one of
+[`atLeast()`](#spy.atLeast), [`atMost()`](#spy.atMost), or
+[`between()`](#spy.between):
+
+```php
+$spy->atLeast(2)->called();    // called 2 or more times
+$spy->atMost(3)->called();     // called no more than 3 times
+$spy->between(2, 4)->called(); // called 2, 3, or 4 times
+
+$spy->atLeast(2)->returned('a');    // returned 'a' 2 or more times
+$spy->atMost(3)->returned('a');     // returned 'a' no more than 3 times
+$spy->between(2, 4)->returned('a'); // returned 'a' 2, 3, or 4 times
+```
+
+#### Verifying that all spy events happen the same way
+
+To verify that all events happen the same way, use [`always()`](#spy.always):
+
+```php
+$spy->always()->calledWith('a'); // always called with 'a'
+$spy->always()->returned('b');   // always returned 'b'
+```
+
+Note that [`always()`](#spy.always) does not interfere with other cardinality
+modifiers, and can be combined to produce powerful verifications:
+
+```php
+$spy->twice()->always()->calledWith('a'); // called exactly 2 times, and always with 'a'
+```
+
+### Labeling spies
+
+Every spy has a label, which is a free-form string used to help identify the spy
+in verification failure messages. By default, each spy is assigned a unique
+sequential integer label upon creation.
+
+The label can be changed at any time by using [`setLabel()`](#spy.setLabel):
+
+```php
+$spy = spy();
+$spy->setLabel('a');
+
+echo $spy->label(); // outputs 'a'
+```
+
+The [`setLabel()`](#spy.setLabel) method is also fluent, meaning that spy
+creation and label setting can be done in a single expression:
+
+```php
+$spy = spy()->setLabel('a');
+```
+
+When a verification fails for a labeled spy, the output is similar to the
+following:
+
+    Expected call on {spy}[label] with arguments like:
+        "x", "y"
+    Calls:
+        - "x", "z"
+
+### Invoking spies
+
+Spies can be invoked directly like any other dynamic callable:
+
+```php
+$spy('a', 'b');
+
+$spy->calledWith('a', 'b'); // passes
+```
+
+They can also be invoked more explicitly using [`invoke()`](#spy.invoke):
+
+```php
+$spy->invoke('a', 'b');
+
+$spy->calledWith('a', 'b'); // passes
+```
+
+There is also a more advanced method, [`invokeWith()`](#spy.invokeWith), that
+supports arguments passed by reference:
+
+```php
+$spy = spy(
+    function (&$a, &$b) {
+        list($a, $b) = ['x', 'y'];
+    }
+);
+
+$a = 'a';
+$b = 'b';
+
+$spy->invokeWith([&$a, &$b]);
+
+$spy->calledWith('a', 'b'); // passes
+
+echo $a; // outputs 'x'
+echo $b; // outputs 'y'
+```
+
 ## Calls
 
 *Phony* provides the ability to make verifications on individual recorded calls.
-The call API mirrors the methods available on [the spy API][spies].
+The call API mirrors the methods available on [the spy API].
+
+### The call API
+
+<a name="call.arguments" />
+
+----
+
+> *[arguments][arguments-api]* $call->[**arguments**](#call.arguments)()
+
+Get the arguments.
+
+<a name="call.argument" />
+
+----
+
+> *mixed* $call->[**argument**](#call.argument)($index = 0)
+> throws [UndefinedArgumentException]
+
+Get an argument by index.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="call.argumentCount" />
+
+----
+
+> *integer* $call->[**argumentCount**](#call.argumentCount)()
+
+Get the number of arguments.
+
+<a name="call.returnValue" />
+
+----
+
+> *mixed* $call->[**returnValue**](#call.returnValue)()
+
+Get the return value.
+
+<a name="call.exception" />
+
+----
+
+> *[Throwable]|null* $call->[**exception**](#call.exception)()
+
+Get the thrown exception.
+
+<a name="call.hasResponded" />
+
+----
+
+> *boolean* $call->[**hasResponded**](#call.hasResponded)()
+
+Returns true if this call has responded.
+
+*A call that has "responded" has returned a value, or thrown an exception.*
+
+<a name="call.isTraversable" />
+
+----
+
+> *boolean* $call->[**isTraversable**](#call.isTraversable)()
+
+Returns true if this call has responded with a traversable.
+
+*A call that has "responded" has returned a value, or thrown an exception.*
+
+<a name="call.isGenerator" />
+
+----
+
+> *boolean* $call->[**isGenerator**](#call.isGenerator)()
+
+Returns true if this call has responded with a generator.
+
+*A call that has "responded" has returned a value, or thrown an exception.*
+
+<a name="call.hasCompleted" />
+
+----
+
+> *boolean* $call->[**hasCompleted**](#call.hasCompleted)()
+
+Returns true if this call has completed.
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+<a name="call.time" />
+
+----
+
+> *float* $call->[**time**](#call.time)()
+
+Get the time at which the call occurred, in seconds since the Unix epoch.
+
+<a name="call.responseTime" />
+
+----
+
+> *float|null* $call->[**responseTime**](#call.responseTime)()
+
+Get the time at which the call responded, in seconds since the Unix epoch.
+
+*If the call has not yet responded, `null` will be returned.*
+
+*A call that has "responded" has returned a value, or thrown an exception.*
+
+<a name="call.endTime" />
+
+----
+
+> *float|null* $call->[**endTime**](#call.endTime)()
+
+Get the time at which the call completed, in seconds since the Unix epoch.
+
+*If the call has not yet completed, `null` will be returned.*
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+<a name="call.responseDuration" />
+
+----
+
+> *float|null* $call->[**responseDuration**](#call.responseDuration)()
+
+Get the call response duration, in seconds.
+
+*If the call has not yet responded, `null` will be returned.*
+
+*A call that has "responded" has returned a value, or thrown an exception.*
+
+<a name="call.duration" />
+
+----
+
+> *float|null* $call->[**duration**](#call.duration)()
+
+Get the call response duration, in seconds.
+
+*If the call has not yet completed, `null` will be returned.*
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+<a name="call.sequenceNumber" />
+
+----
+
+> *integer* $call->[**sequenceNumber**](#call.sequenceNumber)()
+
+Get the sequence number.
+
+*The sequence number is a unique number assigned to every event that Phony
+records. The numbers are assigned sequentially, meaning that sequence numbers
+can be used to determine event order.*
+
+<a name="call.checkCalledWith" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkCalledWith**](#call.checkCalledWith)(...$arguments)
+
+Checks if called with the supplied arguments.
+
+*See [Verifying that a call was made with specific arguments],
+[Check verification].*
+
+<a name="call.calledWith" />
+
+----
+
+> *[verification][verification-api]* $call->[**calledWith**](#call.calledWith)(...$arguments)
+> throws [AssertionException]
+
+Throws an exception unless called with the supplied arguments.
+
+*See [Verifying that a call was made with specific arguments].*
+
+<a name="call.checkCalledOn" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkCalledOn**](#call.checkCalledOn)($value)
+
+Checks if the bound `$this` value is equal to the supplied value.
+
+*See [Verifying call closure binding], [Check verification].*
+
+<a name="call.calledOn" />
+
+----
+
+> *[verification][verification-api]* $call->[**calledOn**](#call.calledOn)($value)
+> throws [AssertionException]
+
+Throws an exception unless the bound `$this` value is equal to the supplied
+value.
+
+*See [Verifying call closure binding].*
+
+<a name="call.checkReturned" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkReturned**](#call.checkReturned)($value = null)
+
+Checks if this call returned the supplied value.
+
+*When called with no arguments, this method simply checks that the call returned
+any value.*
+
+*See [Verifying call return values], [Check verification].*
+
+<a name="call.returned" />
+
+----
+
+> *[verification][verification-api]* $call->[**returned**](#call.returned)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless this call returned the supplied value.
+
+*When called with no arguments, this method simply checks that the call returned
+any value.*
+
+*See [Verifying call return values].*
+
+<a name="call.checkThrew" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkThrew**](#call.checkThrew)($type = null)
+
+Checks if an exception of the supplied type was thrown.
+
+*When called with no arguments, this method simply checks that the call threw
+any exception.*
+
+*When called with a string, this method checks that the call threw an exception
+that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the call threw
+an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the call threw an
+exception that matches the supplied matcher.*
+
+*See [Verifying call exceptions], [Check verification].*
+
+<a name="call.threw" />
+
+----
+
+> *[verification][verification-api]* $call->[**threw**](#call.threw)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless this call threw an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the call threw
+any exception.*
+
+*When called with a string, this method checks that the call threw an exception
+that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the call threw
+an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the call threw an
+exception that matches the supplied matcher.*
+
+*See [Verifying call exceptions].*
+
+<a name="call.checkProduced" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkProduced**](#call.checkProduced)($keyOrValue = null, $value = null)
+
+Checks if this call produced the supplied values.
+
+*When called with no arguments, this method simply checks that the call produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*See [Verifying values produced by calls], [Check verification].*
+
+<a name="call.produced" />
+
+----
+
+> *[verification][verification-api]* $call->[**produced**](#call.produced)($keyOrValue = null, $value = null)
+> throws [AssertionException]
+
+Checks if this call produced the supplied values.
+
+*When called with no arguments, this method simply checks that the call produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*See [Verifying values produced by calls].*
+
+<a name="call.checkProducedAll" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkProducedAll**](#call.checkProducedAll)(...$pairs)
+
+Checks if this call produced all of the supplied key-value pairs, in the
+supplied order.
+
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`checkProduced()`](#call.checkProduced).*
+
+*See [Verifying values produced by calls], [Check verification].*
+
+<a name="call.producedAll" />
+
+----
+
+> *[verification][verification-api]* $call->[**producedAll**](#call.producedAll)(...$pairs)
+> throws [AssertionException]
+
+Throws an exception unless this call produced all of the supplied key-value
+pairs, in the supplied order.
+
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`produced()`](#call.produced).*
+
+*See [Verifying values produced by calls].*
+
+<a name="call.checkReceived" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkReceived**](#call.checkReceived)($value = null)
+
+Checks if this call received the supplied value.
+
+*When called with no arguments, this method simply checks that the call received
+any value.*
+
+*See [Verifying values received by calls], [Check verification].*
+
+<a name="call.received" />
+
+----
+
+> *[verification][verification-api]* $call->[**received**](#call.received)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless this call received the supplied value.
+
+*When called with no arguments, this method simply checks that the call received
+any value.*
+
+*See [Verifying values received by calls].*
+
+<a name="call.checkReceivedException" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkReceivedException**](#call.checkReceivedException)($type = null)
+
+Checks if this call received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the call received
+any exception.*
+
+*When called with a string, this method checks that the call received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the call
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the call received an
+exception that matches the supplied matcher.*
+
+*See [Verifying exceptions received by calls], [Check verification].*
+
+<a name="call.receivedException" />
+
+----
+
+> *[verification][verification-api]* $call->[**receivedException**](#call.receivedException)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless this call received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the call received
+any exception.*
+
+*When called with a string, this method checks that the call received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the call
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the call received an
+exception that matches the supplied matcher.*
+
+*See [Verifying exceptions received by calls].*
+
+<a name="call.never" />
+
+----
+
+> *fluent* $call->[**never**](#call.never)()
+
+Requires that the next verification never matches.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="call.once" />
+
+----
+
+> *fluent* $call->[**once**](#call.once)()
+
+Requires that the next verification matches only once.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="call.twice" />
+
+----
+
+> *fluent* $call->[**twice**](#call.twice)()
+
+Requires that the next verification matches exactly two times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="call.thrice" />
+
+----
+
+> *fluent* $call->[**thrice**](#call.thrice)()
+
+Requires that the next verification matches exactly three times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="call.times" />
+
+----
+
+> *fluent* $call->[**times**](#call.times)($times)
+
+Requires that the next verification matches exactly `$times` times.
+
+*See [Verifying that a call event happened an exact number of times].*
+
+<a name="call.atLeast" />
+
+----
+
+> *fluent* $call->[**atLeast**](#call.atLeast)($minimum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`.
+
+*See [Verifying that a call event happened a bounded number of times].*
+
+<a name="call.atMost" />
+
+----
+
+> *fluent* $call->[**atMost**](#call.atMost)($maximum)
+
+Requires that the next verification matches a number of times less than or equal
+to `$maximum`.
+
+*See [Verifying that a call event happened a bounded number of times].*
+
+<a name="call.between" />
+
+----
+
+> *fluent* $call->[**between**](#call.between)($minimum, $maximum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`, and less than or equal to `$maximum`.
+
+*See [Verifying that a call event happened a bounded number of times].*
+
+<a name="call.always" />
+
+----
+
+> *fluent* $call->[**always**](#call.always)()
+
+Requires that the next verification matches for all possible items.
+
+*See [Verifying that all call events happen the same way].*
+
+### The arguments API
+
+<a name="arguments.all" />
+
+----
+
+> *array\<mixed>* $arguments->[**all**](#arguments.all)()
+
+Get the arguments as an array.
+
+*Arguments passed by reference will be references in the returned array.*
+
+<a name="arguments.has" />
+
+----
+
+> *boolean* $arguments->[**has**](#arguments.has)($index = 0)
+
+Returns `true` if an argument exists at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="arguments.get" />
+
+----
+
+> *mixed* $arguments->[**get**](#arguments.get)($index = 0)
+> throws [UndefinedArgumentException]
+
+Get the argument at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="arguments.set" />
+
+----
+
+> *void* $arguments->[**set**](#arguments.set)($indexOrValue = null, $value = null)
+> throws [UndefinedArgumentException]
+
+Set an argument by index.
+
+*If called with no arguments, sets the first argument to `null`.*
+
+*If called with one argument, sets the first argument to `$indexOrValue`.*
+
+*If called with two arguments, sets the argument at `$indexOrValue` to
+`$value`.*
+
+<a name="arguments.copy" />
+
+----
+
+> *[arguments][arguments-api]* $arguments->[**copy**](#arguments.copy)()
+
+Copy these arguments, breaking any references.
 
 ### Retrieving calls from a spy
 
-To get the first call, use `firstCall()`:
+To get the first call, use [`firstCall()`](#spy.firstCall):
 
 ```php
 $spy->firstCall();
 ```
 
-To get the last call, use `lastCall()`:
+To get the last call, use [`lastCall()`](#spy.lastCall):
 
 ```php
 $spy->lastCall();
 ```
 
-To get a specific call by index, use `callAt()`:
+To get a specific call by index, use [`callAt()`](#spy.callAt):
 
 ```php
 $spy->callAt(0); // returns the first call
@@ -1260,13 +4304,13 @@ $spy->callAt(9); // returns the tenth call
 
 These methods will throw an exception if no call is found.
 
-### Verifying input
+### Verifying call input
 
 #### Verifying that a call was made with specific arguments
 
-To verify input arguments, use `calledWith()`. Arguments passed to
-`calledWith()` can be literal values, or [matchers], including
-[shorthand matchers]:
+To verify input arguments, use [`calledWith()`](#call.calledWith). Arguments
+passed to [`calledWith()`](#call.calledWith) can be literal values, or
+[matchers], including [shorthand matchers]:
 
 ```php
 $call->calledWith();         // called with no arguments
@@ -1275,7 +4319,8 @@ $call->calledWith('a', '*'); // called with 'a' followed by 0-n arguments
 $call->calledWith('a', '~'); // called with 'a' followed by exactly 1 argument
 ```
 
-Arguments can also be retrieved with `arguments()` or `argument()`:
+Arguments can also be retrieved with [`arguments()`](#call.arguments) or
+[`argument()`](#call.argument):
 
 ```php
 $call->arguments(); // all arguments as an array
@@ -1283,29 +4328,29 @@ $call->argument();  // first argument
 $call->argument(1); // second argument
 ```
 
-#### Verifying closure binding
+#### Verifying call closure binding
 
 Where [closure binding] is supported, the bound object can be verified using
-`calledOn()`:
+[`calledOn()`](#call.calledOn):
 
 ```php
 $call->calledOn($object);
 ```
 
-### Verifying output
+### Verifying call output
 
-#### Verifying return values
+#### Verifying call return values
 
-To verify a call's return value, use `returned()`:
+To verify a call's return value, use [`returned()`](#call.returned):
 
 ```php
 $call->returned();    // returned anything
 $call->returned('a'); // returned 'a'
 ```
 
-#### Verifying exceptions
+#### Verifying call exceptions
 
-To verify that a call threw an exception, use `threw()`:
+To verify that a call threw an exception, use [`threw()`](#call.threw):
 
 ```php
 $call->threw();                                         // threw any exception
@@ -1313,7 +4358,7 @@ $call->threw('RuntimeException');                       // threw a runtime excep
 $call->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
 
-### Verifying generators and traversables
+### Verifying calls with generators or traversables
 
 *Phony* records values and exceptions that are passed in and out of
 [generators]:
@@ -1331,7 +4376,8 @@ $call->threw(new RuntimeException('You done goofed.')); // threw a runtime excep
   exception*.
 
 This behavior is enabled by default for generators, and can optionally be
-enabled for other traversables by calling `setUseTraversableSpies()` on a spy:
+enabled for other traversables by calling
+[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) on a spy:
 
 ```php
 $spy->setUseTraversableSpies(true);
@@ -1340,9 +4386,10 @@ $spy->setUseTraversableSpies(true);
 For other traversables, such as arrays and iterators, the values are recorded as
 *produced values*.
 
-#### Verifying produced values
+#### Verifying values produced by calls
 
-To verify that a value was produced by a call, use `produced()`:
+To verify that a value was produced by a call, use
+[`produced()`](#call.produced):
 
 ```php
 $call->produced();         // produced anything
@@ -1351,7 +4398,7 @@ $call->produced('a', 'b'); // produced 'b' with key 'a'
 ```
 
 To verify that a set of values were produced by a call in a specific order, use
-`producedAll()`:
+[`producedAll()`](#call.producedAll):
 
 ```php
 $call->producedAll();                // produced nothing (an empty traversable)
@@ -1359,24 +4406,600 @@ $call->producedAll('a', 'b');        // produced 'a', then 'b', with any keys
 $call->producedAll('a', ['b', 'c']); // produced 'a' with any key, then 'c' with key 'b'
 ```
 
-#### Verifying received values
+#### Verifying values received by calls
 
-To verify that a value was received by a call, use `received()`:
+To verify that a value was received by a call, use
+[`received()`](#call.received):
 
 ```php
 $call->received();    // received anything
 $call->received('a'); // received 'a'
 ```
 
-#### Verifying received exceptions
+#### Verifying exceptions received by calls
 
-To verify that an exception was received by a call, use `receivedException()`:
+To verify that an exception was received by a call, use
+[`receivedException()`](#call.receivedException):
 
 ```php
 $call->receivedException();                                         // received any exception
 $call->receivedException('RuntimeException');                       // received a runtime exception
 $call->receivedException(new RuntimeException('You done goofed.')); // received a runtime exception with a specific message
 ```
+
+### Verifying cardinality with calls
+
+Cardinality modifiers change the amount of times a call, or other event, must
+meet the requirements of a subsequent verification.
+
+Cardinality must be specified **before** verification, and can be applied to
+any verification call:
+
+```php
+$call->never()->calledWith('a'); // not called with 'a'
+$call->never()->returned('b');   // did not return 'b'
+$call->never()->threw();         // did not throw an exception
+```
+
+The default cardinality is `atLeast(1)`, meaning verifications will pass if at
+least one matching event was recorded.
+
+#### Verifying that a call event happened an exact number of times
+
+To verify that an event happened an exact number of times, use one of
+[`never()`](#call.never), [`once()`](#call.once), [`twice()`](#call.twice),
+[`thrice()`](#call.thrice), or [`times()`](#call.times):
+
+```php
+$call->never()->produced('a');   // never produced 'a'
+$call->once()->produced('a');    // produced 'a' exactly 1 time
+$call->twice()->produced('a');   // produced 'a' exactly 2 times
+$call->thrice()->produced('a');  // produced 'a' exactly 3 times
+$call->times(10)->produced('a'); // produced 'a' exactly 10 times
+
+$call->never()->received('a');   // never received 'a'
+$call->once()->received('a');    // received 'a' exactly 1 time
+$call->twice()->received('a');   // received 'a' exactly 2 times
+$call->thrice()->received('a');  // received 'a' exactly 3 times
+$call->times(10)->received('a'); // received 'a' exactly 10 times
+```
+
+#### Verifying that a call event happened a bounded number of times
+
+To verify that an event happened a bounded number of times, use one of
+[`atLeast()`](#call.atLeast), [`atMost()`](#call.atMost), or
+[`between()`](#call.between):
+
+```php
+$call->atLeast(2)->produced('a');    // produced 'a' 2 or more times
+$call->atMost(3)->produced('a');     // produced 'a' no more than 3 times
+$call->between(2, 4)->produced('a'); // produced 'a' 2, 3, or 4 times
+
+$call->atLeast(2)->received('a');    // received 'a' 2 or more times
+$call->atMost(3)->received('a');     // received 'a' no more than 3 times
+$call->between(2, 4)->received('a'); // received 'a' 2, 3, or 4 times
+```
+
+#### Verifying that all call events happen the same way
+
+To verify that all events happen the same way, use [`always()`](#call.always):
+
+```php
+$call->always()->produced('a'); // always produced 'a'
+$call->always()->received('b'); // always received 'b'
+```
+
+Note that [`always()`](#call.always) does not interfere with other cardinality
+modifiers, and can be combined to produce powerful verifications:
+
+```php
+$call->twice()->always()->produced('a'); // produced exactly 2 values, both of which are 'a'
+```
+
+## Verification
+
+"Verification" is a general term, used to refer to any *Phony* method or
+function that asserts that something happened. *Phony* implements many
+verification methods and functions across its APIs, but they all behave in a
+similar manner.
+
+Each verification method or function has two variants. For most use-cases, the
+[standard verification] style will be the best fit. When verification fails,
+this variant will record an assertion failure with the [testing framework] in
+use. This typically (but not always) involves an exception being thrown.
+
+For situations where this is not desirable, the [check verification] style can
+be used. When verification fails, this variant will simply return `null`, and no
+assertion failure will be recorded with the [testing framework] in use.
+
+### The verification result API
+
+<a name="verification.arguments" />
+
+----
+
+> *[arguments][arguments-api]* $verification->[**arguments**](#verification.arguments)()
+> throws [UndefinedCallException]
+
+Get the arguments of the first call.
+
+<a name="verification.argument" />
+
+----
+
+> *mixed* $verification->[**argument**](#verification.argument)($index = 0)
+> throws [UndefinedCallException], [UndefinedArgumentException]
+
+Get the argument of the first call at `$index`.
+
+<a name="verification.hasEvents" />
+
+----
+
+> *boolean* $verification->[**hasEvents**](#verification.hasEvents)()
+
+Returns `true` if this collection contains any events.
+
+<a name="verification.hasCalls" />
+
+----
+
+> *boolean* $verification->[**hasCalls**](#verification.hasCalls)()
+
+Returns `true` if this collection contains any calls.
+
+<a name="verification.eventCount" />
+
+----
+
+> *integer* $verification->[**eventCount**](#verification.eventCount)()
+
+Get the number of events.
+
+<a name="verification.callCount" />
+
+----
+
+> *integer* $verification->[**callCount**](#verification.callCount)()
+
+Get the number of calls.
+
+<a name="verification.allEvents" />
+
+----
+
+> *array<[event][event-api]>* $verification->[**allEvents**](#verification.allEvents)()
+
+Get all events as an array.
+
+<a name="verification.allCalls" />
+
+----
+
+> *array<[call][call-api]>* $verification->[**allCalls**](#verification.allCalls)()
+
+Get all calls as an array.
+
+<a name="verification.firstCall" />
+
+----
+
+> *[call][call-api]* $verification->[**firstCall**](#verification.firstCall)()
+> throws [UndefinedCallException]
+
+Get the first call.
+
+<a name="verification.lastCall" />
+
+----
+
+> *[call][call-api]* $verification->[**lastCall**](#verification.lastCall)()
+> throws [UndefinedCallException]
+
+Get the last call.
+
+<a name="verification.eventAt" />
+
+----
+
+> *[event][event-api]* $verification->[**eventAt**](#verification.eventAt)($index = 0)
+> throws [UndefinedEventException]
+
+Get the event at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="verification.callAt" />
+
+----
+
+> *[call][call-api]* $verification->[**callAt**](#verification.callAt)($index = 0)
+> throws [UndefinedCallException]
+
+Get the call at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+### The event API
+
+<a name="event.time" />
+
+----
+
+> *float* $event->[**time**](#event.time)()
+
+Get the time at which the event occurred, in seconds since the Unix epoch.
+
+<a name="event.sequenceNumber" />
+
+----
+
+> *integer* $event->[**sequenceNumber**](#event.sequenceNumber)()
+
+Get the sequence number.
+
+*The sequence number is a unique number assigned to every event that Phony
+records. The numbers are assigned sequentially, meaning that sequence numbers
+can be used to determine event order.*
+
+### The order verification API
+
+<a name="facade.checkInOrder" />
+
+----
+
+> *[verification][verification-api]|null* [**checkInOrder**](#facade.checkInOrder)(...$events) *(with [use function])*<br />
+> *[verification][verification-api]|null* x\\[**checkInOrder**](#facade.checkInOrder)(...$events) *(without [use function])*<br />
+> *[verification][verification-api]|null* Phony::[**checkInOrder**](#facade.checkInOrder)(...$events) *(static)*
+
+Checks if the supplied events happened in chronological order.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Order verification], [Check verification].*
+
+<a name="facade.inOrder" />
+
+----
+
+> *[verification][verification-api]* [**inOrder**](#facade.inOrder)(...$events) *(with [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* x\\[**inOrder**](#facade.inOrder)(...$events) *(without [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* Phony::[**inOrder**](#facade.inOrder)(...$events) *(static)*
+> throws [AssertionException]
+
+Throws an exception unless the supplied events happened in chronological order.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Order verification].*
+
+<a name="facade.checkInOrderSequence" />
+
+----
+
+> *[verification][verification-api]|null* [**checkInOrderSequence**](#facade.checkInOrderSequence)($events) *(with [use function])*<br />
+> *[verification][verification-api]|null* x\\[**checkInOrderSequence**](#facade.checkInOrderSequence)($events) *(without [use function])*<br />
+> *[verification][verification-api]|null* Phony::[**checkInOrderSequence**](#facade.checkInOrderSequence)($events) *(static)*
+
+Checks if the supplied event sequence happened in chronological order.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Dynamic order verification], [Check verification].*
+
+<a name="facade.inOrderSequence" />
+
+----
+
+> *[verification][verification-api]* [**inOrderSequence**](#facade.inOrderSequence)($events) *(with [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* x\\[**inOrderSequence**](#facade.inOrderSequence)($events) *(without [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* Phony::[**inOrderSequence**](#facade.inOrderSequence)($events) *(static)*
+> throws [AssertionException]
+
+Throws an exception unless the supplied event sequence happened in chronological
+order.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Dynamic order verification].*
+
+<a name="facade.checkAnyOrder" />
+
+----
+
+> *[verification][verification-api]|null* [**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(with [use function])*<br />
+> *[verification][verification-api]|null* x\\[**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(without [use function])*<br />
+> *[verification][verification-api]|null* Phony::[**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(static)*
+
+Checks that at least one event is supplied.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Order verification], [Check verification].*
+
+<a name="facade.anyOrder" />
+
+----
+
+> *[verification][verification-api]* [**anyOrder**](#facade.anyOrder)(...$events) *(with [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* x\\[**anyOrder**](#facade.anyOrder)(...$events) *(without [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* Phony::[**anyOrder**](#facade.anyOrder)(...$events) *(static)*
+> throws [AssertionException]
+
+Throws an exception unless at least one event is supplied.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Order verification].*
+
+<a name="facade.checkAnyOrderSequence" />
+
+----
+
+> *[verification][verification-api]|null* [**checkAnyOrderSequence**](#facade.checkAnyOrderSequence)($events) *(with [use function])*<br />
+> *[verification][verification-api]|null* x\\[**checkAnyOrderSequence**](#facade.checkAnyOrderSequence)($events) *(without [use function])*<br />
+> *[verification][verification-api]|null* Phony::[**checkAnyOrderSequence**](#facade.checkAnyOrderSequence)($events) *(static)*
+
+Checks if the supplied event sequence contains at least one event.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Dynamic order verification], [Check verification].*
+
+<a name="facade.anyOrderSequence" />
+
+----
+
+> *[verification][verification-api]* [**anyOrderSequence**](#facade.anyOrderSequence)($events) *(with [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* x\\[**anyOrderSequence**](#facade.anyOrderSequence)($events) *(without [use function])*
+> throws [AssertionException]<br />
+> *[verification][verification-api]* Phony::[**anyOrderSequence**](#facade.anyOrderSequence)($events) *(static)*
+> throws [AssertionException]
+
+Throws an exception unless the supplied event sequence contains at least one
+event.
+
+*Each value in `$events` should be a [verification result].*
+
+*See [Dynamic order verification].*
+
+### Standard verification
+
+"Standard" verification involves "recording" failures with the
+[testing framework] in use. For most testing frameworks, this involves throwing
+a specific type of exception used by the framework.
+
+In some cases, the framework will not use a specific exception type, and will
+treat *any* exception as a failure. In this case, and in the case that no
+[testing framework] is being used, *Phony* will simply throw its own
+[AssertionException] on failure.
+
+In rare cases, such as use with [SimpleTest], failures do not result in any
+exception being thrown. The failure is recorded with the [testing framework]
+via whatever method the framework uses instead. This may mean that execution
+continues past the failed verification call.
+
+As with [check verification], verification successes will return a
+[verification result], which can be used for further verifications, including
+[order verification].
+
+### Check verification
+
+In contrast to [standard verification], "check" verification does not involve
+integration with the [testing framework] in use.
+
+In the case of verification failure, `null` will be returned. As with
+[standard verification], verification successes will return a
+[verification result], which can be used for further verifications, including
+[order verification].
+
+Check verification may be used to integrate with [testing frameworks] that do
+not yet have first-class support in *Phony*:
+
+```php
+expect($spy->checkCalled())->to->be->ok;
+```
+
+### Order verification
+
+To verify that events happened in a particular order, use
+[`inOrder()`](#facade.inOrder):
+
+```php
+// with `use function`
+inOrder(
+    $spyA->calledWith('a'),
+    $spyA->returned('x'),
+    $spyB->calledWith('b'),
+    $spyB->returned('y')
+);
+
+// without `use function`
+x\inOrder(
+    $spyA->calledWith('a'),
+    $spyA->returned('x'),
+    $spyB->calledWith('b'),
+    $spyB->returned('y')
+);
+
+// static
+Phony::inOrder(
+    $spyA->calledWith('a'),
+    $spyA->returned('x'),
+    $spyB->calledWith('b'),
+    $spyB->returned('y')
+);
+```
+
+To relax order verification within a call to [`inOrder()`](#facade.inOrder), use
+[`anyOrder()`](#facade.anyOrder):
+
+```php
+// with `use function`
+inOrder(
+    anyOrder(
+        $spyA->calledWith('a'),
+        $spyB->calledWith('b')
+    ),
+    anyOrder(
+        $spyA->returned('x'),
+        $spyB->returned('y')
+    )
+);
+
+// without `use function`
+x\inOrder(
+    x\anyOrder(
+        $spyA->calledWith('a'),
+        $spyB->calledWith('b')
+    ),
+    x\anyOrder(
+        $spyA->returned('x'),
+        $spyB->returned('y')
+    )
+);
+
+// static
+Phony::inOrder(
+    Phony::anyOrder(
+        $spyA->calledWith('a'),
+        $spyB->calledWith('b')
+    ),
+    Phony::anyOrder(
+        $spyA->returned('x'),
+        $spyB->returned('y')
+    )
+);
+```
+
+Event order can be verified across all defined mocks, stubs, and spies, using
+any [verification] implemented by *Phony*. Both [`inOrder()`](#facade.inOrder)
+and [`anyOrder()`](#facade.anyOrder) will accept any number of
+[verification results] to verify.
+
+#### Dynamic order verification
+
+In addition to [`inOrder()`](#facade.inOrder) and
+[`anyOrder()`](#facade.anyOrder), there are also
+[`inOrderSequence()`](#facade.inOrderSequence) and
+[`anyOrderSequence()`](#facade.anyOrderSequence) variants that accept any array
+or traversable containing [verification results]. These variants can be used
+when the number of events to verify is dynamic:
+
+```php
+$calledEvents = [];
+$returnedEvents = [];
+
+foreach ($spies as $spy) {
+    $calledEvents[] = $spy->called();
+    $returnedEvents[] = $spy->returned();
+}
+
+// with `use function`
+inOrderSequence(
+    [
+        anyOrderSequence($calledEvents),
+        anyOrderSequence($returnedEvents),
+    ]
+);
+
+// without `use function`
+x\inOrderSequence(
+    [
+        x\anyOrderSequence($calledEvents),
+        x\anyOrderSequence($returnedEvents),
+    ]
+);
+
+// static
+Phony::inOrderSequence(
+    [
+        Phony::anyOrderSequence($calledEvents),
+        Phony::anyOrderSequence($returnedEvents),
+    ]
+);
+```
+
+Note that [`inOrder()`](#facade.inOrder), [`anyOrder()`](#facade.anyOrder),
+[`inOrderSequence()`](#facade.inOrderSequence), and
+[`anyOrderSequence()`](#facade.anyOrderSequence) can be used together in
+whatever fashion is most appropriate for the situation:
+
+```php
+inOrder(
+    anyOrderSequence($calledEvents),
+    anyOrderSequence($returnedEvents),
+);
+```
+
+#### Order verification caveats
+
+##### Intermediate events in order verification
+
+Order verification **does not** verify that the specified events were the *only*
+events that occurred:
+
+```php
+$spy('a');
+$spy('b');
+$spy('c');
+
+$withA = $spy->calledWith('a');
+$withB = $spy->calledWith('b');
+$withC = $spy->calledWith('c');
+
+inOrder($withA, $withB); // passes
+inOrder($withA, $withC); // passes
+inOrder($withB, $withC); // passes
+```
+
+To verify that specific events did not occur, use [`$spy->never()`](#spy.never)
+or [`$call->never()`](#call.never).
+
+##### Similar events in order verification
+
+Order verification **does not** verify that the specified events happened in
+*only* one order:
+
+```php
+$spy('a');
+$spy('b');
+$spy('a');
+
+$withA = $spy->calledWith('a');
+$withB = $spy->calledWith('b');
+
+inOrder($withA, $withB);         // passes
+inOrder($withB, $withA);         // passes
+inOrder($withA, $withB, $withA); // passes
+```
+
+### Verifying that there was no interaction with a mock
+
+To verify that there was no interaction with a mock, use
+[`noInteraction()`](#handle.noInteraction) on any [mock handle]:
+
+```php
+$handle = mock('ClassA');
+$mock = $handle->mock();
+
+$handle->noInteraction(); // passes
+
+$mock->methodA();
+
+$handle->noInteraction(); // fails
+```
+
+This verification will fail if any of the mock's methods have been called.
 
 ## Matchers
 
@@ -1387,118 +5010,187 @@ improve the quality of a test suite.
 *Phony* implements only a few matchers itself, and provides first-class support
 for numerous third-party matcher libraries.
 
+### The matcher API
+
+<a name="facade.any" />
+
+----
+
+> *[matcher][matcher-api]* [**any**](#facade.any)() *(with [use function])*<br />
+> *[matcher][matcher-api]* x\\[**any**](#facade.any)() *(without [use function])*<br />
+> *[matcher][matcher-api]* Phony::[**any**](#facade.any)() *(static)*
+
+Create a new ["any" matcher].
+
+<a name="facade.equalTo" />
+
+----
+
+> *[matcher][matcher-api]* [**equalTo**](#facade.equalTo)($value) *(with [use function])*<br />
+> *[matcher][matcher-api]* x\\[**equalTo**](#facade.equalTo)($value) *(without [use function])*<br />
+> *[matcher][matcher-api]* Phony::[**equalTo**](#facade.equalTo)($value) *(static)*
+
+Create a new ["equal to" matcher].
+
+<a name="matcher.matches" />
+
+----
+
+> *boolean* $matcher->[**matches**](#matcher.matches)($value)
+
+Returns `true` if `$value` matches this matcher's criteria.
+
+<a name="matcher.describe" />
+<a name="matcher.__toString" />
+
+----
+
+> *string* $matcher->[**describe**](#matcher.describe)() or
+> [**"$matcher"**](#matcher.__toString)
+
+Describe this matcher.
+
+### The wildcard matcher API
+
+<a name="facade.wildcard" />
+
+----
+
+> *[wildcard][wildcard-api]* [**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = null) *(with [use function])*<br />
+> *[wildcard][wildcard-api]* x\\[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = null) *(without [use function])*<br />
+> *[wildcard][wildcard-api]* Phony::[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = null) *(static)*
+
+Create a new ["wildcard" matcher].
+
+*The `$value` parameter accepts a value, or a [matcher], to check against each
+argument that the wildcard matches.*
+
+<a name="wildcard.matcher" />
+
+----
+
+> *[matcher][matcher-api]* $wildcard->[**matcher**](#wildcard.matcher)()
+
+Get the matcher to use for each argument.
+
+<a name="wildcard.minimumArguments" />
+
+----
+
+> *integer* $wildcard->[**minimumArguments**](#wildcard.minimumArguments)()
+
+Get the minimum number of arguments to match.
+
+<a name="wildcard.maximumArguments" />
+
+----
+
+> *integer|null* $wildcard->[**maximumArguments**](#wildcard.maximumArguments)()
+
+Get the maximum number of arguments to match.
+
+<a name="wildcard.describe" />
+<a name="wildcard.__toString" />
+
+----
+
+> *string* $wildcard->[**describe**](#wildcard.describe)() or
+> [**"$wildcard"**](#wildcard.__toString)
+
+Describe this matcher.
+
 ### Matcher integrations
 
-#### Counterpart matchers
+#### [Counterpart] matchers
 
 [Counterpart] is a stand-alone matcher library. Its matchers can be used in any
-*Phony* validation:
+*Phony* verification:
 
 ```php
 $spy->calledWith(Counterpart\Matchers::isEqual('a'));
 ```
 
-[counterpart]: http://docs.counterpartphp.org/
-
-#### Hamcrest matchers
+#### [Hamcrest] matchers
 
 [Hamcrest] is a popular stand-alone matcher library, that originated in Java,
 and has been ported to many languages, including an "official" port for PHP. Its
-matchers can be used in any *Phony* validation:
+matchers can be used in any *Phony* verification:
 
 ```php
 $spy->calledWith(equalTo('a'));
 ```
 
-[hamcrest]: https://github.com/hamcrest/hamcrest-php
-
-#### Mockery matchers
+#### [Mockery] matchers
 
 [Mockery] is a mocking library, similar to *Phony*. [Mockery matchers] can be
-used in any *Phony* validation:
+used in any *Phony* verification:
 
 ```php
 $spy->calledWith(Mockery::mustBe('a'));
 ```
 
-[mockery]: http://docs.mockery.io/
-[mockery matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
-
-#### Phake matchers
+#### [Phake] matchers
 
 [Phake] is a mocking library, similar to *Phony*. [Phake matchers] can be used
-in any *Phony* validation:
+in any *Phony* verification:
 
 ```php
 $spy->calledWith(Phake::equalTo('a'));
 ```
 
-[phake]: http://phake.readthedocs.org/
-[phake matchers]: http://phake.readthedocs.org/en/latest/method-parameter-matchers.html
-
-#### PHPUnit constraints
+#### [PHPUnit] constraints
 
 [PHPUnit] is a popular unit testing framework. [PHPUnit matchers] \(referred to
-as "constraints") can be used in any *Phony* validation:
+as "constraints") can be used in any *Phony* verification:
 
 ```php
 // where $this is a PHPUnit test case
 $spy->calledWith($this->equalTo('a'));
 ```
-[phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 
-#### Prophecy argument tokens
+#### [Prophecy] argument tokens
 
 [Prophecy] is a mocking library, similar to *Phony*. [Prophecy matchers]
-\(referred to as "argument tokens") can be used in any *Phony* validation:
+\(referred to as "argument tokens") can be used in any *Phony* verification:
 
 ```php
 $spy->calledWith(Prophecy\Argument::exact('a'));
 ```
 
-[prophecy]: https://github.com/phpspec/prophecy
-[prophecy matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
-
-#### SimpleTest expectations
+#### [SimpleTest] expectations
 
 [SimpleTest] is a legacy unit testing framework. [SimpleTest matchers]
-\(referred to as "expectations") can be used in any *Phony* validation:
+\(referred to as "expectations") can be used in any *Phony* verification:
 
 ```php
 $spy->calledWith(new EqualExpectation('a'));
 ```
 
-[simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
-
 ### Shorthand matchers
 
-*Phony* provides two 'shorthand matchers'; `'~'`, and `'*'`. These strings are
+*Phony* provides two "shorthand matchers"; `'~'`, and `'*'`. These strings are
 automatically transformed into specific matchers:
 
-- `'~'` is equivalent to an ['any' matcher]
-- `'*'` is equivalent to a ['wildcard' matcher]
+- `'~'` is equivalent to an ["any" matcher]
+- `'*'` is equivalent to a ["wildcard" matcher]
 
 For typical *Phony* usage, this results in much simpler verifications. For
 example, the following verifications are exactly equivalent:
 
 ```php
-$spy->calledWith('a', Phony::any(), 'b', Phony::wildcard());
+$spy->calledWith('a', any(), 'b', wildcard());
 $spy->calledWith('a', '~', 'b', '*');
 ```
 
 In the case that a verification expects a literal `'~'`, or `'*'` value, the
-['equal to' matcher] can be used to prevent *Phony* interpreting shorthand
+["equal to" matcher] can be used to prevent *Phony* interpreting shorthand
 matchers:
 
 ```php
 $spy->calledWith(equalTo('~'), equalTo('*'));
 ```
 
-['any' matcher]: #the-any-matcher
-['equal to' matcher]: #the-equal-to-matcher
-['wildcard' matcher]: #the-wildcard-matcher
-
-### The 'any' matcher
+### The "any" matcher
 
 This matcher matches a single argument of any value:
 
@@ -1510,7 +5202,7 @@ $matcher = Phony::any($value); // static
 $spy->calledWith(any()); // typical usage
 ```
 
-### The 'equal to' matcher
+### The "equal to" matcher
 
 This is the default matcher used by *Phony*. It takes a single argument, and
 matches values that are equal to that argument:
@@ -1533,9 +5225,9 @@ var_dump($matcher->matches((object) ['a' => 0]));    // outputs 'bool(true)'
 var_dump($matcher->matches((object) ['a' => null])); // outputs 'bool(false)'
 ```
 
-#### When to use the 'equal to' matcher
+#### When to use the "equal to" matcher
 
-In most cases, it's not necessary to create an 'equal to' matcher manually,
+In most cases, it's not necessary to create an "equal to" matcher manually,
 because *Phony* implicitly wraps anything that's not already a matcher. For
 example, this verification:
 
@@ -1564,9 +5256,73 @@ argument:
 $spy->calledWith(equalTo(new EqualToMatcher('a')));
 ```
 
-### The 'wildcard' matcher
+#### Special cases for the "equal to" matcher
 
-The 'wildcard' matcher is a special matcher that can match multiple arguments:
+For certain types of values, the "equal to" matcher will exhibit special
+behavior, in order to improve the usefulness of its comparisons, or to improve
+performance in common use cases.
+
+##### Comparing exceptions
+
+When an exception is compared, some internal PHP details are stripped from the
+output, including file path, line number, and stack trace.
+
+In the following example, note that differing line numbers are ignored, but
+differing codes are not:
+
+```php
+$matcher = equalTo(new Exception('x'));
+
+$a = new Exception('x');
+$b = new Exception('x', 1);
+
+echo $matcher->matches($a) ? 'true' : 'false'; // outputs 'true'
+echo $matcher->matches($b) ? 'true' : 'false'; // outputs 'false'
+```
+
+##### Comparing mocks
+
+When a mock is compared, some internal *Phony* details are ignored. In addition,
+if a [label][labeling mocks] has been set on the mock, it will be included in
+the comparison.
+
+In the following example, note that differing mock behaviors are ignored, but
+differing labels are not:
+
+```php
+$matcher = equalTo(mock('ClassX')->setLabel('x')->mock());
+
+$a = mock('ClassX')->setLabel('x');
+$a->methodX->returns('x');
+
+echo $matcher->matches($a->mock()) ? 'true' : 'false'; // outputs 'true'
+
+$b = mock('ClassX')->setLabel('y');
+$c = mock('ClassX');
+
+echo $matcher->matches($b->mock()) ? 'true' : 'false'; // outputs 'false'
+echo $matcher->matches($c->mock()) ? 'true' : 'false'; // outputs 'false'
+```
+
+Since mocks are labeled with a unique integer by default, they can normally be
+used to differentiate calls without requiring the use of an 'identical to'
+matcher:
+
+```php
+$a = mock('ClassX')->mock();
+$b = mock('ClassX')->mock();
+
+$stub = stub();
+$stub->with($a)->returns('a');
+$stub->with($b)->returns('b');
+
+echo $stub($a); // outputs 'a'
+echo $stub($b); // outputs 'b'
+```
+
+### The "wildcard" matcher
+
+The "wildcard" matcher is a special matcher that can match multiple arguments:
 
 ```php
 $spy('a', 'b', 'c');
@@ -1625,13 +5381,13 @@ $spy->calledWith('a', '*', 'c'); // this is not supported
 
 #### Third-party wildcard matcher integrations
 
-*Phony* also supports the use of 'wildcard' style matchers from third-party
+*Phony* also supports the use of "wildcard" style matchers from third-party
 matcher systems:
 
 ##### Phake wildcard matchers
 
 [Phake wildcard matchers] \(`Phake::anyParameters()`) can be used in any *Phony*
-validation:
+verification:
 
 ```php
 $spy('a', 'b');
@@ -1639,12 +5395,10 @@ $spy('a', 'b');
 $spy->calledWith(Phake::anyParameters()); // verification passes
 ```
 
-[phake wildcard matchers]: http://phake.readthedocs.org/en/latest/method-stubbing.html?highlight=anyparameters#stubbing-consecutive-calls
-
 ##### Prophecy wildcard matchers
 
 [Prophecy wildcard matchers] \(`Argument::cetera()`) can be used in any *Phony*
-validation:
+verification:
 
 ```php
 $spy('a', 'b');
@@ -1652,18 +5406,467 @@ $spy('a', 'b');
 $spy->calledWith(Prophecy\Argument::cetera()); // verification passes
 ```
 
-[prophecy wildcard matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
+## The exporter
 
+When a *Phony* verification fails, the failure message will often contain string
+representations of the actual, or expected PHP values involved. These string
+representations are generated by *Phony*'s internal exporter.
+
+### The exporter API
+
+<a name="facade.setExportDepth" />
+
+----
+
+> *integer* [**setExportDepth**](#facade.setExportDepth)($depth) *(with [use function])*<br />
+> *integer* x\\[**setExportDepth**](#facade.setExportDepth)($depth) *(without [use function])*<br />
+> *integer* Phony::[**setExportDepth**](#facade.setExportDepth)($depth) *(static)*
+
+Set the default export depth, and return the previous depth.
+
+*Negative depths are treated as infinite depth.*
+
+### The export format
+
+The exporter generates a concise, unambiguous, human-readable representation of
+any PHP value, including recursive objects and arrays:
+
+Input value                     | Exporter output
+--------------------------------|-----------------
+`null`                          | `'null'`
+`true`                          | `'true'`
+`false`                         | `'false'`
+`111`                           | `'111'`
+`1.11`                          | `'1.110000e+0'`
+`'1.11'`                        | `'"1.11"'`
+`"a\nb"`                        | `'"a\nb"'`
+`STDIN`                         | `'resource#1'`
+`[1, 2]`                        | `'#0[1, 2]'`
+`['a' => 1, 'b' => 2]`          | `'#0[a: 1, b: 2]'`
+`(object) ['a' => 1, 'b' => 2]` | `'#0{a: 1, b: 2}'`
+`new ClassA()`                  | `'ClassA#0{}'`
+
+#### Export identifiers and references
+
+Exported arrays and objects include a numeric identifier that can be used to
+identify re-use of the same value in nested structures. When a value appears
+multiple times, its internal structure will only be described the first time.
+Subsequent appearances will be indicated by a reference to the value's
+identifier:
+
+```php
+$inner = [1, 2];
+$value = [$inner, $inner];
+// $value is exported as '#0[#1[1, 2], #1[]]'
+
+$inner = (object) ['a' => 1];
+$value = (object) ['b' => $inner, 'c' => $inner];
+// $value is exported as '#0{b: #1{a: 1}, c: #1{}}'
+```
+
+Array references appear followed by brackets (e.g. `#0[]`), and object
+references appear followed by braces (e.g. `#0{}`). This is because the
+identifier sequences used for arrays and objects are independent, meaning that
+identical array identifiers and object identifiers can co-exist in the same
+exporter output:
+
+```php
+$value = [
+    (object) [],
+    [
+        (object) [],
+    ],
+];
+// $value is exported as '#0[#0{}, #1[#1{}]]'
+```
+
+Object references also exclude the class name for brevity:
+
+```php
+$inner = new ClassA();
+$value = (object) ['a' => $inner, 'b' => $inner];
+// $value is exported as '#0{a: ClassA#1{}, b: #1{}}'
+```
+
+Identifiers for objects are persistent across invocations of the exporter:
+
+```php
+$a = (object) [];
+$b = (object) [];
+
+$value = [$a, $b, $a];
+// $value is exported as '#0[#0{}, #1{}, #0{}]'
+
+$value = [$b, $a, $b];
+// $value is exported as '#0[#1{}, #0{}, #1{}]'
+```
+
+But due to PHP's limitations, array identifiers are only persistent within a
+single exporter invocation:
+
+```php
+$a = [];
+$b = [];
+
+$valueA = [$a, $b, $a];
+$valueB = [$b, $a, $b];
+// both $valueA and $valueB are exported as '#0[#1[], #2[], #1[]]'
+```
+
+#### Exporting recursive values
+
+If a recursive value is exported, the points of recursion are exported as
+[references], in the same way that multiple instances of the same value are
+handled:
+
+```php
+$value = [];
+$value[] = &$value;
+// $value is exported as '#0[#0[]]'
+
+$value = (object) [];
+$value->a = $value;
+// $value is exported as '#0{"a": #0{}}'
+```
+
+#### Exporter special cases
+
+For certain types of values, the exporter will exhibit special behavior, in
+order to improve the usefulness of its output, or to improve performance in
+common use cases.
+
+##### Exporting exceptions
+
+When an exception is exported, some internal PHP details are stripped from the
+output, including file path, line number, and stack trace:
+
+```php
+$value = new Exception('a', 1, new Exception());
+// $value is exported as 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'
+```
+
+Additionally, when the message is `''`, the code is `0`, and/or the previous
+exception is `null`, these values are excluded for brevity:
+
+```php
+$value = new RuntimeException();
+// $value is exported as 'RuntimeException#0{}'
+```
+
+##### Exporting mocks
+
+When a mock is exported, some internal *Phony* details are stripped from the
+output. In addition, if a [label][labeling mocks] has been set on the mock, this
+will be included as a special property `phony.label`:
+
+```php
+$handle = mock('ClassA');
+$handle->setLabel('a');
+
+$value = $handle->mock();
+// $value is exported as 'Phony_ClassA_0#0{phony.label: "a"}'
+```
+
+### Export depth
+
+For complicated nested structures, exporting the entire value right down to its
+innermost values is not always desirable. *Phony* sets a limit on how deep into
+a nested structure the exporter will traverse.
+
+When a value is beyond the export depth, and has sub-values, its contents will
+be replaced with a special notation that simply indicates how many sub-values
+exist within that value:
+
+```php
+$value = [[], ['a', 'b', 'c']];
+// $value is exported as '#0[#1[], #2[:3]]'
+
+$value = [(object) [], (object) ['a', 'b', 'c']];
+// $value is exported as '#0[#1{}, #2{:3}]'
+```
+
+#### Setting the export depth
+
+To set the export depth, use [`setExportDepth()`](#facade.setExportDepth):
+
+```php
+setExportDepth($depth);        // with `use function`
+x\setExportDepth($depth);      // without `use function`
+Phony::setExportDepth($depth); // static
+```
+
+Where `$depth` is an integer indicating the desired export depth.
+
+Negative values are treated as infinite depth, and will cause *Phony* to export
+values in their entirety. Note that this can produce immense amounts of output
+for large nested structures.
+
+## Exception APIs
+
+### AssertionException
+
+Thrown when a verification fails. The exact exception class and implementation
+depends on the [testing framework] in use. See [Standard verification].
+
+Other than the standard PHP [Exception] methods, assertion exceptions have no
+public API methods.
+
+### UndefinedArgumentException
+
+Thrown when an argument that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Call\Argument\Exception`
+
+<a name="undefinedargumentexception.index" />
+
+----
+
+> *integer* $exception->[**index**](#undefinedargumentexception.index)()
+
+Get the index.
+
+### UndefinedCallException
+
+Thrown when a call that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Call\Exception`
+
+<a name="undefinedcallexception.index" />
+
+----
+
+> *integer* $exception->[**index**](#undefinedcallexception.index)()
+
+Get the index.
+
+### UndefinedEventException
+
+Thrown when an event that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Event\Exception`
+
+<a name="undefinedeventexception.index" />
+
+----
+
+> *integer* $exception->[**index**](#undefinedeventexception.index)()
+
+Get the index.
+
+<!-- Heading references -->
+
+[ad hoc mocks]: #ad-hoc-mocks
+[anonymous spies]: #anonymous-spies
+[anonymous stubs]: #anonymous-stubs
+[answers that perform multiple actions]: #answers-that-perform-multiple-actions
+[assertionexception]: #assertionexception
+[call count]: #call-count
+[call verification]: #call-verification
+[calling a constructor manually]: #calling-a-constructor-manually
 [calls]: #calls
+[check verification]: #check-verification
+[comparing exceptions]: #comparing-exceptions
+[comparing mocks]: #comparing-mocks
+[counterpart matchers]: #counterpart-matchers
+[creating mocks from a builder]: #creating-mocks-from-a-builder
+[custom class names]: #custom-class-names
+[customizing the mock class]: #customizing-the-mock-class
+[dynamic order verification]: #dynamic-order-verification
+[exception apis]: #exception-apis
+[export depth]: #export-depth
+[export identifiers and references]: #export-identifiers-and-references
+[exporter special cases]: #exporter-special-cases
+[exporting exceptions]: #exporting-exceptions
+[exporting mocks]: #exporting-mocks
+[exporting recursive values]: #exporting-recursive-values
+[forwarding to the original callable]: #forwarding-to-the-original-callable
+[generating mock classes from a builder]: #generating-mock-classes-from-a-builder
+[hamcrest matchers]: #hamcrest-matchers
+[importing a static facade]: #importing-a-static-facade
+[importing with use function]: #importing-with-use-function
+[importing without use function]: #importing-without-use-function
+[importing]: #importing
+[individual calls]: #individual-calls
+[installation]: #installation
+[integration with test frameworks]: #integration-with-test-frameworks
+[intermediate events in order verification]: #intermediate-events-in-order-verification
+[invoking arguments]: #invoking-arguments
+[invoking callables]: #invoking-callables
+[invoking spies]: #invoking-spies
+[labeling mocks]: #labeling-mocks
+[labeling spies]: #labeling-spies
+[matcher integrations]: #matcher-integrations
 [matchers]: #matchers
+[matching stub arguments]: #matching-stub-arguments
+[mock builders]: #mock-builders
+[mock handles]: #mock-handles
+[mockery matchers]: #mockery-matchers
+[mocking basics]: #mocking-basics
+[mocking multiple types]: #mocking-multiple-types
+[mocks]: #mocks
+[multiple answers]: #multiple-answers
+[multiple rules]: #multiple-rules
+[order verification caveats]: #order-verification-caveats
+[order verification]: #order-verification
+[overriding rules]: #overriding-rules
+[partial mocks]: #partial-mocks
+[peridot usage]: #peridot-usage
+[phake matchers]: #phake-matchers
+[phake wildcard matchers]: #phake-wildcard-matchers
+[pho usage]: #pho-usage
+[phpunit constraints]: #phpunit-constraints
+[phpunit usage]: #phpunit-usage
+[prophecy argument tokens]: #prophecy-argument-tokens
+[prophecy wildcard matchers]: #prophecy-wildcard-matchers
+[resetting a mock]: #resetting-a-mock
+[retrieving calls from a spy]: #retrieving-calls-from-a-spy
+[returning arguments]: #returning-arguments
+[returning the "self" value]: #returning-the-self-value
+[returning values]: #returning-values
+[setting passed-by-reference arguments]: #setting-passed-by-reference-arguments
+[setting the export depth]: #setting-the-export-depth
 [shorthand matchers]: #shorthand-matchers
+[similar events in order verification]: #similar-events-in-order-verification
+[simpletest expectations]: #simpletest-expectations
+[simpletest usage]: #simpletest-usage
+[special cases for the "equal to" matcher]: #special-cases-for-the-equal-to-matcher
 [spies]: #spies
+[spying on an existing callable]: #spying-on-an-existing-callable
+[standalone usage]: #standalone-usage
+[standard verification]: #standard-verification
+[static mocks]: #static-mocks
+[stub rules and answers]: #stub-rules-and-answers
+[stubbing an existing callable]: #stubbing-an-existing-callable
+[stubbing handles]: #stubbing-handles
 [stubs]: #stubs
+[terminology]: #terminology
+[the "any" matcher]: #the-any-matcher
+[the "equal to" matcher]: #the-equal-to-matcher
+[the "wildcard" matcher]: #the-wildcard-matcher
+[the arguments api]: #the-arguments-api
+[the call api]: #the-call-api
+[the default rule and answer]: #the-default-rule-and-answer
+[the event api]: #the-event-api
+[the export format]: #the-export-format
+[the exporter api]: #the-exporter-api
+[the exporter]: #the-exporter
+[the matcher api]: #the-matcher-api
+[the mock api]: #the-mock-api
+[the mock builder api]: #the-mock-builder-api
+[the order verification api]: #the-order-verification-api
+[the spy api]: #the-spy-api
+[the stub api]: #the-stub-api
+[the verification result api]: #the-verification-result-api
+[the wildcard matcher api]: #the-wildcard-matcher-api
+[third-party wildcard matcher integrations]: #third-party-wildcard-matcher-integrations
+[throwing exceptions]: #throwing-exceptions
+[undefinedargumentexception]: #undefinedargumentexception
+[undefinedcallexception]: #undefinedcallexception
+[undefinedeventexception]: #undefinedeventexception
+[usage]: #usage
+[using a callable as an answer]: #using-a-callable-as-an-answer
+[verification handles]: #verification-handles
+[verification]: #verification
+[verifying call closure binding]: #verifying-call-closure-binding
+[verifying call exceptions]: #verifying-call-exceptions
+[verifying call input]: #verifying-call-input
+[verifying call output]: #verifying-call-output
+[verifying call return values]: #verifying-call-return-values
+[verifying calls with generators or traversables]: #verifying-calls-with-generators-or-traversables
+[verifying cardinality with calls]: #verifying-cardinality-with-calls
+[verifying cardinality with spies]: #verifying-cardinality-with-spies
+[verifying exceptions received by calls]: #verifying-exceptions-received-by-calls
+[verifying exceptions received by spies]: #verifying-exceptions-received-by-spies
+[verifying spies with generators or traversables]: #verifying-spies-with-generators-or-traversables
+[verifying spy closure binding]: #verifying-spy-closure-binding
+[verifying spy exceptions]: #verifying-spy-exceptions
+[verifying spy input]: #verifying-spy-input
+[verifying spy output]: #verifying-spy-output
+[verifying spy return values]: #verifying-spy-return-values
+[verifying that a call event happened a bounded number of times]: #verifying-that-a-call-event-happened-a-bounded-number-of-times
+[verifying that a call event happened an exact number of times]: #verifying-that-a-call-event-happened-an-exact-number-of-times
+[verifying that a call was made with specific arguments]: #verifying-that-a-call-was-made-with-specific-arguments
+[verifying that a call was made]: #verifying-that-a-call-was-made
+[verifying that a spy event happened a bounded number of times]: #verifying-that-a-spy-event-happened-a-bounded-number-of-times
+[verifying that a spy event happened an exact number of times]: #verifying-that-a-spy-event-happened-an-exact-number-of-times
+[verifying that a spy was called with specific arguments]: #verifying-that-a-spy-was-called-with-specific-arguments
+[verifying that all call events happen the same way]: #verifying-that-all-call-events-happen-the-same-way
+[verifying that all spy events happen the same way]: #verifying-that-all-spy-events-happen-the-same-way
+[verifying that there was no interaction with a mock]: #verifying-that-there-was-no-interaction-with-a-mock
+[verifying values produced by calls]: #verifying-values-produced-by-calls
+[verifying values produced by spies]: #verifying-values-produced-by-spies
+[verifying values received by calls]: #verifying-values-received-by-calls
+[verifying values received by spies]: #verifying-values-received-by-spies
+[when to use the "equal to" matcher]: #when-to-use-the-equal-to-matcher
 
+<!-- Shortcut references -->
+
+["any" matcher]: #the-any-matcher
+["equal to" matcher]: #the-equal-to-matcher
+["wildcard" matcher]: #the-wildcard-matcher
+[ad hoc mock]: #ad-hoc-mocks
+[full mock]: #mocking-basics
+[generator spies]: #verifying-spies-with-generators-or-traversables
+[matcher]: #matchers
+[mock builder]: #mock-builders
+[mock handle]: #mock-handles
+[mock]: #mocks
+[partial mock]: #partial-mocks
+[references]: #export-identifiers-and-references
+[self value]: #returning-the-self-value
+[spy]: #spies
+[static mock handles]: #static-mocks
+[stub]: #stubs
+[stubbing handle]: #stubbing-handles
+[testing framework]: #integration-with-test-frameworks
+[testing frameworks]: #integration-with-test-frameworks
+[traversable spies]: #verifying-spies-with-generators-or-traversables
+[verification handle]: #verification-handles
+[verification result]: #the-verification-result-api
+[verification results]: #the-verification-result-api
+
+<!-- API references -->
+
+[arguments-api]: #the-arguments-api
+[call-api]: #the-call-api
+[event-api]: #the-event-api
+[matcher-api]: #the-matcher-api
+[mock-api]: #the-mock-api
+[mock-builder-api]: #the-mock-builder-api
+[spy-api]: #the-spy-api
+[stub-api]: #the-stub-api
+[verification-api]: #the-verification-result-api
+[wildcard-api]: #the-wildcard-matcher-api
+
+<!-- External references -->
+
+[`__invoke()`]: http://php.net/language.oop5.magic#object.invoke
 [closure binding]: http://php.net/closure.bind
+[composer]: http://getcomposer.org/
+[counterpart]: http://docs.counterpartphp.org/
+[eloquent/phony]: https://packagist.org/packages/eloquent/phony
+[error]: http://php.net/class.error
+[exception]: http://php.net/class.exception
+[fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
 [generator::send()]: http://php.net/generator.send
 [generator::throw()]: http://php.net/generator.throw
 [generators]: http://php.net/language.generators.overview
+[hamcrest]: https://github.com/hamcrest/hamcrest-php
+[mockery matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
+[mockery]: http://docs.mockery.io/
+[peridot]: http://peridot-php.github.io/
+[phake matchers]: http://phake.readthedocs.org/en/latest/method-parameter-matchers.html
+[phake wildcard matchers]: http://phake.readthedocs.org/en/latest/method-stubbing.html?highlight=anyparameters#stubbing-consecutive-calls
+[phake]: http://phake.readthedocs.org/
+[pho]: https://github.com/danielstjules/pho
+[phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 [phpunit]: https://phpunit.de/
+[prophecy matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
+[prophecy wildcard matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
+[prophecy]: https://github.com/phpspec/prophecy
+[reflectionclass]: http://php.net/reflectionclass
+[simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
 [simpletest]: https://github.com/simpletest/simpletest
+[throwable]: http://php.net/class.throwable
+[use function]: http://php.net/language.namespaces.importing
 [yield]: http://php.net/language.generators.syntax#control-structures.yield
