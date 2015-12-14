@@ -179,7 +179,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $proxy->method->calledWith(123, 1.23, '<string>', true);
     }
 
-    public function testClassReturnTypeMocking()
+    public function testReturnTypeMocking()
     {
         if (!$this->featureDetector->isSupported('return.type')) {
             $this->markTestSkipped('Requires return type declarations.');
@@ -202,7 +202,22 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame(123, $proxy->mock()->scalarType());
     }
 
-    public function testClassReturnTypeMockingInvalidType()
+    public function testMagicMethodReturnTypeMocking()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType')->mock();
+
+        x\onStatic($mock)->nonexistent->returns('x');
+        x\on($mock)->nonexistent->returns('z');
+
+        $this->assertSame('x', $mock::nonexistent());
+        $this->assertSame('z', $mock->nonexistent());
+    }
+
+    public function testReturnTypeMockingInvalidType()
     {
         if (!$this->featureDetector->isSupported('return.type')) {
             $this->markTestSkipped('Requires return type declarations.');
