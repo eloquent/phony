@@ -88,6 +88,8 @@ class MockDefinition implements MockDefinitionInterface
         $this->featureDetector = $featureDetector;
 
         $this->isTraitSupported = $this->featureDetector->isSupported('trait');
+        $this->isRelaxedKeywordsSupported
+             = $this->featureDetector->isSupported('parser.relaxed-keywords');
     }
 
     /**
@@ -388,18 +390,25 @@ class MockDefinition implements MockDefinitionInterface
             }
         }
 
-        $methodNames = array_keys($methods);
-        $tokens = token_get_all('<?php ' . implode(' ', $methodNames));
+        if ($this->isRelaxedKeywordsSupported) {
+            // class is the only keyword that can not be used as a method name
+            // @codeCoverageIgnoreStart
+            unset($methods['class']);
+            // @codeCoverageIgnoreEnd
+        } else {
+            $methodNames = array_keys($methods);
+            $tokens = token_get_all('<?php ' . implode(' ', $methodNames));
 
-        foreach ($methodNames as $index => $methodName) {
-            $tokenIndex = $index * 2 + 1;
+            foreach ($methodNames as $index => $methodName) {
+                $tokenIndex = $index * 2 + 1;
 
-            if (
-                !is_array($tokens[$tokenIndex]) ||
-                $tokens[$tokenIndex][0] !== T_STRING
-            ) { // @codeCoverageIgnoreStart
-                unset($methods[$methodName]);
-            } // @codeCoverageIgnoreEnd
+                if (
+                    !is_array($tokens[$tokenIndex]) ||
+                    $tokens[$tokenIndex][0] !== T_STRING
+                ) { // @codeCoverageIgnoreStart
+                    unset($methods[$methodName]);
+                } // @codeCoverageIgnoreEnd
+            }
         }
 
         foreach ($this->customStaticMethods as $methodName => $callback) {
@@ -441,6 +450,7 @@ class MockDefinition implements MockDefinitionInterface
     private $signatureInspector;
     private $featureDetector;
     private $isTraitSupported;
+    private $isRelaxedKeywordsSupported;
     private $typeNames;
     private $parentClassName;
     private $interfaceNames;
