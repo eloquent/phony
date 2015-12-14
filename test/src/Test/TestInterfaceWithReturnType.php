@@ -15,4 +15,7 @@ interface TestInterfaceWithReturnType
 {
     public function classType() : \stdClass;
     public function scalarType() : int;
+
+    public function __call($name, array $arguments) : string;
+    public static function __callStatic($name, array $arguments) : string;
 }

@@ -310,8 +310,9 @@ class MockGenerator implements MockGeneratorInterface
     public static function __callStatic(
 EOD;
 
+        $methodReflector = $methods[$callStaticName]->method();
         $signature = $this->signatureInspector
-            ->signature($methods[$callStaticName]->method());
+            ->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -327,9 +328,22 @@ EOD;
                 $parameter[3];
         }
 
-        $source .= <<<'EOD'
+        if (
+            $this->isReturnTypeSupported &&
+            $methodReflector->hasReturnType()
+        ) {
+            $type = $methodReflector->getReturnType();
 
-    ) {
+            if ($type->isBuiltin()) {
+                $source .= "\n    ) : " . $type . " {\n";
+            } else {
+                $source .= "\n    ) : \\" . $type . " {\n";
+            }
+        } else {
+            $source .= "\n    ) {\n";
+        }
+
+        $source .= <<<'EOD'
         return self::$_staticProxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
@@ -559,9 +573,9 @@ EOD;
 
     public function __call(
 EOD;
-
+        $methodReflector = $methods[$callName]->method();
         $signature = $this->signatureInspector
-            ->signature($methods[$callName]->method());
+            ->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -577,9 +591,22 @@ EOD;
                 $parameter[2];
         }
 
-        $source .= <<<'EOD'
+        if (
+            $this->isReturnTypeSupported &&
+            $methodReflector->hasReturnType()
+        ) {
+            $type = $methodReflector->getReturnType();
 
-    ) {
+            if ($type->isBuiltin()) {
+                $source .= "\n    ) : " . $type . " {\n";
+            } else {
+                $source .= "\n    ) : \\" . $type . " {\n";
+            }
+        } else {
+            $source .= "\n    ) {\n";
+        }
+
+        $source .= <<<'EOD'
         return $this->_proxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
