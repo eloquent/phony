@@ -310,6 +310,18 @@ class FeatureDetector implements FeatureDetectorInterface
                     ->checkStatement('function (stdClass ...$a) {};');
             },
 
+            'parameter.hint.scalar' => function ($detector) {
+                return $detector
+                    ->checkInternalMethod('ReflectionParameter', 'getType');
+            },
+
+            'return.type' => function ($detector) {
+                return $detector->checkInternalMethod(
+                    'ReflectionFunctionAbstract',
+                    'hasReturnType'
+                );
+            },
+
             'reflection.function.export.default.array' => function ($detector) {
                 $function =
                     new ReflectionFunction(function ($a0 = array('a')) {});
