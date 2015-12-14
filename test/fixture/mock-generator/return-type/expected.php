@@ -1,8 +1,8 @@
 <?php
 
-class MockGeneratorReturnTypeDeclaration
+class MockGeneratorReturnType
 implements \Eloquent\Phony\Mock\MockInterface,
-           \Eloquent\Phony\Test\TestInterfaceWithReturnTypeDeclarations
+           \Eloquent\Phony\Test\TestInterfaceWithReturnType
 {
     public function classType() : \stdClass
     {

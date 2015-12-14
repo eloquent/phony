@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Test;
 
-interface TestInterfaceWithReturnTypeDeclarations
+interface TestInterfaceWithReturnType
 {
     public function classType() : \stdClass;
     public function scalarType() : int;
