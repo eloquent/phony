@@ -167,6 +167,42 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
     }
 
+    public function testClassReturnTypeMocking()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnTypeDeclarations');
+        $object = (object) array();
+        $proxy->classType->does(
+            function () use ($object) {
+                return $object;
+            }
+        );
+        $proxy->scalarType->does(
+            function () {
+                return 123;
+            }
+        );
+
+        $this->assertSame($object, $proxy->mock()->classType());
+        $this->assertSame(123, $proxy->mock()->scalarType());
+    }
+
+    public function testClassReturnTypeMockingInvalidType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnTypeDeclarations');
+        $proxy->scalarType->returns('<string>');
+
+        $this->setExpectedException('TypeError');
+        $proxy->mock()->scalarType();
+    }
+
     public function testSpyStatic()
     {
         $spy = Phony::spy();
@@ -209,6 +245,17 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $spy->calledWith('a', 'b', 'c'),
             $spy->calledWith(111)
         );
+    }
+
+    public function testSpyReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $spy = x\spy(eval('return function () : int { return 123; };'));
+
+        $this->assertSame(123, $spy());
     }
 
     public function testStubStatic()
@@ -276,6 +323,17 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub = x\stub($callback)->forwards();
 
         $this->assertSame($callback, $stub());
+    }
+
+    public function testStubReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $spy = x\stub(eval('return function () : int { return 123; };'));
+
+        $this->assertSame(123, $spy());
     }
 
     public function testTraversableSpyingStatic()

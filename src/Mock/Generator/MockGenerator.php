@@ -69,6 +69,8 @@ class MockGenerator implements MockGeneratorInterface
 
         $this->isClosureBindingSupported =
             $this->featureDetector->isSupported('closure.bind');
+        $this->isReturnTypeSupported =
+            $this->featureDetector->isSupported('return.type');
     }
 
     /**
@@ -383,6 +385,7 @@ EOD;
         foreach ($methods as $method) {
             $name = $method->name();
             $nameLower = strtolower($name);
+            $methodReflector = $method->method();
 
             switch ($nameLower) {
                 case '__construct':
@@ -392,8 +395,6 @@ EOD;
 
                 // @codeCoverageIgnoreStart
                 case 'inittrace':
-                    $methodReflector = $method->method();
-
                     if ($methodReflector instanceof ReflectionMethod) {
                         $declaringClass =
                             $methodReflector->getDeclaringClass()->getName();
@@ -407,8 +408,7 @@ EOD;
                     }
             } // @codeCoverageIgnoreEnd
 
-            $signature =
-                $this->signatureInspector->signature($method->method());
+            $signature = $this->signatureInspector->signature($methodReflector);
 
             if ($method->isCustom()) {
                 $parameterName = null;
@@ -492,6 +492,21 @@ EOD;
                 'function ' .
                 $name;
 
+            if (
+                $this->isReturnTypeSupported &&
+                $methodReflector->hasReturnType()
+            ) {
+                $type = $methodReflector->getReturnType();
+
+                if ($type->isBuiltin()) {
+                    $returnType = ' : ' . $type;
+                } else {
+                    $returnType = ' : \\' . $type;
+                }
+            } else {
+                $returnType = '';
+            }
+
             if ($signature) {
                 $index = -1;
                 $isFirst = true;
@@ -512,9 +527,9 @@ EOD;
                         $parameter[3];
                 }
 
-                $source .= "\n    ) {\n";
+                $source .= "\n    )" . $returnType . " {\n";
             } else {
-                $source .= "()\n    {\n";
+                $source .= "()" . $returnType . "\n    {\n";
             }
 
             $source .= $body . "\n    }\n";
@@ -865,4 +880,5 @@ EOD;
     private $signatureInspector;
     private $featureDetector;
     private $isClosureBindingSupported;
+    private $isReturnTypeSupported;
 }
