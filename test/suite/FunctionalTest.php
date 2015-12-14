@@ -160,6 +160,18 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
     }
 
+    public function testScalarTypeHintMocking()
+    {
+        if (!$this->featureDetector->isSupported('parameter.hint.scalar')) {
+            $this->markTestSkipped('Requires scalar type hints.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint');
+
+        $proxy->mock()->method(123, 1.23, '<string>', true);
+        $proxy->method->calledWith(123, 1.23, '<string>', true);
+    }
+
     public function testClassReturnTypeMocking()
     {
         if (!$this->featureDetector->isSupported('return.type')) {
