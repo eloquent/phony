@@ -32,5 +32,6 @@
     "Reflection function exports include by-reference information":     ["reflection.function.export.reference",      "0.x",     "999",   [], "3.4.x", "999", []],
     "HHVM runtime":                                                     ["runtime.hhvm",                              "999",     "0.x",   [], "0.x",   "999", []],
     "PHP runtime":                                                      ["runtime.php",                               "0.x",     "999",   [], "999",   "0.x", []],
+    "Language keywords can be used as method names":                    ["parser.relaxed-keywords",                   "7.x",     "999",   [], "999",   "0.x", []],
     "Can use traits":                                                   ["trait",                                     "5.4.x",   "999",   [], "0.x",   "999", []]
 }
