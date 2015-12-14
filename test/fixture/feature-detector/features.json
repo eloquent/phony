@@ -26,6 +26,8 @@
     "Can use variadic parameters":                                      ["parameter.variadic",                        "5.6.x",   "999",   [], "3.3.x", "999", []],
     "Can use by-reference variadic parameters":                         ["parameter.variadic.reference",              "5.6.x",   "999",   [], "999",   "0.x", []],
     "Can use type hints with variadic parameters":                      ["parameter.variadic.type",                   "5.6.x",   "999",   [], "999",   "0.x", []],
+    "Can use scalar type hints":                                        ["parameter.hint.scalar",                     "7.x",     "999",   [], "999",   "0.x", []],
+    "Can use return type declarations":                                 ["return.type",                               "7.x",     "999",   [], "999",   "0.x", []],
     "Reflection function exports include full array default value":     ["reflection.function.export.default.array",  "999",     "0.x",   [], "3.2.x", "999", []],
     "Reflection function exports include by-reference information":     ["reflection.function.export.reference",      "0.x",     "999",   [], "3.4.x", "999", []],
     "HHVM runtime":                                                     ["runtime.hhvm",                              "999",     "0.x",   [], "0.x",   "999", []],
