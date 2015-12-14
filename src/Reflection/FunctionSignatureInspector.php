@@ -63,6 +63,8 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             ->isSupported('reflection.function.export.reference');
         $this->isVariadicParameterSupported = $featureDetector
             ->isSupported('parameter.variadic');
+        $this->isScalarTypeHintSupported = $featureDetector
+            ->isSupported('parameter.hint.scalar');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
@@ -123,18 +125,23 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                 }
             } // @codeCoverageIgnoreEnd
 
-            switch ($typehint) {
-                case '':
-                case 'array ':
-                case 'callable ':
-                    break;
-
-                case 'self ':
-                    $typehint = $parameter->getDeclaringClass()->getName() .
-                        ' ';
-
-                default:
+            if ('self ' === $typehint) {
+                $typehint = '\\' . $parameter->getDeclaringClass()->getName()
+                    . ' ';
+            } elseif (
+                '' !== $typehint &&
+                'array ' !== $typehint &&
+                'callable ' !== $typehint
+            ) {
+                if (!$this->isScalarTypeHintSupported) {
                     $typehint = '\\' . $typehint;
+                } elseif ('integer ' === $typehint && $parameter->getType()->isBuiltin()) {
+                    $typehint = 'int ';
+                } elseif ('boolean ' === $typehint && $parameter->getType()->isBuiltin()) {
+                    $typehint = 'bool ';
+                } elseif ('float ' !== $typehint && 'string ' !== $typehint) {
+                    $typehint = '\\' . $typehint;
+                }
             }
 
             if ($this->isExportReferenceSupported) {
@@ -208,5 +215,6 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     private $featureDetector;
     private $isExportDefaultArraySupported;
     private $isExportReferenceSupported;
+    private $isScalarTypeHintSupported;
     private $isHhvm;
 }
