@@ -341,6 +341,12 @@ class FeatureDetector implements FeatureDetectorInterface
                 return 'php' === $detector->runtime();
             },
 
+            'parser.relaxed-keywords' => function ($detector) {
+                // syntax causes fatal on PHP < 7.0 and HHVM
+                return $detector->isSupported('runtime.php') &&
+                    !version_compare(PHP_VERSION, '7.x', '<');
+            },
+
             'trait' => function ($detector) {
                 return $detector
                     ->checkInternalMethod('ReflectionClass', 'isTrait');
