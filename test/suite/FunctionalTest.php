@@ -178,7 +178,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnTypeDeclarations');
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $object = (object) array();
         $proxy->classType->does(
             function () use ($object) {
@@ -201,7 +201,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnTypeDeclarations');
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $proxy->scalarType->returns('<string>');
 
         $this->setExpectedException('TypeError');
