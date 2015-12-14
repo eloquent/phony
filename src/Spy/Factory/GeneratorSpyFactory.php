@@ -59,6 +59,8 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
         $this->callEventFactory = $callEventFactory;
         $this->featureDetector = $featureDetector;
 
+        $this->isGeneratorReturnSupported = $featureDetector
+            ->isSupported('generator.return');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
@@ -117,21 +119,40 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
             );
         }
 
-        if ($this->isHhvm) { // @codeCoverageIgnoreStart
+        if ($this->isHhvm) {
+            // @codeCoverageIgnoreStart
+            if ($this->isGeneratorReturnSupported) {
+                return GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
+                    $call,
+                    $traversable,
+                    $this->callEventFactory
+                );
+            }
 
             return GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
                 $call,
                 $traversable,
                 $this->callEventFactory
             );
-        } // @codeCoverageIgnoreEnd
+            // @codeCoverageIgnoreEnd
+        } elseif ($this->isGeneratorReturnSupported) {
+            return GeneratorSpyFactoryDetailPhpWithReturn::createGeneratorSpy(
+                $call,
+                $traversable,
+                $this->callEventFactory
+            );
+        }
 
-        return GeneratorSpyFactoryDetailPhp
-            ::createGeneratorSpy($call, $traversable, $this->callEventFactory);
+        return GeneratorSpyFactoryDetailPhp::createGeneratorSpy(
+            $call,
+            $traversable,
+            $this->callEventFactory
+        );
     }
 
     private static $instance;
     private $featureDetector;
     private $callEventFactory;
+    private $isGeneratorReturnSupported;
     private $isHhvm;
 }

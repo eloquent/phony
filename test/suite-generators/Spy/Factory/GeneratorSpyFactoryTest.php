@@ -270,4 +270,26 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
     }
+
+    public function testGeneratorReturn()
+    {
+        if (!$this->featureDetector->isSupported('generator.return')) {
+            $this->markTestSkipped('Requires generator return support.');
+        }
+
+        $generator = eval(
+            'return call_user_func(function () { return 123; yield; });'
+        );
+
+        $spy = $this->subject->create($this->call, $generator, true);
+
+        while ($spy->valid()) {
+            $spy->next();
+        }
+
+        $this->assertSame(
+            123,
+            $spy->getReturn()
+        );
+    }
 }

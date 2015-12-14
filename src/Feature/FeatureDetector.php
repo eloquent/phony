@@ -265,6 +265,10 @@ class FeatureDetector implements FeatureDetectorInterface
                     $detector->checkStatement('yield');
             },
 
+            'generator.return' => function ($detector) {
+                return $detector->checkInternalMethod('Generator', 'getReturn');
+            },
+
             'object.constructor.php4' => function ($detector) {
                 if ($detector->isSupported('runtime.hhvm')) {
                     return true; // @codeCoverageIgnore
