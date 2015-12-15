@@ -22,16 +22,15 @@
         "hamcrest/hamcrest-php": "^1",
         "icecave/archer": "dev-develop",
         "icecave/isolator": "^3",
-        "mockery/mockery": "^0",
+        "mockery/mockery": "^0.9",
         "peridot-php/leo": "^1",
         "peridot-php/peridot": "^1",
         "phake/phake": "^2",
         "phpspec/prophecy": "^1",
         "phpunit/php-code-coverage": "^2",
         "phpunit/phpunit": "^4",
-        "sami/sami": "^2",
-        "sebastian/comparator": "^1",
-        "simpletest/simpletest": "dev-master"
+        "sami/sami": "^3",
+        "simpletest/simpletest": "^1"
     },
     "autoload": {
         "psr-4": {
@@ -54,7 +53,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.6.x-dev"
+            "dev-develop": "0.7.x-dev"
         }
     }
 }
