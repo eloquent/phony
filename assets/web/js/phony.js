@@ -66,8 +66,6 @@ var run = function () {
     tocShow.addEventListener(
         'click',
         function (event) {
-            event.preventDefault();
-
             tocShow.style.display = 'none';
             tocHide.style.display = 'inline';
             tocListElement.style.display = 'block';
@@ -78,8 +76,6 @@ var run = function () {
     tocHide.addEventListener(
         'click',
         function (event) {
-            event.preventDefault();
-
             tocHide.style.display = 'none';
             tocShow.style.display = 'inline';
             tocListElement.style.display = 'none';
