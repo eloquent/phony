@@ -1,0 +1,61 @@
+#!/usr/bin/env php
+<?php
+
+echo "Generating Phony website...\n";
+
+passthru('rm -rf artifacts/web');
+passthru('mkdir -p artifacts/web');
+
+$hash = sha1_file('doc/index.md');
+$content = null;
+
+if (file_exists('artifacts/web.json')) {
+    $meta = json_decode(file_get_contents('artifacts/web.json'));
+    $needsRender = $meta->hash !== $hash;
+    $content = $meta->content;
+} else {
+    $needsRender = true;
+}
+
+if ($needsRender) {
+    $content = strtr(
+        file_get_contents(
+            'https://api.github.com/markdown/raw',
+            false,
+            stream_context_create(
+                array(
+                    'http' => array(
+                        'user_agent' => 'PHP',
+                        'header' => "Content-type: text/plain\r\n",
+                        'method' => 'POST',
+                        'content' => file_get_contents('doc/index.md'),
+                    ),
+                )
+            )
+        ),
+        array(
+            'id="user-content-' => 'id="',
+            'name="user-content-' => 'name="',
+        )
+    );
+
+    file_put_contents(
+        'artifacts/web.json',
+        json_encode(
+            array('content' => $content, 'hash' => $hash),
+            JSON_PRETTY_PRINT
+        )
+    );
+}
+
+file_put_contents(
+    'artifacts/web/index.html',
+    strtr(
+        file_get_contents('assets/web/site.tpl.html'),
+        array('{content}' => $content)
+    )
+);
+
+passthru('cp -a assets/web/css artifacts/web/');
+passthru('cp -a assets/web/img artifacts/web/');
+passthru('cp -a assets/web/js artifacts/web/');

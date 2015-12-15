@@ -1,0 +1,101 @@
+#container {
+    width: 1230px;
+    margin: 0 auto;
+    padding: 0 2.25em;
+}
+
+#content {
+    width: 820px;
+    padding-bottom: 2000px;
+    margin-bottom: 2.25em;
+    background-image: url("../img/phony.png");
+    background-position: center bottom;
+    background-repeat: no-repeat;
+}
+
+#toc {
+    position: fixed;
+    margin-left: 870px;
+    width: 300px;
+}
+
+#toc > h2 {
+    padding-bottom: 0.3em;
+    font-size: 2.25em;
+    line-height: 1.2;
+    margin-top: 0;
+}
+#toc h2 span {
+    font-size: 1.75rem;
+}
+#toc > h2 > a {
+    float: right;
+}
+#toc > h2 a {
+    font-size: 1.8rem;
+    margin-top: .5rem;
+    margin-left: .5rem;
+    font-weight: normal;
+    color: #333;
+}
+#toc > h2 a:hover {
+    color: #4078c0;
+}
+
+#toc ul {
+    display: none;
+    padding-left: 1em;
+    list-style: none;
+}
+
+#toc li.active ul {
+    display: block;
+}
+#toc li.active ul ul {
+    display: none;
+}
+#toc li.active ul li.active ul {
+    display: block;
+}
+
+#toc > ul {
+    display: block;
+    padding-left: 0;
+}
+
+#toc li.active {
+    font-weight: bold;
+}
+#toc li.active li {
+    font-weight: normal;
+}
+#toc li.active li.active {
+    font-weight: bold;
+}
+
+.markdown-body {
+    font-family: Lato, "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.markdown-body code,
+.markdown-body pre,
+.markdown-body .highlight pre,
+.markdown-body kbd {
+    font-family: Inconsolata, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.markdown-body code,
+.markdown-body pre,
+.markdown-body .highlight pre {
+    font-size: 16px;
+}
+
+.markdown-body blockquote {
+    padding: 1em;
+    border: 1px solid #eee;
+    border-left: 1em solid #eee;
+}
+
+.markdown-body hr {
+    height: 1px;
+    background-color: white;
+}

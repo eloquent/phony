@@ -126,8 +126,8 @@
             - [Comparing mocks]
     - [The "wildcard" matcher]
         - [Third-party wildcard matcher integrations]
-            - [Phake wildcard matchers]
-            - [Prophecy wildcard matchers]
+            - [Phake wildcard matcher integration]
+            - [Prophecy wildcard matcher integration]
 - [The exporter]
     - [The exporter API]
     - [The export format]
@@ -138,7 +138,7 @@
             - [Exporting mocks]
     - [Export depth]
         - [Setting the export depth]
-- [Exception APIs]
+- [Thrown exceptions]
     - [AssertionException]
     - [UndefinedArgumentException]
     - [UndefinedCallException]
@@ -5384,7 +5384,7 @@ $spy->calledWith('a', '*', 'c'); // this is not supported
 *Phony* also supports the use of "wildcard" style matchers from third-party
 matcher systems:
 
-##### Phake wildcard matchers
+##### Phake wildcard matcher integration
 
 [Phake wildcard matchers] \(`Phake::anyParameters()`) can be used in any *Phony*
 verification:
@@ -5395,7 +5395,7 @@ $spy('a', 'b');
 $spy->calledWith(Phake::anyParameters()); // verification passes
 ```
 
-##### Prophecy wildcard matchers
+##### Prophecy wildcard matcher integration
 
 [Prophecy wildcard matchers] \(`Argument::cetera()`) can be used in any *Phony*
 verification:
@@ -5601,7 +5601,7 @@ Negative values are treated as infinite depth, and will cause *Phony* to export
 values in their entirety. Note that this can produce immense amounts of output
 for large nested structures.
 
-## Exception APIs
+## Thrown exceptions
 
 ### AssertionException
 
@@ -5672,7 +5672,6 @@ Get the index.
 [custom class names]: #custom-class-names
 [customizing the mock class]: #customizing-the-mock-class
 [dynamic order verification]: #dynamic-order-verification
-[exception apis]: #exception-apis
 [export depth]: #export-depth
 [export identifiers and references]: #export-identifiers-and-references
 [exporter special cases]: #exporter-special-cases
@@ -5712,12 +5711,12 @@ Get the index.
 [partial mocks]: #partial-mocks
 [peridot usage]: #peridot-usage
 [phake matchers]: #phake-matchers
-[phake wildcard matchers]: #phake-wildcard-matchers
+[phake wildcard matcher integration]: #phake-wildcard-matcher-integration
 [pho usage]: #pho-usage
 [phpunit constraints]: #phpunit-constraints
 [phpunit usage]: #phpunit-usage
 [prophecy argument tokens]: #prophecy-argument-tokens
-[prophecy wildcard matchers]: #prophecy-wildcard-matchers
+[prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
 [resetting a mock]: #resetting-a-mock
 [retrieving calls from a spy]: #retrieving-calls-from-a-spy
 [returning arguments]: #returning-arguments
@@ -5760,6 +5759,7 @@ Get the index.
 [the wildcard matcher api]: #the-wildcard-matcher-api
 [third-party wildcard matcher integrations]: #third-party-wildcard-matcher-integrations
 [throwing exceptions]: #throwing-exceptions
+[thrown exceptions]: #thrown-exceptions
 [undefinedargumentexception]: #undefinedargumentexception
 [undefinedcallexception]: #undefinedcallexception
 [undefinedeventexception]: #undefinedeventexception
