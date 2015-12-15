@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-echo "Generating Phony website...\n";
+echo 'Generating Phony website... ';
 
 passthru('rm -rf artifacts/web');
 passthru('mkdir -p artifacts/web');
@@ -59,3 +59,5 @@ file_put_contents(
 passthru('cp -a assets/web/css artifacts/web/');
 passthru('cp -a assets/web/img artifacts/web/');
 passthru('cp -a assets/web/js artifacts/web/');
+
+echo "done.\n";
