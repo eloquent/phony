@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.6.2 (2015-12-16)
 
 - **[IMPROVED]** Huge additions to the documentation ([#85], [#88]).
 - **[FIXED]** Fixed error with EqualToMatcher when comparing object to
@@ -18,7 +18,7 @@
 
 [#91]: https://github.com/eloquent/phony/issues/91
 
-## 0.6.0
+## 0.6.0 (2015-11-12)
 
 - **[NEW]** Support for stub default answer callbacks.
 - **[FIXED]** Fixed full mock default answer bug (#89).
