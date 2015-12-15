@@ -134,4 +134,4 @@ class PhonyTest extends UnitTestCase
 
 [simpletest]: https://github.com/simpletest/simpletest
 
-[documentation]: doc/index.md
+[documentation]: http://eloquent-software.com/phony/
