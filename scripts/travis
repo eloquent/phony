@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ "$TRAVIS_BRANCH" == "develop" && "$TRAVIS_PHP_VERSION" == "$ARCHER_PUBLISH_VERSION" ]]; then
+    scripts/build-web
+fi
+
+vendor/bin/archer travis:build

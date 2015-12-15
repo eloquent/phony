@@ -7,16 +7,16 @@
 [![Current coverage status image][coverage-image]][current coverage status]
 
 [build-image]: http://img.shields.io/travis/eloquent/phony/develop.svg?style=flat-square "Current build status for the develop branch"
-[current build status]: https://travis-ci.org/eloquent/phony
 [coverage-image]: https://img.shields.io/codecov/c/github/eloquent/phony/develop.svg?style=flat-square "Current test coverage for the develop branch"
+[current build status]: https://travis-ci.org/eloquent/phony
 [current coverage status]: https://codecov.io/github/eloquent/phony
-[semantic versioning]: http://semver.org/
+[current version]: https://packagist.org/packages/eloquent/phony
 [version-image]: https://img.shields.io/packagist/v/eloquent/phony.svg?style=flat-square "This project uses semantic versioning"
 
 ## Installation and documentation
 
 - Available as [Composer] package [eloquent/phony].
-- Read the [manual].
+- Read the [documentation].
 
 [composer]: http://getcomposer.org/
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
@@ -34,7 +34,7 @@ supports PHP 7 and [HHVM].
 
 ## Usage
 
-For detailed usage, see the [manual].
+For detailed usage, see the [documentation].
 
 ### Standalone usage
 
@@ -50,7 +50,7 @@ assert($mock->methodA('argument') === 'value');
 $handle->methodA->calledWith('argument');
 ```
 
-### Peridot usage
+### [Peridot] usage
 
 ```php
 use function Eloquent\Phony\mock;
@@ -68,7 +68,9 @@ describe('Phony', function () {
 });
 ```
 
-### Pho usage
+[peridot]: http://peridot-php.github.io/
+
+### [Pho] usage
 
 ```php
 use function Eloquent\Phony\Pho\mock;
@@ -86,7 +88,9 @@ describe('Phony', function () {
 });
 ```
 
-### PHPUnit usage
+[pho]: https://github.com/danielstjules/pho
+
+### [PHPUnit] usage
 
 ```php
 use Eloquent\Phony\Phpunit\Phony;
@@ -106,7 +110,9 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-### SimpleTest usage
+[phpunit]: https://phpunit.de/
+
+### [SimpleTest] usage
 
 ```php
 use Eloquent\Phony\Simpletest\Phony;
@@ -126,4 +132,6 @@ class PhonyTest extends UnitTestCase
 }
 ```
 
-[manual]: doc/index.md
+[simpletest]: https://github.com/simpletest/simpletest
+
+[documentation]: http://eloquent-software.com/phony/

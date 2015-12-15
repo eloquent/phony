@@ -6,4 +6,5 @@
 /test/ export-ignore
 # archer end
 
+/assets/ export-ignore
 /doc/ export-ignore

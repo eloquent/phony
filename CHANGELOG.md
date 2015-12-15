@@ -1,14 +1,24 @@
 # Phony changelog
 
+## 0.6.2 (2015-12-16)
+
+- **[IMPROVED]** Huge additions to the documentation ([#85], [#88]).
+- **[FIXED]** Fixed error with EqualToMatcher when comparing object to
+  non-object. (#100).
+
+[#85]: https://github.com/eloquent/phony/issues/85
+[#88]: https://github.com/eloquent/phony/issues/88
+[#100]: https://github.com/eloquent/phony/issues/100
+
 ## 0.6.1 (2015-11-16)
 
 - **[IMPROVED]** Mock instances labels are now compared by the equal to matcher
   (#91).
-- **[IMPROVED]** The inline exporter now outputs mock labels (#91).
+- **[IMPROVED]** The inline exporter now outputs mock labels ([#91]).
 
 [#91]: https://github.com/eloquent/phony/issues/91
 
-## 0.6.0
+## 0.6.0 (2015-11-12)
 
 - **[NEW]** Support for stub default answer callbacks.
 - **[FIXED]** Fixed full mock default answer bug (#89).
