@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "43024d90b7fd3ffdadd5b584bcfe66d4",
-    "content-hash": "dc8da8349d1a5fd862ff0169896e7411",
+    "hash": "0f9fbc80e66e1db498d66c690bf109a2",
+    "content-hash": "30b6a335e97d0ce80863ecdec88a173e",
     "packages": [],
     "packages-dev": [
         {
@@ -260,6 +260,57 @@
             "time": "2015-12-11 00:24:24"
         },
         {
+            "name": "eloquent/enumeration",
+            "version": "5.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eloquent/enumeration.git",
+                "reference": "0242859435d9b135939816858348556d3cde9e3c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eloquent/enumeration/zipball/0242859435d9b135939816858348556d3cde9e3c",
+                "reference": "0242859435d9b135939816858348556d3cde9e3c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "icecave/archer": "dev-develop",
+                "phpunit/phpunit": "^4",
+                "sami/sami": "^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Eloquent\\Enumeration\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                }
+            ],
+            "description": "An enumeration implementation for PHP.",
+            "homepage": "https://github.com/eloquent/enumeration",
+            "keywords": [
+                "class",
+                "enum",
+                "enumeration",
+                "multiton",
+                "set",
+                "type"
+            ],
+            "time": "2015-11-03 22:21:38"
+        },
+        {
             "name": "evenement/evenement",
             "version": "v2.0.0",
             "source": {
@@ -304,6 +355,53 @@
                 "event-emitter"
             ],
             "time": "2012-11-02 14:49:47"
+        },
+        {
+            "name": "ezzatron/ci-status-images",
+            "version": "3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ezzatron/ci-status-images.git",
+                "reference": "9e0cec35d09a75c73732bac9352f342172a1e3cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ezzatron/ci-status-images/zipball/9e0cec35d09a75c73732bac9352f342172a1e3cc",
+                "reference": "9e0cec35d09a75c73732bac9352f342172a1e3cc",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                },
+                {
+                    "name": "James Harris",
+                    "email": "james.harris@icecave.com.au",
+                    "homepage": "https://github.com/jmalloc"
+                }
+            ],
+            "description": "Test coverage percentage and other useful status images for continuous integration systems.",
+            "homepage": "https://github.com/ezzatron/ci-status-images",
+            "keywords": [
+                "button",
+                "ci",
+                "continuous",
+                "github",
+                "icon",
+                "image",
+                "integration",
+                "label",
+                "status",
+                "travis"
+            ],
+            "time": "2013-09-08 11:40:38"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -427,6 +525,64 @@
             "time": "2015-10-26 00:32:44"
         },
         {
+            "name": "icecave/duct",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IcecaveStudios/duct.git",
+                "reference": "8ceafedf13c6c8fc87dc0d596e9242667b56170b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IcecaveStudios/duct/zipball/8ceafedf13c6c8fc87dc0d596e9242667b56170b",
+                "reference": "8ceafedf13c6c8fc87dc0d596e9242667b56170b",
+                "shasum": ""
+            },
+            "require": {
+                "eloquent/enumeration": "~5",
+                "evenement/evenement": "~2",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1",
+                "icecave/archer": "~1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Icecave\\Duct\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Harris",
+                    "email": "james.harris@icecave.com.au",
+                    "homepage": "https://github.com/jmalloc"
+                }
+            ],
+            "description": "An incremental streaming JSON parser.",
+            "homepage": "https://github.com/IcecaveStudios/duct",
+            "keywords": [
+                "event",
+                "evented",
+                "json",
+                "parse",
+                "parser",
+                "react",
+                "stream"
+            ],
+            "time": "2015-04-23 00:16:00"
+        },
+        {
             "name": "icecave/isolator",
             "version": "3.0.3",
             "source": {
@@ -485,6 +641,77 @@
             "time": "2015-03-27 05:04:19"
         },
         {
+            "name": "icecave/woodhouse",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IcecaveStudios/woodhouse.git",
+                "reference": "043931ddeef39645b6a0126f2d33936b6317a22f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IcecaveStudios/woodhouse/zipball/043931ddeef39645b6a0126f2d33936b6317a22f",
+                "reference": "043931ddeef39645b6a0126f2d33936b6317a22f",
+                "shasum": ""
+            },
+            "require": {
+                "eloquent/asplode": "^2",
+                "eloquent/enumeration": "^5",
+                "ezzatron/ci-status-images": "^3",
+                "icecave/duct": "^2",
+                "icecave/isolator": "^3",
+                "kriswallsmith/buzz": "^0.15",
+                "php": ">=5.3",
+                "symfony/console": "^2",
+                "symfony/filesystem": "^2",
+                "symfony/process": "^2"
+            },
+            "require-dev": {
+                "eloquent/liberator": "^2",
+                "icecave/archer": "dev-develop",
+                "phake/phake": "^2",
+                "phpunit/phpunit": "^4",
+                "symfony/event-dispatcher": "^2"
+            },
+            "bin": [
+                "bin/woodhouse"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Icecave\\Woodhouse\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Harris",
+                    "email": "james.harris@icecave.com.au",
+                    "homepage": "https://github.com/jmalloc"
+                }
+            ],
+            "description": "Command line tools for automated publication to GitHub Pages.",
+            "homepage": "https://github.com/IcecaveStudios/woodhouse",
+            "keywords": [
+                "Xdebug",
+                "code",
+                "coverage",
+                "github",
+                "pages",
+                "phpunit",
+                "publish"
+            ],
+            "time": "2015-08-18 00:20:59"
+        },
+        {
             "name": "kevinlebrun/colors.php",
             "version": "0.2.0",
             "source": {
@@ -529,6 +756,54 @@
                 "shell"
             ],
             "time": "2012-03-25 18:18:10"
+        },
+        {
+            "name": "kriswallsmith/buzz",
+            "version": "v0.15",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kriswallsmith/Buzz.git",
+                "reference": "d4041666c3ffb379af02a92dabe81c904b35fab8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kriswallsmith/Buzz/zipball/d4041666c3ffb379af02a92dabe81c904b35fab8",
+                "reference": "d4041666c3ffb379af02a92dabe81c904b35fab8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "suggest": {
+                "ext-curl": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Buzz": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kris Wallsmith",
+                    "email": "kris.wallsmith@gmail.com",
+                    "homepage": "http://kriswallsmith.net/"
+                }
+            ],
+            "description": "Lightweight HTTP client",
+            "homepage": "https://github.com/kriswallsmith/Buzz",
+            "keywords": [
+                "curl",
+                "http client"
+            ],
+            "time": "2015-06-25 17:26:56"
         },
         {
             "name": "michelf/php-markdown",
@@ -2386,7 +2661,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "icecave/archer": 20
+        "icecave/archer": 20,
+        "icecave/woodhouse": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

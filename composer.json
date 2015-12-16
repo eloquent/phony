@@ -22,6 +22,7 @@
         "hamcrest/hamcrest-php": "^1",
         "icecave/archer": "dev-develop",
         "icecave/isolator": "^3",
+        "icecave/woodhouse": "dev-develop",
         "mockery/mockery": "^0.9",
         "peridot-php/leo": "^1",
         "peridot-php/peridot": "^1",
