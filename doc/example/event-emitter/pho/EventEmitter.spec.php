@@ -1,9 +1,9 @@
 <?php
 
-use Eloquent\Phony as x;
+use Eloquent\Phony\Pho as x;
 
-describe('EventEmitter', function () {
-    beforeEach(function () {
+pho\describe('EventEmitter', function () {
+    pho\beforeEach(function () {
         $this->emitter = new EventEmitter();
 
         $this->spyA = x\spy();
@@ -12,21 +12,21 @@ describe('EventEmitter', function () {
         $this->spyD = x\spy();
     });
 
-    describe('on()', function () {
-        it('adds listeners to the correct events', function () {
+    pho\describe('on()', function () {
+        pho\it('adds listeners to the correct events', function () {
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventB', $this->spyB);
             $this->emitter->on('eventA', $this->spyC);
             $this->emitter->on('eventB', $this->spyD);
             $this->emitter->on('eventA', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyA, $this->spyC, $this->spyA));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyB, $this->spyD));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyA, $this->spyC, $this->spyA));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyB, $this->spyD));
         });
     });
 
-    describe('once()', function () {
-        it('removes the listener once it is called', function () {
+    pho\describe('once()', function () {
+        pho\it('removes the listener once it is called', function () {
             $this->emitter->once('eventA', $this->spyA);
 
             $this->emitter->emit('eventA', array(1, 2));
@@ -37,8 +37,8 @@ describe('EventEmitter', function () {
         });
     });
 
-    describe('removeListener()', function () {
-        it('removes listeners from the correct events', function () {
+    pho\describe('removeListener()', function () {
+        pho\it('removes listeners from the correct events', function () {
             $this->emitter->removeListener('no-listeners', function () {});
 
             $this->emitter->on('eventA', $this->spyA);
@@ -46,61 +46,61 @@ describe('EventEmitter', function () {
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventB', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyA, $this->spyB, $this->spyA));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyA));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyA, $this->spyB, $this->spyA));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyA));
 
             $this->emitter->removeListener('eventA', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyB, $this->spyA));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyA));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyB, $this->spyA));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyA));
 
             $this->emitter->removeListener('eventA', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyB));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyA));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyB));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyA));
 
             $this->emitter->removeListener('eventA', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyB));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyA));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyB));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyA));
         });
     });
 
-    describe('removeAllListeners()', function () {
-        it('removes all listeners from a specific event', function () {
+    pho\describe('removeAllListeners()', function () {
+        pho\it('removes all listeners from a specific event', function () {
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventA', $this->spyB);
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventB', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyA, $this->spyB, $this->spyA));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyA));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyA, $this->spyB, $this->spyA));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyA));
 
             $this->emitter->removeAllListeners('eventA');
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array());
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyA));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array());
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyA));
         });
 
-        it('removes all listeners from all events', function () {
+        pho\it('removes all listeners from all events', function () {
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventA', $this->spyB);
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventB', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyA, $this->spyB, $this->spyA));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyA));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyA, $this->spyB, $this->spyA));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyA));
 
             $this->emitter->removeAllListeners();
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array());
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array());
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array());
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array());
         });
     });
 
-    describe('listeners()', function () {
-        it('returns the existing listeners', function () {
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array());
+    pho\describe('listeners()', function () {
+        pho\it('returns the existing listeners', function () {
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array());
 
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventB', $this->spyB);
@@ -108,13 +108,13 @@ describe('EventEmitter', function () {
             $this->emitter->on('eventB', $this->spyD);
             $this->emitter->on('eventA', $this->spyA);
 
-            expect($this->emitter->listeners('eventA'))->to->be->equal(array($this->spyA, $this->spyC, $this->spyA));
-            expect($this->emitter->listeners('eventB'))->to->be->equal(array($this->spyB, $this->spyD));
+            pho\expect($this->emitter->listeners('eventA'))->toBe(array($this->spyA, $this->spyC, $this->spyA));
+            pho\expect($this->emitter->listeners('eventB'))->toBe(array($this->spyB, $this->spyD));
         });
     });
 
-    describe('emit()', function () {
-        it('emits events to the correct listeners', function () {
+    pho\describe('emit()', function () {
+        pho\it('emits events to the correct listeners', function () {
             $this->emitter->on('eventA', $this->spyA);
             $this->emitter->on('eventB', $this->spyB);
             $this->emitter->on('eventA', $this->spyC);

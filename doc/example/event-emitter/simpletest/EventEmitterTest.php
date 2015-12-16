@@ -1,10 +1,10 @@
 <?php
 
-use Eloquent\Phony\Phpunit\Phony;
+use Eloquent\Phony\Simpletest\Phony;
 
-class EventEmitterTest extends PHPUnit_Framework_TestCase
+class EventEmitterTest extends UnitTestCase
 {
-    protected function setUp()
+    public function setUp()
     {
         $this->emitter = new EventEmitter();
 
