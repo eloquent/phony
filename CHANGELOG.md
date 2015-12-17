@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.6.3 (2015-12-18)
 
 - **[FIXED]** Fixed custom mocks with invocable objects as method
   implementations (#113).
