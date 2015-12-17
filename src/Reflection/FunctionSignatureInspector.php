@@ -24,7 +24,7 @@ use ReflectionFunctionAbstract;
  */
 class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 {
-    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(?:or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^\]]+)? ]$/m';
+    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^\]]+)? ]$/m';
 
     /**
      * Get the static instance of this inspector.
@@ -140,7 +140,7 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             }
 
             if ($this->isExportReferenceSupported) {
-                $byReference = $match[3];
+                $byReference = $match[4];
             } else { // @codeCoverageIgnoreStart
                 $byReference = $parameter->isPassedByReference() ? '&' : '';
             } // @codeCoverageIgnoreEnd
@@ -153,15 +153,15 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                 $optional = 'optional' === $match[1];
             }
 
-            if (isset($match[5])) {
+            if (isset($match[6])) {
                 if (
                     !$this->isExportDefaultArraySupported &&
-                    ' = Array' === $match[5]
+                    ' = Array' === $match[6]
                 ) {
                     $defaultValue = ' = ' .
                         var_export($parameter->getDefaultValue(), true);
                 } else {
-                    $defaultValue = $match[5];
+                    $defaultValue = $match[6];
                 }
 
                 switch ($defaultValue) {
@@ -174,13 +174,13 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                         $defaultValue =
                             str_replace('array (', 'array(', $defaultValue);
                 }
-            } elseif ($optional) {
+            } elseif ($optional || $match[3]) {
                 $defaultValue = ' = null';
             } else {
                 $defaultValue = '';
             }
 
-            $signature[$match[4]] =
+            $signature[$match[5]] =
                 array($typehint, $byReference, $variadic, $defaultValue);
         }
 
