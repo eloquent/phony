@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
-use ReflectionFunction;
 use ReflectionFunctionAbstract;
 
 /**
@@ -24,19 +23,20 @@ class CustomMethodDefinition implements MethodDefinitionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param boolean       $isStatic True if this method is static.
-     * @param string        $name     The name.
-     * @param callable|null $callback The callback.
+     * @param boolean                    $isStatic True if this method is static.
+     * @param string                     $name     The name.
+     * @param ReflectionFunctionAbstract $method   The function implementation.
+     * @param callable                   $callback The callback.
      */
-    public function __construct($isStatic, $name, $callback = null)
-    {
-        if (null === $callback) {
-            $callback = function () {};
-        }
-
+    public function __construct(
+        $isStatic,
+        $name,
+        ReflectionFunctionAbstract $method,
+        $callback
+    ) {
         $this->isStatic = $isStatic;
         $this->name = $name;
-        $this->method = new ReflectionFunction($callback);
+        $this->method = $method;
         $this->callback = $callback;
     }
 

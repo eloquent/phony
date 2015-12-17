@@ -15,6 +15,8 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Feature\FeatureDetectorInterface;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
@@ -57,6 +59,7 @@ class MockBuilder implements MockBuilderInterface
      * @param MockFactoryInterface|null                                                                           $factory            The factory to use.
      * @param ProxyFactoryInterface|null                                                                          $proxyFactory       The proxy factory to use.
      * @param FunctionSignatureInspectorInterface|null                                                            $signatureInspector The function signature inspector to use.
+     * @param InvocableInspectorInterface|null                                                                    $invocableInspector The invocable inspector.
      * @param FeatureDetectorInterface|null                                                                       $featureDetector    The feature detector to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
@@ -68,6 +71,7 @@ class MockBuilder implements MockBuilderInterface
         MockFactoryInterface $factory = null,
         ProxyFactoryInterface $proxyFactory = null,
         FunctionSignatureInspectorInterface $signatureInspector = null,
+        InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $factory) {
@@ -79,6 +83,9 @@ class MockBuilder implements MockBuilderInterface
         if (null === $signatureInspector) {
             $signatureInspector = FunctionSignatureInspector::instance();
         }
+        if (null === $invocableInspector) {
+            $invocableInspector = InvocableInspector::instance();
+        }
         if (null === $featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
@@ -86,6 +93,7 @@ class MockBuilder implements MockBuilderInterface
         $this->factory = $factory;
         $this->proxyFactory = $proxyFactory;
         $this->signatureInspector = $signatureInspector;
+        $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;
 
         $this->types = array();
@@ -136,6 +144,16 @@ class MockBuilder implements MockBuilderInterface
     public function signatureInspector()
     {
         return $this->signatureInspector;
+    }
+
+    /**
+     * Get the invocable inspector.
+     *
+     * @return InvocableInspectorInterface The invocable inspector.
+     */
+    public function invocableInspector()
+    {
+        return $this->invocableInspector;
     }
 
     /**
@@ -668,6 +686,7 @@ class MockBuilder implements MockBuilderInterface
             $this->customConstants,
             $this->className,
             $this->signatureInspector,
+            $this->invocableInspector,
             $this->featureDetector
         );
     }
@@ -675,6 +694,7 @@ class MockBuilder implements MockBuilderInterface
     private $factory;
     private $proxyFactory;
     private $signatureInspector;
+    private $invocableInspector;
     private $featureDetector;
     private $types;
     private $parentClassName;

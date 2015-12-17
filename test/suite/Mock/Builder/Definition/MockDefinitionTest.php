@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Builder\Definition;
 
 use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
@@ -19,6 +20,7 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
+use ReflectionFunction;
 use ReflectionMethod;
 
 class MockDefinitionTest extends PHPUnit_Framework_TestCase
@@ -26,6 +28,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->signatureInspector = new FunctionSignatureInspector();
+        $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = array(
@@ -60,6 +63,15 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->callbackB = function () {};
         $this->callbackC = function () {};
         $this->callbackD = function () {};
+        $this->callbackE = function () {};
+        $this->callbackF = function () {};
+
+        $this->callbackReflectorA = new ReflectionFunction($this->callbackA);
+        $this->callbackReflectorB = new ReflectionFunction($this->callbackB);
+        $this->callbackReflectorC = new ReflectionFunction($this->callbackC);
+        $this->callbackReflectorD = new ReflectionFunction($this->callbackD);
+        $this->callbackReflectorE = new ReflectionFunction($this->callbackE);
+        $this->callbackReflectorF = new ReflectionFunction($this->callbackF);
     }
 
     protected function setUpWith($typeNames)
@@ -73,11 +85,13 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->customMethods = array(
             'methodA' => $this->callbackA,
             'methodB' => $this->callbackB,
+            'methodC' => null,
         );
         $this->customProperties = array('a' => 'b', 'c' => 'd');
         $this->customStaticMethods = array(
-            'methodC' => $this->callbackC,
             'methodD' => $this->callbackD,
+            'methodE' => $this->callbackE,
+            'methodF' => null,
         );
         $this->customStaticProperties = array('e' => 'f', 'g' => 'h');
         $this->customConstants = array('i' => 'j', 'k' => 'l');
@@ -91,6 +105,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             $this->customConstants,
             $this->className,
             $this->signatureInspector,
+            $this->invocableInspector,
             $this->featureDetector
         );
     }
@@ -99,14 +114,26 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->typeNames);
 
+        $expectedCustomMethods = array(
+            'methodA' => $this->callbackA,
+            'methodB' => $this->callbackB,
+            'methodC' => function () {},
+        );
+        $expectedCustomStaticMethods = array(
+            'methodD' => $this->callbackD,
+            'methodE' => $this->callbackE,
+            'methodF' => function () {},
+        );
+
         $this->assertSame($this->types, $this->subject->types());
-        $this->assertSame($this->customMethods, $this->subject->customMethods());
+        $this->assertEquals($expectedCustomMethods, $this->subject->customMethods());
         $this->assertSame($this->customProperties, $this->subject->customProperties());
-        $this->assertSame($this->customStaticMethods, $this->subject->customStaticMethods());
+        $this->assertEquals($expectedCustomStaticMethods, $this->subject->customStaticMethods());
         $this->assertSame($this->customStaticProperties, $this->subject->customStaticProperties());
         $this->assertSame($this->customConstants, $this->subject->customConstants());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertSame($this->typeNames, $this->subject->typeNames());
         $this->assertSame($this->parentClassName, $this->subject->parentClassName());
@@ -142,6 +169,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->customConstants());
         $this->assertNull($this->subject->className());
         $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertSame(array(), $this->subject->typeNames());
         $this->assertNull($this->subject->parentClassName());
@@ -159,10 +187,12 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                 'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count')),
                 'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current')),
                 'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key')),
-                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
-                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
-                'methodC' => new CustomMethodDefinition(true, 'methodC', $this->callbackC),
-                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
+                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackReflectorA, $this->callbackA),
+                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackReflectorB, $this->callbackB),
+                'methodC' => new CustomMethodDefinition(false, 'methodC', $this->callbackReflectorC, $this->callbackC),
+                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackReflectorD, $this->callbackD),
+                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackReflectorE, $this->callbackE),
+                'methodF' => new CustomMethodDefinition(true, 'methodF', $this->callbackReflectorF, $this->callbackF),
                 'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next')),
                 'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind')),
                 'testClassAMethodA' => new RealMethodDefinition(
@@ -229,10 +259,12 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                 'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count')),
                 'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current')),
                 'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key')),
-                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
-                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
-                'methodC' => new CustomMethodDefinition(true, 'methodC', $this->callbackC),
-                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
+                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackReflectorA, $this->callbackA),
+                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackReflectorB, $this->callbackB),
+                'methodC' => new CustomMethodDefinition(false, 'methodC', $this->callbackReflectorC, $this->callbackC),
+                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackReflectorD, $this->callbackD),
+                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackReflectorE, $this->callbackE),
+                'methodF' => new CustomMethodDefinition(true, 'methodF', $this->callbackReflectorF, $this->callbackF),
                 'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next')),
                 'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind')),
                 'testClassAMethodA' => new RealMethodDefinition(

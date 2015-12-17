@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Builder;
 
 use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
@@ -25,6 +26,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->signatureInspector = new FunctionSignatureInspector();
+        $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = array(
@@ -72,6 +74,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             $this->factory,
             $this->proxyFactory,
             $this->signatureInspector,
+            $this->invocableInspector,
             $this->featureDetector
         );
     }
@@ -95,6 +98,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
         $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
+        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
@@ -156,6 +160,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(MockFactory::instance(), $this->subject->factory());
         $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
         $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
+        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
@@ -377,7 +382,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $definition = $this->subject->definition();
 
-        $this->assertSame(array('methodA' => $callback, 'methodB' => null), $definition->customMethods());
+        $this->assertEquals(array('methodA' => $callback, 'methodB' => function () {}), $definition->customMethods());
     }
 
     public function testAddMethodFailureFinalized()
@@ -399,7 +404,10 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $definition = $this->subject->definition();
 
-        $this->assertSame(array('methodA' => $callback, 'methodB' => null), $definition->customStaticMethods());
+        $this->assertEquals(
+            array('methodA' => $callback, 'methodB' => function () {}),
+            $definition->customStaticMethods()
+        );
     }
 
     public function testAddStaticMethodFailureFinalized()

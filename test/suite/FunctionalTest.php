@@ -13,6 +13,7 @@ use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
+use Eloquent\Phony\Test\TestInvocable;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
 {
@@ -776,6 +777,13 @@ EOD;
             'Expected call on PhonyMockAssertionRenderingWithCustomMethod[label]->customMethod with arguments like',
             $error->getMessage()
         );
+    }
+
+    public function testCanCallCustomMethodWithInvocableObjectImplementation()
+    {
+        $mock = x\partialMock(null, null, array('methodA' => new TestInvocable()))->mock();
+
+        $this->assertSame(array('invokeWith', array('a', 'b')), $mock->methodA('a', 'b'));
     }
 
     public function testMockWithUncallableMagicMethod()
