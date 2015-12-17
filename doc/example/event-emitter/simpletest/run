@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+php "${BASH_SOURCE%/*}/index.php"

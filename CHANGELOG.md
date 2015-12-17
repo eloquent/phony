@@ -1,10 +1,20 @@
 # Phony changelog
 
+## 0.6.3 (2015-12-18)
+
+- **[FIXED]** Fixed custom mocks with invocable objects as method
+  implementations (#113).
+- **[FIXED]** Fixed required, but nullable parameters in function signatures
+  (#114).
+
+[#113]: https://github.com/eloquent/phony/issues/113
+[#114]: https://github.com/eloquent/phony/issues/114
+
 ## 0.6.2 (2015-12-16)
 
 - **[IMPROVED]** Huge additions to the documentation ([#85], [#88]).
 - **[FIXED]** Fixed error with EqualToMatcher when comparing object to
-  non-object. (#100).
+  non-object (#100).
 
 [#85]: https://github.com/eloquent/phony/issues/85
 [#88]: https://github.com/eloquent/phony/issues/88

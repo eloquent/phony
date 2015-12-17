@@ -21,7 +21,8 @@ class CustomMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->isStatic = false;
         $this->name = 'name';
         $this->callback = function () {};
-        $this->subject = new CustomMethodDefinition($this->isStatic, $this->name, $this->callback);
+        $this->method = new ReflectionFunction($this->callback);
+        $this->subject = new CustomMethodDefinition($this->isStatic, $this->name, $this->method, $this->callback);
     }
 
     public function testConstructor()
@@ -31,16 +32,7 @@ class CustomMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isCustom());
         $this->assertSame('public', $this->subject->accessLevel());
         $this->assertSame($this->name, $this->subject->name());
-        $this->assertEquals(new ReflectionFunction($this->callback), $this->subject->method());
+        $this->assertSame($this->method, $this->subject->method());
         $this->assertSame($this->callback, $this->subject->callback());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CustomMethodDefinition($this->isStatic, $this->name);
-
-        $this->assertInternalType('object', $this->subject->callback());
-        $this->assertTrue(is_callable($this->subject->callback()));
-        $this->assertNull(call_user_func($this->subject->callback()));
     }
 }

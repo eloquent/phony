@@ -1,6 +1,12 @@
 #!/usr/bin/env php
 <?php
 
+use Eloquent\Asplode\Asplode;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+Asplode::install();
+
 echo 'Generating Phony website... ';
 
 passthru('rm -rf artifacts/web');
@@ -18,6 +24,12 @@ if (file_exists('artifacts/web.json')) {
 }
 
 if ($needsRender) {
+    $header = "Content-type: text/plain\r\n";
+
+    if ($token = getenv('ARCHER_TOKEN')) {
+        $header .= "Authorization: token $token\r\n";
+    }
+
     $content = strtr(
         file_get_contents(
             'https://api.github.com/markdown/raw',
@@ -26,7 +38,7 @@ if ($needsRender) {
                 array(
                     'http' => array(
                         'user_agent' => 'PHP',
-                        'header' => "Content-type: text/plain\r\n",
+                        'header' => $header,
                         'method' => 'POST',
                         'content' => file_get_contents('doc/index.md'),
                     ),

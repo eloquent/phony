@@ -36,6 +36,12 @@ supports PHP 7 and [HHVM].
 
 For detailed usage, see the [documentation].
 
+### Example test suites
+
+See the [example] directory.
+
+[example]: doc/example
+
 ### Standalone usage
 
 ```php

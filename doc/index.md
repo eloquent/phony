@@ -2,6 +2,7 @@
 
 - [Installation]
 - [Usage]
+    - [Example test suites]
     - [Standalone usage]
     - [Peridot usage]
     - [Pho usage]
@@ -149,6 +150,10 @@
 Available as [Composer] package [eloquent/phony].
 
 ## Usage
+
+### Example test suites
+
+See the [example] directory.
 
 ### Standalone usage
 
@@ -5672,6 +5677,7 @@ Get the index.
 [custom class names]: #custom-class-names
 [customizing the mock class]: #customizing-the-mock-class
 [dynamic order verification]: #dynamic-order-verification
+[example test suites]: #example-test-suites
 [export depth]: #export-depth
 [export identifiers and references]: #export-identifiers-and-references
 [exporter special cases]: #exporter-special-cases
@@ -5846,6 +5852,7 @@ Get the index.
 [counterpart]: http://docs.counterpartphp.org/
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [error]: http://php.net/class.error
+[example]: https://github.com/eloquent/phony/tree/develop/doc/example
 [exception]: http://php.net/class.exception
 [fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
 [generator::send()]: http://php.net/generator.send

@@ -8,3 +8,4 @@
 
 /assets/ export-ignore
 /doc/ export-ignore
+/scripts/ export-ignore

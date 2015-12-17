@@ -52,12 +52,9 @@ class EventEmitter
         return array();
     }
 
-    public function emit($event)
+    public function emit($event, array $arguments = array())
     {
         if (isset($this->listeners[$event])) {
-            $arguments = func_get_args();
-            $event = array_shift($arguments);
-
             foreach ($this->listeners[$event] as $listener) {
                 call_user_func_array($listener, $arguments);
             }
