@@ -543,7 +543,7 @@ EOD;
 
                 $source .= "\n    )" . $returnType . " {\n";
             } else {
-                $source .= "()" . $returnType . "\n    {\n";
+                $source .= '()' . $returnType . "\n    {\n";
             }
 
             $source .= $body . "\n    }\n";
