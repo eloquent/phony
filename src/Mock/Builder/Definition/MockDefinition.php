@@ -86,18 +86,6 @@ class MockDefinition implements MockDefinitionInterface
             $featureDetector = FeatureDetector::instance();
         }
 
-        foreach ($customMethods as $methodName => $callback) {
-            if (null === $callback) {
-                $customMethods[$methodName] = function () {};
-            }
-        }
-
-        foreach ($customStaticMethods as $methodName => $callback) {
-            if (null === $callback) {
-                $customStaticMethods[$methodName] = function () {};
-            }
-        }
-
         $this->types = $types;
         $this->customMethods = $customMethods;
         $this->customProperties = $customProperties;
@@ -430,20 +418,34 @@ class MockDefinition implements MockDefinitionInterface
         }
 
         foreach ($this->customStaticMethods as $methodName => $callback) {
+            if (null === $callback) {
+                $reflector = null;
+            } else {
+                $reflector =
+                    $this->invocableInspector->callbackReflector($callback);
+            }
+
             $methods[$methodName] = new CustomMethodDefinition(
                 true,
                 $methodName,
-                $this->invocableInspector->callbackReflector($callback),
-                $callback
+                $callback,
+                $reflector
             );
         }
 
         foreach ($this->customMethods as $methodName => $callback) {
+            if (null === $callback) {
+                $reflector = null;
+            } else {
+                $reflector =
+                    $this->invocableInspector->callbackReflector($callback);
+            }
+
             $methods[$methodName] = new CustomMethodDefinition(
                 false,
                 $methodName,
-                $this->invocableInspector->callbackReflector($callback),
-                $callback
+                $callback,
+                $reflector
             );
         }
 
@@ -462,8 +464,21 @@ class MockDefinition implements MockDefinitionInterface
      */
     protected function isSignatureEqual($callbackA, $callbackB)
     {
-        return $this->signatureInspector->callbackSignature($callbackA) ===
-            $this->signatureInspector->callbackSignature($callbackB);
+        if (null === $callbackA) {
+            $signatureA = array();
+        } else {
+            $signatureA =
+                $this->signatureInspector->callbackSignature($callbackA);
+        }
+
+        if (null === $callbackB) {
+            $signatureB = array();
+        } else {
+            $signatureB =
+                $this->signatureInspector->callbackSignature($callbackB);
+        }
+
+        return $signatureA === $signatureB;
     }
 
     private $types;

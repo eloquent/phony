@@ -187,6 +187,9 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         if (!$this->featureDetector->isSupported('parameter.variadic')) {
             $this->markTestSkipped('Requires variadic parameters.');
         }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
+        }
 
         $function = new ReflectionFunction(eval('return function(...$a){};'));
         $actual = $this->subject->signature($function);

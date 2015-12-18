@@ -169,12 +169,10 @@ class FeatureDetector implements FeatureDetectorInterface
                     }
                 }
 
-                // syntax causes fatal on HHVM < 3.8
+                // syntax causes fatal on HHVM
                 // @codeCoverageIgnoreStart
                 if ($detector->isSupported('runtime.hhvm')) {
-                    if (version_compare(HHVM_VERSION, '3.8.x', '<')) {
-                        return false;
-                    }
+                    return false;
                 } // @codeCoverageIgnoreEnd
 
                 return $detector->checkStatement(
