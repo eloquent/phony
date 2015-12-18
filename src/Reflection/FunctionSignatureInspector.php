@@ -174,7 +174,11 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                         $defaultValue =
                             str_replace('array (', 'array(', $defaultValue);
                 }
-            } elseif ($optional || $match[3]) {
+            } elseif (// @codeCoverageIgnoreStart
+                $optional ||
+                $match[3] ||
+                ($this->isHhvm && $parameter->isDefaultValueAvailable())
+            ) { // @codeCoverageIgnoreEnd
                 $defaultValue = ' = null';
             } else {
                 $defaultValue = '';

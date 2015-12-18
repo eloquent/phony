@@ -382,7 +382,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $definition = $this->subject->definition();
 
-        $this->assertEquals(array('methodA' => $callback, 'methodB' => function () {}), $definition->customMethods());
+        $this->assertEquals(array('methodA' => $callback, 'methodB' => null), $definition->customMethods());
     }
 
     public function testAddMethodFailureFinalized()
@@ -404,10 +404,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $definition = $this->subject->definition();
 
-        $this->assertEquals(
-            array('methodA' => $callback, 'methodB' => function () {}),
-            $definition->customStaticMethods()
-        );
+        $this->assertEquals(array('methodA' => $callback, 'methodB' => null), $definition->customStaticMethods());
     }
 
     public function testAddStaticMethodFailureFinalized()

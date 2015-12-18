@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
 use PHPUnit_Framework_TestCase;
-use ReflectionFunction;
 use ReflectionMethod;
 
 class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
@@ -20,8 +19,8 @@ class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->methods = array(
-            'methodA' => new CustomMethodDefinition(true, 'methodA', new ReflectionFunction(function () {}), function () {}),
-            'methodB' => new CustomMethodDefinition(false, 'methodB', new ReflectionFunction(function () {}), function () {}),
+            'methodA' => new CustomMethodDefinition(true, 'methodA'),
+            'methodB' => new CustomMethodDefinition(false, 'methodB'),
             'testClassAMethodA' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA')),
             'testClassAMethodB' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodB')),
             'testClassAMethodC' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodC')),

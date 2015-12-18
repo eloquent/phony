@@ -113,6 +113,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         if (!$this->featureDetector->isSupported('parameter.variadic')) {
             $this->markTestSkipped('Requires variadic parameters.');
         }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
+        }
 
         $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
         $proxy->method->does(
@@ -128,6 +131,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         if (!$this->featureDetector->isSupported('parameter.variadic')) {
             $this->markTestSkipped('Requires variadic parameters.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
         }
 
         $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
