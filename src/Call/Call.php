@@ -296,7 +296,7 @@ class Call implements CallInterface
         if (!$this->isTraversable()) {
             throw new InvalidArgumentException('Not a traversable call.');
         }
-        if ($this->endEvent && $this->isGenerator()) {
+        if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
         }
 
@@ -355,11 +355,11 @@ class Call implements CallInterface
     {
         $events = $this->traversableEvents();
 
-        if ($this->responseEvent) {
-            if ($this->endEvent && $this->isGenerator()) {
-                $events[] = $this->endEvent;
-            }
+        if ($this->endEvent && $this->responseEvent !== $this->endEvent) {
+            $events[] = $this->endEvent;
+        }
 
+        if ($this->responseEvent) {
             array_unshift($events, $this->responseEvent);
         }
 

@@ -135,13 +135,13 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
             ) {
                 if (!$this->isScalarTypeHintSupported) {
                     $typehint = '\\' . $typehint;
-                } elseif ('integer ' === $typehint && $parameter->getType()->isBuiltin()) {
+                } elseif ('integer ' === $typehint && $parameter->getType()->isBuiltin()) { // @codeCoverageIgnoreStart
                     $typehint = 'int ';
                 } elseif ('boolean ' === $typehint && $parameter->getType()->isBuiltin()) {
                     $typehint = 'bool ';
                 } elseif ('float ' !== $typehint && 'string ' !== $typehint) {
                     $typehint = '\\' . $typehint;
-                }
+                } // @codeCoverageIgnoreEnd
             }
 
             if ($this->isExportReferenceSupported) {
