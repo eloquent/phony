@@ -121,6 +121,11 @@ class FeatureDetector implements FeatureDetectorInterface
     public function standardFeatures()
     {
         return array(
+            'class.anonymous' => function ($detector) {
+                return $detector
+                    ->checkInternalMethod('ReflectionClass', 'isAnonymous');
+            },
+
             'closure' => function ($detector) {
                 return $detector->checkInternalClass('Closure');
             },

@@ -1,4 +1,5 @@
 {
+    "Can use anonymous classes":                                        ["class.anonymous",                           "7.x",     "999",   [], "3.11.x", "999", []],
     "Can use closures":                                                 ["closure",                                   "5.3.x",   "999",   [], "0.x",    "999", []],
     "Can bind closures":                                                ["closure.bind",                              "5.4.x",   "999",   [], "3.4.x",  "999", []],
     "Can use constants with array values":                              ["constant.array",                            "5.6.x",   "999",   [], "3.4.x",  "999", []],
