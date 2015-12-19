@@ -20,7 +20,6 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
-use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinitionInterface;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use ReflectionClass;
@@ -340,43 +339,6 @@ class MockDefinition implements MockDefinitionInterface
         }
 
         $methods = array();
-        $traitMethods = array();
-        $parameterCounts = array();
-
-        foreach ($this->interfaceNames() as $typeName) {
-            foreach ($this->types[$typeName]->getMethods() as $method) {
-                $methodName = $method->getName();
-                $parameterCount = $method->getNumberOfParameters();
-
-                if (
-                    !isset($parameterCounts[$methodName]) ||
-                    $parameterCount > $parameterCounts[$methodName]
-                ) {
-                    $methods[$methodName] = new RealMethodDefinition($method);
-                    $parameterCounts[$methodName] = $parameterCount;
-                }
-            }
-        }
-
-        foreach ($this->traitNames() as $typeName) {
-            foreach ($this->types[$typeName]->getMethods() as $method) {
-                $methodDefinition = new TraitMethodDefinition($method);
-                $methodName = $methodDefinition->name();
-                $parameterCount = $method->getNumberOfParameters();
-
-                if (
-                    !isset($parameterCounts[$methodName]) ||
-                    $parameterCount > $parameterCounts[$methodName]
-                ) {
-                    $methods[$methodName] = $methodDefinition;
-                    $parameterCounts[$methodName] = $parameterCount;
-                }
-
-                if (!$method->isAbstract()) {
-                    $traitMethods[] = $methodDefinition;
-                }
-            }
-        }
 
         if ($typeName = $this->parentClassName()) {
             foreach ($this->types[$typeName]->getMethods() as $method) {
@@ -388,17 +350,34 @@ class MockDefinition implements MockDefinitionInterface
                     continue;
                 }
 
-                $methodName = $method->getName();
-                $parameterCount = $method->getNumberOfParameters();
+                $methods[$method->getName()] =
+                    new RealMethodDefinition($method);
+            }
+        }
 
-                if (
-                    !isset($parameterCounts[$methodName]) ||
-                    $methods[$methodName] instanceof
-                        TraitMethodDefinitionInterface ||
-                    $parameterCount >= $parameterCounts[$methodName]
-                ) {
+        $traitMethods = array();
+
+        foreach ($this->traitNames() as $typeName) {
+            foreach ($this->types[$typeName]->getMethods() as $method) {
+                $methodDefinition = new TraitMethodDefinition($method);
+                $methodName = $methodDefinition->name();
+
+                if (!$method->isAbstract()) {
+                    $traitMethods[] = $methodDefinition;
+                }
+
+                if (!isset($methods[$methodName])) {
+                    $methods[$methodName] = $methodDefinition;
+                }
+            }
+        }
+
+        foreach ($this->interfaceNames() as $typeName) {
+            foreach ($this->types[$typeName]->getMethods() as $method) {
+                $methodName = $method->getName();
+
+                if (!isset($methods[$methodName])) {
                     $methods[$methodName] = new RealMethodDefinition($method);
-                    $parameterCounts[$methodName] = $parameterCount;
                 }
             }
         }

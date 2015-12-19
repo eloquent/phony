@@ -442,9 +442,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $proxy = x\partialMock(array('Eloquent\Phony\Test\TestTraitA', 'Eloquent\Phony\Test\TestInterfaceA'));
+        $proxy = x\partialMock(array('Eloquent\Phony\Test\TestTraitH', 'Eloquent\Phony\Test\TestInterfaceE'));
 
-        $this->assertSame('ab', $proxy->mock()->testClassAMethodB('a', 'b'));
+        $this->assertSame('a', $proxy->mock()->methodA());
     }
 
     public function testCanMockClassWithPrivateConstructor()

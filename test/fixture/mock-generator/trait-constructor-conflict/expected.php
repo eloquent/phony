@@ -64,7 +64,7 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     private static $_uncallableMethods = array();
     private static $_traitMethods = array(
-  '__construct' => 'Eloquent\\Phony\\Test\\TestTraitE',
+  '__construct' => 'Eloquent\\Phony\\Test\\TestTraitD',
 );
     private static $_customMethods = array();
     private static $_staticProxy;
