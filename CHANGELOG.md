@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.6.4 (2015-12-19)
 
 - **[FIXED]** Simplified method resolution rules. Fixes issue when mocking
   interfaces and traits ([#112]).
