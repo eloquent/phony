@@ -84,8 +84,8 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Create a new mock builder.
      *
-     * The `$types` argument may be an object, a class name, a reflection class,
-     * an anonymous class, or a mock builder. It may also be an array of any of
+     * The `$types` argument may be a class name, a reflection class, an
+     * anonymous class, or a mock builder. It may also be an array of any of
      * these.
      *
      * If `$types` is omitted, or `null`, no existing type will be used when
@@ -115,8 +115,8 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Create a new full mock.
      *
-     * The `$types` argument may be an object, a class name, a reflection class,
-     * an anonymous class, or a mock builder. It may also be an array of any of
+     * The `$types` argument may be a class name, a reflection class, an
+     * anonymous class, or a mock builder. It may also be an array of any of
      * these.
      *
      * If `$types` is omitted, or `null`, no existing type will be used when
@@ -140,8 +140,8 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Create a new partial mock.
      *
-     * The `$types` argument may be an object, a class name, a reflection class,
-     * an anonymous class, or a mock builder. It may also be an array of any of
+     * The `$types` argument may be a class name, a reflection class, an
+     * anonymous class, or a mock builder. It may also be an array of any of
      * these.
      *
      * If `$types` is omitted, or `null`, no existing type will be used when

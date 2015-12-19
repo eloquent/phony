@@ -944,19 +944,38 @@ EOD;
             $this->markTestSkipped('Requires anonymous classes.');
         }
 
-        $handle = x\mock(eval(<<<EOD
-            return new class extends DateTime {
+        $handle = x\mock(eval(<<<'EOD'
+            return new class extends DateTime
+            {
                 public function methodA()
                 {
                     return implode(func_get_args());
                 }
+
+                public function state($state)
+                {
+                    $old = $this->state;
+                    $this->setState($state);
+
+                    return $old;
+                }
+
+                private function setState($state)
+                {
+                    $this->state = $state;
+                }
+
+                private $state;
             };
 EOD
         ));
         $handle->methodA->forwards();
+        $handle->state->forwards();
         $mock = $handle->mock();
 
         $this->assertSame('ab', $mock->methodA('a', 'b'));
         $this->assertNull($mock->format('c'));
+        $this->assertNull($mock->state('a'));
+        $this->assertSame('a', $mock->state('b'));
     }
 }
