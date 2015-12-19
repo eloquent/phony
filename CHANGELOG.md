@@ -4,6 +4,7 @@
 
 - **[NEW]** Implemented `firstCall()` and `lastCall()` (#93).
 - **[IMPROVED]** Support for PHP7 engine error exceptions (#94).
+- **[IMPROVED]** Support for PHP7 anonymous classes (#94).
 - **[IMPROVED]** Tidied up many interfaces and doc blocks.
 
 [#93]: https://github.com/eloquent/phony/issues/93

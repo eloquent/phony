@@ -37,6 +37,7 @@ use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 
 /**
  * Builds mock classes.
@@ -51,8 +52,9 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * The `$types` argument may be an object, a class name, a reflection class,
+     * an anonymous class, or a mock builder. It may also be an array of any of
+     * these.
      *
      * If `$types` is omitted, or `null`, no existing type will be used when
      * generating the mock class. This is useful in the case of ad hoc mocks,
@@ -94,6 +96,10 @@ class MockBuilder implements MockBuilderInterface
         if (null === $featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
+
+        $this->isTraitSupported = $featureDetector->isSupported('trait');
+        $this->isAnonymousClassSupported =
+            $featureDetector->isSupported('class.anonymous');
 
         $this->factory = $factory;
         $this->proxyFactory = $proxyFactory;
@@ -209,7 +215,6 @@ class MockBuilder implements MockBuilderInterface
             }
         }
 
-        $isTraitSupported = $this->featureDetector->isSupported('trait');
         $toAdd = array();
 
         if (null === $this->parentClassName) {
@@ -219,35 +224,62 @@ class MockBuilder implements MockBuilderInterface
         }
 
         $parentClassName = null;
+        $anonymousClasses = array();
 
         foreach ($types as $type) {
-            if ($type instanceof MockBuilderInterface) {
-                $toAdd = array_merge($toAdd, $type->types());
+            $original = $type;
 
-                continue;
-            }
+            if (is_object($type)) {
+                if ($type instanceof MockBuilderInterface) {
+                    $toAdd = array_merge($toAdd, $type->types());
 
-            if (is_string($type)) {
+                    continue;
+                }
+
+                if (!$type instanceof ReflectionClass) {
+                    $type = new ReflectionClass($type);
+                }
+            } elseif (is_string($type)) {
                 try {
                     $type = new ReflectionClass($type);
                 } catch (ReflectionException $e) {
                     throw new InvalidTypeException($type, $e);
                 }
-            } elseif (!$type instanceof ReflectionClass) {
+            } else {
                 throw new InvalidTypeException($type);
             }
 
-            $isTrait = $isTraitSupported && $type->isTrait();
+            $isAnonymous =
+                $this->isAnonymousClassSupported && $type->isAnonymous();
 
-            if (!$isTrait && $type->isFinal()) {
-                throw new FinalClassException($type->getName());
+            if ($isAnonymous) {
+                $anonymousClasses[] = array($type, $original);
+                $impliedTypes = array();
+
+                if ($parentClass = $type->getParentClass()) {
+                    $impliedTypes[] = $parentClass;
+                }
+
+                foreach ($type->getInterfaces() as $interface) {
+                    $impliedTypes[] = $interface;
+                }
+            } else {
+                $impliedTypes = array($type);
             }
 
-            if (!$isTrait && !$type->isInterface()) {
-                $parentClassNames[] = $parentClassName = $type->getName();
-            }
+            foreach ($impliedTypes as $type) {
+                $isTrait = $this->isTraitSupported && $type->isTrait();
 
-            $toAdd[] = $type;
+                if (!$isTrait && $type->isFinal()) {
+                    throw new FinalClassException($type->getName());
+                }
+
+                if (!$isTrait && !$type->isInterface()) {
+                    $parentClassNames[] = $parentClassName = $type->getName();
+                }
+
+                $toAdd[] = $type;
+            }
         }
 
         $parentClassNames = array_unique($parentClassNames);
@@ -267,6 +299,26 @@ class MockBuilder implements MockBuilderInterface
 
         if ($parentClassCount > 0) {
             $this->parentClassName = $parentClassName;
+        }
+
+        foreach ($anonymousClasses as $anonymous) {
+            $className = $anonymous[0]->getName();
+            $methods = $anonymous[0]->getMethods(ReflectionMethod::IS_PUBLIC);
+
+            foreach ($methods as $method) {
+                if ($method->getDeclaringClass()->getName() !== $className) {
+                    continue;
+                }
+
+                $methodName = $method->getName();
+                $methodCallback = array($anonymous[1], $methodName);
+
+                if ($method->isStatic()) {
+                    $this->addStaticMethod($methodName, $methodCallback);
+                } else {
+                    $this->addMethod($methodName, $methodCallback);
+                }
+            }
         }
 
         return $this;
@@ -732,6 +784,8 @@ class MockBuilder implements MockBuilderInterface
     private $signatureInspector;
     private $invocableInspector;
     private $featureDetector;
+    private $isTraitSupported;
+    private $isAnonymousClassSupported;
     private $types;
     private $parentClassName;
     private $customMethods;

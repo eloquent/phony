@@ -937,4 +937,26 @@ EOD;
         $this->assertTrue($callB->hasResponded());
         $this->assertFalse($callB->hasCompleted());
     }
+
+    public function testCanMockAnonymousClasses()
+    {
+        if (!$this->featureDetector->isSupported('class.anonymous')) {
+            $this->markTestSkipped('Requires anonymous classes.');
+        }
+
+        $handle = x\mock(eval(<<<EOD
+            return new class extends DateTime {
+                public function methodA()
+                {
+                    return implode(func_get_args());
+                }
+            };
+EOD
+        ));
+        $handle->methodA->forwards();
+        $mock = $handle->mock();
+
+        $this->assertSame('ab', $mock->methodA('a', 'b'));
+        $this->assertNull($mock->format('c'));
+    }
 }

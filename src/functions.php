@@ -33,12 +33,12 @@ use ReflectionClass;
 /**
  * Create a new mock builder.
  *
- * The `$types` argument may be a class name, a reflection class, or a mock
- * builder. It may also be an array of any of these.
+ * The `$types` argument may be an object, a class name, a reflection class, an
+ * anonymous class, or a mock builder. It may also be an array of any of these.
  *
  * If `$types` is omitted, or `null`, no existing type will be used when
- * generating the mock class. This is useful in the case of ad hoc mocks,
- * where mocks need not imitate an existing type.
+ * generating the mock class. This is useful in the case of ad hoc mocks, where
+ * mocks need not imitate an existing type.
  *
  * @api
  *
@@ -57,12 +57,12 @@ function mockBuilder($types = null, $definition = null, $className = null)
 /**
  * Create a new full mock.
  *
- * The `$types` argument may be a class name, a reflection class, or a mock
- * builder. It may also be an array of any of these.
+ * The `$types` argument may be an object, a class name, a reflection class, an
+ * anonymous class, or a mock builder. It may also be an array of any of these.
  *
  * If `$types` is omitted, or `null`, no existing type will be used when
- * generating the mock class. This is useful in the case of ad hoc mocks,
- * where mocks need not imitate an existing type.
+ * generating the mock class. This is useful in the case of ad hoc mocks, where
+ * mocks need not imitate an existing type.
  *
  * @api
  *
@@ -83,12 +83,12 @@ function mock($types = null, $definition = null, $className = null)
 /**
  * Create a new partial mock.
  *
- * The `$types` argument may be a class name, a reflection class, or a mock
- * builder. It may also be an array of any of these.
+ * The `$types` argument may be an object, a class name, a reflection class, an
+ * anonymous class, or a mock builder. It may also be an array of any of these.
  *
  * If `$types` is omitted, or `null`, no existing type will be used when
- * generating the mock class. This is useful in the case of ad hoc mocks,
- * where mocks need not imitate an existing type.
+ * generating the mock class. This is useful in the case of ad hoc mocks, where
+ * mocks need not imitate an existing type.
  *
  * @api
  *
