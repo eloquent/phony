@@ -44,8 +44,7 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0,
         $a1,
         &$a2 = null,
-        &$a3 = null,
-        &$a4 = null
+        &$a3 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -62,11 +61,8 @@ implements \Eloquent\Phony\Mock\MockInterface
         if ($argumentCount > 3) {
             $arguments[] = &$a3;
         }
-        if ($argumentCount > 4) {
-            $arguments[] = &$a4;
-        }
 
-        for ($i = 5; $i < $argumentCount; ++$i) {
+        for ($i = 4; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -128,7 +124,7 @@ implements \Eloquent\Phony\Mock\MockInterface
 );
     private static $_traitMethods = array(
   'testclassastaticmethoda' => 'Eloquent\\Phony\\Test\\TestTraitA',
-  'testclassamethodb' => 'Eloquent\\Phony\\Test\\TestTraitB',
+  'testclassamethodb' => 'Eloquent\\Phony\\Test\\TestTraitA',
 );
     private static $_customMethods = array();
     private static $_staticProxy;
