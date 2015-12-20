@@ -15,13 +15,11 @@ use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher that wraps a Prophecy token.
- *
- * @internal
  */
 class ProphecyMatcher extends WrappedMatcher
 {
     /**
-     * Returns true if the supplied value matches.
+     * Returns `true` if `$value` matches this matcher's criteria.
      *
      * @param mixed $value The value to check.
      *

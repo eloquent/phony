@@ -15,6 +15,8 @@ use Eloquent\Phony\Mock\Proxy\StaticProxyInterface;
 
 /**
  * The interface used to identify static verification proxies.
+ *
+ * @api
  */
 interface StaticVerificationProxyInterface extends StaticProxyInterface,
     VerificationProxyInterface

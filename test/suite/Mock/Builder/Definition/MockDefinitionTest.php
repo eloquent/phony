@@ -258,6 +258,9 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                 'testClassAMethodD' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD')
                 ),
+                'testTraitBMethodA' => new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA')
+                ),
                 'testClassAStaticMethodA' => new RealMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA')
                 ),
@@ -301,7 +304,73 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB')
                 ),
                 new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA')
+                ),
+                new TraitMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA')
+                ),
+            )
+        );
+        $actual = $this->subject->methods();
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($actual, $this->subject->methods());
+    }
+
+    public function testMethodsWithFinalMethods()
+    {
+        $this->setUpWith(
+            array(
+                'Eloquent\Phony\Test\TestClassF',
+                'Eloquent\Phony\Test\TestInterfaceG',
+            )
+        );
+
+        $expected = new MethodDefinitionCollection(
+            array(
+                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
+                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
+                'methodC' => new CustomMethodDefinition(false, 'methodC'),
+                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
+                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackE),
+                'methodF' => new CustomMethodDefinition(true, 'methodF'),
+            )
+        );
+        $actual = $this->subject->methods();
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($actual, $this->subject->methods());
+    }
+
+    public function testMethodsWithFinalMethodsAndTraits()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $this->setUpWith(
+            array(
+                'Eloquent\Phony\Test\TestClassF',
+                'Eloquent\Phony\Test\TestTraitI',
+                'Eloquent\Phony\Test\TestInterfaceG',
+            )
+        );
+
+        $expected = new MethodDefinitionCollection(
+            array(
+                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
+                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
+                'methodC' => new CustomMethodDefinition(false, 'methodC'),
+                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
+                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackE),
+                'methodF' => new CustomMethodDefinition(true, 'methodF'),
+            ),
+            array(
+                new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFStaticMethodA')
+                ),
+                new TraitMethodDefinition(
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFMethodA')
                 ),
             )
         );
@@ -333,13 +402,13 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
     public function testIsEqualToWithInequalSignature()
     {
         $definitionA = new MockDefinition(
-            null,
+            array(),
             array(
                 'methodA' => function ($a, $b) {},
             )
         );
         $definitionB = new MockDefinition(
-            null,
+            array(),
             array(
                 'methodA' => function ($a, array $b = null) {},
             )
@@ -351,17 +420,17 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
     public function testIsEqualToWithInequalSignatureStatic()
     {
         $definitionA = new MockDefinition(
-            null,
-            null,
-            null,
+            array(),
+            array(),
+            array(),
             array(
                 'methodA' => function ($a, $b) {},
             )
         );
         $definitionB = new MockDefinition(
-            null,
-            null,
-            null,
+            array(),
+            array(),
+            array(),
             array(
                 'methodA' => function ($a, array $b = null) {},
             )

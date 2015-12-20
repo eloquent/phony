@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * The supplied value is not a mock.
- *
- * @internal
  */
 final class InvalidMockException extends Exception implements
     MockExceptionInterface

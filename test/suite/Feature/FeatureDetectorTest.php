@@ -95,12 +95,12 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $maximum,
         $exclude,
         $hhvmMinimum,
-        $hhmvMaximum,
+        $hhvmMaximum,
         $hhvmExclude
     ) {
         if (defined('HHVM_VERSION')) {
             $expected = version_compare(HHVM_VERSION, $hhvmMinimum, '>=') &&
-                version_compare(HHVM_VERSION, $hhmvMaximum, '<') &&
+                version_compare(HHVM_VERSION, $hhvmMaximum, '<') &&
                 $this->checkVersionIncluded(HHVM_VERSION, $hhvmExclude);
         } else {
             $expected = version_compare(PHP_VERSION, $minimum, '>=') &&

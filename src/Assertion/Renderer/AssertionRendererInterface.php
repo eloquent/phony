@@ -18,6 +18,7 @@ use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Error;
 use Exception;
 
 /**
@@ -105,11 +106,11 @@ interface AssertionRendererInterface
      * Render the responses of a sequence of calls.
      *
      * @param array<CallInterface> $calls              The calls.
-     * @param boolean|null         $expandTraversables True if traversable events should be rendered.
+     * @param boolean              $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered call responses.
      */
-    public function renderResponses(array $calls, $expandTraversables = null);
+    public function renderResponses(array $calls, $expandTraversables = false);
 
     /**
      * Render the supplied call.
@@ -150,7 +151,7 @@ interface AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
@@ -159,11 +160,11 @@ interface AssertionRendererInterface
     /**
      * Render an exception.
      *
-     * @param Exception|null The exception.
+     * @param Exception|Error|null $exception The exception.
      *
      * @return string The rendered exception.
      */
-    public function renderException(Exception $exception = null);
+    public function renderException($exception = null);
 
     /**
      * Render an arbitrary sequence of events.

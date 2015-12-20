@@ -20,8 +20,6 @@ use PHPUnit_Framework_Assert;
 
 /**
  * An assertion recorder for PHPUnit.
- *
- * @internal
  */
 class PhpunitAssertionRecorder extends AssertionRecorder
 {
@@ -42,11 +40,11 @@ class PhpunitAssertionRecorder extends AssertionRecorder
     /**
      * Record that a successful assertion occurred.
      *
-     * @param array<EventInterface>|null $events The events.
+     * @param array<EventInterface> $events The events.
      *
      * @return EventCollectionInterface The result.
      */
-    public function createSuccess(array $events = null)
+    public function createSuccess(array $events = array())
     {
         PHPUnit_Framework_Assert::assertThat(
             true,

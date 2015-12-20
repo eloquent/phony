@@ -18,8 +18,6 @@ use Iterator;
 
 /**
  * Spies on an iterator.
- *
- * @internal
  */
 class IteratorSpy implements IteratorSpyInterface
 {
@@ -42,6 +40,7 @@ class IteratorSpy implements IteratorSpyInterface
         $this->call = $call;
         $this->iterator = $iterator;
         $this->callEventFactory = $callEventFactory;
+        $this->isConsumed = false;
     }
 
     /**
@@ -120,14 +119,23 @@ class IteratorSpy implements IteratorSpyInterface
         if ($isValid = $this->iterator->valid()) {
             $this->key = $this->iterator->key();
             $this->value = $this->iterator->current();
+        } else {
+            $this->key = null;
+            $this->value = null;
+        }
 
+        if ($this->isConsumed) {
+            return $isValid;
+        }
+
+        if ($isValid) {
             $this->call->addTraversableEvent(
                 $this->callEventFactory
                     ->createProduced($this->key, $this->value)
             );
         } else {
-            $this->value = null;
-            $this->key = null;
+            $this->call->setEndEvent($this->callEventFactory->createConsumed());
+            $this->isConsumed = true;
         }
 
         return $isValid;
@@ -138,4 +146,5 @@ class IteratorSpy implements IteratorSpyInterface
     private $callEventFactory;
     private $key;
     private $value;
+    private $isConsumed;
 }

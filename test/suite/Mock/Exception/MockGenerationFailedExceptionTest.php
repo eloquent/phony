@@ -19,7 +19,7 @@ class MockGenerationFailedExceptionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->definition = new MockDefinition(null, null, null, null, null, null, 'ClassName');
+        $this->definition = new MockDefinition(array(), array(), array(), array(), array(), array(), 'ClassName');
         $this->cause = new Exception();
     }
 

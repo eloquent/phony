@@ -13,12 +13,11 @@ namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+use Error;
 use Exception;
 
 /**
  * Invokes callbacks, maintaining reference parameters.
- *
- * @internal
  */
 class Invoker implements InvokerInterface
 {
@@ -39,13 +38,13 @@ class Invoker implements InvokerInterface
     /**
      * Calls a callback, maintaining reference parameters.
      *
-     * @param callable                      $callback  The callback.
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param callable                 $callback  The callback.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
-     * @return mixed     The result of invocation.
-     * @throws Exception If an error occurs.
+     * @return mixed           The result of invocation.
+     * @throws Exception|Error If an error occurs.
      */
-    public function callWith($callback, $arguments = null)
+    public function callWith($callback, $arguments = array())
     {
         if ($callback instanceof InvocableInterface) {
             return $callback->invokeWith($arguments);

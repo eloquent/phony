@@ -30,7 +30,6 @@
         "phpspec/prophecy": "^1",
         "phpunit/php-code-coverage": "^2",
         "phpunit/phpunit": "^4",
-        "sami/sami": "^3",
         "simpletest/simpletest": "^1"
     },
     "autoload": {
@@ -54,7 +53,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.7.x-dev"
+            "dev-develop": "0.8.x-dev"
         }
     }
 }

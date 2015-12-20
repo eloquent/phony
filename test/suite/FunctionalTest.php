@@ -167,6 +167,69 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
     }
 
+    public function testScalarTypeHintMocking()
+    {
+        if (!$this->featureDetector->isSupported('parameter.hint.scalar')) {
+            $this->markTestSkipped('Requires scalar type hints.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint');
+
+        $proxy->mock()->method(123, 1.23, '<string>', true);
+        $proxy->method->calledWith(123, 1.23, '<string>', true);
+    }
+
+    public function testReturnTypeMocking()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
+        $object = (object) array();
+        $proxy->classType->does(
+            function () use ($object) {
+                return $object;
+            }
+        );
+        $proxy->scalarType->does(
+            function () {
+                return 123;
+            }
+        );
+
+        $this->assertSame($object, $proxy->mock()->classType());
+        $this->assertSame(123, $proxy->mock()->scalarType());
+    }
+
+    public function testMagicMethodReturnTypeMocking()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType')->mock();
+
+        x\onStatic($mock)->nonexistent->returns('x');
+        x\on($mock)->nonexistent->returns('z');
+
+        $this->assertSame('x', $mock::nonexistent());
+        $this->assertSame('z', $mock->nonexistent());
+    }
+
+    public function testReturnTypeMockingInvalidType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $proxy = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
+        $proxy->scalarType->returns('<string>');
+
+        $this->setExpectedException('TypeError');
+        $proxy->mock()->scalarType();
+    }
+
     public function testSpyStatic()
     {
         $spy = Phony::spy();
@@ -209,6 +272,17 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $spy->calledWith('a', 'b', 'c'),
             $spy->calledWith(111)
         );
+    }
+
+    public function testSpyReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $spy = x\spy(eval('return function () : int { return 123; };'));
+
+        $this->assertSame(123, $spy());
     }
 
     public function testStubStatic()
@@ -276,6 +350,17 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub = x\stub($callback)->forwards();
 
         $this->assertSame($callback, $stub());
+    }
+
+    public function testStubReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $spy = x\stub(eval('return function () : int { return 123; };'));
+
+        $this->assertSame(123, $spy());
     }
 
     public function testTraversableSpyingStatic()
@@ -814,5 +899,55 @@ EOD;
 
         $this->assertNull($proxy->mock()->testClassAMethodA($spy));
         $spy->called();
+    }
+
+    public function testAlwaysWithNoEvents()
+    {
+        $spy = x\spy();
+
+        $this->assertTrue((boolean) $spy->atLeast(0)->always()->checkCalledWith('a'));
+    }
+
+    public function testIncompleteCalls()
+    {
+        $test = $this;
+        $context = (object) array('spy' => null);
+        $context->spy = $spy = x\spy(
+            function () use ($test, $context) {
+                $test->assertFalse($context->spy->callAt(0)->hasResponded());
+                $test->assertFalse($context->spy->callAt(0)->hasCompleted());
+            }
+        );
+
+        $spy();
+    }
+
+    public function testCallRespondedAndCompleted()
+    {
+        $stub = x\stub();
+        $stub->returns(array(), array());
+        $stub();
+        $stub->setUseTraversableSpies(true);
+        $stub();
+        $callA = $stub->callAt(0);
+        $callB = $stub->callAt(1);
+
+        $this->assertTrue($callA->hasResponded());
+        $this->assertTrue($callA->hasCompleted());
+        $this->assertTrue($callB->hasResponded());
+        $this->assertFalse($callB->hasCompleted());
+    }
+
+    public function testCannotMockAnonymousClasses()
+    {
+        if (!$this->featureDetector->isSupported('class.anonymous')) {
+            $this->markTestSkipped('Requires anonymous classes.');
+        }
+
+        $instance = eval('return new class {};');
+        $reflector = new ReflectionClass($instance);
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\AnonymousClassException');
+        x\mock($reflector);
     }
 }

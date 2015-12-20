@@ -27,21 +27,31 @@ use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
+use InvalidArgumentException;
 use ReflectionClass;
 
 /**
- * An abstract base class for implementing facades.
+ * INTERNAL USE ONLY. An abstract base class for implementing facades.
  *
- * @internal
+ * @api
  */
 abstract class AbstractFacade
 {
     /**
      * Create a new mock builder.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @api
+     *
+     * @param mixed             $types      The types to mock.
+     * @param array|object|null $definition The definition.
+     * @param string|null       $className  The class name.
      *
      * @return MockBuilderInterface The mock builder.
      */
@@ -57,9 +67,18 @@ abstract class AbstractFacade
     /**
      * Create a new full mock.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @api
+     *
+     * @param mixed             $types      The types to mock.
+     * @param array|object|null $definition The definition.
+     * @param string|null       $className  The class name.
      *
      * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
      */
@@ -77,10 +96,19 @@ abstract class AbstractFacade
     /**
      * Create a new partial mock.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @api
+     *
+     * @param mixed                         $types      The types to mock.
+     * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null             $definition The definition.
+     * @param string|null                   $className  The class name.
      *
      * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
      */
@@ -90,23 +118,24 @@ abstract class AbstractFacade
         $definition = null,
         $className = null
     ) {
-        if (func_num_args() > 1) {
-            $mock = static::driver()->mockBuilderFactory()->createPartialMock(
+        if (func_num_args() < 2) {
+            $arguments = array();
+        }
+
+        return static::on(
+            static::driver()->mockBuilderFactory()->createPartialMock(
                 $types,
                 $arguments,
                 $definition,
                 $className
-            );
-        } else {
-            $mock = static::driver()->mockBuilderFactory()
-                ->createPartialMock($types);
-        }
-
-        return static::on($mock);
+            )
+        );
     }
 
     /**
      * Create a new stubbing proxy.
+     *
+     * @api
      *
      * @param MockInterface|InstanceProxyInterface $mock The mock.
      *
@@ -121,6 +150,8 @@ abstract class AbstractFacade
     /**
      * Create a new verification proxy.
      *
+     * @api
+     *
      * @param MockInterface|InstanceProxyInterface $mock The mock.
      *
      * @return InstanceVerificationProxyInterface The newly created proxy.
@@ -134,6 +165,8 @@ abstract class AbstractFacade
     /**
      * Create a new static stubbing proxy.
      *
+     * @api
+     *
      * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
      *
      * @return StaticStubbingProxyInterface The newly created proxy.
@@ -146,6 +179,8 @@ abstract class AbstractFacade
 
     /**
      * Create a new static verification proxy.
+     *
+     * @api
      *
      * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
      *
@@ -161,16 +196,18 @@ abstract class AbstractFacade
     /**
      * Create a new spy verifier for the supplied callback.
      *
+     * @api
+     *
      * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
-     * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
+     * @param boolean       $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean       $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyVerifierInterface The newly created spy verifier.
      */
     public static function spy(
         $callback = null,
-        $useGeneratorSpies = null,
-        $useTraversableSpies = null
+        $useGeneratorSpies = true,
+        $useTraversableSpies = false
     ) {
         return static::driver()->spyVerifierFactory()->createFromCallback(
             $callback,
@@ -182,11 +219,13 @@ abstract class AbstractFacade
     /**
      * Create a new stub verifier for the supplied callback.
      *
+     * @api
+     *
      * @param callable|null $callback              The callback, or null to create an unbound stub verifier.
      * @param mixed         $self                  The self value.
      * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
-     * @param boolean|null  $useGeneratorSpies     True if generator spies should be used.
-     * @param boolean|null  $useTraversableSpies   True if traversable spies should be used.
+     * @param boolean       $useGeneratorSpies     True if generator spies should be used.
+     * @param boolean       $useTraversableSpies   True if traversable spies should be used.
      *
      * @return StubVerifierInterface The newly created stub verifier.
      */
@@ -194,8 +233,8 @@ abstract class AbstractFacade
         $callback = null,
         $self = null,
         $defaultAnswerCallback = null,
-        $useGeneratorSpies = null,
-        $useTraversableSpies = null
+        $useGeneratorSpies = true,
+        $useTraversableSpies = false
     ) {
         return static::driver()->stubVerifierFactory()->createFromCallback(
             $callback,
@@ -209,7 +248,9 @@ abstract class AbstractFacade
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @api
+     *
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -223,7 +264,9 @@ abstract class AbstractFacade
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @api
+     *
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -236,6 +279,8 @@ abstract class AbstractFacade
 
     /**
      * Checks if the supplied event sequence happened in chronological order.
+     *
+     * @api
      *
      * @param mixed<EventCollectionInterface> $events The event sequence.
      *
@@ -251,6 +296,8 @@ abstract class AbstractFacade
      * Throws an exception unless the supplied event sequence happened in
      * chronological order.
      *
+     * @api
+     *
      * @param mixed<EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface The result.
@@ -264,7 +311,9 @@ abstract class AbstractFacade
     /**
      * Checks that at least one event is supplied.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @api
+     *
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -278,7 +327,9 @@ abstract class AbstractFacade
     /**
      * Throws an exception unless at least one event is supplied.
      *
-     * @param EventCollectionInterface $events,... The events.
+     * @api
+     *
+     * @param EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.
@@ -292,6 +343,8 @@ abstract class AbstractFacade
 
     /**
      * Checks if the supplied event sequence contains at least one event.
+     *
+     * @api
      *
      * @param mixed<EventCollectionInterface> $events The event sequence.
      *
@@ -308,6 +361,8 @@ abstract class AbstractFacade
      * Throws an exception unless the supplied event sequence contains at least
      * one event.
      *
+     * @api
+     *
      * @param mixed<EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface The result.
@@ -323,6 +378,8 @@ abstract class AbstractFacade
     /**
      * Create a new matcher that matches anything.
      *
+     * @api
+     *
      * @return MatcherInterface The newly created matcher.
      */
     public static function any()
@@ -332,6 +389,8 @@ abstract class AbstractFacade
 
     /**
      * Create a new equal to matcher.
+     *
+     * @api
      *
      * @param mixed $value The value to check.
      *
@@ -345,15 +404,17 @@ abstract class AbstractFacade
     /**
      * Create a new matcher that matches multiple arguments.
      *
+     * @api
+     *
      * @param mixed        $value            The value to check for each argument.
-     * @param integer|null $minimumArguments The minimum number of arguments.
+     * @param integer      $minimumArguments The minimum number of arguments.
      * @param integer|null $maximumArguments The maximum number of arguments.
      *
      * @return WildcardMatcherInterface The newly created wildcard matcher.
      */
     public static function wildcard(
         $value = null,
-        $minimumArguments = null,
+        $minimumArguments = 0,
         $maximumArguments = null
     ) {
         return static::driver()->matcherFactory()
@@ -364,6 +425,8 @@ abstract class AbstractFacade
      * Set the default export depth.
      *
      * Negative depths are treated as infinite depth.
+     *
+     * @api
      *
      * @param integer $depth The depth.
      *

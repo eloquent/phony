@@ -14,7 +14,9 @@ namespace Eloquent\Phony\Call\Argument\Exception;
 use Exception;
 
 /**
- * No argument is defined for the requested index.
+ * Thrown when an argument that was requested by index does not exist.
+ *
+ * @api
  */
 final class UndefinedArgumentException extends Exception
 {
@@ -40,6 +42,8 @@ final class UndefinedArgumentException extends Exception
 
     /**
      * Get the index.
+     *
+     * @api
      *
      * @return integer The index.
      */

@@ -996,14 +996,16 @@ echo get_class($mock); // outputs 'CustomClassName'
 ### Calling a constructor manually
 
 In order to stub methods called in the constructor of a partial mock, it is
-necessary to defer construction of the mock object. To accomplish this using
-*Phony*, a normal mock is created, then converted to a partial mock using
-[`partial()`](#handle.partial). This diverts the calling of the mock
-constructor:
+necessary to defer construction of the mock object. To accomplish this, pass
+`null` as the second argument to [`partialMock()`](#facade.partialMock), which
+will cause *Phony* to bypass the constructor:
 
 ```php
-$handle = mock('ClassA')->partial();
+$handle = partialMock('ClassA', null);
 ```
+
+Note that omitting the second argument will **not** have the same effect as
+explicitly passing `null`.
 
 Behavior can then be defined before the constructor is called:
 
@@ -1433,7 +1435,7 @@ Add callbacks to be called as part of an answer.
 
 ----
 
-> *fluent* $stub->[**callsWith**](#stub.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**callsWith**](#stub.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add a callback to be called as part of an answer.
 
@@ -1464,7 +1466,7 @@ the last element, and `-2` indicates the second last element.*
 
 ----
 
-> *fluent* $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add an argument callback to be called as part of an answer.
 
@@ -1508,7 +1510,7 @@ Add callbacks as answers.
 
 ----
 
-> *fluent* $stub->[**doesWith**](#stub.doesWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**doesWith**](#stub.doesWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add a callback as an answer.
 
@@ -1520,7 +1522,7 @@ Add a callback as an answer.
 
 ----
 
-> *fluent* $stub->[**forwards**](#stub.forwards)($arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**forwards**](#stub.forwards)($arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add an answer that calls the wrapped callback.
 

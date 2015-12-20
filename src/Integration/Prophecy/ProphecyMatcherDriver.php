@@ -18,8 +18,6 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 
 /**
  * A matcher driver for Prophecy tokens.
- *
- * @internal
  */
 class ProphecyMatcherDriver extends AbstractMatcherDriver
 {

@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * Unable to extend final class.
- *
- * @internal
  */
 final class FinalClassException extends Exception implements
     MockExceptionInterface

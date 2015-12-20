@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Exporter;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
-use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
 use PHPUnit_Framework_TestCase;
@@ -51,8 +50,8 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
             '-0.0'             => array(-0.0,                                            '0.000000e+0'),
             '1.0'              => array(1.0,                                             '1.000000e+0'),
             '-1.0'             => array(-1.0,                                            '-1.000000e+0'),
-            'STDIN'            => array(STDIN,                                           'resource #1'),
-            'STDOUT'           => array(STDOUT,                                          'resource #2'),
+            'STDIN'            => array(STDIN,                                           'resource#1'),
+            'STDOUT'           => array(STDOUT,                                          'resource#2'),
             'a\nb'             => array("a\nb",                                          '"a\nb"'),
             '[]'               => array(array(),                                         '#0[]'),
             '[1]'              => array(array(1),                                        '#0[1]'),
@@ -184,7 +183,7 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
             null,
             'PhonyMockInlineExporterExportMocks'
         );
-        $mock = MockFactory::instance()->createMock($builder, null, 'label');
+        $mock = $builder->createWith(null, 'label');
 
         $this->assertSame(
             'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .

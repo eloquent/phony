@@ -27,8 +27,6 @@ use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
  * Creates matchers.
- *
- * @internal
  */
 class MatcherFactory implements MatcherFactoryInterface
 {
@@ -50,18 +48,15 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Construct a new matcher factory.
      *
-     * @param array<MatcherDriverInterface>|null $drivers            The matcher drivers to use.
-     * @param MatcherInterface|null              $anyMatcher         A matcher that matches any value.
-     * @param WildcardMatcherInterface|null      $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
+     * @param array<MatcherDriverInterface> $drivers            The matcher drivers to use.
+     * @param MatcherInterface|null         $anyMatcher         A matcher that matches any value.
+     * @param WildcardMatcherInterface|null $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
      */
     public function __construct(
-        array $drivers = null,
+        array $drivers = array(),
         MatcherInterface $anyMatcher = null,
         WildcardMatcherInterface $wildcardAnyMatcher = null
     ) {
-        if (null === $drivers) {
-            $drivers = array();
-        }
         if (null === $anyMatcher) {
             $anyMatcher = AnyMatcher::instance();
         }
@@ -249,14 +244,14 @@ class MatcherFactory implements MatcherFactoryInterface
      * Create a new matcher that matches multiple arguments.
      *
      * @param mixed        $value            The value to check for each argument.
-     * @param integer|null $minimumArguments The minimum number of arguments.
+     * @param integer      $minimumArguments The minimum number of arguments.
      * @param integer|null $maximumArguments The maximum number of arguments.
      *
      * @return WildcardMatcherInterface The newly created wildcard matcher.
      */
     public function wildcard(
         $value = null,
-        $minimumArguments = null,
+        $minimumArguments = 0,
         $maximumArguments = null
     ) {
         if (0 === func_num_args()) {

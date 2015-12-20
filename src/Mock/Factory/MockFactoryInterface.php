@@ -26,14 +26,14 @@ interface MockFactoryInterface
      * Create the mock class for the supplied builder.
      *
      * @param MockBuilderInterface $builder   The builder.
-     * @param boolean|null         $createNew True if a new class should be created even when a compatible one exists.
+     * @param boolean              $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return ReflectionClass        The class.
      * @throws MockExceptionInterface If the mock generation fails.
      */
     public function createMockClass(
         MockBuilderInterface $builder,
-        $createNew = null
+        $createNew = false
     );
 
     /**

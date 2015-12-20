@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Event;
 
 /**
  * A special event that represents the absence of an event.
- *
- * @internal
  */
 class NullEvent extends AbstractEvent implements NullEventInterface
 {

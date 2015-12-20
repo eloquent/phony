@@ -27,14 +27,24 @@ use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
+use InvalidArgumentException;
 use ReflectionClass;
 
 /**
  * Create a new mock builder.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
- * @param array|object|null                                                                                   $definition The definition.
- * @param string|null                                                                                         $className  The class name.
+ * The `$types` argument may be a class name, a reflection class, or a mock
+ * builder. It may also be an array of any of these.
+ *
+ * If `$types` is omitted, or `null`, no existing type will be used when
+ * generating the mock class. This is useful in the case of ad hoc mocks, where
+ * mocks need not imitate an existing type.
+ *
+ * @api
+ *
+ * @param mixed             $types      The types to mock.
+ * @param array|object|null $definition The definition.
+ * @param string|null       $className  The class name.
  *
  * @return MockBuilderInterface The mock builder.
  */
@@ -47,9 +57,18 @@ function mockBuilder($types = null, $definition = null, $className = null)
 /**
  * Create a new full mock.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
- * @param array|object|null                                                                                   $definition The definition.
- * @param string|null                                                                                         $className  The class name.
+ * The `$types` argument may be a class name, a reflection class, or a mock
+ * builder. It may also be an array of any of these.
+ *
+ * If `$types` is omitted, or `null`, no existing type will be used when
+ * generating the mock class. This is useful in the case of ad hoc mocks, where
+ * mocks need not imitate an existing type.
+ *
+ * @api
+ *
+ * @param mixed             $types      The types to mock.
+ * @param array|object|null $definition The definition.
+ * @param string|null       $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
@@ -64,10 +83,19 @@ function mock($types = null, $definition = null, $className = null)
 /**
  * Create a new partial mock.
  *
- * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
- * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
- * @param array|object|null                                                                                   $definition The definition.
- * @param string|null                                                                                         $className  The class name.
+ * The `$types` argument may be a class name, a reflection class, or a mock
+ * builder. It may also be an array of any of these.
+ *
+ * If `$types` is omitted, or `null`, no existing type will be used when
+ * generating the mock class. This is useful in the case of ad hoc mocks, where
+ * mocks need not imitate an existing type.
+ *
+ * @api
+ *
+ * @param mixed                         $types      The types to mock.
+ * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
+ * @param array|object|null             $definition The definition.
+ * @param string|null                   $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
@@ -77,19 +105,20 @@ function partialMock(
     $definition = null,
     $className = null
 ) {
-    if (func_num_args() > 1) {
-        $mock = FacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types, $arguments, $definition, $className);
-    } else {
-        $mock = FacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types);
+    if (func_num_args() < 2) {
+        $arguments = array();
     }
 
-    return on($mock);
+    return on(
+        FacadeDriver::instance()->mockBuilderFactory()
+            ->createPartialMock($types, $arguments, $definition, $className)
+    );
 }
 
 /**
  * Create a new stubbing proxy.
+ *
+ * @api
  *
  * @param MockInterface|InstanceProxyInterface $mock The mock.
  *
@@ -104,6 +133,8 @@ function on($mock)
 /**
  * Create a new verification proxy.
  *
+ * @api
+ *
  * @param MockInterface|InstanceProxyInterface $mock The mock.
  *
  * @return InstanceVerificationProxyInterface The newly created proxy.
@@ -116,6 +147,8 @@ function verify($mock)
 
 /**
  * Create a new static stubbing proxy.
+ *
+ * @api
  *
  * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
  *
@@ -131,6 +164,8 @@ function onStatic($class)
 /**
  * Create a new static verification proxy.
  *
+ * @api
+ *
  * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
  *
  * @return StaticVerificationProxyInterface The newly created proxy.
@@ -145,16 +180,18 @@ function verifyStatic($class)
 /**
  * Create a new spy verifier for the supplied callback.
  *
+ * @api
+ *
  * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
- * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
- * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
+ * @param boolean       $useGeneratorSpies   True if generator spies should be used.
+ * @param boolean       $useTraversableSpies True if traversable spies should be used.
  *
  * @return SpyVerifierInterface The newly created spy verifier.
  */
 function spy(
     $callback = null,
-    $useGeneratorSpies = null,
-    $useTraversableSpies = null
+    $useGeneratorSpies = true,
+    $useTraversableSpies = false
 ) {
     return FacadeDriver::instance()->spyVerifierFactory()->createFromCallback(
         $callback,
@@ -166,11 +203,13 @@ function spy(
 /**
  * Create a new stub verifier for the supplied callback.
  *
+ * @api
+ *
  * @param callable|null $callback              The callback, or null to create an unbound stub verifier.
  * @param object|null   $self                  The self value.
  * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
- * @param boolean|null  $useGeneratorSpies     True if generator spies should be used.
- * @param boolean|null  $useTraversableSpies   True if traversable spies should be used.
+ * @param boolean       $useGeneratorSpies     True if generator spies should be used.
+ * @param boolean       $useTraversableSpies   True if traversable spies should be used.
  *
  * @return StubVerifierInterface The newly created stub verifier.
  */
@@ -178,8 +217,8 @@ function stub(
     $callback = null,
     $self = null,
     $defaultAnswerCallback = null,
-    $useGeneratorSpies = null,
-    $useTraversableSpies = null
+    $useGeneratorSpies = true,
+    $useTraversableSpies = false
 ) {
     return FacadeDriver::instance()->stubVerifierFactory()->createFromCallback(
         $callback,
@@ -193,7 +232,9 @@ function stub(
 /**
  * Checks if the supplied events happened in chronological order.
  *
- * @param EventCollectionInterface $events,... The events.
+ * @api
+ *
+ * @param EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface|null The result.
  */
@@ -207,7 +248,9 @@ function checkInOrder()
  * Throws an exception unless the supplied events happened in chronological
  * order.
  *
- * @param EventCollectionInterface $events,... The events.
+ * @api
+ *
+ * @param EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface The result.
  * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -220,6 +263,8 @@ function inOrder()
 
 /**
  * Checks if the supplied event sequence happened in chronological order.
+ *
+ * @api
  *
  * @param mixed<EventCollectionInterface> $events The event sequence.
  *
@@ -235,6 +280,8 @@ function checkInOrderSequence($events)
  * Throws an exception unless the supplied event sequence happened in
  * chronological order.
  *
+ * @api
+ *
  * @param mixed<EventCollectionInterface> $events The event sequence.
  *
  * @return EventCollectionInterface The result.
@@ -249,7 +296,9 @@ function inOrderSequence($events)
 /**
  * Checks that at least one event is supplied.
  *
- * @param EventCollectionInterface $events,... The events.
+ * @api
+ *
+ * @param EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface|null The result.
  * @throws InvalidArgumentException      If invalid input is supplied.
@@ -263,7 +312,9 @@ function checkAnyOrder()
 /**
  * Throws an exception unless at least one event is supplied.
  *
- * @param EventCollectionInterface $events,... The events.
+ * @api
+ *
+ * @param EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface The result.
  * @throws InvalidArgumentException If invalid input is supplied.
@@ -277,6 +328,8 @@ function anyOrder()
 
 /**
  * Checks if the supplied event sequence contains at least one event.
+ *
+ * @api
  *
  * @param mixed<EventCollectionInterface> $events The event sequence.
  *
@@ -293,6 +346,8 @@ function checkAnyOrderSequence($events)
  * Throws an exception unless the supplied event sequence contains at least
  * one event.
  *
+ * @api
+ *
  * @param mixed<EventCollectionInterface> $events The event sequence.
  *
  * @return EventCollectionInterface The result.
@@ -308,6 +363,8 @@ function anyOrderSequence($events)
 /**
  * Create a new matcher that matches anything.
  *
+ * @api
+ *
  * @return MatcherInterface The newly created matcher.
  */
 function any()
@@ -317,6 +374,8 @@ function any()
 
 /**
  * Create a new equal to matcher.
+ *
+ * @api
  *
  * @param mixed $value The value to check.
  *
@@ -330,17 +389,35 @@ function equalTo($value)
 /**
  * Create a new matcher that matches multiple arguments.
  *
+ * @api
+ *
  * @param mixed        $value            The value to check for each argument.
- * @param integer|null $minimumArguments The minimum number of arguments.
+ * @param integer      $minimumArguments The minimum number of arguments.
  * @param integer|null $maximumArguments The maximum number of arguments.
  *
  * @return WildcardMatcherInterface The newly created wildcard matcher.
  */
 function wildcard(
     $value = null,
-    $minimumArguments = null,
+    $minimumArguments = 0,
     $maximumArguments = null
 ) {
     return FacadeDriver::instance()->matcherFactory()
         ->wildcard($value, $minimumArguments, $maximumArguments);
+}
+
+/**
+ * Set the default export depth.
+ *
+ * Negative depths are treated as infinite depth.
+ *
+ * @api
+ *
+ * @param integer $depth The depth.
+ *
+ * @return integer The previous depth.
+ */
+function setExportDepth($depth)
+{
+    return FacadeDriver::instance()->exporter()->setDepth($depth);
 }

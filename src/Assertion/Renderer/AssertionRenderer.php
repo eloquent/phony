@@ -16,6 +16,7 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\CallEventInterface;
+use Eloquent\Phony\Call\Event\ConsumedEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
@@ -35,14 +36,13 @@ use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
+use Error;
 use Exception;
 use ReflectionException;
 use ReflectionMethod;
 
 /**
  * Renders various data for use in assertion messages.
- *
- * @internal
  */
 class AssertionRenderer implements AssertionRendererInterface
 {
@@ -386,17 +386,14 @@ class AssertionRenderer implements AssertionRendererInterface
      * Render the responses of a sequence of calls.
      *
      * @param array<CallInterface> $calls              The calls.
-     * @param boolean|null         $expandTraversables True if traversable events should be rendered.
+     * @param boolean              $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered call responses.
      */
-    public function renderResponses(array $calls, $expandTraversables = null)
+    public function renderResponses(array $calls, $expandTraversables = false)
     {
-        if (null === $expandTraversables) {
-            $expandTraversables = false;
-        }
-
         $rendered = array();
+
         foreach ($calls as $call) {
             if (!$call->hasResponded()) {
                 $rendered[] = '    - <none>';
@@ -503,6 +500,7 @@ class AssertionRenderer implements AssertionRendererInterface
     public function renderProduced(CallInterface $call)
     {
         $rendered = array();
+
         foreach ($call->traversableEvents() as $event) {
             if ($event instanceof ProducedEventInterface) {
                 $rendered[] = sprintf(
@@ -523,13 +521,19 @@ class AssertionRenderer implements AssertionRendererInterface
             }
         }
 
+        if ($call->endEvent()) {
+            $rendered[] = '    - finished iterating';
+        } else {
+            $rendered[] = '    - did not finish iterating';
+        }
+
         return implode("\n", $rendered);
     }
 
     /**
      * Render a sequence of arguments.
      *
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
@@ -542,6 +546,7 @@ class AssertionRenderer implements AssertionRendererInterface
         }
 
         $rendered = array();
+
         foreach ($arguments as $argument) {
             $rendered[] = $this->renderValue($argument);
         }
@@ -552,11 +557,11 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render an exception.
      *
-     * @param Exception|null The exception.
+     * @param Exception|Error|null $exception The exception.
      *
      * @return string The rendered exception.
      */
-    public function renderException(Exception $exception = null)
+    public function renderException($exception = null)
     {
         if (null === $exception) {
             return '<none>';
@@ -634,6 +639,8 @@ class AssertionRenderer implements AssertionRendererInterface
                     $this->renderException($event->exception()),
                     $call
                 );
+            } elseif ($event instanceof ConsumedEventInterface) {
+                $rendered[] = sprintf('    - %s finished iterating', $call);
             } elseif ($event instanceof NullEventInterface) {
                 $rendered[] = '    - <none>';
             } else {

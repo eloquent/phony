@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Assertion\Exception;
 
 /**
  * The interface used to identify assertion exceptions.
+ *
+ * @api
  */
 interface AssertionExceptionInterface
 {

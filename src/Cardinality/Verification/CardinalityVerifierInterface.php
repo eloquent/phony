@@ -16,43 +16,55 @@ use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
 
 /**
  * The interface implemented by cardinality verifiers.
+ *
+ * @api
  */
 interface CardinalityVerifierInterface
 {
     /**
      * Requires that the next verification never matches.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @api
+     *
+     * @return $this This verifier.
      */
     public function never();
 
     /**
      * Requires that the next verification matches only once.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @api
+     *
+     * @return $this This verifier.
      */
     public function once();
 
     /**
      * Requires that the next verification matches exactly two times.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @api
+     *
+     * @return $this This verifier.
      */
     public function twice();
 
     /**
      * Requires that the next verification matches exactly three times.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @api
+     *
+     * @return $this This verifier.
      */
     public function thrice();
 
     /**
      * Requires that the next verification matches an exact number of times.
      *
-     * @param integer|null $times The match count, or null to remove all cardinality requirements.
+     * @api
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @param integer $times The match count.
+     *
+     * @return $this This verifier.
      */
     public function times($times);
 
@@ -60,9 +72,11 @@ interface CardinalityVerifierInterface
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum.
      *
+     * @api
+     *
      * @param integer $minimum The minimum match count.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function atLeast($minimum);
 
@@ -70,9 +84,11 @@ interface CardinalityVerifierInterface
      * Requires that the next verification matches a number of times less than
      * or equal to $maximum.
      *
+     * @api
+     *
      * @param integer $maximum The maximum match count.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function atMost($maximum);
 
@@ -80,10 +96,12 @@ interface CardinalityVerifierInterface
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum, and less than or equal to $maximum.
      *
-     * @param integer|null $minimum The minimum match count, or null for no minimum.
+     * @api
+     *
+     * @param integer      $minimum The minimum match count.
      * @param integer|null $maximum The maximum match count, or null for no maximum.
      *
-     * @return CardinalityVerifierInterface         This verifier.
+     * @return $this                                This verifier.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function between($minimum, $maximum);
@@ -91,7 +109,9 @@ interface CardinalityVerifierInterface
     /**
      * Requires that the next verification matches for all possible items.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @api
+     *
+     * @return $this This verifier.
      */
     public function always();
 

@@ -12,3 +12,7 @@ if [[ "$TRAVIS_BRANCH" == "develop" && "$TRAVIS_PHP_VERSION" == "$ARCHER_PUBLISH
 fi
 
 vendor/bin/archer travis:build
+
+if [[ "$TRAVIS_PHP_VERSION" == "$ARCHER_PUBLISH_VERSION" ]]; then
+    doc/example/run-all
+fi

@@ -24,8 +24,6 @@ use ReflectionMethod;
 
 /**
  * Generates mock classes.
- *
- * @internal
  */
 class MockGenerator implements MockGeneratorInterface
 {
@@ -71,6 +69,8 @@ class MockGenerator implements MockGeneratorInterface
 
         $this->isClosureBindingSupported =
             $this->featureDetector->isSupported('closure.bind');
+        $this->isReturnTypeSupported =
+            $this->featureDetector->isSupported('return.type');
     }
 
     /**
@@ -310,8 +310,9 @@ class MockGenerator implements MockGeneratorInterface
     public static function __callStatic(
 EOD;
 
+        $methodReflector = $methods[$callStaticName]->method();
         $signature = $this->signatureInspector
-            ->signature($methods[$callStaticName]->method());
+            ->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -327,9 +328,22 @@ EOD;
                 $parameter[3];
         }
 
-        $source .= <<<'EOD'
+        if (// @codeCoverageIgnoreStart
+            $this->isReturnTypeSupported &&
+            $methodReflector->hasReturnType()
+        ) {
+            $type = $methodReflector->getReturnType();
 
-    ) {
+            if ($type->isBuiltin()) {
+                $source .= "\n    ) : " . $type . " {\n";
+            } else {
+                $source .= "\n    ) : \\" . $type . " {\n";
+            }
+        } else { // @codeCoverageIgnoreEnd
+            $source .= "\n    ) {\n";
+        }
+
+        $source .= <<<'EOD'
         return self::$_staticProxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
@@ -374,7 +388,7 @@ EOD;
     /**
      * Generate the supplied methods.
      *
-     * @param array<string,MethodDefinitionInterface> The methods.
+     * @param array<string,MethodDefinitionInterface> $methods The methods.
      *
      * @return string The source code.
      */
@@ -385,6 +399,7 @@ EOD;
         foreach ($methods as $method) {
             $name = $method->name();
             $nameLower = strtolower($name);
+            $methodReflector = $method->method();
 
             switch ($nameLower) {
                 case '__construct':
@@ -394,19 +409,20 @@ EOD;
 
                 // @codeCoverageIgnoreStart
                 case 'inittrace':
-                    $methodReflector = $method->method();
+                    if ($methodReflector instanceof ReflectionMethod) {
+                        $declaringClass =
+                            $methodReflector->getDeclaringClass()->getName();
 
-                    if (
-                        $methodReflector instanceof ReflectionMethod &&
-                        'Exception' ===
-                            $methodReflector->getDeclaringClass()->getName()
-                    ) {
-                        continue 2;
+                        if (
+                            'Exception' === $declaringClass ||
+                            'Error' === $declaringClass
+                        ) {
+                            continue 2;
+                        }
                     }
             } // @codeCoverageIgnoreEnd
 
-            $signature =
-                $this->signatureInspector->signature($method->method());
+            $signature = $this->signatureInspector->signature($methodReflector);
 
             if ($method->isCustom()) {
                 $parameterName = null;
@@ -490,6 +506,21 @@ EOD;
                 'function ' .
                 $name;
 
+            if (// @codeCoverageIgnoreStart
+                $this->isReturnTypeSupported &&
+                $methodReflector->hasReturnType()
+            ) {
+                $type = $methodReflector->getReturnType();
+
+                if ($type->isBuiltin()) {
+                    $returnType = ' : ' . $type;
+                } else {
+                    $returnType = ' : \\' . $type;
+                }
+            } else { // @codeCoverageIgnoreEnd
+                $returnType = '';
+            }
+
             if ($signature) {
                 $index = -1;
                 $isFirst = true;
@@ -510,9 +541,9 @@ EOD;
                         $parameter[3];
                 }
 
-                $source .= "\n    ) {\n";
+                $source .= "\n    )" . $returnType . " {\n";
             } else {
-                $source .= "()\n    {\n";
+                $source .= '()' . $returnType . "\n    {\n";
             }
 
             $source .= $body . "\n    }\n";
@@ -542,9 +573,9 @@ EOD;
 
     public function __call(
 EOD;
-
+        $methodReflector = $methods[$callName]->method();
         $signature = $this->signatureInspector
-            ->signature($methods[$callName]->method());
+            ->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -560,9 +591,22 @@ EOD;
                 $parameter[2];
         }
 
-        $source .= <<<'EOD'
+        if (// @codeCoverageIgnoreStart
+            $this->isReturnTypeSupported &&
+            $methodReflector->hasReturnType()
+        ) {
+            $type = $methodReflector->getReturnType();
 
-    ) {
+            if ($type->isBuiltin()) {
+                $source .= "\n    ) : " . $type . " {\n";
+            } else {
+                $source .= "\n    ) : \\" . $type . " {\n";
+            }
+        } else { // @codeCoverageIgnoreEnd
+            $source .= "\n    ) {\n";
+        }
+
+        $source .= <<<'EOD'
         return $this->_proxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
     }
@@ -863,4 +907,5 @@ EOD;
     private $signatureInspector;
     private $featureDetector;
     private $isClosureBindingSupported;
+    private $isReturnTypeSupported;
 }

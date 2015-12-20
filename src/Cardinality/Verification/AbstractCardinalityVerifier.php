@@ -17,8 +17,6 @@ use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
 
 /**
  * An abstract base class for implementing cardinality verifiers.
- *
- * @internal
  */
 abstract class AbstractCardinalityVerifier implements
     CardinalityVerifierInterface
@@ -34,7 +32,7 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Requires that the next verification never matches.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function never()
     {
@@ -44,7 +42,7 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Requires that the next verification matches only once.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function once()
     {
@@ -54,7 +52,7 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Requires that the next verification matches exactly two times.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function twice()
     {
@@ -64,7 +62,7 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Requires that the next verification matches exactly three times.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function thrice()
     {
@@ -74,9 +72,9 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Requires that the next verification matches an exact number of times.
      *
-     * @param integer|null $times The match count, or null to remove all cardinality requirements.
+     * @param integer $times The match count.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function times($times)
     {
@@ -89,7 +87,7 @@ abstract class AbstractCardinalityVerifier implements
      *
      * @param integer $minimum The minimum match count.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function atLeast($minimum)
     {
@@ -102,7 +100,7 @@ abstract class AbstractCardinalityVerifier implements
      *
      * @param integer $maximum The maximum match count.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function atMost($maximum)
     {
@@ -113,10 +111,10 @@ abstract class AbstractCardinalityVerifier implements
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum, and less than or equal to $maximum.
      *
-     * @param integer|null $minimum The minimum match count, or null for no minimum.
+     * @param integer      $minimum The minimum match count.
      * @param integer|null $maximum The maximum match count, or null for no maximum.
      *
-     * @return CardinalityVerifierInterface         This verifier.
+     * @return $this                                This verifier.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function between($minimum, $maximum)
@@ -129,7 +127,7 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Requires that the next verification matches for all possible items.
      *
-     * @return CardinalityVerifierInterface This verifier.
+     * @return $this This verifier.
      */
     public function always()
     {

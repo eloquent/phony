@@ -20,8 +20,6 @@ use Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException;
 
 /**
  * Represents a set of criteria and associated answers.
- *
- * @internal
  */
 class StubRule implements StubRuleInterface
 {
@@ -96,8 +94,7 @@ class StubRule implements StubRuleInterface
      */
     public function matches($arguments)
     {
-        return $this->matcherVerifier
-            ->matches($this->criteria, Arguments::adapt($arguments));
+        return $this->matcherVerifier->matches($this->criteria, $arguments);
     }
 
     /**

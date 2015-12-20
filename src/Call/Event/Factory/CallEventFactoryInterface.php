@@ -13,9 +13,11 @@ namespace Eloquent\Phony\Call\Event\Factory;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\ConsumedEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
+use Error;
 use Exception;
 use Generator;
 
@@ -27,25 +29,22 @@ interface CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null                 $callback  The callback.
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param callable|null            $callback  The callback.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled($callback = null, $arguments = null);
+    public function createCalled($callback = null, $arguments = array());
 
     /**
      * Create a new response event.
      *
-     * @param mixed          $returnValue The return value.
-     * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
+     * @param mixed                $returnValue The return value.
+     * @param Exception|Error|null $exception   The thrown exception, or null if no exception was thrown.
      *
      * @return ResponseEventInterface The newly created event.
      */
-    public function createResponse(
-        $returnValue = null,
-        Exception $exception = null
-    );
+    public function createResponse($returnValue = null, $exception = null);
 
     /**
      * Create a new 'returned' event.
@@ -68,11 +67,11 @@ interface CallEventFactoryInterface
     /**
      * Create a new 'thrown' event.
      *
-     * @param Exception|null $exception The thrown exception.
+     * @param Exception|Error|null $exception The thrown exception.
      *
      * @return ThrewEventInterface The newly created event.
      */
-    public function createThrew(Exception $exception = null);
+    public function createThrew($exception = null);
 
     /**
      * Create a new 'produced' event.
@@ -101,9 +100,16 @@ interface CallEventFactoryInterface
     /**
      * Create a new 'received exception' event.
      *
-     * @param Exception|null $exception The received exception.
+     * @param Exception|Error|null $exception The received exception.
      *
      * @return ReceivedExceptionEventInterface The newly created event.
      */
-    public function createReceivedException(Exception $exception = null);
+    public function createReceivedException($exception = null);
+
+    /**
+     * Create a new 'consumed' event.
+     *
+     * @return ConsumedEventInterface The newly created event.
+     */
+    public function createConsumed();
 }

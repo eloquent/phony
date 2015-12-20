@@ -15,6 +15,8 @@ use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
 
 /**
  * The interface implemented by instance verification proxies.
+ *
+ * @api
  */
 interface InstanceVerificationProxyInterface extends InstanceProxyInterface,
     VerificationProxyInterface

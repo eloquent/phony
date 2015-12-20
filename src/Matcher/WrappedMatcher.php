@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * Wraps a typical third party matcher.
- *
- * @internal
  */
 class WrappedMatcher extends AbstractMatcher implements
     WrappedMatcherInterface
@@ -40,7 +38,7 @@ class WrappedMatcher extends AbstractMatcher implements
     }
 
     /**
-     * Returns true if the supplied value matches.
+     * Returns `true` if `$value` matches this matcher's criteria.
      *
      * @param mixed $value The value to check.
      *

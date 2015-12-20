@@ -61,10 +61,14 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callA = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisObjectA, 'testClassAMethodA'), array('a', 'b')),
+            $this->callEventFactory->createReturned('x'),
+            null,
             $this->callEventFactory->createReturned('x')
         );
         $this->callB = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode'),
+            $this->callEventFactory->createThrew(new RuntimeException('You done goofed.')),
+            null,
             $this->callEventFactory->createThrew(new RuntimeException('You done goofed.'))
         );
         $this->callC = $this->callFactory->create(
@@ -187,12 +191,20 @@ EOD;
 
     public function testRenderResponsesExpandedTraversables()
     {
-        $traversableCall = $this->callFactory->create(
+        $traversableCallA = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
             $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd')),
             array(
                 $this->callEventFactory->createProduced('a', 'b'),
                 $this->callEventFactory->createProduced('c', 'd'),
+            ),
+            $this->callEventFactory->createConsumed()
+        );
+        $traversableCallB = $this->callFactory->create(
+            $this->callEventFactory->createCalled(),
+            $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd')),
+            array(
+                $this->callEventFactory->createProduced('a', 'b'),
             )
         );
         $expected = <<<'EOD'
@@ -200,6 +212,10 @@ EOD;
     - returned #0[:2] producing:
         - produced "a": "b"
         - produced "c": "d"
+        - finished iterating
+    - returned #0[:2] producing:
+        - produced "a": "b"
+        - did not finish iterating
     - threw RuntimeException("You done goofed.")
     - <none>
 EOD;
@@ -207,8 +223,10 @@ EOD;
         $this->assertSame('', $this->subject->renderResponses(array(), true));
         $this->assertSame(
             $expected,
-            $this->subject
-                ->renderResponses(array($this->callA, $traversableCall, $this->callB, $this->callC), true)
+            $this->subject->renderResponses(
+                array($this->callA, $traversableCallA, $traversableCallB, $this->callB, $this->callC),
+                true
+            )
         );
     }
 
@@ -320,6 +338,7 @@ EOD;
                 $this->callEventFactory->createReceived('z'),
                 $this->callEventFactory
                     ->createReceivedException(new RuntimeException('Consequences will never be the same.')),
+                $this->callEventFactory->createConsumed(),
                 NullEvent::instance(),
                 new TestEvent(0, 0.0),
             )
@@ -332,6 +351,7 @@ EOD;
     - produced "x": "y" from unknown call
     - received "z" in unknown call
     - received exception RuntimeException("Consequences will never be the same.") in unknown call
+    - unknown call finished iterating
     - <none>
     - "Eloquent\\Phony\\Test\\TestEvent" event
 EOD;

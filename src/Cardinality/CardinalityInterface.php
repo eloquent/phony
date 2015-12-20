@@ -21,7 +21,7 @@ interface CardinalityInterface
     /**
      * Get the minimum.
      *
-     * @return integer|null The minimum.
+     * @return integer The minimum.
      */
     public function minimum();
 
@@ -68,7 +68,7 @@ interface CardinalityInterface
      * Asserts that this cardinality is suitable for events that can only happen
      * once or not at all.
      *
-     * @return CardinalityInterface                 This cardinality.
+     * @return $this                                This cardinality.
      * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
      */
     public function assertSingular();

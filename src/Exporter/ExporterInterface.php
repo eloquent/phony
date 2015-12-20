@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Exporter;
 
 /**
  * The interface implemented by exporters.
- *
- * @internal
  */
 interface ExporterInterface
 {

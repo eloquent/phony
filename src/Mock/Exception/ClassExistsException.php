@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * The class is already defined.
- *
- * @internal
  */
 final class ClassExistsException extends Exception implements
     MockExceptionInterface

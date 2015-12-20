@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use ArrayIterator;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
@@ -269,6 +270,14 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
         $this->subject->like(1);
+    }
+
+    public function testLikeFailureInvalidObject()
+    {
+        $this->subject = new MockBuilder();
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
+        $this->subject->like(new ArrayIterator());
     }
 
     public function testLikeFailureFinalized()
@@ -541,18 +550,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($actual->implementsInterface('Traversable'));
         $this->assertTrue($actual->implementsInterface('IteratorAggregate'));
-    }
-
-    public function testBuildWithTraversableAndIterator()
-    {
-        $this->setUpWith(
-            array('Iterator', 'Eloquent\Phony\Test\TestInterfaceC')
-        );
-        $actual = $this->subject->build();
-
-        $this->assertTrue($actual->implementsInterface('Traversable'));
-        $this->assertTrue($actual->implementsInterface('Iterator'));
-        $this->assertFalse($actual->implementsInterface('IteratorAggregate'));
+        $this->assertFalse($actual->implementsInterface('Iterator'));
     }
 
     public function testBuildWithTraversableAndIteratorAggregate()
@@ -565,6 +563,60 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($actual->implementsInterface('Traversable'));
         $this->assertTrue($actual->implementsInterface('IteratorAggregate'));
         $this->assertFalse($actual->implementsInterface('Iterator'));
+    }
+
+    public function testBuildWithTraversableAndIterator()
+    {
+        $this->setUpWith(
+            array('Iterator', 'Eloquent\Phony\Test\TestInterfaceC')
+        );
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->implementsInterface('Traversable'));
+        $this->assertFalse($actual->implementsInterface('IteratorAggregate'));
+        $this->assertTrue($actual->implementsInterface('Iterator'));
+    }
+
+    public function testBuildWithThrowableOnly()
+    {
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            $this->markTestSkipped('Requires engine error exceptions.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceF');
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->implementsInterface('Throwable'));
+        $this->assertTrue($actual->isSubclassOf('Exception'));
+        $this->assertFalse($actual->isSubclassOf('Error'));
+    }
+
+    public function testBuildWithThrowableAndException()
+    {
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            $this->markTestSkipped('Requires engine error exceptions.');
+        }
+
+        $this->setUpWith('Exception', 'Eloquent\Phony\Test\TestInterfaceF');
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->implementsInterface('Throwable'));
+        $this->assertTrue($actual->isSubclassOf('Exception'));
+        $this->assertFalse($actual->isSubclassOf('Error'));
+    }
+
+    public function testBuildWithThrowableAndError()
+    {
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            $this->markTestSkipped('Requires engine error exceptions.');
+        }
+
+        $this->setUpWith('Error', 'Eloquent\Phony\Test\TestInterfaceF');
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->implementsInterface('Throwable'));
+        $this->assertTrue($actual->isSubclassOf('Error'));
+        $this->assertFalse($actual->isSubclassOf('Exception'));
     }
 
     public function testBuildFailureClassExists()

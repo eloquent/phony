@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * The supplied class is not a mock class.
- *
- * @internal
  */
 final class NonMockClassException extends Exception implements
     MockExceptionInterface

@@ -13,11 +13,15 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * The interface implemented by self-describing matchers.
+ *
+ * @api
  */
 interface SelfDescribingMatcherInterface
 {
     /**
      * Describe this matcher.
+     *
+     * @api
      *
      * @return string The description.
      */
@@ -25,6 +29,8 @@ interface SelfDescribingMatcherInterface
 
     /**
      * Describe this matcher.
+     *
+     * @api
      *
      * @return string The description.
      */

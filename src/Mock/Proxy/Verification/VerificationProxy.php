@@ -19,8 +19,6 @@ use Exception;
 
 /**
  * A proxy for verifying a mock.
- *
- * @internal
  */
 class VerificationProxy extends AbstractInstanceProxy implements
     InstanceVerificationProxyInterface
@@ -32,9 +30,9 @@ class VerificationProxy extends AbstractInstanceProxy implements
      * @param string $name      The method name.
      * @param array  $arguments The arguments.
      *
-     * @return VerificationProxyInterface This proxy.
-     * @throws MockExceptionInterface     If the stub does not exist.
-     * @throws Exception                  If the assertion fails, and the assertion recorder throws exceptions.
+     * @return $this                  This proxy.
+     * @throws MockExceptionInterface If the stub does not exist.
+     * @throws Exception              If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function __call($name, array $arguments)
     {
