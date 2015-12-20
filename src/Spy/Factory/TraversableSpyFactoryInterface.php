@@ -21,15 +21,6 @@ use Traversable;
 interface TraversableSpyFactoryInterface
 {
     /**
-     * Returns true if the supplied value is supported by this factory.
-     *
-     * @param mixed $value The value to check.
-     *
-     * @return boolean True if the supplied value is supported.
-     */
-    public function isSupported($value);
-
-    /**
      * Create a new traversable spy.
      *
      * @param CallInterface     $call        The call from which the traversable originated.

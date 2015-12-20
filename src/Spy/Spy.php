@@ -32,7 +32,9 @@ use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactoryInterface;
 use Error;
 use Exception;
+use Generator;
 use Iterator;
+use Traversable;
 
 /**
  * Spies on a function or method.
@@ -408,16 +410,13 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
         $returnValue = $responseEvent->value();
 
-        if (
-            $this->useGeneratorSpies &&
-            $this->generatorSpyFactory->isSupported($returnValue)
-        ) {
+        if ($this->useGeneratorSpies && $returnValue instanceof Generator) {
             return $this->generatorSpyFactory->create($call, $returnValue);
         }
 
         if (
             $this->useTraversableSpies &&
-            $this->traversableSpyFactory->isSupported($returnValue)
+            ($returnValue instanceof Traversable || is_array($returnValue))
         ) {
             return $this->traversableSpyFactory->create($call, $returnValue);
         }

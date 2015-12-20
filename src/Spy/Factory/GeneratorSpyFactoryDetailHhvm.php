@@ -1,4 +1,4 @@
-<?php // @codeCoverageIgnoreStart
+<?php
 
 /*
  * This file is part of the Phony package.
@@ -19,6 +19,8 @@ use Throwable;
 
 /**
  * A detail class for generator spy syntax using an expression.
+ *
+ * @codeCoverageIgnore
  */
 abstract class GeneratorSpyFactoryDetailHhvm
 {

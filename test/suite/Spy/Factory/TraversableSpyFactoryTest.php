@@ -40,13 +40,6 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(CallEventFactory::instance(), $this->subject->callEventFactory());
     }
 
-    public function testIsSupported()
-    {
-        $this->assertTrue($this->subject->isSupported(array()));
-        $this->assertTrue($this->subject->isSupported(new ArrayIterator()));
-        $this->assertFalse($this->subject->isSupported(null));
-    }
-
     public function testCreateWithArrayReturn()
     {
         $values = array('a' => 'b', 'c' => 'd');

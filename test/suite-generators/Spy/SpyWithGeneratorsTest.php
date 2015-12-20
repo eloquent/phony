@@ -59,9 +59,9 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generator = call_user_func($this->callback);
         $spy = new Spy(
             $this->callback,
-            true,
-            true,
             null,
+            true,
+            true,
             null,
             $this->callFactory,
             $this->generatorSpyFactory,

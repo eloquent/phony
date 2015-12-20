@@ -19,6 +19,8 @@ use Throwable;
 
 /**
  * A detail class for generator spy syntax using an expression.
+ *
+ * @codeCoverageIgnore
  */
 abstract class GeneratorSpyFactoryDetailPhpWithReturn
 {

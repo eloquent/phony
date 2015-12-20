@@ -413,4 +413,48 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $value);
     }
+
+    public function testInvokeWithWithTraversableSpy()
+    {
+        $this->callback = function () {
+            return array_map('strtoupper', func_get_args());
+        };
+        $generator = call_user_func($this->callback);
+        $spy = new Spy(
+            $this->callback,
+            null,
+            true,
+            true,
+            null,
+            $this->callFactory,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
+        foreach ($spy->invoke('a', 'b') as $value) {
+        }
+        foreach ($spy->invoke('c') as $value) {
+        }
+        $this->callFactory->reset();
+        $expected = array(
+            $this->callFactory->create(
+                $this->callEventFactory->createCalled($spy, array('a', 'b')),
+                $this->callEventFactory->createReturned(array('A', 'B')),
+                array(
+                    $this->callEventFactory->createProduced(0, 'A'),
+                    $this->callEventFactory->createProduced(1, 'B'),
+                ),
+                $this->callEventFactory->createConsumed()
+            ),
+            $this->callFactory->create(
+                $this->callEventFactory->createCalled($spy, array('c')),
+                $this->callEventFactory->createReturned(array('C')),
+                array(
+                    $this->callEventFactory->createProduced(0, 'C'),
+                ),
+                $this->callEventFactory->createConsumed()
+            ),
+        );
+
+        $this->assertEquals($expected, $spy->allCalls());
+    }
 }

@@ -49,18 +49,6 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
-    public function testIsSupported()
-    {
-        $generator = call_user_func(
-            function () {
-                return;
-                yield null;
-            }
-        );
-
-        $this->assertTrue($this->subject->isSupported($generator));
-    }
-
     public function testCreateWithConsumedEnd()
     {
         $generator = call_user_func(

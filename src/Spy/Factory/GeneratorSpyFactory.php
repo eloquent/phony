@@ -85,18 +85,6 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
     }
 
     /**
-     * Returns true if the supplied value is supported by this factory.
-     *
-     * @param mixed $value The value to check.
-     *
-     * @return boolean True if the supplied value is supported.
-     */
-    public function isSupported($value)
-    {
-        return $value instanceof Generator;
-    }
-
-    /**
      * Create a new traversable spy.
      *
      * @param CallInterface     $call        The call from which the traversable originated.
@@ -107,7 +95,7 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
      */
     public function create(CallInterface $call, $traversable)
     {
-        if (!$this->isSupported($traversable)) {
+        if (!$traversable instanceof Generator) {
             if (is_object($traversable)) {
                 $type = var_export(get_class($traversable), true);
             } else {
