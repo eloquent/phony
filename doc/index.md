@@ -996,14 +996,17 @@ echo get_class($mock); // outputs 'CustomClassName'
 ### Calling a constructor manually
 
 In order to stub methods called in the constructor of a partial mock, it is
-necessary to defer construction of the mock object. To accomplish this using
-*Phony*, a normal mock is created, then converted to a partial mock using
-[`partial()`](#handle.partial). This diverts the calling of the mock
+necessary to defer construction of the mock object. To accomplish this, first
+pass `null` value as the second argument to
+[`partialMock()`](#facade.partialMock), which will cause *Phony* to bypass the
 constructor:
 
 ```php
-$handle = mock('ClassA')->partial();
+$handle = partialMock('ClassA', null);
 ```
+
+Note that omitting the second argument will **not** have the same effect as
+explicitly passing `null`.
 
 Behavior can then be defined before the constructor is called:
 

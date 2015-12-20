@@ -105,32 +105,31 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param mixed                    $types      The types to mock.
-     * @param ArgumentsInterface|array $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null        $definition The definition.
-     * @param string|null              $className  The class name.
+     * @param mixed                         $types      The types to mock.
+     * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null             $definition The definition.
+     * @param string|null                   $className  The class name.
      *
      * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
      */
     public static function partialMock(
         $types = null,
-        $arguments = array(),
+        $arguments = null,
         $definition = null,
         $className = null
     ) {
-        if (func_num_args() > 1) {
-            $mock = static::driver()->mockBuilderFactory()->createPartialMock(
+        if (func_num_args() < 2) {
+            $arguments = array();
+        }
+
+        return static::on(
+            static::driver()->mockBuilderFactory()->createPartialMock(
                 $types,
                 $arguments,
                 $definition,
                 $className
-            );
-        } else {
-            $mock = static::driver()->mockBuilderFactory()
-                ->createPartialMock($types);
-        }
-
-        return static::on($mock);
+            )
+        );
     }
 
     /**

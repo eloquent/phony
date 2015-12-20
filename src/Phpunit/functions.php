@@ -92,28 +92,27 @@ function mock($types = null, $definition = null, $className = null)
  *
  * @api
  *
- * @param mixed                    $types      The types to mock.
- * @param ArgumentsInterface|array $arguments  The constructor arguments, or null to bypass the constructor.
- * @param array|object|null        $definition The definition.
- * @param string|null              $className  The class name.
+ * @param mixed                         $types      The types to mock.
+ * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
+ * @param array|object|null             $definition The definition.
+ * @param string|null                   $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
 function partialMock(
     $types = null,
-    $arguments = array(),
+    $arguments = null,
     $definition = null,
     $className = null
 ) {
-    if (func_num_args() > 1) {
-        $mock = PhpunitFacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types, $arguments, $definition, $className);
-    } else {
-        $mock = PhpunitFacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types);
+    if (func_num_args() < 2) {
+        $arguments = array();
     }
 
-    return on($mock);
+    return on(
+        PhpunitFacadeDriver::instance()->mockBuilderFactory()
+            ->createPartialMock($types, $arguments, $definition, $className)
+    );
 }
 
 /**

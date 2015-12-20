@@ -145,19 +145,23 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
      * generating the mock class. This is useful in the case of ad hoc mocks,
      * where mocks need not imitate an existing type.
      *
-     * @param mixed                    $types      The types to mock.
-     * @param ArgumentsInterface|array $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null        $definition The definition.
-     * @param string|null              $className  The class name.
+     * @param mixed                         $types      The types to mock.
+     * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null             $definition The definition.
+     * @param string|null                   $className  The class name.
      *
      * @return MockInterface The mock.
      */
     public function createPartialMock(
         $types = null,
-        $arguments = array(),
+        $arguments = null,
         $definition = null,
         $className = null
     ) {
+        if (func_num_args() < 2) {
+            $arguments = array();
+        }
+
         return $this->create($types, $definition, $className)
             ->createWith($arguments);
     }
