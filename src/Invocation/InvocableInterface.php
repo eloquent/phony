@@ -29,7 +29,7 @@ interface InvocableInterface
      *
      * @api
      *
-     * @param ArgumentsInterface|array The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.

@@ -388,7 +388,7 @@ EOD;
     /**
      * Generate the supplied methods.
      *
-     * @param array<string,MethodDefinitionInterface> The methods.
+     * @param array<string,MethodDefinitionInterface> $methods The methods.
      *
      * @return string The source code.
      */

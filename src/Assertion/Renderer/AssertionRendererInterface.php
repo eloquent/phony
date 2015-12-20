@@ -160,7 +160,7 @@ interface AssertionRendererInterface
     /**
      * Render an exception.
      *
-     * @param Exception|Error|null The exception.
+     * @param Exception|Error|null $exception The exception.
      *
      * @return string The rendered exception.
      */
