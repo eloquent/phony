@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-echo "Running example scripts..."
-find doc/example -type f -name run | xargs -n1 sh

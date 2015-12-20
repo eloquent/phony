@@ -14,5 +14,5 @@ fi
 vendor/bin/archer travis:build
 
 if [[ "$TRAVIS_PHP_VERSION" == "$ARCHER_PUBLISH_VERSION" ]]; then
-    scripts/run-all-examples
+    doc/example/run-all
 fi
