@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use ArrayIterator;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
@@ -269,6 +270,14 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
         $this->subject->like(1);
+    }
+
+    public function testLikeFailureInvalidObject()
+    {
+        $this->subject = new MockBuilder();
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
+        $this->subject->like(new ArrayIterator());
     }
 
     public function testLikeFailureFinalized()

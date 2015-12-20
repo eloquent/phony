@@ -241,11 +241,11 @@ class MockBuilder implements MockBuilderInterface
 
                     if (
                         !$this->isAnonymousClassSupported ||
-                        !$type->isAnonymous()
+                        !$type->isAnonymous() // @codeCoverageIgnore
                     ) {
                         throw new InvalidTypeException($type);
                     }
-                }
+                } // @codeCoverageIgnore
             } elseif (is_string($type)) {
                 try {
                     $type = new ReflectionClass($type);
@@ -259,7 +259,7 @@ class MockBuilder implements MockBuilderInterface
             $isAnonymous =
                 $this->isAnonymousClassSupported && $type->isAnonymous();
 
-            if ($isAnonymous) {
+            if ($isAnonymous) { // @codeCoverageIgnoreStart
                 $anonymousClasses[] = array($type, $original);
                 $impliedTypes = array();
 
@@ -270,7 +270,7 @@ class MockBuilder implements MockBuilderInterface
                 foreach ($type->getInterfaces() as $interface) {
                     $impliedTypes[] = $interface;
                 }
-            } else {
+            } else { // @codeCoverageIgnoreEnd
                 $impliedTypes = array($type);
             }
 
@@ -308,7 +308,7 @@ class MockBuilder implements MockBuilderInterface
             $this->parentClassName = $parentClassName;
         }
 
-        foreach ($anonymousClasses as $anonymous) {
+        foreach ($anonymousClasses as $anonymous) { // @codeCoverageIgnoreStart
             $className = $anonymous[0]->getName();
             $methods = $anonymous[0]->getMethods(ReflectionMethod::IS_PUBLIC);
 
@@ -326,7 +326,7 @@ class MockBuilder implements MockBuilderInterface
                     $this->addMethod($methodName, $methodCallback);
                 }
             }
-        }
+        } // @codeCoverageIgnoreEnd
 
         return $this;
     }

@@ -13,6 +13,8 @@ implements \Eloquent\Phony\Mock\MockInterface
             as private _callTrait_Eloquent¦Phony¦Test¦TestTraitA»testClassAMethodB;
         \Eloquent\Phony\Test\TestTraitB::testClassAMethodB
             as private _callTrait_Eloquent¦Phony¦Test¦TestTraitB»testClassAMethodB;
+        \Eloquent\Phony\Test\TestTraitB::testTraitBMethodA
+            as private _callTrait_Eloquent¦Phony¦Test¦TestTraitB»testTraitBMethodA;
         \Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA
             as private _callTrait_Eloquent¦Phony¦Test¦TestTraitB»testClassAStaticMethodA;
         \Eloquent\Phony\Test\TestTraitC::testClassAStaticMethodA
@@ -63,6 +65,20 @@ implements \Eloquent\Phony\Mock\MockInterface
         }
 
         for ($i = 4; $i < $argumentCount; ++$i) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+    }
+
+    public function testTraitBMethodA()
+    {
+        $argumentCount = \func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -125,6 +141,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     private static $_traitMethods = array(
   'testclassastaticmethoda' => 'Eloquent\\Phony\\Test\\TestTraitA',
   'testclassamethodb' => 'Eloquent\\Phony\\Test\\TestTraitA',
+  'testtraitbmethoda' => 'Eloquent\\Phony\\Test\\TestTraitB',
 );
     private static $_customMethods = array();
     private static $_staticProxy;

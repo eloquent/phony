@@ -392,12 +392,10 @@ class MockDefinition implements MockDefinitionInterface
             }
         }
 
-        if ($this->isRelaxedKeywordsSupported) {
+        if ($this->isRelaxedKeywordsSupported) { // @codeCoverageIgnoreStart
             // class is the only keyword that can not be used as a method name
-            // @codeCoverageIgnoreStart
             unset($methods['class']);
-            // @codeCoverageIgnoreEnd
-        } else {
+        } else { // @codeCoverageIgnoreEnd
             $methodNames = array_keys($methods);
             $tokens = token_get_all('<?php ' . implode(' ', $methodNames));
 
