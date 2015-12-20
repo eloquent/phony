@@ -311,9 +311,8 @@ can be useful when a "real" object becomes difficult to use in a test.
 
 Create a new [full mock], and return a [stubbing handle].
 
-*The `$types` argument may be a class name, a reflection class, an
-[anonymous class], or a [mock builder]. It may also be an array of any of
-these.*
+*The `$types` argument may be a class name, a reflection class, or a
+[mock builder]. It may also be an array of any of these.*
 
 *If `$types` is empty, or `null`, no existing type will be used when generating
 the mock class. This is useful in the case of [ad hoc mocks], where mocks need
@@ -331,9 +330,8 @@ not imitate an existing type.*
 
 Create a new [partial mock], and return a [stubbing handle].
 
-*The `$types` argument may be a class name, a reflection class, an
-[anonymous class], or a [mock builder]. It may also be an array of any of
-these.*
+*The `$types` argument may be a class name, a reflection class, or a
+[mock builder]. It may also be an array of any of these.*
 
 *If `$types` is empty, or `null`, no existing type will be used when generating
 the mock class. This is useful in the case of [ad hoc mocks], where mocks need
@@ -577,9 +575,8 @@ Get the types that will be mocked.
 
 Add classes, interfaces, or traits.
 
-*Each `$type` argument may be a class name, a reflection class, an
-[anonymous class], or another [mock builder]. It may also be an array of any of
-these.*
+*Each `$type` argument may be a class name, a reflection class, or another
+[mock builder]. It may also be an array of any of these.*
 
 <a name="builder.define" />
 
@@ -5850,7 +5847,6 @@ Get the index.
 <!-- External references -->
 
 [`__invoke()`]: http://php.net/language.oop5.magic#object.invoke
-[anonymous class]: http://php.net/language.oop5.anonymous
 [closure binding]: http://php.net/closure.bind
 [composer]: http://getcomposer.org/
 [counterpart]: http://docs.counterpartphp.org/

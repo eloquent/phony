@@ -19,6 +19,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
+use Eloquent\Phony\Mock\Exception\AnonymousClassException;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalizedMockException;
 use Eloquent\Phony\Mock\Exception\InvalidClassNameException;
@@ -37,7 +38,6 @@ use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionMethod;
 
 /**
  * Builds mock classes.
@@ -52,9 +52,8 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * The `$types` argument may be a class name, a reflection class, an
-     * anonymous class, or a mock builder. It may also be an array of any of
-     * these.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
      *
      * If `$types` is omitted, or `null`, no existing type will be used when
      * generating the mock class. This is useful in the case of ad hoc mocks,
@@ -224,7 +223,6 @@ class MockBuilder implements MockBuilderInterface
         }
 
         $parentClassName = null;
-        $anonymousClasses = array();
 
         foreach ($types as $type) {
             $original = $type;
@@ -237,15 +235,8 @@ class MockBuilder implements MockBuilderInterface
                 }
 
                 if (!$type instanceof ReflectionClass) {
-                    $type = new ReflectionClass($type);
-
-                    if (
-                        !$this->isAnonymousClassSupported ||
-                        !$type->isAnonymous() // @codeCoverageIgnore
-                    ) {
-                        throw new InvalidTypeException($type);
-                    }
-                } // @codeCoverageIgnore
+                    throw new InvalidTypeException($type);
+                }
             } elseif (is_string($type)) {
                 try {
                     $type = new ReflectionClass($type);
@@ -256,37 +247,21 @@ class MockBuilder implements MockBuilderInterface
                 throw new InvalidTypeException($type);
             }
 
-            $isAnonymous =
-                $this->isAnonymousClassSupported && $type->isAnonymous();
+            if ($this->isAnonymousClassSupported && $type->isAnonymous()) { // @codeCoverageIgnoreStart
+                throw new AnonymousClassException();
+            } // @codeCoverageIgnoreEnd
 
-            if ($isAnonymous) { // @codeCoverageIgnoreStart
-                $anonymousClasses[] = array($type, $original);
-                $impliedTypes = array();
+            $isTrait = $this->isTraitSupported && $type->isTrait();
 
-                if ($parentClass = $type->getParentClass()) {
-                    $impliedTypes[] = $parentClass;
-                }
-
-                foreach ($type->getInterfaces() as $interface) {
-                    $impliedTypes[] = $interface;
-                }
-            } else { // @codeCoverageIgnoreEnd
-                $impliedTypes = array($type);
+            if (!$isTrait && $type->isFinal()) {
+                throw new FinalClassException($type->getName());
             }
 
-            foreach ($impliedTypes as $type) {
-                $isTrait = $this->isTraitSupported && $type->isTrait();
-
-                if (!$isTrait && $type->isFinal()) {
-                    throw new FinalClassException($type->getName());
-                }
-
-                if (!$isTrait && !$type->isInterface()) {
-                    $parentClassNames[] = $parentClassName = $type->getName();
-                }
-
-                $toAdd[] = $type;
+            if (!$isTrait && !$type->isInterface()) {
+                $parentClassNames[] = $parentClassName = $type->getName();
             }
+
+            $toAdd[] = $type;
         }
 
         $parentClassNames = array_unique($parentClassNames);
@@ -307,26 +282,6 @@ class MockBuilder implements MockBuilderInterface
         if ($parentClassCount > 0) {
             $this->parentClassName = $parentClassName;
         }
-
-        foreach ($anonymousClasses as $anonymous) { // @codeCoverageIgnoreStart
-            $className = $anonymous[0]->getName();
-            $methods = $anonymous[0]->getMethods(ReflectionMethod::IS_PUBLIC);
-
-            foreach ($methods as $method) {
-                if ($method->getDeclaringClass()->getName() !== $className) {
-                    continue;
-                }
-
-                $methodName = $method->getName();
-                $methodCallback = array($anonymous[1], $methodName);
-
-                if ($method->isStatic()) {
-                    $this->addStaticMethod($methodName, $methodCallback);
-                } else {
-                    $this->addMethod($methodName, $methodCallback);
-                }
-            }
-        } // @codeCoverageIgnoreEnd
 
         return $this;
     }
