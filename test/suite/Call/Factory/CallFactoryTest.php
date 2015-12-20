@@ -16,9 +16,11 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Test\TestCallEventFactory;
+use Error;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use RuntimeException;
@@ -32,7 +34,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $this->indexNormalizer = new IndexNormalizer();
         $this->subject = new CallFactory($this->eventFactory, $this->invoker, $this->indexNormalizer);
 
-        $this->exception = new RuntimeException('You done goofed.');
+        $this->featureDetector = new FeatureDetector();
     }
 
     public function testConstructor()
@@ -60,6 +62,48 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $expected = $this->subject->create(
             $this->eventFactory->createCalled($spy, $arguments),
             $this->eventFactory->createReturned($returnValue)
+        );
+        $this->eventFactory->reset();
+        $actual = $this->subject->record($callback, $arguments, $spy);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertEquals(array($expected), $spy->allCalls());
+    }
+
+    public function testRecordException()
+    {
+        $exception = new RuntimeException('You done goofed.');
+        $callback = function () use ($exception) {
+            throw $exception;
+        };
+        $arguments = array(array('a', 'b'));
+        $spy = new Spy();
+        $expected = $this->subject->create(
+            $this->eventFactory->createCalled($spy, $arguments),
+            $this->eventFactory->createThrew($exception)
+        );
+        $this->eventFactory->reset();
+        $actual = $this->subject->record($callback, $arguments, $spy);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertEquals(array($expected), $spy->allCalls());
+    }
+
+    public function testRecordEngineErrorException()
+    {
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            $this->markTestSkipped('Requires engine error exceptions.');
+        }
+
+        $exception = new Error('You done goofed.');
+        $callback = function () use ($exception) {
+            throw $exception;
+        };
+        $arguments = array(array('a', 'b'));
+        $spy = new Spy();
+        $expected = $this->subject->create(
+            $this->eventFactory->createCalled($spy, $arguments),
+            $this->eventFactory->createThrew($exception)
         );
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);

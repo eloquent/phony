@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
-use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassB;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitA;
@@ -467,13 +466,12 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testMockMatching()
     {
-        $mockBuilderFactory = MockBuilderFactory::instance();
-        $mockFactory = MockFactory::instance();
         $className = 'PhonyMockEqualToMatcherMatchesMocks';
-        $builder = $mockBuilderFactory->create('Eloquent\Phony\Test\Properties\TestBaseClass', null, $className);
-        $mockA1 = $mockFactory->createMock($builder, null, 'a');
-        $mockA2 = $mockFactory->createMock($builder, null, 'a');
-        $mockB1 = $mockFactory->createMock($builder, null, 'b');
+        $builder = MockBuilderFactory::instance()
+            ->create('Eloquent\Phony\Test\Properties\TestBaseClass', null, $className);
+        $mockA1 = $builder->createWith(null, 'a');
+        $mockA2 = $builder->createWith(null, 'a');
+        $mockB1 = $builder->createWith(null, 'b');
         $mockX1 = new $className();
 
         $matcher = new EqualToMatcher($mockA1);

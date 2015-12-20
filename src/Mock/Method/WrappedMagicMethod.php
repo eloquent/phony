@@ -15,13 +15,12 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Error;
 use Exception;
 use ReflectionMethod;
 
 /**
  * A wrapper that allows calling of the parent magic method in mocks.
- *
- * @internal
  */
 class WrappedMagicMethod extends AbstractWrappedInvocable implements
     WrappedMethodInterface
@@ -114,12 +113,12 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array|null The arguments.
+     * @param ArgumentsInterface|array The arguments.
      *
-     * @return mixed     The result of invocation.
-     * @throws Exception If an error occurs.
+     * @return mixed           The result of invocation.
+     * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = null)
+    public function invokeWith($arguments = array())
     {
         if ($this->isUncallable) {
             return;

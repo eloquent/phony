@@ -49,19 +49,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
-    public function testIsSupported()
-    {
-        $generator = call_user_func(
-            function () {
-                return;
-                yield null;
-            }
-        );
-
-        $this->assertTrue($this->subject->isSupported($generator));
-    }
-
-    public function testCreateWithReturnedEnd()
+    public function testCreateWithConsumedEnd()
     {
         $generator = call_user_func(
             function () {
@@ -90,7 +78,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createReturned();
+        $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -186,7 +174,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createReturned();
+        $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -207,7 +195,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = array();
-        $endEvent = $this->callEventFactory->createReturned();
+        $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -269,5 +257,27 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
+    }
+
+    public function testGeneratorReturn()
+    {
+        if (!$this->featureDetector->isSupported('generator.return')) {
+            $this->markTestSkipped('Requires generator return support.');
+        }
+
+        $generator = eval(
+            'return call_user_func(function () { return 123; yield; });'
+        );
+
+        $spy = $this->subject->create($this->call, $generator, true);
+
+        while ($spy->valid()) {
+            $spy->next();
+        }
+
+        $this->assertSame(
+            123,
+            $spy->getReturn()
+        );
     }
 }

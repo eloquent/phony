@@ -15,8 +15,6 @@ use ReflectionFunctionAbstract;
 
 /**
  * The interface implemented by function signature inspectors.
- *
- * @internal
  */
 interface FunctionSignatureInspectorInterface
 {

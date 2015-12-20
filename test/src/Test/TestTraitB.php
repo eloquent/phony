@@ -24,4 +24,9 @@ trait TestTraitB
     ) {
         return implode(func_get_args());
     }
+
+    public function testTraitBMethodA()
+    {
+        return implode(func_get_args());
+    }
 }

@@ -17,8 +17,6 @@ use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 
 /**
  * Verifies argument lists against matcher lists.
- *
- * @internal
  */
 class MatcherVerifier implements MatcherVerifierInterface
 {
@@ -39,8 +37,8 @@ class MatcherVerifier implements MatcherVerifierInterface
     /**
      * Verify that the supplied arguments match the supplied matchers.
      *
-     * @param array<MatcherInterface>       $matchers  The matchers.
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param array<MatcherInterface>  $matchers  The matchers.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return boolean True if the arguments match.
      */

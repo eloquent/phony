@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Error;
 use Exception;
 
 /**
@@ -21,7 +22,7 @@ interface ReceivedExceptionEventInterface extends TraversableEventInterface
     /**
      * Get the received exception.
      *
-     * @return Exception The received exception.
+     * @return Exception|Error The received exception.
      */
     public function exception();
 }

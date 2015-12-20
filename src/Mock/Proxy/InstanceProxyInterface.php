@@ -16,11 +16,15 @@ use Eloquent\Phony\Mock\MockInterface;
 
 /**
  * The interface implemented by instance proxies.
+ *
+ * @api
  */
 interface InstanceProxyInterface extends ProxyInterface
 {
     /**
      * Get the mock.
+     *
+     * @api
      *
      * @return MockInterface The mock.
      */
@@ -29,30 +33,40 @@ interface InstanceProxyInterface extends ProxyInterface
     /**
      * Call the original constructor.
      *
-     * @param mixed $arguments,... The arguments.
+     * @api
      *
-     * @return ProxyInterface This proxy.
+     * @param mixed ...$arguments The arguments.
+     *
+     * @return $this This proxy.
      */
     public function construct();
 
     /**
      * Call the original constructor.
      *
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @api
      *
-     * @return ProxyInterface This proxy.
+     * @param ArgumentsInterface|array $arguments The arguments.
+     *
+     * @return $this This proxy.
      */
-    public function constructWith($arguments = null);
+    public function constructWith($arguments = array());
 
     /**
      * Set the label.
      *
+     * @api
+     *
      * @param string|null $label The label.
+     *
+     * @return $this This proxy.
      */
     public function setLabel($label);
 
     /**
      * Get the label.
+     *
+     * @api
      *
      * @return string|null The label.
      */

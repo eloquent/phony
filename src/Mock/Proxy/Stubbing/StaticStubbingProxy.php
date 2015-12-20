@@ -19,8 +19,6 @@ use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
  * A proxy for stubbing a mock class.
- *
- * @internal
  */
 class StaticStubbingProxy extends AbstractStaticProxy implements
     StaticStubbingProxyInterface

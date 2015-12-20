@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Call\Event;
 
+use Error;
+use Exception;
+
 /**
  * The interface implemented by 'threw' events.
  */
@@ -19,7 +22,7 @@ interface ThrewEventInterface extends ResponseEventInterface
     /**
      * Get the thrown exception.
      *
-     * @return Exception The thrown exception.
+     * @return Exception|Error The thrown exception.
      */
     public function exception();
 }

@@ -16,24 +16,22 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 
 /**
  * Represents the start of a call.
- *
- * @internal
  */
 class CalledEvent extends AbstractCallEvent implements CalledEventInterface
 {
     /**
      * Construct a new 'called' event.
      *
-     * @param integer                       $sequenceNumber The sequence number.
-     * @param float                         $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param callable|null                 $callback       The callback.
-     * @param ArgumentsInterface|array|null $arguments      The arguments.
+     * @param integer                  $sequenceNumber The sequence number.
+     * @param float                    $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param callable|null            $callback       The callback.
+     * @param ArgumentsInterface|array $arguments      The arguments.
      */
     public function __construct(
         $sequenceNumber,
         $time,
         $callback = null,
-        $arguments = null
+        $arguments = array()
     ) {
         if (null === $callback) {
             $callback = function () {};

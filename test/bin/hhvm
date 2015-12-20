@@ -1,4 +1,6 @@
 #!/bin/sh
 
+set -e
+
 docker build -f hhvm.Dockerfile -t phony-hhvm .
 docker run -it --rm phony-hhvm

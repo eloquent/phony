@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * An invalid definition was encountered.
- *
- * @internal
  */
 final class InvalidDefinitionException extends Exception implements
     MockExceptionInterface

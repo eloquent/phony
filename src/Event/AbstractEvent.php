@@ -20,8 +20,6 @@ use Iterator;
 
 /**
  * An abstract base class for implementing events.
- *
- * @internal
  */
 abstract class AbstractEvent implements EventInterface
 {
@@ -39,6 +37,10 @@ abstract class AbstractEvent implements EventInterface
 
     /**
      * Get the sequence number.
+     *
+     * The sequence number is a unique number assigned to every event that Phony
+     * records. The numbers are assigned sequentially, meaning that sequence
+     * numbers can be used to determine event order.
      *
      * @return integer The sequence number.
      */
@@ -130,14 +132,17 @@ abstract class AbstractEvent implements EventInterface
     /**
      * Get an event by index.
      *
-     * @param integer|null $index The index, or null for the first event.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return EventInterface          The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = null)
+    public function eventAt($index = 0)
     {
-        if (null === $index || 0 === $index || -1 === $index) {
+        if (0 === $index || -1 === $index) {
             return $this;
         }
 
@@ -145,14 +150,39 @@ abstract class AbstractEvent implements EventInterface
     }
 
     /**
+     * Get the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function firstCall()
+    {
+        throw new UndefinedCallException(0);
+    }
+
+    /**
+     * Get the last call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function lastCall()
+    {
+        throw new UndefinedCallException(0);
+    }
+
+    /**
      * Get a call by index.
      *
-     * @param integer|null $index The index, or null for the first call.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return CallInterface          The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = null)
+    public function callAt($index = 0)
     {
         throw new UndefinedCallException($index);
     }
@@ -171,13 +201,16 @@ abstract class AbstractEvent implements EventInterface
     /**
      * Get an argument by index.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedCallException     If there are no calls.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function argument($index = null)
+    public function argument($index = 0)
     {
         throw new UndefinedCallException(0);
     }

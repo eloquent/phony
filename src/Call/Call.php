@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Call;
 use ArrayIterator;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
@@ -24,6 +25,7 @@ use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
+use Error;
 use Exception;
 use Generator;
 use InvalidArgumentException;
@@ -32,8 +34,6 @@ use Traversable;
 
 /**
  * Represents a single call.
- *
- * @internal
  */
 class Call implements CallInterface
 {
@@ -43,7 +43,7 @@ class Call implements CallInterface
      * @param CalledEventInterface                  $calledEvent       The 'called' event.
      * @param ResponseEventInterface|null           $responseEvent     The response event, or null if the call has not yet responded.
      * @param array<TraversableEventInterface>|null $traversableEvents The traversable events.
-     * @param ResponseEventInterface|null           $endEvent          The end event, or null if the call has not yet completed.
+     * @param EndEventInterface|null                $endEvent          The end event, or null if the call has not yet completed.
      * @param IndexNormalizerInterface|null         $indexNormalizer   The index normalizer to use.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
@@ -52,7 +52,7 @@ class Call implements CallInterface
         CalledEventInterface $calledEvent,
         ResponseEventInterface $responseEvent = null,
         array $traversableEvents = null,
-        ResponseEventInterface $endEvent = null,
+        EndEventInterface $endEvent = null,
         IndexNormalizerInterface $indexNormalizer = null
     ) {
         if (null === $indexNormalizer) {
@@ -93,6 +93,10 @@ class Call implements CallInterface
 
     /**
      * Get the sequence number.
+     *
+     * The sequence number is a unique number assigned to every event that Phony
+     * records. The numbers are assigned sequentially, meaning that sequence
+     * numbers can be used to determine event order.
      *
      * @return integer The sequence number.
      */
@@ -168,12 +172,15 @@ class Call implements CallInterface
     /**
      * Get an event by index.
      *
-     * @param integer|null $index The index, or null for the first event.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return EventInterface          The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = null)
+    public function eventAt($index = 0)
     {
         $events = $this->allEvents();
         $count = count($events);
@@ -188,16 +195,41 @@ class Call implements CallInterface
     }
 
     /**
+     * Get the first call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function firstCall()
+    {
+        return $this;
+    }
+
+    /**
+     * Get the last call.
+     *
+     * @return CallInterface          The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function lastCall()
+    {
+        return $this;
+    }
+
+    /**
      * Get a call by index.
      *
-     * @param integer|null $index The index, or null for the first call.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return CallInterface          The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = null)
+    public function callAt($index = 0)
     {
-        if (null === $index || 0 === $index || -1 === $index) {
+        if (0 === $index || -1 === $index) {
             return $this;
         }
 
@@ -239,10 +271,6 @@ class Call implements CallInterface
 
         $responseEvent->setCall($this);
         $this->responseEvent = $responseEvent;
-
-        if (!$this->isGenerator()) {
-            $this->endEvent = $responseEvent;
-        }
     }
 
     /**
@@ -268,7 +296,7 @@ class Call implements CallInterface
         if (!$this->isTraversable()) {
             throw new InvalidArgumentException('Not a traversable call.');
         }
-        if ($this->endEvent && $this->isGenerator()) {
+        if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
         }
 
@@ -289,11 +317,11 @@ class Call implements CallInterface
     /**
      * Set the end event.
      *
-     * @param ResponseEventInterface $endEvent The end event.
+     * @param EndEventInterface $endEvent The end event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function setEndEvent(ResponseEventInterface $endEvent)
+    public function setEndEvent(EndEventInterface $endEvent)
     {
         if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
@@ -311,7 +339,7 @@ class Call implements CallInterface
     /**
      * Get the end event.
      *
-     * @return ResponseEventInterface|null The end event, or null if the call has not yet completed.
+     * @return EndEventInterface|null The end event, or null if the call has not yet completed.
      */
     public function endEvent()
     {
@@ -327,11 +355,11 @@ class Call implements CallInterface
     {
         $events = $this->traversableEvents();
 
-        if ($this->responseEvent) {
-            if ($this->endEvent && $this->isGenerator()) {
-                $events[] = $this->endEvent;
-            }
+        if ($this->endEvent && $this->responseEvent !== $this->endEvent) {
+            $events[] = $this->endEvent;
+        }
 
+        if ($this->responseEvent) {
             array_unshift($events, $this->responseEvent);
         }
 
@@ -352,6 +380,8 @@ class Call implements CallInterface
 
     /**
      * Returns true if this call has responded.
+     *
+     * A call that has responded has returned a value, or thrown an exception.
      *
      * @return boolean True if this call has responded.
      */
@@ -390,6 +420,14 @@ class Call implements CallInterface
     /**
      * Returns true if this call has completed.
      *
+     * When generator spies are in use, a call that returns a generator will not
+     * be considered complete until the generator has been completey consumed
+     * via iteration.
+     *
+     * Similarly, when traversable spies are in use, a call that returns a
+     * traversable will not be considered complete until the traversable has
+     * been completely consumed via iteration.
+     *
      * @return boolean True if this call has completed.
      */
     public function hasCompleted()
@@ -420,12 +458,15 @@ class Call implements CallInterface
     /**
      * Get an argument by index.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param integer $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
      */
-    public function argument($index = null)
+    public function argument($index = 0)
     {
         return $this->calledEvent->arguments()->get($index);
     }
@@ -445,7 +486,7 @@ class Call implements CallInterface
     /**
      * Get the thrown exception.
      *
-     * @return Exception|null The thrown exception, or null if no exception was thrown.
+     * @return Exception|Error|null The thrown exception, or null if no exception was thrown.
      */
     public function exception()
     {
@@ -456,6 +497,8 @@ class Call implements CallInterface
 
     /**
      * Get the time at which the call responded.
+     *
+     * A call that has responded has returned a value, or thrown an exception.
      *
      * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
@@ -468,6 +511,14 @@ class Call implements CallInterface
 
     /**
      * Get the time at which the call completed.
+     *
+     * When generator spies are in use, a call that returns a generator will not
+     * be considered complete until the generator has been completey consumed
+     * via iteration.
+     *
+     * Similarly, when traversable spies are in use, a call that returns a
+     * traversable will not be considered complete until the traversable has
+     * been completely consumed via iteration.
      *
      * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */

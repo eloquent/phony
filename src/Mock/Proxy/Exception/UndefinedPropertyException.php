@@ -16,8 +16,6 @@ use Exception;
 
 /**
  * Undefined property.
- *
- * @internal
  */
 final class UndefinedPropertyException extends Exception implements
     MockExceptionInterface

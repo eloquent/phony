@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Cardinality\Exception;
 
 /**
  * The interface used to identify invalid cardinality exceptions.
+ *
+ * @api
  */
 interface InvalidCardinalityExceptionInterface
 {

@@ -22,8 +22,6 @@ use Eloquent\Phony\Spy\SpyInterface;
 
 /**
  * Creates spies.
- *
- * @internal
  */
 class SpyFactory implements SpyFactoryInterface
 {
@@ -134,15 +132,15 @@ class SpyFactory implements SpyFactoryInterface
      * Create a new spy.
      *
      * @param callable|null $callback            The callback, or null to create an unbound spy.
-     * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
+     * @param boolean       $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean       $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyInterface The newly created spy.
      */
     public function create(
         $callback = null,
-        $useGeneratorSpies = null,
-        $useTraversableSpies = null
+        $useGeneratorSpies = true,
+        $useTraversableSpies = false
     ) {
         return new Spy(
             $callback,

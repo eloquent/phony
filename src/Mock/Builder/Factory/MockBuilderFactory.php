@@ -20,12 +20,9 @@ use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
-use ReflectionClass;
 
 /**
  * Creates mock builders.
- *
- * @internal
  */
 class MockBuilderFactory implements MockBuilderFactoryInterface
 {
@@ -87,9 +84,16 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Create a new mock builder.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @param mixed             $types      The types to mock.
+     * @param array|object|null $definition The definition.
+     * @param string|null       $className  The class name.
      *
      * @return MockBuilderInterface The mock builder.
      */
@@ -110,9 +114,16 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Create a new full mock.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @param mixed             $types      The types to mock.
+     * @param array|object|null $definition The definition.
+     * @param string|null       $className  The class name.
      *
      * @return MockInterface The mock.
      */
@@ -127,23 +138,26 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Create a new partial mock.
      *
-     * @param string|ReflectionClass|MockBuilderInterface|array<string|ReflectionClass|MockBuilderInterface>|null $types      The types to mock.
-     * @param ArgumentsInterface|array|null                                                                       $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null                                                                                   $definition The definition.
-     * @param string|null                                                                                         $className  The class name.
+     * The `$types` argument may be a class name, a reflection class, or a mock
+     * builder. It may also be an array of any of these.
+     *
+     * If `$types` is omitted, or `null`, no existing type will be used when
+     * generating the mock class. This is useful in the case of ad hoc mocks,
+     * where mocks need not imitate an existing type.
+     *
+     * @param mixed                    $types      The types to mock.
+     * @param ArgumentsInterface|array $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null        $definition The definition.
+     * @param string|null              $className  The class name.
      *
      * @return MockInterface The mock.
      */
     public function createPartialMock(
         $types = null,
-        $arguments = null,
+        $arguments = array(),
         $definition = null,
         $className = null
     ) {
-        if (null !== $arguments || func_num_args() < 2) {
-            $arguments = Arguments::adapt($arguments);
-        }
-
         return $this->create($types, $definition, $className)
             ->createWith($arguments);
     }

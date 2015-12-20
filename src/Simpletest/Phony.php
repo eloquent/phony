@@ -17,13 +17,13 @@ use Eloquent\Phony\Integration\Simpletest\SimpletestFacadeDriver;
 
 /**
  * A facade for Phony usage under SimpleTest.
+ *
+ * @api
  */
 class Phony extends AbstractFacade
 {
     /**
      * Get the facade driver.
-     *
-     * @internal
      *
      * @return FacadeDriverInterface The facade driver.
      */

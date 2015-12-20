@@ -16,37 +16,25 @@ use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 
 /**
  * Represents a call request.
- *
- * @internal
  */
 class CallRequest implements CallRequestInterface
 {
     /**
      * Construct a call request.
      *
-     * @param callable                      $callback              The callback.
-     * @param ArgumentsInterface|array|null $arguments             The arguments.
-     * @param boolean|null                  $prefixSelf            True if the self value should be prefixed.
-     * @param boolean|null                  $suffixArgumentsObject True if arguments object should be appended.
-     * @param boolean|null                  $suffixArguments       True if arguments should be appended.
+     * @param callable                 $callback              The callback.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean                  $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if arguments should be appended.
      */
     public function __construct(
         $callback,
-        $arguments = null,
-        $prefixSelf = null,
-        $suffixArgumentsObject = null,
-        $suffixArguments = null
+        $arguments = array(),
+        $prefixSelf = false,
+        $suffixArgumentsObject = false,
+        $suffixArguments = true
     ) {
-        if (null === $prefixSelf) {
-            $prefixSelf = false;
-        }
-        if (null === $suffixArgumentsObject) {
-            $suffixArgumentsObject = false;
-        }
-        if (null === $suffixArguments) {
-            $suffixArguments = true;
-        }
-
         $this->callback = $callback;
         $this->arguments = Arguments::adapt($arguments);
         $this->prefixSelf = $prefixSelf;
@@ -67,12 +55,12 @@ class CallRequest implements CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object                        $self      The self value.
-     * @param ArgumentsInterface|array|null $arguments The incoming arguments.
+     * @param object                   $self      The self value.
+     * @param ArgumentsInterface|array $arguments The incoming arguments.
      *
      * @return ArgumentsInterface The final arguments.
      */
-    public function finalArguments($self, $arguments = null)
+    public function finalArguments($self, $arguments = array())
     {
         $arguments = Arguments::adapt($arguments);
         $finalArguments = $this->arguments->all();

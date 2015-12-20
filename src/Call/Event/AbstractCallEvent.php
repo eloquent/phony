@@ -16,8 +16,6 @@ use Eloquent\Phony\Event\AbstractEvent;
 
 /**
  * An abstract base class for implementing call events.
- *
- * @internal
  */
 abstract class AbstractCallEvent extends AbstractEvent implements
     CallEventInterface

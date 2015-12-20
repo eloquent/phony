@@ -22,8 +22,6 @@ use SimpleTestContext;
 
 /**
  * An assertion recorder for SimpleTest.
- *
- * @internal
  */
 class SimpletestAssertionRecorder extends AssertionRecorder
 {
@@ -68,11 +66,11 @@ class SimpletestAssertionRecorder extends AssertionRecorder
     /**
      * Record that a successful assertion occurred.
      *
-     * @param array<EventInterface>|null $events The events.
+     * @param array<EventInterface> $events The events.
      *
      * @return EventCollectionInterface The result.
      */
-    public function createSuccess(array $events = null)
+    public function createSuccess(array $events = array())
     {
         $this->simpletestContext->getReporter()->paintPass('');
 

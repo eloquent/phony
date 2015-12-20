@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * Unable to extend multiple classes.
- *
- * @internal
  */
 final class MultipleInheritanceException extends Exception implements
     MockExceptionInterface

@@ -17,11 +17,15 @@ use IteratorAggregate;
 
 /**
  * The interface implemented by arguments.
+ *
+ * @api
  */
 interface ArgumentsInterface extends Countable, IteratorAggregate
 {
     /**
      * Copy these arguments, breaking any references.
+     *
+     * @api
      *
      * @return ArgumentsInterface The copied arguments.
      */
@@ -32,7 +36,9 @@ interface ArgumentsInterface extends Countable, IteratorAggregate
      *
      * This method supports reference parameters.
      *
-     * @return array The arguments.
+     * @api
+     *
+     * @return array<mixed> The arguments.
      */
     public function all();
 
@@ -41,10 +47,12 @@ interface ArgumentsInterface extends Countable, IteratorAggregate
      *
      * If called with no arguments, sets the first argument to null.
      *
-     * If called with one argument, sets the first argument to $indexOrValue.
+     * If called with one argument, sets the first argument to `$indexOrValue`.
      *
-     * If called with two arguments, sets the argument at $indexOrValue to
-     * $value.
+     * If called with two arguments, sets the argument at `$indexOrValue` to
+     * `$value`.
+     *
+     * @api
      *
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
@@ -56,19 +64,29 @@ interface ArgumentsInterface extends Countable, IteratorAggregate
     /**
      * Returns true if the argument index exists.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @api
+     *
+     * @param integer $index The index.
      *
      * @return boolean True if the argument exists.
      */
-    public function has($index = null);
+    public function has($index = 0);
 
     /**
      * Get an argument by index.
      *
-     * @param integer|null $index The index, or null for the first argument.
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @api
+     *
+     * @param integer $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function get($index = null);
+    public function get($index = 0);
 }

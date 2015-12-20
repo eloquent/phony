@@ -15,6 +15,8 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CalledEventInterface;
+use Eloquent\Phony\Call\Event\ConsumedEvent;
+use Eloquent\Phony\Call\Event\ConsumedEventInterface;
 use Eloquent\Phony\Call\Event\ProducedEvent;
 use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
@@ -29,13 +31,12 @@ use Eloquent\Phony\Clock\ClockInterface;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use Error;
 use Exception;
 use Generator;
 
 /**
  * Creates call events.
- *
- * @internal
  */
 class CallEventFactory implements CallEventFactoryInterface
 {
@@ -97,38 +98,44 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null                 $callback  The callback.
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param callable|null            $callback  The callback.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled($callback = null, $arguments = null)
+    public function createCalled($callback = null, $arguments = array())
     {
         return new CalledEvent(
             $this->sequencer->next(),
             $this->clock->time(),
             $callback,
-            Arguments::adapt($arguments)
+            $arguments
         );
     }
 
     /**
      * Create a new response event.
      *
-     * @param mixed          $returnValue The return value.
-     * @param Exception|null $exception   The thrown exception, or null if no exception was thrown.
+     * @param mixed                $returnValue The return value.
+     * @param Exception|Error|null $exception   The thrown exception, or null if no exception was thrown.
      *
      * @return ResponseEventInterface The newly created event.
      */
-    public function createResponse(
-        $returnValue = null,
-        Exception $exception = null
-    ) {
+    public function createResponse($returnValue = null, $exception = null)
+    {
         if ($exception) {
-            return $this->createThrew($exception);
+            return new ThrewEvent(
+                $this->sequencer->next(),
+                $this->clock->time(),
+                $exception
+            );
         }
 
-        return $this->createReturned($returnValue);
+        return new ReturnedEvent(
+            $this->sequencer->next(),
+            $this->clock->time(),
+            $returnValue
+        );
     }
 
     /**
@@ -166,11 +173,11 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'thrown' event.
      *
-     * @param Exception|null $exception The thrown exception.
+     * @param Exception|Error|null $exception The thrown exception.
      *
      * @return ThrewEventInterface The newly created event.
      */
-    public function createThrew(Exception $exception = null)
+    public function createThrew($exception = null)
     {
         return new ThrewEvent(
             $this->sequencer->next(),
@@ -228,16 +235,29 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'received exception' event.
      *
-     * @param Exception|null $exception The received exception.
+     * @param Exception|Error|null $exception The received exception.
      *
      * @return ReceivedExceptionEventInterface The newly created event.
      */
-    public function createReceivedException(Exception $exception = null)
+    public function createReceivedException($exception = null)
     {
         return new ReceivedExceptionEvent(
             $this->sequencer->next(),
             $this->clock->time(),
             $exception
+        );
+    }
+
+    /**
+     * Create a new 'consumed' event.
+     *
+     * @return ConsumedEventInterface The newly created event.
+     */
+    public function createConsumed()
+    {
+        return new ConsumedEvent(
+            $this->sequencer->next(),
+            $this->clock->time()
         );
     }
 

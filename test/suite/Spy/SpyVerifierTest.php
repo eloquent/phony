@@ -19,12 +19,14 @@ use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Error;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -73,22 +75,30 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
-            $this->callEventFactory->createReturned($this->returnValueA)
+            ($responseEvent = $this->callEventFactory->createReturned($this->returnValueA)),
+            null,
+            $responseEvent
         );
         $this->callAResponse = $this->callA->responseEvent();
         $this->callB = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueB, 'testClassAMethodA')),
-            $this->callEventFactory->createReturned($this->returnValueB)
+            ($responseEvent = $this->callEventFactory->createReturned($this->returnValueB)),
+            null,
+            $responseEvent
         );
         $this->callBResponse = $this->callB->responseEvent();
         $this->callC = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
-            $this->callEventFactory->createThrew($this->exceptionA)
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionA)),
+            null,
+            $responseEvent
         );
         $this->callCResponse = $this->callC->responseEvent();
         $this->callD = $this->callFactory->create(
             $this->callEventFactory->createCalled('implode'),
-            $this->callEventFactory->createThrew($this->exceptionB)
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionB)),
+            null,
+            $responseEvent
         );
         $this->callDResponse = $this->callD->responseEvent();
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
@@ -98,7 +108,30 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
         $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
 
+        $this->traversableCalledEvent = $this->callEventFactory->createCalled();
+        $this->returnedTraversableEvent =
+            $this->callEventFactory->createReturned(array('m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v'));
+        $this->iteratorEventA = $this->callEventFactory->createProduced('m', 'n');
+        $this->iteratorEventC = $this->callEventFactory->createProduced('p', 'q');
+        $this->iteratorEventE = $this->callEventFactory->createProduced('r', 's');
+        $this->iteratorEventG = $this->callEventFactory->createProduced('u', 'v');
+        $this->iteratorEvents = array(
+            $this->iteratorEventA,
+            $this->iteratorEventC,
+            $this->iteratorEventE,
+            $this->iteratorEventG,
+        );
+        $this->traversableEndEvent = $this->callEventFactory->createReturned();
+        $this->iteratorCall = $this->callFactory->create(
+            $this->traversableCalledEvent,
+            $this->returnedTraversableEvent,
+            $this->iteratorEvents,
+            $this->traversableEndEvent
+        );
+
         $this->callFactory->reset();
+
+        $this->featureDetector = new FeatureDetector();
     }
 
     public function testConstructor()
@@ -135,8 +168,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testSetLabel()
     {
-        $this->subject->setLabel(null);
-
+        $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
 
         $this->subject->setLabel($this->label);
@@ -248,6 +280,36 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->eventAt();
     }
 
+    public function testFirstCall()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals($this->wrappedCallA, $this->subject->firstCall());
+    }
+
+    public function testFirstCallFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->firstCall();
+    }
+
+    public function testLastCall()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals($this->wrappedCallD, $this->subject->lastCall());
+    }
+
+    public function testLastCallFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->lastCall();
+    }
+
     public function testCallAt()
     {
         $this->subject->setCalls($this->calls);
@@ -303,15 +365,21 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('a'))),
-                $this->callEventFactory->createReturned('a')
+                ($responseEvent = $this->callEventFactory->createReturned('a')),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('b', 'c'))),
-                $this->callEventFactory->createReturned('bc')
+                ($responseEvent = $this->callEventFactory->createReturned('bc')),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array(array('d'))),
-                $this->callEventFactory->createReturned('d')
+                ($responseEvent = $this->callEventFactory->createReturned('d')),
+                null,
+                $responseEvent
             ),
         );
 
@@ -329,15 +397,21 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('a')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('b', 'c')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('d')),
-                $this->callEventFactory->createReturned()
+                ($responseEvent = $this->callEventFactory->createReturned()),
+                null,
+                $responseEvent
             ),
         );
 
@@ -373,15 +447,21 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('a')),
-                $this->callEventFactory->createThrew($exceptions[0])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[0])),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('b', 'c')),
-                $this->callEventFactory->createThrew($exceptions[1])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[1])),
+                null,
+                $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, array('d')),
-                $this->callEventFactory->createThrew($exceptions[2])
+                ($responseEvent = $this->callEventFactory->createThrew($exceptions[2])),
+                null,
+                $responseEvent
             ),
         );
 
@@ -1339,6 +1419,40 @@ EOD;
         );
     }
 
+    public function testThrewWithEngineErrorException()
+    {
+        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+            $this->markTestSkipped('Requires engine error exceptions.');
+        }
+
+        $this->exceptionA = new Error('You done goofed.');
+        $this->exceptionB = new Error('Consequences will never be the same.');
+        $this->callC = $this->callFactory->create(
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionA)),
+            null,
+            $responseEvent
+        );
+        $this->callCResponse = $this->callC->responseEvent();
+        $this->callD = $this->callFactory->create(
+            $this->callEventFactory->createCalled('implode'),
+            ($responseEvent = $this->callEventFactory->createThrew($this->exceptionB)),
+            null,
+            $responseEvent
+        );
+        $this->callDResponse = $this->callD->responseEvent();
+        $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
+        $this->wrappedCallC = $this->callVerifierFactory->adapt($this->callC);
+        $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
+        $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals(
+            new EventCollection(array($this->callCResponse, $this->callDResponse)),
+            $this->subject->threw()
+        );
+    }
+
     public function testThrewFailureExpectingAny()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
@@ -1682,6 +1796,435 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->always()->threw(new EqualToMatcher(new RuntimeException()));
+    }
+
+    public function testCheckProduced()
+    {
+        $this->assertFalse((boolean) $this->subject->checkProduced());
+        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertFalse((boolean) $this->subject->checkProduced());
+        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+
+        $this->subject->addCall($this->iteratorCall);
+
+        $this->assertTrue((boolean) $this->subject->checkProduced());
+        $this->assertTrue((boolean) $this->subject->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->checkProduced('m', 'n'));
+        $this->assertTrue((boolean) $this->subject->times(4)->checkProduced());
+        $this->assertTrue((boolean) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
+        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((boolean) $this->subject->always()->checkProduced());
+
+        $this->subject->setCalls(array($this->iteratorCall));
+
+        $this->assertTrue((boolean) $this->subject->always()->checkProduced());
+    }
+
+    public function testProduced()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+
+        $this->assertEquals(
+            new EventCollection(
+                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG)
+            ),
+            $this->subject->produced()
+        );
+        $this->assertEquals(new EventCollection(array($this->iteratorEventA)), $this->subject->produced('n'));
+        $this->assertEquals(new EventCollection(array($this->iteratorEventA)), $this->subject->produced('m', 'n'));
+        $this->assertEquals(
+            new EventCollection(
+                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG)
+            ),
+            $this->subject->times(4)->produced()
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->iteratorEventA)),
+            $this->subject->once()->produced('n')
+        );
+        $this->assertEquals(new EventCollection(), $this->subject->never()->produced('m'));
+
+        $this->subject->setCalls(array($this->iteratorCall));
+
+        $this->assertEquals(
+            new EventCollection(
+                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG)
+            ),
+            $this->subject->always()->produced()
+        );
+    }
+
+    public function testProducedFailureNoCallsNoMatchers()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected call on implode[label] to produce. Never called.'
+        );
+        $this->subject->produced();
+    }
+
+    public function testProducedFailureNoCallsValueOnly()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected call on implode[label] to produce like "x". Never called.'
+        );
+        $this->subject->produced('x');
+    }
+
+    public function testProducedFailureNoCallsKeyAndValue()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected call on implode[label] to produce like "x": "y". Never called.'
+        );
+        $this->subject->produced('x', 'y');
+    }
+
+    public function testProducedFailureNoGeneratorsNoMatchers()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->produced();
+    }
+
+    public function testProducedFailureNoGeneratorsValueOnly()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce like "x". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->produced('x');
+    }
+
+    public function testProducedFailureNoGeneratorsKeyAndValue()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce like "x": "y". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->produced('x', 'y');
+    }
+
+    public function testProducedFailureValueMismatch()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce like "x". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->produced('x');
+    }
+
+    public function testProducedFailureKeyValueMismatch()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce like "x": "y". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->produced('x', 'y');
+    }
+
+    public function testProducedFailureAlways()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+        $expected = <<<'EOD'
+Expected every call on implode[label] to produce like "n". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->always()->produced('n');
+    }
+
+    public function testProducedFailureNever()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+        $expected = <<<'EOD'
+Expected no call on implode[label] to produce like "n". Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->never()->produced('n');
+    }
+
+    public function testCheckProducedAll()
+    {
+        $this->assertFalse((boolean) $this->subject->checkProducedAll());
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's', 'v'));
+        $this->assertFalse(
+            (boolean) $this->subject
+                ->checkProducedAll('n', array('p', 'q'), 's', array('u', 'v'))
+        );
+        $this->assertFalse(
+            (boolean) $this->subject
+                ->checkProducedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
+        );
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('x', 'q', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's', array('x', 'v')));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('q', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll());
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('q', 's', 'v'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('n', 's', 'v'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('n', 'q', 's'));
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertTrue((boolean) $this->subject->checkProducedAll());
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's', 'v'));
+        $this->assertFalse(
+            (boolean) $this->subject
+                ->checkProducedAll('n', array('p', 'q'), 's', array('u', 'v'))
+        );
+        $this->assertFalse(
+            (boolean) $this->subject
+                ->checkProducedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
+        );
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('x', 'q', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's', array('x', 'v')));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('q', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's'));
+        $this->assertFalse((boolean) $this->subject->never()->checkProducedAll());
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('q', 's', 'v'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('n', 's', 'v'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('n', 'q', 's'));
+
+        $this->subject->addCall($this->iteratorCall);
+
+        $this->assertTrue((boolean) $this->subject->checkProducedAll());
+        $this->assertTrue((boolean) $this->subject->checkProducedAll('n', 'q', 's', 'v'));
+        $this->assertTrue(
+            (boolean) $this->subject
+                ->checkProducedAll('n', array('p', 'q'), 's', array('u', 'v'))
+        );
+        $this->assertTrue(
+            (boolean) $this->subject
+                ->checkProducedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
+        );
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('x', 'q', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's', array('x', 'v')));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('q', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 's', 'v'));
+        $this->assertFalse((boolean) $this->subject->checkProducedAll('n', 'q', 's'));
+        $this->assertFalse((boolean) $this->subject->never()->checkProducedAll());
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('q', 's', 'v'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('n', 's', 'v'));
+        $this->assertTrue((boolean) $this->subject->never()->checkProducedAll('n', 'q', 's'));
+    }
+
+    public function testProducedAll()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+
+        $this->assertEquals(
+            new EventCollection(
+                array($this->callAResponse, $this->callBResponse, $this->callCResponse, $this->callDResponse)
+            ),
+            $this->subject->producedAll()
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->iteratorEventG)),
+            $this->subject->producedAll('n', 'q', 's', 'v')
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->iteratorEventG)),
+            $this->subject->producedAll('n', array('p', 'q'), 's', array('u', 'v'))
+        );
+        $this->assertEquals(
+            new EventCollection(array($this->iteratorEventG)),
+            $this->subject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
+        );
+        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('q', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('n', 's', 'v'));
+        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('n', 'q', 's'));
+    }
+
+    public function testProducedAllFailureNeverCalled()
+    {
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce like:
+    - "a"
+    - "b": "c"
+Never called.
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->producedAll('a', array('b', 'c'));
+    }
+
+    public function testProducedAllFailureNothingProduced()
+    {
+        $this->subject->setCalls($this->calls);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce like:
+    - "a"
+    - "b": "c"
+Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->producedAll('a', array('b', 'c'));
+    }
+
+    public function testProducedAllFailureMismatch()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce like:
+    - "a"
+    - "b": "c"
+Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->producedAll('a', array('b', 'c'));
+    }
+
+    public function testProducedAllFailureMismatchNever()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+        $expected = <<<'EOD'
+Expected no call on implode[label] to produce like:
+    - "n"
+    - "q"
+    - "s"
+    - "v"
+Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->never()->producedAll('n', 'q', 's', 'v');
+    }
+
+    public function testProducedAllFailureExpectedNothing()
+    {
+        $this->subject->addCall($this->iteratorCall);
+        $expected = <<<'EOD'
+Expected call on implode[label] to produce nothing. Responded:
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->producedAll();
     }
 
     public function testCardinalityMethods()

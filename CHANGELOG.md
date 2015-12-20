@@ -1,5 +1,27 @@
 # Phony changelog
 
+## Next release
+
+- **[NEW]** Implemented `firstCall()` and `lastCall()` ([#93]).
+- **[IMPROVED]** Support for PHP 7 engine error exceptions ([#119]).
+- **[IMPROVED]** Support for PHP 7 scalar type hints ([#106] - thanks
+  [@jmalloc]).
+- **[IMPROVED]** Support for PHP 7 return type declarations ([#104], [#108] -
+  thanks [@jmalloc]).
+- **[IMPROVED]** Support for PHP 7 methods names that match tokens ([#110] -
+  thanks [@jmalloc]).
+- **[IMPROVED]** Partial support for PHP 7 generator returns ([#111] - thanks
+  [@jmalloc]).
+- **[IMPROVED]** Tidied up many interfaces and doc blocks.
+
+[#93]: https://github.com/eloquent/phony/issues/93
+[#104]: https://github.com/eloquent/phony/issues/104
+[#106]: https://github.com/eloquent/phony/issues/106
+[#108]: https://github.com/eloquent/phony/issues/108
+[#110]: https://github.com/eloquent/phony/issues/110
+[#111]: https://github.com/eloquent/phony/issues/111
+[#119]: https://github.com/eloquent/phony/issues/119
+
 ## 0.6.4 (2015-12-19)
 
 - **[FIXED]** Simplified method resolution rules. Fixes issue when mocking

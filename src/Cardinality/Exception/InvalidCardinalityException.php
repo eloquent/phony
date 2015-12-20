@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * The specified cardinality is invalid.
- *
- * @internal
  */
 final class InvalidCardinalityException extends Exception implements
     InvalidCardinalityExceptionInterface

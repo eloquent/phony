@@ -14,11 +14,10 @@ namespace Eloquent\Phony\Exporter;
 use Eloquent\Phony\Mock\MockInterface;
 use Exception;
 use SplObjectStorage;
+use Throwable;
 
 /**
  * Exports values to inline strings.
- *
- * @internal
  */
 class InlineExporter implements ExporterInterface
 {
@@ -39,18 +38,11 @@ class InlineExporter implements ExporterInterface
     /**
      * Construct a new inline exporter.
      *
-     * @param integer|null $depth        The depth.
-     * @param boolean|null $incrementIds True if IDs should increment. Used for testing purposes.
+     * @param integer $depth        The depth.
+     * @param boolean $incrementIds True if IDs should increment. Used for testing purposes.
      */
-    public function __construct($depth = null, $incrementIds = null)
+    public function __construct($depth = 1, $incrementIds = true)
     {
-        if (null === $depth) {
-            $depth = 1;
-        }
-        if (null === $incrementIds) {
-            $incrementIds = true;
-        }
-
         $this->incrementIds = $incrementIds;
         $this->depth = $depth;
         $this->objectIds = array();
@@ -139,7 +131,7 @@ class InlineExporter implements ExporterInterface
                     break;
 
                 case 'resource':
-                    $result->type = 'resource #' . intval($value);
+                    $result->type = 'resource#' . intval($value);
 
                     break;
 
@@ -233,7 +225,8 @@ class InlineExporter implements ExporterInterface
                     }
 
                     $result->type = get_class($value);
-                    $isException = $value instanceof Exception;
+                    $isException = $value instanceof Throwable ||
+                        $value instanceof Exception;
                     $phpValues = (array) $value;
 
                     unset($phpValues["\0gcdata"]);
