@@ -58,7 +58,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAddMatcherDriver()
     {
-        $this->subject = new MatcherFactory(null, $this->anyMatcher, $this->wildcardAnyMatcher);
+        $this->subject = new MatcherFactory(array(), $this->anyMatcher, $this->wildcardAnyMatcher);
         $this->subject->addMatcherDriver($this->driverA);
 
         $this->assertSame(array($this->driverA), $this->subject->drivers());
@@ -73,7 +73,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
      */
     public function testAddDefaultMatcherDrivers()
     {
-        $this->subject = new MatcherFactory(null, $this->anyMatcher, $this->wildcardAnyMatcher);
+        $this->subject = new MatcherFactory(array(), $this->anyMatcher, $this->wildcardAnyMatcher);
         $this->subject->addDefaultMatcherDrivers();
 
         $this->assertSame(

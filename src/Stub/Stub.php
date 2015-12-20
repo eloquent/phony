@@ -214,18 +214,18 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                      $callback             The callback.
-     * @param ArgumentsInterface|array|null $arguments            The arguments.
-     * @param boolean|null                  $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback             The callback.
+     * @param ArgumentsInterface|array $arguments            The arguments.
+     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean                  $suffixArguments      True if arguments should be appended.
      */
     public function callsWith(
         $callback,
-        $arguments = null,
+        $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = null,
-        $suffixArguments = null
+        $suffixArgumentsArray = false,
+        $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
@@ -238,7 +238,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->answer->addSecondaryRequest(
             new CallRequest(
                 $callback,
-                Arguments::adapt($arguments),
+                $arguments,
                 $prefixSelf,
                 $suffixArgumentsArray,
                 $suffixArguments
@@ -285,33 +285,22 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer                       $index                The argument index.
-     * @param ArgumentsInterface|array|null $arguments            The arguments.
-     * @param boolean|null                  $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null                  $suffixArguments      True if arguments should be appended.
+     * @param integer                  $index                The argument index.
+     * @param ArgumentsInterface|array $arguments            The arguments.
+     * @param boolean                  $prefixSelf           True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean                  $suffixArguments      True if arguments should be appended.
      *
      * @return $this This stub.
      */
     public function callsArgumentWith(
         $index = 0,
-        $arguments = null,
-        $prefixSelf = null,
-        $suffixArgumentsArray = null,
-        $suffixArguments = null
+        $arguments = array(),
+        $prefixSelf = false,
+        $suffixArgumentsArray = false,
+        $suffixArguments = false
     ) {
-        if (null === $prefixSelf) {
-            $prefixSelf = false;
-        }
-        if (null === $suffixArgumentsArray) {
-            $suffixArgumentsArray = false;
-        }
-        if (null === $suffixArguments) {
-            $suffixArguments = false;
-        }
-
         $invoker = $this->invoker;
-        $arguments = Arguments::adapt($arguments);
 
         return $this->callsWith(
             function ($self, $incoming) use (
@@ -343,7 +332,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
                 return $invoker->callWith($callback, $finalArguments);
             },
-            null,
+            array(),
             true,
             true,
             false
@@ -380,7 +369,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                     $arguments->set($index, $value);
                 }
             },
-            null,
+            array(),
             false,
             true,
             false
@@ -409,20 +398,20 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable                      $callback             The callback.
-     * @param ArgumentsInterface|array|null $arguments            The arguments.
-     * @param boolean|null                  $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback             The callback.
+     * @param ArgumentsInterface|array $arguments            The arguments.
+     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean                  $suffixArguments      True if arguments should be appended.
      *
      * @return $this This stub.
      */
     public function doesWith(
         $callback,
-        $arguments = null,
+        $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = null,
-        $suffixArguments = null
+        $suffixArgumentsArray = false,
+        $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
@@ -441,7 +430,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->answer->setPrimaryRequest(
             new CallRequest(
                 $callback,
-                Arguments::adapt($arguments),
+                $arguments,
                 $prefixSelf,
                 $suffixArgumentsArray,
                 $suffixArguments
@@ -456,18 +445,18 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param ArgumentsInterface|array|null $arguments            The arguments.
-     * @param boolean|null                  $prefixSelf           True if the self value should be prefixed.
-     * @param boolean|null                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean|null                  $suffixArguments      True if arguments should be appended.
+     * @param ArgumentsInterface|array $arguments            The arguments.
+     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
+     * @param boolean                  $suffixArguments      True if arguments should be appended.
      *
      * @return $this This stub.
      */
     public function forwards(
-        $arguments = null,
+        $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = null,
-        $suffixArguments = null
+        $suffixArgumentsArray = false,
+        $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
@@ -479,7 +468,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         $invoker = $this->invoker;
         $callback = $this->callback;
-        $arguments = Arguments::adapt($arguments);
 
         return $this->doesWith(
             function ($self, $incoming) use (
@@ -501,7 +489,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
                 return $invoker->callWith($callback, $finalArguments);
             },
-            null,
+            array(),
             true,
             true,
             false
@@ -519,7 +507,8 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function returns($value = null)
     {
         if (0 === func_num_args()) {
-            return $this->doesWith(function () {}, null, false, false, false);
+            return $this
+                ->doesWith(function () {}, array(), false, false, false);
         }
 
         foreach (func_get_args() as $value) {
@@ -527,7 +516,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 function () use ($value) {
                     return $value;
                 },
-                null,
+                array(),
                 false,
                 false,
                 false
@@ -555,7 +544,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                     return $arguments->get($index);
                 }
             },
-            null,
+            array(),
             false,
             true,
             false
@@ -573,7 +562,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             function ($self) {
                 return $self;
             },
-            null,
+            array(),
             true,
             false,
             false
@@ -595,7 +584,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 function () {
                     throw new Exception();
                 },
-                null,
+                array(),
                 false,
                 false,
                 false
@@ -611,7 +600,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 function () use ($exception) {
                     throw $exception;
                 },
-                null,
+                array(),
                 false,
                 false,
                 false
@@ -626,12 +615,12 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array|null The arguments.
+     * @param ArgumentsInterface|array The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = null)
+    public function invokeWith($arguments = array())
     {
         $this->handleDanglingRules();
 

@@ -106,11 +106,11 @@ interface AssertionRendererInterface
      * Render the responses of a sequence of calls.
      *
      * @param array<CallInterface> $calls              The calls.
-     * @param boolean|null         $expandTraversables True if traversable events should be rendered.
+     * @param boolean              $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered call responses.
      */
-    public function renderResponses(array $calls, $expandTraversables = null);
+    public function renderResponses(array $calls, $expandTraversables = false);
 
     /**
      * Render the supplied call.
@@ -151,7 +151,7 @@ interface AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return string The rendered arguments.
      */

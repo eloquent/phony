@@ -29,12 +29,12 @@ interface CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null                 $callback  The callback.
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param callable|null            $callback  The callback.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled($callback = null, $arguments = null);
+    public function createCalled($callback = null, $arguments = array());
 
     /**
      * Create a new response event.

@@ -28,12 +28,12 @@ interface CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object                        $self      The self value.
-     * @param ArgumentsInterface|array|null $arguments The incoming arguments.
+     * @param object                   $self      The self value.
+     * @param ArgumentsInterface|array $arguments The incoming arguments.
      *
      * @return ArgumentsInterface The final arguments.
      */
-    public function finalArguments($self, $arguments = null);
+    public function finalArguments($self, $arguments = array());
 
     /**
      * Get the hard-coded arguments.

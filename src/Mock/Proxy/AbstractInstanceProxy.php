@@ -127,11 +127,11 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     /**
      * Call the original constructor.
      *
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return $this This proxy.
      */
-    public function constructWith($arguments = null)
+    public function constructWith($arguments = array())
     {
         if ($this->callParentConstructorMethod) {
             $this->callParentConstructorMethod

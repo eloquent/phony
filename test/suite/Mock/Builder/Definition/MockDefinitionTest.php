@@ -402,13 +402,13 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
     public function testIsEqualToWithInequalSignature()
     {
         $definitionA = new MockDefinition(
-            null,
+            array(),
             array(
                 'methodA' => function ($a, $b) {},
             )
         );
         $definitionB = new MockDefinition(
-            null,
+            array(),
             array(
                 'methodA' => function ($a, array $b = null) {},
             )
@@ -420,17 +420,17 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
     public function testIsEqualToWithInequalSignatureStatic()
     {
         $definitionA = new MockDefinition(
-            null,
-            null,
-            null,
+            array(),
+            array(),
+            array(),
             array(
                 'methodA' => function ($a, $b) {},
             )
         );
         $definitionB = new MockDefinition(
-            null,
-            null,
-            null,
+            array(),
+            array(),
+            array(),
             array(
                 'methodA' => function ($a, array $b = null) {},
             )

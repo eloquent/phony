@@ -46,11 +46,11 @@ interface InstanceProxyInterface extends ProxyInterface
      *
      * @api
      *
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return $this This proxy.
      */
-    public function constructWith($arguments = null);
+    public function constructWith($arguments = array());
 
     /**
      * Set the label.

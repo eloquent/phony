@@ -29,16 +29,13 @@ class EventCollection implements EventCollectionInterface
     /**
      * Construct a new event collection.
      *
-     * @param array<EventInterface>|null    $events          The events.
+     * @param array<EventInterface>         $events          The events.
      * @param IndexNormalizerInterface|null $indexNormalizer The index normalizer to use.
      */
     public function __construct(
-        array $events = null,
+        array $events = array(),
         IndexNormalizerInterface $indexNormalizer = null
     ) {
-        if (null === $events) {
-            $events = array();
-        }
         if (null === $indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }

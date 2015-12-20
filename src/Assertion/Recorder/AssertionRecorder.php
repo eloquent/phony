@@ -39,11 +39,11 @@ class AssertionRecorder implements AssertionRecorderInterface
     /**
      * Record that a successful assertion occurred.
      *
-     * @param array<EventInterface>|null $events The events.
+     * @param array<EventInterface> $events The events.
      *
      * @return EventCollectionInterface The result.
      */
-    public function createSuccess(array $events = null)
+    public function createSuccess(array $events = array())
     {
         return new EventCollection($events);
     }

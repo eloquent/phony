@@ -107,7 +107,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateDefaults()
     {
         $stub = new Stub(null, null, '0', null, $this->matcherFactory, $this->matcherVerifier);
-        $spy = new Spy($stub, '0', null, null, null, $this->callFactory);
+        $spy = new Spy($stub, '0', true, false, null, $this->callFactory);
         $expected = new StubVerifier(
             $stub,
             $spy,

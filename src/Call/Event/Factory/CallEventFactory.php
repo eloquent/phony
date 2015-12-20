@@ -98,18 +98,18 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null                 $callback  The callback.
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param callable|null            $callback  The callback.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled($callback = null, $arguments = null)
+    public function createCalled($callback = null, $arguments = array())
     {
         return new CalledEvent(
             $this->sequencer->next(),
             $this->clock->time(),
             $callback,
-            Arguments::adapt($arguments)
+            $arguments
         );
     }
 

@@ -48,18 +48,15 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Construct a new matcher factory.
      *
-     * @param array<MatcherDriverInterface>|null $drivers            The matcher drivers to use.
-     * @param MatcherInterface|null              $anyMatcher         A matcher that matches any value.
-     * @param WildcardMatcherInterface|null      $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
+     * @param array<MatcherDriverInterface> $drivers            The matcher drivers to use.
+     * @param MatcherInterface|null         $anyMatcher         A matcher that matches any value.
+     * @param WildcardMatcherInterface|null $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
      */
     public function __construct(
-        array $drivers = null,
+        array $drivers = array(),
         MatcherInterface $anyMatcher = null,
         WildcardMatcherInterface $wildcardAnyMatcher = null
     ) {
-        if (null === $drivers) {
-            $drivers = array();
-        }
         if (null === $anyMatcher) {
             $anyMatcher = AnyMatcher::instance();
         }

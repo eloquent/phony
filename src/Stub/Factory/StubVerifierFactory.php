@@ -220,8 +220,8 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
      * @param callable|null $callback              The callback, or null to create an unbound stub verifier.
      * @param mixed         $self                  The self value.
      * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
-     * @param boolean|null  $useGeneratorSpies     True if generator spies should be used.
-     * @param boolean|null  $useTraversableSpies   True if traversable spies should be used.
+     * @param boolean       $useGeneratorSpies     True if generator spies should be used.
+     * @param boolean       $useTraversableSpies   True if traversable spies should be used.
      *
      * @return StubVerifierInterface The newly created stub verifier.
      */
@@ -229,10 +229,11 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         $callback = null,
         $self = null,
         $defaultAnswerCallback = null,
-        $useGeneratorSpies = null,
-        $useTraversableSpies = null
+        $useGeneratorSpies = true,
+        $useTraversableSpies = false
     ) {
-        $stub = $this->stubFactory->create($callback, $self, $defaultAnswerCallback);
+        $stub = $this->stubFactory
+            ->create($callback, $self, $defaultAnswerCallback);
 
         return $this->create(
             $stub,

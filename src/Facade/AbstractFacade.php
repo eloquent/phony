@@ -105,16 +105,16 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param mixed                         $types      The types to mock.
-     * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null             $definition The definition.
-     * @param string|null                   $className  The class name.
+     * @param mixed                    $types      The types to mock.
+     * @param ArgumentsInterface|array $arguments  The constructor arguments, or null to bypass the constructor.
+     * @param array|object|null        $definition The definition.
+     * @param string|null              $className  The class name.
      *
      * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
      */
     public static function partialMock(
         $types = null,
-        $arguments = null,
+        $arguments = array(),
         $definition = null,
         $className = null
     ) {
@@ -200,15 +200,15 @@ abstract class AbstractFacade
      * @api
      *
      * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
-     * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
-     * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
+     * @param boolean       $useGeneratorSpies   True if generator spies should be used.
+     * @param boolean       $useTraversableSpies True if traversable spies should be used.
      *
      * @return SpyVerifierInterface The newly created spy verifier.
      */
     public static function spy(
         $callback = null,
-        $useGeneratorSpies = null,
-        $useTraversableSpies = null
+        $useGeneratorSpies = true,
+        $useTraversableSpies = false
     ) {
         return static::driver()->spyVerifierFactory()->createFromCallback(
             $callback,
@@ -225,8 +225,8 @@ abstract class AbstractFacade
      * @param callable|null $callback              The callback, or null to create an unbound stub verifier.
      * @param mixed         $self                  The self value.
      * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
-     * @param boolean|null  $useGeneratorSpies     True if generator spies should be used.
-     * @param boolean|null  $useTraversableSpies   True if traversable spies should be used.
+     * @param boolean       $useGeneratorSpies     True if generator spies should be used.
+     * @param boolean       $useTraversableSpies   True if traversable spies should be used.
      *
      * @return StubVerifierInterface The newly created stub verifier.
      */
@@ -234,8 +234,8 @@ abstract class AbstractFacade
         $callback = null,
         $self = null,
         $defaultAnswerCallback = null,
-        $useGeneratorSpies = null,
-        $useTraversableSpies = null
+        $useGeneratorSpies = true,
+        $useTraversableSpies = false
     ) {
         return static::driver()->stubVerifierFactory()->createFromCallback(
             $callback,

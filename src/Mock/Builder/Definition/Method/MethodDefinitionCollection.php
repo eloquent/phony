@@ -21,20 +21,13 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinitionInterface>|null $methods      The methods.
-     * @param array<TraitMethodDefinitionInterface>|null   $traitMethods The trait methods.
+     * @param array<string,MethodDefinitionInterface> $methods      The methods.
+     * @param array<TraitMethodDefinitionInterface>   $traitMethods The trait methods.
      */
     public function __construct(
-        array $methods = null,
-        array $traitMethods = null
+        array $methods = array(),
+        array $traitMethods = array()
     ) {
-        if (null === $methods) {
-            $methods = array();
-        }
-        if (null === $traitMethods) {
-            $traitMethods = array();
-        }
-
         $this->methodNames = array();
         $this->allMethods = $methods;
         $this->traitMethods = $traitMethods;

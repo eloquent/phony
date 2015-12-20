@@ -26,7 +26,7 @@ class Arguments implements ArgumentsInterface
     /**
      * Adapt a set of call arguments.
      *
-     * @param ArgumentsInterface|array|null $arguments The arguments.
+     * @param ArgumentsInterface|array $arguments The arguments.
      *
      * @return ArgumentsInterface The adapted arguments.
      */
@@ -42,16 +42,13 @@ class Arguments implements ArgumentsInterface
     /**
      * Construct a new set of call arguments.
      *
-     * @param array|null                    $arguments       The arguments.
+     * @param array                         $arguments       The arguments.
      * @param IndexNormalizerInterface|null $indexNormalizer The index normalizer to use.
      */
     public function __construct(
-        array $arguments = null,
+        array $arguments = array(),
         IndexNormalizerInterface $indexNormalizer = null
     ) {
-        if (null === $arguments) {
-            $arguments = array();
-        }
         if (null === $indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }

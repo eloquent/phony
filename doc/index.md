@@ -1433,7 +1433,7 @@ Add callbacks to be called as part of an answer.
 
 ----
 
-> *fluent* $stub->[**callsWith**](#stub.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**callsWith**](#stub.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add a callback to be called as part of an answer.
 
@@ -1464,7 +1464,7 @@ the last element, and `-2` indicates the second last element.*
 
 ----
 
-> *fluent* $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add an argument callback to be called as part of an answer.
 
@@ -1508,7 +1508,7 @@ Add callbacks as answers.
 
 ----
 
-> *fluent* $stub->[**doesWith**](#stub.doesWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**doesWith**](#stub.doesWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add a callback as an answer.
 
@@ -1520,7 +1520,7 @@ Add a callback as an answer.
 
 ----
 
-> *fluent* $stub->[**forwards**](#stub.forwards)($arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = false)
+> *fluent* $stub->[**forwards**](#stub.forwards)($arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
 
 Add an answer that calls the wrapped callback.
 

@@ -94,8 +94,7 @@ class StubRule implements StubRuleInterface
      */
     public function matches($arguments)
     {
-        return $this->matcherVerifier
-            ->matches($this->criteria, Arguments::adapt($arguments));
+        return $this->matcherVerifier->matches($this->criteria, $arguments);
     }
 
     /**

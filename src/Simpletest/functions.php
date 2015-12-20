@@ -92,16 +92,16 @@ function mock($types = null, $definition = null, $className = null)
  *
  * @api
  *
- * @param mixed                         $types      The types to mock.
- * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
- * @param array|object|null             $definition The definition.
- * @param string|null                   $className  The class name.
+ * @param mixed                    $types      The types to mock.
+ * @param ArgumentsInterface|array $arguments  The constructor arguments, or null to bypass the constructor.
+ * @param array|object|null        $definition The definition.
+ * @param string|null              $className  The class name.
  *
  * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
  */
 function partialMock(
     $types = null,
-    $arguments = null,
+    $arguments = array(),
     $definition = null,
     $className = null
 ) {
@@ -186,15 +186,15 @@ function verifyStatic($class)
  * @api
  *
  * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
- * @param boolean|null  $useGeneratorSpies   True if generator spies should be used.
- * @param boolean|null  $useTraversableSpies True if traversable spies should be used.
+ * @param boolean       $useGeneratorSpies   True if generator spies should be used.
+ * @param boolean       $useTraversableSpies True if traversable spies should be used.
  *
  * @return SpyVerifierInterface The newly created spy verifier.
  */
 function spy(
     $callback = null,
-    $useGeneratorSpies = null,
-    $useTraversableSpies = null
+    $useGeneratorSpies = true,
+    $useTraversableSpies = false
 ) {
     return SimpletestFacadeDriver::instance()->spyVerifierFactory()
         ->createFromCallback(
@@ -212,8 +212,8 @@ function spy(
  * @param callable|null $callback              The callback, or null to create an unbound stub verifier.
  * @param object|null   $self                  The self value.
  * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
- * @param boolean|null  $useGeneratorSpies     True if generator spies should be used.
- * @param boolean|null  $useTraversableSpies   True if traversable spies should be used.
+ * @param boolean       $useGeneratorSpies     True if generator spies should be used.
+ * @param boolean       $useTraversableSpies   True if traversable spies should be used.
  *
  * @return StubVerifierInterface The newly created stub verifier.
  */
@@ -221,8 +221,8 @@ function stub(
     $callback = null,
     $self = null,
     $defaultAnswerCallback = null,
-    $useGeneratorSpies = null,
-    $useTraversableSpies = null
+    $useGeneratorSpies = true,
+    $useTraversableSpies = false
 ) {
     return SimpletestFacadeDriver::instance()->stubVerifierFactory()
         ->createFromCallback(

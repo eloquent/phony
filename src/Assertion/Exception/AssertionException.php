@@ -26,10 +26,9 @@ final class AssertionException extends Exception implements
      *
      * Also replaces the file path and line number.
      *
-     * @param Exception   $exception The exception.
-     * @param string|null $prefix    The namespace prefix to search for.
+     * @param Exception $exception The exception.
      */
-    public static function trim(Exception $exception, $prefix = null)
+    public static function trim(Exception $exception)
     {
         $reflector = new ReflectionClass('Exception');
 
@@ -40,8 +39,7 @@ final class AssertionException extends Exception implements
         $lineProperty = $reflector->getProperty('line');
         $lineProperty->setAccessible(true);
 
-        $call = static
-            ::tracePhonyCall($traceProperty->getValue($exception), $prefix);
+        $call = static::tracePhonyCall($traceProperty->getValue($exception));
 
         if ($call) {
             $traceProperty->setValue($exception, array($call));
@@ -63,16 +61,13 @@ final class AssertionException extends Exception implements
     /**
      * Find the Phony entry point call in a stack trace.
      *
-     * @param array       $trace  The stack trace.
-     * @param string|null $prefix The namespace prefix to search for.
+     * @param array $trace The stack trace.
      *
      * @return array|null The call, or null if unable to determine the entry point.
      */
-    public static function tracePhonyCall(array $trace, $prefix = null)
+    public static function tracePhonyCall(array $trace)
     {
-        if (null === $prefix) {
-            $prefix = 'Eloquent\Phony\\';
-        }
+        $prefix = 'Eloquent\Phony\\';
 
         $index = null;
         $broke = false;

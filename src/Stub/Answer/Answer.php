@@ -19,17 +19,13 @@ class Answer implements AnswerInterface
     /**
      * Construct a new answer.
      *
-     * @param CallRequestInterface|null        $primaryRequest    The primary request.
-     * @param array<CallRequestInterface>|null $secondaryRequests The secondary requests.
+     * @param CallRequestInterface|null   $primaryRequest    The primary request.
+     * @param array<CallRequestInterface> $secondaryRequests The secondary requests.
      */
     public function __construct(
         CallRequestInterface $primaryRequest = null,
-        array $secondaryRequests = null
+        array $secondaryRequests = array()
     ) {
-        if (null === $secondaryRequests) {
-            $secondaryRequests = array();
-        }
-
         $this->primaryRequest = $primaryRequest;
         $this->secondaryRequests = $secondaryRequests;
     }

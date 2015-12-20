@@ -36,13 +36,13 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Vendor\Package\ClassA',
+                        'class' =>  'Eloquent\Phony\ClassA',
                     ),
                     array(
                         'file' => '/path/to/file/b',
                         'line' => 222,
                         'function' => 'methodB',
-                        'class' =>  'Vendor\Package\ClassB',
+                        'class' =>  'Eloquent\Phony\ClassB',
                     ),
                     array(
                         'file' => '/path/to/file/c',
@@ -51,43 +51,15 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'class' => 'ClassC',
                     ),
                 ),
-                'Vendor\Package\\',
                 array(
                     'file' => '/path/to/file/b',
                     'line' => 222,
                     'function' => 'methodB',
-                    'class' =>  'Vendor\Package\ClassB',
+                    'class' =>  'Eloquent\Phony\ClassB',
                 ),
             ),
 
             'Function' => array(
-                array(
-                    array(
-                        'file' => '/path/to/file/a',
-                        'line' => 111,
-                        'function' => 'methodA',
-                        'class' =>  'Vendor\Package\ClassA',
-                    ),
-                    array(
-                        'file' => '/path/to/file/b',
-                        'line' => 222,
-                        'function' => 'Vendor\Package\functionB',
-                    ),
-                    array(
-                        'file' => '/path/to/file/c',
-                        'line' => 333,
-                        'function' => 'functionC',
-                    ),
-                ),
-                'Vendor\Package\\',
-                array(
-                    'file' => '/path/to/file/b',
-                    'line' => 222,
-                    'function' => 'Vendor\Package\functionB',
-                ),
-            ),
-
-            'Default prefix' => array(
                 array(
                     array(
                         'file' => '/path/to/file/a',
@@ -106,7 +78,6 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'function' => 'functionC',
                     ),
                 ),
-                null,
                 array(
                     'file' => '/path/to/file/b',
                     'line' => 222,
@@ -120,25 +91,23 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Vendor\Package\ClassA',
+                        'class' =>  'Eloquent\Phony\ClassA',
                     ),
                     array(
                         'file' => '/path/to/file/b',
                         'line' => 222,
-                        'function' => 'Vendor\Package\functionB',
+                        'function' => 'Eloquent\Phony\functionB',
                     ),
                 ),
-                'Vendor\Package\\',
                 array(
                     'file' => '/path/to/file/b',
                     'line' => 222,
-                    'function' => 'Vendor\Package\functionB',
+                    'function' => 'Eloquent\Phony\functionB',
                 ),
             ),
 
             'Empty Trace' => array(
                 array(),
-                'Vendor\Package\\',
                 null,
             ),
         );
@@ -147,8 +116,8 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider tracePhonyCallData
      */
-    public function testTracePhonyCall($trace, $prefix, $expected)
+    public function testTracePhonyCall($trace, $expected)
     {
-        $this->assertSame($expected, AssertionException::tracePhonyCall($trace, $prefix));
+        $this->assertSame($expected, AssertionException::tracePhonyCall($trace));
     }
 }

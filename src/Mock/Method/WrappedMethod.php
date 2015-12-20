@@ -55,12 +55,12 @@ class WrappedMethod extends AbstractWrappedMethod
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array|null The arguments.
+     * @param ArgumentsInterface|array The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = null)
+    public function invokeWith($arguments = array())
     {
         return $this->callParentMethod
             ->invoke($this->mock, $this->name, Arguments::adapt($arguments));

@@ -32,47 +32,29 @@ class MockDefinition implements MockDefinitionInterface
     /**
      * Construct a new mock definition.
      *
-     * @param array<string,ReflectionClass>|null       $types                  The types.
-     * @param array<string,callable|null>|null         $customMethods          The custom methods.
-     * @param array<string,mixed>|null                 $customProperties       The custom properties.
-     * @param array<string,callable|null>|null         $customStaticMethods    The custom static methods.
-     * @param array<string,mixed>|null                 $customStaticProperties The custom static properties.
-     * @param array<string,mixed>|null                 $customConstants        The custom constants.
+     * @param array<string,ReflectionClass>            $types                  The types.
+     * @param array<string,callable|null>              $customMethods          The custom methods.
+     * @param array<string,mixed>                      $customProperties       The custom properties.
+     * @param array<string,callable|null>              $customStaticMethods    The custom static methods.
+     * @param array<string,mixed>                      $customStaticProperties The custom static properties.
+     * @param array<string,mixed>                      $customConstants        The custom constants.
      * @param string|null                              $className              The class name.
      * @param FunctionSignatureInspectorInterface|null $signatureInspector     The function signature inspector.
      * @param InvocableInspectorInterface|null         $invocableInspector     The invocable inspector.
      * @param FeatureDetectorInterface|null            $featureDetector        The feature detector to use.
      */
     public function __construct(
-        array $types = null,
-        array $customMethods = null,
-        array $customProperties = null,
-        array $customStaticMethods = null,
-        array $customStaticProperties = null,
-        array $customConstants = null,
+        array $types = array(),
+        array $customMethods = array(),
+        array $customProperties = array(),
+        array $customStaticMethods = array(),
+        array $customStaticProperties = array(),
+        array $customConstants = array(),
         $className = null,
         FunctionSignatureInspectorInterface $signatureInspector = null,
         InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $types) {
-            $types = array();
-        }
-        if (null === $customMethods) {
-            $customMethods = array();
-        }
-        if (null === $customProperties) {
-            $customProperties = array();
-        }
-        if (null === $customStaticMethods) {
-            $customStaticMethods = array();
-        }
-        if (null === $customStaticProperties) {
-            $customStaticProperties = array();
-        }
-        if (null === $customConstants) {
-            $customConstants = array();
-        }
         if (null === $signatureInspector) {
             $signatureInspector = FunctionSignatureInspector::instance();
         }

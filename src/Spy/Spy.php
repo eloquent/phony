@@ -46,8 +46,8 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      *
      * @param callable|null                       $callback              The callback, or null to create an unbound spy.
      * @param string|null                         $label                 The label.
-     * @param boolean|null                        $useGeneratorSpies     True if generator spies should be used.
-     * @param boolean|null                        $useTraversableSpies   True if traversable spies should be used.
+     * @param boolean                             $useGeneratorSpies     True if generator spies should be used.
+     * @param boolean                             $useTraversableSpies   True if traversable spies should be used.
      * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
      * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
@@ -56,19 +56,13 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function __construct(
         $callback = null,
         $label = null,
-        $useGeneratorSpies = null,
-        $useTraversableSpies = null,
+        $useGeneratorSpies = true,
+        $useTraversableSpies = false,
         IndexNormalizerInterface $indexNormalizer = null,
         CallFactoryInterface $callFactory = null,
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
-        if (null === $useGeneratorSpies) {
-            $useGeneratorSpies = true;
-        }
-        if (null === $useTraversableSpies) {
-            $useTraversableSpies = false;
-        }
         if (null === $indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }
@@ -391,15 +385,14 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array|null The arguments.
+     * @param ArgumentsInterface|array The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = null)
+    public function invokeWith($arguments = array())
     {
-        $call = $this->callFactory
-            ->record($this->callback, Arguments::adapt($arguments), $this);
+        $call = $this->callFactory->record($this->callback, $arguments, $this);
         $responseEvent = $call->responseEvent();
 
         if ($responseEvent instanceof ThrewEventInterface) {

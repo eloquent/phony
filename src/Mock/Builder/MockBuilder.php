@@ -522,12 +522,12 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return ReflectionClass        The class.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function build($createNew = null)
+    public function build($createNew = false)
     {
         if (!$this->class) {
             $this->class = $this->factory->createMockClass($this, $createNew);
@@ -541,12 +541,12 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return string                 The class name.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function className($createNew = null)
+    public function className($createNew = false)
     {
         return $this->build($createNew)->getName();
     }
@@ -568,7 +568,9 @@ class MockBuilder implements MockBuilderInterface
             return $this->mock;
         }
 
-        return $this->create();
+        $this->mock = $this->factory->createMock($this, array());
+
+        return $this->mock;
     }
 
     /**
@@ -586,7 +588,9 @@ class MockBuilder implements MockBuilderInterface
      */
     public function create()
     {
-        return $this->createWith(func_get_args());
+        $this->mock = $this->factory->createMock($this, func_get_args());
+
+        return $this->mock;
     }
 
     /**
@@ -607,10 +611,6 @@ class MockBuilder implements MockBuilderInterface
      */
     public function createWith($arguments = null, $label = null)
     {
-        if (null !== $arguments) {
-            $arguments = Arguments::adapt($arguments);
-        }
-
         $this->mock = $this->factory->createMock($this, $arguments, $label);
 
         return $this->mock;
@@ -631,10 +631,10 @@ class MockBuilder implements MockBuilderInterface
      */
     public function full($label = null)
     {
-        $mock = $this->createWith(null, $label);
-        $this->proxyFactory->createStubbing($mock)->full();
+        $this->mock = $this->factory->createMock($this, null, $label);
+        $this->proxyFactory->createStubbing($this->mock)->full();
 
-        return $mock;
+        return $this->mock;
     }
 
     /**

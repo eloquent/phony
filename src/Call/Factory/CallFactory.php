@@ -109,15 +109,15 @@ class CallFactory implements CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null                 $callback  The callback.
-     * @param ArgumentsInterface|array|null $arguments The arguments.
-     * @param SpyInterface|null             $spy       The spy to record the call to.
+     * @param callable|null            $callback  The callback.
+     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param SpyInterface|null        $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
-        $arguments = null,
+        $arguments = array(),
         SpyInterface $spy = null
     ) {
         if (null === $callback) {

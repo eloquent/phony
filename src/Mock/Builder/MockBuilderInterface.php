@@ -182,12 +182,12 @@ interface MockBuilderInterface
      *
      * @api
      *
-     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return ReflectionClass        The class.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function build($createNew = null);
+    public function build($createNew = false);
 
     /**
      * Generate and define the mock class, and return the class name.
@@ -196,12 +196,12 @@ interface MockBuilderInterface
      *
      * @api
      *
-     * @param boolean|null $createNew True if a new class should be created even when a compatible one exists.
+     * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return string                 The class name.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function className($createNew = null);
+    public function className($createNew = false);
 
     /**
      * Get a mock.

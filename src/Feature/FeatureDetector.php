@@ -41,15 +41,14 @@ class FeatureDetector implements FeatureDetectorInterface
      * Construct a new feature detector.
      *
      * @param array<string,callable>|null $features  The features.
-     * @param array<string,boolean>|null  $supported The known feature support.
+     * @param array<string,boolean>       $supported The known feature support.
      */
-    public function __construct(array $features = null, array $supported = null)
-    {
+    public function __construct(
+        array $features = null,
+        array $supported = array()
+    ) {
         if (null === $features) {
             $features = $this->standardFeatures();
-        }
-        if (null === $supported) {
-            $supported = array();
         }
 
         $this->features = $features;
@@ -210,62 +209,62 @@ class FeatureDetector implements FeatureDetectorInterface
 
             'generator.yield' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('yield 0');
+                    $detector->checkStatement('yield 0', true);
             },
 
             'generator.yield.assign' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('$x=yield 0');
+                    $detector->checkStatement('$x=yield 0', true);
             },
 
             'generator.yield.assign.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('$x=yield 0=>0');
+                    $detector->checkStatement('$x=yield 0=>0', true);
             },
 
             'generator.yield.assign.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('$x=yield');
+                    $detector->checkStatement('$x=yield', true);
             },
 
             'generator.yield.expression' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('(yield 0)');
+                    $detector->checkStatement('(yield 0)', true);
             },
 
             'generator.yield.expression.assign' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('$x=(yield 0)');
+                    $detector->checkStatement('$x=(yield 0)', true);
             },
 
             'generator.yield.expression.assign.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('$x=(yield 0=>0)');
+                    $detector->checkStatement('$x=(yield 0=>0)', true);
             },
 
             'generator.yield.expression.assign.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('$x=(yield)');
+                    $detector->checkStatement('$x=(yield)', true);
             },
 
             'generator.yield.expression.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('(yield 0=>0)');
+                    $detector->checkStatement('(yield 0=>0)', true);
             },
 
             'generator.yield.expression.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('(yield)');
+                    $detector->checkStatement('(yield)', true);
             },
 
             'generator.yield.key' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('yield 0=>0');
+                    $detector->checkStatement('yield 0=>0', true);
             },
 
             'generator.yield.nothing' => function ($detector) {
                 return $detector->isSupported('generator') &&
-                    $detector->checkStatement('yield');
+                    $detector->checkStatement('yield', true);
             },
 
             'generator.return' => function ($detector) {
@@ -293,7 +292,7 @@ class FeatureDetector implements FeatureDetectorInterface
             },
 
             'parameter.variadic' => function ($detector) {
-                return $detector->checkStatement('function (...$a) {};');
+                return $detector->checkStatement('function (...$a) {};', true);
             },
 
             'parameter.variadic.reference' => function ($detector) {
@@ -303,7 +302,7 @@ class FeatureDetector implements FeatureDetectorInterface
                     return false;
                 } // @codeCoverageIgnoreEnd
 
-                return $detector->checkStatement('function (&...$a) {};');
+                return $detector->checkStatement('function (&...$a) {};', true);
             },
 
             'parameter.variadic.type' => function ($detector) {
@@ -314,7 +313,7 @@ class FeatureDetector implements FeatureDetectorInterface
                 } // @codeCoverageIgnoreEnd
 
                 return $detector
-                    ->checkStatement('function (stdClass ...$a) {};');
+                    ->checkStatement('function (stdClass ...$a) {};', true);
             },
 
             'parameter.hint.scalar' => function ($detector) {
@@ -404,16 +403,13 @@ class FeatureDetector implements FeatureDetectorInterface
     /**
      * Check that the supplied syntax is valid.
      *
-     * @param string $source The source to check.
+     * @param string  $source     The source to check.
+     * @param boolean $useClosure True to wrap the supplied source code in a closure.
      *
      * @return boolean True if the syntax is valid.
      */
-    public function checkStatement($source, $useClosure = null)
+    public function checkStatement($source, $useClosure = true)
     {
-        if (null === $useClosure) {
-            $useClosure = true;
-        }
-
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
 
         // @codeCoverageIgnoreStart

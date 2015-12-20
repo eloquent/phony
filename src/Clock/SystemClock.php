@@ -33,14 +33,10 @@ class SystemClock implements ClockInterface
     /**
      * Construct a new system clock.
      *
-     * @param callable|null $microtime The implementation of microtime() to use.
+     * @param callable $microtime The implementation of microtime() to use.
      */
-    public function __construct($microtime = null)
+    public function __construct($microtime = 'microtime')
     {
-        if (null === $microtime) {
-            $microtime = 'microtime';
-        }
-
         $this->microtime = $microtime;
     }
 
