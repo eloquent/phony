@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.7.0 (2015-12-20)
 
 - **[NEW]** Implemented `firstCall()` and `lastCall()` ([#93]).
 - **[IMPROVED]** Support for PHP 7 engine error exceptions ([#119]).
