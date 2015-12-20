@@ -107,14 +107,14 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
             );
         }
 
-        if ($this->isHhvm) {
-            // @codeCoverageIgnoreStart
+        if ($this->isHhvm) { // @codeCoverageIgnoreStart
             if ($this->isGeneratorReturnSupported) {
-                return GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
-                    $call,
-                    $traversable,
-                    $this->callEventFactory
-                );
+                return
+                    GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
+                        $call,
+                        $traversable,
+                        $this->callEventFactory
+                    );
             }
 
             return GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
@@ -122,14 +122,13 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
                 $traversable,
                 $this->callEventFactory
             );
-            // @codeCoverageIgnoreEnd
         } elseif ($this->isGeneratorReturnSupported) {
             return GeneratorSpyFactoryDetailPhpWithReturn::createGeneratorSpy(
                 $call,
                 $traversable,
                 $this->callEventFactory
             );
-        }
+        } // @codeCoverageIgnoreEnd
 
         return GeneratorSpyFactoryDetailPhp::createGeneratorSpy(
             $call,

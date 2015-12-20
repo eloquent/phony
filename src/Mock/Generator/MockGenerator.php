@@ -328,7 +328,7 @@ EOD;
                 $parameter[3];
         }
 
-        if (
+        if (// @codeCoverageIgnoreStart
             $this->isReturnTypeSupported &&
             $methodReflector->hasReturnType()
         ) {
@@ -339,7 +339,7 @@ EOD;
             } else {
                 $source .= "\n    ) : \\" . $type . " {\n";
             }
-        } else {
+        } else { // @codeCoverageIgnoreEnd
             $source .= "\n    ) {\n";
         }
 
@@ -506,7 +506,7 @@ EOD;
                 'function ' .
                 $name;
 
-            if (
+            if (// @codeCoverageIgnoreStart
                 $this->isReturnTypeSupported &&
                 $methodReflector->hasReturnType()
             ) {
@@ -517,7 +517,7 @@ EOD;
                 } else {
                     $returnType = ' : \\' . $type;
                 }
-            } else {
+            } else { // @codeCoverageIgnoreEnd
                 $returnType = '';
             }
 
@@ -591,7 +591,7 @@ EOD;
                 $parameter[2];
         }
 
-        if (
+        if (// @codeCoverageIgnoreStart
             $this->isReturnTypeSupported &&
             $methodReflector->hasReturnType()
         ) {
@@ -602,7 +602,7 @@ EOD;
             } else {
                 $source .= "\n    ) : \\" . $type . " {\n";
             }
-        } else {
+        } else { // @codeCoverageIgnoreEnd
             $source .= "\n    ) {\n";
         }
 
