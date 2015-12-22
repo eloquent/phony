@@ -21,7 +21,6 @@
     - [Mocking multiple types]
     - [Ad hoc mocks]
     - [Static mocks]
-    - [Custom class names]
     - [Calling a constructor manually]
     - [Resetting a mock]
     - [Labeling mocks]
@@ -305,18 +304,15 @@ can be useful when a "real" object becomes difficult to use in a test.
 
 ----
 
-> *[handle][mock-api]* [**mock**](#facade.mock)($types = [], $definition = [], $className = null) *(with [use function])*<br />
-> *[handle][mock-api]* x\\[**mock**](#facade.mock)($types = [], $definition = [], $className = null) *(without [use function])*<br />
-> *[handle][mock-api]* Phony::[**mock**](#facade.mock)($types = [], $definition = [], $className = null) *(static)*
+> *[handle][mock-api]* [**mock**](#facade.mock)($types = []) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**mock**](#facade.mock)($types = []) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**mock**](#facade.mock)($types = []) *(static)*
 
 Create a new [full mock], and return a [stubbing handle].
 
-*The `$types` argument may be a class name, a reflection class, or a
-[mock builder]. It may also be an array of any of these.*
-
-*If `$types` is empty, or `null`, no existing type will be used when generating
-the mock class. This is useful in the case of [ad hoc mocks], where mocks need
-not imitate an existing type.*
+*Each value in `$types` can be either a class name, or an [ad hoc mock]
+definition. If only a single type is being mocked, the class name or definition
+can be passed without being wrapped in an array.*
 
 *See [Mocking basics].*
 
@@ -324,20 +320,21 @@ not imitate an existing type.*
 
 ----
 
-> *[handle][mock-api]* [**partialMock**](#facade.partialMock)($types = [], $arguments = [], $definition = [], $className = null) *(with [use function])*<br />
-> *[handle][mock-api]* x\\[**partialMock**](#facade.partialMock)($types = [], $arguments = [], $definition = [], $className = null) *(without [use function])*<br />
-> *[handle][mock-api]* Phony::[**partialMock**](#facade.partialMock)($types = [], $arguments = [], $definition = [], $className = null) *(static)*
+> *[handle][mock-api]* [**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(with [use function])*<br />
+> *[handle][mock-api]* x\\[**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(without [use function])*<br />
+> *[handle][mock-api]* Phony::[**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(static)*
 
 Create a new [partial mock], and return a [stubbing handle].
 
-*The `$types` argument may be a class name, a reflection class, or a
-[mock builder]. It may also be an array of any of these.*
+*Each value in `$types` can be either a class name, or an [ad hoc mock]
+definition. If only a single type is being mocked, the class name or definition
+can be passed without being wrapped in an array.*
 
-*If `$types` is empty, or `null`, no existing type will be used when generating
-the mock class. This is useful in the case of [ad hoc mocks], where mocks need
-not imitate an existing type.*
+*Omitting `$arguments` will cause the original constructor to be called with an
+empty argument list. However, if a `null` value is supplied for `$arguments`,
+the original constructor will not be called at all.*
 
-*See [Partial mocks].*
+*See [Partial mocks], [Calling a constructor manually].*
 
 <a name="facade.on" />
 
@@ -551,11 +548,15 @@ Checks if there was no interaction with the mock.
 
 ----
 
-> *[builder][mock-builder-api]* [**mockBuilder**](#facade.mockBuilder)() *(with [use function])*<br />
-> *[builder][mock-builder-api]* x\\[**mockBuilder**](#facade.mockBuilder)() *(without [use function])*<br />
-> *[builder][mock-builder-api]* Phony::[**mockBuilder**](#facade.mockBuilder)() *(static)*
+> *[builder][mock-builder-api]* [**mockBuilder**](#facade.mockBuilder)($types = []) *(with [use function])*<br />
+> *[builder][mock-builder-api]* x\\[**mockBuilder**](#facade.mockBuilder)($types = []) *(without [use function])*<br />
+> *[builder][mock-builder-api]* Phony::[**mockBuilder**](#facade.mockBuilder)($types = []) *(static)*
 
 Create a new [mock builder].
+
+*Each value in `$types` can be either a class name, or an [ad hoc mock]
+definition. If only a single type is being mocked, the class name or definition
+can be passed without being wrapped in an array.*
 
 <a name="builder.types" />
 
@@ -575,16 +576,7 @@ Get the types that will be mocked.
 
 Add classes, interfaces, or traits.
 
-*Each `$type` argument may be a class name, a reflection class, or another
-[mock builder]. It may also be an array of any of these.*
-
-<a name="builder.define" />
-
-----
-
-> *fluent* $builder->[**define**](#builder.define)($definition)
-
-Add custom methods and properties via an [ad hoc mock] definition.
+*Each type value can be either a class name, or an [ad hoc mock] definition.*
 
 <a name="builder.addMethod" />
 
@@ -825,7 +817,7 @@ $handle = partialMock('ClassA', ['argumentA', 'argumentB']);
 ### Mocking multiple types
 
 Multiple interfaces and/or traits can be mocked simultaneously by passing an
-array of types as the first argument to [`mock()`](#facade.mock) or
+array of types to [`mock()`](#facade.mock) or
 [`partialMock()`](#facade.partialMock):
 
 ```php
@@ -846,13 +838,11 @@ $handle = Phony::mock(['ClassA', 'InterfaceA', 'TraitA']); // static
 
 *Phony* supports the creation of mock objects with methods and/or properties
 that are not pre-defined in some other class, interface, or trait. It does so
-using a special "definition" value, which can be passed as the second argument
-to [`mock()`](#facade.mock) (or the third argument to
-[`partialMock()`](#facade.partialMock)):
+using special "definition" values, which can be passed to
+[`mock()`](#facade.mock) or [`partialMock()`](#facade.partialMock):
 
 ```php
-$handle = mock(
-    null,
+$handle = partialMock(
     [
         '__toString' => function () {
             return 'What is this sorcery?';
@@ -869,13 +859,41 @@ echo $mock;              // outputs 'What is this sorcery?'
 echo $mock->a('b', 'c'); // outputs 'a(b, c)'
 ```
 
+Definition values can be mocked at the same time as regular classes, traits, and
+interfaces. Multiple definitions can even be mocked at the same time. Simply
+specify all types to be mocked in a single array:
+
+```php
+$handle = partialMock(
+    [
+        'Countable',
+        [
+            '__invoke' => function () {
+                return 'You called me?';
+            }
+        ],
+        [
+            '__toString' => function () {
+                return 'Are you stringing me along?';
+            }
+        ],
+    ]
+);
+
+$mock = $handle->mock();
+$mock->count->returns(111);
+
+echo $mock();      // outputs 'You called me?'
+echo $mock;        // outputs 'Are you stringing me along?'
+echo count($mock); // outputs '111'
+```
+
 Definition values support methods, properties, and constants. By default,
 callback functions will be converted to methods, and everything else will become
 a property:
 
 ```php
-$handle = mock(
-    null,
+$handle = partialMock(
     [
         'a' => function () {
             return 'A is for apple.';
@@ -894,8 +912,7 @@ To override the default treatment of values, or to define static methods or
 properties, keywords can be added to the keys of the definition value:
 
 ```php
-$handle = mock(
-    null,
+$handle = partialMock(
     [
         'const A' => 'A is for apple.',
         'static b' => function () {
@@ -978,19 +995,6 @@ $static = Phony::verifyStatic($handle); // static
 $static = verifyStatic($mock);        // with `use function`
 $static = x\verifyStatic($mock);      // without `use function`
 $static = Phony::verifyStatic($mock); // static
-```
-
-### Custom class names
-
-To use a specific class name for a generated mock class, pass the class name as
-the third argument to [`mock()`](#facade.mock) (or the fourth argument to
-[`partialMock()`](#facade.partialMock)):
-
-```php
-$handle = mock('ClassA', null, 'CustomClassName');
-$mock = $handle->mock();
-
-echo get_class($mock); // outputs 'CustomClassName'
 ```
 
 ### Calling a constructor manually
@@ -1206,6 +1210,13 @@ when more fine-grained control is desired. To create a mock builder, use
 $builder = mockBuilder();        // with `use function`
 $builder = x\mockBuilder();      // without `use function`
 $builder = Phony::mockBuilder(); // static
+```
+
+Types to mock can be passed directly to [`mockBuilder()`](#facade.mockBuilder)
+in a similar fashion to [`mock()`](#facade.mock):
+
+```php
+$builder = mockBuilder(['ClassA', 'InterfaceA']);
 ```
 
 #### Customizing the mock class
@@ -5676,7 +5687,6 @@ Get the index.
 [comparing mocks]: #comparing-mocks
 [counterpart matchers]: #counterpart-matchers
 [creating mocks from a builder]: #creating-mocks-from-a-builder
-[custom class names]: #custom-class-names
 [customizing the mock class]: #customizing-the-mock-class
 [dynamic order verification]: #dynamic-order-verification
 [example test suites]: #example-test-suites

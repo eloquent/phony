@@ -1,3 +1,8 @@
 .git
+*/.git
+*/*/.git
+*/*/*/.git
+*/*/*/*/.git
+*/*/*/*/*/.git
 artifacts
 doc

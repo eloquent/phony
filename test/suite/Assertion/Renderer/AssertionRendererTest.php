@@ -52,7 +52,8 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->thisObjectBProxy->setLabel('label');
         $this->thisObjectB->testClassAMethodA();
 
-        $mockBuilder = new MockBuilder('IteratorAggregate', null, 'PhonyMockAssertionRendererTestIteratorAggregate');
+        $mockBuilder = new MockBuilder('IteratorAggregate');
+        $mockBuilder->named('PhonyMockAssertionRendererTestIteratorAggregate');
         $this->thisObjectC = $mockBuilder->get();
         $this->thisObjectCProxy = $this->proxyFactory->createStubbing($this->thisObjectC);
         $this->thisObjectCProxy->setLabel('label');

@@ -872,7 +872,7 @@ EOD;
 
     public function testCanCallCustomMethodWithInvocableObjectImplementation()
     {
-        $mock = x\partialMock(null, null, array('methodA' => new TestInvocable()))->mock();
+        $mock = x\partialMock(array('methodA' => new TestInvocable()))->mock();
 
         $this->assertSame(array('invokeWith', array('a', 'b')), $mock->methodA('a', 'b'));
     }
@@ -945,9 +945,8 @@ EOD;
         }
 
         $instance = eval('return new class {};');
-        $reflector = new ReflectionClass($instance);
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\AnonymousClassException');
-        x\mock($reflector);
+        x\mock(get_class($instance));
     }
 }

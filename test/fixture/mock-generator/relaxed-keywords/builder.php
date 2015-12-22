@@ -1,9 +1,12 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    'Eloquent\Phony\Test\TestInterfaceWithKeywordMethods',
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
-        'throw' => function () {},
-    ),
-    'MockGeneratorRelaxedKeywords'
+        'Eloquent\Phony\Test\TestInterfaceWithKeywordMethods',
+        array(
+            'throw' => function () {},
+        ),
+    )
 );
+
+return $builder->named('MockGeneratorRelaxedKeywords');

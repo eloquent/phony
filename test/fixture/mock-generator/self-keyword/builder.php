@@ -1,7 +1,7 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    'Eloquent\Phony\Test\TestClassC',
-    null,
-    'MockGeneratorSelfKeyword'
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+    'Eloquent\Phony\Test\TestClassC'
 );
+
+return $builder->named('MockGeneratorSelfKeyword');

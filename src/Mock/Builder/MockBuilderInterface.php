@@ -37,8 +37,9 @@ interface MockBuilderInterface
     /**
      * Add classes, interfaces, or traits.
      *
-     * Each `$type` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
      * @api
      *
@@ -49,18 +50,6 @@ interface MockBuilderInterface
      * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
      */
     public function like($type);
-
-    /**
-     * Add custom methods and properties via a definition.
-     *
-     * @api
-     *
-     * @param array|object $definition The definition.
-     *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
-     */
-    public function define($definition);
 
     /**
      * Add a custom method.
@@ -248,12 +237,11 @@ interface MockBuilderInterface
      * @api
      *
      * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null                   $label     The label.
      *
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createWith($arguments = null, $label = null);
+    public function createWith($arguments = array());
 
     /**
      * Create a new full mock.
@@ -265,12 +253,10 @@ interface MockBuilderInterface
      *
      * @api
      *
-     * @param string|null $label The label.
-     *
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function full($label = null);
+    public function full();
 
     /**
      * Get the generated source code of the mock class.

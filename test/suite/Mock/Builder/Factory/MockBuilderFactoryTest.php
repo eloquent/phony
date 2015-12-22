@@ -44,10 +44,8 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $types = array('Eloquent\Phony\Test\TestInterfaceA', 'Eloquent\Phony\Test\TestInterfaceB');
-        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
-        $className = 'PhonyMockMockBuilderFactoryTestCreate';
-        $actual = $this->subject->create($types, $definition, $className);
-        $expected = new MockBuilder($types, $definition, $className, $this->mockFactory);
+        $actual = $this->subject->create($types);
+        $expected = new MockBuilder($types, $this->mockFactory, $this->proxyFactory);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($this->mockFactory, $actual->factory());
@@ -58,11 +56,9 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = new Arguments(array('a', 'b'));
-        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
-        $className = 'PhonyMockMockBuilderFactoryTestCreatePartialMock';
-        $actual = $this->subject->createPartialMock($types, $arguments, $definition, $className);
+        $actual = $this->subject->createPartialMock($types, $arguments);
 
-        $this->assertInstanceOf($className, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
         $this->assertInstanceOf('Countable', $actual);
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);
@@ -73,11 +69,9 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $arguments = null;
-        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
-        $className = 'PhonyMockMockBuilderFactoryTestCreatePartialMockWithNullArguments';
-        $actual = $this->subject->createPartialMock($types, $arguments, $definition, $className);
+        $actual = $this->subject->createPartialMock($types, $arguments);
 
-        $this->assertInstanceOf($className, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
         $this->assertInstanceOf('Countable', $actual);
@@ -85,7 +79,7 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
     }
 
-    public function testCreatePartialMockWithNoArguments()
+    public function testCreatePartialMockWithOmittedArguments()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $actual = $this->subject->createPartialMock($types);
@@ -105,11 +99,9 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFullMock()
     {
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
-        $definition = array('propertyA' => 'valueA', 'propertyB' => 'valueB');
-        $className = 'PhonyMockMockBuilderFactoryTestCreateFullMock';
-        $actual = $this->subject->createFullMock($types, $definition, $className);
+        $actual = $this->subject->createFullMock($types);
 
-        $this->assertInstanceOf($className, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
         $this->assertInstanceOf('Countable', $actual);

@@ -33,85 +33,65 @@ use ReflectionClass;
 /**
  * Create a new mock builder.
  *
- * The `$types` argument may be a class name, a reflection class, or a mock
- * builder. It may also be an array of any of these.
- *
- * If `$types` is omitted, or `null`, no existing type will be used when
- * generating the mock class. This is useful in the case of ad hoc mocks, where
- * mocks need not imitate an existing type.
+ * Each value in `$types` can be either a class name, or an ad hoc mock
+ * definition. If only a single type is being mocked, the class name or
+ * definition can be passed without being wrapped in an array.
  *
  * @api
  *
- * @param mixed             $types      The types to mock.
- * @param array|object|null $definition The definition.
- * @param string|null       $className  The class name.
+ * @param mixed $types The types to mock.
  *
  * @return MockBuilderInterface The mock builder.
  */
-function mockBuilder($types = null, $definition = null, $className = null)
+function mockBuilder($types = array())
 {
-    return PhoFacadeDriver::instance()->mockBuilderFactory()
-        ->create($types, $definition, $className);
+    return PhoFacadeDriver::instance()->mockBuilderFactory()->create($types);
 }
 
 /**
- * Create a new full mock.
+ * Create a new full mock, and return a stubbing handle.
  *
- * The `$types` argument may be a class name, a reflection class, or a mock
- * builder. It may also be an array of any of these.
- *
- * If `$types` is omitted, or `null`, no existing type will be used when
- * generating the mock class. This is useful in the case of ad hoc mocks, where
- * mocks need not imitate an existing type.
+ * Each value in `$types` can be either a class name, or an ad hoc mock
+ * definition. If only a single type is being mocked, the class name or
+ * definition can be passed without being wrapped in an array.
  *
  * @api
  *
- * @param mixed             $types      The types to mock.
- * @param array|object|null $definition The definition.
- * @param string|null       $className  The class name.
+ * @param mixed $types The types to mock.
  *
- * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
+ * @return InstanceStubbingProxyInterface A stubbing handle around the new mock.
  */
-function mock($types = null, $definition = null, $className = null)
+function mock($types = array())
 {
     return on(
         PhoFacadeDriver::instance()->mockBuilderFactory()
-            ->createFullMock($types, $definition, $className)
+            ->createFullMock($types)
     );
 }
 
 /**
- * Create a new partial mock.
+ * Create a new partial mock, and return a stubbing handle.
  *
- * The `$types` argument may be a class name, a reflection class, or a mock
- * builder. It may also be an array of any of these.
+ * Each value in `$types` can be either a class name, or an ad hoc mock
+ * definition. If only a single type is being mocked, the class name or
+ * definition can be passed without being wrapped in an array.
  *
- * If `$types` is omitted, or `null`, no existing type will be used when
- * generating the mock class. This is useful in the case of ad hoc mocks, where
- * mocks need not imitate an existing type.
+ * Omitting `$arguments` will cause the original constructor to be called
+ * with an empty argument list. However, if a `null` value is supplied for
+ * `$arguments`, the original constructor will not be called at all.
  *
  * @api
  *
- * @param mixed                         $types      The types to mock.
- * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
- * @param array|object|null             $definition The definition.
- * @param string|null                   $className  The class name.
+ * @param mixed                         $types     The types to mock.
+ * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
  *
- * @return InstanceStubbingProxyInterface A stubbing proxy around the new mock.
+ * @return InstanceStubbingProxyInterface A stubbing handle around the new mock.
  */
-function partialMock(
-    $types = null,
-    $arguments = null,
-    $definition = null,
-    $className = null
-) {
-    if (func_num_args() < 2) {
-        $arguments = array();
-    }
-
+function partialMock($types = array(), $arguments = array())
+{
     return on(
         PhoFacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types, $arguments, $definition, $className)
+            ->createPartialMock($types, $arguments)
     );
 }
 

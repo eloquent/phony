@@ -1,9 +1,9 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    null,
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'methodA' => function (stdClass $first = null, $second) {},
-    ),
-    'Phony\Test\MockGeneratorNonOptionalNullableObject'
+    )
 );
+
+return $builder->named('Phony\Test\MockGeneratorNonOptionalNullableObject');

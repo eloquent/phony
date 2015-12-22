@@ -52,17 +52,19 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateMockClass()
     {
         $builder = new MockBuilder(
-            'Eloquent\Phony\Test\TestClassB',
             array(
-                'static methodA' => function () {
-                    return 'static custom ' . implode(func_get_args());
-                },
-                'methodB' => function () {
-                    return 'custom ' . implode(func_get_args());
-                },
-            ),
-            __NAMESPACE__ . '\PhonyMockFactoryTestCreateMockClass'
+                'Eloquent\Phony\Test\TestClassB',
+                array(
+                    'static methodA' => function () {
+                        return 'static custom ' . implode(func_get_args());
+                    },
+                    'methodB' => function () {
+                        return 'custom ' . implode(func_get_args());
+                    },
+                ),
+            )
         );
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMockClass');
         $actual = $this->subject->createMockClass($builder);
         $protectedMethod = $actual->getMethod('testClassAStaticMethodC');
         $protectedMethod->setAccessible(true);
@@ -79,7 +81,8 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateMockClassFailureExists()
     {
         $builderA = new MockBuilder();
-        $builderB = new MockBuilder(null, null, $builderA->build(true)->getName());
+        $builderB = new MockBuilder();
+        $builderB->named($builderA->className());
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\ClassExistsException');
         $this->subject->createMockClass($builderB);
@@ -97,17 +100,19 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateMock()
     {
         $builder = new MockBuilder(
-            'Eloquent\Phony\Test\TestClassB',
             array(
-                'static methodA' => function () {
-                    return 'static custom ' . implode(func_get_args());
-                },
-                'methodB' => function () {
-                    return 'custom ' . implode(func_get_args());
-                },
-            ),
-            __NAMESPACE__ . '\PhonyMockFactoryTestCreateMock'
+                'Eloquent\Phony\Test\TestClassB',
+                array(
+                    'static methodA' => function () {
+                        return 'static custom ' . implode(func_get_args());
+                    },
+                    'methodB' => function () {
+                        return 'custom ' . implode(func_get_args());
+                    },
+                ),
+            )
         );
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMock');
         $actual = $this->subject->createMock($builder);
         $class = new ReflectionClass($actual);
         $protectedMethod = $class->getMethod('testClassAMethodC');
@@ -126,27 +131,10 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame('static custom ab', PhonyMockFactoryTestCreateMock::methodA('a', 'b'));
     }
 
-    public function testCreateMockWithConstructorArgumentsAndId()
-    {
-        $builder = new MockBuilder(
-            'Eloquent\Phony\Test\TestClassB',
-            null,
-            __NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithConstructorArguments'
-        );
-        $actual = $this->subject->createMock($builder, array('a', 'b'), 'label');
-        $class = new ReflectionClass($actual);
-
-        $this->assertSame(array('a', 'b'), $actual->constructorArguments);
-        $this->assertSame('label', $this->proxyFactory->createStubbing($actual)->label());
-    }
-
     public function testCreateMockWithConstructorArgumentsWithReferences()
     {
-        $builder = new MockBuilder(
-            'Eloquent\Phony\Test\TestClassA',
-            null,
-            __NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithConstructorArgumentsWithReferences'
-        );
+        $builder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithConstructorArgumentsWithReferences');
         $a = 'a';
         $b = 'b';
         $actual = $this->subject->createMock($builder, array(&$a, &$b));
@@ -164,11 +152,8 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         require_once __DIR__ . '/../../../src/TestClassOldConstructor.php';
 
-        $builder = new MockBuilder(
-            'TestClassOldConstructor',
-            null,
-            __NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithOldConstructor'
-        );
+        $builder = new MockBuilder('TestClassOldConstructor');
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithOldConstructor');
         $actual = $this->subject->createMock($builder, array('a', 'b'));
 
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);

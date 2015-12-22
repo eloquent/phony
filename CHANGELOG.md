@@ -1,5 +1,21 @@
 # Phony changelog
 
+## Next release
+
+- **[BC BREAK]** Mocking functions now accept ad hoc definitions in the `$types`
+  argument, hence the `$definition` argument has been removed from `mock()`,
+  `partialMock()`, and `mockBuilder()` ([#117]).
+- **[BC BREAK]** Mocking functions `mock()`, `partialMock()`, and
+  `mockBuilder()` no longer accept the `$className` argument. Custom class names
+  can still be used via `named()` on mock builders ([#117]).
+- **[BC BREAK]** Mocking functions `mock()`, `partialMock()`, and
+  `mockBuilder()` no longer accept reflection classes or mock builders in the
+  `$types` argument ([#117]).
+- **[BC BREAK]** Mock definition values can no longer be generic objects
+  ([#117]).
+
+[#117]: https://github.com/eloquent/phony/issues/117
+
 ## 0.7.0 (2015-12-20)
 
 - **[NEW]** Implemented `firstCall()` and `lastCall()` ([#93]).

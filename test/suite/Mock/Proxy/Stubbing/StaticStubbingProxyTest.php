@@ -39,7 +39,8 @@ class StaticStubbingProxyTest extends PHPUnit_Framework_TestCase
 
     protected function setUpWith($className, $mockClassName = null)
     {
-        $this->mockBuilder = new MockBuilder($className, null, $mockClassName);
+        $this->mockBuilder = new MockBuilder($className);
+        $this->mockBuilder->named($mockClassName);
         $this->class = $this->mockBuilder->build(true);
         $this->subject = new StaticStubbingProxy(
             $this->class,
@@ -312,7 +313,6 @@ EOD;
     public function testStubbingWithCustomMethod()
     {
         $this->mockBuilder = new MockBuilder(
-            null,
             array(
                 'static methodA' => function () {
                     return implode(func_get_args());
