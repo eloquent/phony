@@ -20,6 +20,8 @@
     - [Partial mocks]
     - [Mocking multiple types]
     - [Ad hoc mocks]
+        - [Ad hoc definition values]
+        - [Ad hoc definition magic "self" values]
     - [Static mocks]
     - [Calling a constructor manually]
     - [Resetting a mock]
@@ -36,6 +38,8 @@
     - [The stub API]
     - [Stubbing an existing callable]
     - [Anonymous stubs]
+    - [Stub "self" values]
+        - [Magic "self" values]
     - [Stub rules and answers]
         - [Multiple rules]
         - [Multiple answers]
@@ -888,7 +892,9 @@ echo $mock;        // outputs 'Are you stringing me along?'
 echo count($mock); // outputs '111'
 ```
 
-Definition values support methods, properties, and constants. By default,
+#### Ad hoc definition values
+
+Ad hoc definition values support methods, properties, and constants. By default,
 callback functions will be converted to methods, and everything else will become
 a property:
 
@@ -940,6 +946,37 @@ echo var_dump(isset($mock->d));  // outputs 'bool(true)'
 echo var_dump(isset($class::e)); // outputs 'bool(true)'
 
 echo $mock->f(', ', ['a', 'b']); // outputs 'a, b'
+```
+
+#### Ad hoc definition magic "self" values
+
+Methods defined in an [ad hoc mock] definition can take advantage of
+[magic "self" values]. When stubs are retrieved from a mock, their [self value]
+is automatically set to the mock itself.
+
+Any custom method with a first parameter named `$phonySelf`, regardless of the
+parameter's type, will receive the self value as the first argument. This self
+value can be used in place of `$this` to access instance state, and/or implement
+fluent interfaces:
+
+```php
+$handle = partialMock(
+    [
+        'set' => function ($phonySelf, $key, $value) {
+            $phonySelf->values[$key] = $value;
+
+            return $phonySelf;
+        },
+        'get' => function ($phonySelf, $key) {
+            return $phonySelf->values[$key] ?? null;
+        },
+        'values' => [],
+    ]
+);
+
+$mock = $handle->mock();
+
+echo $mock->set('a', 1)->get('a'); // outputs '1'
 ```
 
 ### Static mocks
@@ -1406,8 +1443,6 @@ Set the [label][labeling spies].
 
 Get the [self value] of this stub.
 
-*This value is used by [returnsSelf()](#stub.returnsSelf).*
-
 <a name="stub.setSelf" />
 
 ----
@@ -1415,8 +1450,6 @@ Get the [self value] of this stub.
 > *void* $stub->[**setSelf**](#stub.setSelf)($self)
 
 Set the [self value] of this stub.
-
-*This value is used by [returnsSelf()](#stub.returnsSelf).*
 
 <a name="stub.with" />
 
@@ -1572,7 +1605,7 @@ the last element, and `-2` indicates the second last element.*
 
 Add an answer that returns the self value.
 
-*See [Returning the "self" value].*
+*See [Returning the "self" value], [Stub "self" values].*
 
 <a name="stub.throws" />
 
@@ -2182,6 +2215,67 @@ echo $stub();    // outputs 'x'
 echo $stub('a'); // outputs 'x'
 ```
 
+### Stub "self" values
+
+All stubs have a special "self" value that is used in multiple ways by *Phony*.
+The self value defaults to the callback passed to [`stub()`](#facade.stub):
+
+```php
+$callback = function () {};
+$stub = stub($callback);
+
+echo $stub->self() === $callback ? 'true' : 'false'; // outputs 'true'
+```
+
+The self value can also be set manually by calling [`setSelf()`](#stub.setSelf):
+
+```php
+$stub = stub();
+$stub->setSelf('a');
+
+echo $stub->self(); // outputs 'a'
+```
+
+When stubs are retrieved from a [mock], their "self" value is automatically set
+to the mock itself:
+
+```php
+$handle = mock('ClassA');
+$mock = $handle->mock();
+$stub = $handle->methodA;
+
+echo $stub->self() === $mock ? 'true' : 'false'; // outputs 'true'
+```
+
+#### Magic "self" values
+
+A stubbed callback that has a first parameter named `$phonySelf`, regardless of
+the parameter's type, will receive the stub [self value] as the first argument.
+
+In the case of stubs created outside of a mock, this self value will be the
+callback passed to [`stub()`](#facade.stub), allowing recursive calls without
+creating an explicit reference to the callback:
+
+```php
+$stub = stub(
+    function ($phonySelf, $n, $total = 1) {
+        if ($n < 2) {
+            return $total;
+        }
+
+        return $phonySelf($n - 1, $total * $n);
+    }
+);
+$stub->forwards();
+
+echo $stub(0); // outputs '1'
+echo $stub(1); // outputs '1'
+echo $stub(2); // outputs '2'
+echo $stub(3); // outputs '6'
+echo $stub(4); // outputs '24'
+echo $stub(5); // outputs '120'
+```
+
 ### Stub rules and answers
 
 *Stub rules* define the circumstances under which a stub changes its behavior.
@@ -2368,7 +2462,7 @@ echo $stubC('x', 'y', 'z'); // outputs 'z'
 
 ### Returning the "self" value
 
-When stubs are retrieved from a mock, their "self" value is automatically set to
+When stubs are retrieved from a mock, their [self value] is automatically set to
 the mock itself. This allows mocking of [fluent interfaces] with the
 [`returnsSelf()`](#stub.returnsSelf) method:
 
@@ -2386,16 +2480,6 @@ $handle->methodB->returns('x');
 $fluent = $handle->mock();
 
 echo $fluent->methodA()->methodB(); // outputs 'x'
-```
-
-The self value can also be set manually by calling [`setSelf()`](#stub.setSelf)
-on any stub:
-
-```php
-$stub = stub()->returnsSelf();
-$stub->setSelf('x');
-
-echo $stub(); // outputs 'x'
 ```
 
 ### Throwing exceptions
@@ -5722,6 +5806,8 @@ Get the index.
 
 <!-- Heading references -->
 
+[ad hoc definition magic "self" values]: #ad-hoc-definition-magic-self-values
+[ad hoc definition values]: #ad-hoc-definition-values
 [ad hoc mocks]: #ad-hoc-mocks
 [anonymous spies]: #anonymous-spies
 [anonymous stubs]: #anonymous-stubs
@@ -5761,6 +5847,7 @@ Get the index.
 [invoking spies]: #invoking-spies
 [labeling mocks]: #labeling-mocks
 [labeling spies]: #labeling-spies
+[magic "self" values]: #magic-self-values
 [matcher integrations]: #matcher-integrations
 [matchers]: #matchers
 [matching stub arguments]: #matching-stub-arguments
@@ -5801,6 +5888,7 @@ Get the index.
 [standalone usage]: #standalone-usage
 [standard verification]: #standard-verification
 [static mocks]: #static-mocks
+[stub "self" values]: #stub-self-values
 [stub rules and answers]: #stub-rules-and-answers
 [stubbing an existing callable]: #stubbing-an-existing-callable
 [stubbing handles]: #stubbing-handles
@@ -5880,7 +5968,7 @@ Get the index.
 [mock]: #mocks
 [partial mock]: #partial-mocks
 [references]: #export-identifiers-and-references
-[self value]: #returning-the-self-value
+[self value]: #stub-self-values
 [spy]: #spies
 [static mock handles]: #static-mocks
 [stub]: #stubs
