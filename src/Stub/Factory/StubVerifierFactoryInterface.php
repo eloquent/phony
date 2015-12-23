@@ -23,7 +23,7 @@ interface StubVerifierFactoryInterface
     /**
      * Create a new stub verifier.
      *
-     * @param StubInterface|null $stub The stub, or null to create an unbound stub verifier.
+     * @param StubInterface|null $stub The stub, or null to create an anonymous stub.
      * @param SpyInterface|null  $spy  The spy, or null to spy on the supplied stub.
      *
      * @return StubVerifierInterface The newly created stub verifier.
@@ -36,19 +36,9 @@ interface StubVerifierFactoryInterface
     /**
      * Create a new stub verifier for the supplied callback.
      *
-     * @param callable|null $callback              The callback, or null to create an unbound stub verifier.
-     * @param mixed         $self                  The self value.
-     * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
-     * @param boolean       $useGeneratorSpies     True if generator spies should be used.
-     * @param boolean       $useTraversableSpies   True if traversable spies should be used.
+     * @param callable|null $callback The callback, or null to create an anonymous stub.
      *
      * @return StubVerifierInterface The newly created stub verifier.
      */
-    public function createFromCallback(
-        $callback = null,
-        $self = null,
-        $defaultAnswerCallback = null,
-        $useGeneratorSpies = true,
-        $useTraversableSpies = false
-    );
+    public function createFromCallback($callback = null);
 }

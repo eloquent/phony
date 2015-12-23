@@ -363,24 +363,10 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame(123, $spy());
     }
 
-    public function testTraversableSpyingStatic()
+    public function testTraversableSpying()
     {
-        $stub = Phony::stub(null, null, null, null, true);
-        $stub->returns(array('a' => 'b', 'c' => 'd'));
-        iterator_to_array($stub());
-
-        $stub->produced();
-        $stub->produced('b');
-        $stub->produced('d');
-        $stub->produced('a', 'b');
-        $stub->produced('c', 'd');
-        $stub->producedAll('b', 'd');
-        $stub->producedAll(array('a', 'b'), array('c', 'd'));
-    }
-
-    public function testTraversableSpyingFunction()
-    {
-        $stub = x\stub(null, null, null, null, true);
+        $stub = x\stub();
+        $stub->setUseTraversableSpies(true);
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 

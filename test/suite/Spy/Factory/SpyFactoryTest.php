@@ -59,23 +59,17 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $callback = function () {};
-        $useGeneratorSpies = false;
-        $useTraversableSpies = false;
         $expected = new Spy(
             $callback,
             '0',
-            $useGeneratorSpies,
-            $useTraversableSpies,
             $this->indexNormalizer,
             $this->callFactory,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
-        $actual = $this->subject->create($callback, $useTraversableSpies, $useGeneratorSpies);
+        $actual = $this->subject->create($callback);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($useGeneratorSpies, $actual->useGeneratorSpies());
-        $this->assertSame($useTraversableSpies, $actual->useTraversableSpies());
         $this->assertSame($callback, $actual->callback());
         $this->assertSame($this->indexNormalizer, $actual->indexNormalizer());
         $this->assertSame($this->callFactory, $actual->callFactory());

@@ -110,14 +110,12 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $spy = new Spy($callback, '0', false, true);
+        $spy = new Spy($callback, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
-        $actual = $this->subject->createFromCallback($callback, false, true);
+        $actual = $this->subject->createFromCallback($callback);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
-        $this->assertFalse($actual->useGeneratorSpies());
-        $this->assertTrue($actual->useTraversableSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());

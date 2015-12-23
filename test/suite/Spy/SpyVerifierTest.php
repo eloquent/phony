@@ -44,7 +44,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
         $this->label = 'label';
-        $this->spy = new Spy($this->callback, $this->label, false, false, null, $this->callFactory);
+        $this->spy = new Spy($this->callback, $this->label, null, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
@@ -388,7 +388,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, '111', false, false, null, $this->callFactory);
+        $spy = new Spy(null, '111', null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $verifier->invokeWith(array('a'));
         $verifier->invoke('b', 'c');
@@ -425,7 +425,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($callback, '111', false, false, null, $this->callFactory);
+        $spy = new Spy($callback, '111', null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $caughtExceptions = array();
         try {
@@ -473,7 +473,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $callback = function (&$argument) {
             $argument = 'x';
         };
-        $spy = new Spy($callback, '111', false, false, null, $this->callFactory);
+        $spy = new Spy($callback, '111', null, $this->callFactory);
         $verifier = new SpyVerifier($spy);
         $value = null;
         $arguments = array(&$value);

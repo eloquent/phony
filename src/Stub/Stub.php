@@ -36,7 +36,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Construct a new stub.
      *
-     * @param callable|null                    $callback              The callback, or null to create an unbound stub.
+     * @param callable|null                    $callback              The callback, or null to create an anonymous stub.
      * @param mixed                            $self                  The self value.
      * @param string|null                      $label                 The label.
      * @param callable|null                    $defaultAnswerCallback The callback to use when creating a default answer.

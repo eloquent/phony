@@ -13,8 +13,13 @@
   `$types` argument ([#117]).
 - **[BC BREAK]** Mock definition values can no longer be generic objects
   ([#117]).
+- **[BC BREAK]** Removed the `$useGeneratorSpies` and `$useTraversableSpies`
+  argument from both `spy()` and `stub()` ([#123]).
+- **[BC BREAK]** Removed the `$self` and `$defaultAnswerCallback` arguments from
+  `stub()` ([#123]).
 
 [#117]: https://github.com/eloquent/phony/issues/117
+[#123]: https://github.com/eloquent/phony/issues/123
 
 ## 0.7.0 (2015-12-20)
 

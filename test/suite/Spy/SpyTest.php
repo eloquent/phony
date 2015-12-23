@@ -26,8 +26,6 @@ class SpyTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->label = 'label';
-        $this->useGeneratorSpies = false;
-        $this->useTraversableSpies = false;
         $this->indexNormalizer = new IndexNormalizer();
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
@@ -36,8 +34,6 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->subject = new Spy(
             $this->callback,
             $this->label,
-            $this->useGeneratorSpies,
-            $this->useTraversableSpies,
             $this->indexNormalizer,
             $this->callFactory,
             $this->generatorSpyFactory,
@@ -56,8 +52,8 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->label, $this->subject->label());
-        $this->assertSame($this->useGeneratorSpies, $this->subject->useGeneratorSpies());
-        $this->assertSame($this->useTraversableSpies, $this->subject->useTraversableSpies());
+        $this->assertTrue($this->subject->useGeneratorSpies());
+        $this->assertFalse($this->subject->useTraversableSpies());
         $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
         $this->assertSame($this->generatorSpyFactory, $this->subject->generatorSpyFactory());
@@ -303,7 +299,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, '111', false, false, null, $this->callFactory);
+        $spy = new Spy(null, '111', null, $this->callFactory);
         $spy->invokeWith(array('a'));
         $spy->invoke('b', 'c');
         $spy('d');
@@ -339,7 +335,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($callback, '111', false, false, null, $this->callFactory);
+        $spy = new Spy($callback, '111', null, $this->callFactory);
         $caughtExceptions = array();
         try {
             $spy->invokeWith(array('a'));
@@ -386,7 +382,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $callback = function () {
             return 'x';
         };
-        $spy = new Spy($callback, '111', false, false, null, $this->callFactory);
+        $spy = new Spy($callback, '111', null, $this->callFactory);
         $spy->invokeWith();
         $this->callFactory->reset();
         $expected = array(
@@ -406,7 +402,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $callback = function (&$argument) {
             $argument = 'x';
         };
-        $spy = new Spy($callback, '111', false, false, null, $this->callFactory);
+        $spy = new Spy($callback, '111', null, $this->callFactory);
         $value = null;
         $arguments = array(&$value);
         $spy->invokeWith($arguments);
@@ -423,13 +419,12 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $spy = new Spy(
             $this->callback,
             null,
-            true,
-            true,
             null,
             $this->callFactory,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
+        $spy->setUseTraversableSpies(true);
         foreach ($spy->invoke('a', 'b') as $value) {
         }
         foreach ($spy->invoke('c') as $value) {

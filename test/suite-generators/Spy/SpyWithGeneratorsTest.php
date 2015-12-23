@@ -24,8 +24,6 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->label = 'label';
-        $this->useGeneratorSpies = false;
-        $this->useTraversableSpies = false;
         $this->indexNormalizer = new IndexNormalizer();
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
@@ -34,8 +32,6 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject = new Spy(
             $this->callback,
             $this->label,
-            $this->useGeneratorSpies,
-            $this->useTraversableSpies,
             $this->indexNormalizer,
             $this->callFactory,
             $this->generatorSpyFactory,
@@ -60,8 +56,6 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $spy = new Spy(
             $this->callback,
             null,
-            true,
-            true,
             null,
             $this->callFactory,
             $this->generatorSpyFactory,

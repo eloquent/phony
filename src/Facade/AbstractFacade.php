@@ -163,55 +163,33 @@ abstract class AbstractFacade
     }
 
     /**
-     * Create a new spy verifier for the supplied callback.
+     * Create a new spy.
      *
      * @api
      *
-     * @param callable|null $callback            The callback, or null to create an unbound spy verifier.
-     * @param boolean       $useGeneratorSpies   True if generator spies should be used.
-     * @param boolean       $useTraversableSpies True if traversable spies should be used.
+     * @param callable|null $callback The callback, or null to create an anonymous spy.
      *
-     * @return SpyVerifierInterface The newly created spy verifier.
+     * @return SpyVerifierInterface The new spy.
      */
-    public static function spy(
-        $callback = null,
-        $useGeneratorSpies = true,
-        $useTraversableSpies = false
-    ) {
-        return static::driver()->spyVerifierFactory()->createFromCallback(
-            $callback,
-            $useGeneratorSpies,
-            $useTraversableSpies
-        );
+    public static function spy($callback = null)
+    {
+        return static::driver()->spyVerifierFactory()
+            ->createFromCallback($callback);
     }
 
     /**
-     * Create a new stub verifier for the supplied callback.
+     * Create a new stub.
      *
      * @api
      *
-     * @param callable|null $callback              The callback, or null to create an unbound stub verifier.
-     * @param mixed         $self                  The self value.
-     * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
-     * @param boolean       $useGeneratorSpies     True if generator spies should be used.
-     * @param boolean       $useTraversableSpies   True if traversable spies should be used.
+     * @param callable|null $callback The callback, or null to create an anonymous stub.
      *
-     * @return StubVerifierInterface The newly created stub verifier.
+     * @return StubVerifierInterface The new stub.
      */
-    public static function stub(
-        $callback = null,
-        $self = null,
-        $defaultAnswerCallback = null,
-        $useGeneratorSpies = true,
-        $useTraversableSpies = false
-    ) {
-        return static::driver()->stubVerifierFactory()->createFromCallback(
-            $callback,
-            $self,
-            $defaultAnswerCallback,
-            $useGeneratorSpies,
-            $useTraversableSpies
-        );
+    public static function stub($callback = null)
+    {
+        return static::driver()->stubVerifierFactory()
+            ->createFromCallback($callback);
     }
 
     /**

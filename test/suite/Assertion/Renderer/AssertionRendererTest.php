@@ -236,6 +236,12 @@ EOD;
         $callFactory = new TestCallFactory();
         $callEventFactory = $callFactory->eventFactory();
 
+        $spyWithLabel = new Spy();
+        $spyWithLabel->setLabel('label');
+
+        $stubWithLabel = new Stub();
+        $stubWithLabel->setLabel('label');
+
         return array(
             'Method' => array(
                 $callFactory->create($callEventFactory->createCalled(array($this, 'setUp'))),
@@ -258,7 +264,7 @@ EOD;
                 '{spy}()',
             ),
             'Spy with label' => array(
-                $callFactory->create($callEventFactory->createCalled(new Spy(null, 'label'))),
+                $callFactory->create($callEventFactory->createCalled($spyWithLabel)),
                 '{spy}[label]()',
             ),
             'Stub' => array(
@@ -266,7 +272,7 @@ EOD;
                 '{stub}()',
             ),
             'Stub with label' => array(
-                $callFactory->create($callEventFactory->createCalled(new Stub(null, null, 'label'))),
+                $callFactory->create($callEventFactory->createCalled($stubWithLabel)),
                 '{stub}[label]()',
             ),
             'With arguments' => array(

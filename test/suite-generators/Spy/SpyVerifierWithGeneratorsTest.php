@@ -33,7 +33,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
         $this->label = 'label';
-        $this->spy = new Spy($this->callback, $this->label, false, false, null, $this->callFactory);
+        $this->spy = new Spy($this->callback, $this->label, null, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();
