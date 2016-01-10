@@ -159,7 +159,7 @@ For help with a difficult testing scenario, questions regarding how to use
 *Phony*, or to report issues with *Phony* itself, please open a [GitHub issue]
 so that others may benefit from the outcome.
 
-Alternatively, [@ezzatron] may be contacted directly via Twitter.
+Alternatively, [@ezzatron] may be contacted directly via [Twitter].
 
 ## Usage
 
@@ -6022,7 +6022,7 @@ Get the index.
 
 <!-- External references -->
 
-[@ezzatron]: https://twitter.com/ezzatron
+[@ezzatron]: https://github.com/ezzatron
 [`__invoke()`]: http://php.net/language.oop5.magic#object.invoke
 [closure binding]: http://php.net/closure.bind
 [composer]: http://getcomposer.org/
@@ -6053,5 +6053,6 @@ Get the index.
 [simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
 [simpletest]: https://github.com/simpletest/simpletest
 [throwable]: http://php.net/class.throwable
+[twitter]: https://twitter.com/ezzatron
 [use function]: http://php.net/language.namespaces.importing
 [yield]: http://php.net/language.generators.syntax#control-structures.yield

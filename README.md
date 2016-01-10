@@ -27,21 +27,13 @@
 support for many modern PHP features such as [traits] and [generators], and
 supports PHP 7 and [HHVM].
 
-[generators]: http://php.net/language.generators.overview
-[hhvm]: http://hhvm.com/
-[test doubles]: https://en.wikipedia.org/wiki/Test_double
-[traits]: http://php.net/traits
-
 ## Help
 
 For help with a difficult testing scenario, questions regarding how to use
 *Phony*, or to report issues with *Phony* itself, please open a [GitHub issue]
 so that others may benefit from the outcome.
 
-Alternatively, [@ezzatron] may be contacted directly via Twitter.
-
-[@ezzatron]: https://twitter.com/ezzatron
-[github issue]: https://github.com/eloquent/phony/issues
+Alternatively, [@ezzatron] may be contacted directly via [Twitter].
 
 ## Usage
 
@@ -50,8 +42,6 @@ For detailed usage, see the [documentation].
 ### Example test suites
 
 See the [example] directory.
-
-[example]: doc/example
 
 ### Standalone usage
 
@@ -85,8 +75,6 @@ describe('Phony', function () {
 });
 ```
 
-[peridot]: http://peridot-php.github.io/
-
 ### [Pho] usage
 
 ```php
@@ -104,8 +92,6 @@ describe('Phony', function () {
     });
 });
 ```
-
-[pho]: https://github.com/danielstjules/pho
 
 ### [PHPUnit] usage
 
@@ -127,8 +113,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-[phpunit]: https://phpunit.de/
-
 ### [SimpleTest] usage
 
 ```php
@@ -149,6 +133,131 @@ class PhonyTest extends UnitTestCase
 }
 ```
 
-[simpletest]: https://github.com/simpletest/simpletest
+## Why?
 
+I'd like to answer this question a little less formally, by instead talking
+about the history of *Phony*'s inception. Please forgive me if this section is
+opinionated, or if I recall some particular detail of a framework incorrectly.
+
+The first mocking framework I used was *probably* [SimpleTest]'s. Unfortunately,
+that's a long time ago now, and I didn't really understand mocking at the time,
+and to top it off, I can't even remember how [SimpleTest]'s mocks functioned.
+So let's skip ahead to the first mocking framework I really explored in depth,
+which was [PHPUnit]'s.
+
+When I first discovered [PHPUnit]'s mocks they were revolutionary to me. They
+allowed me to test things *really* thoroughly, in ways I didn't even know were
+possible previously. Although [PHPUnit]'s mocking was likely a port of some
+existing Java mocking system, My eyes were opened, so I must give credit to
+[@sebastianbergmann] and the rest of the [PHPUnit] developers for their work.
+
+Unfortunately it wasn't all sunshine and roses. [PHPUnit]'s mocks were difficult
+to use, and especially, because of the [expect-run-verify] style interface, they
+were difficult to *re*-use. There was no way to "un-expect" something in a
+particular test, and when something failed, the true cause of the failure was
+often difficult to determine.
+
+While searching for a better solution, I stumbled across [Phake], which was
+inspired by Java's *extremely* popular [Mockito] mocking framework. [Phake] was,
+and still is, an excellent mocking framework. Both [Mockito] and [Phake] eschew
+the [expect-run-verify] pattern, to great benefit.
+
+By treating stubbing and verification as separate concepts, [Phake] essentially
+fixed all of the problems I had with [PHPUnit]'s mocks. Mocks could be re-used
+easily, and when a test failed, the cause was (usually) clear. I was sold on the
+evils of [expect-run-verify], and swore never to go back. I'm forever in debt to
+[@mlively], and everyone who worked on [Phake] for this. Thank you!
+
+I believe it was around this time that I heard of [Mockery]. Although I was
+fairly happy with [Phake], it *did* have a few little oddities, such as the way
+it deals with by-reference arguments, and mocking of traits was not possible. So
+I checked out [Mockery], but was immediately put off by its use of expectations,
+which I felt would have been a huge step backwards.
+
+In fairness, it's possible that [Mockery] supports other mocking methods, but
+since the "primary" way it works seems to be based around [expect-run-verify],
+I've never considered it a viable candidate, and have never used it.
+
+At some point around this time I worked on a Node.js project, and explored a
+handful of the most popular Node mocking frameworks, before settling on the
+excellent [Sinon.JS]. Its focus on callback-based stubbing and spying, and its
+extensive verification API would eventually influence *Phony* heavily. Many
+thanks to [@cjohansen] and all who worked on [Sinon.JS]!
+
+It wasn't until [HHVM] became a viable option in the PHP world that I really had
+to consider using something other than [Phake]. I had wanted for a while to
+start experimenting with [HHVM] in my projects. Unfortunately [Phake] had issues
+that prevented the test suite from even *running* under [HHVM], so it was
+immediately a problem.
+
+One of my co-workers had intended to work on [HHVM] support for [Phake], but
+unfortunately it seemed at that time as though work on [Phake] had stagnated,
+and it took over a month just to get a [PR] accepted that added [HHVM] as a test
+target. To [Phake]'s credit, [HHVM] *is* now supported, and hindsight has taught
+me that HHVM support is **hard**.
+
+One project that showed promise was [Prophecy], an "opinionated" mocking
+framework that arose from the [phpspec] testing framework. While I disliked its
+use of abstract terms like "prophesize" and "reveal" for method names, the core
+idea of a separate object instance that can be used to control the actual mock
+worked really well. So well, in fact, that I would eventually end up using this
+concept in *Phony*, so thanks are due to [@padraic] and the [Mockery] team for
+that idea.
+
+Importantly, [Prophecy] already supported [HHVM], and seemed like a great fit to
+replace [Phake], until I ran into the "opinionated" side of [Prophecy]'s nature.
+One thing that [Prophecy] does not support, is order verification. For example,
+verifying that your code opens a file before writing to it. It seemed to me to
+be a feature whose benefits are self-evident, but the [Prophecy] developers
+unfortunately [did not agree].
+
+So, fool that I am, I thought "How hard can it be?" and started work on *Phony*,
+a mocking framework designed to combine the strengths of its predecessors, and
+allow testing under [HHVM] without compromise.
+
+New versions of PHP came along and introduced new language features, and *Phony*
+adapted to meet the requirements of testing these features. I was also fortunate
+enough to be part of a development team at my day job who were willing to be the
+test bed for *Phony*, and it received a lot of real-world usage that contributed
+immensely to *Phony*'s stability and eventual feature set. Special thanks to
+[@jmalloc], [@koden-km], [@parkertr], and [@darianbr] for their help.
+
+Of course it turned into a much longer journey than I first expected, and
+*Phony* continues to be a challenging project to maintain. But for me, it's an
+invaluable tool that I use almost every day, and I hope it can be the same for
+you.
+
+Thanks for listening.
+
+> Erin ([@ezzatron])
+
+[@cjohansen]: https://github.com/cjohansen
+[@darianbr]: https://github.com/darianbr
+[@ezzatron]: https://github.com/ezzatron
+[@jmalloc]: https://github.com/jmalloc
+[@koden-km]: https://github.com/koden-km
+[@mlively]: https://github.com/mlively
+[@padraic]: https://github.com/padraic
+[@parkertr]: https://github.com/parkertr
+[@sebastianbergmann]: https://github.com/sebastianbergmann
+[did not agree]: https://github.com/phpspec/prophecy/issues/130
 [documentation]: http://eloquent-software.com/phony/
+[example]: doc/example
+[expect-run-verify]: http://monkeyisland.pl/2008/02/01/deathwish/
+[generators]: http://php.net/language.generators.overview
+[github issue]: https://github.com/eloquent/phony/issues
+[hhvm]: http://hhvm.com/
+[mockery]: http://docs.mockery.io/
+[mockito]: http://mockito.org/
+[peridot]: http://peridot-php.github.io/
+[phake]: http://phake.readthedocs.org/
+[pho]: https://github.com/danielstjules/pho
+[phpspec]: http://phpspec.readthedocs.org/
+[phpunit]: https://phpunit.de/
+[pr]: https://github.com/mlively/Phake/pull/133
+[prophecy]: https://github.com/phpspec/prophecy
+[simpletest]: https://github.com/simpletest/simpletest
+[sinon.js]: http://sinonjs.org/
+[test doubles]: https://en.wikipedia.org/wiki/Test_double
+[traits]: http://php.net/traits
+[twitter]: https://twitter.com/ezzatron
