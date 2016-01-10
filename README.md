@@ -138,6 +138,14 @@ class PhonyTest extends UnitTestCase
 I'd like to answer this question a little less formally, by instead talking
 about the history of *Phony*'s inception. Please forgive me if this section is
 opinionated, or if I recall some particular detail of a framework incorrectly.
+But if you want a TL;DR, basically:
+
+- [Phake] doesn't support traits, and once upon a time, *didn't* support [HHVM].
+- [PHPUnit] and [Mockery] both implement [expect-run-verify] style mocks, which
+  are evil.
+- [Prophecy] doesn't support the features that I need.
+- [SimpleTest] is ancient.
+- I haven't heard of anything else that sounds promising.
 
 The first mocking framework I used was *probably* [SimpleTest]'s. Unfortunately,
 that's a long time ago now, and I didn't really understand mocking at the time,
