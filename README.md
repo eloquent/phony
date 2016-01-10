@@ -236,7 +236,7 @@ allow testing under [HHVM] without compromise.
 New versions of PHP came along and introduced new language features, and *Phony*
 adapted to meet the requirements of testing these features. I was also fortunate
 enough to be part of a development team at my day job, who were willing to be
-the test bed for *Phony*, and it received a lot of real-world usage that
+the test bed for *Phony*; and it received a lot of real-world usage that
 contributed immensely to *Phony*'s stability and eventual feature set.
 
 Of course it turned into a much longer journey than I first expected, and
