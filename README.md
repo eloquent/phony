@@ -261,7 +261,7 @@ Special thanks to the following people:
   help as test subjects.
 - [@szczepiq], and everyone who contributed to [Mockito].
 - [@mlively], and everyone who contributed to [Phake].
-- [@cjohansen] and everyone who contributed to [Sinon.JS].
+- [@cjohansen], and everyone who contributed to [Sinon.JS].
 - [@everzet], and everyone who contributed to [Prophecy].
 - [@sebastianbergmann], and everyone who contributed to [PHPUnit].
 
