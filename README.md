@@ -161,8 +161,8 @@ But if you want a TL;DR, basically:
 - I haven't heard of anything else that sounds promising.
 
 The first mocking framework I used was *probably* [SimpleTest]'s. Unfortunately,
-that's a long time ago now, and I didn't really understand mocking at the time,
-and to top it off, I can't even remember how [SimpleTest]'s mocks functioned.
+that's a long time ago now, and I didn't really understand mocking at the time.
+And to top it off, I can't even remember how [SimpleTest]'s mocks functioned.
 So let's skip ahead to the first mocking framework I really explored in depth,
 which was [PHPUnit]'s.
 
@@ -192,7 +192,7 @@ I believe it was around this time that I heard of [Mockery]. Although I was
 fairly happy with [Phake], it *did* have a few little oddities, such as the way
 it deals with by-reference arguments, and mocking of [traits] was not possible.
 So I checked out [Mockery], but was immediately put off by its use of
-expectations, which I felt would have been a huge step backwards.
+expectations; which I felt would have been a huge step backwards.
 
 In fairness, it's possible that [Mockery] supports other mocking methods, but
 since the "primary" way it works seems to be based around [expect-run-verify],
@@ -223,8 +223,8 @@ worked really well. So well, in fact, that I would eventually end up using this
 concept in *Phony*.
 
 Importantly, [Prophecy] already supported [HHVM], and seemed like a great fit to
-replace [Phake], until I ran into the "opinionated" side of [Prophecy]'s nature.
-One thing that [Prophecy] does not support, is order verification. For example,
+replace [Phake]; until I ran into the "opinionated" side of [Prophecy]'s nature.
+One thing that [Prophecy] does *not* support is order verification. For example;
 verifying that your code opens a file before writing to it. It seemed to me to
 be a feature whose benefits are self-evident, but the [Prophecy] developers
 unfortunately [did not agree].
@@ -236,7 +236,7 @@ allow testing under [HHVM] without compromise.
 New versions of PHP came along and introduced new language features, and *Phony*
 adapted to meet the requirements of testing these features. I was also fortunate
 enough to be part of a development team at my day job, who were willing to be
-the test bed for *Phony*; and it received a lot of real-world usage that
+the test bed for *Phony*, and it received a lot of real-world usage that
 contributed immensely to *Phony*'s stability and eventual feature set.
 
 Of course it turned into a much longer journey than I first expected, and
