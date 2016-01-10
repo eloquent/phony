@@ -166,10 +166,11 @@ and to top it off, I can't even remember how [SimpleTest]'s mocks functioned.
 So let's skip ahead to the first mocking framework I really explored in depth,
 which was [PHPUnit]'s.
 
-When I first discovered [PHPUnit]'s mocks they were revolutionary to me. They
+When I first discovered [PHPUnit]'s mocks, they were revolutionary to me. They
 allowed me to test things *really* thoroughly, in ways I didn't even know were
 possible previously. Although [PHPUnit]'s mocking was likely a port of some
-existing Java mocking system, my eyes were opened.
+existing Java mocking system, it was the framework that first opened my eyes to
+the real potential of test doubles.
 
 Unfortunately it wasn't all sunshine and roses. [PHPUnit]'s mocks were difficult
 to use, and especially, because of the [expect-run-verify] style interface, they
