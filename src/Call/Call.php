@@ -421,7 +421,7 @@ class Call implements CallInterface
      * Returns true if this call has completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a
@@ -513,7 +513,7 @@ class Call implements CallInterface
      * Get the time at which the call completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a
