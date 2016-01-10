@@ -1447,7 +1447,7 @@ Get the [self value] of this stub.
 
 ----
 
-> *void* $stub->[**setSelf**](#stub.setSelf)($self)
+> *fluent* $stub->[**setSelf**](#stub.setSelf)($self)
 
 Set the [self value] of this stub.
 
@@ -1629,7 +1629,7 @@ Returns `true` if this stub uses [generator spies].
 
 ----
 
-> *void* $stub->[**setUseGeneratorSpies**](#stub.setUseGeneratorSpies)($useGeneratorSpies)
+> *fluent* $stub->[**setUseGeneratorSpies**](#stub.setUseGeneratorSpies)($useGeneratorSpies)
 
 Turn on or off the use of [generator spies].
 
@@ -1645,7 +1645,7 @@ Returns `true` if this stub uses [traversable spies].
 
 ----
 
-> *void* $stub->[**setUseTraversableSpies**](#stub.setUseTraversableSpies)($useTraversableSpies)
+> *fluent* $stub->[**setUseTraversableSpies**](#stub.setUseTraversableSpies)($useTraversableSpies)
 
 Turn on or off the use of [traversable spies].
 
@@ -2234,6 +2234,13 @@ $stub = stub();
 $stub->setSelf('a');
 
 echo $stub->self(); // outputs 'a'
+```
+
+The [`setSelf()`](#stub.setSelf) method is also fluent, meaning that stub
+creation and self value setting can be done in a single expression:
+
+```php
+$stub = stub()->setSelf('a');
 ```
 
 When stubs are retrieved from a [mock], their "self" value is automatically set
@@ -2933,7 +2940,7 @@ Returns `true` if this spy uses [generator spies].
 
 ----
 
-> *void* $spy->[**setUseGeneratorSpies**](#spy.setUseGeneratorSpies)($useGeneratorSpies)
+> *fluent* $spy->[**setUseGeneratorSpies**](#spy.setUseGeneratorSpies)($useGeneratorSpies)
 
 Turn on or off the use of [generator spies].
 
@@ -2949,7 +2956,7 @@ Returns `true` if this spy uses [traversable spies].
 
 ----
 
-> *void* $spy->[**setUseTraversableSpies**](#spy.setUseTraversableSpies)($useTraversableSpies)
+> *fluent* $spy->[**setUseTraversableSpies**](#spy.setUseTraversableSpies)($useTraversableSpies)
 
 Turn on or off the use of [traversable spies].
 
@@ -3619,6 +3626,16 @@ To turn off generator spies, use
 
 ```php
 $spy->setUseGeneratorSpies(false);
+```
+
+Both [`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) and
+[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) are fluent, meaning
+spy creation and setting of these options can be done in a single expression:
+
+```php
+$spy = spy()
+    ->setUseTraversableSpies(true)
+    ->setUseGeneratorSpies(false);
 ```
 
 #### Verifying values produced by spies
@@ -4363,7 +4380,7 @@ the last element, and `-2` indicates the second last element.*
 
 ----
 
-> *void* $arguments->[**set**](#arguments.set)($indexOrValue = null, $value = null)
+> *fluent* $arguments->[**set**](#arguments.set)($indexOrValue = null, $value = null)
 > throws [UndefinedArgumentException]
 
 Set an argument by index.

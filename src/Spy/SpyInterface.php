@@ -30,6 +30,8 @@ interface SpyInterface extends
      * @api
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
+     *
+     * @return $this This spy.
      */
     public function setUseGeneratorSpies($useGeneratorSpies);
 
@@ -48,6 +50,8 @@ interface SpyInterface extends
      * @api
      *
      * @param boolean $useTraversableSpies True to use traversable spies.
+     *
+     * @return $this This spy.
      */
     public function setUseTraversableSpies($useTraversableSpies);
 

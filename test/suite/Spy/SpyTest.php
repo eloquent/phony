@@ -89,15 +89,13 @@ class SpyTest extends PHPUnit_Framework_TestCase
 
     public function testSetUseGeneratorSpies()
     {
-        $this->subject->setUseGeneratorSpies(true);
-
+        $this->assertSame($this->subject, $this->subject->setUseGeneratorSpies(true));
         $this->assertTrue($this->subject->useGeneratorSpies());
     }
 
     public function testSetUseTraversableSpies()
     {
-        $this->subject->setUseTraversableSpies(true);
-
+        $this->assertSame($this->subject, $this->subject->setUseTraversableSpies(true));
         $this->assertTrue($this->subject->useTraversableSpies());
     }
 

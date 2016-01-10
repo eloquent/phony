@@ -57,6 +57,7 @@ interface ArgumentsInterface extends Countable, IteratorAggregate
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
      *
+     * @return $this                      This arguments object.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
     public function set($indexOrValue = null, $value = null);

@@ -144,6 +144,8 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      * This value is used by returnsThis().
      *
      * @param mixed $self The self value.
+     *
+     * @return $this This stub.
      */
     public function setSelf($self)
     {
@@ -152,6 +154,8 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         $this->self = $self;
+
+        return $this;
     }
 
     /**

@@ -170,12 +170,9 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testSetSelf()
     {
-        $this->subject->setSelf($this->subject);
-
+        $this->assertSame($this->subject, $this->subject->setSelf($this->subject));
         $this->assertSame($this->subject, $this->subject->self());
-
-        $this->subject->setSelf($this->self);
-
+        $this->assertSame($this->subject, $this->subject->setSelf($this->self));
         $this->assertSame($this->self, $this->subject->self());
     }
 

@@ -88,10 +88,14 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * Turn on or off the use of generator spies.
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
+     *
+     * @return $this This spy.
      */
     public function setUseGeneratorSpies($useGeneratorSpies)
     {
         $this->useGeneratorSpies = $useGeneratorSpies;
+
+        return $this;
     }
 
     /**
@@ -108,10 +112,14 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * Turn on or off the use of traversable spies.
      *
      * @param boolean $useTraversableSpies True to use traversable spies.
+     *
+     * @return $this This spy.
      */
     public function setUseTraversableSpies($useTraversableSpies)
     {
         $this->useTraversableSpies = $useTraversableSpies;
+
+        return $this;
     }
 
     /**

@@ -31,6 +31,8 @@ interface StubInterface extends WrappedInvocableInterface
      * @api
      *
      * @param mixed $self The self value.
+     *
+     * @return $this This stub.
      */
     public function setSelf($self);
 

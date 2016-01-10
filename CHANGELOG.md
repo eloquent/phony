@@ -17,7 +17,9 @@
   argument from both `spy()` and `stub()` ([#123]).
 - **[BC BREAK]** Removed the `$self` and `$defaultAnswerCallback` arguments from
   `stub()` ([#123]).
+- **[IMPROVED]** Made API setter style methods fluent ([#98]).
 
+[#98]: https://github.com/eloquent/phony/issues/98
 [#117]: https://github.com/eloquent/phony/issues/117
 [#123]: https://github.com/eloquent/phony/issues/123
 

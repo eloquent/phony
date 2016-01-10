@@ -103,10 +103,14 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      * This value is used by returnsThis().
      *
      * @param mixed $self The self value.
+     *
+     * @return $this This stub.
      */
     public function setSelf($self)
     {
         $this->stub->setSelf($self);
+
+        return $this;
     }
 
     /**

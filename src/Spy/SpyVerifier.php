@@ -195,10 +195,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * Turn on or off the use of generator spies.
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
+     *
+     * @return $this This spy.
      */
     public function setUseGeneratorSpies($useGeneratorSpies)
     {
         $this->spy->setUseGeneratorSpies($useGeneratorSpies);
+
+        return $this;
     }
 
     /**
@@ -215,10 +219,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * Turn on or off the use of traversable spies.
      *
      * @param boolean $useTraversableSpies True to use traversable spies.
+     *
+     * @return $this This spy.
      */
     public function setUseTraversableSpies($useTraversableSpies)
     {
         $this->spy->setUseTraversableSpies($useTraversableSpies);
+
+        return $this;
     }
 
     /**

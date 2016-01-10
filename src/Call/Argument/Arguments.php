@@ -109,6 +109,7 @@ class Arguments implements ArgumentsInterface
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
      *
+     * @return $this                      This arguments object.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
     public function set($indexOrValue = null, $value = null)
@@ -129,6 +130,8 @@ class Arguments implements ArgumentsInterface
         }
 
         $this->arguments[$normalized] = $value;
+
+        return $this;
     }
 
     /**
