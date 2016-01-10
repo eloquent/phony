@@ -1,6 +1,7 @@
 # Phony
 
 - [Installation]
+- [Help]
 - [Usage]
     - [Example test suites]
     - [Standalone usage]
@@ -151,6 +152,14 @@
 ## Installation
 
 Available as [Composer] package [eloquent/phony].
+
+## Help
+
+For help with a difficult testing scenario, questions regarding how to use
+*Phony*, or to report issues with *Phony* itself, please open a [GitHub issue]
+so that others may benefit from the outcome.
+
+Alternatively, [@ezzatron] may be contacted directly via Twitter.
 
 ## Usage
 
@@ -5851,6 +5860,7 @@ Get the index.
 [forwarding to the original callable]: #forwarding-to-the-original-callable
 [generating mock classes from a builder]: #generating-mock-classes-from-a-builder
 [hamcrest matchers]: #hamcrest-matchers
+[help]: #help
 [importing a static facade]: #importing-a-static-facade
 [importing with use function]: #importing-with-use-function
 [importing without use function]: #importing-without-use-function
@@ -6012,6 +6022,7 @@ Get the index.
 
 <!-- External references -->
 
+[@ezzatron]: https://twitter.com/ezzatron
 [`__invoke()`]: http://php.net/language.oop5.magic#object.invoke
 [closure binding]: http://php.net/closure.bind
 [composer]: http://getcomposer.org/
@@ -6024,6 +6035,7 @@ Get the index.
 [generator::send()]: http://php.net/generator.send
 [generator::throw()]: http://php.net/generator.throw
 [generators]: http://php.net/language.generators.overview
+[github issue]: https://github.com/eloquent/phony/issues
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
 [mockery matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
 [mockery]: http://docs.mockery.io/

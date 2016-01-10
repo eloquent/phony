@@ -32,6 +32,17 @@ supports PHP 7 and [HHVM].
 [test doubles]: https://en.wikipedia.org/wiki/Test_double
 [traits]: http://php.net/traits
 
+## Help
+
+For help with a difficult testing scenario, questions regarding how to use
+*Phony*, or to report issues with *Phony* itself, please open a [GitHub issue]
+so that others may benefit from the outcome.
+
+Alternatively, [@ezzatron] may be contacted directly via Twitter.
+
+[@ezzatron]: https://twitter.com/ezzatron
+[github issue]: https://github.com/eloquent/phony/issues
+
 ## Usage
 
 For detailed usage, see the [documentation].
