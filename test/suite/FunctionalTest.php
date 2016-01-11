@@ -961,4 +961,28 @@ EOD;
         $this->assertSame('magic a bc', $class::a('b', 'c'));
         x\verifyStatic($mock)->a('b', 'c');
     }
+
+    public function testInvalidStubUsageWithInvoke()
+    {
+        $stub = x\stub()->with();
+
+        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $stub();
+    }
+
+    public function testInvalidStubUsageWithDestructor()
+    {
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('Causes uncatchable error under HHVM.');
+        }
+
+        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+
+        call_user_func(
+            function () {
+                x\stub()->with();
+            }
+        );
+        gc_collect_cycles();
+    }
 }

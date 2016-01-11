@@ -161,7 +161,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertTrue(is_callable($this->subject->self()));
         $this->assertNull($this->subject->label());
-        $this->assertNull($this->subject->defaultAnswerCallback());
+        $this->assertSame('Eloquent\Phony\Stub\Stub::forwardsAnswerCallback', $this->subject->defaultAnswerCallback());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());

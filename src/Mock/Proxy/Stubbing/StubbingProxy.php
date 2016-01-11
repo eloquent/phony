@@ -12,9 +12,7 @@
 namespace Eloquent\Phony\Mock\Proxy\Stubbing;
 
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
-use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Proxy\AbstractInstanceProxy;
-use Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 
 /**
@@ -35,10 +33,12 @@ class StubbingProxy extends AbstractInstanceProxy implements
      */
     public function __call($name, array $arguments)
     {
-        try {
-            $stub = $this->stub($name);
-        } catch (UndefinedMethodStubException $e) {
-            throw new UndefinedMethodException(get_called_class(), $name, $e);
+        $key = strtolower($name);
+
+        if (isset($this->state->stubs->$key)) {
+            $stub = $this->state->stubs->$key;
+        } else {
+            $stub = $this->state->stubs->$key = $this->createStub($name);
         }
 
         return call_user_func_array(array($stub, 'with'), $arguments);

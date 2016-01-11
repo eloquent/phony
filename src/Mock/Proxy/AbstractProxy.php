@@ -18,8 +18,6 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
@@ -28,7 +26,6 @@ use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
 use Eloquent\Phony\Mock\Method\WrappedUncallableMethod;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
@@ -58,8 +55,7 @@ abstract class AbstractProxy implements ProxyInterface
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
-     * @param InvokerInterface|null             $wildcardMatcher     The invoker to use.
+     * @param InvokerInterface|null             $invoker             The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,
@@ -72,7 +68,6 @@ abstract class AbstractProxy implements ProxyInterface
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         AssertionRendererInterface $assertionRenderer = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        WildcardMatcherInterface $wildcardMatcher = null,
         InvokerInterface $invoker = null
     ) {
         if (null === $state) {
@@ -93,9 +88,6 @@ abstract class AbstractProxy implements ProxyInterface
         if (null === $assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $wildcardMatcher) {
-            $wildcardMatcher = WildcardMatcher::instance();
-        }
         if (null === $invoker) {
             $invoker = Invoker::instance();
         }
@@ -110,7 +102,6 @@ abstract class AbstractProxy implements ProxyInterface
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->assertionRenderer = $assertionRenderer;
         $this->assertionRecorder = $assertionRecorder;
-        $this->wildcardMatcher = $wildcardMatcher;
         $this->invoker = $invoker;
 
         $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
@@ -164,16 +155,6 @@ abstract class AbstractProxy implements ProxyInterface
     public function assertionRecorder()
     {
         return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the wildcard matcher.
-     *
-     * @return WildcardMatcherInterface The wildcard matcher.
-     */
-    public function wildcardMatcher()
-    {
-        return $this->wildcardMatcher;
     }
 
     /**
@@ -253,24 +234,33 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Get a stub verifier.
      *
-     * @param string $name The method name.
+     * @param string  $name      The method name.
+     * @param boolean $isNewRule True if a new rule should be started.
      *
      * @return StubVerifierInterface  The stub verifier.
      * @throws MockExceptionInterface If the stub does not exist.
      */
-    public function stub($name)
+    public function stub($name, $isNewRule = true)
     {
         $key = strtolower($name);
 
-        if (!isset($this->state->stubs->$key)) {
-            $this->state->stubs->$key = $this->createStub($name);
+        if (isset($this->state->stubs->$key)) {
+            $stub = $this->state->stubs->$key;
+        } else {
+            $stub = $this->state->stubs->$key = $this->createStub($name);
         }
 
-        return $this->state->stubs->$key;
+        if ($isNewRule) {
+            $stub->closeRule();
+        }
+
+        return $stub;
     }
 
     /**
      * Get a stub verifier.
+     *
+     * Using this method will always start a new rule.
      *
      * @param string $name The method name.
      *
@@ -279,13 +269,15 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function __get($name)
     {
-        try {
-            $stub = $this->stub($name);
-        } catch (UndefinedMethodStubException $e) {
-            throw new UndefinedPropertyException(get_called_class(), $name, $e);
+        $key = strtolower($name);
+
+        if (isset($this->state->stubs->$key)) {
+            $stub = $this->state->stubs->$key;
+        } else {
+            $stub = $this->state->stubs->$key = $this->createStub($name);
         }
 
-        return $stub->with($this->wildcardMatcher);
+        return $stub->closeRule();
     }
 
     /**
@@ -485,7 +477,6 @@ abstract class AbstractProxy implements ProxyInterface
     private $stubVerifierFactory;
     private $assertionRenderer;
     private $assertionRecorder;
-    private $wildcardMatcher;
     private $invoker;
     private $customMethods;
 }

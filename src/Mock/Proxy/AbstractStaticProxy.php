@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Mock\Proxy;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use ReflectionClass;
@@ -35,8 +34,7 @@ abstract class AbstractStaticProxy extends AbstractProxy implements
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
      * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param WildcardMatcherInterface|null     $wildcardMatcher     The wildcard matcher to use.
-     * @param InvokerInterface|null             $wildcardMatcher     The invoker to use.
+     * @param InvokerInterface|null             $invoker             The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,
@@ -45,7 +43,6 @@ abstract class AbstractStaticProxy extends AbstractProxy implements
         StubVerifierFactoryInterface $stubVerifierFactory = null,
         AssertionRendererInterface $assertionRenderer = null,
         AssertionRecorderInterface $assertionRecorder = null,
-        WildcardMatcherInterface $wildcardMatcher = null,
         InvokerInterface $invoker = null
     ) {
         if ($class->hasMethod('_callParentStatic')) {
@@ -80,7 +77,6 @@ abstract class AbstractStaticProxy extends AbstractProxy implements
             $stubVerifierFactory,
             $assertionRenderer,
             $assertionRecorder,
-            $wildcardMatcher,
             $invoker
         );
     }

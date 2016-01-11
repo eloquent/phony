@@ -16,7 +16,6 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -32,7 +31,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->stubVerifierFactory = new StubVerifierFactory();
         $this->assertionRenderer = new AssertionRenderer();
         $this->assertionRecorder = new AssertionRecorder();
-        $this->wildcardMatcher = new WildcardMatcher();
         $this->invoker = new Invoker();
 
         $this->featureDetector = FeatureDetector::instance();
@@ -50,7 +48,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
             $this->stubVerifierFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
-            $this->wildcardMatcher,
             $this->invoker
         );
 
@@ -77,7 +74,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
         $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
@@ -93,7 +89,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
@@ -161,7 +156,7 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->nonexistent;
     }
 
@@ -235,7 +230,7 @@ EOD;
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->nonexistent();
     }
 

@@ -427,6 +427,18 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
         return $this;
     }
 
+    /**
+     * Close any existing rule.
+     *
+     * @return $this This stub.
+     */
+    public function closeRule()
+    {
+        $this->stub->closeRule();
+
+        return $this;
+    }
+
     private $stub;
     private $invoker;
 }

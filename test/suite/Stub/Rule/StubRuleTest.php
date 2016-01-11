@@ -22,33 +22,25 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->criteria = array(new EqualToMatcher('a'), new EqualToMatcher('b'));
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->subject = new StubRule($this->criteria, $this->matcherVerifier);
-
         $this->answerA = new Answer(new CallRequest('implode'));
         $this->answerB = new Answer(new CallRequest('implode'));
+        $this->answers = array($this->answerA, $this->answerB);
+        $this->matcherVerifier = new MatcherVerifier();
+        $this->subject = new StubRule($this->criteria, $this->answers, $this->matcherVerifier);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->criteria, $this->subject->criteria());
+        $this->assertSame($this->answers, $this->subject->answers());
         $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame(array(), $this->subject->answers());
     }
 
     public function testConstructorDefaults()
     {
-        $this->subject = new StubRule($this->criteria);
+        $this->subject = new StubRule($this->criteria, $this->answers);
 
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-    }
-
-    public function testAddAnswer()
-    {
-        $this->subject->addAnswer($this->answerA);
-        $this->subject->addAnswer($this->answerB);
-
-        $this->assertSame(array($this->answerA, $this->answerB), $this->subject->answers());
     }
 
     public function testMatches()
@@ -59,9 +51,6 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
 
     public function testNext()
     {
-        $this->subject->addAnswer($this->answerA);
-        $this->subject->addAnswer($this->answerB);
-
         $this->assertSame($this->answerA, $this->subject->next());
         $this->assertSame($this->answerB, $this->subject->next());
         $this->assertSame($this->answerB, $this->subject->next());
@@ -70,6 +59,8 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
 
     public function testNextFailureUndefined()
     {
+        $this->subject = new StubRule($this->criteria, array(), $this->matcherVerifier);
+
         $this->setExpectedException('Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException');
         $this->subject->next();
     }

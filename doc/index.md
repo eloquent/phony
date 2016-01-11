@@ -436,10 +436,12 @@ verifications.*
 
 ----
 
-> *[stub][stub-api]* $handle->[**stub**](#handle.stub)($method) or
+> *[stub][stub-api]* $handle->[**stub**](#handle.stub)($method, $isNewRule = true) or
 > $handle->[**$method**](#handle.__get)
 
 Get the [stub] for `$method`.
+
+*If `false` is passed for `$isNewRule`, a new rule will not be started.*
 
 *See [Mocking basics].*
 
