@@ -49,10 +49,16 @@ var run = function () {
         tocElement.style.marginLeft = (870 - document.body.scrollLeft) + 'px';
     };
 
+    if (window.devicePixelRatio) {
+        devicePixelRatio = window.devicePixelRatio;
+    } else {
+        devicePixelRatio = 1;
+    }
+
     gumshoe.init(
         {
             selector: '#toc > ul a',
-            offset: 30,
+            offset: 30 * devicePixelRatio,
             callback: activateTocHeading
         }
     );
