@@ -574,8 +574,7 @@ EOD;
     public function __call(
 EOD;
         $methodReflector = $methods[$callName]->method();
-        $signature = $this->signatureInspector
-            ->signature($methodReflector);
+        $signature = $this->signatureInspector->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -626,6 +625,7 @@ EOD;
     protected function generateCallParentMethods(
         MockDefinitionInterface $definition
     ) {
+        $methods = $definition->methods();
         $traitNames = $definition->traitNames();
         $hasTraits = (boolean) $traitNames;
         $parentClassName = $definition->parentClassName();
@@ -673,7 +673,7 @@ EOD;
 EOD;
         }
 
-        if (null !== $definition->methods()->methodName('__callstatic')) {
+        if (null !== $methods->methodName('__callstatic')) {
             $source .= <<<'EOD'
 
     private static function _callMagicStatic(
@@ -802,16 +802,35 @@ EOD;
 EOD;
         }
 
-        if (null !== $definition->methods()->methodName('__call')) {
-            $source .= <<<'EOD'
+        if (null !== ($name = $methods->methodName('__call'))) {
+            $methodName = "'parent::__call'";
+
+            if ($hasTraits) {
+                $methods = $methods->methods();
+                $method = $methods[$name];
+
+                if ($method instanceof TraitMethodDefinitionInterface) {
+                    $traitName =
+                        $method->method()->getDeclaringClass()->getName();
+                    $methodName = var_export(
+                        '_callTrait_' .
+                            \str_replace('\\', "\xc2\xa6", $traitName) .
+                            "\xc2\xbb" .
+                            $name,
+                        true
+                    );
+                }
+            }
+
+            $source .= <<<EOD
 
     private function _callMagic(
-        $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \$name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
     ) {
         return \call_user_func_array(
-            array($this, 'parent::__call'),
-            array($name, $arguments->all())
+            array(\$this, $methodName),
+            array(\$name, \$arguments->all())
         );
     }
 

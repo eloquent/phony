@@ -935,4 +935,30 @@ EOD;
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\AnonymousClassException');
         x\mock(get_class($instance));
     }
+
+    public function testPartialMockOfMagicCallTrait()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $handle = x\partialMock('Eloquent\Phony\Test\TestTraitJ');
+        $mock = $handle->mock();
+
+        $this->assertSame('magic a bc', $mock->a('b', 'c'));
+        $handle->a->calledWith('b', 'c');
+    }
+
+    public function testPartialMockOfStaticMagicCallTrait()
+    {
+        if (!$this->featureDetector->isSupported('trait')) {
+            $this->markTestSkipped('Requires traits.');
+        }
+
+        $mock = x\partialMock('Eloquent\Phony\Test\TestTraitJ')->mock();
+        $class = get_class($mock);
+
+        $this->assertSame('magic a bc', $class::a('b', 'c'));
+        x\verifyStatic($mock)->a('b', 'c');
+    }
 }

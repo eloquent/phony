@@ -18,10 +18,12 @@
 - **[BC BREAK]** Removed the `$self` and `$defaultAnswerCallback` arguments from
   `stub()` ([#123]).
 - **[IMPROVED]** Made API setter style methods fluent ([#98]).
+- **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
 
 [#98]: https://github.com/eloquent/phony/issues/98
 [#117]: https://github.com/eloquent/phony/issues/117
 [#123]: https://github.com/eloquent/phony/issues/123
+[#127]: https://github.com/eloquent/phony/issues/127
 
 ## 0.7.0 (2015-12-20)
 
