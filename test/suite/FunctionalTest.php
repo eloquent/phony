@@ -985,4 +985,19 @@ EOD;
         );
         gc_collect_cycles();
     }
+
+    public function testAutomaticInstanceProxyAdaptation()
+    {
+        $handleA = x\mock();
+        $mockA = $handleA->mock();
+        $handleB = x\mock(array('methodA' => function () {}));
+        $mockB = $handleB->mock();
+        $handleB->methodA->returns($handleA);
+        $handleB->methodA($handleA)->returns('a');
+
+        $this->assertSame($handleA->mock(), $mockB->methodA());
+        $this->assertSame('a', $mockB->methodA($handleA->mock()));
+        $handleB->methodA->calledWith($handleA);
+        $handleB->methodA->returned($handleA);
+    }
 }

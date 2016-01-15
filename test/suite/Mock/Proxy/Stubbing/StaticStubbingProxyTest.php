@@ -222,6 +222,7 @@ EOD;
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($actual, $this->subject->testClassAStaticMethodA);
         $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
+        $this->assertSame($actual, $this->subject->testClassAStaticMethodA()->returns());
     }
 
     public function testMagicCallFailure()

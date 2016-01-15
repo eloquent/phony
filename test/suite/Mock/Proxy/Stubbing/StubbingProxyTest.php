@@ -69,6 +69,7 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->state->stubs, $this->subject->stubs());
         $this->assertSame($this->state->isFull, $this->subject->isFull());
         $this->assertSame($this->state->label, $this->subject->label());
+        $this->assertTrue($this->subject->isAdaptable());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
@@ -98,10 +99,17 @@ class StubbingProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
-
-        $this->subject->setLabel($this->state->label);
-
+        $this->assertSame($this->subject, $this->subject->setLabel($this->state->label));
         $this->assertSame($this->state->label, $this->subject->label());
+    }
+
+    public function testSetIsAdaptable()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertTrue($this->subject->isAdaptable());
+        $this->assertSame($this->subject, $this->subject->setIsAdaptable(false));
+        $this->assertFalse($this->subject->isAdaptable());
     }
 
     public function testFull()
@@ -234,6 +242,7 @@ EOD;
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame($actual, $this->subject->testClassAMethodA);
         $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda);
+        $this->assertSame($actual, $this->subject->testClassAMethodA()->returns());
     }
 
     public function testMagicCallFailure()

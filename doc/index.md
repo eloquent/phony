@@ -30,6 +30,7 @@
     - [Mock handles]
         - [Stubbing handles]
         - [Verification handles]
+        - [Mock handle substitution]
     - [Mock builders]
         - [Customizing the mock class]
         - [Creating mocks from a builder]
@@ -418,6 +419,8 @@ Get a stub, and modify its current criteria to match the supplied arguments.
 
 *This is equivalent to `$handle->$method->with(...$arguments)`.*
 
+*This method supports [mock handle substitution].*
+
 *See [Mocking basics], [Stubbing handles].*
 
 **When called on a [verification handle]:**
@@ -428,6 +431,8 @@ arguments.
 *This is equivalent to `$handle->$method->calledWith(...$arguments)`, except
 that it returns `$handle`, allowing a fluent interface for multiple
 verifications.*
+
+*This method supports [mock handle substitution].*
 
 *See [Verification handles].*
 
@@ -1248,6 +1253,53 @@ Note that this does not verify the order of events. If order is important, use
 Note that a static variant of the verification handle exists. See
 [Static mocks].
 
+#### Mock handle substitution
+
+*Phony* will sometimes accept a mock handle as equivalent to the mock it
+represents. This simplifies some common mocking scenarios, and improves test
+readability.
+
+One such scenario is returning a [mock] from another [stub] \(this includes
+stubbed mock methods). Returning a handle from a stub is equivalent to returning
+the mock itself:
+
+```php
+$database = mock('Database');
+$result = mock('Result');
+
+// these two statements are equivalent
+$database->select->returns($result);
+$database->select->returns($result->mock());
+```
+
+Another common situation is the use of a mock handle when
+[matching stub arguments]. Use of a mock handle in a argument list is equivalent
+to use of the mock itself:
+
+```php
+$database = mock('Database');
+$query = mock('Query');
+$result = mock('Result');
+
+// these two statements are equivalent
+$database->select($query)->returns($result);
+$database->select($query->mock())->returns($result);
+```
+
+The same is true when [verifying that a spy was called with specific arguments]:
+
+```php
+$database = mock('Database');
+$query = mock('Query');
+
+// these two statements are equivalent
+$database->select->calledWith($query);
+$database->select->calledWith($query->mock());
+```
+
+There are other edge-case situations where *Phony* will exhibit this behaviour.
+Refer to the API documentation for more detailed information.
+
 ### Mock builders
 
 Mock builders provide an alternative method for defining and creating mocks,
@@ -1470,6 +1522,8 @@ Set the [self value] of this stub.
 
 Modify the current criteria to match the supplied arguments.
 
+*This method supports [mock handle substitution].*
+
 *See [Matching stub arguments].*
 
 <a name="stub.calls" />
@@ -1497,6 +1551,9 @@ Add a callback to be called as part of an answer.
 *Note that all supplied callbacks will be called in the same invocation.*
 
 *This method supports reference parameters.*
+
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
 
 *See [Invoking callables].*
 
@@ -1532,6 +1589,9 @@ the last element, and `-2` indicates the second last element.*
 
 *Note that all supplied callbacks will be called in the same invocation.*
 
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
 *See [Invoking arguments].*
 
 <a name="stub.setsArgument" />
@@ -1548,6 +1608,8 @@ Set the value of an argument passed by reference as part of an answer.
 
 *If called with two arguments, sets the argument at `$indexOrValue` to
 `$value`.*
+
+*This method supports [mock handle substitution] of the value.*
 
 *See [Setting passed-by-reference arguments].*
 
@@ -1571,6 +1633,9 @@ Add a callback as an answer.
 
 *The supplied arguments support reference parameters.*
 
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
 *See [Using a callable as an answer].*
 
 <a name="stub.forwards" />
@@ -1582,6 +1647,9 @@ Add a callback as an answer.
 Add an answer that calls the wrapped callback.
 
 *The supplied arguments support reference parameters.*
+
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
 
 *See [Forwarding to the original callable].*
 
@@ -1625,6 +1693,9 @@ Add an answer that returns the self value.
 > *fluent* $stub->[**throws**](#stub.throws)($exception = null, ...$additionalExceptions)
 
 Add answers that throw exceptions.
+
+*This method supports [mock handle substitution]. Any supplied exception mock
+handles are equivalent to the mocks themselves.*
 
 *See [Throwing exceptions].*
 
@@ -1796,9 +1867,12 @@ Checks if called.
 > *[verification][verification-api]* $stub->[**calledWith**](#stub.calledWith)(...$arguments)
 > throws [AssertionException]
 
-Throws an exception unless called.
+Throws an exception unless called with the supplied arguments.
 
-*See [Verifying that a call was made].*
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
+*See [Verifying that a spy was called with specific arguments].*
 
 <a name="stub.checkCalledWith" />
 
@@ -1808,29 +1882,11 @@ Throws an exception unless called.
 
 Checks if called with the supplied arguments.
 
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
 *See [Verifying that a spy was called with specific arguments],
 [Check verification].*
-
-<a name="stub.calledWith" />
-
-----
-
-> *[verification][verification-api]* $stub->[**calledWith**](#stub.calledWith)(...$arguments)
-> throws [AssertionException]
-
-Throws an exception unless called with the supplied arguments.
-
-*See [Verifying that a spy was called with specific arguments].*
-
-<a name="stub.checkCalledOn" />
-
-----
-
-> *[verification][verification-api]|null* $stub->[**checkCalledOn**](#stub.checkCalledOn)($value)
-
-Checks if the bound `$this` value is equal to the supplied value.
-
-*See [Verifying spy closure binding], [Check verification].*
 
 <a name="stub.calledOn" />
 
@@ -1842,20 +1898,21 @@ Checks if the bound `$this` value is equal to the supplied value.
 Throws an exception unless the bound `$this` value is equal to the supplied
 value.
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying spy closure binding].*
 
-<a name="stub.checkReturned" />
+<a name="stub.checkCalledOn" />
 
 ----
 
-> *[verification][verification-api]|null* $stub->[**checkReturned**](#stub.checkReturned)($value = null)
+> *[verification][verification-api]|null* $stub->[**checkCalledOn**](#stub.checkCalledOn)($value)
 
-Checks if this stub returned the supplied value.
+Checks if the bound `$this` value is equal to the supplied value.
 
-*When called with no arguments, this method simply checks that the stub returned
-any value.*
+*This method supports [mock handle substitution].*
 
-*See [Verifying spy return values], [Check verification].*
+*See [Verifying spy closure binding], [Check verification].*
 
 <a name="stub.returned" />
 
@@ -1869,29 +1926,24 @@ Throws an exception unless this stub returned the supplied value.
 *When called with no arguments, this method simply checks that the stub returned
 any value.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying spy return values].*
 
-<a name="stub.checkThrew" />
+<a name="stub.checkReturned" />
 
 ----
 
-> *[verification][verification-api]|null* $stub->[**checkThrew**](#stub.checkThrew)($type = null)
+> *[verification][verification-api]|null* $stub->[**checkReturned**](#stub.checkReturned)($value = null)
 
-Checks if an exception of the supplied type was thrown.
+Checks if this stub returned the supplied value.
 
-*When called with no arguments, this method simply checks that the stub threw
-any exception.*
+*When called with no arguments, this method simply checks that the stub returned
+any value.*
 
-*When called with a string, this method checks that the stub threw an exception
-that is an instance of `$type`.*
+*This method supports [mock handle substitution].*
 
-*When called with an exception instance, this method checks that the stub threw
-an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the stub threw an
-exception that matches the supplied matcher.*
-
-*See [Verifying spy exceptions], [Check verification].*
+*See [Verifying spy return values], [Check verification].*
 
 <a name="stub.threw" />
 
@@ -1914,26 +1966,33 @@ an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the stub threw an
 exception that matches the supplied matcher.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying spy exceptions].*
 
-<a name="stub.checkProduced" />
+<a name="stub.checkThrew" />
 
 ----
 
-> *[verification][verification-api]|null* $stub->[**checkProduced**](#stub.checkProduced)($keyOrValue = null, $value = null)
+> *[verification][verification-api]|null* $stub->[**checkThrew**](#stub.checkThrew)($type = null)
 
-Checks if this stub produced the supplied values.
+Checks if an exception of the supplied type was thrown.
 
-*When called with no arguments, this method simply checks that the stub produced
-any value.*
+*When called with no arguments, this method simply checks that the stub threw
+any exception.*
 
-*With a single argument, it checks that a value matching the argument was
-produced.*
+*When called with a string, this method checks that the stub threw an exception
+that is an instance of `$type`.*
 
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
+*When called with an exception instance, this method checks that the stub threw
+an exception that is equal to the supplied instance.*
 
-*See [Verifying values produced by spies], [Check verification].*
+*When called with a [matcher], this method checks that the stub threw an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying spy exceptions], [Check verification].*
 
 <a name="stub.produced" />
 
@@ -1953,19 +2012,28 @@ produced.*
 *With two arguments, it checks that a key and value matching the respective
 arguments were produced together.*
 
+*This method supports [mock handle substitution] for both keys and values.*
+
 *See [Verifying values produced by spies].*
 
-<a name="stub.checkProducedAll" />
+<a name="stub.checkProduced" />
 
 ----
 
-> *[verification][verification-api]|null* $stub->[**checkProducedAll**](#stub.checkProducedAll)(...$pairs)
+> *[verification][verification-api]|null* $stub->[**checkProduced**](#stub.checkProduced)($keyOrValue = null, $value = null)
 
-Checks if this stub produced all of the supplied key-value pairs, in the
-supplied order, in a single call.
+Checks if this stub produced the supplied values.
 
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`checkProduced()`](#stub.checkProduced).*
+*When called with no arguments, this method simply checks that the stub produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*This method supports [mock handle substitution] for both keys and values.*
 
 *See [Verifying values produced by spies], [Check verification].*
 
@@ -1982,20 +2050,25 @@ pairs, in the supplied order, in a single call.
 *Each value in `$pairs` is equivalent to a set of arguments passed to
 [`produced()`](#stub.produced).*
 
+*This method supports [mock handle substitution] for both keys and values.*
+
 *See [Verifying values produced by spies].*
 
-<a name="stub.checkReceived" />
+<a name="stub.checkProducedAll" />
 
 ----
 
-> *[verification][verification-api]|null* $stub->[**checkReceived**](#stub.checkReceived)($value = null)
+> *[verification][verification-api]|null* $stub->[**checkProducedAll**](#stub.checkProducedAll)(...$pairs)
 
-Checks if this stub received the supplied value.
+Checks if this stub produced all of the supplied key-value pairs, in the
+supplied order, in a single call.
 
-*When called with no arguments, this method simply checks that the stub received
-any value.*
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`checkProduced()`](#stub.checkProduced).*
 
-*See [Verifying values received by spies], [Check verification].*
+*This method supports [mock handle substitution] for both keys and values.*
+
+*See [Verifying values produced by spies], [Check verification].*
 
 <a name="stub.received" />
 
@@ -2009,29 +2082,24 @@ Throws an exception unless this stub received the supplied value.
 *When called with no arguments, this method simply checks that the stub received
 any value.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying values received by spies].*
 
-<a name="stub.checkReceivedException" />
+<a name="stub.checkReceived" />
 
 ----
 
-> *[verification][verification-api]|null* $stub->[**checkReceivedException**](#stub.checkReceivedException)($type = null)
+> *[verification][verification-api]|null* $stub->[**checkReceived**](#stub.checkReceived)($value = null)
 
-Checks if this stub received an exception of the supplied type.
+Checks if this stub received the supplied value.
 
 *When called with no arguments, this method simply checks that the stub received
-any exception.*
+any value.*
 
-*When called with a string, this method checks that the stub received an
-exception that is an instance of `$type`.*
+*This method supports [mock handle substitution].*
 
-*When called with an exception instance, this method checks that the stub
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the stub received an
-exception that matches the supplied matcher.*
-
-*See [Verifying exceptions received by spies], [Check verification].*
+*See [Verifying values received by spies], [Check verification].*
 
 <a name="stub.receivedException" />
 
@@ -2054,7 +2122,33 @@ received an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the stub received an
 exception that matches the supplied matcher.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying exceptions received by spies].*
+
+<a name="stub.checkReceivedException" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkReceivedException**](#stub.checkReceivedException)($type = null)
+
+Checks if this stub received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the stub received
+any exception.*
+
+*When called with a string, this method checks that the stub received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the stub
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the stub received an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying exceptions received by spies], [Check verification].*
 
 <a name="stub.never" />
 
@@ -3079,16 +3173,6 @@ Get the call at `$index`.
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
 
-<a name="spy.checkCalled" />
-
-----
-
-> *[verification][verification-api]|null* $spy->[**checkCalled**](#spy.checkCalled)()
-
-Checks if called.
-
-*See [Verifying that a call was made], [Check verification].*
-
 <a name="spy.called" />
 
 ----
@@ -3100,16 +3184,15 @@ Throws an exception unless called.
 
 *See [Verifying that a call was made].*
 
-<a name="spy.checkCalledWith" />
+<a name="spy.checkCalled" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkCalledWith**](#spy.checkCalledWith)(...$arguments)
+> *[verification][verification-api]|null* $spy->[**checkCalled**](#spy.checkCalled)()
 
-Checks if called with the supplied arguments.
+Checks if called.
 
-*See [Verifying that a spy was called with specific arguments],
-[Check verification].*
+*See [Verifying that a call was made], [Check verification].*
 
 <a name="spy.calledWith" />
 
@@ -3120,17 +3203,24 @@ Checks if called with the supplied arguments.
 
 Throws an exception unless called with the supplied arguments.
 
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
 *See [Verifying that a spy was called with specific arguments].*
 
-<a name="spy.checkCalledOn" />
+<a name="spy.checkCalledWith" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkCalledOn**](#spy.checkCalledOn)($value)
+> *[verification][verification-api]|null* $spy->[**checkCalledWith**](#spy.checkCalledWith)(...$arguments)
 
-Checks if the bound `$this` value is equal to the supplied value.
+Checks if called with the supplied arguments.
 
-*See [Verifying spy closure binding], [Check verification].*
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
+*See [Verifying that a spy was called with specific arguments],
+[Check verification].*
 
 <a name="spy.calledOn" />
 
@@ -3142,20 +3232,21 @@ Checks if the bound `$this` value is equal to the supplied value.
 Throws an exception unless the bound `$this` value is equal to the supplied
 value.
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying spy closure binding].*
 
-<a name="spy.checkReturned" />
+<a name="spy.checkCalledOn" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkReturned**](#spy.checkReturned)($value = null)
+> *[verification][verification-api]|null* $spy->[**checkCalledOn**](#spy.checkCalledOn)($value)
 
-Checks if this spy returned the supplied value.
+Checks if the bound `$this` value is equal to the supplied value.
 
-*When called with no arguments, this method simply checks that the spy returned
-any value.*
+*This method supports [mock handle substitution].*
 
-*See [Verifying spy return values], [Check verification].*
+*See [Verifying spy closure binding], [Check verification].*
 
 <a name="spy.returned" />
 
@@ -3169,29 +3260,24 @@ Throws an exception unless this spy returned the supplied value.
 *When called with no arguments, this method simply checks that the spy returned
 any value.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying spy return values].*
 
-<a name="spy.checkThrew" />
+<a name="spy.checkReturned" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkThrew**](#spy.checkThrew)($type = null)
+> *[verification][verification-api]|null* $spy->[**checkReturned**](#spy.checkReturned)($value = null)
 
-Checks if an exception of the supplied type was thrown.
+Checks if this spy returned the supplied value.
 
-*When called with no arguments, this method simply checks that the spy threw any
-exception.*
+*When called with no arguments, this method simply checks that the spy returned
+any value.*
 
-*When called with a string, this method checks that the spy threw an exception
-that is an instance of `$type`.*
+*This method supports [mock handle substitution].*
 
-*When called with an exception instance, this method checks that the spy threw
-an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the spy threw an
-exception that matches the supplied matcher.*
-
-*See [Verifying spy exceptions], [Check verification].*
+*See [Verifying spy return values], [Check verification].*
 
 <a name="spy.threw" />
 
@@ -3214,26 +3300,33 @@ an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the spy threw an
 exception that matches the supplied matcher.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying spy exceptions].*
 
-<a name="spy.checkProduced" />
+<a name="spy.checkThrew" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkProduced**](#spy.checkProduced)($keyOrValue = null, $value = null)
+> *[verification][verification-api]|null* $spy->[**checkThrew**](#spy.checkThrew)($type = null)
 
-Checks if this spy produced the supplied values.
+Checks if an exception of the supplied type was thrown.
 
-*When called with no arguments, this method simply checks that the spy produced
-any value.*
+*When called with no arguments, this method simply checks that the spy threw any
+exception.*
 
-*With a single argument, it checks that a value matching the argument was
-produced.*
+*When called with a string, this method checks that the spy threw an exception
+that is an instance of `$type`.*
 
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
+*When called with an exception instance, this method checks that the spy threw
+an exception that is equal to the supplied instance.*
 
-*See [Verifying values produced by spies], [Check verification].*
+*When called with a [matcher], this method checks that the spy threw an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying spy exceptions], [Check verification].*
 
 <a name="spy.produced" />
 
@@ -3253,19 +3346,28 @@ produced.*
 *With two arguments, it checks that a key and value matching the respective
 arguments were produced together.*
 
+*This method supports [mock handle substitution] for both keys and values.*
+
 *See [Verifying values produced by spies].*
 
-<a name="spy.checkProducedAll" />
+<a name="spy.checkProduced" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkProducedAll**](#spy.checkProducedAll)(...$pairs)
+> *[verification][verification-api]|null* $spy->[**checkProduced**](#spy.checkProduced)($keyOrValue = null, $value = null)
 
-Checks if this spy produced all of the supplied key-value pairs, in the supplied
-order, in a single call.
+Checks if this spy produced the supplied values.
 
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`checkProduced()`](#spy.checkProduced).*
+*When called with no arguments, this method simply checks that the spy produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*This method supports [mock handle substitution] for both keys and values.*
 
 *See [Verifying values produced by spies], [Check verification].*
 
@@ -3282,20 +3384,25 @@ pairs, in the supplied order, in a single call.
 *Each value in `$pairs` is equivalent to a set of arguments passed to
 [`produced()`](#spy.produced).*
 
+*This method supports [mock handle substitution] for both keys and values.*
+
 *See [Verifying values produced by spies].*
 
-<a name="spy.checkReceived" />
+<a name="spy.checkProducedAll" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkReceived**](#spy.checkReceived)($value = null)
+> *[verification][verification-api]|null* $spy->[**checkProducedAll**](#spy.checkProducedAll)(...$pairs)
 
-Checks if this spy received the supplied value.
+Checks if this spy produced all of the supplied key-value pairs, in the supplied
+order, in a single call.
 
-*When called with no arguments, this method simply checks that the spy received
-any value.*
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`checkProduced()`](#spy.checkProduced).*
 
-*See [Verifying values received by spies], [Check verification].*
+*This method supports [mock handle substitution] for both keys and values.*
+
+*See [Verifying values produced by spies], [Check verification].*
 
 <a name="spy.received" />
 
@@ -3309,29 +3416,24 @@ Throws an exception unless this spy received the supplied value.
 *When called with no arguments, this method simply checks that the spy received
 any value.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying values received by spies].*
 
-<a name="spy.checkReceivedException" />
+<a name="spy.checkReceived" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkReceivedException**](#spy.checkReceivedException)($type = null)
+> *[verification][verification-api]|null* $spy->[**checkReceived**](#spy.checkReceived)($value = null)
 
-Checks if this spy received an exception of the supplied type.
+Checks if this spy received the supplied value.
 
 *When called with no arguments, this method simply checks that the spy received
-any exception.*
+any value.*
 
-*When called with a string, this method checks that the spy received an
-exception that is an instance of `$type`.*
+*This method supports [mock handle substitution].*
 
-*When called with an exception instance, this method checks that the spy
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the spy received an
-exception that matches the supplied matcher.*
-
-*See [Verifying exceptions received by spies], [Check verification].*
+*See [Verifying values received by spies], [Check verification].*
 
 <a name="spy.receivedException" />
 
@@ -3354,7 +3456,33 @@ received an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the spy received an
 exception that matches the supplied matcher.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying exceptions received by spies].*
+
+<a name="spy.checkReceivedException" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkReceivedException**](#spy.checkReceivedException)($type = null)
+
+Checks if this spy received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the spy received
+any exception.*
+
+*When called with a string, this method checks that the spy received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the spy
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the spy received an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying exceptions received by spies], [Check verification].*
 
 <a name="spy.never" />
 
@@ -4003,17 +4131,6 @@ Get the sequence number.
 records. The numbers are assigned sequentially, meaning that sequence numbers
 can be used to determine event order.*
 
-<a name="call.checkCalledWith" />
-
-----
-
-> *[verification][verification-api]|null* $call->[**checkCalledWith**](#call.checkCalledWith)(...$arguments)
-
-Checks if called with the supplied arguments.
-
-*See [Verifying that a call was made with specific arguments],
-[Check verification].*
-
 <a name="call.calledWith" />
 
 ----
@@ -4023,17 +4140,24 @@ Checks if called with the supplied arguments.
 
 Throws an exception unless called with the supplied arguments.
 
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
 *See [Verifying that a call was made with specific arguments].*
 
-<a name="call.checkCalledOn" />
+<a name="call.checkCalledWith" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkCalledOn**](#call.checkCalledOn)($value)
+> *[verification][verification-api]|null* $call->[**checkCalledWith**](#call.checkCalledWith)(...$arguments)
 
-Checks if the bound `$this` value is equal to the supplied value.
+Checks if called with the supplied arguments.
 
-*See [Verifying call closure binding], [Check verification].*
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
+*See [Verifying that a call was made with specific arguments],
+[Check verification].*
 
 <a name="call.calledOn" />
 
@@ -4045,20 +4169,21 @@ Checks if the bound `$this` value is equal to the supplied value.
 Throws an exception unless the bound `$this` value is equal to the supplied
 value.
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying call closure binding].*
 
-<a name="call.checkReturned" />
+<a name="call.checkCalledOn" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkReturned**](#call.checkReturned)($value = null)
+> *[verification][verification-api]|null* $call->[**checkCalledOn**](#call.checkCalledOn)($value)
 
-Checks if this call returned the supplied value.
+Checks if the bound `$this` value is equal to the supplied value.
 
-*When called with no arguments, this method simply checks that the call returned
-any value.*
+*This method supports [mock handle substitution].*
 
-*See [Verifying call return values], [Check verification].*
+*See [Verifying call closure binding], [Check verification].*
 
 <a name="call.returned" />
 
@@ -4072,29 +4197,24 @@ Throws an exception unless this call returned the supplied value.
 *When called with no arguments, this method simply checks that the call returned
 any value.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying call return values].*
 
-<a name="call.checkThrew" />
+<a name="call.checkReturned" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkThrew**](#call.checkThrew)($type = null)
+> *[verification][verification-api]|null* $call->[**checkReturned**](#call.checkReturned)($value = null)
 
-Checks if an exception of the supplied type was thrown.
+Checks if this call returned the supplied value.
 
-*When called with no arguments, this method simply checks that the call threw
-any exception.*
+*When called with no arguments, this method simply checks that the call returned
+any value.*
 
-*When called with a string, this method checks that the call threw an exception
-that is an instance of `$type`.*
+*This method supports [mock handle substitution].*
 
-*When called with an exception instance, this method checks that the call threw
-an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the call threw an
-exception that matches the supplied matcher.*
-
-*See [Verifying call exceptions], [Check verification].*
+*See [Verifying call return values], [Check verification].*
 
 <a name="call.threw" />
 
@@ -4117,26 +4237,33 @@ an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the call threw an
 exception that matches the supplied matcher.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying call exceptions].*
 
-<a name="call.checkProduced" />
+<a name="call.checkThrew" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkProduced**](#call.checkProduced)($keyOrValue = null, $value = null)
+> *[verification][verification-api]|null* $call->[**checkThrew**](#call.checkThrew)($type = null)
 
-Checks if this call produced the supplied values.
+Checks if an exception of the supplied type was thrown.
 
-*When called with no arguments, this method simply checks that the call produced
-any value.*
+*When called with no arguments, this method simply checks that the call threw
+any exception.*
 
-*With a single argument, it checks that a value matching the argument was
-produced.*
+*When called with a string, this method checks that the call threw an exception
+that is an instance of `$type`.*
 
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
+*When called with an exception instance, this method checks that the call threw
+an exception that is equal to the supplied instance.*
 
-*See [Verifying values produced by calls], [Check verification].*
+*When called with a [matcher], this method checks that the call threw an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying call exceptions], [Check verification].*
 
 <a name="call.produced" />
 
@@ -4156,19 +4283,28 @@ produced.*
 *With two arguments, it checks that a key and value matching the respective
 arguments were produced together.*
 
+*This method supports [mock handle substitution] for both keys and values.*
+
 *See [Verifying values produced by calls].*
 
-<a name="call.checkProducedAll" />
+<a name="call.checkProduced" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkProducedAll**](#call.checkProducedAll)(...$pairs)
+> *[verification][verification-api]|null* $call->[**checkProduced**](#call.checkProduced)($keyOrValue = null, $value = null)
 
-Checks if this call produced all of the supplied key-value pairs, in the
-supplied order.
+Checks if this call produced the supplied values.
 
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`checkProduced()`](#call.checkProduced).*
+*When called with no arguments, this method simply checks that the call produced
+any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*This method supports [mock handle substitution] for both keys and values.*
 
 *See [Verifying values produced by calls], [Check verification].*
 
@@ -4185,20 +4321,25 @@ pairs, in the supplied order.
 *Each value in `$pairs` is equivalent to a set of arguments passed to
 [`produced()`](#call.produced).*
 
+*This method supports [mock handle substitution] for both keys and values.*
+
 *See [Verifying values produced by calls].*
 
-<a name="call.checkReceived" />
+<a name="call.checkProducedAll" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkReceived**](#call.checkReceived)($value = null)
+> *[verification][verification-api]|null* $call->[**checkProducedAll**](#call.checkProducedAll)(...$pairs)
 
-Checks if this call received the supplied value.
+Checks if this call produced all of the supplied key-value pairs, in the
+supplied order.
 
-*When called with no arguments, this method simply checks that the call received
-any value.*
+*Each value in `$pairs` is equivalent to a set of arguments passed to
+[`checkProduced()`](#call.checkProduced).*
 
-*See [Verifying values received by calls], [Check verification].*
+*This method supports [mock handle substitution] for both keys and values.*
+
+*See [Verifying values produced by calls], [Check verification].*
 
 <a name="call.received" />
 
@@ -4212,29 +4353,24 @@ Throws an exception unless this call received the supplied value.
 *When called with no arguments, this method simply checks that the call received
 any value.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying values received by calls].*
 
-<a name="call.checkReceivedException" />
+<a name="call.checkReceived" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkReceivedException**](#call.checkReceivedException)($type = null)
+> *[verification][verification-api]|null* $call->[**checkReceived**](#call.checkReceived)($value = null)
 
-Checks if this call received an exception of the supplied type.
+Checks if this call received the supplied value.
 
 *When called with no arguments, this method simply checks that the call received
-any exception.*
+any value.*
 
-*When called with a string, this method checks that the call received an
-exception that is an instance of `$type`.*
+*This method supports [mock handle substitution].*
 
-*When called with an exception instance, this method checks that the call
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the call received an
-exception that matches the supplied matcher.*
-
-*See [Verifying exceptions received by calls], [Check verification].*
+*See [Verifying values received by calls], [Check verification].*
 
 <a name="call.receivedException" />
 
@@ -4257,7 +4393,33 @@ received an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the call received an
 exception that matches the supplied matcher.*
 
+*This method supports [mock handle substitution].*
+
 *See [Verifying exceptions received by calls].*
+
+<a name="call.checkReceivedException" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkReceivedException**](#call.checkReceivedException)($type = null)
+
+Checks if this call received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the call received
+any exception.*
+
+*When called with a string, this method checks that the call received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the call
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the call received an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying exceptions received by calls], [Check verification].*
 
 <a name="call.never" />
 
@@ -5881,6 +6043,7 @@ Get the index.
 [matchers]: #matchers
 [matching stub arguments]: #matching-stub-arguments
 [mock builders]: #mock-builders
+[mock handle substitution]: #mock-handle-substitution
 [mock handles]: #mock-handles
 [mockery matchers]: #mockery-matchers
 [mocking basics]: #mocking-basics

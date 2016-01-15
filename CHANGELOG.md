@@ -18,6 +18,8 @@
 - **[BC BREAK]** Removed the `$self` and `$defaultAnswerCallback` arguments from
   `stub()` ([#123]).
 - **[IMPROVED]** Made API setter style methods fluent ([#98]).
+- **[IMPROVED]** Instance handles are automatically adapted when stubbing and
+  verifying ([#126]).
 - **[IMPROVED]** Added checks for unused stub criteria ([#126]).
 - **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
 

@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Phpunit\Phony;
 use PHPUnit_Framework_TestCase;
 
 class CallRequestTest extends PHPUnit_Framework_TestCase
@@ -49,6 +50,17 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->prefixSelf());
         $this->assertFalse($this->subject->suffixArgumentsObject());
         $this->assertTrue($this->subject->suffixArguments());
+    }
+
+    public function testConstructorWithInstanceProxies()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->arguments = new Arguments(array($adaptable, $unadaptable));
+        $this->subject = new CallRequest($this->callback, $this->arguments);
+
+        $this->assertSame($adaptable->mock(), $this->subject->arguments()->get(0));
+        $this->assertSame($unadaptable, $this->subject->arguments()->get(1));
     }
 
     public function finalArgumentsData()

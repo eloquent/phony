@@ -82,6 +82,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         $this->mock = $mock;
         $this->class = $class;
         $this->callParentConstructorMethod = $callParentConstructorMethod;
+        $this->isAdaptable = true;
 
         parent::__construct(
             $class,
@@ -161,7 +162,32 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
         return $this->state->label;
     }
 
+    /**
+     * Set whether this proxy should be adapted to its mock automatically.
+     *
+     * @param boolean $isAdaptable True if this proxy should be adapted automatically.
+     *
+     * @return $this This proxy.
+     */
+    public function setIsAdaptable($isAdaptable)
+    {
+        $this->isAdaptable = $isAdaptable;
+
+        return $this;
+    }
+
+    /**
+     * Returns true if this proxy should be adapted to its mock automatically.
+     *
+     * @return boolean True if this proxy should be adapted automatically.
+     */
+    public function isAdaptable()
+    {
+        return $this->isAdaptable;
+    }
+
     private $mock;
     private $class;
     private $callParentConstructorMethod;
+    private $isAdaptable;
 }

@@ -71,4 +71,20 @@ interface InstanceProxyInterface extends ProxyInterface
      * @return string|null The label.
      */
     public function label();
+
+    /**
+     * Set whether this proxy should be adapted to its mock automatically.
+     *
+     * @param boolean $isAdaptable True if this proxy should be adapted automatically.
+     *
+     * @return $this This proxy.
+     */
+    public function setIsAdaptable($isAdaptable);
+
+    /**
+     * Returns true if this proxy should be adapted to its mock automatically.
+     *
+     * @return boolean True if this proxy should be adapted automatically.
+     */
+    public function isAdaptable();
 }

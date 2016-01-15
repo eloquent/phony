@@ -17,6 +17,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
@@ -633,6 +634,20 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c', $c);
     }
 
+    public function testSetsArgumentWithInstanceProxies()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->setsArgument(0, $adaptable)->setsArgument(1, $unadaptable);
+
+        $a = null;
+        $b = null;
+        $this->subject->invokeWith(array(&$a, &$b));
+
+        $this->assertSame($adaptable->mock(), $a);
+        $this->assertSame($unadaptable, $b);
+    }
+
     public function testDoes()
     {
         $this->assertSame(
@@ -837,6 +852,16 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
     }
 
+    public function testReturnsWithInstanceProxies()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->returns($adaptable, $unadaptable);
+
+        $this->assertSame($adaptable->mock(), call_user_func($this->subject));
+        $this->assertSame($unadaptable, call_user_func($this->subject));
+    }
+
     public function testReturnsArgument()
     {
         $this->assertSame($this->subject, $this->subject->returnsArgument());
@@ -885,6 +910,15 @@ class StubTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals(array(new Exception(), new Exception()), $thrownExceptions);
+    }
+
+    public function testThrowsWithInstanceProxies()
+    {
+        $adaptable = Phony::mock('RuntimeException');
+        $this->subject->throws($adaptable);
+
+        $this->setExpectedException('RuntimeException');
+        call_user_func($this->subject);
     }
 
     public function testThrowsWithException()
@@ -980,6 +1014,23 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('e', call_user_func($this->subject, 'b'));
     }
 
+    public function testCloseRule()
+    {
+        $this->subject->returns('a');
+        $this->subject->closeRule();
+        $this->subject->returns('b');
+
+        $this->assertSame('b', call_user_func($this->subject));
+    }
+
+    public function testCloseRuleFailureDanglingCriteria()
+    {
+        $this->subject->with();
+
+        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->subject->closeRule();
+    }
+
     public function testDanglingRules()
     {
         $callCountA = 0;
@@ -1070,5 +1121,12 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
+    }
+
+    public function testInvokeWithNoRules()
+    {
+        $stub = new Stub();
+
+        $this->assertNull($stub());
     }
 }
