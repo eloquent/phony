@@ -149,6 +149,7 @@
     - [UndefinedArgumentException]
     - [UndefinedCallException]
     - [UndefinedEventException]
+- [License]
 
 ## Installation
 
@@ -5994,6 +5995,10 @@ Namespace: `Eloquent\Phony\Event\Exception`
 
 Get the index.
 
+## License
+
+For the full copyright and license information, please view the [LICENSE file].
+
 <!-- Heading references -->
 
 [ad hoc definition magic "self" values]: #ad-hoc-definition-magic-self-values
@@ -6038,6 +6043,7 @@ Get the index.
 [invoking spies]: #invoking-spies
 [labeling mocks]: #labeling-mocks
 [labeling spies]: #labeling-spies
+[license]: #license
 [magic "self" values]: #magic-self-values
 [matcher integrations]: #matcher-integrations
 [matchers]: #matchers
@@ -6202,6 +6208,7 @@ Get the index.
 [generators]: http://php.net/language.generators.overview
 [github issue]: https://github.com/eloquent/phony/issues
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
+[license file]: https://github.com/eloquent/phony/blob/develop/LICENSE
 [mockery matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
 [mockery]: http://docs.mockery.io/
 [peridot]: http://peridot-php.github.io/

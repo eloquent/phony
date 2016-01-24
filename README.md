@@ -276,6 +276,12 @@ Special thanks to the following people:
 [@sebastianbergmann]: https://github.com/sebastianbergmann
 [@szczepiq]: https://github.com/szczepiq
 
+## License
+
+For the full copyright and license information, please view the [LICENSE file].
+
+[license file]: LICENSE
+
 <!-- References -->
 
 [documentation]: http://eloquent-software.com/phony/
