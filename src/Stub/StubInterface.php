@@ -256,4 +256,11 @@ interface StubInterface extends WrappedInvocableInterface
      * @return $this This stub.
      */
     public function throws($exception = null);
+
+    /**
+     * Close any existing rule.
+     *
+     * @return $this This stub.
+     */
+    public function closeRule();
 }

@@ -21,13 +21,6 @@ use Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException;
 interface StubRuleInterface
 {
     /**
-     * Add an answer.
-     *
-     * @param AnswerInterface $answer The answer.
-     */
-    public function addAnswer(AnswerInterface $answer);
-
-    /**
      * Get the answers.
      *
      * @return array<AnswerInterface> The answers.

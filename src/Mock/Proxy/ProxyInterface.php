@@ -75,15 +75,18 @@ interface ProxyInterface
      *
      * @api
      *
-     * @param string $name The method name.
+     * @param string  $name      The method name.
+     * @param boolean $isNewRule True if a new rule should be started.
      *
      * @return StubVerifierInterface  The stub verifier.
      * @throws MockExceptionInterface If the stub does not exist.
      */
-    public function stub($name);
+    public function stub($name, $isNewRule = true);
 
     /**
      * Get a stub verifier.
+     *
+     * Using this method will always start a new rule.
      *
      * @api
      *

@@ -31,16 +31,6 @@ class Answer implements AnswerInterface
     }
 
     /**
-     * Set the primary request.
-     *
-     * @param CallRequestInterface $primaryRequest The primary request.
-     */
-    public function setPrimaryRequest(CallRequestInterface $primaryRequest)
-    {
-        $this->primaryRequest = $primaryRequest;
-    }
-
-    /**
      * Get the primary request.
      *
      * @return CallRequestInterface|null The primary request, or null if none has been set.
@@ -48,16 +38,6 @@ class Answer implements AnswerInterface
     public function primaryRequest()
     {
         return $this->primaryRequest;
-    }
-
-    /**
-     * Add a secondary request.
-     *
-     * @param CallRequestInterface $secondaryRequest The secondary request.
-     */
-    public function addSecondaryRequest(CallRequestInterface $secondaryRequest)
-    {
-        $this->secondaryRequests[] = $secondaryRequest;
     }
 
     /**

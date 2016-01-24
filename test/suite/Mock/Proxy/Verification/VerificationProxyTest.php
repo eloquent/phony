@@ -16,7 +16,6 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -33,7 +32,6 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->stubVerifierFactory = new StubVerifierFactory();
         $this->assertionRenderer = new AssertionRenderer();
         $this->assertionRecorder = new AssertionRecorder();
-        $this->wildcardMatcher = new WildcardMatcher();
         $this->invoker = new Invoker();
 
         $this->featureDetector = FeatureDetector::instance();
@@ -52,7 +50,6 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
             $this->stubVerifierFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
-            $this->wildcardMatcher,
             $this->invoker
         );
 
@@ -78,11 +75,11 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->state->stubs, $this->subject->stubs());
         $this->assertSame($this->state->isFull, $this->subject->isFull());
         $this->assertSame($this->state->label, $this->subject->label());
+        $this->assertTrue($this->subject->isAdaptable());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
         $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->wildcardMatcher, $this->subject->wildcardMatcher());
         $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
@@ -99,7 +96,6 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
         $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcardMatcher());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
@@ -109,10 +105,17 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
-
-        $this->subject->setLabel($this->state->label);
-
+        $this->assertSame($this->subject, $this->subject->setLabel($this->state->label));
         $this->assertSame($this->state->label, $this->subject->label());
+    }
+
+    public function testSetIsAdaptable()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertTrue($this->subject->isAdaptable());
+        $this->assertSame($this->subject, $this->subject->setIsAdaptable(false));
+        $this->assertFalse($this->subject->isAdaptable());
     }
 
     public function testFull()
@@ -177,7 +180,7 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedPropertyException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->nonexistent;
     }
 
@@ -248,7 +251,7 @@ EOD;
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Proxy\Exception\UndefinedMethodException');
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->nonexistent();
     }
 

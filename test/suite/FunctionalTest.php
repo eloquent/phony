@@ -961,4 +961,43 @@ EOD;
         $this->assertSame('magic a bc', $class::a('b', 'c'));
         x\verifyStatic($mock)->a('b', 'c');
     }
+
+    public function testInvalidStubUsageWithInvoke()
+    {
+        $stub = x\stub()->with();
+
+        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $stub();
+    }
+
+    public function testInvalidStubUsageWithDestructor()
+    {
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('Causes uncatchable error under HHVM.');
+        }
+
+        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+
+        call_user_func(
+            function () {
+                x\stub()->with();
+            }
+        );
+        gc_collect_cycles();
+    }
+
+    public function testAutomaticInstanceProxyAdaptation()
+    {
+        $handleA = x\mock();
+        $mockA = $handleA->mock();
+        $handleB = x\mock(array('methodA' => function () {}));
+        $mockB = $handleB->mock();
+        $handleB->methodA->returns($handleA);
+        $handleB->methodA($handleA)->returns('a');
+
+        $this->assertSame($handleA->mock(), $mockB->methodA());
+        $this->assertSame('a', $mockB->methodA($handleA->mock()));
+        $handleB->methodA->calledWith($handleA);
+        $handleB->methodA->returned($handleA);
+    }
 }
