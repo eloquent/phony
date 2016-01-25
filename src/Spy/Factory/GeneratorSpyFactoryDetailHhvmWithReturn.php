@@ -33,7 +33,7 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
      *
      * @return Generator The newly created generator spy.
      */
-    public static function createGeneratorSpy(
+    public static function &createGeneratorSpy(
         CallInterface $call,
         Generator $generator,
         CallEventFactoryInterface $callEventFactory
