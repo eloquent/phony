@@ -1,12 +1,13 @@
 <?php
 
-class MockGeneratorSelfKeyword
-extends \Eloquent\Phony\Test\TestClassC
+class MockGeneratorReturnByReference
+extends \Eloquent\Phony\Test\TestClassG
 implements \Eloquent\Phony\Mock\MockInterface
 {
-    public function methodA(
-        \Eloquent\Phony\Test\TestClassC $a0,
-        $a1 = 'a'
+    public static function &testClassGStaticMethodA(
+        $a0,
+        &$a1,
+        &$a2
     ) {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -15,10 +16,52 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a0;
         }
         if ($argumentCount > 1) {
-            $arguments[] = $a1;
+            $arguments[] = &$a1;
+        }
+        if ($argumentCount > 2) {
+            $arguments[] = &$a2;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
+        for ($i = 3; $i < $argumentCount; ++$i) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+        );
+
+        return $result;
+    }
+
+    public static function &__callStatic(
+        $a0,
+        array $a1
+    ) {
+        $result = self::$_staticProxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+
+        return $result;
+    }
+
+    public function &testClassGMethodA(
+        $a0,
+        &$a1,
+        &$a2
+    ) {
+        $argumentCount = \func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) {
+            $arguments[] = $a0;
+        }
+        if ($argumentCount > 1) {
+            $arguments[] = &$a1;
+        }
+        if ($argumentCount > 2) {
+            $arguments[] = &$a2;
+        }
+
+        for ($i = 3; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
         }
 
@@ -29,31 +72,12 @@ implements \Eloquent\Phony\Mock\MockInterface
         return $result;
     }
 
-    public function methodB(
+    public function &__call(
         $a0,
-        $a1 = 111,
-        $a2 = 'second'
+        array $a1
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = array();
-
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
-        }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
-        }
-        if ($argumentCount > 2) {
-            $arguments[] = $a2;
-        }
-
-        for ($i = 3; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
-        }
-
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
-        );
+        $result = $this->_proxy->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 
         return $result;
     }
@@ -68,6 +92,14 @@ implements \Eloquent\Phony\Mock\MockInterface
         );
     }
 
+    private static function _callMagicStatic(
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return self::$_staticProxy
+            ->spy('__callStatic')->invoke($name, $arguments->all());
+    }
+
     private function _callParent(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
@@ -75,6 +107,16 @@ implements \Eloquent\Phony\Mock\MockInterface
         return \call_user_func_array(
             array($this, 'parent::' . $name),
             $arguments->all()
+        );
+    }
+
+    private function _callMagic(
+        $name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+    ) {
+        return \call_user_func_array(
+            array($this, 'parent::__call'),
+            array($name, $arguments->all())
         );
     }
 

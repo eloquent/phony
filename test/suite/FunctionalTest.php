@@ -1001,6 +1001,31 @@ EOD;
         $handleB->methodA->returned($handleA);
     }
 
+    public function testReturnByReferenceMocking()
+    {
+        $a = 'a';
+        $b = 'b';
+        $handle = x\partialMock('Eloquent\Phony\Test\TestClassG');
+        $mock = $handle->mock();
+        $class = get_class($mock);
+        $static = $class::testClassGStaticMethodA(true, $a, $b);
+        $staticMagic = $class::nonexistent(true, $a, $b);
+        $nonStatic = $mock->testClassGMethodA(true, $a, $b);
+        $nonStaticMagic = $mock->nonexistent(true, $a, $b);
+
+        $this->assertSame('a', $static);
+        $this->assertSame('a', $staticMagic);
+        $this->assertSame('a', $nonStatic);
+        $this->assertSame('a', $nonStaticMagic);
+
+        $a = 'x';
+
+        $this->assertSame('a', $static);
+        $this->assertSame('a', $staticMagic);
+        $this->assertSame('a', $nonStatic);
+        $this->assertSame('a', $nonStaticMagic);
+    }
+
     public function testAdHocMocksWithSameSignatures()
     {
         $foo = x\partialMock(array('test' => function () { return 'foo'; }))->mock();

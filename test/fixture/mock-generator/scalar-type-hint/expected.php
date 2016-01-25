@@ -30,9 +30,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function customMethod(
@@ -49,9 +51,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     private static $_uncallableMethods = array(
