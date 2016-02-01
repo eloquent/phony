@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ "$TRAVIS_BRANCH" == "develop" && "$TRAVIS_PHP_VERSION" == "$ARCHER_PUBLISH_VERSION" ]]; then
+if [[ "${TRAVIS_PULL_REQUEST}" == "false" && "$TRAVIS_BRANCH" == "develop" && "$TRAVIS_PHP_VERSION" == "$ARCHER_PUBLISH_VERSION" ]]; then
     scripts/build-web
     vendor/bin/woodhouse publish eloquent/phony --auth-token "$ARCHER_TOKEN" \
         artifacts/web/index.html:index.html \
