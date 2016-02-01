@@ -943,10 +943,10 @@ $handle = partialMock(
         },
         'static c' => 'C is for cat.',
         'var d' => function () {
-            'D is for dog.';
+            return 'D is for dog.';
         },
         'static var e' => function () {
-            'E is for egg.';
+            return 'E is for egg.';
         },
         'function f' => 'implode',
     ]
