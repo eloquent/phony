@@ -17,7 +17,6 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -26,7 +25,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->signatureInspector = new FunctionSignatureInspector();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
 
@@ -73,7 +71,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             $typeNames,
             $this->factory,
             $this->proxyFactory,
-            $this->signatureInspector,
             $this->invocableInspector,
             $this->featureDetector
         );
@@ -97,7 +94,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->typesFor($this->typeNames), $this->subject->types());
         $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
-        $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
@@ -159,7 +155,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->types());
         $this->assertSame(MockFactory::instance(), $this->subject->factory());
         $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
-        $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());

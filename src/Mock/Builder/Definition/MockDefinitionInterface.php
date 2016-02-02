@@ -69,6 +69,16 @@ interface MockDefinitionInterface
     public function className();
 
     /**
+     * Get the signature.
+     *
+     * This is an opaque value designed to aid in determining whether two mock
+     * definitions are the same.
+     *
+     * @return mixed The signature.
+     */
+    public function signature();
+
+    /**
      * Get the type names.
      *
      * @return array<string> The type names.

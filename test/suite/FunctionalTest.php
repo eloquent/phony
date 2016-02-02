@@ -1000,4 +1000,13 @@ EOD;
         $handleB->methodA->calledWith($handleA);
         $handleB->methodA->returned($handleA);
     }
+
+    public function testAdHocMocksWithSameSignatures()
+    {
+        $foo = x\partialMock(array('test' => function () { return 'foo'; }))->mock();
+        $bar = x\partialMock(array('test' => function () { return 'bar'; }))->mock();
+
+        $this->assertSame('foo', $foo->test());
+        $this->assertSame('bar', $bar->test());
+    }
 }
