@@ -37,9 +37,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function testClassAMethodB(
@@ -68,9 +70,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function testTraitBMethodA()
@@ -82,9 +86,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function testTraitCMethodA()
@@ -96,9 +102,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     private static function _callTraitStatic(

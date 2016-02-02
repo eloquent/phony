@@ -15,16 +15,20 @@ implements \Eloquent\Phony\Mock\MockInterface
         $a0,
         array $a1
     ) {
-        return self::$_staticProxy->spy($a0)
+        $result = self::$_staticProxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+
+        return $result;
     }
 
     public function __call(
         $a0,
         array $a1
     ) {
-        return $this->_proxy->spy($a0)
+        $result = $this->_proxy->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+
+        return $result;
     }
 
     private static function _callTraitStatic(

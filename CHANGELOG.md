@@ -22,10 +22,13 @@
   verifying ([#126]).
 - **[IMPROVED]** Added checks for unused stub criteria ([#126]).
 - **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
+- **[FIXED]** Mocking, and calling of return-by-reference methods no longer
+  causes errors to be emitted ([#105]).
 - **[FIXED]** Ad-hoc mocks that differ only by function body no longer result in
   re-use of the same mock class ([#131]).
 
 [#98]: https://github.com/eloquent/phony/issues/98
+[#105]: https://github.com/eloquent/phony/issues/105
 [#117]: https://github.com/eloquent/phony/issues/117
 [#123]: https://github.com/eloquent/phony/issues/123
 [#126]: https://github.com/eloquent/phony/issues/126

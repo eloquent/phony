@@ -24,9 +24,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a2[$i - 2];
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function methodB(
@@ -48,9 +50,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = $a2[$i - 2];
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function methodC(
@@ -72,9 +76,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = &$a2[$i - 2];
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     private static $_uncallableMethods = array();

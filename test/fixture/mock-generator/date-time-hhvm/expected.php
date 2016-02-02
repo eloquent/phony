@@ -26,9 +26,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public static function getLastErrors()
@@ -40,9 +42,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function __construct()
@@ -63,9 +67,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function diff(
@@ -86,9 +92,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function format(
@@ -105,9 +113,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function getOffset()
@@ -119,9 +129,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function getTimestamp()
@@ -133,9 +145,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function getTimezone()
@@ -147,9 +161,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function modify(
@@ -166,9 +182,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function setDate(
@@ -193,9 +211,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function setISODate(
@@ -220,9 +240,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function setTime(
@@ -247,9 +269,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function setTimestamp(
@@ -266,9 +290,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function setTimezone(
@@ -285,9 +311,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function sub(
@@ -304,9 +332,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function __sleep()
@@ -318,9 +348,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function __wakeup()
@@ -332,9 +364,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function __debugInfo()
@@ -346,9 +380,11 @@ implements \Eloquent\Phony\Mock\MockInterface
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     private static function _callParentStatic(
