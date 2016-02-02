@@ -97,7 +97,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject->createMockClass($builder);
     }
 
-    public function testCreateMock()
+    public function testCreateFullMock()
     {
         $builder = new MockBuilder(
             array(
@@ -112,8 +112,42 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
                 ),
             )
         );
-        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMock');
-        $actual = $this->subject->createMock($builder);
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateFullMock');
+        $actual = $this->subject->createFullMock($builder);
+        $class = new ReflectionClass($actual);
+        $protectedMethod = $class->getMethod('testClassAMethodC');
+        $protectedMethod->setAccessible(true);
+        $protectedStaticMethod = $class->getMethod('testClassAStaticMethodC');
+        $protectedStaticMethod->setAccessible(true);
+
+        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
+        $this->assertSame('0', $this->proxyFactory->createStubbing($actual)->label());
+        $this->assertNull($actual->testClassAMethodA('a', 'b'));
+        $this->assertNull($protectedMethod->invoke($actual, 'a', 'b'));
+        $this->assertNull($actual->methodB('a', 'b'));
+        $this->assertSame('ab', PhonyMockFactoryTestCreateFullMock::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame('protected ab', $protectedStaticMethod->invoke(null, 'a', 'b'));
+        $this->assertSame('static custom ab', PhonyMockFactoryTestCreateFullMock::methodA('a', 'b'));
+    }
+
+    public function testCreatePartialMock()
+    {
+        $builder = new MockBuilder(
+            array(
+                'Eloquent\Phony\Test\TestClassB',
+                array(
+                    'static methodA' => function () {
+                        return 'static custom ' . implode(func_get_args());
+                    },
+                    'methodB' => function () {
+                        return 'custom ' . implode(func_get_args());
+                    },
+                ),
+            )
+        );
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMock');
+        $actual = $this->subject->createPartialMock($builder);
         $class = new ReflectionClass($actual);
         $protectedMethod = $class->getMethod('testClassAMethodC');
         $protectedMethod->setAccessible(true);
@@ -126,25 +160,25 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertSame('custom ab', $actual->methodB('a', 'b'));
-        $this->assertSame('ab', PhonyMockFactoryTestCreateMock::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame('ab', PhonyMockFactoryTestCreatePartialMock::testClassAStaticMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedStaticMethod->invoke(null, 'a', 'b'));
-        $this->assertSame('static custom ab', PhonyMockFactoryTestCreateMock::methodA('a', 'b'));
+        $this->assertSame('static custom ab', PhonyMockFactoryTestCreatePartialMock::methodA('a', 'b'));
     }
 
-    public function testCreateMockWithConstructorArgumentsWithReferences()
+    public function testCreatePartialMockWithConstructorArgumentsWithReferences()
     {
         $builder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithConstructorArgumentsWithReferences');
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithConstructorArgumentsWithReferences');
         $a = 'a';
         $b = 'b';
-        $actual = $this->subject->createMock($builder, array(&$a, &$b));
+        $actual = $this->subject->createPartialMock($builder, array(&$a, &$b));
 
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);
         $this->assertSame('first', $a);
         $this->assertSame('second', $b);
     }
 
-    public function testCreateMockWithOldConstructor()
+    public function testCreatePartialMockWithOldConstructor()
     {
         if (!$this->featureDetector->isSupported('object.constructor.php4')) {
             $this->markTestSkipped('Requires PHP4-style constructors.');
@@ -153,8 +187,8 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         require_once __DIR__ . '/../../../src/TestClassOldConstructor.php';
 
         $builder = new MockBuilder('TestClassOldConstructor');
-        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMockWithOldConstructor');
-        $actual = $this->subject->createMock($builder, array('a', 'b'));
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithOldConstructor');
+        $actual = $this->subject->createPartialMock($builder, array('a', 'b'));
 
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);
     }

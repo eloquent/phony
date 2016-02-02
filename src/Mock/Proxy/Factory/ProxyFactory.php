@@ -166,24 +166,25 @@ class ProxyFactory implements ProxyFactoryInterface
             $mock = $mock->mock();
         }
 
-        if ($mock instanceof MockInterface) {
-            $class = new ReflectionClass($mock);
-
-            $proxyProperty = $class->getProperty('_proxy');
-            $proxyProperty->setAccessible(true);
-
-            if ($proxy = $proxyProperty->getValue($mock)) {
-                return $proxy;
-            }
-        } else {
+        if (!$mock instanceof MockInterface) {
             throw new InvalidMockException($mock);
         }
 
-        return new StubbingProxy(
+        $class = new ReflectionClass($mock);
+
+        $proxyProperty = $class->getProperty('_proxy');
+        $proxyProperty->setAccessible(true);
+
+        if ($proxy = $proxyProperty->getValue($mock)) {
+            return $proxy;
+        }
+
+        $proxy = new StubbingProxy(
             $mock,
             (object) array(
+                'defaultAnswerCallback' =>
+                    'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
                 'stubs' => (object) array(),
-                'isFull' => false,
                 'label' => $label,
             ),
             $this->stubFactory,
@@ -192,6 +193,10 @@ class ProxyFactory implements ProxyFactoryInterface
             $this->assertionRecorder,
             $this->invoker
         );
+
+        $proxyProperty->setValue($mock, $proxy);
+
+        return $proxy;
     }
 
     /**
@@ -260,7 +265,7 @@ class ProxyFactory implements ProxyFactoryInterface
             return $proxy;
         }
 
-        return new StaticStubbingProxy(
+        $proxy = new StaticStubbingProxy(
             $class,
             null,
             $this->stubFactory,
@@ -269,6 +274,10 @@ class ProxyFactory implements ProxyFactoryInterface
             $this->assertionRecorder,
             $this->invoker
         );
+
+        $proxyProperty->setValue(null, $proxy);
+
+        return $proxy;
     }
 
     /**

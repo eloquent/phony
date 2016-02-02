@@ -24,7 +24,7 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
         $this->callMagicMethod = new ReflectionMethod($this, 'setUp');
         $this->isUncallable = false;
         $this->mockBuilder = new MockBuilder();
-        $this->mock = $this->mockBuilder->create();
+        $this->mock = $this->mockBuilder->partial();
         $this->proxyFactory = new ProxyFactory();
         $this->proxy = $this->proxyFactory->createStubbing($this->mock);
         $this->subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, $this->isUncallable, $this->proxy);

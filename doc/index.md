@@ -47,6 +47,7 @@
         - [Multiple answers]
         - [Overriding rules]
         - [The default rule and answer]
+            - [The default answer callback]
     - [Matching stub arguments]
     - [Returning values]
     - [Returning arguments]
@@ -531,6 +532,24 @@ Turn the mock into a [full mock].
 
 Turn the mock into a [partial mock].
 
+<a name="handle.defaultAnswerCallback" />
+
+----
+
+> *callable* $handle->[**defaultAnswerCallback**](#handle.defaultAnswerCallback)()
+
+Get the [default answer callback].
+
+<a name="handle.setDefaultAnswerCallback" />
+
+----
+
+> *fluent* $handle->[**setDefaultAnswerCallback**](#handle.setDefaultAnswerCallback)($callback)
+
+Set the [default answer callback] for all method stubs of this mock.
+
+*This method accepts a callback that takes the stub as the first argument.*
+
 <a name="handle.reset" />
 
 ----
@@ -718,43 +737,9 @@ Get a mock.
 *This method will return the last created mock, only creating a new mock if no
 existing mock is available.*
 
-*Calling this method will finalize the mock builder.*
-
-*See [Creating mocks from a builder].*
-
-<a name="builder.create" />
-
-----
-
-> *mock* $builder->[**create**](#builder.create)(...$arguments)
-
-Create a new [partial mock].
-
-*The constructor will be called with `$arguments`.*
-
-*This method will always create a new mock.*
+*If no existing mock is available, the created mock will be a full mock.*
 
 *Calling this method will finalize the mock builder.*
-
-*This method does not support reference parameters.*
-
-*See [Creating mocks from a builder].*
-
-<a name="builder.createWith" />
-
-----
-
-> *mock* $builder->[**createWith**](#builder.createWith)($arguments = [], $label = null)
-
-Create a new [partial mock].
-
-*The constructor will be called with `$arguments`.*
-
-*This method will always create a new mock.*
-
-*Calling this method will finalize the mock builder.*
-
-*This method supports reference parameters.*
 
 *See [Creating mocks from a builder].*
 
@@ -769,6 +754,43 @@ Create a new [full mock].
 *This method will always create a new mock.*
 
 *Calling this method will finalize the mock builder.*
+
+*See [Creating mocks from a builder].*
+
+<a name="builder.partial" />
+
+----
+
+> *mock* $builder->[**partial**](#builder.partial)(...$arguments)
+
+Create a new [partial mock].
+
+*The constructor will be called with `$arguments`.*
+
+*This method will always create a new mock.*
+
+*Calling this method will finalize the mock builder.*
+
+*This method does not support reference parameters.*
+
+*See [Creating mocks from a builder].*
+
+<a name="builder.partialWith" />
+
+----
+
+> *mock* $builder->[**partialWith**](#builder.partialWith)($arguments = [], $label = null)
+
+Create a new [partial mock].
+
+*The constructor will be called with `$arguments`, unless `$arguments` is
+`null`, in which case the constructor will not be called at all.*
+
+*This method will always create a new mock.*
+
+*Calling this method will finalize the mock builder.*
+
+*This method supports reference parameters.*
 
 *See [Creating mocks from a builder].*
 
@@ -1343,36 +1365,36 @@ available methods, see [the mock builder API].
 
 #### Creating mocks from a builder
 
-Once the builder is configured, there are several options for generating the
-mock class, or creating mock instances. All of these will internally "finalize"
-the mock builder, and no further customizations can be made.
+Once the builder is configured, there are several options for creating mock
+instances. All of these will internally "finalize" the mock builder, and no
+further customizations can be made.
 
-Use [`create()`](#builder.create) to create a new mock instance:
-
-```php
-$mock = $builder->create();
-```
-
-Constructor arguments can also be passed to [`create()`](#builder.create):
+Use [`full()`](#builder.full) to create a new full mock instance:
 
 ```php
-$mock = $builder->create('a', 'b');
+$mock = $builder->full();
 ```
 
-There is also a more advanced method, [`createWith()`](#builder.createWith),
+Use [`partial()`](#builder.partial) to create a new partial mock instance:
+
+```php
+$mock = $builder->partial();
+```
+
+Constructor arguments can also be passed to [`partial()`](#builder.partial):
+
+```php
+$mock = $builder->partial('a', 'b');
+```
+
+There is also a more advanced method, [`partialWith()`](#builder.partialWith),
 that accepts arguments passed by reference:
 
 ```php
 $a = null;
 $b = null;
 
-$mock = $builder->createWith([&$a, &$b]);
-```
-
-To create a new "full" mock instance, use [`full()`](#builder.full):
-
-```php
-$mock = $builder->full();
+$mock = $builder->partialWith([&$a, &$b]);
 ```
 
 All of the above methods for creating mock instances store the last created mock
@@ -1380,14 +1402,14 @@ instance on the builder. To retrieve the last created mock instance, use
 [`get()`](#builder.get):
 
 ```php
-$mockA = $builder->create();
+$mockA = $builder->full();
 $mockB = $builder->get();
 
 echo $mockA === $mockB ? 'true' : 'false'; // outputs 'true'
 ```
 
-If no mock instance already exists, [`get()`](#builder.get) will create one and
-return it.
+If no mock instance already exists, [`get()`](#builder.get) will create a new
+full mock instance, and return it.
 
 Note that unlike using [`mock()`](#facade.mock), these methods do not
 automatically wrap the returned mock in a [mock handle]. To obtain a stubbing
@@ -1425,6 +1447,9 @@ generate the mock class, and return the class name as a string:
 ```php
 $className = $builder->className();
 ```
+
+All of the above methods will internally "finalize" the mock builder, and no
+further customizations can be made.
 
 ### Terminology
 
@@ -1514,6 +1539,24 @@ Get the [self value] of this stub.
 > *fluent* $stub->[**setSelf**](#stub.setSelf)($self)
 
 Set the [self value] of this stub.
+
+<a name="stub.defaultAnswerCallback" />
+
+----
+
+> *callable* $stub->[**defaultAnswerCallback**](#stub.defaultAnswerCallback)()
+
+Get the [default answer callback].
+
+<a name="stub.setDefaultAnswerCallback" />
+
+----
+
+> *fluent* $stub->[**setDefaultAnswerCallback**](#stub.setDefaultAnswerCallback)($callback)
+
+Set the [default answer callback] of this stub.
+
+*This method accepts a callback that takes the stub as the first argument.*
 
 <a name="stub.with" />
 
@@ -2495,17 +2538,47 @@ $stubB = stub()
 ```
 
 If a new rule is started before any answers are defined, the stub behaves as if
-[`returns()`](#stub.returns) were called, causing the stub to return `null` by
-default. For example, the two following stubs behave the same:
+[`forwards()`](#stub.forwards) were called, causing the stub to behave the same
+as the stubbed callable by default. For example, the two following stubs behave
+the same:
 
 ```php
-$stubA = stub()
-    ->with('*')->returns()
+$stubA = stub($callable)
+    ->with('*')->forwards()
     ->with('a')->returns('x');
 
-$stubB = stub()
-    // implicit ->with('*')->returns()
+$stubB = stub($callable)
+    // implicit ->with('*')->forwards()
     ->with('a')->returns('x');
+```
+
+##### The default answer callback
+
+To change the default behavior of a stub, use
+[`setDefaultAnswerCallback()`](#stub.setDefaultAnswerCallback). This method
+accepts a callback that takes the stub as the first argument:
+
+```php
+$stub = stub();
+$stub->setDefaultAnswerCallback(
+    function ($stub) {
+        // custom answer logic goes here
+        $stub->returns('default');
+    }
+);
+
+$stub->with('a')->returns('x');
+
+echo $stub('a'); // outputs 'x'
+echo $stub('b'); // outputs 'default'
+```
+
+The [`setDefaultAnswerCallback()`](#stub.setDefaultAnswerCallback) method is
+also fluent, meaning stub creation and setting of this option can be done in a
+single expression:
+
+```php
+$stub = stub()->setDefaultAnswerCallback($defaultAnswerCallback);
 ```
 
 ### Matching stub arguments
@@ -6097,6 +6170,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [the "wildcard" matcher]: #the-wildcard-matcher
 [the arguments api]: #the-arguments-api
 [the call api]: #the-call-api
+[the default answer callback]: #the-default-answer-callback
 [the default rule and answer]: #the-default-rule-and-answer
 [the event api]: #the-event-api
 [the export format]: #the-export-format
@@ -6158,6 +6232,7 @@ For the full copyright and license information, please view the [LICENSE file].
 ["equal to" matcher]: #the-equal-to-matcher
 ["wildcard" matcher]: #the-wildcard-matcher
 [ad hoc mock]: #ad-hoc-mocks
+[default answer callback]: #the-default-answer-callback
 [full mock]: #mocking-basics
 [generator spies]: #verifying-spies-with-generators-or-traversables
 [matcher]: #matchers

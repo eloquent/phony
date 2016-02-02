@@ -31,7 +31,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->traitName = 'Eloquent\Phony\Test\TestTraitA';
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB');
         $this->mockBuilder = new MockBuilder();
-        $this->mock = $this->mockBuilder->create();
+        $this->mock = $this->mockBuilder->partial();
         $this->proxyFactory = new ProxyFactory();
         $this->proxy = $this->proxyFactory->createStubbing($this->mock);
         $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->proxy);

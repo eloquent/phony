@@ -26,7 +26,7 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
         };
         $this->method = new ReflectionMethod($this, 'setUp');
         $this->mockBuilder = new MockBuilder();
-        $this->mock = $this->mockBuilder->create();
+        $this->mock = $this->mockBuilder->partial();
         $this->proxyFactory = new ProxyFactory();
         $this->proxy = $this->proxyFactory->createStubbing($this->mock);
         $this->invoker = new Invoker();

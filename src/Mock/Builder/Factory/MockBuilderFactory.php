@@ -137,7 +137,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
         $builder =
             new MockBuilder($types, $this->mockFactory, $this->proxyFactory);
 
-        return $builder->createWith($arguments);
+        return $builder->partialWith($arguments);
     }
 
     private static $instance;

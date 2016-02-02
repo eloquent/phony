@@ -62,13 +62,24 @@ interface ProxyInterface
     public function partial();
 
     /**
-     * Returns true if the mock is a full mock.
+     * Set the callback to use when creating a default answer.
      *
      * @api
      *
-     * @return boolean True if the mock is a full mock.
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This proxy.
      */
-    public function isFull();
+    public function setDefaultAnswerCallback($defaultAnswerCallback);
+
+    /**
+     * Get the default answer callback.
+     *
+     * @api
+     *
+     * @return callable The default answer callback.
+     */
+    public function defaultAnswerCallback();
 
     /**
      * Get a stub verifier.

@@ -31,7 +31,6 @@ use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
-use Eloquent\Phony\Stub\StubInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use ReflectionClass;
 use ReflectionMethod;
@@ -72,8 +71,9 @@ abstract class AbstractProxy implements ProxyInterface
     ) {
         if (null === $state) {
             $state = (object) array(
+                'defaultAnswerCallback' =>
+                    'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
                 'stubs' => (object) array(),
-                'isFull' => false,
             );
         }
         if (null === $stubFactory) {
@@ -194,7 +194,8 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function full()
     {
-        $this->state->isFull = true;
+        $this->state->defaultAnswerCallback =
+            'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback';
 
         return $this;
     }
@@ -206,19 +207,38 @@ abstract class AbstractProxy implements ProxyInterface
      */
     public function partial()
     {
-        $this->state->isFull = false;
+        $this->state->defaultAnswerCallback =
+            'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback';
 
         return $this;
     }
 
     /**
-     * Returns true if the mock is a full mock.
+     * Set the callback to use when creating a default answer.
      *
-     * @return boolean True if the mock is a full mock.
+     * @api
+     *
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This proxy.
      */
-    public function isFull()
+    public function setDefaultAnswerCallback($defaultAnswerCallback)
     {
-        return $this->state->isFull;
+        $this->state->defaultAnswerCallback = $defaultAnswerCallback;
+
+        return $this;
+    }
+
+    /**
+     * Get the default answer callback.
+     *
+     * @api
+     *
+     * @return callable The default answer callback.
+     */
+    public function defaultAnswerCallback()
+    {
+        return $this->state->defaultAnswerCallback;
     }
 
     /**
@@ -361,20 +381,6 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
-     * Create the default answer for the supplied stub.
-     *
-     * @param StubInterface $stub The stub.
-     */
-    public function defaultAnswer(StubInterface $stub)
-    {
-        if ($this->state->isFull) {
-            $stub->returns();
-        } else {
-            $stub->forwards();
-        }
-    }
-
-    /**
      * Create a new stub verifier.
      *
      * @param string $name The method name.
@@ -412,7 +418,7 @@ abstract class AbstractProxy implements ProxyInterface
                     $this
                 ),
                 $mock,
-                array($this, 'defaultAnswer')
+                $this->state->defaultAnswerCallback
             );
         } elseif (isset($this->uncallableMethods[$key])) {
             $stub = $this->stubFactory->create(
@@ -421,7 +427,7 @@ abstract class AbstractProxy implements ProxyInterface
                     $this
                 ),
                 $mock,
-                array($this, 'defaultAnswer')
+                $this->state->defaultAnswerCallback
             );
         } elseif (isset($this->traitMethods[$key])) {
             $stub = $this->stubFactory->create(
@@ -432,7 +438,7 @@ abstract class AbstractProxy implements ProxyInterface
                     $this
                 ),
                 $mock,
-                array($this, 'defaultAnswer')
+                $this->state->defaultAnswerCallback
             );
         } elseif (array_key_exists($key, $this->customMethods)) {
             $stub = $this->stubFactory->create(
@@ -443,7 +449,7 @@ abstract class AbstractProxy implements ProxyInterface
                     $this->invoker
                 ),
                 $mock,
-                array($this, 'defaultAnswer')
+                $this->state->defaultAnswerCallback
             );
         } else {
             $method = $this->class->getMethod($name);
@@ -458,7 +464,7 @@ abstract class AbstractProxy implements ProxyInterface
             $stub = $this->stubFactory->create(
                 new WrappedMethod($this->callParentMethod, $method, $this),
                 $mock,
-                array($this, 'defaultAnswer')
+                $this->state->defaultAnswerCallback
             );
         }
 

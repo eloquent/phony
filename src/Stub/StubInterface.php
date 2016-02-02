@@ -46,6 +46,26 @@ interface StubInterface extends WrappedInvocableInterface
     public function self();
 
     /**
+     * Set the callback to use when creating a default answer.
+     *
+     * @api
+     *
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This stub.
+     */
+    public function setDefaultAnswerCallback($defaultAnswerCallback);
+
+    /**
+     * Get the default answer callback.
+     *
+     * @api
+     *
+     * @return callable The default answer callback.
+     */
+    public function defaultAnswerCallback();
+
+    /**
      * Modify the current criteria to match the supplied arguments.
      *
      * @api

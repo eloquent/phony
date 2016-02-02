@@ -46,6 +46,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
+     * Creates a answer that returns `null` on the supplied stub.
+     *
+     * @param StubInterface $stub The stub.
+     */
+    public static function returnsNullAnswerCallback(StubInterface $stub)
+    {
+        $stub->returns();
+    }
+
+    /**
      * Construct a new stub.
      *
      * @param callable|null                    $callback              The callback, or null to create an anonymous stub.
@@ -191,6 +201,20 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         if ($this->self) {
             return $this->self;
         }
+
+        return $this;
+    }
+
+    /**
+     * Set the callback to use when creating a default answer.
+     *
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This stub.
+     */
+    public function setDefaultAnswerCallback($defaultAnswerCallback)
+    {
+        $this->defaultAnswerCallback = $defaultAnswerCallback;
 
         return $this;
     }

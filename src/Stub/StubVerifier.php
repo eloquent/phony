@@ -124,6 +124,30 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
+     * Get the default answer callback.
+     *
+     * @return callable The default answer callback.
+     */
+    public function defaultAnswerCallback()
+    {
+        return $this->stub->defaultAnswerCallback();
+    }
+
+    /**
+     * Set the callback to use when creating a default answer.
+     *
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This stub.
+     */
+    public function setDefaultAnswerCallback($defaultAnswerCallback)
+    {
+        $this->stub->setDefaultAnswerCallback($defaultAnswerCallback);
+
+        return $this;
+    }
+
+    /**
      * Set the label.
      *
      * @param string|null $label The label.
@@ -138,9 +162,9 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
-     * Get the lbel.
+     * Get the label.
      *
-     * @return string|null The lbel.
+     * @return string|null The label.
      */
     public function label()
     {

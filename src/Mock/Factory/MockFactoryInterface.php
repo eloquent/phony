@@ -37,7 +37,17 @@ interface MockFactoryInterface
     );
 
     /**
-     * Create a new mock instance for the supplied builder.
+     * Create a new full mock instance for the supplied builder.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return MockInterface          The newly created mock.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function createFullMock(MockBuilderInterface $builder);
+
+    /**
+     * Create a new partial mock instance for the supplied builder.
      *
      * @param MockBuilderInterface          $builder   The builder.
      * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
@@ -45,7 +55,7 @@ interface MockFactoryInterface
      * @return MockInterface          The newly created mock.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createMock(
+    public function createPartialMock(
         MockBuilderInterface $builder,
         $arguments = array()
     );

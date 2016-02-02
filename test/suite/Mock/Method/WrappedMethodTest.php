@@ -23,7 +23,7 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
         $this->callParentMethod = new ReflectionMethod($this, 'setUp');
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodE');
         $this->mockBuilder = new MockBuilder();
-        $this->mock = $this->mockBuilder->create();
+        $this->mock = $this->mockBuilder->partial();
         $this->proxyFactory = new ProxyFactory();
         $this->proxy = $this->proxyFactory->createStubbing($this->mock);
         $this->subject = new WrappedMethod($this->callParentMethod, $this->method, $this->proxy);

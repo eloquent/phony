@@ -17,17 +17,23 @@
   argument from both `spy()` and `stub()` ([#123]).
 - **[BC BREAK]** Removed the `$self` and `$defaultAnswerCallback` arguments from
   `stub()` ([#123]).
+- **[BC BREAK]** Rewrite and rename of mock builder API methods for creating
+  mocks ([#103]).
 - **[IMPROVED]** Made API setter style methods fluent ([#98]).
 - **[IMPROVED]** Instance handles are automatically adapted when stubbing and
   verifying ([#126]).
 - **[IMPROVED]** Added checks for unused stub criteria ([#126]).
+- **[IMPROVED]** Default answer callbacks are now a first-class concept for
+  mocks ([#90]).
 - **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
 - **[FIXED]** Mocking, and calling of return-by-reference methods no longer
   causes errors to be emitted ([#105]).
 - **[FIXED]** Ad-hoc mocks that differ only by function body no longer result in
   re-use of the same mock class ([#131]).
 
+[#90]: https://github.com/eloquent/phony/issues/90
 [#98]: https://github.com/eloquent/phony/issues/98
+[#103]: https://github.com/eloquent/phony/issues/103
 [#105]: https://github.com/eloquent/phony/issues/105
 [#117]: https://github.com/eloquent/phony/issues/117
 [#123]: https://github.com/eloquent/phony/issues/123

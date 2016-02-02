@@ -484,6 +484,8 @@ class MockBuilder implements MockBuilderInterface
      * This method will return the current mock, only creating a new mock if no
      * existing mock is available.
      *
+     * If no existing mock is available, the created mock will be a full mock.
+     *
      * Calling this method will finalize the mock builder.
      *
      * @return MockInterface          The mock instance.
@@ -495,49 +497,7 @@ class MockBuilder implements MockBuilderInterface
             return $this->mock;
         }
 
-        $this->mock = $this->factory->createMock($this, array());
-
-        return $this->mock;
-    }
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param mixed ...$arguments The constructor arguments.
-     *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
-     */
-    public function create()
-    {
-        $this->mock = $this->factory->createMock($this, func_get_args());
-
-        return $this->mock;
-    }
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * This method supports reference parameters.
-     *
-     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
-     *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
-     */
-    public function createWith($arguments = array())
-    {
-        $this->mock = $this->factory->createMock($this, $arguments);
+        $this->mock = $this->factory->createFullMock($this);
 
         return $this->mock;
     }
@@ -555,8 +515,49 @@ class MockBuilder implements MockBuilderInterface
      */
     public function full()
     {
-        $this->mock = $this->factory->createMock($this, null);
-        $this->proxyFactory->createStubbing($this->mock)->full();
+        $this->mock = $this->factory->createFullMock($this);
+
+        return $this->mock;
+    }
+
+    /**
+     * Create a new partial mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param mixed ...$arguments The constructor arguments.
+     *
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function partial()
+    {
+        $this->mock = $this->factory->createPartialMock($this, func_get_args());
+
+        return $this->mock;
+    }
+
+    /**
+     * Create a new partial mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * This method supports reference parameters.
+     *
+     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function partialWith($arguments = array())
+    {
+        $this->mock = $this->factory->createPartialMock($this, $arguments);
 
         return $this->mock;
     }

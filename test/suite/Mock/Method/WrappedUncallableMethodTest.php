@@ -22,7 +22,7 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA');
         $this->mockBuilder = new MockBuilder();
-        $this->mock = $this->mockBuilder->create();
+        $this->mock = $this->mockBuilder->partial();
         $this->proxyFactory = new ProxyFactory();
         $this->proxy = $this->proxyFactory->createStubbing($this->mock);
         $this->subject = new WrappedUncallableMethod($this->method, $this->proxy);

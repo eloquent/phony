@@ -45,6 +45,13 @@ abstract class AbstractStaticProxy extends AbstractProxy implements
         AssertionRecorderInterface $assertionRecorder = null,
         InvokerInterface $invoker = null
     ) {
+        if (null === $state) {
+            $state = (object) array(
+                'defaultAnswerCallback' =>
+                    'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',
+                'stubs' => (object) array(),
+            );
+        }
         if ($class->hasMethod('_callParentStatic')) {
             $callParentMethod = $class->getMethod('_callParentStatic');
             $callParentMethod->setAccessible(true);

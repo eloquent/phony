@@ -577,10 +577,10 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->get());
     }
 
-    public function testCreate()
+    public function testPartial()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->create('a', 'b');
+        $first = $this->subject->partial('a', 'b');
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
@@ -589,17 +589,17 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
-        $second = $this->subject->create();
+        $second = $this->subject->partial();
 
         $this->assertNotSame($first, $second);
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
     }
 
-    public function testCreateWith()
+    public function testPartialWith()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->createWith(array('a', 'b'));
+        $first = $this->subject->partialWith(array('a', 'b'));
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
@@ -608,20 +608,20 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
-        $second = $this->subject->createWith(array());
+        $second = $this->subject->partialWith(array());
 
         $this->assertNotSame($first, $second);
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
 
-        $third = $this->subject->createWith();
+        $third = $this->subject->partialWith();
 
         $this->assertNotSame($first, $third);
         $this->assertNotSame($second, $third);
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($third, $this->subject->get());
 
-        $third = $this->subject->createWith(null);
+        $third = $this->subject->partialWith(null);
 
         $this->assertNotSame($first, $third);
         $this->assertNotSame($second, $third);
@@ -674,7 +674,7 @@ EOD;
         $first = null;
         $second = null;
         $builder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $builder->createWith(array(&$first, &$second));
+        $builder->partialWith(array(&$first, &$second));
 
         $this->assertSame('first', $first);
         $this->assertSame('second', $second);

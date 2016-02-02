@@ -26,7 +26,10 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->state = (object) array('stubs' => (object) array(), 'isFull' => true);
+        $this->state = (object) array(
+            'stubs' => (object) array(),
+            'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
+        );
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
         $this->assertionRenderer = new AssertionRenderer();
@@ -69,7 +72,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->class, $this->subject->clazz());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->state->stubs, $this->subject->stubs());
-        $this->assertSame($this->state->isFull, $this->subject->isFull());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
@@ -84,7 +86,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->subject = new StaticVerificationProxy($this->class);
 
         $this->assertEquals((object) array(), $this->subject->stubs());
-        $this->assertFalse($this->subject->isFull());
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
         $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
@@ -98,7 +99,6 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $className = $this->className;
 
         $this->assertSame($this->subject, $this->subject->full());
-        $this->assertTrue($this->subject->isFull());
         $this->assertNull($className::testClassAStaticMethodA());
         $this->assertNull($className::testClassAStaticMethodB('a', 'b'));
     }
@@ -109,9 +109,20 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $className = $this->className;
 
         $this->assertSame($this->subject, $this->subject->partial());
-        $this->assertFalse($this->subject->isFull());
         $this->assertSame('', $className::testClassAStaticMethodA());
         $this->assertSame('ab', $className::testClassAStaticMethodB('a', 'b'));
+    }
+
+    public function testSetDefaultAnswerCallback()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $callbackA = function () {};
+        $callbackB = function () {};
+
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackA));
+        $this->assertSame($callbackA, $this->subject->defaultAnswerCallback());
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackB));
+        $this->assertSame($callbackB, $this->subject->defaultAnswerCallback());
     }
 
     public function testStub()

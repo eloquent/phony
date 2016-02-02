@@ -180,10 +180,7 @@ class MockFactory implements MockFactoryInterface
         $customMethodsProperty->setAccessible(true);
         $customMethodsProperty->setValue(null, $customMethods);
 
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $proxyProperty
-            ->setValue(null, $this->proxyFactory->createStubbingStatic($class));
+        $this->proxyFactory->createStubbingStatic($class);
 
         $this->definitions[] = array($definition, $class);
 
@@ -191,7 +188,24 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Create a new mock instance for the supplied builder.
+     * Create a new full mock instance for the supplied builder.
+     *
+     * @param MockBuilderInterface $builder The builder.
+     *
+     * @return MockInterface          The newly created mock.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function createFullMock(MockBuilderInterface $builder)
+    {
+        $mock = $builder->build()->newInstanceArgs();
+        $this->proxyFactory
+            ->createStubbing($mock, strval($this->labelSequencer->next()));
+
+        return $mock;
+    }
+
+    /**
+     * Create a new partial mock instance for the supplied builder.
      *
      * @param MockBuilderInterface          $builder   The builder.
      * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
@@ -199,18 +213,15 @@ class MockFactory implements MockFactoryInterface
      * @return MockInterface          The newly created mock.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createMock(
+    public function createPartialMock(
         MockBuilderInterface $builder,
         $arguments = array()
     ) {
-        $class = $builder->build();
-        $mock = $class->newInstanceArgs();
+        $mock = $builder->build()->newInstanceArgs();
         $proxy = $this->proxyFactory
             ->createStubbing($mock, strval($this->labelSequencer->next()));
 
-        $proxyProperty = $class->getProperty('_proxy');
-        $proxyProperty->setAccessible(true);
-        $proxyProperty->setValue($mock, $proxy);
+        $proxy->partial();
 
         if (null !== $arguments) {
             $proxy->constructWith($arguments);

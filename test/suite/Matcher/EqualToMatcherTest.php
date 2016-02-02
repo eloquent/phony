@@ -470,11 +470,11 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $className = 'PhonyMockEqualToMatcherMatchesMocks';
         $builder = MockBuilderFactory::instance()->create('Eloquent\Phony\Test\Properties\TestBaseClass')
             ->named($className);
-        $mockA1 = $builder->create();
+        $mockA1 = $builder->full();
         Phony::on($mockA1)->setLabel('a');
-        $mockA2 = $builder->create();
+        $mockA2 = $builder->full();
         Phony::on($mockA2)->setLabel('a');
-        $mockB1 = $builder->create();
+        $mockB1 = $builder->full();
         Phony::on($mockB1)->setLabel('b');
         $mockX1 = new $className();
 

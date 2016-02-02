@@ -198,6 +198,8 @@ interface MockBuilderInterface
      * This method will return the current mock, only creating a new mock if no
      * existing mock is available.
      *
+     * If no existing mock is available, the created mock will be a full mock.
+     *
      * Calling this method will finalize the mock builder.
      *
      * @api
@@ -206,6 +208,21 @@ interface MockBuilderInterface
      * @throws MockExceptionInterface If the mock generation fails.
      */
     public function get();
+
+    /**
+     * Create a new full mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @api
+     *
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function full();
 
     /**
      * Create a new mock.
@@ -222,7 +239,7 @@ interface MockBuilderInterface
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function create();
+    public function partial();
 
     /**
      * Create a new mock.
@@ -241,22 +258,7 @@ interface MockBuilderInterface
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createWith($arguments = array());
-
-    /**
-     * Create a new full mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @api
-     *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
-     */
-    public function full();
+    public function partialWith($arguments = array());
 
     /**
      * Get the generated source code of the mock class.

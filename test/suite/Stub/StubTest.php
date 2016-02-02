@@ -177,6 +177,17 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->self, $this->subject->self());
     }
 
+    public function testSetDefaultAnswerCallback()
+    {
+        $callbackA = function () {};
+        $callbackB = function () {};
+
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackA));
+        $this->assertSame($callbackA, $this->subject->defaultAnswerCallback());
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackB));
+        $this->assertSame($callbackB, $this->subject->defaultAnswerCallback());
+    }
+
     public function testSetLabel()
     {
         $this->assertSame($this->subject, $this->subject->setLabel(null));

@@ -224,7 +224,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testOn()
     {
-        $mock = Phony::mockBuilder()->create();
+        $mock = Phony::mockBuilder()->partial();
         $actual = Phony::on($mock);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy', $actual);
@@ -233,7 +233,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testOnFunction()
     {
-        $mock = mockBuilder()->create();
+        $mock = mockBuilder()->partial();
         $actual = on($mock);
         $expected = $this->proxyFactory->createStubbing($mock);
 
@@ -263,7 +263,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testVerify()
     {
-        $mock = Phony::mockBuilder()->create();
+        $mock = Phony::mockBuilder()->partial();
         $actual = Phony::verify($mock);
         $expected = $this->proxyFactory->createVerification($mock);
 
@@ -273,7 +273,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testVerifyFunction()
     {
-        $mock = mockBuilder()->create();
+        $mock = mockBuilder()->partial();
         $actual = verify($mock);
         $expected = $this->proxyFactory->createVerification($mock);
 
