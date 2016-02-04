@@ -24,7 +24,7 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 
 /**
  * Creates matchers.
@@ -131,7 +131,7 @@ class MatcherFactory implements MatcherFactoryInterface
                 return true;
             }
 
-            if ($value instanceof InstanceProxyInterface) {
+            if ($value instanceof InstanceHandleInterface) {
                 return $value->isAdaptable();
             }
 
@@ -162,7 +162,7 @@ class MatcherFactory implements MatcherFactoryInterface
         }
 
         if (is_object($value)) {
-            if ($value instanceof InstanceProxyInterface) {
+            if ($value instanceof InstanceHandleInterface) {
                 if ($value->isAdaptable()) {
                     return new EqualToMatcher($value->mock());
                 }
@@ -208,7 +208,7 @@ class MatcherFactory implements MatcherFactoryInterface
             }
 
             if (is_object($value)) {
-                if ($value instanceof InstanceProxyInterface) {
+                if ($value instanceof InstanceHandleInterface) {
                     if ($value->isAdaptable()) {
                         $matchers[] = new EqualToMatcher($value->mock());
 

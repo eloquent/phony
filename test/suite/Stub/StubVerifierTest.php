@@ -176,7 +176,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
-    public function testProxyMethods()
+    public function testHandleMethods()
     {
         $this->assertSame($this->self, $this->subject->self());
         $this->assertSame($this->label, $this->subject->label());

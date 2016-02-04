@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
@@ -19,11 +19,11 @@ use ReflectionClass;
 use stdClass;
 
 /**
- * The interface implemented by proxies.
+ * The interface implemented by handles.
  *
  * @api
  */
-interface ProxyInterface
+interface HandleInterface
 {
     /**
      * Get the class.
@@ -48,7 +48,7 @@ interface ProxyInterface
      *
      * @api
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function full();
 
@@ -57,7 +57,7 @@ interface ProxyInterface
      *
      * @api
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function partial();
 
@@ -68,7 +68,7 @@ interface ProxyInterface
      *
      * @param callable $defaultAnswerCallback The default answer callback.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function setDefaultAnswerCallback($defaultAnswerCallback);
 
@@ -132,7 +132,7 @@ interface ProxyInterface
      *
      * @api
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function reset();
 
@@ -154,7 +154,7 @@ interface ProxyInterface
     public function spy($name);
 
     /**
-     * Get the proxy state.
+     * Get the handle state.
      *
      * @return stdClass The state.
      */

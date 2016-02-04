@@ -19,9 +19,9 @@ use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use ParseError;
@@ -52,12 +52,12 @@ class MockFactory implements MockFactoryInterface
      *
      * @param SequencerInterface|null     $labelSequencer The label sequencer to use.
      * @param MockGeneratorInterface|null $generator      The generator to use.
-     * @param ProxyFactoryInterface|null  $proxyFactory   The proxy factory to use.
+     * @param HandleFactoryInterface|null $handleFactory  The handle factory to use.
      */
     public function __construct(
         SequencerInterface $labelSequencer = null,
         MockGeneratorInterface $generator = null,
-        ProxyFactoryInterface $proxyFactory = null
+        HandleFactoryInterface $handleFactory = null
     ) {
         if (null === $labelSequencer) {
             $labelSequencer = Sequencer::sequence('mock-label');
@@ -65,13 +65,13 @@ class MockFactory implements MockFactoryInterface
         if (null === $generator) {
             $generator = MockGenerator::instance();
         }
-        if (null === $proxyFactory) {
-            $proxyFactory = ProxyFactory::instance();
+        if (null === $handleFactory) {
+            $handleFactory = HandleFactory::instance();
         }
 
         $this->labelSequencer = $labelSequencer;
         $this->generator = $generator;
-        $this->proxyFactory = $proxyFactory;
+        $this->handleFactory = $handleFactory;
         $this->definitions = array();
     }
 
@@ -96,13 +96,13 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Get the proxy factory.
+     * Get the handle factory.
      *
-     * @return ProxyFactoryInterface The proxy factory.
+     * @return HandleFactoryInterface The handle factory.
      */
-    public function proxyFactory()
+    public function handleFactory()
     {
-        return $this->proxyFactory;
+        return $this->handleFactory;
     }
 
     /**
@@ -180,7 +180,7 @@ class MockFactory implements MockFactoryInterface
         $customMethodsProperty->setAccessible(true);
         $customMethodsProperty->setValue(null, $customMethods);
 
-        $this->proxyFactory->createStubbingStatic($class);
+        $this->handleFactory->createStubbingStatic($class);
 
         $this->definitions[] = array($definition, $class);
 
@@ -198,7 +198,7 @@ class MockFactory implements MockFactoryInterface
     public function createFullMock(MockBuilderInterface $builder)
     {
         $mock = $builder->build()->newInstanceArgs();
-        $this->proxyFactory
+        $this->handleFactory
             ->createStubbing($mock, strval($this->labelSequencer->next()));
 
         return $mock;
@@ -218,13 +218,13 @@ class MockFactory implements MockFactoryInterface
         $arguments = array()
     ) {
         $mock = $builder->build()->newInstanceArgs();
-        $proxy = $this->proxyFactory
+        $handle = $this->handleFactory
             ->createStubbing($mock, strval($this->labelSequencer->next()));
 
-        $proxy->partial();
+        $handle->partial();
 
         if (null !== $arguments) {
-            $proxy->constructWith($arguments);
+            $handle->constructWith($arguments);
         }
 
         return $mock;
@@ -233,6 +233,6 @@ class MockFactory implements MockFactoryInterface
     private static $instance;
     private $labelSequencer;
     private $generator;
-    private $proxyFactory;
+    private $handleFactory;
     private $definitions;
 }

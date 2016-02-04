@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
@@ -23,13 +23,13 @@ use ReflectionClass;
 use stdClass;
 
 /**
- * An abstract base class for implementing instance proxies.
+ * An abstract base class for implementing instance handles.
  */
-abstract class AbstractInstanceProxy extends AbstractProxy implements
-    InstanceProxyInterface
+abstract class AbstractInstanceHandle extends AbstractHandle implements
+    InstanceHandleInterface
 {
     /**
-     * Construct a new instance proxy.
+     * Construct a new instance handle.
      *
      * @param MockInterface                     $mock                The mock.
      * @param stdClass|null                     $state               The state.
@@ -114,7 +114,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function construct()
     {
@@ -126,7 +126,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      *
      * @param ArgumentsInterface|array $arguments The arguments.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function constructWith($arguments = array())
     {
@@ -143,7 +143,7 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
      *
      * @param string|null $label The label.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function setLabel($label)
     {
@@ -163,11 +163,11 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     }
 
     /**
-     * Set whether this proxy should be adapted to its mock automatically.
+     * Set whether this handle should be adapted to its mock automatically.
      *
-     * @param boolean $isAdaptable True if this proxy should be adapted automatically.
+     * @param boolean $isAdaptable True if this handle should be adapted automatically.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function setIsAdaptable($isAdaptable)
     {
@@ -177,9 +177,9 @@ abstract class AbstractInstanceProxy extends AbstractProxy implements
     }
 
     /**
-     * Returns true if this proxy should be adapted to its mock automatically.
+     * Returns true if this handle should be adapted to its mock automatically.
      *
-     * @return boolean True if this proxy should be adapted automatically.
+     * @return boolean True if this handle should be adapted automatically.
      */
     public function isAdaptable()
     {

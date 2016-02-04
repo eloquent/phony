@@ -31,9 +31,9 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 use Eloquent\Phony\Mock\Method\WrappedMethodInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
 use Error;
@@ -116,13 +116,13 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a mock.
      *
-     * @param ProxyInterface $proxy The proxy.
+     * @param HandleInterface $handle The handle.
      *
      * @return string The rendered mock.
      */
-    public function renderMock(ProxyInterface $proxy)
+    public function renderMock(HandleInterface $handle)
     {
-        $class = $proxy->clazz();
+        $class = $handle->clazz();
 
         if ($parentClass = $class->getParentClass()) {
             $class = $parentClass;
@@ -131,8 +131,8 @@ class AssertionRenderer implements AssertionRendererInterface
         $atoms = explode('\\', $class->getName());
         $rendered = array_pop($atoms);
 
-        if ($proxy instanceof InstanceProxyInterface) {
-            $label = $proxy->label();
+        if ($handle instanceof InstanceHandleInterface) {
+            $label = $handle->label();
 
             if (null !== $label) {
                 $rendered .= '[' . $label . ']';
@@ -204,10 +204,10 @@ class AssertionRenderer implements AssertionRendererInterface
 
                 if ($wrappedCallback instanceof WrappedMethodInterface) {
                     $name = $wrappedCallback->name();
-                    $proxy = $wrappedCallback->proxy();
+                    $handle = $wrappedCallback->handle();
 
-                    if ($proxy instanceof InstanceProxyInterface) {
-                        $mockLabel = $proxy->label();
+                    if ($handle instanceof InstanceHandleInterface) {
+                        $mockLabel = $handle->label();
 
                         if (null !== $mockLabel) {
                             $rendered .= '[' . $mockLabel . ']';

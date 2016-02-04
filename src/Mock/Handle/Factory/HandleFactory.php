@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Factory;
+namespace Eloquent\Phony\Mock\Handle\Factory;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
@@ -21,17 +21,17 @@ use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
 use Eloquent\Phony\Mock\Exception\InvalidMockException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
+use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandleInterface;
+use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
+use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandleInterface;
+use Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle;
+use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandleInterface;
+use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle;
+use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandleInterface;
+use Eloquent\Phony\Mock\Handle\Verification\VerificationHandle;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
-use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy;
-use Eloquent\Phony\Mock\Proxy\Verification\InstanceVerificationProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy;
-use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -40,14 +40,14 @@ use ReflectionClass;
 use ReflectionException;
 
 /**
- * Creates proxies.
+ * Creates handles.
  */
-class ProxyFactory implements ProxyFactoryInterface
+class HandleFactory implements HandleFactoryInterface
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return ProxyFactoryInterface The static factory.
+     * @return HandleFactoryInterface The static factory.
      */
     public static function instance()
     {
@@ -59,7 +59,7 @@ class ProxyFactory implements ProxyFactoryInterface
     }
 
     /**
-     * Construct a new proxy factory.
+     * Construct a new handle factory.
      *
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
@@ -148,21 +148,21 @@ class ProxyFactory implements ProxyFactoryInterface
     }
 
     /**
-     * Create a new stubbing proxy.
+     * Create a new stubbing handle.
      *
-     * @param MockInterface|InstanceProxyInterface $mock  The mock.
-     * @param string|null                          $label The label.
+     * @param MockInterface|InstanceHandleInterface $mock  The mock.
+     * @param string|null                           $label The label.
      *
-     * @return InstanceStubbingProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface         If the supplied mock is invalid.
+     * @return InstanceStubbingHandleInterface The newly created handle.
+     * @throws MockExceptionInterface          If the supplied mock is invalid.
      */
     public function createStubbing($mock, $label = null)
     {
-        if ($mock instanceof InstanceStubbingProxyInterface) {
+        if ($mock instanceof InstanceStubbingHandleInterface) {
             return $mock;
         }
 
-        if ($mock instanceof InstanceProxyInterface) {
+        if ($mock instanceof InstanceHandleInterface) {
             $mock = $mock->mock();
         }
 
@@ -172,14 +172,14 @@ class ProxyFactory implements ProxyFactoryInterface
 
         $class = new ReflectionClass($mock);
 
-        $proxyProperty = $class->getProperty('_proxy');
-        $proxyProperty->setAccessible(true);
+        $handleProperty = $class->getProperty('_handle');
+        $handleProperty->setAccessible(true);
 
-        if ($proxy = $proxyProperty->getValue($mock)) {
-            return $proxy;
+        if ($handle = $handleProperty->getValue($mock)) {
+            return $handle;
         }
 
-        $proxy = new StubbingProxy(
+        $handle = new StubbingHandle(
             $mock,
             (object) array(
                 'defaultAnswerCallback' =>
@@ -194,30 +194,30 @@ class ProxyFactory implements ProxyFactoryInterface
             $this->invoker
         );
 
-        $proxyProperty->setValue($mock, $proxy);
+        $handleProperty->setValue($mock, $handle);
 
-        return $proxy;
+        return $handle;
     }
 
     /**
-     * Create a new verification proxy.
+     * Create a new verification handle.
      *
-     * @param MockInterface|InstanceProxyInterface $mock The mock.
+     * @param MockInterface|InstanceHandleInterface $mock The mock.
      *
-     * @return InstanceVerificationProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface             If the supplied mock is invalid.
+     * @return InstanceVerificationHandleInterface The newly created handle.
+     * @throws MockExceptionInterface              If the supplied mock is invalid.
      */
     public function createVerification($mock)
     {
-        if ($mock instanceof InstanceVerificationProxyInterface) {
+        if ($mock instanceof InstanceVerificationHandleInterface) {
             return $mock;
         }
 
-        $stubbingProxy = $this->createStubbing($mock);
+        $stubbingHandle = $this->createStubbing($mock);
 
-        return new VerificationProxy(
-            $stubbingProxy->mock(),
-            $stubbingProxy->state(),
+        return new VerificationHandle(
+            $stubbingHandle->mock(),
+            $stubbingHandle->state(),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->assertionRenderer,
@@ -227,20 +227,20 @@ class ProxyFactory implements ProxyFactoryInterface
     }
 
     /**
-     * Create a new static stubbing proxy.
+     * Create a new static stubbing handle.
      *
-     * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+     * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
      *
-     * @return StaticStubbingProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface       If the supplied class name is not a mock class.
+     * @return StaticStubbingHandleInterface The newly created handle.
+     * @throws MockExceptionInterface        If the supplied class name is not a mock class.
      */
     public function createStubbingStatic($class)
     {
-        if ($class instanceof StaticStubbingProxyInterface) {
+        if ($class instanceof StaticStubbingHandleInterface) {
             return $class;
         }
 
-        if ($class instanceof ProxyInterface) {
+        if ($class instanceof HandleInterface) {
             $class = $class->clazz();
         } elseif ($class instanceof MockInterface) {
             $class = new ReflectionClass($class);
@@ -258,14 +258,14 @@ class ProxyFactory implements ProxyFactoryInterface
             throw new NonMockClassException($class->getName());
         }
 
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
+        $handleProperty = $class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
 
-        if ($proxy = $proxyProperty->getValue(null)) {
-            return $proxy;
+        if ($handle = $handleProperty->getValue(null)) {
+            return $handle;
         }
 
-        $proxy = new StaticStubbingProxy(
+        $handle = new StaticStubbingHandle(
             $class,
             null,
             $this->stubFactory,
@@ -275,30 +275,30 @@ class ProxyFactory implements ProxyFactoryInterface
             $this->invoker
         );
 
-        $proxyProperty->setValue(null, $proxy);
+        $handleProperty->setValue(null, $handle);
 
-        return $proxy;
+        return $handle;
     }
 
     /**
-     * Create a new static verification proxy.
+     * Create a new static verification handle.
      *
-     * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+     * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
      *
-     * @return StaticVerificationProxyInterface The newly created proxy.
-     * @throws MockExceptionInterface           If the supplied class name is not a mock class.
+     * @return StaticVerificationHandleInterface The newly created handle.
+     * @throws MockExceptionInterface            If the supplied class name is not a mock class.
      */
     public function createVerificationStatic($class)
     {
-        if ($class instanceof StaticVerificationProxyInterface) {
+        if ($class instanceof StaticVerificationHandleInterface) {
             return $class;
         }
 
-        $stubbingProxy = $this->createStubbingStatic($class);
+        $stubbingHandle = $this->createStubbingStatic($class);
 
-        return new StaticVerificationProxy(
-            $stubbingProxy->clazz(),
-            $stubbingProxy->state(),
+        return new StaticVerificationHandle(
+            $stubbingHandle->clazz(),
+            $stubbingHandle->state(),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->assertionRenderer,

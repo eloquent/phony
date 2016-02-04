@@ -346,7 +346,7 @@ EOD;
         }
 
         $source .= <<<'EOD'
-        $result = self::$_staticProxy->spy($a0)
+        $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 
         return $result;
@@ -471,9 +471,9 @@ EOD;
             $isStatic = $method->isStatic() ? 'static ' : '';
 
             if ($isStatic) {
-                $proxy = 'self::$_staticProxy';
+                $handle = 'self::$_staticHandle';
             } else {
-                $proxy = '$this->_proxy';
+                $handle = '$this->_handle';
             }
 
             if ($variadicIndex > -1) {
@@ -485,7 +485,7 @@ EOD;
                     "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = $variadicReference\$a" .
                     "${variadicIndex}[\$i - $variadicIndex];\n" .
-                    "        }\n\n        \$result = ${proxy}->spy" .
+                    "        }\n\n        \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
                     "(\$arguments)\n        );\n\n        return \$result;";
@@ -497,7 +497,7 @@ EOD;
                     $parameterCount .
                     "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = \\func_get_arg(\$i);\n" .
-                    "        }\n\n        \$result = ${proxy}->spy" .
+                    "        }\n\n        \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
                     "(\$arguments)\n        );\n\n        return \$result;";
@@ -617,7 +617,7 @@ EOD;
         }
 
         $source .= <<<'EOD'
-        $result = $this->_proxy->spy($a0)
+        $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 
         return $result;
@@ -693,7 +693,7 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return self::$_staticProxy
+        return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
     }
 
@@ -916,8 +916,8 @@ EOD;
         }
 
         $source .= ";\n    private static \$_customMethods = array();" .
-            "\n    private static \$_staticProxy;" .
-            "\n    private \$_proxy;";
+            "\n    private static \$_staticHandle;" .
+            "\n    private \$_handle;";
 
         return $source;
     }

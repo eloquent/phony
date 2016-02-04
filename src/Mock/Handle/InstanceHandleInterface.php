@@ -9,17 +9,17 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Mock\MockInterface;
 
 /**
- * The interface implemented by instance proxies.
+ * The interface implemented by instance handles.
  *
  * @api
  */
-interface InstanceProxyInterface extends ProxyInterface
+interface InstanceHandleInterface extends HandleInterface
 {
     /**
      * Get the mock.
@@ -37,7 +37,7 @@ interface InstanceProxyInterface extends ProxyInterface
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function construct();
 
@@ -48,7 +48,7 @@ interface InstanceProxyInterface extends ProxyInterface
      *
      * @param ArgumentsInterface|array $arguments The arguments.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function constructWith($arguments = array());
 
@@ -59,7 +59,7 @@ interface InstanceProxyInterface extends ProxyInterface
      *
      * @param string|null $label The label.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function setLabel($label);
 
@@ -73,18 +73,18 @@ interface InstanceProxyInterface extends ProxyInterface
     public function label();
 
     /**
-     * Set whether this proxy should be adapted to its mock automatically.
+     * Set whether this handle should be adapted to its mock automatically.
      *
-     * @param boolean $isAdaptable True if this proxy should be adapted automatically.
+     * @param boolean $isAdaptable True if this handle should be adapted automatically.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function setIsAdaptable($isAdaptable);
 
     /**
-     * Returns true if this proxy should be adapted to its mock automatically.
+     * Returns true if this handle should be adapted to its mock automatically.
      *
-     * @return boolean True if this proxy should be adapted automatically.
+     * @return boolean True if this handle should be adapted automatically.
      */
     public function isAdaptable();
 }

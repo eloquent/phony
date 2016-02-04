@@ -15,7 +15,7 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
 use Error;
 use Exception;
 use ReflectionMethod;
@@ -30,13 +30,13 @@ class WrappedCustomMethod extends AbstractWrappedMethod
      *
      * @param callable              $customCallback The custom callback.
      * @param ReflectionMethod      $method         The method.
-     * @param ProxyInterface        $proxy          The proxy.
+     * @param HandleInterface       $handle         The handle.
      * @param InvokerInterface|null $invoker        The invoker to use.
      */
     public function __construct(
         $customCallback,
         ReflectionMethod $method,
-        ProxyInterface $proxy,
+        HandleInterface $handle,
         InvokerInterface $invoker = null
     ) {
         if (null === $invoker) {
@@ -46,7 +46,7 @@ class WrappedCustomMethod extends AbstractWrappedMethod
         $this->customCallback = $customCallback;
         $this->invoker = $invoker;
 
-        parent::__construct($method, $proxy);
+        parent::__construct($method, $handle);
     }
 
     /**

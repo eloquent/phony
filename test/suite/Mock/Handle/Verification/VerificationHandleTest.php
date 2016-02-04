@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Verification;
+namespace Eloquent\Phony\Mock\Handle\Verification;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
@@ -22,7 +22,7 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionProperty;
 
-class VerificationProxyTest extends PHPUnit_Framework_TestCase
+class VerificationHandleTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -47,7 +47,7 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder->named($mockClassName);
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new VerificationProxy(
+        $this->subject = new VerificationHandle(
             $this->mock,
             $this->state,
             $this->stubFactory,
@@ -59,13 +59,13 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->className = $this->class->getName();
 
-        $proxyProperty = $this->class->getProperty('_proxy');
-        $proxyProperty->setAccessible(true);
-        $proxy = $proxyProperty->getValue($this->mock);
+        $handleProperty = $this->class->getProperty('_handle');
+        $handleProperty->setAccessible(true);
+        $handle = $handleProperty->getValue($this->mock);
 
-        $stateProperty = new ReflectionProperty('Eloquent\Phony\Mock\Proxy\AbstractProxy', 'state');
+        $stateProperty = new ReflectionProperty('Eloquent\Phony\Mock\Handle\AbstractHandle', 'state');
         $stateProperty->setAccessible(true);
-        $stateProperty->setValue($proxy, $this->state);
+        $stateProperty->setValue($handle, $this->state);
     }
 
     public function testConstructor()
@@ -91,7 +91,7 @@ class VerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new VerificationProxy($this->mock);
+        $this->subject = new VerificationHandle($this->mock);
 
         $this->assertEquals((object) array(), $this->subject->stubs());
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
@@ -272,7 +272,7 @@ EOD;
         $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new VerificationProxy($this->mock);
+        $this->subject = new VerificationHandle($this->mock);
 
         $this->assertNull($this->mock->constructorArguments);
         $this->assertSame($this->subject, $this->subject->construct('a', 'b'));
@@ -284,7 +284,7 @@ EOD;
         $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new VerificationProxy($this->mock);
+        $this->subject = new VerificationHandle($this->mock);
 
         $this->assertNull($this->mock->constructorArguments);
         $this->assertSame($this->subject, $this->subject->constructWith(array('a', 'b')));
@@ -296,7 +296,7 @@ EOD;
         $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new VerificationProxy($this->mock);
+        $this->subject = new VerificationHandle($this->mock);
         $a = 'a';
         $b = 'b';
 
@@ -394,13 +394,13 @@ EOD;
         );
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new VerificationProxy($this->mock);
-        $proxyProperty = $this->class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $proxy = $proxyProperty->getValue($this->mock);
-        $stateProperty = new ReflectionProperty('Eloquent\Phony\Mock\Proxy\AbstractProxy', 'state');
+        $this->subject = new VerificationHandle($this->mock);
+        $handleProperty = $this->class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
+        $handle = $handleProperty->getValue($this->mock);
+        $stateProperty = new ReflectionProperty('Eloquent\Phony\Mock\Handle\AbstractHandle', 'state');
         $stateProperty->setAccessible(true);
-        $stateProperty->setValue($proxy, $this->subject->state());
+        $stateProperty->setValue($handle, $this->subject->state());
         $this->mock->methodA('a', 'b');
 
         $this->assertSame($this->subject, $this->subject->methodA('a', 'b'));

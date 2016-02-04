@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Mock\Factory;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestMockGenerator;
 use Mockery\Generator\Generator;
@@ -27,8 +27,8 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->labelSequencer = new Sequencer();
         $this->generator = new MockGenerator();
-        $this->proxyFactory = new ProxyFactory();
-        $this->subject = new MockFactory($this->labelSequencer, $this->generator, $this->proxyFactory);
+        $this->handleFactory = new HandleFactory();
+        $this->subject = new MockFactory($this->labelSequencer, $this->generator, $this->handleFactory);
 
         $this->featureDetector = FeatureDetector::instance();
     }
@@ -37,7 +37,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->labelSequencer, $this->subject->labelSequencer());
         $this->assertSame($this->generator, $this->subject->generator());
-        $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
+        $this->assertSame($this->handleFactory, $this->subject->handleFactory());
     }
 
     public function testConstructorDefaults()
@@ -46,7 +46,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(Sequencer::sequence('mock-label'), $this->subject->labelSequencer());
         $this->assertSame(MockGenerator::instance(), $this->subject->generator());
-        $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
+        $this->assertSame(HandleFactory::instance(), $this->subject->handleFactory());
     }
 
     public function testCreateMockClass()
@@ -122,7 +122,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertSame('0', $this->proxyFactory->createStubbing($actual)->label());
+        $this->assertSame('0', $this->handleFactory->createStubbing($actual)->label());
         $this->assertNull($actual->testClassAMethodA('a', 'b'));
         $this->assertNull($protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertNull($actual->methodB('a', 'b'));
@@ -156,7 +156,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertSame('0', $this->proxyFactory->createStubbing($actual)->label());
+        $this->assertSame('0', $this->handleFactory->createStubbing($actual)->label());
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertSame('custom ab', $actual->methodB('a', 'b'));

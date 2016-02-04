@@ -99,7 +99,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->isMatcher((object) array()));
     }
 
-    public function testIsMatcherWithInstanceProxies()
+    public function testIsMatcherWithInstanceHandles()
     {
         $adaptable = Phony::mock();
         $unadaptable = Phony::mock()->setIsAdaptable(false);
@@ -143,7 +143,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
     }
 
-    public function testAdaptInstanceProxies()
+    public function testAdaptInstanceHandles()
     {
         $adaptable = Phony::mock();
         $unadaptable = Phony::mock()->setIsAdaptable(false);

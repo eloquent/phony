@@ -52,7 +52,7 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->suffixArguments());
     }
 
-    public function testConstructorWithInstanceProxies()
+    public function testConstructorWithInstanceHandles()
     {
         $adaptable = Phony::mock();
         $unadaptable = Phony::mock()->setIsAdaptable(false);

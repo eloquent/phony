@@ -17,9 +17,9 @@ use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 
 /**
  * Creates mock builders.
@@ -43,22 +43,22 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Construct a new mock builder factory.
      *
-     * @param MockFactoryInterface|null  $mockFactory  The mock factory to use.
-     * @param ProxyFactoryInterface|null $proxyFactory The proxy factory to use.
+     * @param MockFactoryInterface|null   $mockFactory   The mock factory to use.
+     * @param HandleFactoryInterface|null $handleFactory The handle factory to use.
      */
     public function __construct(
         MockFactoryInterface $mockFactory = null,
-        ProxyFactoryInterface $proxyFactory = null
+        HandleFactoryInterface $handleFactory = null
     ) {
         if (null === $mockFactory) {
             $mockFactory = MockFactory::instance();
         }
-        if (null === $proxyFactory) {
-            $proxyFactory = ProxyFactory::instance();
+        if (null === $handleFactory) {
+            $handleFactory = HandleFactory::instance();
         }
 
         $this->mockFactory = $mockFactory;
-        $this->proxyFactory = $proxyFactory;
+        $this->handleFactory = $handleFactory;
     }
 
     /**
@@ -72,13 +72,13 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     }
 
     /**
-     * Get the proxy factory.
+     * Get the handle factory.
      *
-     * @return ProxyFactoryInterface The proxy factory.
+     * @return HandleFactoryInterface The handle factory.
      */
-    public function proxyFactory()
+    public function handleFactory()
     {
-        return $this->proxyFactory;
+        return $this->handleFactory;
     }
 
     /**
@@ -94,7 +94,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
      */
     public function create($types = array())
     {
-        return new MockBuilder($types, $this->mockFactory, $this->proxyFactory);
+        return new MockBuilder($types, $this->mockFactory, $this->handleFactory);
     }
 
     /**
@@ -111,7 +111,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     public function createFullMock($types = array())
     {
         $builder =
-            new MockBuilder($types, $this->mockFactory, $this->proxyFactory);
+            new MockBuilder($types, $this->mockFactory, $this->handleFactory);
 
         return $builder->full();
     }
@@ -135,12 +135,12 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     public function createPartialMock($types = array(), $arguments = array())
     {
         $builder =
-            new MockBuilder($types, $this->mockFactory, $this->proxyFactory);
+            new MockBuilder($types, $this->mockFactory, $this->handleFactory);
 
         return $builder->partialWith($arguments);
     }
 
     private static $instance;
     private $mockFactory;
-    private $proxyFactory;
+    private $handleFactory;
 }

@@ -31,9 +31,9 @@ use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -56,7 +56,7 @@ class MockBuilder implements MockBuilderInterface
      *
      * @param mixed                            $types              The types to mock.
      * @param MockFactoryInterface|null        $factory            The factory to use.
-     * @param ProxyFactoryInterface|null       $proxyFactory       The proxy factory to use.
+     * @param HandleFactoryInterface|null      $handleFactory      The handle factory to use.
      * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector.
      * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
      *
@@ -65,15 +65,15 @@ class MockBuilder implements MockBuilderInterface
     public function __construct(
         $types = null,
         MockFactoryInterface $factory = null,
-        ProxyFactoryInterface $proxyFactory = null,
+        HandleFactoryInterface $handleFactory = null,
         InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $factory) {
             $factory = MockFactory::instance();
         }
-        if (null === $proxyFactory) {
-            $proxyFactory = ProxyFactory::instance();
+        if (null === $handleFactory) {
+            $handleFactory = HandleFactory::instance();
         }
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
@@ -87,7 +87,7 @@ class MockBuilder implements MockBuilderInterface
             $featureDetector->isSupported('class.anonymous');
 
         $this->factory = $factory;
-        $this->proxyFactory = $proxyFactory;
+        $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;
 
@@ -127,13 +127,13 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get the proxy factory.
+     * Get the handle factory.
      *
-     * @return ProxyFactoryInterface The proxy factory.
+     * @return HandleFactoryInterface The handle factory.
      */
-    public function proxyFactory()
+    public function handleFactory()
     {
-        return $this->proxyFactory;
+        return $this->handleFactory;
     }
 
     /**
@@ -710,7 +710,7 @@ class MockBuilder implements MockBuilderInterface
     }
 
     private $factory;
-    private $proxyFactory;
+    private $handleFactory;
     private $invocableInspector;
     private $featureDetector;
     private $isTraitSupported;

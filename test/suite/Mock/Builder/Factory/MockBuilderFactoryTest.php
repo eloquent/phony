@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Mock\Builder\Factory;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -23,14 +23,14 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->mockFactory = new MockFactory();
-        $this->proxyFactory = new ProxyFactory();
-        $this->subject = new MockBuilderFactory($this->mockFactory, $this->proxyFactory);
+        $this->handleFactory = new HandleFactory();
+        $this->subject = new MockBuilderFactory($this->mockFactory, $this->handleFactory);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->mockFactory, $this->subject->mockFactory());
-        $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
+        $this->assertSame($this->handleFactory, $this->subject->handleFactory());
     }
 
     public function testConstructorDefaults()
@@ -38,18 +38,18 @@ class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject = new MockBuilderFactory();
 
         $this->assertSame(MockFactory::instance(), $this->subject->mockFactory());
-        $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
+        $this->assertSame(HandleFactory::instance(), $this->subject->handleFactory());
     }
 
     public function testCreate()
     {
         $types = array('Eloquent\Phony\Test\TestInterfaceA', 'Eloquent\Phony\Test\TestInterfaceB');
         $actual = $this->subject->create($types);
-        $expected = new MockBuilder($types, $this->mockFactory, $this->proxyFactory);
+        $expected = new MockBuilder($types, $this->mockFactory, $this->handleFactory);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($this->mockFactory, $actual->factory());
-        $this->assertSame($this->proxyFactory, $actual->proxyFactory());
+        $this->assertSame($this->handleFactory, $actual->handleFactory());
     }
 
     public function testCreatePartialMock()

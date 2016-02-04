@@ -22,19 +22,19 @@ class PhonyTest extends UnitTestCase
 {
     public function setUp()
     {
-        $this->proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
-        $this->mock = $this->proxy->mock();
+        $this->handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
+        $this->mock = $this->handle->mock();
     }
 
     public function testShouldRecordPassingMockAssertions()
     {
         $this->mock->testClassAMethodA('a', 'b');
 
-        $this->proxy->testClassAMethodA->calledWith(new EqualExpectation('a'), 'b');
+        $this->handle->testClassAMethodA->calledWith(new EqualExpectation('a'), 'b');
     }
 
     public function testShouldRecordFailingMockAssertions()
     {
-        $this->proxy->testClassAMethodA->calledWith('a', 'b');
+        $this->handle->testClassAMethodA->calledWith('a', 'b');
     }
 }

@@ -9,21 +9,21 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Factory;
+namespace Eloquent\Phony\Mock\Handle\Factory;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxy;
-use Eloquent\Phony\Mock\Proxy\Stubbing\StubbingProxy;
+use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
+use Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionProperty;
 
-class ProxyFactoryTest extends PHPUnit_Framework_TestCase
+class HandleFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -32,7 +32,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertionRenderer = new AssertionRenderer();
         $this->assertionRecorder = new AssertionRecorder();
         $this->invoker = new Invoker();
-        $this->subject = new ProxyFactory(
+        $this->subject = new HandleFactory(
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->assertionRenderer,
@@ -52,7 +52,7 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new ProxyFactory();
+        $this->subject = new HandleFactory();
 
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
         $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
@@ -65,10 +65,10 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
-        $proxyProperty = new ReflectionProperty($mock, '_proxy');
-        $proxyProperty->setAccessible(true);
-        $proxyProperty->setValue($mock, null);
-        $expected = new StubbingProxy(
+        $handleProperty = new ReflectionProperty($mock, '_handle');
+        $handleProperty->setAccessible(true);
+        $handleProperty->setValue($mock, null);
+        $expected = new StubbingHandle(
             $mock,
             (object) array(
                 'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
@@ -90,9 +90,9 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
-        $proxyProperty = new ReflectionProperty($mock, '_proxy');
-        $proxyProperty->setAccessible(true);
-        $expected = $proxyProperty->getValue($mock);
+        $handleProperty = new ReflectionProperty($mock, '_handle');
+        $handleProperty->setAccessible(true);
+        $expected = $handleProperty->getValue($mock);
         $actual = $this->subject->createStubbing($mock);
 
         $this->assertSame($expected, $actual);
@@ -103,11 +103,11 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
-        $proxyProperty = new ReflectionProperty($mock, '_proxy');
-        $proxyProperty->setAccessible(true);
-        $expected = $proxyProperty->getValue($mock);
-        $verifierProxy = $this->subject->createVerification($mock);
-        $actual = $this->subject->createStubbing($verifierProxy);
+        $handleProperty = new ReflectionProperty($mock, '_handle');
+        $handleProperty->setAccessible(true);
+        $expected = $handleProperty->getValue($mock);
+        $verificationHandle = $this->subject->createVerification($mock);
+        $actual = $this->subject->createStubbing($verificationHandle);
 
         $this->assertSame($expected, $actual);
     }
@@ -122,15 +122,15 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
-        $proxyProperty = new ReflectionProperty($mock, '_proxy');
-        $proxyProperty->setAccessible(true);
-        $stubbingProxy = $proxyProperty->getValue($mock);
+        $handleProperty = new ReflectionProperty($mock, '_handle');
+        $handleProperty->setAccessible(true);
+        $stubbingHandle = $handleProperty->getValue($mock);
         $actual = $this->subject->createVerification($mock);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy', $actual);
-        $this->assertSame($stubbingProxy->mock(), $actual->mock());
-        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
-        $this->assertSame($stubbingProxy->label(), $actual->label());
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\VerificationHandle', $actual);
+        $this->assertSame($stubbingHandle->mock(), $actual->mock());
+        $this->assertSame($stubbingHandle->stubs(), $actual->stubs());
+        $this->assertSame($stubbingHandle->label(), $actual->label());
     }
 
     public function testCreateVerificationAdapt()
@@ -146,23 +146,23 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
-        $stubbingProxy = $this->subject->createStubbing($mock);
+        $stubbingHandle = $this->subject->createStubbing($mock);
         $actual = $this->subject->createVerification($mock);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\VerificationProxy', $actual);
-        $this->assertSame($stubbingProxy->mock(), $actual->mock());
-        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
-        $this->assertSame($stubbingProxy->label(), $actual->label());
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\VerificationHandle', $actual);
+        $this->assertSame($stubbingHandle->mock(), $actual->mock());
+        $this->assertSame($stubbingHandle->stubs(), $actual->stubs());
+        $this->assertSame($stubbingHandle->label(), $actual->label());
     }
 
     public function testCreateStubbingStaticNew()
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $proxyProperty->setValue(null, null);
-        $expected = new StaticStubbingProxy(
+        $handleProperty = $class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
+        $handleProperty->setValue(null, null);
+        $expected = new StaticStubbingHandle(
             $class,
             null,
             $this->stubFactory,
@@ -180,9 +180,9 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $expected = $proxyProperty->getValue(null);
+        $handleProperty = $class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
+        $expected = $handleProperty->getValue(null);
         $actual = $this->subject->createStubbingStatic($class);
 
         $this->assertSame($expected, $actual);
@@ -193,11 +193,11 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $expected = $proxyProperty->getValue(null);
-        $verifierProxy = $this->subject->createVerificationStatic($class);
-        $actual = $this->subject->createStubbingStatic($verifierProxy);
+        $handleProperty = $class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
+        $expected = $handleProperty->getValue(null);
+        $verificationHandle = $this->subject->createVerificationStatic($class);
+        $actual = $this->subject->createStubbingStatic($verificationHandle);
 
         $this->assertSame($expected, $actual);
     }
@@ -206,9 +206,9 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $expected = $proxyProperty->getValue(null);
+        $handleProperty = $class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
+        $expected = $handleProperty->getValue(null);
         $actual = $this->subject->createStubbingStatic($mockBuilder->partial());
 
         $this->assertSame($expected, $actual);
@@ -218,9 +218,9 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $expected = $proxyProperty->getValue(null);
+        $handleProperty = $class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
+        $expected = $handleProperty->getValue(null);
         $actual = $this->subject->createStubbingStatic($class->getName());
 
         $this->assertSame($expected, $actual);
@@ -254,14 +254,14 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
-        $proxyProperty = $class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $stubbingProxy = $proxyProperty->getValue(null);
+        $handleProperty = $class->getProperty('_staticHandle');
+        $handleProperty->setAccessible(true);
+        $stubbingHandle = $handleProperty->getValue(null);
         $actual = $this->subject->createVerificationStatic($class);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
-        $this->assertSame($stubbingProxy->clazz(), $actual->clazz());
-        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle', $actual);
+        $this->assertSame($stubbingHandle->clazz(), $actual->clazz());
+        $this->assertSame($stubbingHandle->stubs(), $actual->stubs());
     }
 
     public function testCreateVerificationStaticAdapt()
@@ -277,12 +277,12 @@ class ProxyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
-        $stubbingProxy = $this->subject->createStubbingStatic($class);
+        $stubbingHandle = $this->subject->createStubbingStatic($class);
         $actual = $this->subject->createVerificationStatic($class);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxy', $actual);
-        $this->assertSame($stubbingProxy->clazz(), $actual->clazz());
-        $this->assertSame($stubbingProxy->stubs(), $actual->stubs());
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle', $actual);
+        $this->assertSame($stubbingHandle->clazz(), $actual->clazz());
+        $this->assertSame($stubbingHandle->stubs(), $actual->stubs());
     }
 
     public function testInstance()

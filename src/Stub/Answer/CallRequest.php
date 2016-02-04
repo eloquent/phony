@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 
 /**
  * Represents a call request.
@@ -44,7 +44,7 @@ class CallRequest implements CallRequestInterface
 
         foreach ($this->arguments->all() as $index => $argument) {
             if (
-                $argument instanceof InstanceProxyInterface &&
+                $argument instanceof InstanceHandleInterface &&
                 $argument->isAdaptable()
             ) {
                 $this->arguments->set($index, $argument->mock());

@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Mock\Handle\HandleInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 
 /**
  * The interface implemented by wrapped methods.
@@ -27,11 +27,11 @@ interface WrappedMethodInterface
     public function name();
 
     /**
-     * Get the proxy.
+     * Get the handle.
      *
-     * @return ProxyInterface The proxy.
+     * @return HandleInterface The handle.
      */
-    public function proxy();
+    public function handle();
 
     /**
      * Get the mock.

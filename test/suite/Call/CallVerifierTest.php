@@ -175,7 +175,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
-    public function testProxyMethods()
+    public function testHandleMethods()
     {
         $this->assertSame($this->calledEvent, $this->subject->eventAt(0));
         $this->assertSame($this->call, $this->subject->firstCall());

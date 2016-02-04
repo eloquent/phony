@@ -22,7 +22,7 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
@@ -413,7 +413,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $value = $indexOrValue;
         }
 
-        if ($value instanceof InstanceProxyInterface && $value->isAdaptable()) {
+        if ($value instanceof InstanceHandleInterface && $value->isAdaptable()) {
             $value = $value->mock();
         }
 
@@ -561,7 +561,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         foreach (func_get_args() as $value) {
             if (
-                $value instanceof InstanceProxyInterface &&
+                $value instanceof InstanceHandleInterface &&
                 $value->isAdaptable()
             ) {
                 $value = $value->mock();
@@ -650,7 +650,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             if (is_string($exception)) {
                 $exception = new Exception($exception);
             } elseif (
-                $exception instanceof InstanceProxyInterface &&
+                $exception instanceof InstanceHandleInterface &&
                 $exception->isAdaptable()
             ) {
                 $exception = $exception->mock();

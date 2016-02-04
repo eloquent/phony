@@ -17,13 +17,13 @@ use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
+use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandleInterface;
+use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandleInterface;
+use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandleInterface;
+use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandleInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Stubbing\InstanceStubbingProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Stubbing\StaticStubbingProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Verification\InstanceVerificationProxyInterface;
-use Eloquent\Phony\Mock\Proxy\Verification\StaticVerificationProxyInterface;
 use Eloquent\Phony\Spy\SpyVerifierInterface;
 use Eloquent\Phony\Stub\StubVerifierInterface;
 use Exception;
@@ -59,7 +59,7 @@ function mockBuilder($types = array())
  *
  * @param mixed $types The types to mock.
  *
- * @return InstanceStubbingProxyInterface A stubbing handle around the new mock.
+ * @return InstanceStubbingHandleInterface A stubbing handle around the new mock.
  */
 function mock($types = array())
 {
@@ -84,7 +84,7 @@ function mock($types = array())
  * @param mixed                         $types     The types to mock.
  * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
  *
- * @return InstanceStubbingProxyInterface A stubbing handle around the new mock.
+ * @return InstanceStubbingHandleInterface A stubbing handle around the new mock.
  */
 function partialMock($types = array(), $arguments = array())
 {
@@ -95,64 +95,64 @@ function partialMock($types = array(), $arguments = array())
 }
 
 /**
- * Create a new stubbing proxy.
+ * Create a new stubbing handle.
  *
  * @api
  *
- * @param MockInterface|InstanceProxyInterface $mock The mock.
+ * @param MockInterface|InstanceHandleInterface $mock The mock.
  *
- * @return InstanceStubbingProxyInterface The newly created proxy.
- * @throws MockExceptionInterface         If the supplied mock is invalid.
+ * @return InstanceStubbingHandleInterface The newly created handle.
+ * @throws MockExceptionInterface          If the supplied mock is invalid.
  */
 function on($mock)
 {
-    return FacadeDriver::instance()->proxyFactory()->createStubbing($mock);
+    return FacadeDriver::instance()->handleFactory()->createStubbing($mock);
 }
 
 /**
- * Create a new verification proxy.
+ * Create a new verification handle.
  *
  * @api
  *
- * @param MockInterface|InstanceProxyInterface $mock The mock.
+ * @param MockInterface|InstanceHandleInterface $mock The mock.
  *
- * @return InstanceVerificationProxyInterface The newly created proxy.
- * @throws MockExceptionInterface             If the supplied mock is invalid.
+ * @return InstanceVerificationHandleInterface The newly created handle.
+ * @throws MockExceptionInterface              If the supplied mock is invalid.
  */
 function verify($mock)
 {
-    return FacadeDriver::instance()->proxyFactory()->createVerification($mock);
+    return FacadeDriver::instance()->handleFactory()->createVerification($mock);
 }
 
 /**
- * Create a new static stubbing proxy.
+ * Create a new static stubbing handle.
  *
  * @api
  *
- * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+ * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
  *
- * @return StaticStubbingProxyInterface The newly created proxy.
- * @throws MockExceptionInterface       If the supplied class name is not a mock class.
+ * @return StaticStubbingHandleInterface The newly created handle.
+ * @throws MockExceptionInterface        If the supplied class name is not a mock class.
  */
 function onStatic($class)
 {
-    return FacadeDriver::instance()->proxyFactory()
+    return FacadeDriver::instance()->handleFactory()
         ->createStubbingStatic($class);
 }
 
 /**
- * Create a new static verification proxy.
+ * Create a new static verification handle.
  *
  * @api
  *
- * @param MockInterface|ProxyInterface|ReflectionClass|string $class The class.
+ * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
  *
- * @return StaticVerificationProxyInterface The newly created proxy.
- * @throws MockExceptionInterface           If the supplied class name is not a mock class.
+ * @return StaticVerificationHandleInterface The newly created handle.
+ * @throws MockExceptionInterface            If the supplied class name is not a mock class.
  */
 function verifyStatic($class)
 {
-    return FacadeDriver::instance()->proxyFactory()
+    return FacadeDriver::instance()->handleFactory()
         ->createVerificationStatic($class);
 }
 

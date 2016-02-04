@@ -9,27 +9,28 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Stubbing;
+namespace Eloquent\Phony\Mock\Handle\Verification;
 
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
-use Eloquent\Phony\Mock\Proxy\AbstractStaticProxy;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Eloquent\Phony\Mock\Handle\AbstractStaticHandle;
+use Exception;
 
 /**
- * A proxy for stubbing a mock class.
+ * A handle for verifying a mock class.
  */
-class StaticStubbingProxy extends AbstractStaticProxy implements
-    StaticStubbingProxyInterface
+class StaticVerificationHandle extends AbstractStaticHandle implements
+    StaticVerificationHandleInterface
 {
     /**
-     * Get a stub verifier, and modify its current criteria to match the
+     * Throws an exception unless the specified method was called with the
      * supplied arguments.
      *
      * @param string $name      The method name.
      * @param array  $arguments The arguments.
      *
-     * @return StubVerifierInterface  The stub verifier.
+     * @return $this                  This handle.
      * @throws MockExceptionInterface If the stub does not exist.
+     * @throws Exception              If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function __call($name, array $arguments)
     {
@@ -41,6 +42,8 @@ class StaticStubbingProxy extends AbstractStaticProxy implements
             $stub = $this->state->stubs->$key = $this->createStub($name);
         }
 
-        return call_user_func_array(array($stub, 'with'), $arguments);
+        call_user_func_array(array($stub, 'calledWith'), $arguments);
+
+        return $this;
     }
 }

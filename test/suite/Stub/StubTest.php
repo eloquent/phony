@@ -645,7 +645,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c', $c);
     }
 
-    public function testSetsArgumentWithInstanceProxies()
+    public function testSetsArgumentWithInstanceHandles()
     {
         $adaptable = Phony::mock();
         $unadaptable = Phony::mock()->setIsAdaptable(false);
@@ -863,7 +863,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
     }
 
-    public function testReturnsWithInstanceProxies()
+    public function testReturnsWithInstanceHandles()
     {
         $adaptable = Phony::mock();
         $unadaptable = Phony::mock()->setIsAdaptable(false);
@@ -923,7 +923,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(new Exception(), new Exception()), $thrownExceptions);
     }
 
-    public function testThrowsWithInstanceProxies()
+    public function testThrowsWithInstanceHandles()
     {
         $adaptable = Phony::mock('RuntimeException');
         $this->subject->throws($adaptable);

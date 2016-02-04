@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Verification;
+namespace Eloquent\Phony\Mock\Handle\Stubbing;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
@@ -20,15 +20,15 @@ use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
-use ReflectionProperty;
 
-class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
+class StubbingHandleTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         $this->state = (object) array(
             'stubs' => (object) array(),
             'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
+            'label' => 'label',
         );
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
@@ -44,8 +44,9 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = new MockBuilder($className);
         $this->mockBuilder->named($mockClassName);
         $this->class = $this->mockBuilder->build(true);
-        $this->subject = new StaticVerificationProxy(
-            $this->class,
+        $this->mock = $this->mockBuilder->partial();
+        $this->subject = new StubbingHandle(
+            $this->mock,
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
@@ -56,22 +57,22 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 
         $this->className = $this->class->getName();
 
-        $proxyProperty = $this->class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $proxy = $proxyProperty->getValue(null);
-
-        $stateProperty = new ReflectionProperty('Eloquent\Phony\Mock\Proxy\AbstractProxy', 'state');
-        $stateProperty->setAccessible(true);
-        $stateProperty->setValue($proxy, $this->state);
+        $handleProperty = $this->class->getProperty('_handle');
+        $handleProperty->setAccessible(true);
+        $handleProperty->setValue($this->mock, $this->subject);
     }
 
     public function testConstructor()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
 
-        $this->assertSame($this->class, $this->subject->clazz());
+        $this->assertSame($this->mock, $this->subject->mock());
+        $this->assertInstanceOf('ReflectionClass', $this->subject->clazz());
+        $this->assertSame($this->className, $this->subject->clazz()->getName());
         $this->assertSame($this->className, $this->subject->className());
         $this->assertSame($this->state->stubs, $this->subject->stubs());
+        $this->assertSame($this->state->label, $this->subject->label());
+        $this->assertTrue($this->subject->isAdaptable());
         $this->assertSame($this->stubFactory, $this->subject->stubFactory());
         $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
         $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
@@ -83,7 +84,8 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
     {
         $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
-        $this->subject = new StaticVerificationProxy($this->class);
+        $this->mock = $this->mockBuilder->partial();
+        $this->subject = new StubbingHandle($this->mock);
 
         $this->assertEquals((object) array(), $this->subject->stubs());
         $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
@@ -93,24 +95,41 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
+    public function testSetLabel()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertSame($this->subject, $this->subject->setLabel(null));
+        $this->assertNull($this->subject->label());
+        $this->assertSame($this->subject, $this->subject->setLabel($this->state->label));
+        $this->assertSame($this->state->label, $this->subject->label());
+    }
+
+    public function testSetIsAdaptable()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+
+        $this->assertTrue($this->subject->isAdaptable());
+        $this->assertSame($this->subject, $this->subject->setIsAdaptable(false));
+        $this->assertFalse($this->subject->isAdaptable());
+    }
+
     public function testFull()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
-        $className = $this->className;
 
         $this->assertSame($this->subject, $this->subject->full());
-        $this->assertNull($className::testClassAStaticMethodA());
-        $this->assertNull($className::testClassAStaticMethodB('a', 'b'));
+        $this->assertNull($this->mock->testClassAMethodA());
+        $this->assertNull($this->mock->testClassAMethodB('a', 'b'));
     }
 
     public function testPartial()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
-        $className = $this->className;
 
         $this->assertSame($this->subject, $this->subject->partial());
-        $this->assertSame('', $className::testClassAStaticMethodA());
-        $this->assertSame('ab', $className::testClassAStaticMethodB('a', 'b'));
+        $this->assertSame('', $this->mock->testClassAMethodA());
+        $this->assertSame('ab', $this->mock->testClassAMethodB('a', 'b'));
     }
 
     public function testSetDefaultAnswerCallback()
@@ -128,11 +147,11 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
     public function testStub()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $actual = $this->subject->stub('testClassAStaticMethodA');
+        $actual = $this->subject->stub('testClassAMethodA');
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($actual, $this->subject->stub('testClassAStaticMethodA'));
-        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
+        $this->assertSame($actual, $this->subject->stub('testClassAMethodA'));
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda);
     }
 
     public function testStubWithMagic()
@@ -156,11 +175,11 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
     public function testMagicProperty()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $actual = $this->subject->testClassAStaticMethodA;
+        $actual = $this->subject->testClassAMethodA;
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($actual, $this->subject->testClassAStaticMethodA);
-        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
+        $this->assertSame($actual, $this->subject->testClassAMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda);
     }
 
     public function testMagicPropertyFailure()
@@ -174,21 +193,20 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
     public function testSpy()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $actual = $this->subject->spy('testClassAStaticMethodA');
+        $actual = $this->subject->spy('testClassAMethodA');
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\Spy', $actual);
-        $this->assertSame($actual, $this->subject->spy('testClassAStaticMethodA'));
-        $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda->spy());
+        $this->assertSame($actual, $this->subject->spy('testClassAMethodA'));
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda->spy());
     }
 
     public function testCheckNoInteraction()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $className = $this->subject->className();
 
         $this->assertTrue((boolean) $this->subject->checkNoInteraction());
 
-        $className::testClassAStaticMethodA();
+        $this->mock->testClassAMethodA();
 
         $this->assertFalse((boolean) $this->subject->checkNoInteraction());
     }
@@ -202,16 +220,15 @@ class StaticVerificationProxyTest extends PHPUnit_Framework_TestCase
 
     public function testNoInteractionFailure()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA', 'PhonyMockStaticVerificationNoInteraction');
-        $className = $this->subject->className();
-        $className::testClassAStaticMethodA('a', 'b');
-        $className::testClassAStaticMethodB('c', 'd');
-        $className::testClassAStaticMethodA('e', 'f');
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA', 'PhonyMockStubbingNoInteraction');
+        $this->mock->testClassAMethodA('a', 'b');
+        $this->mock->testClassAMethodB('c', 'd');
+        $this->mock->testClassAMethodA('e', 'f');
         $expected = <<<'EOD'
-Expected no interaction with TestClassA[static]. Calls:
-    - TestClassA::testClassAStaticMethodA("a", "b")
-    - TestClassA::testClassAStaticMethodB("c", "d")
-    - TestClassA::testClassAStaticMethodA("e", "f")
+Expected no interaction with TestClassA[label]. Calls:
+    - TestClassA[label]->testClassAMethodA("a", "b")
+    - TestClassA[label]->testClassAMethodB("c", "d")
+    - TestClassA[label]->testClassAMethodA("e", "f")
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -221,8 +238,8 @@ EOD;
     public function testReset()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $this->subject->stub('testClassAStaticMethodA');
-        $this->subject->stub('testClassAStaticMethodB');
+        $this->subject->stub('testClassAMethodA');
+        $this->subject->stub('testClassAMethodB');
         $this->subject->reset();
 
         $this->assertSame(array(), get_object_vars($this->subject->stubs()));
@@ -231,10 +248,13 @@ EOD;
     public function testMagicCall()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $className = $this->className;
-        $className::testClassAStaticMethodA();
+        $actual = $this->subject->testClassAMethodA();
+        $actual->returns();
 
-        $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA());
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame($actual, $this->subject->testClassAMethodA);
+        $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda);
+        $this->assertSame($actual, $this->subject->testClassAMethodA()->returns());
     }
 
     public function testMagicCallFailure()
@@ -245,20 +265,56 @@ EOD;
         $this->subject->nonexistent();
     }
 
-    public function testVerificationWithParentMethod()
+    public function testConstruct()
+    {
+        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->partialWith(null);
+        $this->subject = new StubbingHandle($this->mock);
+
+        $this->assertNull($this->mock->constructorArguments);
+        $this->assertSame($this->subject, $this->subject->construct('a', 'b'));
+        $this->assertSame(array('a', 'b'), $this->mock->constructorArguments);
+    }
+
+    public function testConstructWith()
+    {
+        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->partialWith(null);
+        $this->subject = new StubbingHandle($this->mock);
+
+        $this->assertNull($this->mock->constructorArguments);
+        $this->assertSame($this->subject, $this->subject->constructWith(array('a', 'b')));
+        $this->assertSame(array('a', 'b'), $this->mock->constructorArguments);
+    }
+
+    public function testConstructWithWithReferenceParameters()
+    {
+        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $this->class = $this->mockBuilder->build(true);
+        $this->mock = $this->mockBuilder->partialWith(null);
+        $this->subject = new StubbingHandle($this->mock);
+        $a = 'a';
+        $b = 'b';
+
+        $this->assertNull($this->mock->constructorArguments);
+        $this->assertSame($this->subject, $this->subject->constructWith(array(&$a, &$b)));
+        $this->assertSame('first', $a);
+        $this->assertSame('second', $b);
+    }
+
+    public function testStubbingWithParentMethod()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
         $this->subject->partial();
-        $className = $this->className;
-        $className::testClassAStaticMethodA('a', 'b');
+        $this->subject->testClassAMethodA('a', 'b')->returns('x');
 
-        $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA('a', 'b'));
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->testClassAStaticMethodA();
+        $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
+        $this->assertSame('cd', $this->mock->testClassAMethodA('c', 'd'));
     }
 
-    public function testVerificationWithTraitMethod()
+    public function testStubbingWithTraitMethod()
     {
         if (!$this->featureDetector->isSupported('trait')) {
             $this->markTestSkipped('Requires traits.');
@@ -266,52 +322,42 @@ EOD;
 
         $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
         $this->subject->partial();
-        $className = $this->className;
-        $a = 'a';
-        $className::testClassAStaticMethodA($a, 'b');
+        $this->subject->testClassAMethodB('a', 'b')->returns('x');
 
-        $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA('a', 'b'));
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->testClassAStaticMethodA();
+        $this->assertSame('x', $this->mock->testClassAMethodB('a', 'b'));
+        $this->assertSame('cd', $this->mock->testClassAMethodB('c', 'd'));
     }
 
-    public function testVerificationWithMagicMethod()
+    public function testStubbingWithMagicMethod()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
         $this->subject->partial();
-        $className = $this->className;
-        $className::nonexistent('a', 'b');
+        $this->subject->nonexistent('a', 'b')->returns('x');
 
-        $this->assertSame($this->subject, $this->subject->nonexistent('a', 'b'));
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->nonexistent();
+        $this->assertSame('x', $this->mock->nonexistent('a', 'b'));
+        $this->assertSame('magic nonexistent cd', $this->mock->nonexistent('c', 'd'));
     }
 
-    public function testVerificationWithNoParentMethod()
+    public function testStubbingWithNoParentMethod()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
         $this->subject->partial();
-        $className = $this->className;
-        $className::testClassAStaticMethodA('a', 'b');
+        $this->subject->testClassAMethodA('a', 'b')->returns('x');
 
-        $this->assertSame($this->subject, $this->subject->testClassAStaticMethodA('a', 'b'));
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->testClassAStaticMethodA();
+        $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
+        $this->assertNull($this->mock->testClassAMethodA('c', 'd'));
     }
 
-    public function testVerificationFailureWithFinalMethod()
+    public function testStubbingFailureWithFinalMethod()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassF');
         $this->subject->partial();
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
-        $this->subject->testClassFStaticMethodA;
+        $this->subject->testClassFMethodA;
     }
 
-    public function testVerificationWithTraitFinalMethod()
+    public function testStubbingWithTraitFinalMethod()
     {
         if (!$this->featureDetector->isSupported('trait')) {
             $this->markTestSkipped('Requires traits.');
@@ -319,38 +365,31 @@ EOD;
 
         $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
         $this->subject->partial();
-        $className = $this->className;
-        $className::testTraitGStaticMethodA('a', 'b');
+        $this->subject->testTraitGMethodA('a', 'b')->returns('x');
 
-        $this->assertSame($this->subject, $this->subject->testTraitGStaticMethodA('a', 'b'));
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->testTraitGStaticMethodA();
+        $this->assertSame('x', $this->mock->testTraitGMethodA('a', 'b'));
+        $this->assertSame('cd', $this->mock->testTraitGMethodA('c', 'd'));
     }
 
-    public function testVerificationWithCustomMethod()
+    public function testStubbingWithCustomMethod()
     {
         $this->mockBuilder = new MockBuilder(
             array(
-                'static methodA' => function () {
+                'methodA' => function () {
                     return implode(func_get_args());
                 },
             )
         );
         $this->class = $this->mockBuilder->build(true);
-        $className = $this->class->getName();
-        $this->subject = new StaticVerificationProxy($this->class);
-        $proxyProperty = $this->class->getProperty('_staticProxy');
-        $proxyProperty->setAccessible(true);
-        $proxy = $proxyProperty->getValue(null);
-        $stateProperty = new ReflectionProperty('Eloquent\Phony\Mock\Proxy\AbstractProxy', 'state');
-        $stateProperty->setAccessible(true);
-        $stateProperty->setValue($proxy, $this->subject->state());
-        $className::methodA('a', 'b');
+        $this->mock = $this->mockBuilder->partial();
+        $this->subject = new StubbingHandle($this->mock);
+        $handleProperty = $this->class->getProperty('_handle');
+        $handleProperty->setAccessible(true);
+        $handleProperty->setValue($this->mock, $this->subject);
+        $this->subject->partial();
+        $this->subject->methodA('a', 'b')->returns('x');
 
-        $this->assertSame($this->subject, $this->subject->methodA('a', 'b'));
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->methodA();
+        $this->assertSame('x', $this->mock->methodA('a', 'b'));
+        $this->assertSame('cd', $this->mock->methodA('c', 'd'));
     }
 }

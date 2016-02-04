@@ -9,13 +9,13 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Handle;
 
 /**
- * The interface used to identify static proxies.
+ * The interface used to identify static handles.
  *
  * @api
  */
-interface StaticProxyInterface extends ProxyInterface
+interface StaticHandleInterface extends HandleInterface
 {
 }

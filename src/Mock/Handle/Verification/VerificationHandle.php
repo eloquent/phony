@@ -9,31 +9,41 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy\Verification;
+namespace Eloquent\Phony\Mock\Handle\Verification;
 
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Eloquent\Phony\Mock\Handle\AbstractInstanceHandle;
 use Exception;
 
 /**
- * The interface implemented by verification proxies.
- *
- * @api
+ * A handle for verifying a mock.
  */
-interface VerificationProxyInterface extends ProxyInterface
+class VerificationHandle extends AbstractInstanceHandle implements
+    InstanceVerificationHandleInterface
 {
     /**
      * Throws an exception unless the specified method was called with the
      * supplied arguments.
      *
-     * @api
-     *
      * @param string $name      The method name.
      * @param array  $arguments The arguments.
      *
-     * @return $this                  This proxy.
+     * @return $this                  This handle.
      * @throws MockExceptionInterface If the stub does not exist.
      * @throws Exception              If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function __call($name, array $arguments);
+    public function __call($name, array $arguments)
+    {
+        $key = strtolower($name);
+
+        if (isset($this->state->stubs->$key)) {
+            $stub = $this->state->stubs->$key;
+        } else {
+            $stub = $this->state->stubs->$key = $this->createStub($name);
+        }
+
+        call_user_func_array(array($stub, 'calledWith'), $arguments);
+
+        return $this;
+    }
 }

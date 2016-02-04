@@ -35,7 +35,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -51,7 +51,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -76,7 +76,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -92,7 +92,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -117,7 +117,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -161,7 +161,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -172,7 +172,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         array $a1
     ) {
-        $result = self::$_staticProxy->spy($a0)
+        $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 
         return $result;
@@ -204,7 +204,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -220,7 +220,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -245,7 +245,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -261,7 +261,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -277,7 +277,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -293,7 +293,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -309,7 +309,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -325,7 +325,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -341,7 +341,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -357,7 +357,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -378,7 +378,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -399,7 +399,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -424,7 +424,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -445,7 +445,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -479,7 +479,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -495,7 +495,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -506,7 +506,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         array $a1
     ) {
-        $result = $this->_proxy->spy($a0)
+        $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
 
         return $result;
@@ -521,7 +521,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -546,7 +546,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = self::$_staticProxy->spy(__FUNCTION__)->invokeWith(
+        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -562,7 +562,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -587,7 +587,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
 
@@ -608,7 +608,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return self::$_staticProxy
+        return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
     }
 
@@ -659,6 +659,6 @@ implements \Eloquent\Phony\Mock\MockInterface,
 );
     private static $_traitMethods = array();
     private static $_customMethods = array();
-    private static $_staticProxy;
-    private $_proxy;
+    private static $_staticHandle;
+    private $_handle;
 }

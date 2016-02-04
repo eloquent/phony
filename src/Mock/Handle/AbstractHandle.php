@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
@@ -37,19 +37,19 @@ use ReflectionMethod;
 use stdClass;
 
 /**
- * An abstract base class for implementing proxies.
+ * An abstract base class for implementing handles.
  */
-abstract class AbstractProxy implements ProxyInterface
+abstract class AbstractHandle implements HandleInterface
 {
     /**
-     * Construct a new proxy.
+     * Construct a new handle.
      *
      * @param ReflectionClass                   $class               The class.
      * @param stdClass|null                     $state               The state.
      * @param ReflectionMethod|null             $callParentMethod    The call parent method, or null if no parent class exists.
      * @param ReflectionMethod|null             $callTraitMethod     The call trait method, or null if no trait methods are implemented.
      * @param ReflectionMethod|null             $callMagicMethod     The call magic method, or null if magic calls are not supported.
-     * @param MockInterface|null                $mock                The mock, or null if this is a static proxy.
+     * @param MockInterface|null                $mock                The mock, or null if this is a static handle.
      * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
      * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
      * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
@@ -190,7 +190,7 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Turn the mock into a full mock.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function full()
     {
@@ -203,7 +203,7 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Turn the mock into a partial mock.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function partial()
     {
@@ -220,7 +220,7 @@ abstract class AbstractProxy implements ProxyInterface
      *
      * @param callable $defaultAnswerCallback The default answer callback.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function setDefaultAnswerCallback($defaultAnswerCallback)
     {
@@ -359,7 +359,7 @@ abstract class AbstractProxy implements ProxyInterface
     /**
      * Reset the mock to its initial state.
      *
-     * @return $this This proxy.
+     * @return $this This handle.
      */
     public function reset()
     {
@@ -371,7 +371,7 @@ abstract class AbstractProxy implements ProxyInterface
     }
 
     /**
-     * Get the proxy state.
+     * Get the handle state.
      *
      * @return stdClass The state.
      */

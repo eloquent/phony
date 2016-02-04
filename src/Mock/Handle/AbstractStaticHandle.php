@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Proxy;
+namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
@@ -20,13 +20,13 @@ use ReflectionClass;
 use stdClass;
 
 /**
- * An abstract base class for implementing static proxies.
+ * An abstract base class for implementing static handles.
  */
-abstract class AbstractStaticProxy extends AbstractProxy implements
-    StaticProxyInterface
+abstract class AbstractStaticHandle extends AbstractHandle implements
+    StaticHandleInterface
 {
     /**
-     * Construct a new static proxy.
+     * Construct a new static handle.
      *
      * @param ReflectionClass                   $class               The class.
      * @param stdClass|null                     $state               The state.
