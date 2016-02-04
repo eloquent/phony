@@ -19,6 +19,7 @@
   `stub()` ([#123]).
 - **[BC BREAK]** Rewrite and rename of mock builder API methods for creating
   mocks ([#103]).
+- **[NEW]** Mock builders can now be copied via the `clone` operator ([#101]).
 - **[IMPROVED]** Made API setter style methods fluent ([#98]).
 - **[IMPROVED]** Instance handles are automatically adapted when stubbing and
   verifying ([#126]).
@@ -33,6 +34,7 @@
 
 [#90]: https://github.com/eloquent/phony/issues/90
 [#98]: https://github.com/eloquent/phony/issues/98
+[#101]: https://github.com/eloquent/phony/issues/101
 [#103]: https://github.com/eloquent/phony/issues/103
 [#105]: https://github.com/eloquent/phony/issues/105
 [#117]: https://github.com/eloquent/phony/issues/117

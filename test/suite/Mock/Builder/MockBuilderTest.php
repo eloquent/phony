@@ -185,6 +185,29 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         new MockBuilder(array(1));
     }
 
+    public function testClone()
+    {
+        $builder = new MockBuilder();
+        $builder->addMethod('methodA');
+        $mockA = $builder->get();
+        $copy = clone $builder;
+        $copy->addMethod('methodB');
+
+        $this->assertTrue($builder->isFinalized());
+        $this->assertTrue($builder->isBuilt());
+        $this->assertFalse($copy->isFinalized());
+        $this->assertFalse($copy->isBuilt());
+
+        $mockB = $copy->get();
+
+        $this->assertNotSame($mockA, $mockB);
+        $this->assertFalse($mockA instanceof $mockB);
+        $this->assertFalse($mockB instanceof $mockA);
+        $this->assertTrue(method_exists($mockA, 'methodA'));
+        $this->assertTrue(method_exists($mockB, 'methodA'));
+        $this->assertTrue(method_exists($mockB, 'methodB'));
+    }
+
     public function testLikeWithString()
     {
         $builder = new MockBuilder();

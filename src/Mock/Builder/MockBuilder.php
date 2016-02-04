@@ -106,6 +106,17 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
+     * Clone this builder.
+     */
+    public function __clone()
+    {
+        $this->isFinalized = false;
+        $this->definition = null;
+        $this->class = null;
+        $this->mock = null;
+    }
+
+    /**
      * Get the factory.
      *
      * @return MockFactoryInterface The factory.
