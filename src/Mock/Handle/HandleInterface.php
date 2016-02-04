@@ -62,6 +62,21 @@ interface HandleInterface
     public function partial();
 
     /**
+     * Use the supplied object as the implementation for all methods of the
+     * mock.
+     *
+     * This method may help when partial mocking of a particular implementation
+     * is not possible; as in the case of a final class.
+     *
+     * @api
+     *
+     * @param object $object The object to use.
+     *
+     * @return $this This handle.
+     */
+    public function proxy($object);
+
+    /**
      * Set the callback to use when creating a default answer.
      *
      * @api

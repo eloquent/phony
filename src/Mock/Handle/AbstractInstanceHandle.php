@@ -20,6 +20,7 @@ use Eloquent\Phony\Mock\MockInterface;
 use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use ReflectionClass;
+use ReflectionObject;
 use stdClass;
 
 /**
@@ -79,8 +80,6 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
             $callMagicMethod = null;
         }
 
-        $this->mock = $mock;
-        $this->class = $class;
         $this->callParentConstructorMethod = $callParentConstructorMethod;
         $this->isAdaptable = true;
 
@@ -163,6 +162,51 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
     }
 
     /**
+     * Use the supplied object as the implementation for all methods of the
+     * mock.
+     *
+     * This method may help when partial mocking of a particular implementation
+     * is not possible; as in the case of a final class.
+     *
+     * @param object $object The object to use.
+     *
+     * @return $this This handle.
+     */
+    public function proxy($object)
+    {
+        $reflector = new ReflectionObject($object);
+
+        foreach ($reflector->getMethods() as $method) {
+            if (
+                $method->isStatic() ||
+                $method->isPrivate() ||
+                $method->isConstructor() ||
+                $method->isDestructor()
+            ) {
+                continue;
+            }
+
+            $name = $method->getName();
+
+            if ($this->class->hasMethod($name)) {
+                $method->setAccessible(true);
+
+                $this->stub($name)->doesWith(
+                    function ($arguments) use ($method, $object) {
+                        return $method->invokeArgs($object, $arguments->all());
+                    },
+                    array(),
+                    false,
+                    true,
+                    false
+                );
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Set whether this handle should be adapted to its mock automatically.
      *
      * @param boolean $isAdaptable True if this handle should be adapted automatically.
@@ -186,8 +230,6 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
         return $this->isAdaptable;
     }
 
-    private $mock;
-    private $class;
     private $callParentConstructorMethod;
     private $isAdaptable;
 }

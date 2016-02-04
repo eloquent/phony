@@ -472,8 +472,8 @@ abstract class AbstractHandle implements HandleInterface
     }
 
     protected $state;
-    private $mock;
-    private $class;
+    protected $class;
+    protected $mock;
     private $uncallableMethods;
     private $traitMethods;
     private $callParentMethod;

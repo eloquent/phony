@@ -19,7 +19,9 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Test\TestClassH;
 use PHPUnit_Framework_TestCase;
+use ReflectionMethod;
 
 class StaticStubbingHandleTest extends PHPUnit_Framework_TestCase
 {
@@ -107,6 +109,22 @@ class StaticStubbingHandleTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->partial());
         $this->assertSame('', $className::testClassAStaticMethodA());
         $this->assertSame('ab', $className::testClassAStaticMethodB('a', 'b'));
+    }
+
+    public function testProxy()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $className = $this->className;
+
+        $protectedMethod = new ReflectionMethod($className, 'testClassAStaticMethodC');
+        $protectedMethod->setAccessible(true);
+        $privateMethod = new ReflectionMethod($className, 'testClassAStaticMethodE');
+        $privateMethod->setAccessible(true);
+
+        $this->assertSame($this->subject, $this->subject->proxy(new TestClassH()));
+        $this->assertSame('final ab', $className::testClassAStaticMethodA('a', 'b'));
+        $this->assertSame('final protected ab', $protectedMethod->invoke(null, 'a', 'b'));
+        $this->assertSame('private ab', $privateMethod->invoke(null, 'a', 'b'));
     }
 
     public function testSetDefaultAnswerCallback()

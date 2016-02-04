@@ -22,6 +22,7 @@
 - **[BC BREAK]** Renamed "proxy" to "handle" in line with documentation
   ([#133]).
 - **[NEW]** Mock builders can now be copied via the `clone` operator ([#101]).
+- **[NEW]** Implemented `proxy()` on mock handles ([#39]).
 - **[IMPROVED]** Made API setter style methods fluent ([#98]).
 - **[IMPROVED]** Instance handles are automatically adapted when stubbing and
   verifying ([#126]).
@@ -34,6 +35,7 @@
 - **[FIXED]** Ad-hoc mocks that differ only by function body no longer result in
   re-use of the same mock class ([#131]).
 
+[#39]: https://github.com/eloquent/phony/issues/39
 [#90]: https://github.com/eloquent/phony/issues/90
 [#98]: https://github.com/eloquent/phony/issues/98
 [#101]: https://github.com/eloquent/phony/issues/101

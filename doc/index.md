@@ -19,6 +19,7 @@
     - [The mock builder API]
     - [Mocking basics]
     - [Partial mocks]
+    - [Proxy mocks]
     - [Mocking multiple types]
     - [Ad hoc mocks]
         - [Ad hoc definition values]
@@ -537,6 +538,19 @@ Turn the mock into a [full mock].
 
 Turn the mock into a [partial mock].
 
+<a name="handle.proxy" />
+
+----
+
+> *fluent* $handle->[**proxy**](#handle.proxy)()
+
+Use the supplied object as the implementation for all methods of the mock.
+
+*This method may help when partial mocking of a particular implementation is not
+possible; as in the case of a final class.*
+
+*See [Proxy mocks].*
+
 <a name="handle.defaultAnswerCallback" />
 
 ----
@@ -870,6 +884,47 @@ the second parameter:
 
 ```php
 $handle = partialMock('ClassA', ['argumentA', 'argumentB']);
+```
+
+### Proxy mocks
+
+In cases where direct mocking is not possible, such as with `final` classes and
+methods, *Phony* offers an alternative strategy in the form of "proxy" mocks.
+Any mock can proxy methods on to any other object by using
+[`proxy()`](#handle.proxy):
+
+```php
+interface Animal
+{
+    public function speak();
+}
+
+final class Cat implements Animal
+{
+    final public function speak()
+    {
+        return 'Meow meow meow? Meow.';
+    }
+}
+
+function listen(Animal $animal)
+{
+    echo 'It said: ' . $animal->speak();
+}
+
+$cat = new Cat();
+
+$handle = mock('Animal'); // a generic animal mock
+$handle->proxy($cat);     // now it behaves exactly like `$cat`
+
+listen($handle->mock());  // outputs 'It said: Meow meow meow? Meow.'
+```
+
+The [`proxy()`](#handle.proxy) method is also fluent, meaning that mock creation
+and proxying can be done in a single expression:
+
+```php
+$handle = mock('Animal')->proxy(new Cat());
 ```
 
 ### Mocking multiple types
@@ -6198,6 +6253,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [phpunit usage]: #phpunit-usage
 [prophecy argument tokens]: #prophecy-argument-tokens
 [prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
+[proxy mocks]: #proxy-mocks
 [resetting a mock]: #resetting-a-mock
 [retrieving calls from a spy]: #retrieving-calls-from-a-spy
 [returning arguments]: #returning-arguments
