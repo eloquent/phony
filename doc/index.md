@@ -157,6 +157,10 @@
 
 Available as [Composer] package [eloquent/phony].
 
+This document represents the state of the `develop` branch, and in rare cases
+may describe features that are not yet tagged. In case of emergency,
+`dev-develop` can be used as the Composer version constraint.
+
 ## Help
 
 For help with a difficult testing scenario, questions regarding how to use
