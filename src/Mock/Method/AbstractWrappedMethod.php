@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\StaticHandleInterface;
 use Eloquent\Phony\Mock\MockInterface;
 use ReflectionMethod;
 
@@ -34,7 +35,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
         $this->handle = $handle;
         $this->name = $method->getName();
 
-        if ($method->isStatic()) {
+        if ($handle instanceof StaticHandleInterface) {
             $this->mock = null;
             $callback = array(
                 $method->getDeclaringClass()->getName(),

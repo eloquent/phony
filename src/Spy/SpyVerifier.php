@@ -264,6 +264,30 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Stop recording calls.
+     *
+     * @return $this This spy.
+     */
+    public function stopRecording()
+    {
+        $this->spy->stopRecording();
+
+        return $this;
+    }
+
+    /**
+     * Start recording calls.
+     *
+     * @return $this This spy.
+     */
+    public function startRecording()
+    {
+        $this->spy->startRecording();
+
+        return $this;
+    }
+
+    /**
      * Set the calls.
      *
      * @param array<CallInterface> $calls The calls.

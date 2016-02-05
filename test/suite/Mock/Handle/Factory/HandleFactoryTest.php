@@ -73,6 +73,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
             (object) array(
                 'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
                 'stubs' => (object) array(),
+                'isRecording' => true,
                 'label' => 'label',
             ),
             $this->stubFactory,

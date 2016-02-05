@@ -21,6 +21,8 @@
   mocks ([#103]).
 - **[BC BREAK]** Renamed "proxy" to "handle" in line with documentation
   ([#133]).
+- **[BC BREAK]** Replaced `reset()` with `stopRecording()` and
+  `startRecording()` ([#99]).
 - **[NEW]** Mock builders can now be copied via the `clone` operator ([#101]).
 - **[NEW]** Implemented `proxy()` on mock handles ([#39]).
 - **[IMPROVED]** Made API setter style methods fluent ([#98]).
@@ -38,6 +40,7 @@
 [#39]: https://github.com/eloquent/phony/issues/39
 [#90]: https://github.com/eloquent/phony/issues/90
 [#98]: https://github.com/eloquent/phony/issues/98
+[#99]: https://github.com/eloquent/phony/issues/99
 [#101]: https://github.com/eloquent/phony/issues/101
 [#103]: https://github.com/eloquent/phony/issues/103
 [#105]: https://github.com/eloquent/phony/issues/105

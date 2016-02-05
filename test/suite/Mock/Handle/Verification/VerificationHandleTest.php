@@ -31,6 +31,7 @@ class VerificationHandleTest extends PHPUnit_Framework_TestCase
         $this->state = (object) array(
             'stubs' => (object) array(),
             'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
+            'isRecording' => true,
             'label' => 'label',
         );
         $this->isFull = true;
@@ -258,16 +259,6 @@ EOD;
         $this->subject->noInteraction();
     }
 
-    public function testReset()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $this->subject->stub('testClassAMethodA');
-        $this->subject->stub('testClassAMethodB');
-        $this->subject->reset();
-
-        $this->assertSame(array(), get_object_vars($this->subject->stubs()));
-    }
-
     public function testMagicCall()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
@@ -424,5 +415,34 @@ EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->methodA();
+    }
+
+    public function testStopRecording()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+
+        $this->mock->testClassAMethodA('a', 'b');
+
+        $this->assertSame($this->subject, $this->subject->stopRecording());
+
+        $this->mock->testClassAMethodB('a', 'b');
+
+        $this->subject->testClassAMethodA->called();
+        $this->subject->testClassAMethodB->never()->called();
+    }
+
+    public function testStartRecording()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+
+        $this->mock->testClassAMethodA('a', 'b');
+
+        $this->assertSame($this->subject, $this->subject->stopRecording());
+        $this->assertSame($this->subject, $this->subject->startRecording());
+
+        $this->mock->testClassAMethodB('a', 'b');
+
+        $this->subject->testClassAMethodA->called();
+        $this->subject->testClassAMethodB->called();
     }
 }

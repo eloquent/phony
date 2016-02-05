@@ -65,6 +65,24 @@ interface SpyInterface extends
     public function useTraversableSpies();
 
     /**
+     * Stop recording calls.
+     *
+     * @api
+     *
+     * @return $this This spy.
+     */
+    public function stopRecording();
+
+    /**
+     * Start recording calls.
+     *
+     * @api
+     *
+     * @return $this This spy.
+     */
+    public function startRecording();
+
+    /**
      * Set the calls.
      *
      * @param array<CallInterface> $calls The calls.

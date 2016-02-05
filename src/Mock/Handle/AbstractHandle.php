@@ -74,6 +74,7 @@ abstract class AbstractHandle implements HandleInterface
                 'defaultAnswerCallback' =>
                     'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
                 'stubs' => (object) array(),
+                'isRecording' => true,
             );
         }
         if (null === $stubFactory) {
@@ -357,15 +358,33 @@ abstract class AbstractHandle implements HandleInterface
     }
 
     /**
-     * Reset the mock to its initial state.
+     * Stop recording calls.
      *
      * @return $this This handle.
      */
-    public function reset()
+    public function stopRecording()
     {
-        foreach (get_object_vars($this->state->stubs) as $name => $stub) {
-            unset($this->state->stubs->$name);
+        foreach (get_object_vars($this->state->stubs) as $stub) {
+            $stub->stopRecording();
         }
+
+        $this->state->isRecording = false;
+
+        return $this;
+    }
+
+    /**
+     * Start recording calls.
+     *
+     * @return $this This handle.
+     */
+    public function startRecording()
+    {
+        foreach (get_object_vars($this->state->stubs) as $stub) {
+            $stub->startRecording();
+        }
+
+        $this->state->isRecording = true;
 
         return $this;
     }
@@ -468,7 +487,13 @@ abstract class AbstractHandle implements HandleInterface
             );
         }
 
-        return $this->stubVerifierFactory->create($stub);
+        $stubVerifier = $this->stubVerifierFactory->create($stub);
+
+        if (!$this->state->isRecording) {
+            $stubVerifier->stopRecording();
+        }
+
+        return $stubVerifier;
     }
 
     protected $state;

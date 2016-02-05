@@ -26,7 +26,6 @@
         - [Ad hoc definition magic "self" values]
     - [Static mocks]
     - [Calling a constructor manually]
-    - [Resetting a mock]
     - [Labeling mocks]
     - [Mock handles]
         - [Stubbing handles]
@@ -37,6 +36,7 @@
         - [Creating mocks from a builder]
         - [Generating mock classes from a builder]
         - [Copying mock builders]
+    - [Pausing mock recording]
     - [Terminology]
 - [Stubs]
     - [The stub API]
@@ -85,6 +85,7 @@
         - [Verifying that all spy events happen the same way]
     - [Labeling spies]
     - [Invoking spies]
+    - [Pausing spy recording]
 - [Calls]
     - [The call API]
     - [The arguments API]
@@ -569,16 +570,6 @@ Set the [default answer callback] for all method stubs of this mock.
 
 *This method accepts a callback that takes the stub as the first argument.*
 
-<a name="handle.reset" />
-
-----
-
-> *fluent* $handle->[**reset**](#handle.reset)()
-
-Reset the mock to its initial state.
-
-*See [Resetting a mock].*
-
 <a name="handle.noInteraction" />
 
 ----
@@ -600,6 +591,26 @@ Checks if there was no interaction with the mock.
 
 *See [Verifying that there was no interaction with a mock],
 [Check verification].*
+
+<a name="handle.stopRecording" />
+
+----
+
+> *fluent* $handle->[**stopRecording**](#handle.stopRecording)()
+
+Stop recording calls.
+
+*See [Pausing mock recording].*
+
+<a name="handle.startRecording" />
+
+----
+
+> *fluent* $handle->[**startRecording**](#handle.startRecording)()
+
+Start recording calls.
+
+*See [Pausing mock recording].*
 
 ### The mock builder API
 
@@ -1182,25 +1193,6 @@ $b = null;
 $handle->constructWith([&$a, &$b]);
 ```
 
-### Resetting a mock
-
-A mock's internal state can be cleared at any time by using
-[`reset()`](#handle.reset) on any mock handle:
-
-```php
-$handle = mock('ClassA');
-$mock = $handle->mock();
-
-$mock->methodA();
-$mock->methodB();
-
-$handle->reset();
-
-$handle->noInteraction(); // passes
-```
-
-Resetting clears any configured stub behaviors, and/or recorded interactions.
-
 ### Labeling mocks
 
 Every mock has a label, which is a free-form string used to help identify the
@@ -1561,6 +1553,32 @@ $mockB = $builderB->get();
 echo $mockA === $mockB ? 'true' : 'false'; // outputs 'false'
 ```
 
+### Pausing mock recording
+
+To temporarily prevent an entire mock from recording calls, use
+[`stopRecording()`](#handle.stopRecording) and
+[`startRecording()`](#handle.startRecording) as necessary:
+
+```php
+$handle = mock(
+    [
+        'methodA' => function () {},
+    ]
+);
+$mock = $handle->mock();
+
+$mock->methodA('a');
+$handle->stopRecording();
+$mock->methodA('b');
+$handle->startRecording();
+$mock->methodA('c');
+
+$handle->methodA->calledWith('a'); // passes
+$handle->methodA->calledWith('c'); // passes
+
+$handle->methodA->calledWith('b'); // fails
+```
+
 ### Terminology
 
 By some popular definitions, *Phony*'s mocks are not technically mocks at all,
@@ -1884,6 +1902,26 @@ Returns `true` if this stub uses [traversable spies].
 > *fluent* $stub->[**setUseTraversableSpies**](#stub.setUseTraversableSpies)($useTraversableSpies)
 
 Turn on or off the use of [traversable spies].
+
+<a name="stub.stopRecording" />
+
+----
+
+> *fluent* $stub->[**stopRecording**](#stub.stopRecording)()
+
+Stop recording calls.
+
+*See [Pausing spy recording].*
+
+<a name="stub.startRecording" />
+
+----
+
+> *fluent* $stub->[**startRecording**](#stub.startRecording)()
+
+Start recording calls.
+
+*See [Pausing spy recording].*
 
 <a name="stub.arguments" />
 
@@ -3249,6 +3287,26 @@ Returns `true` if this spy uses [traversable spies].
 
 Turn on or off the use of [traversable spies].
 
+<a name="spy.stopRecording" />
+
+----
+
+> *fluent* $spy->[**stopRecording**](#spy.stopRecording)()
+
+Stop recording calls.
+
+*See [Pausing spy recording].*
+
+<a name="spy.startRecording" />
+
+----
+
+> *fluent* $spy->[**startRecording**](#spy.startRecording)()
+
+Start recording calls.
+
+*See [Pausing spy recording].*
+
 <a name="spy.arguments" />
 
 ----
@@ -4136,6 +4194,26 @@ $spy->calledWith('a', 'b'); // passes
 
 echo $a; // outputs 'x'
 echo $b; // outputs 'y'
+```
+
+### Pausing spy recording
+
+To temporarily prevent spies from recording calls, use
+[`stopRecording()`](#spy.stopRecording) and
+[`startRecording()`](#spy.startRecording) as necessary:
+
+```php
+$spy = spy();
+$spy('a');
+$spy->stopRecording();
+$spy('b');
+$spy->startRecording();
+$spy('c');
+
+$spy->calledWith('a'); // passes
+$spy->calledWith('c'); // passes
+
+$spy->calledWith('b'); // fails
 ```
 
 ## Calls
@@ -6245,6 +6323,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [order verification]: #order-verification
 [overriding rules]: #overriding-rules
 [partial mocks]: #partial-mocks
+[pausing mock recording]: #pausing-mock-recording
+[pausing spy recording]: #pausing-spy-recording
 [peridot usage]: #peridot-usage
 [phake matchers]: #phake-matchers
 [phake wildcard matcher integration]: #phake-wildcard-matcher-integration
@@ -6254,7 +6334,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [prophecy argument tokens]: #prophecy-argument-tokens
 [prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
 [proxy mocks]: #proxy-mocks
-[resetting a mock]: #resetting-a-mock
 [retrieving calls from a spy]: #retrieving-calls-from-a-spy
 [returning arguments]: #returning-arguments
 [returning the "self" value]: #returning-the-self-value

@@ -143,13 +143,22 @@ interface HandleInterface
     public function noInteraction();
 
     /**
-     * Reset the mock to its initial state.
+     * Stop recording calls.
      *
      * @api
      *
      * @return $this This handle.
      */
-    public function reset();
+    public function stopRecording();
+
+    /**
+     * Start recording calls.
+     *
+     * @api
+     *
+     * @return $this This handle.
+     */
+    public function startRecording();
 
     /**
      * Get the stubs.

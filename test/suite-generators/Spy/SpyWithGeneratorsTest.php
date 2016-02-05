@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -26,6 +27,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->label = 'label';
         $this->indexNormalizer = new IndexNormalizer();
         $this->callFactory = new TestCallFactory();
+        $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory);
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
@@ -34,6 +36,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->label,
             $this->indexNormalizer,
             $this->callFactory,
+            $this->invoker,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
@@ -58,6 +61,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             null,
             null,
             $this->callFactory,
+            $this->invoker,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );

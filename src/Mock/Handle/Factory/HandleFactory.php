@@ -185,6 +185,7 @@ class HandleFactory implements HandleFactoryInterface
                 'defaultAnswerCallback' =>
                     'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
                 'stubs' => (object) array(),
+                'isRecording' => true,
                 'label' => $label,
             ),
             $this->stubFactory,

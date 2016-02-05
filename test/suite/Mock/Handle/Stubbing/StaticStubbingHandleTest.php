@@ -30,6 +30,7 @@ class StaticStubbingHandleTest extends PHPUnit_Framework_TestCase
         $this->state = (object) array(
             'stubs' => (object) array(),
             'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
+            'isRecording' => true,
         );
         $this->stubFactory = new StubFactory();
         $this->stubVerifierFactory = new StubVerifierFactory();
@@ -232,16 +233,6 @@ EOD;
         $this->subject->noInteraction();
     }
 
-    public function testReset()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $this->subject->stub('testClassAStaticMethodA');
-        $this->subject->stub('testClassAStaticMethodB');
-        $this->subject->reset();
-
-        $this->assertSame(array(), get_object_vars($this->subject->stubs()));
-    }
-
     public function testMagicCall()
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
@@ -355,5 +346,36 @@ EOD;
 
         $this->assertSame('x', $className::methodA('a', 'b'));
         $this->assertSame('cd', $className::methodA('c', 'd'));
+    }
+
+    public function testStopRecording()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $className = $this->class->getName();
+
+        $className::testClassAStaticMethodA('a', 'b');
+
+        $this->assertSame($this->subject, $this->subject->stopRecording());
+
+        $className::testClassAStaticMethodB('a', 'b');
+
+        $this->subject->testClassAStaticMethodA->called();
+        $this->subject->testClassAStaticMethodB->never()->called();
+    }
+
+    public function testStartRecording()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $className = $this->class->getName();
+
+        $className::testClassAStaticMethodA('a', 'b');
+
+        $this->assertSame($this->subject, $this->subject->stopRecording());
+        $this->assertSame($this->subject, $this->subject->startRecording());
+
+        $className::testClassAStaticMethodB('a', 'b');
+
+        $this->subject->testClassAStaticMethodA->called();
+        $this->subject->testClassAStaticMethodB->called();
     }
 }

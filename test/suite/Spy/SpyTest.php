@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -28,6 +29,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->label = 'label';
         $this->indexNormalizer = new IndexNormalizer();
         $this->callFactory = new TestCallFactory();
+        $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory);
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
@@ -36,6 +38,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             $this->label,
             $this->indexNormalizer,
             $this->callFactory,
+            $this->invoker,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
@@ -56,6 +59,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->useTraversableSpies());
         $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
         $this->assertSame($this->callFactory, $this->subject->callFactory());
+        $this->assertSame($this->invoker, $this->subject->invoker());
         $this->assertSame($this->generatorSpyFactory, $this->subject->generatorSpyFactory());
         $this->assertSame($this->traversableSpyFactory, $this->subject->traversableSpyFactory());
         $this->assertSame(array(), $this->subject->allCalls());
@@ -73,6 +77,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
         $this->assertSame(CallFactory::instance(), $this->subject->callFactory());
+        $this->assertSame(Invoker::instance(), $this->subject->invoker());
         $this->assertSame(GeneratorSpyFactory::instance(), $this->subject->generatorSpyFactory());
         $this->assertSame(TraversableSpyFactory::instance(), $this->subject->traversableSpyFactory());
     }
@@ -419,6 +424,7 @@ class SpyTest extends PHPUnit_Framework_TestCase
             null,
             null,
             $this->callFactory,
+            $this->invoker,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
@@ -445,6 +451,39 @@ class SpyTest extends PHPUnit_Framework_TestCase
                     $this->callEventFactory->createProduced(0, 'C'),
                 ),
                 $this->callEventFactory->createConsumed()
+            ),
+        );
+
+        $this->assertEquals($expected, $spy->allCalls());
+    }
+
+    public function testStopRecording()
+    {
+        $callback = function () {
+            return 'x';
+        };
+        $spy = new Spy($callback, '111', null, $this->callFactory);
+        $spy->stopRecording()->invokeWith();
+        $this->callFactory->reset();
+
+        $this->assertSame(array(), $spy->allCalls());
+    }
+
+    public function testStartRecording()
+    {
+        $callback = function () {
+            return 'x';
+        };
+        $spy = new Spy($callback, '111', null, $this->callFactory);
+        $spy->stopRecording()->invoke('a');
+        $spy->startRecording()->invoke('b');
+        $this->callFactory->reset();
+        $expected = array(
+            $this->callFactory->create(
+                $this->callEventFactory->createCalled($spy, array('b')),
+                ($responseEvent = $this->callEventFactory->createReturned('x')),
+                null,
+                $responseEvent
             ),
         );
 

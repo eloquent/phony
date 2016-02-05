@@ -51,6 +51,7 @@ abstract class AbstractStaticHandle extends AbstractHandle implements
                 'defaultAnswerCallback' =>
                     'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',
                 'stubs' => (object) array(),
+                'isRecording' => true,
             );
         }
         if ($class->hasMethod('_callParentStatic')) {

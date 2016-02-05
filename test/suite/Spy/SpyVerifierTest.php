@@ -480,6 +480,41 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('x', $value);
     }
 
+    public function testStopRecording()
+    {
+        $callback = function () {
+            return 'x';
+        };
+        $spy = new Spy($callback, '111', null, $this->callFactory);
+        $verifier = new SpyVerifier($spy);
+        $verifier->stopRecording()->invokeWith();
+        $this->callFactory->reset();
+
+        $this->assertSame(array(), $spy->allCalls());
+    }
+
+    public function testStartRecording()
+    {
+        $callback = function () {
+            return 'x';
+        };
+        $spy = new Spy($callback, '111', null, $this->callFactory);
+        $verifier = new SpyVerifier($spy);
+        $verifier->stopRecording()->invoke('a');
+        $verifier->startRecording()->invoke('b');
+        $this->callFactory->reset();
+        $expected = array(
+            $this->callFactory->create(
+                $this->callEventFactory->createCalled($spy, array('b')),
+                ($responseEvent = $this->callEventFactory->createReturned('x')),
+                null,
+                $responseEvent
+            ),
+        );
+
+        $this->assertEquals($expected, $spy->allCalls());
+    }
+
     public function testCheckCalled()
     {
         $this->assertFalse((boolean) $this->subject->checkCalled());

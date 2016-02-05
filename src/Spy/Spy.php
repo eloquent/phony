@@ -27,6 +27,8 @@ use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactoryInterface;
@@ -48,6 +50,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * @param string|null                         $label                 The label.
      * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
+     * @param InvokerInterface|null               $invoker               The invoker to use.
      * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
@@ -56,6 +59,7 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         $label = null,
         IndexNormalizerInterface $indexNormalizer = null,
         CallFactoryInterface $callFactory = null,
+        InvokerInterface $invoker = null,
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
@@ -64,6 +68,9 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
+        }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
         }
         if (null === $generatorSpyFactory) {
             $generatorSpyFactory = GeneratorSpyFactory::instance();
@@ -76,12 +83,14 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
         $this->indexNormalizer = $indexNormalizer;
         $this->callFactory = $callFactory;
+        $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
 
         $this->calls = array();
         $this->useGeneratorSpies = true;
         $this->useTraversableSpies = false;
+        $this->isRecording = true;
     }
 
     /**
@@ -153,6 +162,16 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     }
 
     /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
+    }
+
+    /**
      * Get the generator spy factory.
      *
      * @return TraversableSpyFactoryInterface The generator spy factory.
@@ -170,6 +189,30 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function traversableSpyFactory()
     {
         return $this->traversableSpyFactory;
+    }
+
+    /**
+     * Stop recording calls.
+     *
+     * @return $this This spy.
+     */
+    public function stopRecording()
+    {
+        $this->isRecording = false;
+
+        return $this;
+    }
+
+    /**
+     * Start recording calls.
+     *
+     * @return $this This spy.
+     */
+    public function startRecording()
+    {
+        $this->isRecording = true;
+
+        return $this;
     }
 
     /**
@@ -397,6 +440,10 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      */
     public function invokeWith($arguments = array())
     {
+        if (!$this->isRecording) {
+            return $this->invoker->callWith($this->callback, $arguments);
+        }
+
         $call = $this->callFactory->record($this->callback, $arguments, $this);
         $responseEvent = $call->responseEvent();
 
@@ -426,9 +473,11 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
     private $indexNormalizer;
     private $callFactory;
+    private $invoker;
     private $generatorSpyFactory;
     private $traversableSpyFactory;
     private $useGeneratorSpies;
     private $useTraversableSpies;
+    private $isRecording;
     private $calls;
 }
