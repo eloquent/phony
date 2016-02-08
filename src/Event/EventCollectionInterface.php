@@ -81,6 +81,26 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
     public function allCalls();
 
     /**
+     * Get the first event.
+     *
+     * @api
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent();
+
+    /**
+     * Get the last event.
+     *
+     * @api
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent();
+
+    /**
      * Get an event by index.
      *
      * Negative indices are offset from the end of the list. That is, `-1`

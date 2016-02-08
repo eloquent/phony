@@ -179,6 +179,36 @@ class SpyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array($this->callA), iterator_to_array($this->subject));
     }
 
+    public function testFirstEvent()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertSame($this->callA, $this->subject->firstEvent());
+    }
+
+    public function testFirstEventFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->subject->firstEvent();
+    }
+
+    public function testLastEvent()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertSame($this->callB, $this->subject->lastEvent());
+    }
+
+    public function testLastEventFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->subject->lastEvent();
+    }
+
     public function testEventAt()
     {
         $this->subject->addCall($this->callA);

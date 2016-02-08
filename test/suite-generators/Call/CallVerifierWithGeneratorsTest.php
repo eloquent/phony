@@ -168,7 +168,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testHandleMethodsWithGeneratorEvents()
+    public function testProxyMethodsWithGeneratorEvents()
     {
         $this->assertSame($this->calledEvent, $this->generatorSubject->calledEvent());
         $this->assertSame($this->generatedEvent, $this->generatorSubject->responseEvent());

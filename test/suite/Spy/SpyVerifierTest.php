@@ -159,7 +159,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
-    public function testHandleMethods()
+    public function testProxyMethods()
     {
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
@@ -261,6 +261,36 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->wrappedCalls, $this->subject->allCalls());
         $this->assertEquals($this->wrappedCalls, iterator_to_array($this->subject));
+    }
+
+    public function testFirstEvent()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertSame($this->callA, $this->subject->firstEvent());
+    }
+
+    public function testFirstEventFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->subject->firstEvent();
+    }
+
+    public function testLastEvent()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->assertSame($this->callD, $this->subject->lastEvent());
+    }
+
+    public function testLastEventFailureUndefined()
+    {
+        $this->subject->setCalls(array());
+
+        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->subject->lastEvent();
     }
 
     public function testEventAt()

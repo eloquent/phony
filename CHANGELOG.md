@@ -32,6 +32,8 @@
 - **[IMPROVED]** Added checks for unused stub criteria ([#126]).
 - **[IMPROVED]** Default answer callbacks are now a first-class concept for
   mocks ([#90]).
+- **[IMPROVED]** Verification results (event collections) now implement
+  `firstEvent()` and `lastEvent()` ([#97]).
 - **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
 - **[FIXED]** Mocking, and calling of return-by-reference methods no longer
   causes errors to be emitted ([#105]).
@@ -40,6 +42,7 @@
 
 [#39]: https://github.com/eloquent/phony/issues/39
 [#90]: https://github.com/eloquent/phony/issues/90
+[#97]: https://github.com/eloquent/phony/issues/97
 [#98]: https://github.com/eloquent/phony/issues/98
 [#99]: https://github.com/eloquent/phony/issues/99
 [#101]: https://github.com/eloquent/phony/issues/101

@@ -175,7 +175,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
-    public function testHandleMethods()
+    public function testProxyMethods()
     {
         $this->assertSame($this->calledEvent, $this->subject->eventAt(0));
         $this->assertSame($this->call, $this->subject->firstCall());
@@ -190,6 +190,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
+        $this->assertSame($this->calledEvent, $this->subject->firstEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
         $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertSame(array($this->call), $this->subject->allCalls());
         $this->assertTrue($this->subject->hasResponded());

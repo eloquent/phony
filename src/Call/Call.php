@@ -170,6 +170,40 @@ class Call implements CallInterface
     }
 
     /**
+     * Get the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent()
+    {
+        return $this->calledEvent;
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent()
+    {
+        if ($this->endEvent) {
+            return $this->endEvent;
+        }
+
+        if ($events = $this->traversableEvents()) {
+            return $events[count($events) - 1];
+        }
+
+        if ($this->responseEvent) {
+            return $this->responseEvent;
+        }
+
+        return $this->calledEvent;
+    }
+
+    /**
      * Get an event by index.
      *
      * Negative indices are offset from the end of the list. That is, `-1`

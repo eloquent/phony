@@ -215,6 +215,61 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
     }
 
+    public function testFirstEvent()
+    {
+        $this->assertSame($this->calledEvent, $this->subject->firstEvent());
+    }
+
+    public function testLastEvent()
+    {
+        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
+    }
+
+    public function testLastEventWithOnlyCalled()
+    {
+        $this->subject = new Call($this->calledEvent);
+
+        $this->assertSame($this->calledEvent, $this->subject->lastEvent());
+    }
+
+    public function testLastEventWithTraversable()
+    {
+        $exception = new RuntimeException('You done goofed.');
+        $this->returnValue = new ArrayIterator();
+        $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
+        $this->traversableEventA = $this->callEventFactory->createProduced('a', 'b');
+        $this->traversableEventB = $this->callEventFactory->createProduced('c', 'd');
+        $this->consumedEvent = $this->callEventFactory->createConsumed();
+        $this->traversableEvents = array($this->traversableEventA, $this->traversableEventB);
+        $this->subject =
+            new Call($this->calledEvent, $this->returnedEvent, $this->traversableEvents, $this->consumedEvent);
+
+        $this->assertSame($this->consumedEvent, $this->subject->lastEvent());
+    }
+
+    public function testLastEventWithUnconsumedTraversable()
+    {
+        $exception = new RuntimeException('You done goofed.');
+        $this->returnValue = new ArrayIterator();
+        $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
+        $this->traversableEventA = $this->callEventFactory->createProduced('a', 'b');
+        $this->traversableEventB = $this->callEventFactory->createProduced('c', 'd');
+        $this->traversableEvents = array($this->traversableEventA, $this->traversableEventB);
+        $this->subject = new Call($this->calledEvent, $this->returnedEvent, $this->traversableEvents);
+
+        $this->assertSame($this->traversableEventB, $this->subject->lastEvent());
+    }
+
+    public function testLastEventWithUniteratedTraversable()
+    {
+        $exception = new RuntimeException('You done goofed.');
+        $this->returnValue = new ArrayIterator();
+        $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
+        $this->subject = new Call($this->calledEvent, $this->returnedEvent);
+
+        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
+    }
+
     public function testEventAt()
     {
         $this->assertSame($this->calledEvent, $this->subject->eventAt());

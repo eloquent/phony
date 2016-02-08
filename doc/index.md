@@ -1941,29 +1941,13 @@ Get the arguments of the first call.
 
 Get the argument of the first call at `$index`.
 
-<a name="stub.hasEvents" />
-
-----
-
-> *boolean* $stub->[**hasEvents**](#stub.hasEvents)()
-
-Returns `true` if this collection contains any events.
-
 <a name="stub.hasCalls" />
 
 ----
 
 > *boolean* $stub->[**hasCalls**](#stub.hasCalls)()
 
-Returns `true` if this collection contains any calls.
-
-<a name="stub.eventCount" />
-
-----
-
-> *integer* $stub->[**eventCount**](#stub.eventCount)()
-
-Get the number of events.
+Returns `true` if any calls were recorded.
 
 <a name="stub.callCount" />
 
@@ -1972,14 +1956,6 @@ Get the number of events.
 > *integer* $stub->[**callCount**](#stub.callCount)()
 
 Get the number of calls.
-
-<a name="stub.allEvents" />
-
-----
-
-> *array\<[event][event-api]>* $stub->[**allEvents**](#stub.allEvents)()
-
-Get all events as an array.
 
 <a name="stub.allCalls" />
 
@@ -2007,18 +1983,6 @@ Get the first call.
 
 Get the last call.
 
-<a name="stub.eventAt" />
-
-----
-
-> *[event][event-api]* $stub->[**eventAt**](#stub.eventAt)($index = 0)
-> throws [UndefinedEventException]
-
-Get the event at `$index`.
-
-*Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element.*
-
 <a name="stub.callAt" />
 
 ----
@@ -2027,6 +1991,60 @@ the last element, and `-2` indicates the second last element.*
 > throws [UndefinedCallException]
 
 Get the call at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="stub.hasEvents" />
+
+----
+
+> *boolean* $stub->[**hasEvents**](#stub.hasEvents)()
+
+Returns `true` if any events were recorded.
+
+<a name="stub.eventCount" />
+
+----
+
+> *integer* $stub->[**eventCount**](#stub.eventCount)()
+
+Get the number of events.
+
+<a name="stub.allEvents" />
+
+----
+
+> *array\<[event][event-api]>* $stub->[**allEvents**](#stub.allEvents)()
+
+Get all events as an array.
+
+<a name="stub.firstEvent" />
+
+----
+
+> *[event][event-api]* $stub->[**firstEvent**](#stub.firstEvent)()
+> throws [UndefinedEventException]
+
+Get the first event.
+
+<a name="stub.lastEvent" />
+
+----
+
+> *[event][event-api]* $stub->[**lastEvent**](#stub.lastEvent)()
+> throws [UndefinedEventException]
+
+Get the last event.
+
+<a name="stub.eventAt" />
+
+----
+
+> *[event][event-api]* $stub->[**eventAt**](#stub.eventAt)($index = 0)
+> throws [UndefinedEventException]
+
+Get the event at `$index`.
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
@@ -3325,29 +3343,13 @@ Get the arguments of the first call.
 
 Get the argument of the first call at `$index`.
 
-<a name="spy.hasEvents" />
-
-----
-
-> *boolean* $spy->[**hasEvents**](#spy.hasEvents)()
-
-Returns `true` if this collection contains any events.
-
 <a name="spy.hasCalls" />
 
 ----
 
 > *boolean* $spy->[**hasCalls**](#spy.hasCalls)()
 
-Returns `true` if this collection contains any calls.
-
-<a name="spy.eventCount" />
-
-----
-
-> *integer* $spy->[**eventCount**](#spy.eventCount)()
-
-Get the number of events.
+Returns `true` if any calls were recorded.
 
 <a name="spy.callCount" />
 
@@ -3356,14 +3358,6 @@ Get the number of events.
 > *integer* $spy->[**callCount**](#spy.callCount)()
 
 Get the number of calls.
-
-<a name="spy.allEvents" />
-
-----
-
-> *array\<[event][event-api]>* $spy->[**allEvents**](#spy.allEvents)()
-
-Get all events as an array.
 
 <a name="spy.allCalls" />
 
@@ -3391,18 +3385,6 @@ Get the first call.
 
 Get the last call.
 
-<a name="spy.eventAt" />
-
-----
-
-> *[event][event-api]* $spy->[**eventAt**](#spy.eventAt)($index = 0)
-> throws [UndefinedEventException]
-
-Get the event at `$index`.
-
-*Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element.*
-
 <a name="spy.callAt" />
 
 ----
@@ -3411,6 +3393,60 @@ the last element, and `-2` indicates the second last element.*
 > throws [UndefinedCallException]
 
 Get the call at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="spy.hasEvents" />
+
+----
+
+> *boolean* $spy->[**hasEvents**](#spy.hasEvents)()
+
+Returns `true` if any events were recorded.
+
+<a name="spy.eventCount" />
+
+----
+
+> *integer* $spy->[**eventCount**](#spy.eventCount)()
+
+Get the number of events.
+
+<a name="spy.allEvents" />
+
+----
+
+> *array\<[event][event-api]>* $spy->[**allEvents**](#spy.allEvents)()
+
+Get all events as an array.
+
+<a name="spy.firstEvent" />
+
+----
+
+> *[event][event-api]* $spy->[**firstEvent**](#spy.firstEvent)()
+> throws [UndefinedEventException]
+
+Get the first event.
+
+<a name="spy.lastEvent" />
+
+----
+
+> *[event][event-api]* $spy->[**lastEvent**](#spy.lastEvent)()
+> throws [UndefinedEventException]
+
+Get the last event.
+
+<a name="spy.eventAt" />
+
+----
+
+> *[event][event-api]* $spy->[**eventAt**](#spy.eventAt)($index = 0)
+> throws [UndefinedEventException]
+
+Get the event at `$index`.
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
@@ -5126,38 +5162,13 @@ For information on specific verification methods, see these sections:
 
 Get the arguments of the first call.
 
-<a name="verification.argument" />
-
-----
-
-> *mixed* $verification->[**argument**](#verification.argument)($index = 0)
-> throws [UndefinedCallException], [UndefinedArgumentException]
-
-Get the argument of the first call at `$index`.
-
-<a name="verification.hasEvents" />
-
-----
-
-> *boolean* $verification->[**hasEvents**](#verification.hasEvents)()
-
-Returns `true` if this collection contains any events.
-
 <a name="verification.hasCalls" />
 
 ----
 
 > *boolean* $verification->[**hasCalls**](#verification.hasCalls)()
 
-Returns `true` if this collection contains any calls.
-
-<a name="verification.eventCount" />
-
-----
-
-> *integer* $verification->[**eventCount**](#verification.eventCount)()
-
-Get the number of events.
+Returns `true` if this verification matched any calls.
 
 <a name="verification.callCount" />
 
@@ -5167,19 +5178,11 @@ Get the number of events.
 
 Get the number of calls.
 
-<a name="verification.allEvents" />
-
-----
-
-> *array<[event][event-api]>* $verification->[**allEvents**](#verification.allEvents)()
-
-Get all events as an array.
-
 <a name="verification.allCalls" />
 
 ----
 
-> *array<[call][call-api]>* $verification->[**allCalls**](#verification.allCalls)()
+> *array\<[call][call-api]>* $verification->[**allCalls**](#verification.allCalls)()
 
 Get all calls as an array.
 
@@ -5201,18 +5204,6 @@ Get the first call.
 
 Get the last call.
 
-<a name="verification.eventAt" />
-
-----
-
-> *[event][event-api]* $verification->[**eventAt**](#verification.eventAt)($index = 0)
-> throws [UndefinedEventException]
-
-Get the event at `$index`.
-
-*Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element.*
-
 <a name="verification.callAt" />
 
 ----
@@ -5221,6 +5212,60 @@ the last element, and `-2` indicates the second last element.*
 > throws [UndefinedCallException]
 
 Get the call at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+<a name="verification.hasEvents" />
+
+----
+
+> *boolean* $verification->[**hasEvents**](#verification.hasEvents)()
+
+Returns `true` if this verification matched any events.
+
+<a name="verification.eventCount" />
+
+----
+
+> *integer* $verification->[**eventCount**](#verification.eventCount)()
+
+Get the number of events.
+
+<a name="verification.allEvents" />
+
+----
+
+> *array\<[event][event-api]>* $verification->[**allEvents**](#verification.allEvents)()
+
+Get all events as an array.
+
+<a name="verification.firstEvent" />
+
+----
+
+> *[event][event-api]* $verification->[**firstEvent**](#verification.firstEvent)()
+> throws [UndefinedEventException]
+
+Get the first event.
+
+<a name="verification.lastEvent" />
+
+----
+
+> *[event][event-api]* $verification->[**lastEvent**](#verification.lastEvent)()
+> throws [UndefinedEventException]
+
+Get the last event.
+
+<a name="verification.eventAt" />
+
+----
+
+> *[event][event-api]* $verification->[**eventAt**](#verification.eventAt)($index = 0)
+> throws [UndefinedEventException]
+
+Get the event at `$index`.
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*

@@ -126,6 +126,36 @@ class EventCollection implements EventCollectionInterface
     }
 
     /**
+     * Get the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent()
+    {
+        if (!$this->events) {
+            throw new UndefinedEventException(0);
+        }
+
+        return $this->events[0];
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent()
+    {
+        if ($count = count($this->events)) {
+            return $this->events[$count - 1];
+        }
+
+        throw new UndefinedEventException(0);
+    }
+
+    /**
      * Get an event by index.
      *
      * Negative indices are offset from the end of the list. That is, `-1`
