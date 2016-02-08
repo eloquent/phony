@@ -71,16 +71,30 @@ var run = function () {
 
     var dispatch = function (event) {
         if (window.location.hash) {
+            hash = decodeURIComponent(window.location.hash.substring(1));
+
             var target;
 
             try {
-                target = document.querySelector(window.location.hash);
+                target = document.querySelector('#' + hash);
             } catch (e) {
                 // not a standard anchor link
             }
 
-            if (target.classList.contains('anchor')) {
+            if (target && target.classList.contains('anchor')) {
                 document.title = target.parentNode.innerText + ' - Phony';
+            }
+
+            target = null;
+
+            try {
+                target = document.querySelector('a[name="' + hash + '"]');
+            } catch (e) {
+                // not a standard anchor link
+            }
+
+            if (target && hash.match(/^\w+\.\w+$/)) {
+                document.title = hash + '() - Phony';
             }
         } else {
             document.title = 'Phony';
