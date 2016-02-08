@@ -23,6 +23,7 @@
   ([#133]).
 - **[BC BREAK]** Replaced `reset()` with `stopRecording()` and
   `startRecording()` ([#99]).
+- **[BC BREAK]** Event no longer implements event collection ([#134]).
 - **[NEW]** Mock builders can now be copied via the `clone` operator ([#101]).
 - **[NEW]** Implemented `proxy()` on mock handles ([#39]).
 - **[IMPROVED]** Made API setter style methods fluent ([#98]).
@@ -50,6 +51,7 @@
 [#127]: https://github.com/eloquent/phony/issues/127
 [#131]: https://github.com/eloquent/phony/issues/131
 [#133]: https://github.com/eloquent/phony/issues/133
+[#134]: https://github.com/eloquent/phony/issues/134
 
 ## 0.7.0 (2015-12-20)
 

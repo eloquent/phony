@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Integration\Simpletest\SimpletestFacadeDriver;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
@@ -195,7 +196,7 @@ function stub($callback = null)
  *
  * @api
  *
- * @param EventCollectionInterface ...$events The events.
+ * @param EventInterface|EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface|null The result.
  */
@@ -211,7 +212,7 @@ function checkInOrder()
  *
  * @api
  *
- * @param EventCollectionInterface ...$events The events.
+ * @param EventInterface|EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface The result.
  * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -227,7 +228,7 @@ function inOrder()
  *
  * @api
  *
- * @param mixed<EventCollectionInterface> $events The event sequence.
+ * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
  *
  * @return EventCollectionInterface|null The result.
  */
@@ -243,7 +244,7 @@ function checkInOrderSequence($events)
  *
  * @api
  *
- * @param mixed<EventCollectionInterface> $events The event sequence.
+ * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
  *
  * @return EventCollectionInterface The result.
  * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -259,7 +260,7 @@ function inOrderSequence($events)
  *
  * @api
  *
- * @param EventCollectionInterface ...$events The events.
+ * @param EventInterface|EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface|null The result.
  * @throws InvalidArgumentException      If invalid input is supplied.
@@ -275,7 +276,7 @@ function checkAnyOrder()
  *
  * @api
  *
- * @param EventCollectionInterface ...$events The events.
+ * @param EventInterface|EventCollectionInterface ...$events The events.
  *
  * @return EventCollectionInterface The result.
  * @throws InvalidArgumentException If invalid input is supplied.
@@ -292,7 +293,7 @@ function anyOrder()
  *
  * @api
  *
- * @param mixed<EventCollectionInterface> $events The event sequence.
+ * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
  *
  * @return EventCollectionInterface|null The result.
  * @throws InvalidArgumentException      If invalid input is supplied.
@@ -309,7 +310,7 @@ function checkAnyOrderSequence($events)
  *
  * @api
  *
- * @param mixed<EventCollectionInterface> $events The event sequence.
+ * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
  *
  * @return EventCollectionInterface The result.
  * @throws InvalidArgumentException If invalid input is supplied.

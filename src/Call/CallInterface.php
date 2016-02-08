@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Error;
 use Exception;
@@ -25,7 +26,7 @@ use InvalidArgumentException;
  *
  * @api
  */
-interface CallInterface extends EventInterface
+interface CallInterface extends EventInterface, EventCollectionInterface
 {
     /**
      * Returns true if this call has responded.

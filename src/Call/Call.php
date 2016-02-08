@@ -182,6 +182,10 @@ class Call implements CallInterface
      */
     public function eventAt($index = 0)
     {
+        if (0 === $index) {
+            return $this->calledEvent;
+        }
+
         $events = $this->allEvents();
         $count = count($events);
 

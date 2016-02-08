@@ -16,7 +16,7 @@ namespace Eloquent\Phony\Event;
  *
  * @api
  */
-interface EventInterface extends EventCollectionInterface
+interface EventInterface
 {
     /**
      * Get the sequence number.

@@ -29,6 +29,8 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
     /**
      * Returns true if this collection contains any events.
      *
+     * @api
+     *
      * @return boolean True if this collection contains any events.
      */
     public function hasEvents();
@@ -45,6 +47,8 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
     /**
      * Get the number of events.
      *
+     * @api
+     *
      * @return integer The event count.
      */
     public function eventCount();
@@ -60,6 +64,8 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
 
     /**
      * Get all events as an array.
+     *
+     * @api
      *
      * @return array<EventInterface> The events.
      */
@@ -79,6 +85,8 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @api
      *
      * @param integer $index The index.
      *

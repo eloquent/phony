@@ -84,7 +84,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks if the supplied events happened in chronological order.
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -98,7 +98,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Throws an exception unless the supplied events happened in chronological
      * order.
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.
@@ -112,7 +112,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks if the supplied event sequence happened in chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -127,12 +127,41 @@ class EventOrderVerifier implements EventOrderVerifierInterface
         $matchingEvents = array();
         $earliestEvent = null;
 
-        foreach ($events as $eventCollection) {
-            if (!$eventCollection instanceof EventCollectionInterface) {
-                if (is_object($eventCollection)) {
-                    $type = var_export(get_class($eventCollection), true);
+        foreach ($events as $event) {
+            if ($event instanceof EventInterface) {
+                if (
+                    null === $earliestEvent ||
+                    $event->sequenceNumber() > $earliestEvent->sequenceNumber()
+                ) {
+                    $matchingEvents[] = $earliestEvent = $event;
+
+                    continue;
+                }
+            } elseif ($event instanceof EventCollectionInterface) {
+                if (!$event->hasEvents()) {
+                    $isMatch = false;
+
+                    break;
+                }
+
+                foreach ($event->allEvents() as $subEvent) {
+                    if (
+                        null === $earliestEvent ||
+                        (
+                            $subEvent->sequenceNumber() >
+                            $earliestEvent->sequenceNumber()
+                        )
+                    ) {
+                        $matchingEvents[] = $earliestEvent = $subEvent;
+
+                        continue 2;
+                    }
+                }
+            } else {
+                if (is_object($event)) {
+                    $type = var_export(get_class($event), true);
                 } else {
-                    $type = gettype($eventCollection);
+                    $type = gettype($event);
                 }
 
                 throw new InvalidArgumentException(
@@ -142,43 +171,6 @@ class EventOrderVerifier implements EventOrderVerifierInterface
                         $type
                     )
                 );
-            }
-
-            if (!$eventCollection->hasEvents()) {
-                $isMatch = false;
-
-                break;
-            }
-
-            if ($eventCollection instanceof EventInterface) {
-                if (null === $earliestEvent) {
-                    $matchingEvents[] = $earliestEvent = $eventCollection;
-
-                    continue;
-                }
-
-                if (
-                    $eventCollection->sequenceNumber() >
-                    $earliestEvent->sequenceNumber()
-                ) {
-                    $matchingEvents[] = $earliestEvent = $eventCollection;
-
-                    continue;
-                }
-            } else {
-                foreach ($eventCollection->allEvents() as $event) {
-                    if (
-                        null === $earliestEvent ||
-                        (
-                            $event->sequenceNumber() >
-                            $earliestEvent->sequenceNumber()
-                        )
-                    ) {
-                        $matchingEvents[] = $earliestEvent = $event;
-
-                        continue 2;
-                    }
-                }
             }
 
             $isMatch = false;
@@ -195,7 +187,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Throws an exception unless the supplied event sequence happened in
      * chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.
@@ -236,7 +228,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks that at least one event is supplied.
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -249,7 +241,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Throws an exception unless at least one event is supplied.
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.
@@ -263,7 +255,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Checks if the supplied event sequence contains at least one event.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -282,7 +274,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Throws an exception unless the supplied event sequence contains at least
      * one event.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.
@@ -302,7 +294,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Attempts to normalize the supplied event order expectation into a
      * meaningful sequence of singular events.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface The normalized events.
      */
@@ -311,17 +303,17 @@ class EventOrderVerifier implements EventOrderVerifierInterface
         $expected = array();
         $earliestEvent = null;
 
-        foreach ($events as $eventCollection) {
-            if ($eventCollection instanceof EventInterface) {
-                $expected[] = $earliestEvent = $eventCollection;
+        foreach ($events as $event) {
+            if ($event instanceof EventInterface) {
+                $expected[] = $earliestEvent = $event;
             } else {
-                $event = null;
+                $subEvent = null;
 
-                foreach ($eventCollection->allEvents() as $event) {
+                foreach ($event->allEvents() as $subEvent) {
                     if (
                         null === $earliestEvent ||
                         (
-                            $event->sequenceNumber() >
+                            $subEvent->sequenceNumber() >
                             $earliestEvent->sequenceNumber()
                         )
                     ) {
@@ -329,11 +321,11 @@ class EventOrderVerifier implements EventOrderVerifierInterface
                     }
                 }
 
-                if (null === $event) {
-                    $event = NullEvent::instance();
+                if (null === $subEvent) {
+                    $subEvent = NullEvent::instance();
                 }
 
-                $expected[] = $earliestEvent = $event;
+                $expected[] = $earliestEvent = $subEvent;
             }
         }
 
@@ -344,7 +336,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      * Merge the supplied event sequence into a single event collection, in
      * chronological order.
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @param EventCollectionInterface $events The ordered events.
      */
@@ -352,12 +344,12 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     {
         $merged = array();
 
-        foreach ($events as $eventCollection) {
-            if ($eventCollection instanceof EventInterface) {
-                $merged[$eventCollection->sequenceNumber()] = $eventCollection;
+        foreach ($events as $event) {
+            if ($event instanceof EventInterface) {
+                $merged[$event->sequenceNumber()] = $event;
             } else {
-                foreach ($eventCollection->allEvents() as $thisEvent) {
-                    $merged[$thisEvent->sequenceNumber()] = $thisEvent;
+                foreach ($event->allEvents() as $subEvent) {
+                    $merged[$subEvent->sequenceNumber()] = $subEvent;
                 }
             }
         }

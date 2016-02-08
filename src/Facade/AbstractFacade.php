@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
@@ -197,7 +198,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -213,7 +214,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -229,7 +230,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface|null The result.
      */
@@ -245,7 +246,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface The result.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
@@ -260,7 +261,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -276,7 +277,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param EventCollectionInterface ...$events The events.
+     * @param EventInterface|EventCollectionInterface ...$events The events.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.
@@ -293,7 +294,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface|null The result.
      * @throws InvalidArgumentException      If invalid input is supplied.
@@ -310,7 +311,7 @@ abstract class AbstractFacade
      *
      * @api
      *
-     * @param mixed<EventCollectionInterface> $events The event sequence.
+     * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
      *
      * @return EventCollectionInterface The result.
      * @throws InvalidArgumentException If invalid input is supplied.

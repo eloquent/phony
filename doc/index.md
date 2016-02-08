@@ -5259,7 +5259,7 @@ can be used to determine event order.*
 
 Checks if the supplied events happened in chronological order.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Order verification], [Check verification].*
 
@@ -5276,7 +5276,7 @@ Checks if the supplied events happened in chronological order.
 
 Throws an exception unless the supplied events happened in chronological order.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Order verification].*
 
@@ -5290,7 +5290,7 @@ Throws an exception unless the supplied events happened in chronological order.
 
 Checks if the supplied event sequence happened in chronological order.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Dynamic order verification], [Check verification].*
 
@@ -5308,7 +5308,7 @@ Checks if the supplied event sequence happened in chronological order.
 Throws an exception unless the supplied event sequence happened in chronological
 order.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Dynamic order verification].*
 
@@ -5322,7 +5322,7 @@ order.
 
 Checks that at least one event is supplied.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Order verification], [Check verification].*
 
@@ -5339,7 +5339,7 @@ Checks that at least one event is supplied.
 
 Throws an exception unless at least one event is supplied.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Order verification].*
 
@@ -5353,7 +5353,7 @@ Throws an exception unless at least one event is supplied.
 
 Checks if the supplied event sequence contains at least one event.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Dynamic order verification], [Check verification].*
 
@@ -5371,7 +5371,7 @@ Checks if the supplied event sequence contains at least one event.
 Throws an exception unless the supplied event sequence contains at least one
 event.
 
-*Each value in `$events` should be a [verification result].*
+*Each value in `$events` should be an event, or a [verification result].*
 
 *See [Dynamic order verification].*
 
