@@ -93,8 +93,17 @@ var run = function () {
                 // not a standard anchor link
             }
 
-            if (target && hash.match(/^\w+\.\w+$/)) {
-                document.title = hash + '() - Phony';
+            if (target) {
+                var matches = hash.match(/^(\w+)\.(\w+)$/);
+
+                if (matches) {
+                    if ('facade' === matches[1]) {
+                        document.title = matches[2] + '() - Phony';
+                    } else {
+                        document.title =
+                            '$' + matches[1] + '->' + matches[2] + '() - Phony';
+                    }
+                }
             }
         } else {
             document.title = 'Phony';
