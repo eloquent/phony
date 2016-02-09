@@ -771,10 +771,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         if (0 === func_num_args()) {
             foreach ($calls as $call) {
-                $response = $call->responseEvent();
+                if (!$responseEvent = $call->responseEvent()) {
+                    continue;
+                }
 
-                if ($response && !$call->exception()) {
-                    $matchingEvents[] = $response;
+                list($exception, $returnValue) = $call->response();
+
+                if (!$exception) {
+                    $matchingEvents[] = $responseEvent;
                     ++$matchCount;
                 }
             }
@@ -782,14 +786,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $value = $this->matcherFactory->adapt($value);
 
             foreach ($calls as $call) {
-                $response = $call->responseEvent();
+                if (!$responseEvent = $call->responseEvent()) {
+                    continue;
+                }
 
-                if (
-                    $response &&
-                    !$call->exception() &&
-                    $value->matches($call->returnValue())
-                ) {
-                    $matchingEvents[] = $response;
+                list($exception, $returnValue) = $call->response();
+
+                if (!$exception && $value->matches($returnValue)) {
+                    $matchingEvents[] = $responseEvent;
                     ++$matchCount;
                 }
             }
@@ -883,8 +887,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $isTypeSupported = true;
 
             foreach ($calls as $call) {
-                if ($call->exception()) {
-                    $matchingEvents[] = $call->responseEvent();
+                if (!$responseEvent = $call->responseEvent()) {
+                    continue;
+                }
+
+                list($exception, $returnValue) = $call->response();
+
+                if ($exception) {
+                    $matchingEvents[] = $responseEvent;
                     ++$matchCount;
                 }
             }
@@ -892,8 +902,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $isTypeSupported = true;
 
             foreach ($calls as $call) {
-                if (is_a($call->exception(), $type)) {
-                    $matchingEvents[] = $call->responseEvent();
+                if (!$responseEvent = $call->responseEvent()) {
+                    continue;
+                }
+
+                list($exception, $returnValue) = $call->response();
+
+                if ($exception && is_a($exception, $type)) {
+                    $matchingEvents[] = $responseEvent;
                     ++$matchCount;
                 }
             }
@@ -902,8 +918,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                 $isTypeSupported = true;
 
                 foreach ($calls as $call) {
-                    if ($call->exception() == $type) {
-                        $matchingEvents[] = $call->responseEvent();
+                    if (!$responseEvent = $call->responseEvent()) {
+                        continue;
+                    }
+
+                    list($exception, $returnValue) = $call->response();
+
+                    if ($exception == $type) {
+                        $matchingEvents[] = $responseEvent;
                         ++$matchCount;
                     }
                 }
@@ -912,10 +934,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
                 $type = $this->matcherFactory->adapt($type);
 
                 foreach ($calls as $call) {
-                    $exception = $call->exception();
+                    if (!$responseEvent = $call->responseEvent()) {
+                        continue;
+                    }
+
+                    list($exception, $returnValue) = $call->response();
 
                     if ($exception && $type->matches($exception)) {
-                        $matchingEvents[] = $call->responseEvent();
+                        $matchingEvents[] = $responseEvent;
                         ++$matchCount;
                     }
                 }
@@ -1177,8 +1203,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         }
 
         foreach ($calls as $call) {
+            if (!$lastEvent = $call->responseEvent()) {
+                continue;
+            }
+
             $producedEvents = array();
-            $lastEvent = $call->responseEvent();
 
             foreach ($call->traversableEvents() as $event) {
                 if ($event instanceof ProducedEventInterface) {

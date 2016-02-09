@@ -153,6 +153,7 @@
     - [UndefinedArgumentException]
     - [UndefinedCallException]
     - [UndefinedEventException]
+    - [UndefinedResponseException]
 - [License]
 
 ## Installation
@@ -4292,16 +4293,40 @@ Get the number of arguments.
 ----
 
 > *mixed* $call->[**returnValue**](#call.returnValue)()
+> throws [UndefinedResponseException]
 
 Get the return value.
+
+*An [UndefinedResponseException] will be thrown if the call has not yet
+responded, or threw an exception.*
 
 <a name="call.exception" />
 
 ----
 
-> *[Throwable]|null* $call->[**exception**](#call.exception)()
+> *[Throwable]* $call->[**exception**](#call.exception)()
+> throws [UndefinedResponseException]
 
 Get the thrown exception.
+
+*An [UndefinedResponseException] will be thrown if the call has not yet
+responded, or did not throw an exception.*
+
+<a name="call.response" />
+
+----
+
+> *tuple\<[Throwable]|null,mixed>* $call->[**response**](#call.response)()
+> throws [UndefinedResponseException]
+
+Get the response.
+
+*This method returns a 2-tuple. The first element is the thrown exception, or
+`null` if no exception was thrown. The second element is the returned value,
+or `null` if an exception was thrown.*
+
+*An [UndefinedResponseException] will be thrown if the call has not yet
+responded.*
 
 <a name="call.hasResponded" />
 
@@ -6301,6 +6326,16 @@ Namespace: `Eloquent\Phony\Event\Exception`
 
 Get the index.
 
+### UndefinedResponseException
+
+Thrown when the call has not yet produced a response of the requested type.
+
+This can occur when an individual call is queried for its response details
+before the call has returned a value, or thrown an exception.
+
+Other than the standard PHP [Exception] methods, undefined response exceptions
+have no public API methods.
+
 ## License
 
 For the full copyright and license information, please view the [LICENSE file].
@@ -6426,6 +6461,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [undefinedargumentexception]: #undefinedargumentexception
 [undefinedcallexception]: #undefinedcallexception
 [undefinedeventexception]: #undefinedeventexception
+[undefinedresponseexception]: #undefinedresponseexception
 [usage]: #usage
 [using a callable as an answer]: #using-a-callable-as-an-answer
 [verification handles]: #verification-handles

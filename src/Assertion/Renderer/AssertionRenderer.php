@@ -397,7 +397,13 @@ class AssertionRenderer implements AssertionRendererInterface
         foreach ($calls as $call) {
             if (!$call->hasResponded()) {
                 $rendered[] = '    - <none>';
-            } elseif ($exception = $call->exception()) {
+
+                continue;
+            }
+
+            list($exception, $returnValue) = $call->response();
+
+            if ($exception) {
                 $rendered[] = sprintf(
                     '    - threw %s',
                     $this->renderException($exception)
@@ -409,7 +415,6 @@ class AssertionRenderer implements AssertionRendererInterface
                         $this->indent($this->renderProduced($call))
                     );
                 } else {
-                    $returnValue = $call->returnValue();
                     $rendered[] = sprintf(
                         "    - returned %s producing:\n%s",
                         $this->exporter->export($returnValue, 0),
@@ -419,7 +424,7 @@ class AssertionRenderer implements AssertionRendererInterface
             } else {
                 $rendered[] = sprintf(
                     '    - returned %s',
-                    $this->renderValue($call->returnValue())
+                    $this->renderValue($returnValue)
                 );
             }
         }

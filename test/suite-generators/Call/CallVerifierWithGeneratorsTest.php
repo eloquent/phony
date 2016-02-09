@@ -185,7 +185,6 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->time(), $this->generatorSubject->time());
         $this->assertSame($this->generatedEvent->time(), $this->generatorSubject->responseTime());
         $this->assertSame($this->generatorEndEvent->time(), $this->generatorSubject->endTime());
-        $this->assertNull($this->generatorSubject->exception());
     }
 
     public function testAddGeneratorEvent()

@@ -101,12 +101,20 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $responseEvent
         );
         $this->callDResponse = $this->callD->responseEvent();
-        $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
+        $this->callE = $this->callFactory->create($this->callEventFactory->createCalled('implode'));
+        $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD, $this->callE);
         $this->wrappedCallA = $this->callVerifierFactory->adapt($this->callA);
         $this->wrappedCallB = $this->callVerifierFactory->adapt($this->callB);
         $this->wrappedCallC = $this->callVerifierFactory->adapt($this->callC);
         $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
-        $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
+        $this->wrappedCallE = $this->callVerifierFactory->adapt($this->callE);
+        $this->wrappedCalls = array(
+            $this->wrappedCallA,
+            $this->wrappedCallB,
+            $this->wrappedCallC,
+            $this->wrappedCallD,
+            $this->wrappedCallE,
+        );
 
         $this->traversableCalledEvent = $this->callEventFactory->createCalled();
         $this->returnedTraversableEvent =
@@ -282,7 +290,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertSame($this->callD, $this->subject->lastEvent());
+        $this->assertSame($this->callE, $this->subject->lastEvent());
     }
 
     public function testLastEventFailureUndefined()
@@ -327,7 +335,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals($this->wrappedCallD, $this->subject->lastCall());
+        $this->assertEquals($this->wrappedCallE, $this->subject->lastCall());
     }
 
     public function testLastCallFailureUndefined()
@@ -616,12 +624,12 @@ EOD;
     public function testCheckCalledTimes()
     {
         $this->assertTrue((boolean) $this->subject->times(0)->checkCalled());
-        $this->assertFalse((boolean) $this->subject->times(4)->checkCalled());
+        $this->assertFalse((boolean) $this->subject->times(5)->checkCalled());
 
         $this->subject->setCalls($this->calls);
 
         $this->assertFalse((boolean) $this->subject->times(0)->checkCalled());
-        $this->assertTrue((boolean) $this->subject->times(4)->checkCalled());
+        $this->assertTrue((boolean) $this->subject->times(5)->checkCalled());
     }
 
     public function testCalledTimes()
@@ -629,7 +637,7 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = new EventCollection($this->calls);
 
-        $this->assertEquals($expected, $this->subject->times(4)->called());
+        $this->assertEquals($expected, $this->subject->times(5)->called());
     }
 
     public function testCalledTimesFailure()
@@ -828,7 +836,7 @@ EOD;
         $this->assertTrue(
             (boolean) $this->subject->times(2)->checkCalledWith($this->matchers[0], $this->matcherFactory->wildcard())
         );
-        $this->assertTrue((boolean) $this->subject->times(4)->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertTrue((boolean) $this->subject->times(5)->checkCalledWith($this->matcherFactory->wildcard()));
         $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith('a', 'b', 'c'));
         $this->assertFalse(
             (boolean) $this->subject->times(1)
@@ -858,15 +866,15 @@ EOD;
 
         $expected = new EventCollection($this->calls);
 
-        $this->assertEquals($expected, $this->subject->times(4)->calledWith($this->matcherFactory->wildcard()));
-        $this->assertEquals($expected, $this->subject->times(4)->calledWith($this->matcherFactory->wildcard()));
+        $this->assertEquals($expected, $this->subject->times(5)->calledWith($this->matcherFactory->wildcard()));
+        $this->assertEquals($expected, $this->subject->times(5)->calledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledTimesWithFailure()
     {
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
-Expected call on implode[label], exactly 4 times with arguments like:
+Expected call on implode[label], exactly 5 times with arguments like:
     "a", "b", "c"
 Calls:
     - "a", "b", "c"
@@ -876,19 +884,19 @@ Calls:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->times(4)->calledWith('a', 'b', 'c');
+        $this->subject->times(5)->calledWith('a', 'b', 'c');
     }
 
     public function testCalledTimesWithFailureWithNoCalls()
     {
         $expected = <<<'EOD'
-Expected call on implode[label], exactly 4 times with arguments like:
+Expected call on implode[label], exactly 5 times with arguments like:
     "a", "b", "c"
 Never called.
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->times(4)->calledWith('a', 'b', 'c');
+        $this->subject->times(5)->calledWith('a', 'b', 'c');
     }
 
     /**
@@ -1106,7 +1114,7 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals(new EventCollection(array($this->callD)), $this->subject->calledOn(null));
+        $this->assertEquals(new EventCollection(array($this->callD, $this->callE)), $this->subject->calledOn(null));
         $this->assertEquals(
             new EventCollection(array($this->callA, $this->callC)),
             $this->subject->calledOn($this->thisValueA)
@@ -2017,6 +2025,7 @@ Expected call on implode[label] to produce like "x". Responded:
     - returned "y"
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
+    - <none>
     - returned #0[:4] producing:
         - produced "m": "n"
         - produced "p": "q"
@@ -2039,6 +2048,7 @@ Expected call on implode[label] to produce like "x": "y". Responded:
     - returned "y"
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
+    - <none>
     - returned #0[:4] producing:
         - produced "m": "n"
         - produced "p": "q"
@@ -2061,6 +2071,7 @@ Expected every call on implode[label] to produce like "n". Responded:
     - returned "y"
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
+    - <none>
     - returned #0[:4] producing:
         - produced "m": "n"
         - produced "p": "q"
@@ -2083,6 +2094,7 @@ Expected no call on implode[label] to produce like "n". Responded:
     - returned "y"
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
+    - <none>
     - returned #0[:4] producing:
         - produced "m": "n"
         - produced "p": "q"
@@ -2234,6 +2246,7 @@ Responded:
     - returned "y"
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
+    - <none>
     - returned #0[:4] producing:
         - produced "m": "n"
         - produced "p": "q"
@@ -2261,6 +2274,7 @@ Responded:
     - returned "y"
     - threw RuntimeException("You done goofed.")
     - threw RuntimeException("Consequences will never be the same.")
+    - <none>
     - returned #0[:4] producing:
         - produced "m": "n"
         - produced "p": "q"

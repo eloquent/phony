@@ -64,7 +64,6 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
         $this->assertEquals($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertEquals($this->returnedEvent->time(), $this->subject->endTime());
         $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
@@ -106,7 +105,6 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
         $this->assertEquals($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertEquals($this->consumedEvent->time(), $this->subject->endTime());
     }
@@ -147,7 +145,6 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnValue, $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
         $this->assertEquals($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertEquals($this->consumedEvent->time(), $this->subject->endTime());
     }
@@ -175,7 +172,6 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
-        $this->assertNull($this->subject->returnValue());
         $this->assertSame($exception, $this->subject->exception());
         $this->assertEquals($threwEvent->time(), $this->subject->responseTime());
         $this->assertEquals($threwEvent->time(), $this->subject->endTime());
@@ -202,8 +198,6 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
-        $this->assertNull($this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
         $this->assertNull($this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
     }
@@ -213,6 +207,60 @@ class CallTest extends PHPUnit_Framework_TestCase
         $this->subject = new Call($this->calledEvent);
 
         $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
+    }
+
+    public function testReturnValueFailureThrew()
+    {
+        $exception = new RuntimeException('You done goofed.');
+        $threwEvent = $this->callEventFactory->createThrew($exception);
+        $this->subject = new Call($this->calledEvent, $threwEvent, null, $threwEvent);
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->subject->returnValue();
+    }
+
+    public function testReturnValueFailureNoResponse()
+    {
+        $this->subject = new Call($this->calledEvent);
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->subject->returnValue();
+    }
+
+    public function testExceptionFailureReturned()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->subject->exception();
+    }
+
+    public function testExceptionFailureNoResponse()
+    {
+        $this->subject = new Call($this->calledEvent);
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->subject->exception();
+    }
+
+    public function testResponse()
+    {
+        $this->assertSame(array(null, $this->returnValue), $this->subject->response());
+    }
+
+    public function testResponseWithThrewResponse()
+    {
+        $exception = new RuntimeException('You done goofed.');
+        $threwEvent = $this->callEventFactory->createThrew($exception);
+        $this->subject = new Call($this->calledEvent, $threwEvent, null, $threwEvent);
+
+        $this->assertSame(array($exception, null), $this->subject->response());
+    }
+
+    public function testResponseFailureNoResponse()
+    {
+        $this->subject = new Call($this->calledEvent);
+
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->subject->response();
     }
 
     public function testFirstEvent()

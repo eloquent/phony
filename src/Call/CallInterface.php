@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
+use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Error;
@@ -86,7 +87,8 @@ interface CallInterface extends EventInterface, EventCollectionInterface
      *
      * @api
      *
-     * @return mixed The returned value.
+     * @return mixed                      The returned value.
+     * @throws UndefinedResponseException If this call has not yet returned a value.
      */
     public function returnValue();
 
@@ -95,9 +97,20 @@ interface CallInterface extends EventInterface, EventCollectionInterface
      *
      * @api
      *
-     * @return Exception|Error|null The thrown exception, or null if no exception was thrown.
+     * @return Exception|Error            The thrown exception.
+     * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
     public function exception();
+
+    /**
+     * Get the response.
+     *
+     * @api
+     *
+     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException        If this call has not yet responded.
+     */
+    public function response();
 
     /**
      * Get the time at which the call responded.

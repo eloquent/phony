@@ -34,6 +34,8 @@
   mocks ([#90]).
 - **[IMPROVED]** Verification results (event collections) now implement
   `firstEvent()` and `lastEvent()` ([#97]).
+- **[IMPROVED]** Requesting the return value or exception of a call that has not
+  responded now throws an exception ([#92]).
 - **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
 - **[FIXED]** Mocking, and calling of return-by-reference methods no longer
   causes errors to be emitted ([#105]).
@@ -42,6 +44,7 @@
 
 [#39]: https://github.com/eloquent/phony/issues/39
 [#90]: https://github.com/eloquent/phony/issues/90
+[#92]: https://github.com/eloquent/phony/issues/92
 [#97]: https://github.com/eloquent/phony/issues/97
 [#98]: https://github.com/eloquent/phony/issues/98
 [#99]: https://github.com/eloquent/phony/issues/99
