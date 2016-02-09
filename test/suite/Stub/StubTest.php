@@ -24,6 +24,7 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit_Framework_TestCase;
+use stdClass;
 
 class StubTest extends PHPUnit_Framework_TestCase
 {
@@ -923,7 +924,7 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $this->subject = new Stub(eval('return function (): stdClass {};'));
+        $this->subject = new Stub(eval('return function (): Iterator {};'));
 
         $this->setExpectedException('InvalidArgumentException');
         $this->subject->returns();
