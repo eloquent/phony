@@ -5656,6 +5656,36 @@ inOrder($withB, $withA);         // passes
 inOrder($withA, $withB, $withA); // passes
 ```
 
+However, it *is* possible to verify event order more explicitly using
+[individual calls]:
+
+```php
+inOrder($withA->firstCall(), $withB); // passes
+inOrder($withA->lastCall(), $withB);  // fails
+```
+
+Of course, extracting [individual calls] is only helpful when verifying the
+order of calls. Similar methods exist to aid in explicitly verifying the order
+of other types of events:
+
+```php
+$spy = spy(
+    function ($x) {
+        return $x;
+    }
+);
+
+$spy('a');
+$spy('b');
+$spy('a');
+
+$returnedA = $spy->returned('a');
+$returnedB = $spy->returned('b');
+
+inOrder($returnedA->firstEvent(), $returnedB); // passes
+inOrder($returnedA->lastEvent(), $returnedB);  // fails
+```
+
 ### Verifying that there was no interaction with a mock
 
 To verify that there was no interaction with a mock, use
