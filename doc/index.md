@@ -52,6 +52,7 @@
             - [The default answer callback]
     - [Matching stub arguments]
     - [Returning values]
+        - [Default values for return types]
     - [Returning arguments]
     - [Returning the "self" value]
     - [Throwing exceptions]
@@ -2796,6 +2797,47 @@ $stubB = stub()->returns('x')->returns('y');
 
 echo $stubB(); // outputs 'x'
 echo $stubB(); // outputs 'y'
+```
+
+#### Default values for return types
+
+When using [`returns()`](#stub.returns) without passing an explicit value,
+*Phony* will attempt to return a value that conforms to the stubbed callable's
+[return type]:
+
+```php
+$stub = stub(
+    function (): int {}
+);
+$stub->returns();
+
+var_dump($stubA()); // outputs 'int(0)'
+```
+
+This table details the return types that *Phony* handles, and the values
+returned for each:
+
+Return type | Returned value
+------------|---------------
+`bool`      | `false`
+`int`       | `0`
+`float`     | `.0`
+`string`    | `''`
+`array`     | `[]`
+`stdClass`  | `(object) []`
+`callable`  | `function () {}`
+*(none)*    | `null`
+
+When using a [return type] that is a class name, the return value *must* be
+explicitly passed, or *Phony* will throw an exception:
+
+```php
+$stub = stub(
+    function (): Iterator {}
+);
+
+$stub->returns(new ArrayIterator()); // works fine
+$stub->returns();                    // throws an exception
 ```
 
 ### Returning arguments
@@ -6390,6 +6432,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [counterpart matchers]: #counterpart-matchers
 [creating mocks from a builder]: #creating-mocks-from-a-builder
 [customizing the mock class]: #customizing-the-mock-class
+[default values for return types]: #default-values-for-return-types
 [dynamic order verification]: #dynamic-order-verification
 [example test suites]: #example-test-suites
 [export depth]: #export-depth
@@ -6599,6 +6642,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [prophecy wildcard matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
 [prophecy]: https://github.com/phpspec/prophecy
 [reflectionclass]: http://php.net/reflectionclass
+[return type]: http://php.net/functions.returning-values#functions.returning-values.type-declaration
 [simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
 [simpletest]: https://github.com/simpletest/simpletest
 [throwable]: http://php.net/class.throwable

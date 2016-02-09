@@ -32,6 +32,8 @@
 - **[IMPROVED]** Added checks for unused stub criteria ([#126]).
 - **[IMPROVED]** Default answer callbacks are now a first-class concept for
   mocks ([#90]).
+- **[IMPROVED]** Stubs now return valid default values for most "in built"
+  return type declarations ([#109]).
 - **[IMPROVED]** Verification results (event collections) now implement
   `firstEvent()` and `lastEvent()` ([#97]).
 - **[IMPROVED]** Requesting the return value or exception of a call that has not
@@ -51,6 +53,7 @@
 [#101]: https://github.com/eloquent/phony/issues/101
 [#103]: https://github.com/eloquent/phony/issues/103
 [#105]: https://github.com/eloquent/phony/issues/105
+[#109]: https://github.com/eloquent/phony/issues/109
 [#117]: https://github.com/eloquent/phony/issues/117
 [#123]: https://github.com/eloquent/phony/issues/123
 [#126]: https://github.com/eloquent/phony/issues/126

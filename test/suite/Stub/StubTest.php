@@ -11,7 +11,9 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Closure;
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
@@ -138,6 +140,8 @@ class StubTest extends PHPUnit_Framework_TestCase
             $c = 'c';
             $d = 'd';
         };
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testConstructor()
@@ -861,6 +865,68 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', call_user_func($this->subject));
         $this->assertSame($this->subject, $this->subject->returns());
         $this->assertNull(call_user_func($this->subject));
+    }
+
+    public function returnsWithReturnTypeData()
+    {
+        return array(
+            'bool'   => array('bool',   false),
+            'int'    => array('int',    0),
+            'float'  => array('float',  .0),
+            'string' => array('string', ''),
+            'array'  => array('array',  array()),
+        );
+    }
+
+    /**
+     * @dataProvider returnsWithReturnTypeData
+     */
+    public function testReturnsWithReturnTypes($type, $expected)
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval("return function (): $type {};"));
+        $this->subject->returns();
+
+        $this->assertSame($expected, call_user_func($this->subject));
+    }
+
+    public function testReturnsWithStdClassReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval('return function (): stdClass {};'));
+        $this->subject->returns();
+
+        $this->assertTrue(call_user_func($this->subject) instanceof stdClass);
+    }
+
+    public function testReturnsWithCallableReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval('return function (): callable {};'));
+        $this->subject->returns();
+
+        $this->assertTrue(call_user_func($this->subject) instanceof Closure);
+    }
+
+    public function testReturnsWithClassReturnTypeFailure()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval('return function (): stdClass {};'));
+
+        $this->setExpectedException('InvalidArgumentException');
+        $this->subject->returns();
     }
 
     public function testReturnsWithInstanceHandles()

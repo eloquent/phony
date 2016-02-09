@@ -29,6 +29,7 @@ use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Stub\Rule\StubRule;
 use Error;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * Provides canned answers to function or method invocations.
@@ -555,8 +556,73 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function returns($value = null)
     {
         if (0 === func_num_args()) {
-            return $this
-                ->doesWith(function () {}, array(), false, false, false);
+            $type =
+                $this->invocableInspector->callbackReturnType($this->callback);
+
+            switch ($type) {
+                case 'NULL':
+                    $value = null;
+
+                    break;
+
+                // @codeCoverageIgnoreStart
+
+                case 'bool':
+                    $value = false;
+
+                    break;
+
+                case 'int':
+                    $value = 0;
+
+                    break;
+
+                case 'float':
+                    $value = .0;
+
+                    break;
+
+                case 'string':
+                    $value = '';
+
+                    break;
+
+                case 'array':
+                    $value = array();
+
+                    break;
+
+                case 'stdClass':
+                    $value = (object) array();
+
+                    break;
+
+                case 'callable':
+                    $value = function () {};
+
+                    break;
+
+                default:
+                    throw new InvalidArgumentException(
+                        sprintf(
+                            'Return values of type %s ' .
+                                'must be explicitly specified.',
+                            var_export($type, true)
+                        )
+                    );
+            }
+
+            // @codeCoverageIgnoreEnd
+
+            return $this->doesWith(
+                function () use ($value) {
+                    return $value;
+                },
+                array(),
+                false,
+                false,
+                false
+            );
         }
 
         foreach (func_get_args() as $value) {

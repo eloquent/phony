@@ -39,6 +39,15 @@ interface InvocableInspectorInterface
     public function callbackThisValue($callback);
 
     /**
+     * Get the return type for the supplied callback.
+     *
+     * @param callable $callback The callback.
+     *
+     * @return string The return type.
+     */
+    public function callbackReturnType($callback);
+
+    /**
      * Returns true if bound closures are supported.
      *
      * @return boolean True if bound closures are supported.
