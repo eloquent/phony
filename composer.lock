@@ -464,12 +464,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/archer.git",
-                "reference": "8a140d4838d5920ed49dc9c5fa300016cc85109b"
+                "reference": "bae21e6b5bc698f4fc423d07fa3288f0fe6987e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/8a140d4838d5920ed49dc9c5fa300016cc85109b",
-                "reference": "8a140d4838d5920ed49dc9c5fa300016cc85109b",
+                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/bae21e6b5bc698f4fc423d07fa3288f0fe6987e3",
+                "reference": "bae21e6b5bc698f4fc423d07fa3288f0fe6987e3",
                 "shasum": ""
             },
             "require": {
@@ -532,7 +532,7 @@
                 "testing",
                 "unit"
             ],
-            "time": "2015-10-26 00:32:44"
+            "time": "2016-02-10 03:37:28"
         },
         {
             "name": "icecave/duct",
@@ -1484,16 +1484,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.8.21",
+            "version": "4.8.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ea76b17bced0500a28098626b84eda12dbcf119c"
+                "reference": "dfb11aa5236376b4fc63853cf746af39fe780e72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ea76b17bced0500a28098626b84eda12dbcf119c",
-                "reference": "ea76b17bced0500a28098626b84eda12dbcf119c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dfb11aa5236376b4fc63853cf746af39fe780e72",
+                "reference": "dfb11aa5236376b4fc63853cf746af39fe780e72",
                 "shasum": ""
             },
             "require": {
@@ -1552,7 +1552,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-12-12 07:45:58"
+            "time": "2016-02-02 09:01:21"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -2211,16 +2211,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.0.1",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25"
+                "reference": "1289d16209491b584839022f29257ad859b8532d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/49ff736bd5d41f45240cec77b44967d76e0c3d25",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/1289d16209491b584839022f29257ad859b8532d",
+                "reference": "1289d16209491b584839022f29257ad859b8532d",
                 "shasum": ""
             },
             "require": {
@@ -2232,7 +2232,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -2266,7 +2266,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2015-11-20 09:19:13"
+            "time": "2016-01-20 09:13:37"
         },
         {
             "name": "symfony/process",
@@ -2319,16 +2319,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.0.1",
+            "version": "v3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "3df409958a646dad2bc5046c3fb671ee24a1a691"
+                "reference": "3cf0709d7fe936e97bee9e954382e449003f1d9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/3df409958a646dad2bc5046c3fb671ee24a1a691",
-                "reference": "3df409958a646dad2bc5046c3fb671ee24a1a691",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/3cf0709d7fe936e97bee9e954382e449003f1d9a",
+                "reference": "3cf0709d7fe936e97bee9e954382e449003f1d9a",
                 "shasum": ""
             },
             "require": {
@@ -2364,7 +2364,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-12-26 13:39:53"
+            "time": "2016-02-02 13:44:19"
         },
         {
             "name": "zeptech/annotations",
