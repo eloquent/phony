@@ -604,8 +604,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
                     break;
 
-                // @codeCoverageIgnoreStart
-
                 case 'bool':
                     $value = false;
 
@@ -662,8 +660,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                         )
                     );
             }
-
-            // @codeCoverageIgnoreEnd
 
             return $this->doesWith(
                 function () use ($value) {

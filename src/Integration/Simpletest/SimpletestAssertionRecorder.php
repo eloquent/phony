@@ -22,6 +22,8 @@ use SimpleTestContext;
 
 /**
  * An assertion recorder for SimpleTest.
+ *
+ * @codeCoverageIgnore
  */
 class SimpletestAssertionRecorder extends AssertionRecorder
 {
@@ -94,9 +96,9 @@ class SimpletestAssertionRecorder extends AssertionRecorder
 
         $call = AssertionException::tracePhonyCall(\debug_backtrace($flags));
 
-        if ($call && isset($call['file']) && isset($call['line'])) { // @codeCoverageIgnoreStart
+        if ($call && isset($call['file']) && isset($call['line'])) {
             $description .= "\nat [$call[file] line $call[line]]";
-        } // @codeCoverageIgnoreEnd
+        }
 
         $this->simpletestContext->getReporter()
             ->paintFail(preg_replace('/(\R)/', '$1   ', $description));

@@ -9,6 +9,8 @@
  * that was distributed with this source code.
  */
 
+// @codeCoverageIgnoreStart
+
 namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;

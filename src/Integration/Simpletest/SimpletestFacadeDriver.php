@@ -16,6 +16,8 @@ use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
  * A facade driver for SimpleTest.
+ *
+ * @codeCoverageIgnore
  */
 class SimpletestFacadeDriver extends AbstractIntegratedFacadeDriver
 {

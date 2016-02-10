@@ -26,11 +26,13 @@ abstract class CallEventFactoryDetail
     public static function createEmptyGenerator()
     {
         return call_user_func(
-            function () { // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
+            function () {
 
                 return;
                 yield null;
-            } // @codeCoverageIgnoreEnd
+            }
+            // @codeCoverageIgnoreEnd
         );
     }
 }

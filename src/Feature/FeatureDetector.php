@@ -142,12 +142,13 @@ class FeatureDetector implements FeatureDetectorInterface
                 }
 
                 // syntax causes fatal on HHVM < 3.4
-                // @codeCoverageIgnoreStart
                 if ($detector->isSupported('runtime.hhvm')) {
+                    // @codeCoverageIgnoreStart
                     if (version_compare(HHVM_VERSION, '3.4.x', '<')) {
                         return false;
                     }
-                } // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
+                }
 
                 return $detector->checkStatement(
                     sprintf('const %s=array()', $detector->uniqueSymbolName()),
@@ -164,10 +165,9 @@ class FeatureDetector implements FeatureDetectorInterface
                 }
 
                 // syntax causes fatal on HHVM
-                // @codeCoverageIgnoreStart
                 if ($detector->isSupported('runtime.hhvm')) {
-                    return false;
-                } // @codeCoverageIgnoreEnd
+                    return false; // @codeCoverageIgnore
+                }
 
                 return $detector->checkStatement(
                     sprintf(
@@ -297,20 +297,18 @@ class FeatureDetector implements FeatureDetectorInterface
 
             'parameter.variadic.reference' => function ($detector) {
                 // syntax causes fatal on HHVM
-                // @codeCoverageIgnoreStart
                 if ($detector->isSupported('runtime.hhvm')) {
-                    return false;
-                } // @codeCoverageIgnoreEnd
+                    return false; // @codeCoverageIgnore
+                }
 
                 return $detector->checkStatement('function (&...$a) {};', true);
             },
 
             'parameter.variadic.type' => function ($detector) {
                 // syntax causes fatal on HHVM
-                // @codeCoverageIgnoreStart
                 if ($detector->isSupported('runtime.hhvm')) {
-                    return false;
-                } // @codeCoverageIgnoreEnd
+                    return false; // @codeCoverageIgnore
+                }
 
                 return $detector
                     ->checkStatement('function (stdClass ...$a) {};', true);
@@ -412,25 +410,27 @@ class FeatureDetector implements FeatureDetectorInterface
     {
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
 
-        // @codeCoverageIgnoreStart
         if ($useClosure) {
             try {
                 $result = eval(sprintf('function(){%s;};return true;', $source));
             } catch (ParseError $e) {
                 $result = false;
+                // @codeCoverageIgnoreStart
             } catch (ParseException $e) {
                 $result = false;
             }
+            // @codeCoverageIgnoreEnd
         } else {
             try {
                 $result = eval(sprintf('%s;return true;', $source));
+                // @codeCoverageIgnoreStart
             } catch (ParseError $e) {
                 $result = false;
             } catch (ParseException $e) {
                 $result = false;
             }
+            // @codeCoverageIgnoreEnd
         }
-        // @codeCoverageIgnoreEnd
 
         error_reporting($reporting);
 

@@ -377,10 +377,11 @@ class MockDefinition implements MockDefinitionInterface
             }
         }
 
-        if ($this->isRelaxedKeywordsSupported) { // @codeCoverageIgnoreStart
+        if ($this->isRelaxedKeywordsSupported) {
             // class is the only keyword that can not be used as a method name
             unset($methods['class']);
-        } else { // @codeCoverageIgnoreEnd
+            // @codeCoverageIgnoreStart
+        } else {
             $methodNames = array_keys($methods);
             $tokens = token_get_all('<?php ' . implode(' ', $methodNames));
 
@@ -390,11 +391,12 @@ class MockDefinition implements MockDefinitionInterface
                 if (
                     !is_array($tokens[$tokenIndex]) ||
                     $tokens[$tokenIndex][0] !== T_STRING
-                ) { // @codeCoverageIgnoreStart
+                ) {
                     unset($methods[$methodName]);
-                } // @codeCoverageIgnoreEnd
+                }
             }
         }
+        // @codeCoverageIgnoreEnd
 
         foreach ($this->customStaticMethods as $methodName => $callback) {
             if (!$callback) {

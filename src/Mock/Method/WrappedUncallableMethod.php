@@ -31,6 +31,6 @@ class WrappedUncallableMethod extends AbstractWrappedMethod
      */
     public function invokeWith($arguments = array())
     {
-        // do nothing
+        return null; // do nothing
     }
 }

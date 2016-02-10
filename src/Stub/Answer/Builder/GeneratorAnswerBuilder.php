@@ -343,25 +343,25 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      */
     public function returns($value = null)
     {
-        // @codeCoverageIgnoreStart
         if (
             $value instanceof InstanceHandleInterface &&
             $value->isAdaptable()
         ) {
             $value = $value->mock();
         }
-        // @codeCoverageIgnoreEnd
 
         if ($this->isGeneratorReturnSupported || null === $value) {
             $this->returnValue = $value;
             $this->returnsArgument = null;
             $this->returnsSelf = false;
+            // @codeCoverageIgnoreStart
         } else {
             throw new RuntimeException(
                 'The current runtime does not support the supplied generator ' .
                 'return value.'
             );
         }
+        // @codeCoverageIgnoreEnd
 
         return $this->stub;
     }
@@ -378,17 +378,17 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      */
     public function returnsArgument($index = 0)
     {
+        // @codeCoverageIgnoreStart
         if (!$this->isGeneratorReturnSupported) {
             throw new RuntimeException(
                 'The current runtime does not support generator return values.'
             );
         }
+        // @codeCoverageIgnoreEnd
 
-        // @codeCoverageIgnoreStart
         $this->returnsArgument = $index;
 
         return $this->stub;
-        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -398,17 +398,17 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      */
     public function returnsSelf()
     {
+        // @codeCoverageIgnoreStart
         if (!$this->isGeneratorReturnSupported) {
             throw new RuntimeException(
                 'The current runtime does not support generator return values.'
             );
         }
+        // @codeCoverageIgnoreEnd
 
-        // @codeCoverageIgnoreStart
         $this->returnsSelf = true;
 
         return $this->stub;
-        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -444,7 +444,6 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
     public function answer()
     {
         if ($this->isGeneratorReturnSupported) {
-            // @codeCoverageIgnoreStart
             return GeneratorAnswerBuilderDetailWithReturn::answer(
                 $this->iterations,
                 $this->requests,
@@ -454,9 +453,9 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
                 $this->returnsSelf,
                 $this->invoker
             );
-            // @codeCoverageIgnoreEnd
         }
 
+        // @codeCoverageIgnoreStart
         return GeneratorAnswerBuilderDetail::answer(
             $this->iterations,
             $this->requests,
@@ -466,6 +465,7 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
             $this->returnsSelf,
             $this->invoker
         );
+        // @codeCoverageIgnoreEnd
     }
 
     private $stub;

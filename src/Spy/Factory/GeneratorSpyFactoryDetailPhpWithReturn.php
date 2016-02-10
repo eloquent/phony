@@ -19,8 +19,6 @@ use Throwable;
 
 /**
  * A detail class for generator spies under PHP.
- *
- * @codeCoverageIgnore
  */
 abstract class GeneratorSpyFactoryDetailPhpWithReturn
 {
@@ -62,8 +60,10 @@ abstract class GeneratorSpyFactoryDetailPhpWithReturn
                     return $generator->getReturn();
                 }
             } catch (Throwable $thrown) {
+                // @codeCoverageIgnoreStart
             } catch (Exception $thrown) {
             }
+            // @codeCoverageIgnoreEnd
 
             if ($thrown) {
                 $call->setEndEvent(

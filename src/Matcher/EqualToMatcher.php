@@ -268,7 +268,6 @@ class EqualToMatcher extends AbstractMatcher
         }
 
         if ($leftIsException) {
-            // @codeCoverageIgnoreStart
             unset(
                 $left["\0*\0file"],
                 $left["\0*\0line"],
@@ -276,7 +275,6 @@ class EqualToMatcher extends AbstractMatcher
                 $left["\0Exception\0string"],
                 $left['xdebug_message']
             );
-            // @codeCoverageIgnoreEnd
         }
 
         $rightIsMock = $right instanceof MockInterface;
@@ -297,7 +295,6 @@ class EqualToMatcher extends AbstractMatcher
         }
 
         if ($rightIsException) {
-            // @codeCoverageIgnoreStart
             unset(
                 $right["\0*\0file"],
                 $right["\0*\0line"],
@@ -305,7 +302,6 @@ class EqualToMatcher extends AbstractMatcher
                 $right["\0Exception\0string"],
                 $right['xdebug_message']
             );
-            // @codeCoverageIgnoreEnd
         }
 
         goto compareNextArrayElement;

@@ -29,7 +29,7 @@ final class PhoAssertionException extends ExpectationException
 
         foreach ($this->getTrace() as $call) {
             if (!isset($call['class'])) {
-                continue; // @codeCoverageIgnore
+                continue;
             }
 
             if (0 !== strpos($call['class'], 'Eloquent\Phony\\')) {

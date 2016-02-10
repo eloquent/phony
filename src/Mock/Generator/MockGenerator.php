@@ -330,7 +330,7 @@ EOD;
                 $parameter[3];
         }
 
-        if (// @codeCoverageIgnoreStart
+        if (
             $this->isReturnTypeSupported &&
             $methodReflector->hasReturnType()
         ) {
@@ -341,7 +341,7 @@ EOD;
             } else {
                 $source .= "\n    ) : \\" . $type . " {\n";
             }
-        } else { // @codeCoverageIgnoreEnd
+        } else {
             $source .= "\n    ) {\n";
         }
 
@@ -424,7 +424,8 @@ EOD;
                             continue 2;
                         }
                     }
-            } // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
+            }
 
             $signature = $this->signatureInspector->signature($methodReflector);
 
@@ -513,7 +514,6 @@ EOD;
                 $returnsReference .
                 $name;
 
-            // @codeCoverageIgnoreStart
             if (
                 $this->isReturnTypeSupported &&
                 $methodReflector->hasReturnType()
@@ -526,7 +526,6 @@ EOD;
                     $returnType = ' : \\' . $type;
                 }
             } else {
-                // @codeCoverageIgnoreEnd
                 $returnType = '';
             }
 
@@ -601,7 +600,7 @@ EOD;
                 $parameter[2];
         }
 
-        if (// @codeCoverageIgnoreStart
+        if (
             $this->isReturnTypeSupported &&
             $methodReflector->hasReturnType()
         ) {
@@ -612,7 +611,7 @@ EOD;
             } else {
                 $source .= "\n    ) : \\" . $type . " {\n";
             }
-        } else { // @codeCoverageIgnoreEnd
+        } else {
             $source .= "\n    ) {\n";
         }
 

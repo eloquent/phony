@@ -49,5 +49,6 @@ class CallEventFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $actual = $this->subject->createGenerated();
 
         $this->assertEquals($expected, $actual);
+        $this->assertSame(array(), iterator_to_array($actual->value()));
     }
 }

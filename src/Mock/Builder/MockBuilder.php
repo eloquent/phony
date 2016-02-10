@@ -233,11 +233,9 @@ class MockBuilder implements MockBuilderInterface
                 throw new InvalidTypeException($type);
             }
 
-            // @codeCoverageIgnoreStart
             if ($this->isAnonymousClassSupported && $type->isAnonymous()) {
                 throw new AnonymousClassException();
             }
-            // @codeCoverageIgnoreEnd
 
             $isTrait = $this->isTraitSupported && $type->isTrait();
 
@@ -623,10 +621,8 @@ class MockBuilder implements MockBuilderInterface
         }
 
         if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            return;
+            return; // @codeCoverageIgnore
         }
-
-        // @codeCoverageIgnoreStart
 
         $isThrowable = false;
 
@@ -654,7 +650,7 @@ class MockBuilder implements MockBuilderInterface
                 $this->types
             );
         }
-    } // @codeCoverageIgnoreEnd
+    }
 
     private function define($definition)
     {

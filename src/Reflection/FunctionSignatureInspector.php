@@ -117,13 +117,15 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
 
             $typehint = $match[2];
 
-            if ($this->isHhvm) { // @codeCoverageIgnoreStart
+            if ($this->isHhvm) {
+                // @codeCoverageIgnoreStart
                 if (false !== strpos($typehint, 'HH\\')) {
                     $typehint = '';
                 } elseif ('?' === $typehint[0]) {
                     $typehint = substr($typehint, 1);
                 }
-            } // @codeCoverageIgnoreEnd
+                // @codeCoverageIgnoreEnd
+            }
 
             if ('self ' === $typehint) {
                 $typehint = '\\' . $parameter->getDeclaringClass()->getName()
@@ -134,23 +136,32 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                 'callable ' !== $typehint
             ) {
                 if (!$this->isScalarTypeHintSupported) {
-                    $typehint = '\\' . $typehint;
-                } elseif ('integer ' === $typehint && $parameter->getType()->isBuiltin()) { // @codeCoverageIgnoreStart
+                    $typehint = '\\' . $typehint; // @codeCoverageIgnore
+                } elseif (
+                    'integer ' === $typehint &&
+                    $parameter->getType()->isBuiltin()
+                ) {
                     $typehint = 'int ';
-                } elseif ('boolean ' === $typehint && $parameter->getType()->isBuiltin()) {
+                } elseif (
+                    'boolean ' === $typehint &&
+                    $parameter->getType()->isBuiltin()
+                ) {
                     $typehint = 'bool ';
                 } elseif ('float ' !== $typehint && 'string ' !== $typehint) {
                     $typehint = '\\' . $typehint;
-                } // @codeCoverageIgnoreEnd
+                }
             }
 
             if ($this->isExportReferenceSupported) {
                 $byReference = $match[4];
-            } else { // @codeCoverageIgnoreStart
-                $byReference = $parameter->isPassedByReference() ? '&' : '';
-            } // @codeCoverageIgnoreEnd
+            } else {
+                $byReference = $parameter->isPassedByReference() ? '&' : ''; // @codeCoverageIgnore
+            }
 
-            if ($this->isVariadicParameterSupported && $parameter->isVariadic()) {
+            if (
+                $this->isVariadicParameterSupported &&
+                $parameter->isVariadic()
+            ) {
                 $variadic = '...';
                 $optional = false;
             } else {
@@ -179,11 +190,11 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
                         $defaultValue =
                             str_replace('array (', 'array(', $defaultValue);
                 }
-            } elseif (// @codeCoverageIgnoreStart
+            } elseif (
                 $optional ||
                 $match[3] ||
                 ($this->isHhvm && $parameter->isDefaultValueAvailable())
-            ) { // @codeCoverageIgnoreEnd
+            ) {
                 $defaultValue = ' = null';
             } else {
                 $defaultValue = '';

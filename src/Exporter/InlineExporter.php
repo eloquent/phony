@@ -243,7 +243,6 @@ class InlineExporter implements ExporterInterface
                     }
 
                     if ($isException) {
-                        // @codeCoverageIgnoreStart
                         unset(
                             $phpValues["\0*\0file"],
                             $phpValues["\0*\0line"],
@@ -251,7 +250,6 @@ class InlineExporter implements ExporterInterface
                             $phpValues["\0Exception\0string"],
                             $phpValues['xdebug_message']
                         );
-                        // @codeCoverageIgnoreEnd
                     }
 
                     $properties = array();
@@ -353,10 +351,8 @@ class InlineExporter implements ExporterInterface
 
                     break;
 
-                // @codeCoverageIgnoreStart
                 default:
                     $result->type = '???';
-                // @codeCoverageIgnoreEnd
             }
         }
 

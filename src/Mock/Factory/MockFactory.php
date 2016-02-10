@@ -141,13 +141,14 @@ class MockFactory implements MockFactoryInterface
 
         try {
             eval($source);
-        } catch (ParseError $e) { // @codeCoverageIgnoreStart
+        } catch (ParseError $e) {
             throw new MockGenerationFailedException(
                 $definition,
                 $source,
                 error_get_last(),
                 $e
             );
+            // @codeCoverageIgnoreStart
         } catch (ParseException $e) {
             throw new MockGenerationFailedException(
                 $definition,
@@ -155,16 +156,19 @@ class MockFactory implements MockFactoryInterface
                 error_get_last(),
                 $e
             );
-        } // @codeCoverageIgnoreEnd
+        }
+        // @codeCoverageIgnoreEnd
 
         error_reporting($reporting);
 
         if (!class_exists($className, false)) {
+            // @codeCoverageIgnoreStart
             throw new MockGenerationFailedException(
                 $definition,
                 $source,
                 error_get_last()
             );
+            // @codeCoverageIgnoreEnd
         }
 
         $class = new ReflectionClass($className);

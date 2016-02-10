@@ -16,8 +16,6 @@ use Eloquent\Phony\Stub\Answer\CallRequestInterface;
 
 /**
  * A detail class for generator answer builders.
- *
- * @codeCoverageIgnore
  */
 abstract class GeneratorAnswerBuilderDetailWithReturn
 {

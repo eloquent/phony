@@ -18,8 +18,9 @@ use Generator;
 use Throwable;
 
 /**
- * A detail class for generator spies under PHP without support for return
- * values.
+ * A detail class for generator spy syntax using an expression.
+ *
+ * @codeCoverageIgnore
  */
 abstract class GeneratorSpyFactoryDetailPhp
 {

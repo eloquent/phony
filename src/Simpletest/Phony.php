@@ -19,6 +19,8 @@ use Eloquent\Phony\Integration\Simpletest\SimpletestFacadeDriver;
  * A facade for Phony usage under SimpleTest.
  *
  * @api
+ *
+ * @codeCoverageIgnore
  */
 class Phony extends AbstractFacade
 {

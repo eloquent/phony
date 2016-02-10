@@ -454,6 +454,21 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame('e', $generator->getReturn());
     }
 
+    public function testReturnsArgumentWithUndefinedArgument()
+    {
+        if (!$this->featureDetector->isSupported('generator.return')) {
+            $this->markTestSkipped('Requires generator return values.');
+        }
+
+        $this->assertSame($this->stub, $this->subject->returnsArgument(1));
+
+        $arguments = Arguments::create();
+        $generator = call_user_func($this->answer, $this->self, $arguments);
+        iterator_to_array($generator);
+
+        $this->assertNull($generator->getReturn());
+    }
+
     public function testReturnsArgumentFailureUnsupported()
     {
         if ($this->featureDetector->isSupported('generator.return')) {

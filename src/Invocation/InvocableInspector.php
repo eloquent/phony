@@ -121,14 +121,12 @@ class InvocableInspector implements InvocableInspectorInterface
      */
     public function callbackReturnType($callback)
     {
-        // @codeCoverageIgnoreStart
         if (
             $this->isReturnTypeSupported &&
             $type = $this->callbackReflector($callback)->getReturnType()
         ) {
             return strval($type);
         }
-        // @codeCoverageIgnoreEnd
 
         return 'NULL';
     }

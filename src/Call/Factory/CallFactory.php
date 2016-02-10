@@ -146,8 +146,10 @@ class CallFactory implements CallFactoryInterface
         try {
             $returnValue = $this->invoker->callWith($callback, $arguments);
         } catch (Throwable $exception) {
+            // @codeCoverageIgnoreStart
         } catch (Exception $exception) {
         }
+        // @codeCoverageIgnoreEnd
 
         $call->setResponseEvent(
             $this->eventFactory->createResponse($returnValue, $exception)
