@@ -11,8 +11,8 @@ if [[ "${TRAVIS_PULL_REQUEST}" == "false" && "$TRAVIS_BRANCH" == "develop" && "$
         artifacts/web/js:js
 fi
 
-#vendor/bin/archer travis:build
-vendor/bin/archer
+vendor/bin/archer travis:build
+# vendor/bin/archer
 # ls test/suite | xargs -I % sh -c 'echo; echo Testing %...; echo; vendor/bin/archer test test/suite/%'
 
 if [[ "$TRAVIS_PHP_VERSION" == "$ARCHER_PUBLISH_VERSION" ]]; then

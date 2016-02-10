@@ -963,10 +963,12 @@ EOD;
     public function testInvalidStubUsageWithDestructor()
     {
         if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('Causes uncatchable error under HHVM.');
+            $this->markTestSkipped('Destructor is unpredictable under HHVM.');
         }
 
-        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->expectOutputString(
+            "WARNING: Stub criteria '<none>' were never used. Check for incomplete stub rules.\n"
+        );
 
         call_user_func(
             function () {

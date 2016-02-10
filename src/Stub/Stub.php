@@ -119,7 +119,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function __destruct()
     {
-        $this->closeRule();
+        try {
+            $this->closeRule();
+        } catch (Exception $e) {
+            printf("WARNING: %s\n", $e->getMessage());
+        }
     }
 
     /**
