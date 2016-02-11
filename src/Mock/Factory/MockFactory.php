@@ -119,10 +119,11 @@ class MockFactory implements MockFactoryInterface
         $createNew = false
     ) {
         $definition = $builder->definition();
+        $signature = $definition->signature();
 
         if (!$createNew) {
             foreach ($this->definitions as $tuple) {
-                if ($definition->isEqualTo($tuple[0])) {
+                if ($signature === $tuple[0]) {
                     return $tuple[1];
                 }
             }
@@ -182,7 +183,7 @@ class MockFactory implements MockFactoryInterface
 
         $this->handleFactory->createStubbingStatic($class);
 
-        $this->definitions[] = array($definition, $class);
+        $this->definitions[] = array($signature, $class);
 
         return $class;
     }
