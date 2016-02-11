@@ -433,8 +433,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             true,
             false
         );
-
-        return $this;
     }
 
     /**
