@@ -8,8 +8,10 @@ implements \Eloquent\Phony\Mock\MockInterface,
         $a0,
         array $a1
     ) : string {
-        return self::$_staticProxy->spy($a0)
+        $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+
+        return $result;
     }
 
     public function classType() : \stdClass
@@ -21,9 +23,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function scalarType() : int
@@ -35,9 +39,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function customMethodWithClassType() : \stdClass
@@ -49,9 +55,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function customMethodWithScalarType() : int
@@ -63,24 +71,28 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function __call(
         $a0,
         array $a1
     ) : string {
-        return $this->_proxy->spy($a0)
+        $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+
+        return $result;
     }
 
     private static function _callMagicStatic(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return self::$_staticProxy
+        return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
     }
 
@@ -102,6 +114,6 @@ implements \Eloquent\Phony\Mock\MockInterface,
 );
     private static $_traitMethods = array();
     private static $_customMethods = array();
-    private static $_staticProxy;
-    private $_proxy;
+    private static $_staticHandle;
+    private $_handle;
 }

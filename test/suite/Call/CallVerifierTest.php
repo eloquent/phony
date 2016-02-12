@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -190,6 +190,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->traversableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
+        $this->assertSame($this->calledEvent, $this->subject->firstEvent());
+        $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
         $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertSame(array($this->call), $this->subject->allCalls());
         $this->assertTrue($this->subject->hasResponded());
@@ -204,11 +206,13 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c', $this->subject->argument(-1));
         $this->assertSame('b', $this->subject->argument(-2));
         $this->assertSame($this->returnValue, $this->subject->returnValue());
+        $this->assertSame($this->exception, $this->subjectWithException->exception());
+        $this->assertSame(array(null, $this->returnValue), $this->subject->response());
+        $this->assertSame(array($this->exception, null), $this->subjectWithException->response());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertSame($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertSame($this->returnedEvent->time(), $this->subject->endTime());
-        $this->assertNull($this->subject->exception());
     }
 
     public function testIteration()

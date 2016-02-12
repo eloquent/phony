@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Invocation;
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestWrappedInvocable;
 use PHPUnit_Framework_TestCase;
@@ -27,6 +28,8 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
         $this->callback = function () {};
         $this->invocable = new TestInvocable();
         $this->wrappedInvocable = new TestWrappedInvocable($this->callback);
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testCallbackReflector()
@@ -80,6 +83,16 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
             $this->assertSame($this, $this->subject->callbackThisValue($this->callback));
         } else {
             $this->assertNull($this->subject->callbackThisValue($this->callback));
+        }
+    }
+
+    public function testCallbackReturnType()
+    {
+        $this->assertSame('NULL', $this->subject->callbackReturnType(function () {}));
+
+        if ($this->featureDetector->isSupported('return.type')) {
+            $this->assertSame('int', $this->subject->callbackReturnType(eval('return function () : int {};')));
+            $this->assertSame('stdClass', $this->subject->callbackReturnType(eval('return function () : stdClass {};')));
         }
     }
 

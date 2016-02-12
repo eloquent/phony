@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -27,10 +27,12 @@ class StubRule implements StubRuleInterface
      * Construct a new stub rule.
      *
      * @param array<MatcherInterface>       $criteria        The criteria.
+     * @param array<AnswerInterface>        $answers         The answers.
      * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
      */
     public function __construct(
         array $criteria,
+        array $answers,
         MatcherVerifierInterface $matcherVerifier = null
     ) {
         if (null === $matcherVerifier) {
@@ -38,9 +40,10 @@ class StubRule implements StubRuleInterface
         }
 
         $this->criteria = $criteria;
+        $this->answers = $answers;
         $this->matcherVerifier = $matcherVerifier;
-        $this->answers = array();
-        $this->answerCount = 0;
+
+        $this->lastIndex = count($answers) - 1;
         $this->calledCount = 0;
     }
 
@@ -62,17 +65,6 @@ class StubRule implements StubRuleInterface
     public function matcherVerifier()
     {
         return $this->matcherVerifier;
-    }
-
-    /**
-     * Add an answer.
-     *
-     * @param AnswerInterface $answer The answer.
-     */
-    public function addAnswer(AnswerInterface $answer)
-    {
-        $this->answers[] = $answer;
-        ++$this->answerCount;
     }
 
     /**
@@ -105,8 +97,8 @@ class StubRule implements StubRuleInterface
      */
     public function next()
     {
-        if ($this->calledCount > $this->answerCount - 1) {
-            $index = $this->answerCount - 1;
+        if ($this->calledCount > $this->lastIndex) {
+            $index = $this->lastIndex;
         } else {
             $index = $this->calledCount;
         }
@@ -124,8 +116,8 @@ class StubRule implements StubRuleInterface
     }
 
     private $criteria;
-    private $matcherVerifier;
     private $answers;
-    private $answerCount;
+    private $matcherVerifier;
+    private $lastIndex;
     private $calledCount;
 }

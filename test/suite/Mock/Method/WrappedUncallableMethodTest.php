@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
 
@@ -22,17 +22,17 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA');
         $this->mockBuilder = new MockBuilder();
-        $this->mock = $this->mockBuilder->create();
-        $this->proxyFactory = new ProxyFactory();
-        $this->proxy = $this->proxyFactory->createStubbing($this->mock);
-        $this->subject = new WrappedUncallableMethod($this->method, $this->proxy);
+        $this->mock = $this->mockBuilder->partial();
+        $this->handleFactory = new HandleFactory();
+        $this->handle = $this->handleFactory->createStubbing($this->mock);
+        $this->subject = new WrappedUncallableMethod($this->method, $this->handle);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('testClassAMethodA', $this->subject->name());
-        $this->assertSame($this->proxy, $this->subject->proxy());
+        $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertSame(array($this->mock, 'testClassAMethodA'), $this->subject->callback());
         $this->assertNull($this->subject->label());
@@ -41,12 +41,12 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA');
-        $this->proxy = $this->proxyFactory->createStubbingStatic($this->mockBuilder->build());
-        $this->subject = new WrappedUncallableMethod($this->method, $this->proxy);
+        $this->handle = $this->handleFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->subject = new WrappedUncallableMethod($this->method, $this->handle);
 
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('testClassAStaticMethodA', $this->subject->name());
-        $this->assertSame($this->proxy, $this->subject->proxy());
+        $this->assertSame($this->handle, $this->subject->handle());
         $this->assertNull($this->subject->mock());
         $this->assertSame(
             array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodA'),

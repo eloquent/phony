@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -57,14 +57,14 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
 
     public function testSet()
     {
-        $this->subject->set('c');
-        $this->subject->set(1, 'd');
+        $this->assertSame($this->subject, $this->subject->set('c'));
+        $this->assertSame($this->subject, $this->subject->set(1, 'd'));
 
         $this->assertSame(array('c', 'd'), $this->subject->all());
         $this->assertSame('c', $this->a);
         $this->assertSame('d', $this->b);
 
-        $this->subject->set();
+        $this->assertSame($this->subject, $this->subject->set());
 
         $this->assertSame(array(null, 'd'), $this->subject->all());
         $this->assertNull($this->a);

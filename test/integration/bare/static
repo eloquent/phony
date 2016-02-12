@@ -10,14 +10,14 @@ Asplode::install();
 error_reporting(-1);
 
 // should record passing mock assertions (static)
-$proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
-$mock = $proxy->mock();
+$handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
+$mock = $handle->mock();
 $mock->testClassAMethodA('a', 'b');
 
-$proxy->testClassAMethodA->calledWith('a', 'b');
+$handle->testClassAMethodA->calledWith('a', 'b');
 
 // should record failing mock assertions (static)
-$proxy = Phony::mock('Eloquent\Phony\Test\TestClassA');
-$mock = $proxy->mock();
+$handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
+$mock = $handle->mock();
 
-$proxy->testClassAMethodA->calledWith('a', 'b');
+$handle->testClassAMethodA->calledWith('a', 'b');

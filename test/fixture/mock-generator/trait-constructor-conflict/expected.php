@@ -67,6 +67,6 @@ implements \Eloquent\Phony\Mock\MockInterface
   '__construct' => 'Eloquent\\Phony\\Test\\TestTraitD',
 );
     private static $_customMethods = array();
-    private static $_staticProxy;
-    private $_proxy;
+    private static $_staticHandle;
+    private $_handle;
 }

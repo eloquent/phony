@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -184,13 +184,21 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testSetSelf()
     {
-        $this->subject->setSelf($this->subject);
-
+        $this->assertSame($this->subject, $this->subject->setSelf($this->subject));
         $this->assertSame($this->subject, $this->subject->self());
-
-        $this->subject->setSelf($this->self);
-
+        $this->assertSame($this->subject, $this->subject->setSelf($this->self));
         $this->assertSame($this->self, $this->subject->self());
+    }
+
+    public function testSetDefaultAnswerCallback()
+    {
+        $callbackA = function () {};
+        $callbackB = function () {};
+
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackA));
+        $this->assertSame($callbackA, $this->subject->defaultAnswerCallback());
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackB));
+        $this->assertSame($callbackB, $this->subject->defaultAnswerCallback());
     }
 
     public function testSetLabel()

@@ -1,10 +1,10 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'Eloquent\Phony\Test\TestTraitD',
         'Eloquent\Phony\Test\TestTraitE',
-    ),
-    null,
-    'MockGeneratorTraitConstructorConflict'
+    )
 );
+
+return $builder->named('MockGeneratorTraitConstructorConflict');

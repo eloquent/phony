@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -11,16 +11,20 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Closure;
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit_Framework_TestCase;
+use stdClass;
 
 class StubTest extends PHPUnit_Framework_TestCase
 {
@@ -137,6 +141,8 @@ class StubTest extends PHPUnit_Framework_TestCase
             $c = 'c';
             $d = 'd';
         };
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testConstructor()
@@ -161,7 +167,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject->callback()));
         $this->assertTrue(is_callable($this->subject->self()));
         $this->assertNull($this->subject->label());
-        $this->assertNull($this->subject->defaultAnswerCallback());
+        $this->assertSame('Eloquent\Phony\Stub\Stub::forwardsAnswerCallback', $this->subject->defaultAnswerCallback());
         $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
         $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
         $this->assertSame(Invoker::instance(), $this->subject->invoker());
@@ -170,13 +176,21 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testSetSelf()
     {
-        $this->subject->setSelf($this->subject);
-
+        $this->assertSame($this->subject, $this->subject->setSelf($this->subject));
         $this->assertSame($this->subject, $this->subject->self());
-
-        $this->subject->setSelf($this->self);
-
+        $this->assertSame($this->subject, $this->subject->setSelf($this->self));
         $this->assertSame($this->self, $this->subject->self());
+    }
+
+    public function testSetDefaultAnswerCallback()
+    {
+        $callbackA = function () {};
+        $callbackB = function () {};
+
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackA));
+        $this->assertSame($callbackA, $this->subject->defaultAnswerCallback());
+        $this->assertSame($this->subject, $this->subject->setDefaultAnswerCallback($callbackB));
+        $this->assertSame($callbackB, $this->subject->defaultAnswerCallback());
     }
 
     public function testSetLabel()
@@ -636,6 +650,20 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('c', $c);
     }
 
+    public function testSetsArgumentWithInstanceHandles()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->setsArgument(0, $adaptable)->setsArgument(1, $unadaptable);
+
+        $a = null;
+        $b = null;
+        $this->subject->invokeWith(array(&$a, &$b));
+
+        $this->assertSame($adaptable->mock(), $a);
+        $this->assertSame($unadaptable, $b);
+    }
+
     public function testDoes()
     {
         $this->assertSame(
@@ -840,6 +868,78 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertNull(call_user_func($this->subject));
     }
 
+    public function returnsWithReturnTypeData()
+    {
+        return array(
+            'bool'   => array('bool',   false),
+            'int'    => array('int',    0),
+            'float'  => array('float',  .0),
+            'string' => array('string', ''),
+            'array'  => array('array',  array()),
+        );
+    }
+
+    /**
+     * @dataProvider returnsWithReturnTypeData
+     */
+    public function testReturnsWithReturnTypes($type, $expected)
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval("return function (): $type {};"));
+        $this->subject->returns();
+
+        $this->assertSame($expected, call_user_func($this->subject));
+    }
+
+    public function testReturnsWithStdClassReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval('return function (): stdClass {};'));
+        $this->subject->returns();
+
+        $this->assertTrue(call_user_func($this->subject) instanceof stdClass);
+    }
+
+    public function testReturnsWithCallableReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval('return function (): callable {};'));
+        $this->subject->returns();
+
+        $this->assertTrue(call_user_func($this->subject) instanceof Closure);
+    }
+
+    public function testReturnsWithClassReturnTypeFailure()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval('return function (): Iterator {};'));
+
+        $this->setExpectedException('InvalidArgumentException');
+        $this->subject->returns();
+    }
+
+    public function testReturnsWithInstanceHandles()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->returns($adaptable, $unadaptable);
+
+        $this->assertSame($adaptable->mock(), call_user_func($this->subject));
+        $this->assertSame($unadaptable, call_user_func($this->subject));
+    }
+
     public function testReturnsArgument()
     {
         $this->assertSame($this->subject, $this->subject->returnsArgument());
@@ -888,6 +988,15 @@ class StubTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals(array(new Exception(), new Exception()), $thrownExceptions);
+    }
+
+    public function testThrowsWithInstanceHandles()
+    {
+        $adaptable = Phony::mock('RuntimeException');
+        $this->subject->throws($adaptable);
+
+        $this->setExpectedException('RuntimeException');
+        call_user_func($this->subject);
     }
 
     public function testThrowsWithException()
@@ -983,6 +1092,23 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('e', call_user_func($this->subject, 'b'));
     }
 
+    public function testCloseRule()
+    {
+        $this->subject->returns('a');
+        $this->subject->closeRule();
+        $this->subject->returns('b');
+
+        $this->assertSame('b', call_user_func($this->subject));
+    }
+
+    public function testCloseRuleFailureDanglingCriteria()
+    {
+        $this->subject->with();
+
+        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->subject->closeRule();
+    }
+
     public function testDanglingRules()
     {
         $callCountA = 0;
@@ -1073,5 +1199,12 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
+    }
+
+    public function testInvokeWithNoRules()
+    {
+        $stub = new Stub();
+
+        $this->assertNull($stub());
     }
 }

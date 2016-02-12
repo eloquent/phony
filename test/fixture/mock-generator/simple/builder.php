@@ -1,7 +1,5 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    'stdClass',
-    null,
-    'MockGeneratorSimple'
-);
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder('stdClass');
+
+return $builder->named('MockGeneratorSimple');

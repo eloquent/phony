@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -37,18 +37,26 @@ interface MockFactoryInterface
     );
 
     /**
-     * Create a new mock instance for the supplied builder.
+     * Create a new full mock instance for the supplied builder.
      *
-     * @param MockBuilderInterface          $builder   The builder.
-     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null                   $label     The label.
+     * @param MockBuilderInterface $builder The builder.
      *
      * @return MockInterface          The newly created mock.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createMock(
+    public function createFullMock(MockBuilderInterface $builder);
+
+    /**
+     * Create a new partial mock instance for the supplied builder.
+     *
+     * @param MockBuilderInterface          $builder   The builder.
+     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return MockInterface          The newly created mock.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function createPartialMock(
         MockBuilderInterface $builder,
-        $arguments = null,
-        $label = null
+        $arguments = array()
     );
 }

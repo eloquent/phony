@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -23,68 +23,44 @@ interface MockBuilderFactoryInterface
     /**
      * Create a new mock builder.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
-     * If `$types` is omitted, or `null`, no existing type will be used when
-     * generating the mock class. This is useful in the case of ad hoc mocks,
-     * where mocks need not imitate an existing type.
-     *
-     * @param mixed             $types      The types to mock.
-     * @param array|object|null $definition The definition.
-     * @param string|null       $className  The class name.
+     * @param mixed $types The types to mock.
      *
      * @return MockBuilderInterface The mock builder.
      */
-    public function create(
-        $types = null,
-        $definition = null,
-        $className = null
-    );
+    public function create($types = array());
 
     /**
      * Create a new full mock.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
-     * If `$types` is omitted, or `null`, no existing type will be used when
-     * generating the mock class. This is useful in the case of ad hoc mocks,
-     * where mocks need not imitate an existing type.
-     *
-     * @param mixed             $types      The types to mock.
-     * @param array|object|null $definition The definition.
-     * @param string|null       $className  The class name.
+     * @param mixed $types The types to mock.
      *
      * @return MockInterface The mock.
      */
-    public function createFullMock(
-        $types = null,
-        $definition = null,
-        $className = null
-    );
+    public function createFullMock($types = array());
 
     /**
      * Create a new partial mock.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
-     * If `$types` is omitted, or `null`, no existing type will be used when
-     * generating the mock class. This is useful in the case of ad hoc mocks,
-     * where mocks need not imitate an existing type.
+     * Omitting `$arguments` will cause the original constructor to be called
+     * with an empty argument list. However, if a `null` value is supplied for
+     * `$arguments`, the original constructor will not be called at all.
      *
-     * @param mixed                         $types      The types to mock.
-     * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null             $definition The definition.
-     * @param string|null                   $className  The class name.
+     * @param mixed                         $types     The types to mock.
+     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return MockInterface The mock.
      */
-    public function createPartialMock(
-        $types = null,
-        $arguments = null,
-        $definition = null,
-        $className = null
-    );
+    public function createPartialMock($types = array(), $arguments = array());
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -20,6 +20,7 @@ use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Collection\Exception\UndefinedIndexException;
 use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Collection\IndexNormalizerInterface;
@@ -170,6 +171,40 @@ class Call implements CallInterface
     }
 
     /**
+     * Get the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent()
+    {
+        return $this->calledEvent;
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent()
+    {
+        if ($this->endEvent) {
+            return $this->endEvent;
+        }
+
+        if ($events = $this->traversableEvents()) {
+            return $events[count($events) - 1];
+        }
+
+        if ($this->responseEvent) {
+            return $this->responseEvent;
+        }
+
+        return $this->calledEvent;
+    }
+
+    /**
      * Get an event by index.
      *
      * Negative indices are offset from the end of the list. That is, `-1`
@@ -182,6 +217,10 @@ class Call implements CallInterface
      */
     public function eventAt($index = 0)
     {
+        if (0 === $index) {
+            return $this->calledEvent;
+        }
+
         $events = $this->allEvents();
         $count = count($events);
 
@@ -421,7 +460,7 @@ class Call implements CallInterface
      * Returns true if this call has completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a
@@ -474,25 +513,54 @@ class Call implements CallInterface
     /**
      * Get the returned value.
      *
-     * @return mixed The returned value.
+     * @return mixed                      The returned value.
+     * @throws UndefinedResponseException If this call has not yet returned a value.
      */
     public function returnValue()
     {
         if ($this->responseEvent instanceof ReturnedEventInterface) {
             return $this->responseEvent->value();
         }
+
+        throw new UndefinedResponseException(
+            'The call has not yet returned a value.'
+        );
     }
 
     /**
      * Get the thrown exception.
      *
-     * @return Exception|Error|null The thrown exception, or null if no exception was thrown.
+     * @return Exception|Error            The thrown exception.
+     * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
     public function exception()
     {
         if ($this->endEvent instanceof ThrewEventInterface) {
             return $this->endEvent->exception();
         }
+
+        throw new UndefinedResponseException(
+            'The call has not yet thrown an exception.'
+        );
+    }
+
+    /**
+     * Get the response.
+     *
+     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException        If this call has not yet responded.
+     */
+    public function response()
+    {
+        if ($this->responseEvent instanceof ReturnedEventInterface) {
+            return array(null, $this->responseEvent->value());
+        }
+
+        if ($this->endEvent instanceof ThrewEventInterface) {
+            return array($this->endEvent->exception(), null);
+        }
+
+        throw new UndefinedResponseException('The call has not yet responded.');
     }
 
     /**
@@ -513,7 +581,7 @@ class Call implements CallInterface
      * Get the time at which the call completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a

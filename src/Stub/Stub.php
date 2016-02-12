@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -22,11 +22,14 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
+use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Stub\Rule\StubRule;
 use Error;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * Provides canned answers to function or method invocations.
@@ -34,9 +37,29 @@ use Exception;
 class Stub extends AbstractWrappedInvocable implements StubInterface
 {
     /**
+     * Creates a "forwards" answer on the supplied stub.
+     *
+     * @param StubInterface $stub The stub.
+     */
+    public static function forwardsAnswerCallback(StubInterface $stub)
+    {
+        $stub->forwards();
+    }
+
+    /**
+     * Creates a answer that returns `null` on the supplied stub.
+     *
+     * @param StubInterface $stub The stub.
+     */
+    public static function returnsNullAnswerCallback(StubInterface $stub)
+    {
+        $stub->returns();
+    }
+
+    /**
      * Construct a new stub.
      *
-     * @param callable|null                    $callback              The callback, or null to create an unbound stub.
+     * @param callable|null                    $callback              The callback, or null to create an anonymous stub.
      * @param mixed                            $self                  The self value.
      * @param string|null                      $label                 The label.
      * @param callable|null                    $defaultAnswerCallback The callback to use when creating a default answer.
@@ -55,6 +78,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         InvokerInterface $invoker = null,
         InvocableInspectorInterface $invocableInspector = null
     ) {
+        if (null === $defaultAnswerCallback) {
+            $defaultAnswerCallback =
+                'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback';
+        }
         if (null === $matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
@@ -80,18 +107,29 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
 
-        $this->answer = new Answer();
-        $this->isNewRule = false;
+        $this->secondaryRequests = array();
+        $this->answers = array();
         $this->rules = array();
 
         $this->setSelf($self);
-        $this->with($this->matcherFactory->wildcard());
+    }
+
+    /**
+     * Used to detect invalid stub usage.
+     */
+    public function __destruct()
+    {
+        try {
+            $this->closeRule();
+        } catch (Exception $e) {
+            printf("WARNING: %s\n", $e->getMessage());
+        }
     }
 
     /**
      * Get the default answer callback.
      *
-     * @return callable|null The default answer callback.
+     * @return callable The default answer callback.
      */
     public function defaultAnswerCallback()
     {
@@ -144,6 +182,8 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      * This value is used by returnsThis().
      *
      * @param mixed $self The self value.
+     *
+     * @return $this This stub.
      */
     public function setSelf($self)
     {
@@ -152,6 +192,8 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         $this->self = $self;
+
+        return $this;
     }
 
     /**
@@ -169,6 +211,20 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
+     * Set the callback to use when creating a default answer.
+     *
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This stub.
+     */
+    public function setDefaultAnswerCallback($defaultAnswerCallback)
+    {
+        $this->defaultAnswerCallback = $defaultAnswerCallback;
+
+        return $this;
+    }
+
+    /**
      * Modify the current criteria to match the supplied arguments.
      *
      * @param mixed ...$argument The arguments.
@@ -177,13 +233,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function with()
     {
-        $this->handleDanglingRules();
+        $this->closeRule();
 
-        $this->isNewRule = true;
-        $this->rule = new StubRule(
-            $this->matcherFactory->adaptAll(func_get_args()),
-            $this->matcherVerifier
-        );
+        if (!$this->rules) {
+            call_user_func($this->defaultAnswerCallback, $this);
+            $this->closeRule();
+        }
+
+        $this->criteria = $this->matcherFactory->adaptAll(func_get_args());
 
         return $this;
     }
@@ -235,14 +292,12 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 'phonySelf' === $parameters[0]->getName();
         }
 
-        $this->answer->addSecondaryRequest(
-            new CallRequest(
-                $callback,
-                $arguments,
-                $prefixSelf,
-                $suffixArgumentsArray,
-                $suffixArguments
-            )
+        $this->secondaryRequests[] = new CallRequest(
+            $callback,
+            $arguments,
+            $prefixSelf,
+            $suffixArgumentsArray,
+            $suffixArguments
         );
 
         return $this;
@@ -363,6 +418,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $value = $indexOrValue;
         }
 
+        if ($value instanceof InstanceHandleInterface && $value->isAdaptable()) {
+            $value = $value->mock();
+        }
+
         return $this->callsWith(
             function ($arguments) use ($index, $value) {
                 if ($arguments->has($index)) {
@@ -374,8 +433,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             true,
             false
         );
-
-        return $this;
     }
 
     /**
@@ -421,23 +478,17 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 'phonySelf' === $parameters[0]->getName();
         }
 
-        if ($this->isNewRule) {
-            $this->isNewRule = false;
-
-            array_unshift($this->rules, $this->rule);
-        }
-
-        $this->answer->setPrimaryRequest(
+        $this->answers[] = new Answer(
             new CallRequest(
                 $callback,
                 $arguments,
                 $prefixSelf,
                 $suffixArgumentsArray,
                 $suffixArguments
-            )
+            ),
+            $this->secondaryRequests
         );
-        $this->rule->addAnswer($this->answer);
-        $this->answer = new Answer();
+        $this->secondaryRequests = array();
 
         return $this;
     }
@@ -507,11 +558,83 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function returns($value = null)
     {
         if (0 === func_num_args()) {
-            return $this
-                ->doesWith(function () {}, array(), false, false, false);
+            $type =
+                $this->invocableInspector->callbackReturnType($this->callback);
+
+            switch ($type) {
+                case 'NULL':
+                    $value = null;
+
+                    break;
+
+                // @codeCoverageIgnoreStart
+
+                case 'bool':
+                    $value = false;
+
+                    break;
+
+                case 'int':
+                    $value = 0;
+
+                    break;
+
+                case 'float':
+                    $value = .0;
+
+                    break;
+
+                case 'string':
+                    $value = '';
+
+                    break;
+
+                case 'array':
+                    $value = array();
+
+                    break;
+
+                case 'stdClass':
+                    $value = (object) array();
+
+                    break;
+
+                case 'callable':
+                    $value = function () {};
+
+                    break;
+
+                default:
+                    throw new InvalidArgumentException(
+                        sprintf(
+                            'Return values of type %s ' .
+                                'must be explicitly specified.',
+                            var_export($type, true)
+                        )
+                    );
+            }
+
+            // @codeCoverageIgnoreEnd
+
+            return $this->doesWith(
+                function () use ($value) {
+                    return $value;
+                },
+                array(),
+                false,
+                false,
+                false
+            );
         }
 
         foreach (func_get_args() as $value) {
+            if (
+                $value instanceof InstanceHandleInterface &&
+                $value->isAdaptable()
+            ) {
+                $value = $value->mock();
+            }
+
             $this->doesWith(
                 function () use ($value) {
                     return $value;
@@ -594,6 +717,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         foreach (func_get_args() as $exception) {
             if (is_string($exception)) {
                 $exception = new Exception($exception);
+            } elseif (
+                $exception instanceof InstanceHandleInterface &&
+                $exception->isAdaptable()
+            ) {
+                $exception = $exception->mock();
             }
 
             $this->doesWith(
@@ -611,6 +739,47 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
+     * Close any existing rule.
+     *
+     * @return $this This stub.
+     */
+    public function closeRule()
+    {
+        if ($this->secondaryRequests) {
+            call_user_func($this->defaultAnswerCallback, $this);
+            $this->secondaryRequests = array();
+        }
+
+        if ($this->answers) {
+            if (null !== $this->criteria) {
+                $rule = new StubRule(
+                    $this->criteria,
+                    $this->answers,
+                    $this->matcherVerifier
+                );
+
+                $this->criteria = null;
+            } else {
+                $rule = new StubRule(
+                    array($this->matcherFactory->wildcard()),
+                    $this->answers,
+                    $this->matcherVerifier
+                );
+            }
+
+            array_unshift($this->rules, $rule);
+            $this->answers = array();
+        }
+
+        if (null !== $this->criteria) {
+            $criteria = $this->criteria;
+            $this->criteria = null;
+
+            throw new UnusedStubCriteriaException($criteria);
+        }
+    }
+
+    /**
      * Invoke this object.
      *
      * This method supports reference parameters.
@@ -622,7 +791,12 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function invokeWith($arguments = array())
     {
-        $this->handleDanglingRules();
+        $this->closeRule();
+
+        if (!$this->rules) {
+            call_user_func($this->defaultAnswerCallback, $this);
+            $this->closeRule();
+        }
 
         $arguments = Arguments::adapt($arguments);
 
@@ -649,32 +823,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         );
     }
 
-    /**
-     * Handles any unfinished rules.
-     */
-    protected function handleDanglingRules()
-    {
-        if (!$this->rule) {
-            return;
-        }
-
-        if (!$this->rules || $this->answer->secondaryRequests()) {
-            if ($this->defaultAnswerCallback) {
-                call_user_func($this->defaultAnswerCallback, $this);
-            } else {
-                $this->forwards();
-            }
-        }
-    }
-
     private $self;
     private $defaultAnswerCallback;
     private $matcherFactory;
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
-    private $answer;
-    private $isNewRule;
-    private $rule;
+    private $criteria;
+    private $secondaryRequests;
+    private $answers;
     private $rules;
 }

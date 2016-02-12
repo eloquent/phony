@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -123,6 +123,36 @@ class EventCollection implements EventCollectionInterface
     public function allCalls()
     {
         return $this->calls;
+    }
+
+    /**
+     * Get the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent()
+    {
+        if (!$this->events) {
+            throw new UndefinedEventException(0);
+        }
+
+        return $this->events[0];
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent()
+    {
+        if ($count = count($this->events)) {
+            return $this->events[$count - 1];
+        }
+
+        throw new UndefinedEventException(0);
     }
 
     /**

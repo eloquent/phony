@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Mock\Handle\HandleInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 
 /**
  * The interface implemented by wrapped methods.
@@ -27,11 +27,11 @@ interface WrappedMethodInterface
     public function name();
 
     /**
-     * Get the proxy.
+     * Get the handle.
      *
-     * @return ProxyInterface The proxy.
+     * @return HandleInterface The handle.
      */
-    public function proxy();
+    public function handle();
 
     /**
      * Get the mock.

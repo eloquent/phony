@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -16,8 +16,7 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -26,7 +25,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->signatureInspector = new FunctionSignatureInspector();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
 
@@ -50,10 +48,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->callbackC = function () {};
         $this->callbackD = function () {};
         $this->callbackE = function () {};
-    }
 
-    protected function setUpWith($typeNames)
-    {
         $this->definition = array(
             'static methodA' => $this->callbackA,
             'static methodB' => $this->callbackB,
@@ -66,15 +61,16 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'const constantA' => 'constantValueA',
             'const constantB' => 'constantValueB',
         );
+    }
+
+    protected function setUpWith($typeNames)
+    {
         $this->factory = new MockFactory(new Sequencer());
-        $this->proxyFactory = new ProxyFactory();
+        $this->handleFactory = new HandleFactory();
         $this->subject = new MockBuilder(
             $typeNames,
-            $this->definition,
-            null,
             $this->factory,
-            $this->proxyFactory,
-            $this->signatureInspector,
+            $this->handleFactory,
             $this->invocableInspector,
             $this->featureDetector
         );
@@ -97,8 +93,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->typesFor($this->typeNames), $this->subject->types());
         $this->assertSame($this->factory, $this->subject->factory());
-        $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
-        $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
+        $this->assertSame($this->handleFactory, $this->subject->handleFactory());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
@@ -147,7 +142,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->typesFor($this->typeNamesTraits), $this->subject->types());
         $this->assertSame($this->factory, $this->subject->factory());
-        $this->assertSame($this->proxyFactory, $this->subject->proxyFactory());
+        $this->assertSame($this->handleFactory, $this->subject->handleFactory());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
@@ -159,26 +154,11 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array(), $this->subject->types());
         $this->assertSame(MockFactory::instance(), $this->subject->factory());
-        $this->assertSame(ProxyFactory::instance(), $this->subject->proxyFactory());
-        $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
+        $this->assertSame(HandleFactory::instance(), $this->subject->handleFactory());
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
-    }
-
-    public function testConstructorWithClassName()
-    {
-        $this->subject = new MockBuilder($this->typesFor($this->typeNames), null, 'ClassName');
-        $definition = $this->subject->definition();
-
-        $this->assertSame('ClassName', $definition->className());
-    }
-
-    public function testConstructorFailureInvalidClassName()
-    {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidClassNameException');
-        new MockBuilder(null, null, '1');
     }
 
     public function testConstructorFailureUndefinedClass()
@@ -205,6 +185,29 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         new MockBuilder(array(1));
     }
 
+    public function testClone()
+    {
+        $builder = new MockBuilder();
+        $builder->addMethod('methodA');
+        $mockA = $builder->get();
+        $copy = clone $builder;
+        $copy->addMethod('methodB');
+
+        $this->assertTrue($builder->isFinalized());
+        $this->assertTrue($builder->isBuilt());
+        $this->assertFalse($copy->isFinalized());
+        $this->assertFalse($copy->isBuilt());
+
+        $mockB = $copy->get();
+
+        $this->assertNotSame($mockA, $mockB);
+        $this->assertFalse($mockA instanceof $mockB);
+        $this->assertFalse($mockB instanceof $mockA);
+        $this->assertTrue(method_exists($mockA, 'methodA'));
+        $this->assertTrue(method_exists($mockB, 'methodA'));
+        $this->assertTrue(method_exists($mockB, 'methodB'));
+    }
+
     public function testLikeWithString()
     {
         $builder = new MockBuilder();
@@ -212,24 +215,6 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($builder, $builder->like('Iterator', array('Countable', 'Serializable')));
         $this->assertEquals($this->typesFor($typeNames), $builder->types());
-    }
-
-    public function testLikeWithReflectionClass()
-    {
-        $builder = new MockBuilder();
-        $typeNames = array('stdClass');
-
-        $this->assertSame($builder, $builder->like(new ReflectionClass('stdClass')));
-        $this->assertEquals($this->typesFor($typeNames), $builder->types());
-    }
-
-    public function testLikeWithBuilder()
-    {
-        $this->setUpWith($this->typeNames);
-        $builder = new MockBuilder();
-
-        $this->assertSame($builder, $builder->like($this->subject));
-        $this->assertSame($this->subject->types(), $builder->types());
     }
 
     public function testLikeFailureUndefinedClass()
@@ -289,7 +274,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject->like('ClassName');
     }
 
-    public function testDefine()
+    public function testLikeWithAdHocDefinitions()
     {
         $this->subject = new MockBuilder();
         $this->definition = array(
@@ -305,7 +290,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
             'const constantB' => 'constantValueB',
         );
 
-        $this->assertSame($this->subject, $this->subject->define($this->definition));
+        $this->assertSame($this->subject, $this->subject->like($this->definition));
 
         $definition = $this->subject->definition();
 
@@ -331,54 +316,12 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDefineWithObject()
-    {
-        $this->subject = new MockBuilder();
-        $this->definition = (object) array(
-            'static methodA' => $this->callbackA,
-            'static methodB' => $this->callbackB,
-            'static propertyA' => 'valueA',
-            'static propertyB' => 'valueB',
-            'methodC' => $this->callbackC,
-            'methodD' => $this->callbackD,
-            'propertyC' => 'valueC',
-            'var propertyD' => $this->callbackE,
-            'const constantA' => 'constantValueA',
-            'const constantB' => 'constantValueB',
-        );
-
-        $this->assertSame($this->subject, $this->subject->define((object) $this->definition));
-
-        $definition = $this->subject->definition();
-
-        $this->assertSame(
-            array('methodA' => $this->callbackA, 'methodB' => $this->callbackB),
-            $definition->customStaticMethods()
-        );
-        $this->assertSame(
-            array('methodC' => $this->callbackC, 'methodD' => $this->callbackD),
-            $definition->customMethods()
-        );
-        $this->assertSame(
-            array('propertyA' => 'valueA', 'propertyB' => 'valueB'),
-            $definition->customStaticProperties()
-        );
-        $this->assertSame(
-            array('propertyC' => 'valueC', 'propertyD' => $this->callbackE),
-            $definition->customProperties()
-        );
-        $this->assertSame(
-            array('constantA' => 'constantValueA', 'constantB' => 'constantValueB'),
-            $definition->customConstants()
-        );
-    }
-
-    public function testDefineFailureInvalid()
+    public function testLikeWithAdHocDefinitionsFailureInvalid()
     {
         $this->subject = new MockBuilder();
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidDefinitionException');
-        $this->subject->define(array('propertyA', 'valueA'));
+        $this->subject->like(array(1 => 'propertyA', 2 => 'valueA'));
     }
 
     public function testAddMethod()
@@ -621,7 +564,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testBuildFailureClassExists()
     {
-        $builder = new MockBuilder(null, null, __CLASS__);
+        $builder = new MockBuilder();
+        $builder->named(__CLASS__);
         $exception = null;
         try {
             $builder->build();
@@ -656,10 +600,10 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->get());
     }
 
-    public function testCreate()
+    public function testPartial()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->create('a', 'b');
+        $first = $this->subject->partial('a', 'b');
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
@@ -668,38 +612,42 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
-        $second = $this->subject->create();
+        $second = $this->subject->partial();
 
         $this->assertNotSame($first, $second);
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
     }
 
-    public function testCreateWith()
+    public function testPartialWith()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->createWith(array('a', 'b'), 'label');
+        $first = $this->subject->partialWith(array('a', 'b'));
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('label', $this->proxyFactory->createStubbing($first)->label());
         $this->assertSame(array('a', 'b'), $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
-        $second = $this->subject->createWith(array());
+        $second = $this->subject->partialWith(array());
 
         $this->assertNotSame($first, $second);
-        $this->assertSame('0', $this->proxyFactory->createStubbing($second)->label());
         $this->assertSame(array(), $second->constructorArguments);
         $this->assertSame($second, $this->subject->get());
 
-        $third = $this->subject->createWith();
+        $third = $this->subject->partialWith();
 
         $this->assertNotSame($first, $third);
         $this->assertNotSame($second, $third);
-        $this->assertSame('1', $this->proxyFactory->createStubbing($third)->label());
+        $this->assertSame(array(), $second->constructorArguments);
+        $this->assertSame($third, $this->subject->get());
+
+        $third = $this->subject->partialWith(null);
+
+        $this->assertNotSame($first, $third);
+        $this->assertNotSame($second, $third);
         $this->assertNull($third->constructorArguments);
         $this->assertSame($third, $this->subject->get());
     }
@@ -707,13 +655,12 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     public function testFull()
     {
         $this->setUpWith($this->typeNames);
-        $first = $this->subject->full('label');
+        $first = $this->subject->full();
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $first);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
-        $this->assertSame('label', $this->proxyFactory->createStubbing($first)->label());
         $this->assertNull($first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
@@ -726,7 +673,8 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testSource()
     {
-        $this->subject = new MockBuilder(null, null, 'PhonyMockBuilderTestSourceMethod');
+        $this->subject = new MockBuilder();
+        $this->subject->named('PhonyMockBuilderTestSourceMethod');
         $expected = <<<'EOD'
 class PhonyMockBuilderTestSourceMethod
 implements \Eloquent\Phony\Mock\MockInterface
@@ -734,8 +682,8 @@ implements \Eloquent\Phony\Mock\MockInterface
     private static $_uncallableMethods = array();
     private static $_traitMethods = array();
     private static $_customMethods = array();
-    private static $_staticProxy;
-    private $_proxy;
+    private static $_staticHandle;
+    private $_handle;
 }
 
 EOD;
@@ -749,7 +697,7 @@ EOD;
         $first = null;
         $second = null;
         $builder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
-        $builder->createWith(array(&$first, &$second));
+        $builder->partialWith(array(&$first, &$second));
 
         $this->assertSame('first', $first);
         $this->assertSame('second', $second);

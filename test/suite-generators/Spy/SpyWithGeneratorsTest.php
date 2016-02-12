@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -24,20 +25,18 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->label = 'label';
-        $this->useGeneratorSpies = false;
-        $this->useTraversableSpies = false;
         $this->indexNormalizer = new IndexNormalizer();
         $this->callFactory = new TestCallFactory();
+        $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory);
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
         $this->subject = new Spy(
             $this->callback,
             $this->label,
-            $this->useGeneratorSpies,
-            $this->useTraversableSpies,
             $this->indexNormalizer,
             $this->callFactory,
+            $this->invoker,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
@@ -60,10 +59,9 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $spy = new Spy(
             $this->callback,
             null,
-            true,
-            true,
             null,
             $this->callFactory,
+            $this->invoker,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );

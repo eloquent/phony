@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
 use Error;
 use Exception;
 use ReflectionMethod;
@@ -31,18 +31,18 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      * @param string           $name            The name.
      * @param ReflectionMethod $callMagicMethod The _callMagic() method.
      * @param boolean          $isUncallable    True if the underlying magic method is uncallable.
-     * @param ProxyInterface   $proxy           The proxy.
+     * @param HandleInterface  $handle          The handle.
      */
     public function __construct(
         $name,
         ReflectionMethod $callMagicMethod,
         $isUncallable,
-        ProxyInterface $proxy
+        HandleInterface $handle
     ) {
         $this->name = $name;
         $this->callMagicMethod = $callMagicMethod;
         $this->isUncallable = $isUncallable;
-        $this->proxy = $proxy;
+        $this->handle = $handle;
 
         if ($callMagicMethod->isStatic()) {
             $this->mock = null;
@@ -51,7 +51,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
                 '__callStatic',
             );
         } else {
-            $this->mock = $proxy->mock();
+            $this->mock = $handle->mock();
             $callback = array($this->mock, '__call');
         }
 
@@ -89,13 +89,13 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
     }
 
     /**
-     * Get the proxy.
+     * Get the handle.
      *
-     * @return ProxyInterface The proxy.
+     * @return HandleInterface The handle.
      */
-    public function proxy()
+    public function handle()
     {
-        return $this->proxy;
+        return $this->handle;
     }
 
     /**
@@ -131,6 +131,6 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
     protected $name;
     protected $callMagicMethod;
     protected $isUncallable;
-    protected $proxy;
+    protected $handle;
     protected $mock;
 }

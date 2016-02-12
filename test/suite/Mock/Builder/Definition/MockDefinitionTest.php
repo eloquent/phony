@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -17,7 +17,6 @@ use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionMethod;
@@ -26,7 +25,6 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->signatureInspector = new FunctionSignatureInspector();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
 
@@ -94,7 +92,6 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             $this->customStaticProperties,
             $this->customConstants,
             $this->className,
-            $this->signatureInspector,
             $this->invocableInspector,
             $this->featureDetector
         );
@@ -111,7 +108,6 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->customStaticProperties, $this->subject->customStaticProperties());
         $this->assertSame($this->customConstants, $this->subject->customConstants());
         $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertSame($this->typeNames, $this->subject->typeNames());
@@ -147,7 +143,6 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->subject->customStaticProperties());
         $this->assertSame(array(), $this->subject->customConstants());
         $this->assertNull($this->subject->className());
-        $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
         $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
         $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
         $this->assertSame(array(), $this->subject->typeNames());

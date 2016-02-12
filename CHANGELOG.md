@@ -1,5 +1,67 @@
 # Phony changelog
 
+## 0.8.0 (2016-02-12)
+
+- **[BC BREAK]** Mocking functions now accept ad hoc definitions in the `$types`
+  argument, hence the `$definition` argument has been removed from `mock()`,
+  `partialMock()`, and `mockBuilder()` ([#117]).
+- **[BC BREAK]** Mocking functions `mock()`, `partialMock()`, and
+  `mockBuilder()` no longer accept the `$className` argument. Custom class names
+  can still be used via `named()` on mock builders ([#117]).
+- **[BC BREAK]** Mocking functions `mock()`, `partialMock()`, and
+  `mockBuilder()` no longer accept reflection classes or mock builders in the
+  `$types` argument ([#117]).
+- **[BC BREAK]** Mock definition values can no longer be generic objects
+  ([#117]).
+- **[BC BREAK]** Removed the `$useGeneratorSpies` and `$useTraversableSpies`
+  argument from both `spy()` and `stub()` ([#123]).
+- **[BC BREAK]** Removed the `$self` and `$defaultAnswerCallback` arguments from
+  `stub()` ([#123]).
+- **[BC BREAK]** Rewrite and rename of mock builder API methods for creating
+  mocks ([#103]).
+- **[BC BREAK]** Renamed "proxy" to "handle" in line with documentation
+  ([#133]).
+- **[BC BREAK]** Replaced `reset()` with `stopRecording()` and
+  `startRecording()` ([#99]).
+- **[BC BREAK]** Event no longer implements event collection ([#134]).
+- **[NEW]** Mock builders can now be copied via the `clone` operator ([#101]).
+- **[NEW]** Implemented `proxy()` on mock handles ([#39]).
+- **[IMPROVED]** Made API setter style methods fluent ([#98]).
+- **[IMPROVED]** Instance handles are automatically adapted when stubbing and
+  verifying ([#126]).
+- **[IMPROVED]** Added checks for unused stub criteria ([#126]).
+- **[IMPROVED]** Default answer callbacks are now a first-class concept for
+  mocks ([#90]).
+- **[IMPROVED]** Stubs now return valid default values for most "in built"
+  return type declarations ([#109]).
+- **[IMPROVED]** Verification results (event collections) now implement
+  `firstEvent()` and `lastEvent()` ([#97]).
+- **[IMPROVED]** Requesting the return value or exception of a call that has not
+  responded now throws an exception ([#92]).
+- **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
+- **[FIXED]** Mocking, and calling of return-by-reference methods no longer
+  causes errors to be emitted ([#105]).
+- **[FIXED]** Ad-hoc mocks that differ only by function body no longer result in
+  re-use of the same mock class ([#131]).
+
+[#39]: https://github.com/eloquent/phony/issues/39
+[#90]: https://github.com/eloquent/phony/issues/90
+[#92]: https://github.com/eloquent/phony/issues/92
+[#97]: https://github.com/eloquent/phony/issues/97
+[#98]: https://github.com/eloquent/phony/issues/98
+[#99]: https://github.com/eloquent/phony/issues/99
+[#101]: https://github.com/eloquent/phony/issues/101
+[#103]: https://github.com/eloquent/phony/issues/103
+[#105]: https://github.com/eloquent/phony/issues/105
+[#109]: https://github.com/eloquent/phony/issues/109
+[#117]: https://github.com/eloquent/phony/issues/117
+[#123]: https://github.com/eloquent/phony/issues/123
+[#126]: https://github.com/eloquent/phony/issues/126
+[#127]: https://github.com/eloquent/phony/issues/127
+[#131]: https://github.com/eloquent/phony/issues/131
+[#133]: https://github.com/eloquent/phony/issues/133
+[#134]: https://github.com/eloquent/phony/issues/134
+
 ## 0.7.0 (2015-12-20)
 
 - **[NEW]** Implemented `firstCall()` and `lastCall()` ([#93]).

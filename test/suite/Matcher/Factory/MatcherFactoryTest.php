@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -21,6 +21,7 @@ use Eloquent\Phony\Integration\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Test\TestMatcherA;
 use Eloquent\Phony\Test\TestMatcherB;
 use Eloquent\Phony\Test\TestMatcherDriverA;
@@ -98,6 +99,15 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->isMatcher((object) array()));
     }
 
+    public function testIsMatcherWithInstanceHandles()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+
+        $this->assertTrue($this->subject->isMatcher($adaptable));
+        $this->assertFalse($this->subject->isMatcher($unadaptable));
+    }
+
     public function testAdapt()
     {
         $value = (object) array('key' => 'value');
@@ -133,14 +143,27 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
     }
 
+    public function testAdaptInstanceHandles()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+
+        $this->assertEquals(new EqualToMatcher($adaptable->mock()), $this->subject->adapt($adaptable));
+        $this->assertEquals(new EqualToMatcher($unadaptable), $this->subject->adapt($unadaptable));
+    }
+
     public function testAdaptAll()
     {
         $valueB = new EqualToMatcher('b');
         $valueC = (object) array();
+        $valueD = Phony::mock();
+        $valueE = Phony::mock()->setIsAdaptable(false);
         $values = array(
             'a',
             $valueB,
             $valueC,
+            $valueD,
+            $valueE,
             new TestMatcherA(),
             '*',
             '~',
@@ -150,6 +173,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
             new EqualToMatcher('a'),
             $valueB,
             new EqualToMatcher($valueC),
+            new EqualToMatcher($valueD->mock()),
+            new EqualToMatcher($valueE),
             new EqualToMatcher('a'),
             WildcardMatcher::instance(),
             $this->anyMatcher,

@@ -47,7 +47,81 @@ var run = function () {
 
     var redrawToc = function () {
         tocElement.style.marginLeft = (870 - document.body.scrollLeft) + 'px';
+        gumshoe.setDistances();
     };
+
+    var tocShowElement = document.getElementById('toc-show');
+    var tocHideElement = document.getElementById('toc-hide');
+
+    var showToc = function () {
+        tocShowElement.style.display = 'none';
+        tocHideElement.style.display = 'inline';
+        tocListElement.style.display = 'block';
+
+        gumshoe.setDistances();
+    };
+
+    var hideToc = function () {
+        tocHideElement.style.display = 'none';
+        tocShowElement.style.display = 'inline';
+        tocListElement.style.display = 'none';
+
+        gumshoe.setDistances();
+    };
+
+    var dispatch = function (event) {
+        if (window.location.hash) {
+            hash = decodeURIComponent(window.location.hash.substring(1));
+
+            var target;
+
+            try {
+                target = document.querySelector('#' + hash);
+            } catch (e) {
+                // not a standard anchor link
+            }
+
+            if (target && target.classList.contains('anchor')) {
+                document.title = target.parentNode.innerText + ' - Phony';
+            }
+
+            target = null;
+
+            try {
+                target = document.querySelector('a[name="' + hash + '"]');
+            } catch (e) {
+                // not a standard anchor link
+            }
+
+            if (target) {
+                var matches = hash.match(/^(\w+)\.(\w+)$/);
+
+                if (matches) {
+                    if ('facade' === matches[1]) {
+                        document.title = matches[2] + '() - Phony';
+                    } else {
+                        document.title =
+                            '$' + matches[1] + '->' + matches[2] + '() - Phony';
+                    }
+                }
+            }
+        } else {
+            document.title = 'Phony';
+        }
+
+        if ('#toc' === window.location.hash) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            showToc();
+            tocListElement.scrollIntoView();
+        }
+    };
+
+    window.addEventListener('hashchange', dispatch);
+    document.addEventListener('scroll', _.throttle(redrawToc, 10));
+    tocHideElement.addEventListener('click', hideToc);
 
     gumshoe.init(
         {
@@ -56,33 +130,8 @@ var run = function () {
             callback: activateTocHeading
         }
     );
-
-    document.addEventListener('scroll', _.throttle(redrawToc, 10));
+    dispatch();
     redrawToc();
-
-    var tocShow = document.getElementById('toc-show');
-    var tocHide = document.getElementById('toc-hide');
-
-    tocShow.addEventListener(
-        'click',
-        function (event) {
-            tocShow.style.display = 'none';
-            tocHide.style.display = 'inline';
-            tocListElement.style.display = 'block';
-
-            gumshoe.setDistances();
-        }
-    );
-    tocHide.addEventListener(
-        'click',
-        function (event) {
-            tocHide.style.display = 'none';
-            tocShow.style.display = 'inline';
-            tocListElement.style.display = 'none';
-
-            gumshoe.setDistances();
-        }
-    );
 };
 
 document.addEventListener('DOMContentLoaded', run);

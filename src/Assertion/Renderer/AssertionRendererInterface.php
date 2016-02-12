@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -17,7 +17,7 @@ use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Cardinality\CardinalityInterface;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
 use Error;
 use Exception;
 
@@ -38,11 +38,11 @@ interface AssertionRendererInterface
     /**
      * Render a mock.
      *
-     * @param ProxyInterface $proxy The proxy.
+     * @param HandleInterface $handle The handle.
      *
      * @return string The rendered mock.
      */
-    public function renderMock(ProxyInterface $proxy);
+    public function renderMock(HandleInterface $handle);
 
     /**
      * Render a callable.

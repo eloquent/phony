@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -15,6 +15,8 @@ use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
 use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Collection\IndexNormalizerInterface;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Spy\Spy;
@@ -45,6 +47,7 @@ class SpyFactory implements SpyFactoryInterface
      * @param SequencerInterface|null             $labelSequencer        The label sequencer to use.
      * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
+     * @param InvokerInterface|null               $invoker               The invoker to use.
      * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
@@ -52,6 +55,7 @@ class SpyFactory implements SpyFactoryInterface
         SequencerInterface $labelSequencer = null,
         IndexNormalizerInterface $indexNormalizer = null,
         CallFactoryInterface $callFactory = null,
+        InvokerInterface $invoker = null,
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
@@ -64,6 +68,9 @@ class SpyFactory implements SpyFactoryInterface
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
         }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
+        }
         if (null === $generatorSpyFactory) {
             $generatorSpyFactory = GeneratorSpyFactory::instance();
         }
@@ -74,6 +81,7 @@ class SpyFactory implements SpyFactoryInterface
         $this->labelSequencer = $labelSequencer;
         $this->indexNormalizer = $indexNormalizer;
         $this->callFactory = $callFactory;
+        $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
     }
@@ -109,6 +117,16 @@ class SpyFactory implements SpyFactoryInterface
     }
 
     /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
+    }
+
+    /**
      * Get the generator spy factory.
      *
      * @return TraversableSpyFactoryInterface The generator spy factory.
@@ -131,24 +149,18 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Create a new spy.
      *
-     * @param callable|null $callback            The callback, or null to create an unbound spy.
-     * @param boolean       $useGeneratorSpies   True if generator spies should be used.
-     * @param boolean       $useTraversableSpies True if traversable spies should be used.
+     * @param callable|null $callback The callback, or null to create an anonymous spy.
      *
      * @return SpyInterface The newly created spy.
      */
-    public function create(
-        $callback = null,
-        $useGeneratorSpies = true,
-        $useTraversableSpies = false
-    ) {
+    public function create($callback = null)
+    {
         return new Spy(
             $callback,
             strval($this->labelSequencer->next()),
-            $useGeneratorSpies,
-            $useTraversableSpies,
             $this->indexNormalizer,
             $this->callFactory,
+            $this->invoker,
             $this->generatorSpyFactory,
             $this->traversableSpyFactory
         );
@@ -158,6 +170,7 @@ class SpyFactory implements SpyFactoryInterface
     private $labelSequencer;
     private $indexNormalizer;
     private $callFactory;
+    private $invoker;
     private $generatorSpyFactory;
     private $traversableSpyFactory;
 }

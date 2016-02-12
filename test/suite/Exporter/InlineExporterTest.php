@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Exporter;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
 use PHPUnit_Framework_TestCase;
@@ -178,12 +179,10 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
 
     public function testExportMocks()
     {
-        $builder = MockBuilderFactory::instance()->create(
-            'Eloquent\Phony\Test\Properties\TestBaseClass',
-            null,
-            'PhonyMockInlineExporterExportMocks'
-        );
-        $mock = $builder->createWith(null, 'label');
+        $builder = MockBuilderFactory::instance()->create('Eloquent\Phony\Test\Properties\TestBaseClass')
+            ->named('PhonyMockInlineExporterExportMocks');
+        $mock = $builder->get();
+        Phony::on($mock)->setLabel('label');
 
         $this->assertSame(
             'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .

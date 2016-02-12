@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -31,9 +31,9 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\WrappedInvocableInterface;
 use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 use Eloquent\Phony\Mock\Method\WrappedMethodInterface;
-use Eloquent\Phony\Mock\Proxy\InstanceProxyInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Stub\StubInterface;
 use Error;
@@ -116,13 +116,13 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a mock.
      *
-     * @param ProxyInterface $proxy The proxy.
+     * @param HandleInterface $handle The handle.
      *
      * @return string The rendered mock.
      */
-    public function renderMock(ProxyInterface $proxy)
+    public function renderMock(HandleInterface $handle)
     {
-        $class = $proxy->clazz();
+        $class = $handle->clazz();
 
         if ($parentClass = $class->getParentClass()) {
             $class = $parentClass;
@@ -131,8 +131,8 @@ class AssertionRenderer implements AssertionRendererInterface
         $atoms = explode('\\', $class->getName());
         $rendered = array_pop($atoms);
 
-        if ($proxy instanceof InstanceProxyInterface) {
-            $label = $proxy->label();
+        if ($handle instanceof InstanceHandleInterface) {
+            $label = $handle->label();
 
             if (null !== $label) {
                 $rendered .= '[' . $label . ']';
@@ -204,10 +204,10 @@ class AssertionRenderer implements AssertionRendererInterface
 
                 if ($wrappedCallback instanceof WrappedMethodInterface) {
                     $name = $wrappedCallback->name();
-                    $proxy = $wrappedCallback->proxy();
+                    $handle = $wrappedCallback->handle();
 
-                    if ($proxy instanceof InstanceProxyInterface) {
-                        $mockLabel = $proxy->label();
+                    if ($handle instanceof InstanceHandleInterface) {
+                        $mockLabel = $handle->label();
 
                         if (null !== $mockLabel) {
                             $rendered .= '[' . $mockLabel . ']';
@@ -397,7 +397,13 @@ class AssertionRenderer implements AssertionRendererInterface
         foreach ($calls as $call) {
             if (!$call->hasResponded()) {
                 $rendered[] = '    - <none>';
-            } elseif ($exception = $call->exception()) {
+
+                continue;
+            }
+
+            list($exception, $returnValue) = $call->response();
+
+            if ($exception) {
                 $rendered[] = sprintf(
                     '    - threw %s',
                     $this->renderException($exception)
@@ -409,7 +415,6 @@ class AssertionRenderer implements AssertionRendererInterface
                         $this->indent($this->renderProduced($call))
                     );
                 } else {
-                    $returnValue = $call->returnValue();
                     $rendered[] = sprintf(
                         "    - returned %s producing:\n%s",
                         $this->exporter->export($returnValue, 0),
@@ -419,7 +424,7 @@ class AssertionRenderer implements AssertionRendererInterface
             } else {
                 $rendered[] = sprintf(
                     '    - returned %s',
-                    $this->renderValue($call->returnValue())
+                    $this->renderValue($returnValue)
                 );
             }
         }

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -110,14 +110,12 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $spy = new Spy($callback, '0', false, true);
+        $spy = new Spy($callback, '0');
         $expected = new SpyVerifier($spy, $this->matcherFactory, $this->matcherVerifier, $this->callVerifierFactory);
-        $actual = $this->subject->createFromCallback($callback, false, true);
+        $actual = $this->subject->createFromCallback($callback);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
-        $this->assertFalse($actual->useGeneratorSpies());
-        $this->assertTrue($actual->useTraversableSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());

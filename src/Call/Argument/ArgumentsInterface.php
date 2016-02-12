@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -57,6 +57,7 @@ interface ArgumentsInterface extends Countable, IteratorAggregate
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
      *
+     * @return $this                      This arguments object.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
     public function set($indexOrValue = null, $value = null);

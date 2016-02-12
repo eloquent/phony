@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -31,11 +31,9 @@ use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -52,42 +50,30 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Construct a new mock builder.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
-     * If `$types` is omitted, or `null`, no existing type will be used when
-     * generating the mock class. This is useful in the case of ad hoc mocks,
-     * where mocks need not imitate an existing type.
-     *
-     * @param mixed                                    $types              The types to mock.
-     * @param array|object|null                        $definition         The definition.
-     * @param string|null                              $className          The class name.
-     * @param MockFactoryInterface|null                $factory            The factory to use.
-     * @param ProxyFactoryInterface|null               $proxyFactory       The proxy factory to use.
-     * @param FunctionSignatureInspectorInterface|null $signatureInspector The function signature inspector to use.
-     * @param InvocableInspectorInterface|null         $invocableInspector The invocable inspector.
-     * @param FeatureDetectorInterface|null            $featureDetector    The feature detector to use.
+     * @param mixed                            $types              The types to mock.
+     * @param MockFactoryInterface|null        $factory            The factory to use.
+     * @param HandleFactoryInterface|null      $handleFactory      The handle factory to use.
+     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector.
+     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
      */
     public function __construct(
         $types = null,
-        $definition = null,
-        $className = null,
         MockFactoryInterface $factory = null,
-        ProxyFactoryInterface $proxyFactory = null,
-        FunctionSignatureInspectorInterface $signatureInspector = null,
+        HandleFactoryInterface $handleFactory = null,
         InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
         if (null === $factory) {
             $factory = MockFactory::instance();
         }
-        if (null === $proxyFactory) {
-            $proxyFactory = ProxyFactory::instance();
-        }
-        if (null === $signatureInspector) {
-            $signatureInspector = FunctionSignatureInspector::instance();
+        if (null === $handleFactory) {
+            $handleFactory = HandleFactory::instance();
         }
         if (null === $invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
@@ -101,8 +87,7 @@ class MockBuilder implements MockBuilderInterface
             $featureDetector->isSupported('class.anonymous');
 
         $this->factory = $factory;
-        $this->proxyFactory = $proxyFactory;
-        $this->signatureInspector = $signatureInspector;
+        $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;
 
@@ -118,12 +103,17 @@ class MockBuilder implements MockBuilderInterface
         if (null !== $types) {
             $this->like($types);
         }
+    }
 
-        if (null !== $definition) {
-            $this->define($definition);
-        }
-
-        $this->named($className);
+    /**
+     * Clone this builder.
+     */
+    public function __clone()
+    {
+        $this->isFinalized = false;
+        $this->definition = null;
+        $this->class = null;
+        $this->mock = null;
     }
 
     /**
@@ -137,23 +127,13 @@ class MockBuilder implements MockBuilderInterface
     }
 
     /**
-     * Get the proxy factory.
+     * Get the handle factory.
      *
-     * @return ProxyFactoryInterface The proxy factory.
+     * @return HandleFactoryInterface The handle factory.
      */
-    public function proxyFactory()
+    public function handleFactory()
     {
-        return $this->proxyFactory;
-    }
-
-    /**
-     * Get the function signature inspector.
-     *
-     * @return FunctionSignatureInspectorInterface The function signature inspector.
-     */
-    public function signatureInspector()
-    {
-        return $this->signatureInspector;
+        return $this->handleFactory;
     }
 
     /**
@@ -189,8 +169,9 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add classes, interfaces, or traits.
      *
-     * Each `$type` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
      * @param mixed $type A type, or types to add.
      * @param mixed ...$types Additional types to add.
@@ -208,7 +189,13 @@ class MockBuilder implements MockBuilderInterface
 
         foreach (func_get_args() as $type) {
             if (is_array($type)) {
-                $types = array_merge($types, $type);
+                if ($type) {
+                    if (array_values($type) === $type) {
+                        $types = array_merge($types, $type);
+                    } else {
+                        $types[] = $type;
+                    }
+                }
             } else {
                 $types[] = $type;
             }
@@ -223,33 +210,34 @@ class MockBuilder implements MockBuilderInterface
         }
 
         $parentClassName = null;
+        $definitions = array();
 
         foreach ($types as $type) {
-            $original = $type;
-
-            if (is_object($type)) {
-                if ($type instanceof MockBuilderInterface) {
-                    $toAdd = array_merge($toAdd, $type->types());
-
-                    continue;
-                }
-
-                if (!$type instanceof ReflectionClass) {
-                    throw new InvalidTypeException($type);
-                }
-            } elseif (is_string($type)) {
+            if (is_string($type)) {
                 try {
                     $type = new ReflectionClass($type);
                 } catch (ReflectionException $e) {
                     throw new InvalidTypeException($type, $e);
                 }
+            } elseif (is_array($type)) {
+                foreach ($type as $name => $value) {
+                    if (!is_string($name)) {
+                        throw new InvalidDefinitionException($name, $value);
+                    }
+                }
+
+                $definitions[] = $type;
+
+                continue;
             } else {
                 throw new InvalidTypeException($type);
             }
 
-            if ($this->isAnonymousClassSupported && $type->isAnonymous()) { // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
+            if ($this->isAnonymousClassSupported && $type->isAnonymous()) {
                 throw new AnonymousClassException();
-            } // @codeCoverageIgnoreEnd
+            }
+            // @codeCoverageIgnoreEnd
 
             $isTrait = $this->isTraitSupported && $type->isTrait();
 
@@ -283,58 +271,8 @@ class MockBuilder implements MockBuilderInterface
             $this->parentClassName = $parentClassName;
         }
 
-        return $this;
-    }
-
-    /**
-     * Add custom methods and properties via a definition.
-     *
-     * @param array|object $definition The definition.
-     *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
-     */
-    public function define($definition)
-    {
-        if (is_object($definition)) {
-            $definition = get_object_vars($definition);
-        }
-
-        foreach ($definition as $name => $value) {
-            if (!is_string($name)) {
-                throw new InvalidDefinitionException($name, $value);
-            }
-
-            $nameParts = explode(' ', $name);
-            $name = array_pop($nameParts);
-            $isStatic = in_array('static', $nameParts);
-            $isFunction = in_array('function', $nameParts);
-            $isProperty = in_array('var', $nameParts);
-            $isConstant = in_array('const', $nameParts);
-
-            if (!$isFunction && !$isProperty && !$isConstant) {
-                if (is_object($value) && is_callable($value)) {
-                    $isFunction = true;
-                } else {
-                    $isProperty = true;
-                }
-            }
-
-            if ($isFunction) {
-                if ($isStatic) {
-                    $this->addStaticMethod($name, $value);
-                } else {
-                    $this->addMethod($name, $value);
-                }
-            } elseif ($isConstant) {
-                $this->addConstant($name, $value);
-            } else {
-                if ($isStatic) {
-                    $this->addStaticProperty($name, $value);
-                } else {
-                    $this->addProperty($name, $value);
-                }
-            }
+        foreach ($definitions as $definition) {
+            $this->define($definition);
         }
 
         return $this;
@@ -557,6 +495,8 @@ class MockBuilder implements MockBuilderInterface
      * This method will return the current mock, only creating a new mock if no
      * existing mock is available.
      *
+     * If no existing mock is available, the created mock will be a full mock.
+     *
      * Calling this method will finalize the mock builder.
      *
      * @return MockInterface          The mock instance.
@@ -568,50 +508,7 @@ class MockBuilder implements MockBuilderInterface
             return $this->mock;
         }
 
-        $this->mock = $this->factory->createMock($this, array());
-
-        return $this->mock;
-    }
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @param mixed ...$arguments The constructor arguments.
-     *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
-     */
-    public function create()
-    {
-        $this->mock = $this->factory->createMock($this, func_get_args());
-
-        return $this->mock;
-    }
-
-    /**
-     * Create a new mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * This method supports reference parameters.
-     *
-     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null                   $label     The label.
-     *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
-     */
-    public function createWith($arguments = null, $label = null)
-    {
-        $this->mock = $this->factory->createMock($this, $arguments, $label);
+        $this->mock = $this->factory->createFullMock($this);
 
         return $this->mock;
     }
@@ -624,15 +521,54 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param string|null $label The label.
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function full()
+    {
+        $this->mock = $this->factory->createFullMock($this);
+
+        return $this->mock;
+    }
+
+    /**
+     * Create a new partial mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @param mixed ...$arguments The constructor arguments.
      *
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function full($label = null)
+    public function partial()
     {
-        $this->mock = $this->factory->createMock($this, null, $label);
-        $this->proxyFactory->createStubbing($this->mock)->full();
+        $this->mock = $this->factory->createPartialMock($this, func_get_args());
+
+        return $this->mock;
+    }
+
+    /**
+     * Create a new partial mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * This method supports reference parameters.
+     *
+     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function partialWith($arguments = array())
+    {
+        $this->mock = $this->factory->createPartialMock($this, $arguments);
 
         return $this->mock;
     }
@@ -720,12 +656,45 @@ class MockBuilder implements MockBuilderInterface
         }
     } // @codeCoverageIgnoreEnd
 
-    /**
-     * Build the mock definitions.
-     *
-     * @return MockDefinitionInterface The mock definition.
-     */
-    protected function buildDefinition()
+    private function define($definition)
+    {
+        foreach ($definition as $name => $value) {
+            $nameParts = explode(' ', $name);
+            $name = array_pop($nameParts);
+            $isStatic = in_array('static', $nameParts);
+            $isFunction = in_array('function', $nameParts);
+            $isProperty = in_array('var', $nameParts);
+            $isConstant = in_array('const', $nameParts);
+
+            if (!$isFunction && !$isProperty && !$isConstant) {
+                if (is_object($value) && is_callable($value)) {
+                    $isFunction = true;
+                } else {
+                    $isProperty = true;
+                }
+            }
+
+            if ($isFunction) {
+                if ($isStatic) {
+                    $this->addStaticMethod($name, $value);
+                } else {
+                    $this->addMethod($name, $value);
+                }
+            } elseif ($isConstant) {
+                $this->addConstant($name, $value);
+            } else {
+                if ($isStatic) {
+                    $this->addStaticProperty($name, $value);
+                } else {
+                    $this->addProperty($name, $value);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    private function buildDefinition()
     {
         return new MockDefinition(
             $this->types,
@@ -735,15 +704,13 @@ class MockBuilder implements MockBuilderInterface
             $this->customStaticProperties,
             $this->customConstants,
             $this->className,
-            $this->signatureInspector,
             $this->invocableInspector,
             $this->featureDetector
         );
     }
 
     private $factory;
-    private $proxyFactory;
-    private $signatureInspector;
+    private $handleFactory;
     private $invocableInspector;
     private $featureDetector;
     private $isTraitSupported;

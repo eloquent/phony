@@ -1,10 +1,13 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    'Eloquent\Phony\Test\TestInterfaceWithReturnType',
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
-        'customMethodWithClassType' => function () : \stdClass {},
-        'customMethodWithScalarType' => function () : int {},
-    ),
-    'MockGeneratorReturnType'
+        'Eloquent\Phony\Test\TestInterfaceWithReturnType',
+        array(
+            'customMethodWithClassType' => function () : \stdClass {},
+            'customMethodWithScalarType' => function () : int {},
+        ),
+    )
 );
+
+return $builder->named('MockGeneratorReturnType');

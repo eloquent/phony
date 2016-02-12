@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -61,7 +61,6 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertInstanceOf('Generator', $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
         $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
         $this->assertEquals($endEvent->time(), $this->subject->endTime());
     }
@@ -123,7 +122,6 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertInstanceOf('Generator', $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
         $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
     }
@@ -150,7 +148,6 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertInstanceOf('Generator', $this->subject->returnValue());
-        $this->assertNull($this->subject->exception());
         $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
     }

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -15,7 +15,7 @@ use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
 use Eloquent\Phony\Exporter\ExporterInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactoryInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 
@@ -32,11 +32,11 @@ interface FacadeDriverInterface
     public function mockBuilderFactory();
 
     /**
-     * Get the proxy factory.
+     * Get the handle factory.
      *
-     * @return ProxyFactoryInterface The proxy factory.
+     * @return HandleFactoryInterface The handle factory.
      */
-    public function proxyFactory();
+    public function handleFactory();
 
     /**
      * Get the spy verifier factory.

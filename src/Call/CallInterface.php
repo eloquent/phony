@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -15,6 +15,8 @@ use Eloquent\Phony\Call\Event\CalledEventInterface;
 use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
+use Eloquent\Phony\Call\Exception\UndefinedResponseException;
+use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Error;
 use Exception;
@@ -25,7 +27,7 @@ use InvalidArgumentException;
  *
  * @api
  */
-interface CallInterface extends EventInterface
+interface CallInterface extends EventInterface, EventCollectionInterface
 {
     /**
      * Returns true if this call has responded.
@@ -60,7 +62,7 @@ interface CallInterface extends EventInterface
      * Returns true if this call has completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a
@@ -85,7 +87,8 @@ interface CallInterface extends EventInterface
      *
      * @api
      *
-     * @return mixed The returned value.
+     * @return mixed                      The returned value.
+     * @throws UndefinedResponseException If this call has not yet returned a value.
      */
     public function returnValue();
 
@@ -94,9 +97,20 @@ interface CallInterface extends EventInterface
      *
      * @api
      *
-     * @return Exception|Error|null The thrown exception, or null if no exception was thrown.
+     * @return Exception|Error            The thrown exception.
+     * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
     public function exception();
+
+    /**
+     * Get the response.
+     *
+     * @api
+     *
+     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException        If this call has not yet responded.
+     */
+    public function response();
 
     /**
      * Get the time at which the call responded.
@@ -113,7 +127,7 @@ interface CallInterface extends EventInterface
      * Get the time at which the call completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a

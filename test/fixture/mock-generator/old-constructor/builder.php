@@ -1,7 +1,7 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    'TestClassOldConstructor',
-    null,
-    'MockGeneratorOldConstructor'
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+    'TestClassOldConstructor'
 );
+
+return $builder->named('MockGeneratorOldConstructor');

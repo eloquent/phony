@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -24,6 +24,7 @@ use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
 use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Event\EventCollectionInterface;
 use Eloquent\Phony\Event\EventInterface;
@@ -227,6 +228,28 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
+     * Get the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent()
+    {
+        return $this->call->firstEvent();
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent()
+    {
+        return $this->call->lastEvent();
+    }
+
+    /**
      * Get an event by index.
      *
      * Negative indices are offset from the end of the list. That is, `-1`
@@ -423,7 +446,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * Returns true if this call has completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a
@@ -474,9 +497,10 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     }
 
     /**
-     * Get the return value.
+     * Get the returned value.
      *
-     * @return mixed The return value.
+     * @return mixed                      The returned value.
+     * @throws UndefinedResponseException If this call has not yet returned a value.
      */
     public function returnValue()
     {
@@ -486,11 +510,23 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the thrown exception.
      *
-     * @return Exception|Error|null The thrown exception, or null if no exception was thrown.
+     * @return Exception|Error            The thrown exception.
+     * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
     public function exception()
     {
         return $this->call->exception();
+    }
+
+    /**
+     * Get the response.
+     *
+     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException        If this call has not yet responded.
+     */
+    public function response()
+    {
+        return $this->call->response();
     }
 
     /**
@@ -509,7 +545,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
      * Get the time at which the call completed.
      *
      * When generator spies are in use, a call that returns a generator will not
-     * be considered complete until the generator has been completey consumed
+     * be considered complete until the generator has been completely consumed
      * via iteration.
      *
      * Similarly, when traversable spies are in use, a call that returns a
@@ -726,13 +762,18 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     {
         $cardinality = $this->resetCardinality()->assertSingular();
 
-        $responseEvent = $this->call->responseEvent();
-        $returnValue = $this->call->returnValue();
-        $exception = $this->call->exception();
+        if ($responseEvent = $this->call->responseEvent()) {
+            list($exception, $returnValue) = $this->call->response();
+
+            $hasReturned = !$exception;
+        } else {
+            $returnValue = null;
+            $hasReturned = false;
+        }
 
         if (0 === func_num_args()) {
             list($matchCount, $matchingEvents) =
-                $this->matchIf($responseEvent, $responseEvent && !$exception);
+                $this->matchIf($responseEvent, $hasReturned);
 
             if ($cardinality->matches($matchCount, 1)) {
                 return $this->assertionRecorder->createSuccess($matchingEvents);
@@ -745,7 +786,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         list($matchCount, $matchingEvents) = $this->matchIf(
             $responseEvent,
-            $responseEvent && !$exception && $value->matches($returnValue)
+            $hasReturned && $value->matches($returnValue)
         );
 
         if ($cardinality->matches($matchCount, 1)) {
@@ -814,8 +855,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     {
         $cardinality = $this->resetCardinality()->assertSingular();
 
-        $responseEvent = $this->call->responseEvent();
-        $exception = $this->call->exception();
+        if ($responseEvent = $this->call->responseEvent()) {
+            list($exception) = $this->call->response();
+        } else {
+            $exception = null;
+        }
+
         $isTypeSupported = false;
 
         if (null === $type) {

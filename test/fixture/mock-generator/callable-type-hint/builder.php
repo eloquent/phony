@@ -1,13 +1,13 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    null,
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
     array(
         'methodA' => function (
             $phonySelf,
             callable $first,
             callable $second = null
         ) {},
-    ),
-    'MockGeneratorCallableTypeHint'
+    )
 );
+
+return $builder->named('MockGeneratorCallableTypeHint');

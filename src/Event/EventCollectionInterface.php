@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -29,6 +29,8 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
     /**
      * Returns true if this collection contains any events.
      *
+     * @api
+     *
      * @return boolean True if this collection contains any events.
      */
     public function hasEvents();
@@ -44,6 +46,8 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
 
     /**
      * Get the number of events.
+     *
+     * @api
      *
      * @return integer The event count.
      */
@@ -61,6 +65,8 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
     /**
      * Get all events as an array.
      *
+     * @api
+     *
      * @return array<EventInterface> The events.
      */
     public function allEvents();
@@ -75,10 +81,32 @@ interface EventCollectionInterface extends IteratorAggregate, Countable
     public function allCalls();
 
     /**
+     * Get the first event.
+     *
+     * @api
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent();
+
+    /**
+     * Get the last event.
+     *
+     * @api
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent();
+
+    /**
      * Get an event by index.
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @api
      *
      * @param integer $index The index.
      *

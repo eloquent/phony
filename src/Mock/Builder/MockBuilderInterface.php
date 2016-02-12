@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -37,8 +37,9 @@ interface MockBuilderInterface
     /**
      * Add classes, interfaces, or traits.
      *
-     * Each `$type` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
      * @api
      *
@@ -49,18 +50,6 @@ interface MockBuilderInterface
      * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
      */
     public function like($type);
-
-    /**
-     * Add custom methods and properties via a definition.
-     *
-     * @api
-     *
-     * @param array|object $definition The definition.
-     *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
-     */
-    public function define($definition);
 
     /**
      * Add a custom method.
@@ -209,6 +198,8 @@ interface MockBuilderInterface
      * This method will return the current mock, only creating a new mock if no
      * existing mock is available.
      *
+     * If no existing mock is available, the created mock will be a full mock.
+     *
      * Calling this method will finalize the mock builder.
      *
      * @api
@@ -217,6 +208,21 @@ interface MockBuilderInterface
      * @throws MockExceptionInterface If the mock generation fails.
      */
     public function get();
+
+    /**
+     * Create a new full mock.
+     *
+     * This method will always create a new mock, and will replace the current
+     * mock.
+     *
+     * Calling this method will finalize the mock builder.
+     *
+     * @api
+     *
+     * @return MockInterface          The mock instance.
+     * @throws MockExceptionInterface If the mock generation fails.
+     */
+    public function full();
 
     /**
      * Create a new mock.
@@ -233,7 +239,7 @@ interface MockBuilderInterface
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function create();
+    public function partial();
 
     /**
      * Create a new mock.
@@ -248,29 +254,11 @@ interface MockBuilderInterface
      * @api
      *
      * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
-     * @param string|null                   $label     The label.
      *
      * @return MockInterface          The mock instance.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createWith($arguments = null, $label = null);
-
-    /**
-     * Create a new full mock.
-     *
-     * This method will always create a new mock, and will replace the current
-     * mock.
-     *
-     * Calling this method will finalize the mock builder.
-     *
-     * @api
-     *
-     * @param string|null $label The label.
-     *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
-     */
-    public function full($label = null);
+    public function partialWith($arguments = array());
 
     /**
      * Get the generated source code of the mock class.

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -17,9 +17,9 @@ use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactoryInterface;
 
 /**
  * Creates mock builders.
@@ -43,22 +43,22 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Construct a new mock builder factory.
      *
-     * @param MockFactoryInterface|null  $mockFactory  The mock factory to use.
-     * @param ProxyFactoryInterface|null $proxyFactory The proxy factory to use.
+     * @param MockFactoryInterface|null   $mockFactory   The mock factory to use.
+     * @param HandleFactoryInterface|null $handleFactory The handle factory to use.
      */
     public function __construct(
         MockFactoryInterface $mockFactory = null,
-        ProxyFactoryInterface $proxyFactory = null
+        HandleFactoryInterface $handleFactory = null
     ) {
         if (null === $mockFactory) {
             $mockFactory = MockFactory::instance();
         }
-        if (null === $proxyFactory) {
-            $proxyFactory = ProxyFactory::instance();
+        if (null === $handleFactory) {
+            $handleFactory = HandleFactory::instance();
         }
 
         $this->mockFactory = $mockFactory;
-        $this->proxyFactory = $proxyFactory;
+        $this->handleFactory = $handleFactory;
     }
 
     /**
@@ -72,101 +72,75 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     }
 
     /**
-     * Get the proxy factory.
+     * Get the handle factory.
      *
-     * @return ProxyFactoryInterface The proxy factory.
+     * @return HandleFactoryInterface The handle factory.
      */
-    public function proxyFactory()
+    public function handleFactory()
     {
-        return $this->proxyFactory;
+        return $this->handleFactory;
     }
 
     /**
      * Create a new mock builder.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
-     * If `$types` is omitted, or `null`, no existing type will be used when
-     * generating the mock class. This is useful in the case of ad hoc mocks,
-     * where mocks need not imitate an existing type.
-     *
-     * @param mixed             $types      The types to mock.
-     * @param array|object|null $definition The definition.
-     * @param string|null       $className  The class name.
+     * @param mixed $types The types to mock.
      *
      * @return MockBuilderInterface The mock builder.
      */
-    public function create(
-        $types = null,
-        $definition = null,
-        $className = null
-    ) {
-        return new MockBuilder(
-            $types,
-            $definition,
-            $className,
-            $this->mockFactory,
-            $this->proxyFactory
-        );
+    public function create($types = array())
+    {
+        return new MockBuilder($types, $this->mockFactory, $this->handleFactory);
     }
 
     /**
      * Create a new full mock.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
-     * If `$types` is omitted, or `null`, no existing type will be used when
-     * generating the mock class. This is useful in the case of ad hoc mocks,
-     * where mocks need not imitate an existing type.
-     *
-     * @param mixed             $types      The types to mock.
-     * @param array|object|null $definition The definition.
-     * @param string|null       $className  The class name.
+     * @param mixed $types The types to mock.
      *
      * @return MockInterface The mock.
      */
-    public function createFullMock(
-        $types = null,
-        $definition = null,
-        $className = null
-    ) {
-        return $this->create($types, $definition, $className)->full();
+    public function createFullMock($types = array())
+    {
+        $builder =
+            new MockBuilder($types, $this->mockFactory, $this->handleFactory);
+
+        return $builder->full();
     }
 
     /**
      * Create a new partial mock.
      *
-     * The `$types` argument may be a class name, a reflection class, or a mock
-     * builder. It may also be an array of any of these.
+     * Each value in `$types` can be either a class name, or an ad hoc mock
+     * definition. If only a single type is being mocked, the class name or
+     * definition can be passed without being wrapped in an array.
      *
-     * If `$types` is omitted, or `null`, no existing type will be used when
-     * generating the mock class. This is useful in the case of ad hoc mocks,
-     * where mocks need not imitate an existing type.
+     * Omitting `$arguments` will cause the original constructor to be called
+     * with an empty argument list. However, if a `null` value is supplied for
+     * `$arguments`, the original constructor will not be called at all.
      *
-     * @param mixed                         $types      The types to mock.
-     * @param ArgumentsInterface|array|null $arguments  The constructor arguments, or null to bypass the constructor.
-     * @param array|object|null             $definition The definition.
-     * @param string|null                   $className  The class name.
+     * @param mixed                         $types     The types to mock.
+     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return MockInterface The mock.
      */
-    public function createPartialMock(
-        $types = null,
-        $arguments = null,
-        $definition = null,
-        $className = null
-    ) {
-        if (func_num_args() < 2) {
-            $arguments = array();
-        }
+    public function createPartialMock($types = array(), $arguments = array())
+    {
+        $builder =
+            new MockBuilder($types, $this->mockFactory, $this->handleFactory);
 
-        return $this->create($types, $definition, $className)
-            ->createWith($arguments);
+        return $builder->partialWith($arguments);
     }
 
     private static $instance;
     private $mockFactory;
-    private $proxyFactory;
+    private $handleFactory;
 }

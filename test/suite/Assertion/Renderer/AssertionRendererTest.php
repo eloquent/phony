@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -19,7 +19,7 @@ use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -42,20 +42,21 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->invocableInspector = new InvocableInspector();
         $this->exporter = new InlineExporter(false);
         $this->subject = new AssertionRenderer($this->invocableInspector, $this->exporter);
-        $this->proxyFactory = ProxyFactory::instance();
+        $this->handleFactory = HandleFactory::instance();
 
         $this->thisObjectA = new TestClassA();
 
         $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
         $this->thisObjectB = $mockBuilder->get();
-        $this->thisObjectBProxy = $this->proxyFactory->createStubbing($this->thisObjectB);
-        $this->thisObjectBProxy->setLabel('label');
+        $this->thisObjectBHandle = $this->handleFactory->createStubbing($this->thisObjectB);
+        $this->thisObjectBHandle->setLabel('label');
         $this->thisObjectB->testClassAMethodA();
 
-        $mockBuilder = new MockBuilder('IteratorAggregate', null, 'PhonyMockAssertionRendererTestIteratorAggregate');
+        $mockBuilder = new MockBuilder('IteratorAggregate');
+        $mockBuilder->named('PhonyMockAssertionRendererTestIteratorAggregate');
         $this->thisObjectC = $mockBuilder->get();
-        $this->thisObjectCProxy = $this->proxyFactory->createStubbing($this->thisObjectC);
-        $this->thisObjectCProxy->setLabel('label');
+        $this->thisObjectCHandle = $this->handleFactory->createStubbing($this->thisObjectC);
+        $this->thisObjectCHandle->setLabel('label');
 
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
@@ -80,7 +81,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->callE = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisObjectC, 'getIterator'))
         );
-        $this->callF = $this->thisObjectBProxy->testClassAMethodA->callAt();
+        $this->callF = $this->thisObjectBHandle->testClassAMethodA->callAt();
     }
 
     public function testConstructor()
@@ -110,21 +111,21 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
 
     public function testRenderMock()
     {
-        $this->assertSame('TestClassA[label]', $this->subject->renderMock($this->thisObjectBProxy));
+        $this->assertSame('TestClassA[label]', $this->subject->renderMock($this->thisObjectBHandle));
     }
 
     public function testRenderMockStatic()
     {
-        $proxy = $this->proxyFactory->createStubbingStatic($this->thisObjectB);
+        $handle = $this->handleFactory->createStubbingStatic($this->thisObjectB);
 
-        $this->assertSame('TestClassA[static]', $this->subject->renderMock($proxy));
+        $this->assertSame('TestClassA[static]', $this->subject->renderMock($handle));
     }
 
     public function testRenderMockWithoutParentClass()
     {
         $this->assertSame(
             'PhonyMockAssertionRendererTestIteratorAggregate[label]',
-            $this->subject->renderMock($this->thisObjectCProxy)
+            $this->subject->renderMock($this->thisObjectCHandle)
         );
     }
 
@@ -235,6 +236,12 @@ EOD;
         $callFactory = new TestCallFactory();
         $callEventFactory = $callFactory->eventFactory();
 
+        $spyWithLabel = new Spy();
+        $spyWithLabel->setLabel('label');
+
+        $stubWithLabel = new Stub();
+        $stubWithLabel->setLabel('label');
+
         return array(
             'Method' => array(
                 $callFactory->create($callEventFactory->createCalled(array($this, 'setUp'))),
@@ -257,7 +264,7 @@ EOD;
                 '{spy}()',
             ),
             'Spy with label' => array(
-                $callFactory->create($callEventFactory->createCalled(new Spy(null, 'label'))),
+                $callFactory->create($callEventFactory->createCalled($spyWithLabel)),
                 '{spy}[label]()',
             ),
             'Stub' => array(
@@ -265,7 +272,7 @@ EOD;
                 '{stub}()',
             ),
             'Stub with label' => array(
-                $callFactory->create($callEventFactory->createCalled(new Stub(null, null, 'label'))),
+                $callFactory->create($callEventFactory->createCalled($stubWithLabel)),
                 '{stub}[label]()',
             ),
             'With arguments' => array(

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -67,6 +67,16 @@ interface MockDefinitionInterface
      * @return string|null The class name.
      */
     public function className();
+
+    /**
+     * Get the signature.
+     *
+     * This is an opaque value designed to aid in determining whether two mock
+     * definitions are the same.
+     *
+     * @return mixed The signature.
+     */
+    public function signature();
 
     /**
      * Get the type names.

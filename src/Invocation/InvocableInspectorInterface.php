@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -37,6 +37,15 @@ interface InvocableInspectorInterface
      * @return object|null The $this value.
      */
     public function callbackThisValue($callback);
+
+    /**
+     * Get the return type for the supplied callback.
+     *
+     * @param callable $callback The callback.
+     *
+     * @return string The return type.
+     */
+    public function callbackReturnType($callback);
 
     /**
      * Returns true if bound closures are supported.

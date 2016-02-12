@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -45,6 +45,8 @@ class InvocableInspector implements InvocableInspectorInterface
         $reflectorReflector = new ReflectionClass('ReflectionFunction');
         $this->isBoundClosureSupported =
             $reflectorReflector->hasMethod('getClosureThis');
+        $this->isReturnTypeSupported =
+            $reflectorReflector->hasMethod('getReturnType');
     }
 
     /**
@@ -111,6 +113,27 @@ class InvocableInspector implements InvocableInspectorInterface
     }
 
     /**
+     * Get the return type for the supplied callback.
+     *
+     * @param callable $callback The callback.
+     *
+     * @return string The return type.
+     */
+    public function callbackReturnType($callback)
+    {
+        // @codeCoverageIgnoreStart
+        if (
+            $this->isReturnTypeSupported &&
+            $type = $this->callbackReflector($callback)->getReturnType()
+        ) {
+            return strval($type);
+        }
+        // @codeCoverageIgnoreEnd
+
+        return 'NULL';
+    }
+
+    /**
      * Returns true if bound closures are supported.
      *
      * @return boolean True if bound closures are supported.
@@ -120,6 +143,7 @@ class InvocableInspector implements InvocableInspectorInterface
         return $this->isBoundClosureSupported;
     }
 
-    protected $isBoundClosureSupported;
     private static $instance;
+    private $isBoundClosureSupported;
+    private $isReturnTypeSupported;
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 
 /**
  * Represents a call request.
@@ -40,6 +41,15 @@ class CallRequest implements CallRequestInterface
         $this->prefixSelf = $prefixSelf;
         $this->suffixArgumentsObject = $suffixArgumentsObject;
         $this->suffixArguments = $suffixArguments;
+
+        foreach ($this->arguments->all() as $index => $argument) {
+            if (
+                $argument instanceof InstanceHandleInterface &&
+                $argument->isAdaptable()
+            ) {
+                $this->arguments->set($index, $argument->mock());
+            }
+        }
     }
 
     /**

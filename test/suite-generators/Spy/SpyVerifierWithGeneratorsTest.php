@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -33,7 +33,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
         $this->label = 'label';
-        $this->spy = new Spy($this->callback, $this->label, false, false, null, $this->callFactory);
+        $this->spy = new Spy($this->callback, $this->label, null, $this->callFactory);
 
         $this->matcherFactory = new MatcherFactory();
         $this->matcherVerifier = new MatcherVerifier();

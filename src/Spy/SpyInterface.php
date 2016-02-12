@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -30,6 +30,8 @@ interface SpyInterface extends
      * @api
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
+     *
+     * @return $this This spy.
      */
     public function setUseGeneratorSpies($useGeneratorSpies);
 
@@ -48,6 +50,8 @@ interface SpyInterface extends
      * @api
      *
      * @param boolean $useTraversableSpies True to use traversable spies.
+     *
+     * @return $this This spy.
      */
     public function setUseTraversableSpies($useTraversableSpies);
 
@@ -59,6 +63,24 @@ interface SpyInterface extends
      * @return boolean True if this spy uses traversable spies.
      */
     public function useTraversableSpies();
+
+    /**
+     * Stop recording calls.
+     *
+     * @api
+     *
+     * @return $this This spy.
+     */
+    public function stopRecording();
+
+    /**
+     * Start recording calls.
+     *
+     * @api
+     *
+     * @return $this This spy.
+     */
+    public function startRecording();
 
     /**
      * Set the calls.

@@ -1,7 +1,5 @@
 <?php
 
-return new Eloquent\Phony\Mock\Builder\MockBuilder(
-    'DateTime',
-    null,
-    'MockGeneratorDateTimeHhvm'
-);
+$builder = new Eloquent\Phony\Mock\Builder\MockBuilder('DateTime');
+
+return $builder->named('MockGeneratorDateTimeHhvm');

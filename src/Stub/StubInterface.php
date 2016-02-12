@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -31,6 +31,8 @@ interface StubInterface extends WrappedInvocableInterface
      * @api
      *
      * @param mixed $self The self value.
+     *
+     * @return $this This stub.
      */
     public function setSelf($self);
 
@@ -42,6 +44,26 @@ interface StubInterface extends WrappedInvocableInterface
      * @return mixed The self value.
      */
     public function self();
+
+    /**
+     * Set the callback to use when creating a default answer.
+     *
+     * @api
+     *
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This stub.
+     */
+    public function setDefaultAnswerCallback($defaultAnswerCallback);
+
+    /**
+     * Get the default answer callback.
+     *
+     * @api
+     *
+     * @return callable The default answer callback.
+     */
+    public function defaultAnswerCallback();
 
     /**
      * Modify the current criteria to match the supplied arguments.
@@ -254,4 +276,11 @@ interface StubInterface extends WrappedInvocableInterface
      * @return $this This stub.
      */
     public function throws($exception = null);
+
+    /**
+     * Close any existing rule.
+     *
+     * @return $this This stub.
+     */
+    public function closeRule();
 }

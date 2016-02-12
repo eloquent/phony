@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -24,6 +24,7 @@ use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WildcardMatcherInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 
 /**
  * Creates matchers.
@@ -125,11 +126,15 @@ class MatcherFactory implements MatcherFactoryInterface
      */
     public function isMatcher($value)
     {
-        if ($value instanceof MatcherInterface) {
-            return true;
-        }
-
         if (is_object($value)) {
+            if ($value instanceof MatcherInterface) {
+                return true;
+            }
+
+            if ($value instanceof InstanceHandleInterface) {
+                return $value->isAdaptable();
+            }
+
             foreach ($this->driverIndex as $className => $driver) {
                 if (is_a($value, $className)) {
                     return true;
@@ -157,9 +162,15 @@ class MatcherFactory implements MatcherFactoryInterface
         }
 
         if (is_object($value)) {
-            foreach ($this->driverIndex as $className => $driver) {
-                if (is_a($value, $className)) {
-                    return $driver->wrapMatcher($value);
+            if ($value instanceof InstanceHandleInterface) {
+                if ($value->isAdaptable()) {
+                    return new EqualToMatcher($value->mock());
+                }
+            } else {
+                foreach ($this->driverIndex as $className => $driver) {
+                    if (is_a($value, $className)) {
+                        return $driver->wrapMatcher($value);
+                    }
                 }
             }
         }
@@ -197,11 +208,19 @@ class MatcherFactory implements MatcherFactoryInterface
             }
 
             if (is_object($value)) {
-                foreach ($this->driverIndex as $className => $driver) {
-                    if (is_a($value, $className)) {
-                        $matchers[] = $driver->wrapMatcher($value);
+                if ($value instanceof InstanceHandleInterface) {
+                    if ($value->isAdaptable()) {
+                        $matchers[] = new EqualToMatcher($value->mock());
 
-                        continue 2;
+                        continue;
+                    }
+                } else {
+                    foreach ($this->driverIndex as $className => $driver) {
+                        if (is_a($value, $className)) {
+                            $matchers[] = $driver->wrapMatcher($value);
+
+                            continue 2;
+                        }
                     }
                 }
             }

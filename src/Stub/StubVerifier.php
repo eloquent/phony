@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -103,10 +103,14 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      * This value is used by returnsThis().
      *
      * @param mixed $self The self value.
+     *
+     * @return $this This stub.
      */
     public function setSelf($self)
     {
         $this->stub->setSelf($self);
+
+        return $this;
     }
 
     /**
@@ -117,6 +121,30 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     public function self()
     {
         return $this->stub->self();
+    }
+
+    /**
+     * Get the default answer callback.
+     *
+     * @return callable The default answer callback.
+     */
+    public function defaultAnswerCallback()
+    {
+        return $this->stub->defaultAnswerCallback();
+    }
+
+    /**
+     * Set the callback to use when creating a default answer.
+     *
+     * @param callable $defaultAnswerCallback The default answer callback.
+     *
+     * @return $this This stub.
+     */
+    public function setDefaultAnswerCallback($defaultAnswerCallback)
+    {
+        $this->stub->setDefaultAnswerCallback($defaultAnswerCallback);
+
+        return $this;
     }
 
     /**
@@ -134,9 +162,9 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
-     * Get the lbel.
+     * Get the label.
      *
-     * @return string|null The lbel.
+     * @return string|null The label.
      */
     public function label()
     {
@@ -419,6 +447,18 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     {
         $this->invoker
             ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+
+        return $this;
+    }
+
+    /**
+     * Close any existing rule.
+     *
+     * @return $this This stub.
+     */
+    public function closeRule()
+    {
+        $this->stub->closeRule();
 
         return $this;
     }

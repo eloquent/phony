@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -107,7 +107,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateDefaults()
     {
         $stub = new Stub(null, null, '0', null, $this->matcherFactory, $this->matcherVerifier);
-        $spy = new Spy($stub, '0', true, false, null, $this->callFactory);
+        $spy = new Spy($stub, '0', null, $this->callFactory);
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -132,17 +132,15 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $thisValue = (object) array();
-        $defaultAnswerCallback = function () {};
         $stub = new Stub(
             $callback,
-            $thisValue,
+            null,
             '0',
-            $defaultAnswerCallback,
+            null,
             $this->matcherFactory,
             $this->matcherVerifier
         );
-        $spy = new Spy($stub, '0', false, true, null, $this->callFactory);
+        $spy = new Spy($stub, '0', null, $this->callFactory);
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -153,17 +151,16 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer,
             $this->invoker
         );
-        $actual = $this->subject->createFromCallback($callback, $thisValue, $defaultAnswerCallback, false, true);
+        $actual = $this->subject->createFromCallback($callback);
 
         $this->assertEquals($expected, $actual);
-        $this->assertFalse($actual->useGeneratorSpies());
-        $this->assertTrue($actual->useTraversableSpies());
+        $this->assertTrue($actual->useGeneratorSpies());
+        $this->assertFalse($actual->useTraversableSpies());
         $this->assertSame($this->matcherFactory, $actual->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
         $this->assertSame($this->callVerifierFactory, $actual->callVerifierFactory());
         $this->assertSame($this->assertionRecorder, $actual->assertionRecorder());
         $this->assertSame($this->assertionRenderer, $actual->assertionRenderer());
-        $this->assertSame($defaultAnswerCallback, $actual->stub()->defaultAnswerCallback());
         $this->assertSame($this->matcherFactory, $actual->stub()->matcherFactory());
         $this->assertSame($this->matcherVerifier, $actual->stub()->matcherVerifier());
         $this->assertSame($this->invoker, $actual->invoker());

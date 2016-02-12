@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -305,12 +305,14 @@ class MockGenerator implements MockGeneratorInterface
             return '';
         }
 
-        $source = <<<'EOD'
+        $methodReflector = $methods[$callStaticName]->method();
+        $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
-    public static function __callStatic(
+        $source = <<<EOD
+
+    public static function ${returnsReference}__callStatic(
 EOD;
 
-        $methodReflector = $methods[$callStaticName]->method();
         $signature = $this->signatureInspector
             ->signature($methodReflector);
         $index = -1;
@@ -344,8 +346,10 @@ EOD;
         }
 
         $source .= <<<'EOD'
-        return self::$_staticProxy->spy($a0)
+        $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+
+        return $result;
     }
 
 EOD;
@@ -464,12 +468,12 @@ EOD;
                 $argumentPacking = '';
             }
 
-            $isStatic = $method->isStatic();
+            $isStatic = $method->isStatic() ? 'static ' : '';
 
             if ($isStatic) {
-                $proxy = 'self::$_staticProxy';
+                $handle = 'self::$_staticHandle';
             } else {
-                $proxy = '$this->_proxy';
+                $handle = '$this->_handle';
             }
 
             if ($variadicIndex > -1) {
@@ -481,10 +485,10 @@ EOD;
                     "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = $variadicReference\$a" .
                     "${variadicIndex}[\$i - $variadicIndex];\n" .
-                    "        }\n\n        return ${proxy}->spy" .
+                    "        }\n\n        \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
-                    "(\$arguments)\n        );";
+                    "(\$arguments)\n        );\n\n        return \$result;";
             } else {
                 $body = "        \$argumentCount = \\func_num_args();\n" .
                     '        $arguments = array();' .
@@ -493,20 +497,24 @@ EOD;
                     $parameterCount .
                     "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = \\func_get_arg(\$i);\n" .
-                    "        }\n\n        return ${proxy}->spy" .
+                    "        }\n\n        \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n            " .
                     "new \Eloquent\Phony\Call\Argument\Arguments" .
-                    "(\$arguments)\n        );";
+                    "(\$arguments)\n        );\n\n        return \$result;";
             }
+
+            $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
             $source .= "\n    " .
                 $method->accessLevel() .
                 ' ' .
-                ($isStatic ? 'static ' : '') .
+                $isStatic .
                 'function ' .
+                $returnsReference .
                 $name;
 
-            if (// @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
+            if (
                 $this->isReturnTypeSupported &&
                 $methodReflector->hasReturnType()
             ) {
@@ -517,7 +525,8 @@ EOD;
                 } else {
                     $returnType = ' : \\' . $type;
                 }
-            } else { // @codeCoverageIgnoreEnd
+            } else {
+                // @codeCoverageIgnoreEnd
                 $returnType = '';
             }
 
@@ -569,13 +578,14 @@ EOD;
             return '';
         }
 
-        $source = <<<'EOD'
-
-    public function __call(
-EOD;
         $methodReflector = $methods[$callName]->method();
-        $signature = $this->signatureInspector
-            ->signature($methodReflector);
+        $returnsReference = $methodReflector->returnsReference() ? '&' : '';
+
+        $source = <<<EOD
+
+    public function ${returnsReference}__call(
+EOD;
+        $signature = $this->signatureInspector->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -607,8 +617,10 @@ EOD;
         }
 
         $source .= <<<'EOD'
-        return $this->_proxy->spy($a0)
+        $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+
+        return $result;
     }
 
 EOD;
@@ -626,6 +638,7 @@ EOD;
     protected function generateCallParentMethods(
         MockDefinitionInterface $definition
     ) {
+        $methods = $definition->methods();
         $traitNames = $definition->traitNames();
         $hasTraits = (boolean) $traitNames;
         $parentClassName = $definition->parentClassName();
@@ -673,14 +686,14 @@ EOD;
 EOD;
         }
 
-        if (null !== $definition->methods()->methodName('__callstatic')) {
+        if (null !== $methods->methodName('__callstatic')) {
             $source .= <<<'EOD'
 
     private static function _callMagicStatic(
         $name,
         \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
     ) {
-        return self::$_staticProxy
+        return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
     }
 
@@ -802,16 +815,35 @@ EOD;
 EOD;
         }
 
-        if (null !== $definition->methods()->methodName('__call')) {
-            $source .= <<<'EOD'
+        if (null !== ($name = $methods->methodName('__call'))) {
+            $methodName = "'parent::__call'";
+
+            if ($hasTraits) {
+                $methods = $methods->methods();
+                $method = $methods[$name];
+
+                if ($method instanceof TraitMethodDefinitionInterface) {
+                    $traitName =
+                        $method->method()->getDeclaringClass()->getName();
+                    $methodName = var_export(
+                        '_callTrait_' .
+                            \str_replace('\\', "\xc2\xa6", $traitName) .
+                            "\xc2\xbb" .
+                            $name,
+                        true
+                    );
+                }
+            }
+
+            $source .= <<<EOD
 
     private function _callMagic(
-        $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \$name,
+        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
     ) {
         return \call_user_func_array(
-            array($this, 'parent::__call'),
-            array($name, $arguments->all())
+            array(\$this, $methodName),
+            array(\$name, \$arguments->all())
         );
     }
 
@@ -884,8 +916,8 @@ EOD;
         }
 
         $source .= ";\n    private static \$_customMethods = array();" .
-            "\n    private static \$_staticProxy;" .
-            "\n    private \$_proxy;";
+            "\n    private static \$_staticHandle;" .
+            "\n    private \$_handle;";
 
         return $source;
     }

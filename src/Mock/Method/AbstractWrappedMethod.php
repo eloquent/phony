@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -12,8 +12,9 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\StaticHandleInterface;
 use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
 use ReflectionMethod;
 
 /**
@@ -26,22 +27,22 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
      * Construct a new wrapped method.
      *
      * @param ReflectionMethod $method The method.
-     * @param ProxyInterface   $proxy  The proxy.
+     * @param HandleInterface  $handle The handle.
      */
-    public function __construct(ReflectionMethod $method, ProxyInterface $proxy)
+    public function __construct(ReflectionMethod $method, HandleInterface $handle)
     {
         $this->method = $method;
-        $this->proxy = $proxy;
+        $this->handle = $handle;
         $this->name = $method->getName();
 
-        if ($method->isStatic()) {
+        if ($handle instanceof StaticHandleInterface) {
             $this->mock = null;
             $callback = array(
                 $method->getDeclaringClass()->getName(),
                 $this->name,
             );
         } else {
-            $this->mock = $proxy->mock();
+            $this->mock = $handle->mock();
             $callback = array($this->mock, $this->name);
         }
 
@@ -69,13 +70,13 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
     }
 
     /**
-     * Get the proxy.
+     * Get the handle.
      *
-     * @return ProxyInterface The proxy.
+     * @return HandleInterface The handle.
      */
-    public function proxy()
+    public function handle()
     {
-        return $this->proxy;
+        return $this->handle;
     }
 
     /**
@@ -89,7 +90,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
     }
 
     protected $method;
-    protected $proxy;
+    protected $handle;
     protected $mock;
     protected $name;
 }

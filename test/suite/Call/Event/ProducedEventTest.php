@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -34,9 +34,6 @@ class ProducedEventTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->key, $this->subject->key());
         $this->assertSame($this->value, $this->subject->value());
         $this->assertNull($this->subject->call());
-        $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame(array($this->subject), $this->subject->allEvents());
-        $this->assertSame(1, count($this->subject));
     }
 
     public function testConstructorWithValueOnly()
@@ -55,29 +52,11 @@ class ProducedEventTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->value());
     }
 
-    public function testIteration()
-    {
-        $this->assertSame(array($this->subject), iterator_to_array($this->subject));
-    }
-
     public function testSetCall()
     {
         $call = $this->callFactory->create();
         $this->subject->setCall($call);
 
         $this->assertSame($call, $this->subject->call());
-    }
-
-    public function testEventAt()
-    {
-        $this->assertSame($this->subject, $this->subject->eventAt());
-        $this->assertSame($this->subject, $this->subject->eventAt(0));
-        $this->assertSame($this->subject, $this->subject->eventAt(-1));
-    }
-
-    public function testEventAtFailure()
-    {
-        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
-        $this->subject->eventAt(1);
     }
 }

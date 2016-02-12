@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -17,7 +17,7 @@ use Eloquent\Phony\Event\Verification\EventOrderVerifier;
 use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Proxy\Factory\ProxyFactory;
+use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 
@@ -43,7 +43,7 @@ abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
             $callVerifierFactory,
             $assertionRecorder
         );
-        $proxyFactory = new ProxyFactory(
+        $handleFactory = new HandleFactory(
             null,
             $stubVerifierFactory,
             null,
@@ -51,8 +51,8 @@ abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
         );
 
         parent::__construct(
-            new MockBuilderFactory(new MockFactory(null, null, $proxyFactory)),
-            $proxyFactory,
+            new MockBuilderFactory(new MockFactory(null, null, $handleFactory)),
+            $handleFactory,
             new SpyVerifierFactory(
                 null,
                 null,

@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -27,6 +27,8 @@ use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactoryInterface;
@@ -44,22 +46,20 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null                       $callback              The callback, or null to create an unbound spy.
+     * @param callable|null                       $callback              The callback, or null to create an anonymous spy.
      * @param string|null                         $label                 The label.
-     * @param boolean                             $useGeneratorSpies     True if generator spies should be used.
-     * @param boolean                             $useTraversableSpies   True if traversable spies should be used.
      * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
      * @param CallFactoryInterface|null           $callFactory           The call factory to use.
+     * @param InvokerInterface|null               $invoker               The invoker to use.
      * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
      * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
         $callback = null,
         $label = null,
-        $useGeneratorSpies = true,
-        $useTraversableSpies = false,
         IndexNormalizerInterface $indexNormalizer = null,
         CallFactoryInterface $callFactory = null,
+        InvokerInterface $invoker = null,
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
@@ -68,6 +68,9 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         }
         if (null === $callFactory) {
             $callFactory = CallFactory::instance();
+        }
+        if (null === $invoker) {
+            $invoker = Invoker::instance();
         }
         if (null === $generatorSpyFactory) {
             $generatorSpyFactory = GeneratorSpyFactory::instance();
@@ -78,23 +81,30 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
 
         parent::__construct($callback, $label);
 
-        $this->useGeneratorSpies = $useGeneratorSpies;
-        $this->useTraversableSpies = $useTraversableSpies;
         $this->indexNormalizer = $indexNormalizer;
         $this->callFactory = $callFactory;
+        $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
+
         $this->calls = array();
+        $this->useGeneratorSpies = true;
+        $this->useTraversableSpies = false;
+        $this->isRecording = true;
     }
 
     /**
      * Turn on or off the use of generator spies.
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
+     *
+     * @return $this This spy.
      */
     public function setUseGeneratorSpies($useGeneratorSpies)
     {
         $this->useGeneratorSpies = $useGeneratorSpies;
+
+        return $this;
     }
 
     /**
@@ -111,10 +121,14 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      * Turn on or off the use of traversable spies.
      *
      * @param boolean $useTraversableSpies True to use traversable spies.
+     *
+     * @return $this This spy.
      */
     public function setUseTraversableSpies($useTraversableSpies)
     {
         $this->useTraversableSpies = $useTraversableSpies;
+
+        return $this;
     }
 
     /**
@@ -148,6 +162,16 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     }
 
     /**
+     * Get the invoker.
+     *
+     * @return InvokerInterface The invoker.
+     */
+    public function invoker()
+    {
+        return $this->invoker;
+    }
+
+    /**
      * Get the generator spy factory.
      *
      * @return TraversableSpyFactoryInterface The generator spy factory.
@@ -165,6 +189,30 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function traversableSpyFactory()
     {
         return $this->traversableSpyFactory;
+    }
+
+    /**
+     * Stop recording calls.
+     *
+     * @return $this This spy.
+     */
+    public function stopRecording()
+    {
+        $this->isRecording = false;
+
+        return $this;
+    }
+
+    /**
+     * Start recording calls.
+     *
+     * @return $this This spy.
+     */
+    public function startRecording()
+    {
+        $this->isRecording = true;
+
+        return $this;
     }
 
     /**
@@ -255,6 +303,36 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function allCalls()
     {
         return $this->calls;
+    }
+
+    /**
+     * Get the first event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent()
+    {
+        if (!$this->calls) {
+            throw new UndefinedEventException(0);
+        }
+
+        return $this->calls[0];
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return EventInterface          The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent()
+    {
+        if ($count = count($this->calls)) {
+            return $this->calls[$count - 1];
+        }
+
+        throw new UndefinedEventException(0);
     }
 
     /**
@@ -392,6 +470,10 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      */
     public function invokeWith($arguments = array())
     {
+        if (!$this->isRecording) {
+            return $this->invoker->callWith($this->callback, $arguments);
+        }
+
         $call = $this->callFactory->record($this->callback, $arguments, $this);
         $responseEvent = $call->responseEvent();
 
@@ -419,11 +501,13 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         return $returnValue;
     }
 
-    private $useGeneratorSpies;
-    private $useTraversableSpies;
     private $indexNormalizer;
     private $callFactory;
+    private $invoker;
     private $generatorSpyFactory;
     private $traversableSpyFactory;
+    private $useGeneratorSpies;
+    private $useTraversableSpies;
+    private $isRecording;
     private $calls;
 }

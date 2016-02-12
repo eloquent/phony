@@ -13,9 +13,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     public function throw()
@@ -27,9 +29,11 @@ implements \Eloquent\Phony\Mock\MockInterface,
             $arguments[] = \func_get_arg($i);
         }
 
-        return $this->_proxy->spy(__FUNCTION__)->invokeWith(
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Argument\Arguments($arguments)
         );
+
+        return $result;
     }
 
     private static $_uncallableMethods = array(
@@ -37,6 +41,6 @@ implements \Eloquent\Phony\Mock\MockInterface,
 );
     private static $_traitMethods = array();
     private static $_customMethods = array();
-    private static $_staticProxy;
-    private $_proxy;
+    private static $_staticHandle;
+    private $_handle;
 }

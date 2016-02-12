@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Proxy\ProxyInterface;
+use Eloquent\Phony\Mock\Handle\HandleInterface;
 use Error;
 use Exception;
 use ReflectionMethod;
@@ -29,18 +29,18 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      * @param ReflectionMethod $callTraitMethod The _callTrait() method.
      * @param string           $traitName       The trait name.
      * @param ReflectionMethod $method          The method.
-     * @param ProxyInterface   $proxy           The proxy.
+     * @param HandleInterface  $handle          The handle.
      */
     public function __construct(
         ReflectionMethod $callTraitMethod,
         $traitName,
         ReflectionMethod $method,
-        ProxyInterface $proxy
+        HandleInterface $handle
     ) {
         $this->callTraitMethod = $callTraitMethod;
         $this->traitName = $traitName;
 
-        parent::__construct($method, $proxy);
+        parent::__construct($method, $handle);
     }
 
     /**

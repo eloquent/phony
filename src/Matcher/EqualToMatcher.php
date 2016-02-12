@@ -3,7 +3,7 @@
 /*
  * This file is part of the Phony package.
  *
- * Copyright © 2015 Erin Millard
+ * Copyright © 2016 Erin Millard
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
@@ -260,13 +260,13 @@ class EqualToMatcher extends AbstractMatcher
         unset($left["\0gcdata"]);
 
         if ($leftIsMock) {
-            $proxyProperty = "\0" . $leftClass . "\0_proxy";
+            $handleProperty = "\0" . $leftClass . "\0_handle";
 
-            if ($left[$proxyProperty]) {
-                $left['phony.label'] = $left[$proxyProperty]->label();
+            if ($left[$handleProperty]) {
+                $left['phony.label'] = $left[$handleProperty]->label();
             }
 
-            unset($left[$proxyProperty]);
+            unset($left[$handleProperty]);
         }
 
         if ($leftIsException) {
@@ -289,13 +289,13 @@ class EqualToMatcher extends AbstractMatcher
         unset($right["\0gcdata"]);
 
         if ($rightIsMock) {
-            $proxyProperty = "\0" . $rightClass . "\0_proxy";
+            $handleProperty = "\0" . $rightClass . "\0_handle";
 
-            if ($right[$proxyProperty]) {
-                $right['phony.label'] = $right[$proxyProperty]->label();
+            if ($right[$handleProperty]) {
+                $right['phony.label'] = $right[$handleProperty]->label();
             }
 
-            unset($right[$proxyProperty]);
+            unset($right[$handleProperty]);
         }
 
         if ($rightIsException) {
