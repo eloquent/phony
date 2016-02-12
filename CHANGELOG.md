@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.8.0 (2016-02-12)
 
 - **[BC BREAK]** Mocking functions now accept ad hoc definitions in the `$types`
   argument, hence the `$definition` argument has been removed from `mock()`,
