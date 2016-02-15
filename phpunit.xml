@@ -1,6 +1,5 @@
 <phpunit
     bootstrap="vendor/autoload.php"
-    verbose="true"
     colors="true"
     beStrictAboutChangesToGlobalState="true"
     beStrictAboutOutputDuringTests="true"

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event\Factory;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ProducedEvent;
 use Eloquent\Phony\Call\Event\ReceivedEvent;
@@ -52,7 +53,7 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateCalled()
     {
         $callback = 'implode';
-        $arguments = array('a', 'b');
+        $arguments = Arguments::create('a', 'b');
         $expected = new CalledEvent(0, 0.0, $callback, $arguments);
         $actual = $this->subject->createCalled($callback, $arguments);
 

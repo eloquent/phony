@@ -34,7 +34,7 @@ class MockGenerator implements MockGeneratorInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -53,13 +53,13 @@ class MockGenerator implements MockGeneratorInterface
         FunctionSignatureInspectorInterface $signatureInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $labelSequencer) {
+        if (!$labelSequencer) {
             $labelSequencer = Sequencer::sequence('mock-class-label');
         }
-        if (null === $signatureInspector) {
+        if (!$signatureInspector) {
             $signatureInspector = FunctionSignatureInspector::instance();
         }
-        if (null === $featureDetector) {
+        if (!$featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
 
@@ -153,7 +153,7 @@ class MockGenerator implements MockGeneratorInterface
         MockDefinitionInterface $definition,
         $className = null
     ) {
-        if (null === $className) {
+        if (!$className) {
             $className = $this->generateClassName($definition);
         }
 
@@ -301,7 +301,7 @@ class MockGenerator implements MockGeneratorInterface
         $callStaticName = $methods->methodName('__callstatic');
         $methods = $methods->publicStaticMethods();
 
-        if (null === $callStaticName) {
+        if (!$callStaticName) {
             return '';
         }
 
@@ -574,7 +574,7 @@ EOD;
         $callName = $methods->methodName('__call');
         $methods = $methods->publicMethods();
 
-        if (null === $callName) {
+        if (!$callName) {
             return '';
         }
 

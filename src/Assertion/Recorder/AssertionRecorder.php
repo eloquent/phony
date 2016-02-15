@@ -29,7 +29,7 @@ class AssertionRecorder implements AssertionRecorderInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 

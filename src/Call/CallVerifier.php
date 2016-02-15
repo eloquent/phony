@@ -65,19 +65,19 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         AssertionRendererInterface $assertionRenderer = null,
         InvocableInspectorInterface $invocableInspector = null
     ) {
-        if (null === $matcherFactory) {
+        if (!$matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
-        if (null === $matcherVerifier) {
+        if (!$matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
-        if (null === $assertionRecorder) {
+        if (!$assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $assertionRenderer) {
+        if (!$assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
 
@@ -617,7 +617,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         list($matchCount, $matchingEvents) = $this->matchIf(
             $this->call,
-            $this->matcherVerifier->matches($matchers, $this->call->arguments())
+            $this->matcherVerifier
+                ->matches($matchers, $this->call->arguments()->all())
         );
 
         if ($cardinality->matches($matchCount, 1)) {
@@ -863,7 +864,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
 
         $isTypeSupported = false;
 
-        if (null === $type) {
+        if (!$type) {
             $isTypeSupported = true;
 
             list($matchCount, $matchingEvents) =
@@ -941,7 +942,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
-        if (null === $type) {
+        if (!$type) {
             $renderedType = 'exception';
         } elseif (is_string($type)) {
             $renderedType = sprintf('%s exception', $type);
@@ -1361,7 +1362,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         $totalCount = 0;
         $isTypeSupported = false;
 
-        if (null === $type) {
+        if (!$type) {
             $isTypeSupported = true;
 
             foreach ($traversableEvents as $event) {
@@ -1454,7 +1455,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
             return $result;
         }
 
-        if (null === $type) {
+        if (!$type) {
             $renderedType = 'generator to receive exception';
         } elseif (is_string($type)) {
             $renderedType = sprintf('generator to receive %s exception', $type);

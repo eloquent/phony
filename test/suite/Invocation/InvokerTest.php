@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Invocation;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Test\TestInvocable;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -27,10 +28,10 @@ class InvokerTest extends PHPUnit_Framework_TestCase
     public function testCallWith()
     {
         $this->assertSame(phpversion(), $this->subject->callWith('phpversion'));
-        $this->assertSame(1, $this->subject->callWith('strlen', array('a')));
+        $this->assertSame(1, $this->subject->callWith('strlen', Arguments::create('a')));
         $this->assertSame(
             array('invokeWith', array('a', 'b')),
-            $this->subject->callWith($this->invocable, array('a', 'b'))
+            $this->subject->callWith($this->invocable, Arguments::create('a', 'b'))
         );
     }
 

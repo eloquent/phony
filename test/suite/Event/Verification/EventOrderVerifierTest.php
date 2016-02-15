@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Event\Verification;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
@@ -29,10 +30,10 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
 
-        $this->callACalled = $this->callEventFactory->createCalled('implode', array('a'));
+        $this->callACalled = $this->callEventFactory->createCalled('implode', Arguments::create('a'));
         $this->callAResponse = $this->callEventFactory->createReturned();
-        $this->callBCalled = $this->callEventFactory->createCalled('implode', array('b'));
-        $this->callCCalled = $this->callEventFactory->createCalled('implode', array('c'));
+        $this->callBCalled = $this->callEventFactory->createCalled('implode', Arguments::create('b'));
+        $this->callCCalled = $this->callEventFactory->createCalled('implode', Arguments::create('c'));
         $this->callCResponse = $this->callEventFactory->createReturned();
         $this->callBResponse = $this->callEventFactory->createReturned();
         $this->callA = $this->callFactory->create($this->callACalled, $this->callAResponse);

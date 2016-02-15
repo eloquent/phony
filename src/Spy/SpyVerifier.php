@@ -68,25 +68,25 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         AssertionRendererInterface $assertionRenderer = null,
         InvocableInspectorInterface $invocableInspector = null
     ) {
-        if (null === $spy) {
+        if (!$spy) {
             $spy = new Spy();
         }
-        if (null === $matcherFactory) {
+        if (!$matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
-        if (null === $matcherVerifier) {
+        if (!$matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
-        if (null === $callVerifierFactory) {
+        if (!$callVerifierFactory) {
             $callVerifierFactory = CallVerifierFactory::instance();
         }
-        if (null === $assertionRecorder) {
+        if (!$assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $assertionRenderer) {
+        if (!$assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
 
@@ -603,7 +603,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         foreach ($calls as $call) {
             if (
-                $this->matcherVerifier->matches($matchers, $call->arguments())
+                $this->matcherVerifier
+                    ->matches($matchers, $call->arguments()->all())
             ) {
                 $matchingEvents[] = $call;
                 ++$matchCount;
@@ -883,7 +884,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         $matchCount = 0;
         $isTypeSupported = false;
 
-        if (null === $type) {
+        if (!$type) {
             $isTypeSupported = true;
 
             foreach ($calls as $call) {
@@ -981,7 +982,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
 
-        if (null === $type) {
+        if (!$type) {
             $renderedType = sprintf('call on %s to throw', $renderedSubject);
         } elseif (is_string($type)) {
             $renderedType = sprintf(
@@ -1460,7 +1461,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
         $matchCount = 0;
         $isTypeSupported = false;
 
-        if (null === $type) {
+        if (!$type) {
             $isTypeSupported = true;
 
             foreach ($calls as $call) {
@@ -1549,7 +1550,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
 
-        if (null === $type) {
+        if (!$type) {
             $renderedType = sprintf(
                 'generator returned by %s to receive exception',
                 $renderedSubject

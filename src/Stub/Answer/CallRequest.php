@@ -23,21 +23,25 @@ class CallRequest implements CallRequestInterface
     /**
      * Construct a call request.
      *
-     * @param callable                 $callback              The callback.
-     * @param ArgumentsInterface|array $arguments             The arguments.
-     * @param boolean                  $prefixSelf            True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsObject True if arguments object should be appended.
-     * @param boolean                  $suffixArguments       True if arguments should be appended.
+     * @param callable                $callback              The callback.
+     * @param ArgumentsInterface|null $arguments             The arguments.
+     * @param boolean                 $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                 $suffixArgumentsObject True if arguments object should be appended.
+     * @param boolean                 $suffixArguments       True if arguments should be appended.
      */
     public function __construct(
         $callback,
-        $arguments = array(),
+        ArgumentsInterface $arguments = null,
         $prefixSelf = false,
         $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
+        if (!$arguments) {
+            $arguments = new Arguments();
+        }
+
         $this->callback = $callback;
-        $this->arguments = Arguments::adapt($arguments);
+        $this->arguments = $arguments;
         $this->prefixSelf = $prefixSelf;
         $this->suffixArgumentsObject = $suffixArgumentsObject;
         $this->suffixArguments = $suffixArguments;
@@ -65,14 +69,13 @@ class CallRequest implements CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object                   $self      The self value.
-     * @param ArgumentsInterface|array $arguments The incoming arguments.
+     * @param object             $self      The self value.
+     * @param ArgumentsInterface $arguments The incoming arguments.
      *
      * @return ArgumentsInterface The final arguments.
      */
-    public function finalArguments($self, $arguments = array())
+    public function finalArguments($self, ArgumentsInterface $arguments)
     {
-        $arguments = Arguments::adapt($arguments);
         $finalArguments = $this->arguments->all();
 
         if ($this->prefixSelf) {
@@ -82,7 +85,7 @@ class CallRequest implements CallRequestInterface
             $finalArguments[] = $arguments;
         }
 
-        if ($this->suffixArguments) {
+        if ($this->suffixArguments && $arguments) {
             $finalArguments = array_merge($finalArguments, $arguments->all());
         }
 

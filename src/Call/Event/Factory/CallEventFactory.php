@@ -47,7 +47,7 @@ class CallEventFactory implements CallEventFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -64,10 +64,10 @@ class CallEventFactory implements CallEventFactoryInterface
         SequencerInterface $sequencer = null,
         ClockInterface $clock = null
     ) {
-        if (null === $sequencer) {
+        if (!$sequencer) {
             $sequencer = Sequencer::sequence('event-sequence-number');
         }
-        if (null === $clock) {
+        if (!$clock) {
             $clock = SystemClock::instance();
         }
 
@@ -98,13 +98,15 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'called' event.
      *
-     * @param callable|null            $callback  The callback.
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param callable|null           $callback  The callback.
+     * @param ArgumentsInterface|null $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled($callback = null, $arguments = array())
-    {
+    public function createCalled(
+        $callback = null,
+        ArgumentsInterface $arguments = null
+    ) {
         return new CalledEvent(
             $this->sequencer->next(),
             $this->clock->time(),
@@ -163,7 +165,7 @@ class CallEventFactory implements CallEventFactoryInterface
      */
     public function createGenerated(Generator $generator = null)
     {
-        if (null === $generator) {
+        if (!$generator) {
             $generator = CallEventFactoryDetail::createEmptyGenerator();
         }
 

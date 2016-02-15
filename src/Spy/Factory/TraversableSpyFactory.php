@@ -32,7 +32,7 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -47,7 +47,7 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     public function __construct(
         CallEventFactoryInterface $callEventFactory = null
     ) {
-        if (null === $callEventFactory) {
+        if (!$callEventFactory) {
             $callEventFactory = CallEventFactory::instance();
         }
 

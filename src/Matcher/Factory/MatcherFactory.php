@@ -38,7 +38,7 @@ class MatcherFactory implements MatcherFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
             self::$instance->addDefaultMatcherDrivers();
         }
@@ -58,10 +58,10 @@ class MatcherFactory implements MatcherFactoryInterface
         MatcherInterface $anyMatcher = null,
         WildcardMatcherInterface $wildcardAnyMatcher = null
     ) {
-        if (null === $anyMatcher) {
+        if (!$anyMatcher) {
             $anyMatcher = AnyMatcher::instance();
         }
-        if (null === $wildcardAnyMatcher) {
+        if (!$wildcardAnyMatcher) {
             $wildcardAnyMatcher = WildcardMatcher::instance();
         }
 

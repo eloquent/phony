@@ -53,10 +53,10 @@ class MockDefinition implements MockDefinitionInterface
         InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
-        if (null === $featureDetector) {
+        if (!$featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
 
@@ -397,7 +397,7 @@ class MockDefinition implements MockDefinitionInterface
         }
 
         foreach ($this->customStaticMethods as $methodName => $callback) {
-            if (null === $callback) {
+            if (!$callback) {
                 $reflector = null;
             } else {
                 $reflector =
@@ -413,7 +413,7 @@ class MockDefinition implements MockDefinitionInterface
         }
 
         foreach ($this->customMethods as $methodName => $callback) {
-            if (null === $callback) {
+            if (!$callback) {
                 $reflector = null;
             } else {
                 $reflector =

@@ -42,7 +42,7 @@ class CallFactory implements CallFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -61,13 +61,13 @@ class CallFactory implements CallFactoryInterface
         InvokerInterface $invoker = null,
         IndexNormalizerInterface $indexNormalizer = null
     ) {
-        if (null === $eventFactory) {
+        if (!$eventFactory) {
             $eventFactory = CallEventFactory::instance();
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
-        if (null === $indexNormalizer) {
+        if (!$indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }
 
@@ -109,22 +109,24 @@ class CallFactory implements CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null            $callback  The callback.
-     * @param ArgumentsInterface|array $arguments The arguments.
-     * @param SpyInterface|null        $spy       The spy to record the call to.
+     * @param callable|null           $callback  The callback.
+     * @param ArgumentsInterface|null $arguments The arguments.
+     * @param SpyInterface|null       $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
         $callback = null,
-        $arguments = array(),
+        ArgumentsInterface $arguments = null,
         SpyInterface $spy = null
     ) {
-        if (null === $callback) {
+        if (!$callback) {
             $callback = function () {};
         }
+        if (!$arguments) {
+            $arguments = new Arguments();
+        }
 
-        $arguments = Arguments::adapt($arguments);
         $originalArguments = $arguments->copy();
 
         if ($spy) {
@@ -171,7 +173,7 @@ class CallFactory implements CallFactoryInterface
         array $traversableEvents = null,
         EndEventInterface $endEvent = null
     ) {
-        if (null === $calledEvent) {
+        if (!$calledEvent) {
             $calledEvent = $this->eventFactory->createCalled();
         }
 

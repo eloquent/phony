@@ -25,7 +25,7 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      */
     public function __construct($callback = null, $label = null)
     {
-        if (null === $callback) {
+        if (!$callback) {
             $this->isAnonymous = true;
             $this->callback = function () {};
         } else {

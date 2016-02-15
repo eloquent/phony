@@ -56,7 +56,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     public function testRecord()
     {
         $callback = 'implode';
-        $arguments = array(array('a', 'b'));
+        $arguments = Arguments::create(array('a', 'b'));
         $returnValue = 'ab';
         $spy = new Spy();
         $expected = $this->subject->create(
@@ -76,7 +76,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $callback = function () use ($exception) {
             throw $exception;
         };
-        $arguments = array(array('a', 'b'));
+        $arguments = Arguments::create(array('a', 'b'));
         $spy = new Spy();
         $expected = $this->subject->create(
             $this->eventFactory->createCalled($spy, $arguments),
@@ -99,7 +99,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $callback = function () use ($exception) {
             throw $exception;
         };
-        $arguments = array(array('a', 'b'));
+        $arguments = Arguments::create(array('a', 'b'));
         $spy = new Spy();
         $expected = $this->subject->create(
             $this->eventFactory->createCalled($spy, $arguments),
@@ -115,7 +115,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     public function testRecordWithoutSpy()
     {
         $callback = 'implode';
-        $arguments = array(array('a', 'b'));
+        $arguments = Arguments::create(array('a', 'b'));
         $returnValue = 'ab';
         $expected = $this->subject->create(
             $this->eventFactory->createCalled($callback, $arguments),

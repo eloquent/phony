@@ -29,7 +29,7 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 

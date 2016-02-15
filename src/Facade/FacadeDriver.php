@@ -39,7 +39,7 @@ class FacadeDriver implements FacadeDriverInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -66,25 +66,25 @@ class FacadeDriver implements FacadeDriverInterface
         MatcherFactoryInterface $matcherFactory = null,
         ExporterInterface $exporter = null
     ) {
-        if (null === $mockBuilderFactory) {
+        if (!$mockBuilderFactory) {
             $mockBuilderFactory = MockBuilderFactory::instance();
         }
-        if (null === $handleFactory) {
+        if (!$handleFactory) {
             $handleFactory = HandleFactory::instance();
         }
-        if (null === $spyVerifierFactory) {
+        if (!$spyVerifierFactory) {
             $spyVerifierFactory = SpyVerifierFactory::instance();
         }
-        if (null === $stubVerifierFactory) {
+        if (!$stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
-        if (null === $eventOrderVerifier) {
+        if (!$eventOrderVerifier) {
             $eventOrderVerifier = EventOrderVerifier::instance();
         }
-        if (null === $matcherFactory) {
+        if (!$matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
-        if (null === $exporter) {
+        if (!$exporter) {
             $exporter = InlineExporter::instance();
         }
 

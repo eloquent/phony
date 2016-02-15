@@ -33,7 +33,7 @@ class IteratorSpy implements IteratorSpyInterface
         Iterator $iterator,
         CallEventFactoryInterface $callEventFactory = null
     ) {
-        if (null === $callEventFactory) {
+        if (!$callEventFactory) {
             $callEventFactory = CallEventFactory::instance();
         }
 

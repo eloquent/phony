@@ -56,7 +56,7 @@ class Call implements CallInterface
         EndEventInterface $endEvent = null,
         IndexNormalizerInterface $indexNormalizer = null
     ) {
-        if (null === $indexNormalizer) {
+        if (!$indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }
 

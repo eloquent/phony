@@ -28,7 +28,7 @@ class Invoker implements InvokerInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -38,22 +38,23 @@ class Invoker implements InvokerInterface
     /**
      * Calls a callback, maintaining reference parameters.
      *
-     * @param callable                 $callback  The callback.
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param callable                $callback  The callback.
+     * @param ArgumentsInterface|null $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function callWith($callback, $arguments = array())
+    public function callWith($callback, ArgumentsInterface $arguments = null)
     {
+        if (!$arguments) {
+            $arguments = new Arguments();
+        }
+
         if ($callback instanceof InvocableInterface) {
             return $callback->invokeWith($arguments);
         }
 
-        return call_user_func_array(
-            $callback,
-            Arguments::adapt($arguments)->all()
-        );
+        return call_user_func_array($callback, $arguments->all());
     }
 
     private static $instance;

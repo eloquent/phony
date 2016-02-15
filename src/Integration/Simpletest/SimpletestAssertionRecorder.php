@@ -32,7 +32,7 @@ class SimpletestAssertionRecorder extends AssertionRecorder
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -46,7 +46,7 @@ class SimpletestAssertionRecorder extends AssertionRecorder
      */
     public function __construct(SimpleTestContext $simpletestContext = null)
     {
-        if (null === $simpletestContext) {
+        if (!$simpletestContext) {
             $simpletestContext = SimpleTest::getContext();
         }
 

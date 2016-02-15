@@ -27,7 +27,7 @@ class RealMethodDefinition implements MethodDefinitionInterface
      */
     public function __construct(ReflectionMethod $method, $name = null)
     {
-        if (null === $name) {
+        if (!$name) {
             $name = $method->getName();
         }
 

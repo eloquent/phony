@@ -30,11 +30,9 @@ class EqualToMatcher extends AbstractMatcher
      * @param mixed                  $value    The value to check against.
      * @param ExporterInterface|null $exporter The exporter to use.
      */
-    public function __construct(
-        $value,
-        ExporterInterface $exporter = null
-    ) {
-        if (null === $exporter) {
+    public function __construct($value, ExporterInterface $exporter = null)
+    {
+        if (!$exporter) {
             $exporter = InlineExporter::instance();
         }
 

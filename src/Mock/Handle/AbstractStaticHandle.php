@@ -46,7 +46,7 @@ abstract class AbstractStaticHandle extends AbstractHandle implements
         AssertionRecorderInterface $assertionRecorder = null,
         InvokerInterface $invoker = null
     ) {
-        if (null === $state) {
+        if (!$state) {
             $state = (object) array(
                 'defaultAnswerCallback' =>
                     'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Invocation\Invoker;
@@ -36,7 +37,7 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testRecordWithGeneratedEvents()
     {
         $callback = function () { return; yield null; };
-        $arguments = array(array('a', 'b'));
+        $arguments = Arguments::create(array('a', 'b'));
         $generator = call_user_func($callback);
         $spy = new Spy();
         $expected = $this->subject->create(

@@ -137,10 +137,8 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->subject->get();
     }
 
-    public function testAdapt()
+    public function testCreate()
     {
-        $this->assertSame($this->subject, Arguments::adapt($this->subject));
-        $this->assertNotSame($this->subject, Arguments::adapt($this->arguments));
-        $this->assertEquals($this->subject, Arguments::adapt($this->arguments));
+        $this->assertEquals(new Arguments(array('a', 'b')), Arguments::create('a', 'b'));
     }
 }

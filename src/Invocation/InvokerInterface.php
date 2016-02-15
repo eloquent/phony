@@ -23,11 +23,11 @@ interface InvokerInterface
     /**
      * Calls a callback, maintaining reference parameters.
      *
-     * @param callable                 $callback  The callback.
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param callable                $callback  The callback.
+     * @param ArgumentsInterface|null $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function callWith($callback, $arguments = array());
+    public function callWith($callback, ArgumentsInterface $arguments = null);
 }

@@ -63,19 +63,19 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
-        if (null === $indexNormalizer) {
+        if (!$indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }
-        if (null === $callFactory) {
+        if (!$callFactory) {
             $callFactory = CallFactory::instance();
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
-        if (null === $generatorSpyFactory) {
+        if (!$generatorSpyFactory) {
             $generatorSpyFactory = GeneratorSpyFactory::instance();
         }
-        if (null === $traversableSpyFactory) {
+        if (!$traversableSpyFactory) {
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 
@@ -470,6 +470,10 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      */
     public function invokeWith($arguments = array())
     {
+        if (!$arguments instanceof ArgumentsInterface) {
+            $arguments = new Arguments($arguments);
+        }
+
         if (!$this->isRecording) {
             return $this->invoker->callWith($this->callback, $arguments);
         }

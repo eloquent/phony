@@ -39,7 +39,7 @@ class WrappedCustomMethod extends AbstractWrappedMethod
         HandleInterface $handle,
         InvokerInterface $invoker = null
     ) {
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
 
@@ -81,6 +81,10 @@ class WrappedCustomMethod extends AbstractWrappedMethod
      */
     public function invokeWith($arguments = array())
     {
+        if (!$arguments instanceof ArgumentsInterface) {
+            $arguments = new Arguments($arguments);
+        }
+
         return $this->invoker->callWith($this->customCallback, $arguments);
     }
 

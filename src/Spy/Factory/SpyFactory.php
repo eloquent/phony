@@ -34,7 +34,7 @@ class SpyFactory implements SpyFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -59,22 +59,22 @@ class SpyFactory implements SpyFactoryInterface
         TraversableSpyFactoryInterface $generatorSpyFactory = null,
         TraversableSpyFactoryInterface $traversableSpyFactory = null
     ) {
-        if (null === $labelSequencer) {
+        if (!$labelSequencer) {
             $labelSequencer = Sequencer::sequence('spy-label');
         }
-        if (null === $indexNormalizer) {
+        if (!$indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }
-        if (null === $callFactory) {
+        if (!$callFactory) {
             $callFactory = CallFactory::instance();
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
-        if (null === $generatorSpyFactory) {
+        if (!$generatorSpyFactory) {
             $generatorSpyFactory = GeneratorSpyFactory::instance();
         }
-        if (null === $traversableSpyFactory) {
+        if (!$traversableSpyFactory) {
             $traversableSpyFactory = TraversableSpyFactory::instance();
         }
 

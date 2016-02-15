@@ -29,7 +29,7 @@ class ReceivedExceptionEvent extends AbstractCallEvent implements
      */
     public function __construct($sequenceNumber, $time, $exception = null)
     {
-        if (null === $exception) {
+        if (!$exception) {
             $exception = new Exception();
         }
 

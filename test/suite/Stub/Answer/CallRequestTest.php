@@ -89,9 +89,10 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $incoming,
         $expected
     ) {
-        $this->subject = new CallRequest($this->callback, $arguments, $prefixSelf, $suffixArray, $suffix);
+        $this->subject =
+            new CallRequest($this->callback, new Arguments($arguments), $prefixSelf, $suffixArray, $suffix);
 
-        $this->assertEquals($expected, $this->subject->finalArguments($self, $incoming)->all());
+        $this->assertEquals($expected, $this->subject->finalArguments($self, new Arguments($incoming))->all());
     }
 
     public function testFinalArgumentsWithReferenceParameters()
@@ -100,8 +101,8 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $b = null;
         $c = null;
         $d = null;
-        $arguments = array(&$a, &$b);
-        $incoming = array(&$c, &$d);
+        $arguments = new Arguments(array(&$a, &$b));
+        $incoming = new Arguments(array(&$c, &$d));
         $this->subject = new CallRequest($this->callback, $arguments, false, false, true);
         $finalArguments = $this->subject->finalArguments(null, $incoming)->all();
         $finalArguments[0] = 'a';
@@ -113,8 +114,8 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
-        $this->assertSame(array('a', 'b'), $arguments);
-        $this->assertSame(array('c', 'd'), $incoming);
+        $this->assertSame(array('a', 'b'), $arguments->all());
+        $this->assertSame(array('c', 'd'), $incoming->all());
         $this->assertSame(array('a', 'b', 'c', 'd'), $finalArguments);
     }
 
@@ -124,8 +125,8 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $b = null;
         $c = null;
         $d = null;
-        $arguments = array(&$a, &$b);
-        $incoming = array(&$c, &$d);
+        $arguments = new Arguments(array(&$a, &$b));
+        $incoming = new Arguments(array(&$c, &$d));
         $this->subject = new CallRequest($this->callback, $arguments, false, true, false);
         $finalArguments = $this->subject->finalArguments(null, $incoming)->all();
         $finalArguments[2] = $finalArguments[2]->all();
@@ -138,8 +139,8 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
-        $this->assertSame(array('a', 'b'), $arguments);
-        $this->assertSame(array('c', 'd'), $incoming);
+        $this->assertSame(array('a', 'b'), $arguments->all());
+        $this->assertSame(array('c', 'd'), $incoming->all());
         $this->assertSame(array('a', 'b', array('c', 'd')), $finalArguments);
     }
 }

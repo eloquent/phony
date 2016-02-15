@@ -33,7 +33,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -50,10 +50,10 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
         MockFactoryInterface $mockFactory = null,
         HandleFactoryInterface $handleFactory = null
     ) {
-        if (null === $mockFactory) {
+        if (!$mockFactory) {
             $mockFactory = MockFactory::instance();
         }
-        if (null === $handleFactory) {
+        if (!$handleFactory) {
             $handleFactory = HandleFactory::instance();
         }
 

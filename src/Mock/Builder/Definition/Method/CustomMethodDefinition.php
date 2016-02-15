@@ -33,12 +33,12 @@ class CustomMethodDefinition implements MethodDefinitionInterface
         $callback = null,
         ReflectionFunctionAbstract $method = null
     ) {
-        if (null === $callback) {
+        if (!$callback) {
             $callback = function () {};
         }
-        if (null === $method) {
-            $method = InvocableInspector::instance()
-                ->callbackReflector($callback);
+        if (!$method) {
+            $method =
+                InvocableInspector::instance()->callbackReflector($callback);
         }
 
         $this->isStatic = $isStatic;

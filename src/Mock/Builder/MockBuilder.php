@@ -69,16 +69,16 @@ class MockBuilder implements MockBuilderInterface
         InvocableInspectorInterface $invocableInspector = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $factory) {
+        if (!$factory) {
             $factory = MockFactory::instance();
         }
-        if (null === $handleFactory) {
+        if (!$handleFactory) {
             $handleFactory = HandleFactory::instance();
         }
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
-        if (null === $featureDetector) {
+        if (!$featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
 
@@ -203,7 +203,7 @@ class MockBuilder implements MockBuilderInterface
 
         $toAdd = array();
 
-        if (null === $this->parentClassName) {
+        if (!$this->parentClassName) {
             $parentClassNames = array();
         } else {
             $parentClassNames = array($this->parentClassName);
@@ -585,7 +585,7 @@ class MockBuilder implements MockBuilderInterface
      */
     public function source(MockGeneratorInterface $generator = null)
     {
-        if (null === $generator) {
+        if (!$generator) {
             $generator = MockGenerator::instance();
         }
 

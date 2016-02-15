@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Assertion\Renderer;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventCollection;
@@ -61,7 +62,8 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callA = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisObjectA, 'testClassAMethodA'), array('a', 'b')),
+            $this->callEventFactory
+                ->createCalled(array($this->thisObjectA, 'testClassAMethodA'), Arguments::create('a', 'b')),
             $this->callEventFactory->createReturned('x'),
             null,
             $this->callEventFactory->createReturned('x')
@@ -276,7 +278,7 @@ EOD;
                 '{stub}[label]()',
             ),
             'With arguments' => array(
-                $callFactory->create($callEventFactory->createCalled('implode', array('a', 111))),
+                $callFactory->create($callEventFactory->createCalled('implode', Arguments::create('a', 111))),
                 'implode("a", 111)',
             ),
         );

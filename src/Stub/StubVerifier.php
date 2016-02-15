@@ -54,13 +54,13 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
         AssertionRendererInterface $assertionRenderer = null,
         InvokerInterface $invoker = null
     ) {
-        if (null === $stub) {
+        if (!$stub) {
             $stub = new Stub();
         }
-        if (null === $spy) {
+        if (!$spy) {
             $spy = new Spy($stub);
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
 
@@ -180,8 +180,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function with()
     {
-        $this->invoker
-            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+        call_user_func_array(array($this->stub, 'with'), func_get_args());
 
         return $this;
     }
@@ -198,8 +197,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function calls($callback)
     {
-        $this->invoker
-            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+        call_user_func_array(array($this->stub, 'calls'), func_get_args());
 
         return $this;
     }
@@ -250,8 +248,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function callsArgument($index = 0)
     {
-        $this->invoker
-            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+        call_user_func_array(array($this->stub, 'callsArgument'), func_get_args());
 
         return $this;
     }
@@ -329,8 +326,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function does($callback)
     {
-        $this->invoker
-            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+        call_user_func_array(array($this->stub, 'does'), func_get_args());
 
         return $this;
     }
@@ -400,8 +396,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function returns($value = null)
     {
-        $this->invoker
-            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+        call_user_func_array(array($this->stub, 'returns'), func_get_args());
 
         return $this;
     }
@@ -445,8 +440,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      */
     public function throws($exception = null)
     {
-        $this->invoker
-            ->callWith(array($this->stub, __FUNCTION__), func_get_args());
+        call_user_func_array(array($this->stub, 'throws'), func_get_args());
 
         return $this;
     }

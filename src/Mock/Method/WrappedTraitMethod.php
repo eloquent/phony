@@ -75,11 +75,15 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      */
     public function invokeWith($arguments = array())
     {
+        if (!$arguments instanceof ArgumentsInterface) {
+            $arguments = new Arguments($arguments);
+        }
+
         return $this->callTraitMethod->invoke(
             $this->mock,
             $this->traitName,
             $this->name,
-            Arguments::adapt($arguments)
+            $arguments
         );
     }
 

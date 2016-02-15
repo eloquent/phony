@@ -23,7 +23,7 @@ class WildcardMatcher implements WildcardMatcherInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -42,7 +42,7 @@ class WildcardMatcher implements WildcardMatcherInterface
         $minimumArguments = 0,
         $maximumArguments = null
     ) {
-        if (null === $matcher) {
+        if (!$matcher) {
             $matcher = AnyMatcher::instance();
         }
 

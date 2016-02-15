@@ -33,7 +33,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -50,10 +50,10 @@ class EventOrderVerifier implements EventOrderVerifierInterface
         AssertionRecorderInterface $assertionRecorder = null,
         AssertionRendererInterface $assertionRenderer = null
     ) {
-        if (null === $assertionRecorder) {
+        if (!$assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $assertionRenderer) {
+        if (!$assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
 
@@ -130,7 +130,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
         foreach ($events as $event) {
             if ($event instanceof EventInterface) {
                 if (
-                    null === $earliestEvent ||
+                    !$earliestEvent ||
                     $event->sequenceNumber() > $earliestEvent->sequenceNumber()
                 ) {
                     $matchingEvents[] = $earliestEvent = $event;
@@ -146,7 +146,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
 
                 foreach ($event->allEvents() as $subEvent) {
                     if (
-                        null === $earliestEvent ||
+                        !$earliestEvent ||
                         (
                             $subEvent->sequenceNumber() >
                             $earliestEvent->sequenceNumber()
@@ -311,7 +311,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
 
                 foreach ($event->allEvents() as $subEvent) {
                     if (
-                        null === $earliestEvent ||
+                        !$earliestEvent ||
                         (
                             $subEvent->sequenceNumber() >
                             $earliestEvent->sequenceNumber()
@@ -321,7 +321,7 @@ class EventOrderVerifier implements EventOrderVerifierInterface
                     }
                 }
 
-                if (null === $subEvent) {
+                if (!$subEvent) {
                     $subEvent = NullEvent::instance();
                 }
 

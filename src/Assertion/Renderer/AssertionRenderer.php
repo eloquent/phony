@@ -53,7 +53,7 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -70,10 +70,10 @@ class AssertionRenderer implements AssertionRendererInterface
         InvocableInspectorInterface $invocableInspector = null,
         ExporterInterface $exporter = null
     ) {
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
-        if (null === $exporter) {
+        if (!$exporter) {
             $exporter = InlineExporter::instance();
         }
 
@@ -538,14 +538,12 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param ArgumentsInterface $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
-    public function renderArguments($arguments)
+    public function renderArguments(ArgumentsInterface $arguments)
     {
-        $arguments = Arguments::adapt($arguments);
-
         if (count($arguments) < 1) {
             return '<none>';
         }
@@ -568,7 +566,7 @@ class AssertionRenderer implements AssertionRendererInterface
      */
     public function renderException($exception = null)
     {
-        if (null === $exception) {
+        if (!$exception) {
             return '<none>';
         }
 

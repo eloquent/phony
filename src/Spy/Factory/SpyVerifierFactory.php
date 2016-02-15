@@ -39,7 +39,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -66,25 +66,25 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         AssertionRendererInterface $assertionRenderer = null,
         InvocableInspectorInterface $invocableInspector = null
     ) {
-        if (null === $spyFactory) {
+        if (!$spyFactory) {
             $spyFactory = SpyFactory::instance();
         }
-        if (null === $matcherFactory) {
+        if (!$matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
-        if (null === $matcherVerifier) {
+        if (!$matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
-        if (null === $callVerifierFactory) {
+        if (!$callVerifierFactory) {
             $callVerifierFactory = CallVerifierFactory::instance();
         }
-        if (null === $assertionRecorder) {
+        if (!$assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $assertionRenderer) {
+        if (!$assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
 
@@ -176,7 +176,7 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
      */
     public function create(SpyInterface $spy = null)
     {
-        if (null === $spy) {
+        if (!$spy) {
             $spy = $this->spyFactory->create();
         }
 

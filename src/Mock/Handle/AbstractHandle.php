@@ -69,7 +69,7 @@ abstract class AbstractHandle implements HandleInterface
         AssertionRecorderInterface $assertionRecorder = null,
         InvokerInterface $invoker = null
     ) {
-        if (null === $state) {
+        if (!$state) {
             $state = (object) array(
                 'defaultAnswerCallback' =>
                     'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
@@ -77,19 +77,19 @@ abstract class AbstractHandle implements HandleInterface
                 'isRecording' => true,
             );
         }
-        if (null === $stubFactory) {
+        if (!$stubFactory) {
             $stubFactory = StubFactory::instance();
         }
-        if (null === $stubVerifierFactory) {
+        if (!$stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
-        if (null === $assertionRenderer) {
+        if (!$assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
-        if (null === $assertionRecorder) {
+        if (!$assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
 

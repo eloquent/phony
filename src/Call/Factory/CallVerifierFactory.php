@@ -37,7 +37,7 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -60,19 +60,19 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
         AssertionRendererInterface $assertionRenderer = null,
         InvocableInspectorInterface $invocableInspector = null
     ) {
-        if (null === $matcherFactory) {
+        if (!$matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
-        if (null === $matcherVerifier) {
+        if (!$matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
-        if (null === $assertionRecorder) {
+        if (!$assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $assertionRenderer) {
+        if (!$assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
 

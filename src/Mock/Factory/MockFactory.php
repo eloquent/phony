@@ -40,7 +40,7 @@ class MockFactory implements MockFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -59,13 +59,13 @@ class MockFactory implements MockFactoryInterface
         MockGeneratorInterface $generator = null,
         HandleFactoryInterface $handleFactory = null
     ) {
-        if (null === $labelSequencer) {
+        if (!$labelSequencer) {
             $labelSequencer = Sequencer::sequence('mock-label');
         }
-        if (null === $generator) {
+        if (!$generator) {
             $generator = MockGenerator::instance();
         }
-        if (null === $handleFactory) {
+        if (!$handleFactory) {
             $handleFactory = HandleFactory::instance();
         }
 

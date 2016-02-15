@@ -51,7 +51,7 @@ class HandleFactory implements HandleFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -74,19 +74,19 @@ class HandleFactory implements HandleFactoryInterface
         AssertionRecorderInterface $assertionRecorder = null,
         InvokerInterface $invoker = null
     ) {
-        if (null === $stubFactory) {
+        if (!$stubFactory) {
             $stubFactory = StubFactory::instance();
         }
-        if (null === $stubVerifierFactory) {
+        if (!$stubVerifierFactory) {
             $stubVerifierFactory = StubVerifierFactory::instance();
         }
-        if (null === $assertionRenderer) {
+        if (!$assertionRenderer) {
             $assertionRenderer = AssertionRenderer::instance();
         }
-        if (null === $assertionRecorder) {
+        if (!$assertionRecorder) {
             $assertionRecorder = AssertionRecorder::instance();
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
 

@@ -36,7 +36,7 @@ class EventCollection implements EventCollectionInterface
         array $events = array(),
         IndexNormalizerInterface $indexNormalizer = null
     ) {
-        if (null === $indexNormalizer) {
+        if (!$indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }
 

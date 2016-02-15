@@ -30,7 +30,7 @@ class FeatureDetector implements FeatureDetectorInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -369,7 +369,7 @@ class FeatureDetector implements FeatureDetectorInterface
      */
     public function runtime()
     {
-        if (null === $this->runtime) {
+        if (!$this->runtime) {
             if (false === strpos(phpversion(), 'hhvm')) {
                 $this->runtime = 'php';
             } else {

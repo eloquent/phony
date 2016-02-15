@@ -78,26 +78,26 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         InvokerInterface $invoker = null,
         InvocableInspectorInterface $invocableInspector = null
     ) {
-        if (null === $defaultAnswerCallback) {
+        if (!$defaultAnswerCallback) {
             $defaultAnswerCallback =
                 'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback';
         }
-        if (null === $matcherFactory) {
+        if (!$matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
-        if (null === $matcherVerifier) {
+        if (!$matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
 
         parent::__construct($callback, $label);
 
-        if (null === $self) {
+        if (!$self) {
             $self = $this->callback;
         }
 
@@ -292,6 +292,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 'phonySelf' === $parameters[0]->getName();
         }
 
+        if (!$arguments instanceof ArgumentsInterface) {
+            $arguments = new Arguments($arguments);
+        }
+
         $this->secondaryRequests[] = new CallRequest(
             $callback,
             $arguments,
@@ -356,6 +360,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $suffixArguments = false
     ) {
         $invoker = $this->invoker;
+
+        if (!$arguments instanceof ArgumentsInterface) {
+            $arguments = new Arguments($arguments);
+        }
 
         return $this->callsWith(
             function ($self, $incoming) use (
@@ -478,6 +486,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 'phonySelf' === $parameters[0]->getName();
         }
 
+        if (!$arguments instanceof ArgumentsInterface) {
+            $arguments = new Arguments($arguments);
+        }
+
         $this->answers[] = new Answer(
             new CallRequest(
                 $callback,
@@ -519,6 +531,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         $invoker = $this->invoker;
         $callback = $this->callback;
+
+        if (!$arguments instanceof ArgumentsInterface) {
+            $arguments = new Arguments($arguments);
+        }
 
         return $this->doesWith(
             function ($self, $incoming) use (
@@ -798,10 +814,15 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $this->closeRule();
         }
 
-        $arguments = Arguments::adapt($arguments);
+        if ($arguments instanceof ArgumentsInterface) {
+            $argumentsArray = $arguments->all();
+        } else {
+            $argumentsArray = $arguments;
+            $arguments = new Arguments($arguments);
+        }
 
         foreach ($this->rules as $rule) {
-            if ($rule->matches($arguments)) {
+            if ($rule->matches($argumentsArray)) {
                 break;
             }
         }

@@ -151,11 +151,11 @@ interface AssertionRendererInterface
     /**
      * Render a sequence of arguments.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param ArgumentsInterface $arguments The arguments.
      *
      * @return string The rendered arguments.
      */
-    public function renderArguments($arguments);
+    public function renderArguments(ArgumentsInterface $arguments);
 
     /**
      * Render an exception.

@@ -22,9 +22,11 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->eventA = $this->callEventFactory->createReturned();
-        $this->eventB = $this->callFactory->create($this->callEventFactory->createCalled(null, array('a', 'b')));
-        $this->eventC = $this->callEventFactory->createCalled(null, array('c', 'd'));
-        $this->eventD = $this->callFactory->create($this->callEventFactory->createCalled(null, array('e', 'f')));
+        $this->eventB =
+            $this->callFactory->create($this->callEventFactory->createCalled(null, Arguments::create('a', 'b')));
+        $this->eventC = $this->callEventFactory->createCalled(null, Arguments::create('c', 'd'));
+        $this->eventD =
+            $this->callFactory->create($this->callEventFactory->createCalled(null, Arguments::create('e', 'f')));
         $this->events = array($this->eventA, $this->eventB, $this->eventC, $this->eventD);
         $this->subject = new EventCollection($this->events);
     }

@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Event\EventCollection;
@@ -59,8 +60,8 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->exceptionB = new RuntimeException('Consequences will never be the same.');
         $this->thisValueA = new TestClassA();
         $this->thisValueB = new TestClassA();
-        $this->arguments = array('a', 'b', 'c');
-        $this->matchers = $this->matcherFactory->adaptAll($this->arguments);
+        $this->arguments = Arguments::create('a', 'b', 'c');
+        $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
             $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Assertion\Renderer;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -35,7 +36,7 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callA = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this, 'setUp'), array('a', 'b')),
+            $this->callEventFactory->createCalled(array($this, 'setUp'), Arguments::create('a', 'b')),
             ($responseEvent = $this->callEventFactory->createReturned('x')),
             null,
             $responseEvent

@@ -32,7 +32,7 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -49,10 +49,10 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
         CallEventFactoryInterface $callEventFactory = null,
         FeatureDetectorInterface $featureDetector = null
     ) {
-        if (null === $callEventFactory) {
+        if (!$callEventFactory) {
             $callEventFactory = CallEventFactory::instance();
         }
-        if (null === $featureDetector) {
+        if (!$featureDetector) {
             $featureDetector = FeatureDetector::instance();
         }
 

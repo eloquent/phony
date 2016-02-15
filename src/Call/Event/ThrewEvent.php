@@ -28,7 +28,7 @@ class ThrewEvent extends AbstractCallEvent implements ThrewEventInterface
      */
     public function __construct($sequenceNumber, $time, $exception = null)
     {
-        if (null === $exception) {
+        if (!$exception) {
             $exception = new Exception();
         }
 

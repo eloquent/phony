@@ -35,7 +35,7 @@ class StubFactory implements StubFactoryInterface
      */
     public static function instance()
     {
-        if (null === self::$instance) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 
@@ -58,19 +58,19 @@ class StubFactory implements StubFactoryInterface
         InvokerInterface $invoker = null,
         InvocableInspectorInterface $invocableInspector = null
     ) {
-        if (null === $labelSequencer) {
+        if (!$labelSequencer) {
             $labelSequencer = Sequencer::sequence('stub-label');
         }
-        if (null === $matcherFactory) {
+        if (!$matcherFactory) {
             $matcherFactory = MatcherFactory::instance();
         }
-        if (null === $matcherVerifier) {
+        if (!$matcherVerifier) {
             $matcherVerifier = MatcherVerifier::instance();
         }
-        if (null === $invoker) {
+        if (!$invoker) {
             $invoker = Invoker::instance();
         }
-        if (null === $invocableInspector) {
+        if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
 

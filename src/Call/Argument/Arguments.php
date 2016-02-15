@@ -24,19 +24,15 @@ use Iterator;
 class Arguments implements ArgumentsInterface
 {
     /**
-     * Adapt a set of call arguments.
+     * Create a new set of call arguments from the supplied arguments.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param mixed ...$arguments The arguments.
      *
-     * @return ArgumentsInterface The adapted arguments.
+     * @return ArgumentsInterface The arguments object.
      */
-    public static function adapt($arguments)
+    public static function create()
     {
-        if ($arguments instanceof ArgumentsInterface) {
-            return $arguments;
-        }
-
-        return new static($arguments);
+        return new self(func_get_args());
     }
 
     /**
@@ -49,7 +45,7 @@ class Arguments implements ArgumentsInterface
         array $arguments = array(),
         IndexNormalizerInterface $indexNormalizer = null
     ) {
-        if (null === $indexNormalizer) {
+        if (!$indexNormalizer) {
             $indexNormalizer = IndexNormalizer::instance();
         }
 
@@ -81,7 +77,7 @@ class Arguments implements ArgumentsInterface
             $arguments[] = $argument;
         }
 
-        return new static($arguments);
+        return new self($arguments);
     }
 
     /**

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Spy;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Invocation\Invoker;
@@ -72,7 +73,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory->reset();
         $expected = array(
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, array('a', 'b')),
+                $this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')),
                 $this->callEventFactory->createGenerated($generator),
                 array(
                     $this->callEventFactory->createProduced(0, 'A'),
@@ -83,7 +84,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
                 $this->callEventFactory->createConsumed()
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, array('c')),
+                $this->callEventFactory->createCalled($spy, Arguments::create('c')),
                 $this->callEventFactory->createGenerated($generator),
                 array(
                     $this->callEventFactory->createProduced(0, 'C'),

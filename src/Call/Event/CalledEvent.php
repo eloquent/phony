@@ -22,25 +22,28 @@ class CalledEvent extends AbstractCallEvent implements CalledEventInterface
     /**
      * Construct a new 'called' event.
      *
-     * @param integer                  $sequenceNumber The sequence number.
-     * @param float                    $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param callable|null            $callback       The callback.
-     * @param ArgumentsInterface|array $arguments      The arguments.
+     * @param integer            $sequenceNumber The sequence number.
+     * @param float              $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param callable|null      $callback       The callback.
+     * @param ArgumentsInterface $arguments      The arguments.
      */
     public function __construct(
         $sequenceNumber,
         $time,
         $callback = null,
-        $arguments = array()
+        ArgumentsInterface $arguments = null
     ) {
-        if (null === $callback) {
+        if (!$callback) {
             $callback = function () {};
+        }
+        if (!$arguments) {
+            $arguments = new Arguments();
         }
 
         parent::__construct($sequenceNumber, $time);
 
         $this->callback = $callback;
-        $this->arguments = Arguments::adapt($arguments);
+        $this->arguments = $arguments;
     }
 
     /**

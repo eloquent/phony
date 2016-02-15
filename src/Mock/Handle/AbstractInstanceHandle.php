@@ -130,8 +130,11 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
     public function constructWith($arguments = array())
     {
         if ($this->callParentConstructorMethod) {
-            $this->callParentConstructorMethod
-                ->invoke($this->mock, Arguments::adapt($arguments));
+            if (!$arguments instanceof ArgumentsInterface) {
+                $arguments = new Arguments($arguments);
+            }
+
+            $this->callParentConstructorMethod->invoke($this->mock, $arguments);
         }
 
         return $this;
