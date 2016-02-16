@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[NEW]** Implemented generator stubs ([#11]).
+
+[#11]: https://github.com/eloquent/phony/issues/11
+
 ## 0.8.0 (2016-02-12)
 
 - **[BC BREAK]** Mocking functions now accept ad hoc definitions in the `$types`

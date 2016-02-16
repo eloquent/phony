@@ -24,6 +24,9 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 use Eloquent\Phony\Stub\Answer\Answer;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactoryInterface;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderInterface;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Stub\Rule\StubRule;
@@ -59,14 +62,15 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Construct a new stub.
      *
-     * @param callable|null                    $callback              The callback, or null to create an anonymous stub.
-     * @param mixed                            $self                  The self value.
-     * @param string|null                      $label                 The label.
-     * @param callable|null                    $defaultAnswerCallback The callback to use when creating a default answer.
-     * @param MatcherFactoryInterface|null     $matcherFactory        The matcher factory to use.
-     * @param MatcherVerifierInterface|null    $matcherVerifier       The matcher verifier to use.
-     * @param InvokerInterface|null            $invoker               The invoker to use.
-     * @param InvocableInspectorInterface|null $invocableInspector    The invocable inspector to use.
+     * @param callable|null                               $callback                      The callback, or null to create an anonymous stub.
+     * @param mixed                                       $self                          The self value.
+     * @param string|null                                 $label                         The label.
+     * @param callable|null                               $defaultAnswerCallback         The callback to use when creating a default answer.
+     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface|null               $matcherVerifier               The matcher verifier to use.
+     * @param InvokerInterface|null                       $invoker                       The invoker to use.
+     * @param InvocableInspectorInterface|null            $invocableInspector            The invocable inspector to use.
+     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
         $callback = null,
@@ -76,7 +80,9 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
-        InvocableInspectorInterface $invocableInspector = null
+        InvocableInspectorInterface $invocableInspector = null,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
+            null
     ) {
         if (!$defaultAnswerCallback) {
             $defaultAnswerCallback =
@@ -94,6 +100,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
+        if (!$generatorAnswerBuilderFactory) {
+            $generatorAnswerBuilderFactory =
+                GeneratorAnswerBuilderFactory::instance();
+        }
 
         parent::__construct($callback, $label);
 
@@ -106,6 +116,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
+        $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
 
         $this->secondaryRequests = array();
         $this->answers = array();
@@ -174,6 +185,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function invocableInspector()
     {
         return $this->invocableInspector;
+    }
+
+    /**
+     * Get the generator answer builder factory.
+     *
+     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
+     */
+    public function generatorAnswerBuilderFactory()
+    {
+        return $this->generatorAnswerBuilderFactory;
     }
 
     /**
@@ -267,21 +288,19 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add a callback to be called as part of an answer.
      *
-     * This method supports reference parameters.
-     *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                 $callback             The callback.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback              The callback.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
         $callback,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
@@ -300,7 +319,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $callback,
             $arguments,
             $prefixSelf,
-            $suffixArgumentsArray,
+            $suffixArgumentsObject,
             $suffixArguments
         );
 
@@ -339,16 +358,13 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * This method supports reference parameters in the supplied arguments, but
-     * not in the invocation arguments.
-     *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer                  $index                The argument index.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean                  $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param integer                  $index                 The argument index.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean                  $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -356,7 +372,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $index = 0,
         $arguments = array(),
         $prefixSelf = false,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = false
     ) {
         $invoker = $this->invoker;
@@ -371,7 +387,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 $index,
                 $arguments,
                 $prefixSelf,
-                $suffixArgumentsArray,
+                $suffixArgumentsObject,
                 $suffixArguments
             ) {
                 if (!$incoming->has($index)) {
@@ -388,7 +404,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                     $callback,
                     $arguments,
                     $prefixSelf,
-                    $suffixArgumentsArray,
+                    $suffixArgumentsObject,
                     $suffixArguments
                 );
                 $finalArguments = $request->finalArguments($self, $incoming);
@@ -426,7 +442,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $value = $indexOrValue;
         }
 
-        if ($value instanceof InstanceHandleInterface && $value->isAdaptable()) {
+        if (
+            $value instanceof InstanceHandleInterface &&
+            $value->isAdaptable()
+        ) {
             $value = $value->mock();
         }
 
@@ -463,11 +482,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable                 $callback             The callback.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback              The callback.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -475,7 +494,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         $callback,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
@@ -495,7 +514,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 $callback,
                 $arguments,
                 $prefixSelf,
-                $suffixArgumentsArray,
+                $suffixArgumentsObject,
                 $suffixArguments
             ),
             $this->secondaryRequests
@@ -508,17 +527,17 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
     public function forwards(
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
@@ -542,14 +561,14 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
                 $callback,
                 $arguments,
                 $prefixSelf,
-                $suffixArgumentsArray,
+                $suffixArgumentsObject,
                 $suffixArguments
             ) {
                 $request = new CallRequest(
                     $callback,
                     $arguments,
                     $prefixSelf,
-                    $suffixArgumentsArray,
+                    $suffixArgumentsObject,
                     $suffixArguments
                 );
                 $finalArguments = $request->finalArguments($self, $incoming);
@@ -755,6 +774,23 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
+     * Add an answer that returns a generator, and return a builder for
+     * customizing the generator's behavior.
+     *
+     * @param array $values An array of keys and values to yield.
+     *
+     * @return GeneratorAnswerBuilderInterface The answer builder.
+     */
+    public function generates(array $values = array())
+    {
+        $builder = $this->generatorAnswerBuilderFactory->create($this, $values);
+
+        $this->doesWith($builder->answer(), array(), true, true, false);
+
+        return $builder;
+    }
+
+    /**
      * Close any existing rule.
      *
      * @return $this This stub.
@@ -850,6 +886,7 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
+    private $generatorAnswerBuilderFactory;
     private $criteria;
     private $secondaryRequests;
     private $answers;

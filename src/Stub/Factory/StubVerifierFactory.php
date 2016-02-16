@@ -26,6 +26,8 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Spy\Factory\SpyFactoryInterface;
 use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactoryInterface;
 use Eloquent\Phony\Stub\StubInterface;
 use Eloquent\Phony\Stub\StubVerifier;
 
@@ -51,14 +53,15 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     /**
      * Construct a new stub verifier factory.
      *
-     * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
-     * @param SpyFactoryInterface|null          $spyFactory          The spy factory to use.
-     * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
-     * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
-     * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param InvokerInterface|null             $invoker             The invoker to use.
+     * @param StubFactoryInterface|null                   $stubFactory                   The stub factory to use.
+     * @param SpyFactoryInterface|null                    $spyFactory                    The spy factory to use.
+     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface|null               $matcherVerifier               The macther verifier to use.
+     * @param CallVerifierFactoryInterface|null           $callVerifierFactory           The call verifier factory to use.
+     * @param AssertionRecorderInterface|null             $assertionRecorder             The assertion recorder to use.
+     * @param AssertionRendererInterface|null             $assertionRenderer             The assertion renderer to use.
+     * @param InvokerInterface|null                       $invoker                       The invoker to use.
+     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
         StubFactoryInterface $stubFactory = null,
@@ -68,7 +71,9 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
         AssertionRendererInterface $assertionRenderer = null,
-        InvokerInterface $invoker = null
+        InvokerInterface $invoker = null,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
+            null
     ) {
         if (!$stubFactory) {
             $stubFactory = StubFactory::instance();
@@ -94,6 +99,10 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         if (!$invoker) {
             $invoker = Invoker::instance();
         }
+        if (!$generatorAnswerBuilderFactory) {
+            $generatorAnswerBuilderFactory =
+                GeneratorAnswerBuilderFactory::instance();
+        }
 
         $this->stubFactory = $stubFactory;
         $this->spyFactory = $spyFactory;
@@ -103,6 +112,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->invoker = $invoker;
+        $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
     }
 
     /**
@@ -186,6 +196,16 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     }
 
     /**
+     * Get the generator answer builder factory.
+     *
+     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
+     */
+    public function generatorAnswerBuilderFactory()
+    {
+        return $this->generatorAnswerBuilderFactory;
+    }
+
+    /**
      * Create a new stub verifier.
      *
      * @param StubInterface|null $stub The stub, or null to create an anonymous stub.
@@ -210,7 +230,8 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invoker
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
         );
     }
 
@@ -233,7 +254,8 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invoker
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
         );
     }
 

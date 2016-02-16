@@ -1026,4 +1026,71 @@ EOD;
         $this->assertSame('foo', $foo->test());
         $this->assertSame('bar', $bar->test());
     }
+
+    public function testBasicGeneratorStubbing()
+    {
+        if (!$this->featureDetector->isSupported('generator')) {
+            $this->markTestSkipped('Requires generators.');
+        }
+
+        $stub = x\stub()
+            ->generates(array('a' => 'b', 'c'))
+                ->yields('d', 'e')
+                ->yields('f')
+                ->yields()
+                ->returns();
+
+        $generator = $stub();
+        $actual = iterator_to_array($generator);
+
+        $this->assertInstanceOf('Generator', $generator);
+        $this->assertSame(array('a' => 'b', 0 => 'c', 'd' => 'e', 1 => 'f', 2 => null), $actual);
+    }
+
+    public function testGeneratorStubbingWithReturnValue()
+    {
+        if (!$this->featureDetector->isSupported('generator.return')) {
+            $this->markTestSkipped('Requires generator return values.');
+        }
+
+        $stub = x\stub()->generates()->returns('d');
+
+        $generator = $stub();
+        iterator_to_array($generator);
+
+        $this->assertInstanceOf('Generator', $generator);
+        $this->assertSame('d', $generator->getReturn());
+    }
+
+    public function testGeneratorStubbingWithMultipleAnswers()
+    {
+        if (!$this->featureDetector->isSupported('generator')) {
+            $this->markTestSkipped('Requires generators.');
+        }
+
+        $stub = x\stub()
+            ->generates()->yields('a')->returns()
+            ->returns('b')
+            ->generates()->yields('c')->returns();
+
+        $this->assertSame(array('a'), iterator_to_array($stub()));
+        $this->assertSame('b', $stub());
+        $this->assertSame(array('c'), iterator_to_array($stub()));
+    }
+
+    public function testGeneratorStubbingWithEmptyGenerator()
+    {
+        if (!$this->featureDetector->isSupported('generator')) {
+            $this->markTestSkipped('Requires generators.');
+        }
+
+        $stub = x\stub();
+        $stub->generates();
+
+        $generator = $stub();
+        $actual = iterator_to_array($generator);
+
+        $this->assertInstanceOf('Generator', $generator);
+        $this->assertSame(array(), $actual);
+    }
 }

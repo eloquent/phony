@@ -40,6 +40,7 @@
     - [Terminology]
 - [Stubs]
     - [The stub API]
+    - [The generator answer API]
     - [Stubbing an existing callable]
     - [Anonymous stubs]
     - [Stub "self" values]
@@ -62,6 +63,16 @@
         - [Setting passed-by-reference arguments]
         - [Invoking arguments]
         - [Invoking callables]
+    - [Stubbing generators]
+        - [Yielding from a generator]
+        - [Returning values from a generator]
+        - [Returning arguments from a generator]
+        - [Returning the "self" value from a generator]
+        - [Throwing exceptions from a generator]
+        - [Generator iterations that perform multiple actions]
+            - [Setting passed-by-reference arguments in a generator]
+            - [Invoking arguments in a generator]
+            - [Invoking callables in a generator]
 - [Spies]
     - [The spy API]
     - [Spying on an existing callable]
@@ -1710,21 +1721,17 @@ Add callbacks to be called as part of an answer.
 
 *Note that all supplied callbacks will be called in the same invocation.*
 
-*This method does not support reference parameters.*
-
 *See [Invoking callables].*
 
 <a name="stub.callsWith" />
 
 ----
 
-> *fluent* $stub->[**callsWith**](#stub.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
+> *fluent* $stub->[**callsWith**](#stub.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
 
 Add a callback to be called as part of an answer.
 
 *Note that all supplied callbacks will be called in the same invocation.*
-
-*This method supports reference parameters.*
 
 *This method supports [mock handle substitution]. Any mock handles in
 `$arguments` are equivalent to the mocks themselves.*
@@ -1744,15 +1751,13 @@ the last element, and `-2` indicates the second last element.*
 
 *Note that all supplied callbacks will be called in the same invocation.*
 
-*This method does not support reference parameters.*
-
 *See [Invoking arguments].*
 
 <a name="stub.callsArgumentWith" />
 
 ----
 
-> *fluent* $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
+> *fluent* $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
 
 Add an argument callback to be called as part of an answer.
 
@@ -1801,7 +1806,7 @@ Add callbacks as answers.
 
 ----
 
-> *fluent* $stub->[**doesWith**](#stub.doesWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
+> *fluent* $stub->[**doesWith**](#stub.doesWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
 
 Add a callback as an answer.
 
@@ -1816,7 +1821,7 @@ Add a callback as an answer.
 
 ----
 
-> *fluent* $stub->[**forwards**](#stub.forwards)($arguments = [], $prefixSelf = false, $suffixArgumentsArray = false, $suffixArguments = true)
+> *fluent* $stub->[**forwards**](#stub.forwards)($arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
 
 Add an answer that calls the wrapped callback.
 
@@ -1831,9 +1836,11 @@ Add an answer that calls the wrapped callback.
 
 ----
 
-> *fluent* $stub->[**returns**](#stub.returns)($value = null)
+> *fluent* $stub->[**returns**](#stub.returns)($value = null, ...$additionalValues)
 
 Add answers that return values.
+
+*This method supports [mock handle substitution].*
 
 *See [Returning values].*
 
@@ -1872,6 +1879,19 @@ Add answers that throw exceptions.
 handles are equivalent to the mocks themselves.*
 
 *See [Throwing exceptions].*
+
+<a name="stub.generates" />
+
+----
+
+> *[generator-answer][generator-answer-api]* $stub->[**generates**](#stub.generates)($values = [])
+
+Add an answer that returns a generator, and return the answer for further
+behavior customization.
+
+*Any supplied `$values` will be yielded from the resulting generator.*
+
+*See [Stubbing generators], [Yielding from a generator].*
 
 <a name="stub.useGeneratorSpies" />
 
@@ -2455,6 +2475,147 @@ Requires that the next verification matches for all possible items.
 
 *See [Verifying that all spy events happen the same way].*
 
+### The generator answer API
+
+<a name="generatorAnswer.calls" />
+
+----
+
+> *fluent* $generatorAnswer->[**calls**](#generatorAnswer.calls)($callback, ...$additionalCallbacks)
+
+Add callbacks to be called as part of the answer.
+
+*See [Invoking callables in a generator].*
+
+<a name="generatorAnswer.callsWith" />
+
+----
+
+> *fluent* $generatorAnswer->[**callsWith**](#generatorAnswer.callsWith)($callback, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
+
+Add callbacks to be called as part of the answer.
+
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
+*See [Invoking callables in a generator].*
+
+<a name="generatorAnswer.callsArgument" />
+
+----
+
+> *fluent* $generatorAnswer->[**callsArgument**](#generatorAnswer.callsArgument)($index = 0, ...$additionalIndices)
+
+Add argument callbacks to be called as part of the answer.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+*See [Invoking arguments in a generator].*
+
+<a name="generatorAnswer.callsArgumentWith" />
+
+----
+
+> *fluent* $generatorAnswer->[**callsArgumentWith**](#generatorAnswer.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
+
+Add an argument callback to be called as part of the answer.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+*This method supports reference parameters.*
+
+*This method supports [mock handle substitution]. Any mock handles in
+`$arguments` are equivalent to the mocks themselves.*
+
+*See [Invoking arguments in a generator].*
+
+<a name="generatorAnswer.setsArgument" />
+
+----
+
+> *fluent* $generatorAnswer->[**setsArgument**](#generatorAnswer.setsArgument)($indexOrValue = null, $value = null)
+
+Set the value of an argument passed by reference as part of the answer.
+
+*If called with no arguments, sets the first argument to `null`.*
+
+*If called with one argument, sets the first argument to `$indexOrValue`.*
+
+*If called with two arguments, sets the argument at `$indexOrValue` to
+`$value`.*
+
+*This method supports [mock handle substitution] of the value.*
+
+*See [Setting passed-by-reference arguments in a generator].*
+
+<a name="generatorAnswer.yields" />
+
+----
+
+> *fluent* $generatorAnswer->[**yields**](#generatorAnswer.yields)($keyOrValue = null, $value = null)
+
+Add a yielded value to the answer.
+
+*If both `$keyOrValue` and `$value` are supplied, the stub will yield like
+`yield $keyOrValue => $value;`.*
+
+*If only `$keyOrValue` is supplied, the stub will yield like
+`yield $keyOrValue;`.*
+
+*If no arguments are supplied, the stub will yield like `yield;`.*
+
+*See [Yielding from a generator].*
+
+<a name="generatorAnswer.returns" />
+
+----
+
+> *[stub][stub-api]* $generatorAnswer->[**returns**](#generatorAnswer.returns)($value = null)
+
+End the generator by returning a value.
+
+*This method supports [mock handle substitution].*
+
+*See [Returning values from a generator].*
+
+<a name="generatorAnswer.returnsArgument" />
+
+----
+
+> *[stub][stub-api]* $generatorAnswer->[**returnsArgument**](#generatorAnswer.returnsArgument)($index = 0)
+
+End the generator by returning an argument.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
+
+*See [Returning arguments from a generator].*
+
+<a name="generatorAnswer.returnsSelf" />
+
+----
+
+> *[stub][stub-api]* $generatorAnswer->[**returnsSelf**](#generatorAnswer.returnsSelf)()
+
+End the generator by returning the self value.
+
+*See [Returning the "self" value from a generator], [Stub "self" values].*
+
+<a name="generatorAnswer.throws" />
+
+----
+
+> *[stub][stub-api]* $generatorAnswer->[**throws**](#generatorAnswer.throws)($exception = null)
+
+End the generator by throwing an exception.
+
+*This method supports [mock handle substitution]. Any supplied exception mock
+handles are equivalent to the mocks themselves.*
+
+*See [Throwing exceptions from a generator].*
+
 ### Stubbing an existing callable
 
 Any callable can be stubbed, by passing the callable to
@@ -2945,7 +3106,7 @@ $stub = stub()->doesWith(
     'implode', // callable
     [', '],    // fixed arguments
     false,     // prefix the "self" value?
-    true,      // suffix the arguments as an array?
+    true,      // suffix the arguments object?
     false      // suffix the arguments normally?
 );
 
@@ -3024,7 +3185,7 @@ the original callable:
 $stub = stub('implode')->forwards(
     [', '],    // fixed arguments
     false,     // prefix the "self" value?
-    true,      // suffix the arguments as an array?
+    true,      // suffix the arguments object?
     false      // suffix the arguments normally?
 );
 
@@ -3089,10 +3250,9 @@ sets the first argument:
 
 ```php
 $stub = stub(function (&$a) {})
-    ->setsArgument('x')  // sets the first argument to 'x'
+    ->setsArgument('x') // sets the first argument to 'x'
     ->returns();
 
-$a = 'a';
 $stub($a);
 
 echo $a; // outputs 'x'
@@ -3103,7 +3263,7 @@ sets the first argument to `null`:
 
 ```php
 $stub = stub(function (&$a) {})
-    ->setsArgument()  // sets the first argument to null
+    ->setsArgument() // sets the first argument to `null`
     ->returns();
 
 $stub($a);
@@ -3141,7 +3301,7 @@ $stub = stub()
         1,              // argument to invoke
         ['%s, %s, %s'], // fixed arguments
         false,          // prefix the "self" value?
-        true,           // suffix the arguments as an array?
+        true,           // suffix the arguments object?
         false           // suffix the arguments normally?
     )
     ->returns();
@@ -3198,11 +3358,11 @@ $y = function () { echo 'y'; };
 
 $stubA = stub()->calls($x, $y)->returns();
 
-echo $stubA(); // outputs 'xy'
+$stubA(); // outputs 'xy'
 
 $stubB = stub()->calls($x)->calls($y)->returns();
 
-echo $stubB(); // outputs 'xy'
+$stubB(); // outputs 'xy'
 ```
 
 There is also a more powerful version of [`calls()`](#stub.calls), named
@@ -3215,7 +3375,7 @@ $stub = stub()
         'printf',   // argument to invoke
         ['%s, %s'], // fixed arguments
         false,      // prefix the "self" value?
-        false,      // suffix the arguments as an array?
+        false,      // suffix the arguments object?
         true        // suffix the arguments normally?
     )
     ->returns();
@@ -3248,6 +3408,490 @@ echo $a; // outputs 'a'
 echo $b; // outputs 'b'
 echo $c; // outputs 'c'
 echo $d; // outputs 'd'
+```
+
+### Stubbing generators
+
+To return a [generator] from a stub, use [`generates()`](#stub.generates):
+
+```php
+$stub = stub();
+$stub->generates();
+
+$generator = $stub();
+$values = iterator_to_array($generator); // consume the generator
+
+echo $generator instanceof Generator ? 'true' : 'false'; // outputs 'true'
+echo json_encode($values);                               // outputs '[]'
+```
+
+The result of [`generates()`](#stub.generates) is a [generator answer]. This
+object can be used to further customize the behavior of the generator to be
+returned. See the subsequent headings for details of these customizations.
+
+When a method is called on the generator answer that "ends" the answer (by
+returning or throwing), the original stub is returned, allowing continued
+stubbing in a fluent manner:
+
+```php
+$stub = stub()
+    ->generates()     // returns a generator
+        ->yields('a')
+        ->yields('b')
+        ->returns()   // ends the generator
+    ->returns('c')    // returns a normal value
+    ->generates()     // returns another generator
+        ->yields('d')
+        ->yields('e')
+        ->throws();   // ends the generator by throwing
+
+$resultA = $stub();
+$resultB = $stub();
+$resultC = $stub();
+
+echo $resultA instanceof Generator ? 'true' : 'false'; // outputs 'true'
+echo $resultB instanceof Generator ? 'true' : 'false'; // outputs 'false'
+echo $resultC instanceof Generator ? 'true' : 'false'; // outputs 'true'
+```
+
+#### Yielding from a generator
+
+Keys and values to be yielded can be passed directly to
+[`generates()`](#stub.generates) as an array:
+
+```php
+$stub = stub()
+    ->generates(['a', 'b', 'c', 'd']);
+    ->generates(['a' => 'b', 'c' => 'd'])
+    ->returns();
+
+$generatorA = $stub();
+$generatorB = $stub();
+
+$valuesA = iterator_to_array($generatorA); // consume the generator
+$valuesB = iterator_to_array($generatorB); // consume the generator
+
+echo json_encode($valuesA); // outputs '["a","b","c","d"]'
+echo json_encode($valuesB); // outputs '{"a":"b","c":"d"}'
+```
+
+Alternatively, [`yields()`](#generatorAnswer.yields) can be used when yields
+need to be interleaved with other actions:
+
+```php
+$count = 0;
+$callback = function () use (&$count) {
+    printf("Called %d time(s)\n", ++$count);
+};
+
+$stub = stub(function (&$argument) {});
+$stub->generates()
+    ->calls($callback)
+    ->yields('a')
+    ->calls($callback)
+    ->yields('b');
+
+foreach ($stub() as $value) {
+    printf("Value: %s\n", $value);
+}
+```
+
+The above example outputs:
+
+```
+Called 1 time(s)
+Value: a
+Called 2 time(s)
+Value: b
+```
+
+If [`yields()`](#generatorAnswer.yields) is called with 2 arguments, they are
+treated as key and value respectively. When called with 1 argument, the argument
+is treated as the value to yield. When called with no arguments, the generator
+will yield with no value:
+
+```php
+$stub = stub()->generates()
+    ->yields('a', 'b');
+    ->yields('c')
+    ->yields()
+    ->returns();
+
+$values = iterator_to_array($stub()); // consume the generator
+
+echo json_encode($values); // outputs '{"a":"b","0":"c","1":null}'
+```
+
+#### Returning values from a generator
+
+To return a value from a generator, use [`returns()`](#generatorAnswer.returns)
+on any [generator answer]:
+
+```php
+$stub = stub()->generates()->returns('a');
+
+$generator = $stub();
+iterator_to_array($generator); // consume the generator
+
+echo $generator->getReturn(); // outputs 'a'
+```
+
+Note that attempting to return anything other than `null` will result in an
+exception unless the current runtime supports generator return expressions. For
+older runtimes, it is perfectly valid to call
+[`returns()`](#generatorAnswer.returns) with no arguments in order to end the
+generator:
+
+```php
+$stub = stub()->generates()->returns();
+```
+
+#### Returning arguments from a generator
+
+To return an argument from a generator, use
+[`returnsArgument()`](#generatorAnswer.returnsArgument) on any
+[generator answer]:
+
+```php
+$stubA = stub()->generates()->returnsArgument();   // returns the first argument
+$stubB = stub()->generates()->returnsArgument(1);  // returns the second argument
+$stubC = stub()->generates()->returnsArgument(-1); // returns the last argument
+
+$generatorA = $stubA('x', 'y', 'z');
+$generatorB = $stubB('x', 'y', 'z');
+$generatorC = $stubC('x', 'y', 'z');
+
+iterator_to_array($generatorA); // consume the generator
+iterator_to_array($generatorB); // consume the generator
+iterator_to_array($generatorC); // consume the generator
+
+echo $generatorA->getReturn(); // outputs 'x'
+echo $generatorB->getReturn(); // outputs 'y'
+echo $generatorC->getReturn(); // outputs 'z'
+```
+
+#### Returning the "self" value from a generator
+
+The stub [self value] can be return from a generator by using
+[`returnsSelf()`](#generatorAnswer.returnsSelf) on any [generator answer]:
+
+```php
+$handle = mock();
+$handle->methodA->generates()->returnsSelf();
+
+$mock = $handle->mock();
+$generator = $mock->methodA();
+
+iterator_to_array($generator); // consume the generator
+
+echo $generator->getReturn() === $mock ? 'true' : 'false'; // outputs 'true'
+```
+
+#### Throwing exceptions from a generator
+
+To throw an exception from a generator, use
+[`throws()`](#generatorAnswer.throws) on any [generator answer]:
+
+```php
+$exception = new RuntimeException('You done goofed.');
+
+$stubA = stub()->generates()->throws($exception);
+$stubB = stub()->generates()->throws();
+
+$generatorA = $stubA();
+$generatorB = $stubB();
+
+iterator_to_array($generatorA); // throws $exception
+iterator_to_array($generatorB); // throws a generic exception
+```
+
+#### Generator iterations that perform multiple actions
+
+Stubbed generators can perform multiple actions as part of a single iteration.
+This allows side effects other than yielded values to be emulated.
+
+The most familiar of these side effects is probably the modification of
+passed-by-reference arguments, and the invocation of other callables.
+
+##### Setting passed-by-reference arguments in a generator
+
+To set a reference argument as part of a generator, use
+[`setsArgument()`](#generatorAnswer.setsArgument) on any [generator answer]:
+
+```php
+$stub = stub(function (&$a, &$b, &$c) {})->generates()
+    ->setsArgument(0, 'x')  // sets the first argument to 'x'
+    ->setsArgument(1, 'y')  // sets the second argument to 'y'
+    ->setsArgument(-1, 'z') // sets the last argument to 'z'
+    ->returns();
+
+$generator = $stub($a, $b, $c);
+iterator_to_array($generator); // consume the generator
+
+echo $a; // outputs 'x'
+echo $b; // outputs 'y'
+echo $c; // outputs 'z'
+```
+
+If only one argument is passed to
+[`setsArgument()`](#generatorAnswer.setsArgument), it sets the first argument:
+
+```php
+$stub = stub(function (&$a) {})->generates()
+    ->setsArgument('x') // sets the first argument to 'x'
+    ->returns();
+
+$generator = $stub($a);
+iterator_to_array($generator); // consume the generator
+
+echo $a; // outputs 'x'
+```
+
+If [`setsArgument()`](#generatorAnswer.setsArgument) is called without any
+arguments, it sets the first argument to `null`:
+
+```php
+$stub = stub(function (&$a) {})->generates()
+    ->setsArgument() // sets the first argument to `null`
+    ->returns();
+
+$generator = $stub($a);
+iterator_to_array($generator); // consume the generator
+
+echo gettype($a); // outputs 'NULL'
+```
+
+Setting of arguments can be configured to occur in between yields:
+
+```php
+$stub = stub(function (&$a) {})->generates()
+    ->setsArgument('x') // first iteration starts
+    ->yields('a')       // first iteration ends
+    ->setsArgument('y') // second iteration starts
+    ->yields('b')       // second iteration ends
+    ->returns();
+
+foreach ($stub($a) as $value) {
+    printf("%s, %s\n", $value, $a);
+}
+```
+
+The above example outputs:
+
+```
+a, x
+b, y
+```
+
+##### Invoking arguments in a generator
+
+To invoke an argument as part of a generator, use
+[`callsArgument()`](#generatorAnswer.callsArgument) on any [generator answer]:
+
+```php
+$stub = stub()->generates()
+    ->callsArgument()   // calls the first argument
+    ->callsArgument(1)  // calls the second argument
+    ->callsArgument(-1) // calls the last argument
+    ->returns();
+
+$x = function () { echo 'x'; };
+$y = function () { echo 'y'; };
+$z = function () { echo 'z'; };
+
+$generator = $stub($x, $y, $z);
+iterator_to_array($generator); // outputs 'xyz'
+```
+
+There is also a more powerful version of
+[`callsArgument()`](#generatorAnswer.callsArgument), named
+[`callsArgumentWith()`](#generatorAnswer.callsArgumentWith), that allows more
+control over which arguments are passed to the callable, and how they are
+passed:
+
+```php
+$stub = stub()->generates()
+    ->callsArgumentWith(
+        1,              // argument to invoke
+        ['%s, %s, %s'], // fixed arguments
+        false,          // prefix the "self" value?
+        true,           // suffix the arguments object?
+        false           // suffix the arguments normally?
+    )
+    ->returns();
+
+$generator = $stub('x', 'printf', 'y');
+iterator_to_array($generator); // outputs 'x, printf, y'
+```
+
+The [`callsArgumentWith()`](#generatorAnswer.callsArgumentWith) method also
+supports arguments passed by reference:
+
+```php
+$a = null;
+$b = null;
+$c = null;
+$d = null;
+
+$stub = stub()->generates()
+    ->callsArgumentWith(
+        -1,
+        [&$a, &$b],
+        false,
+        false,
+        true
+    )
+    ->returns();
+
+$callback = function (&$a, &$b, &$c, &$d) {
+    list($a, $b, $c, $d) = ['a', 'b', 'c', 'd'];
+};
+
+$generator = $stub->invokeWith([&$c, &$d, $callback]);
+iterator_to_array($generator); // consume the generator
+
+echo $a; // outputs 'a'
+echo $b; // outputs 'b'
+echo $c; // outputs 'c'
+echo $d; // outputs 'd'
+```
+
+Calling of arguments can be configured to occur in between yields:
+
+```php
+$count = 0;
+$callback = function () use (&$count) {
+    printf("Called %d time(s)\n", ++$count);
+};
+
+$stub = stub(function (&$a) {})->generates()
+    ->callsArgument() // first iteration starts
+    ->yields('a')     // first iteration ends
+    ->callsArgument() // second iteration starts
+    ->yields('b')     // second iteration ends
+    ->returns();
+
+foreach ($stub($callback) as $value) {
+    printf("Value: %s\n", $value);
+}
+```
+
+The above example outputs:
+
+```
+Called 1 time(s)
+Value: a
+Called 2 time(s)
+Value: b
+```
+
+##### Invoking callables in a generator
+
+To invoke a callable as part of a generator, use
+[`calls()`](#generatorAnswer.calls) on any [generator answer]:
+
+```php
+$stub = stub()->generates()->calls('printf')->returns();
+
+$generator = $stub('%s, %s', 'a', 'b');
+iterator_to_array($generator); // outputs 'a, b'
+```
+
+Calling [`calls()`](#generatorAnswer.calls) with multiple arguments is
+equivalent to calling it once with each argument. For example, the two following
+stubs behave the same:
+
+```php
+$x = function () { echo 'x'; };
+$y = function () { echo 'y'; };
+
+$stubA = stub()->generates()->calls($x, $y)->returns();
+
+$generator = $stubA();
+iterator_to_array($generator); // outputs 'xy'
+
+$stubB = stub()->generates()->calls($x)->calls($y)->returns();
+
+$generator = $stubB();
+iterator_to_array($generator); // outputs 'xy'
+```
+
+There is also a more powerful version of [`calls()`](#generatorAnswer.calls),
+named [`callsWith()`](#generatorAnswer.callsWith), that allows more control over
+which arguments are passed to the callable, and how they are passed:
+
+```php
+$stub = stub()->generates()
+    ->callsWith(
+        'printf',   // argument to invoke
+        ['%s, %s'], // fixed arguments
+        false,      // prefix the "self" value?
+        false,      // suffix the arguments object?
+        true        // suffix the arguments normally?
+    )
+    ->returns();
+
+$generator = $stub('x', 'y');
+iterator_to_array($generator); // outputs 'x, y'
+```
+
+The [`callsWith()`](#generatorAnswer.callsWith) method also supports arguments
+passed by reference:
+
+```php
+$a = null;
+$b = null;
+$c = null;
+$d = null;
+
+$stub = stub()->generates()
+    ->callsWith(
+        function (&$a, &$b, &$c, &$d) {
+            list($a, $b, $c, $d) = ['a', 'b', 'c', 'd'];
+        },
+        [&$a, &$b],
+        false,
+        false,
+        true
+    )
+    ->returns();
+
+$generator = $stub->invokeWith([&$c, &$d])
+iterator_to_array($generator); // consume the generator
+
+echo $a; // outputs 'a'
+echo $b; // outputs 'b'
+echo $c; // outputs 'c'
+echo $d; // outputs 'd'
+```
+
+Calling of callables can be configured to occur in between yields:
+
+```php
+$count = 0;
+$callback = function () use (&$count) {
+    printf("Called %d time(s)\n", ++$count);
+};
+
+$stub = stub(function (&$a) {})->generates()
+    ->calls($callback) // first iteration starts
+    ->yields('a')      // first iteration ends
+    ->calls($callback) // second iteration starts
+    ->yields('b')      // second iteration ends
+    ->returns();
+
+foreach ($stub($callback) as $value) {
+    printf("Value: %s\n", $value);
+}
+```
+
+The above example outputs:
+
+```
+Called 1 time(s)
+Value: a
+Called 2 time(s)
+Value: b
 ```
 
 ## Spies
@@ -6443,6 +7087,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [exporting recursive values]: #exporting-recursive-values
 [forwarding to the original callable]: #forwarding-to-the-original-callable
 [generating mock classes from a builder]: #generating-mock-classes-from-a-builder
+[generator iterations that perform multiple actions]: #generator-iterations-that-perform-multiple-actions
 [hamcrest matchers]: #hamcrest-matchers
 [help]: #help
 [importing a static facade]: #importing-a-static-facade
@@ -6453,7 +7098,9 @@ For the full copyright and license information, please view the [LICENSE file].
 [installation]: #installation
 [integration with test frameworks]: #integration-with-test-frameworks
 [intermediate events in order verification]: #intermediate-events-in-order-verification
+[invoking arguments in a generator]: #invoking-arguments-in-a-generator
 [invoking arguments]: #invoking-arguments
+[invoking callables in a generator]: #invoking-callables-in-a-generator
 [invoking callables]: #invoking-callables
 [invoking spies]: #invoking-spies
 [labeling mocks]: #labeling-mocks
@@ -6488,9 +7135,13 @@ For the full copyright and license information, please view the [LICENSE file].
 [prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
 [proxy mocks]: #proxy-mocks
 [retrieving calls from a spy]: #retrieving-calls-from-a-spy
+[returning arguments from a generator]: #returning-arguments-from-a-generator
 [returning arguments]: #returning-arguments
+[returning the "self" value from a generator]: #returning-the-self-value-from-a-generator
 [returning the "self" value]: #returning-the-self-value
+[returning values from a generator]: #returning-values-from-a-generator
 [returning values]: #returning-values
+[setting passed-by-reference arguments in a generator]: #setting-passed-by-reference-arguments-in-a-generator
 [setting passed-by-reference arguments]: #setting-passed-by-reference-arguments
 [setting the export depth]: #setting-the-export-depth
 [shorthand matchers]: #shorthand-matchers
@@ -6506,6 +7157,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [stub "self" values]: #stub-self-values
 [stub rules and answers]: #stub-rules-and-answers
 [stubbing an existing callable]: #stubbing-an-existing-callable
+[stubbing generators]: #stubbing-generators
 [stubbing handles]: #stubbing-handles
 [stubs]: #stubs
 [terminology]: #terminology
@@ -6520,6 +7172,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [the export format]: #the-export-format
 [the exporter api]: #the-exporter-api
 [the exporter]: #the-exporter
+[the generator answer api]: #the-generator-answer-api
 [the matcher api]: #the-matcher-api
 [the mock api]: #the-mock-api
 [the mock builder api]: #the-mock-builder-api
@@ -6529,6 +7182,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [the verification result api]: #the-verification-result-api
 [the wildcard matcher api]: #the-wildcard-matcher-api
 [third-party wildcard matcher integrations]: #third-party-wildcard-matcher-integrations
+[throwing exceptions from a generator]: #throwing-exceptions-from-a-generator
 [throwing exceptions]: #throwing-exceptions
 [thrown exceptions]: #thrown-exceptions
 [undefinedargumentexception]: #undefinedargumentexception
@@ -6570,6 +7224,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying values received by calls]: #verifying-values-received-by-calls
 [verifying values received by spies]: #verifying-values-received-by-spies
 [when to use the "equal to" matcher]: #when-to-use-the-equal-to-matcher
+[yielding from a generator]: #yielding-from-a-generator
 
 <!-- Shortcut references -->
 
@@ -6579,6 +7234,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [ad hoc mock]: #ad-hoc-mocks
 [default answer callback]: #the-default-answer-callback
 [full mock]: #mocking-basics
+[generator answer]: #the-generator-answer-api
 [generator spies]: #verifying-spies-with-generators-or-traversables
 [matcher]: #matchers
 [mock builder]: #mock-builders
@@ -6603,6 +7259,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [arguments-api]: #the-arguments-api
 [call-api]: #the-call-api
 [event-api]: #the-event-api
+[generator-answer-api]: #the-generator-answer-api
 [matcher-api]: #the-matcher-api
 [mock-api]: #the-mock-api
 [mock-builder-api]: #the-mock-builder-api
@@ -6625,6 +7282,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
 [generator::send()]: http://php.net/generator.send
 [generator::throw()]: http://php.net/generator.throw
+[generator]: http://php.net/language.generators.overview
 [generators]: http://php.net/language.generators.overview
 [github issue]: https://github.com/eloquent/phony/issues
 [hamcrest]: https://github.com/hamcrest/hamcrest-php

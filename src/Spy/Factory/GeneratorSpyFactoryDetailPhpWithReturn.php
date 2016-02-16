@@ -18,7 +18,7 @@ use Generator;
 use Throwable;
 
 /**
- * A detail class for generator spy syntax using an expression.
+ * A detail class for generator spies under PHP.
  *
  * @codeCoverageIgnore
  */
@@ -96,6 +96,7 @@ abstract class GeneratorSpyFactoryDetailPhpWithReturn
             }
 
             $isFirst = false;
+            unset($value);
         }
     }
 }

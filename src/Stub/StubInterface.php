@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\WrappedInvocableInterface;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderInterface;
 use Error;
 use Exception;
 
@@ -99,17 +100,17 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @api
      *
-     * @param callable                 $callback             The callback.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback              The callback.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
         $callback,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     );
 
@@ -136,18 +137,15 @@ interface StubInterface extends WrappedInvocableInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * This method supports reference parameters in the supplied arguments, but
-     * not in the invocation arguments.
-     *
      * Note that all supplied callbacks will be called in the same invocation.
      *
      * @api
      *
-     * @param integer                  $index                The argument index.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param integer                  $index                 The argument index.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -155,7 +153,7 @@ interface StubInterface extends WrappedInvocableInterface
         $index = 0,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     );
 
@@ -195,11 +193,11 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @api
      *
-     * @param callable                 $callback             The callback.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback              The callback.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -207,7 +205,7 @@ interface StubInterface extends WrappedInvocableInterface
         $callback,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     );
 
@@ -216,17 +214,17 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @api
      *
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
     public function forwards(
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     );
 
@@ -276,6 +274,18 @@ interface StubInterface extends WrappedInvocableInterface
      * @return $this This stub.
      */
     public function throws($exception = null);
+
+    /**
+     * Add an answer that returns a generator, and return a builder for
+     * customizing the generator's behavior.
+     *
+     * @api
+     *
+     * @param array $values An array of keys and values to yield.
+     *
+     * @return GeneratorAnswerBuilderInterface The answer builder.
+     */
+    public function generates(array $values = array());
 
     /**
      * Close any existing rule.

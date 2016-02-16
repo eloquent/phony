@@ -21,6 +21,8 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactoryInterface;
 use Eloquent\Phony\Stub\Stub;
 
 /**
@@ -45,18 +47,21 @@ class StubFactory implements StubFactoryInterface
     /**
      * Construct a new stub factory.
      *
-     * @param SequencerInterface|null          $labelSequencer     The label sequencer to use.
-     * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
-     * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
-     * @param InvokerInterface|null            $invoker            The invoker to use.
-     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
+     * @param SequencerInterface|null                     $labelSequencer                The label sequencer to use.
+     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface|null               $matcherVerifier               The matcher verifier to use.
+     * @param InvokerInterface|null                       $invoker                       The invoker to use.
+     * @param InvocableInspectorInterface|null            $invocableInspector            The invocable inspector to use.
+     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
         SequencerInterface $labelSequencer = null,
         MatcherFactoryInterface $matcherFactory = null,
         MatcherVerifierInterface $matcherVerifier = null,
         InvokerInterface $invoker = null,
-        InvocableInspectorInterface $invocableInspector = null
+        InvocableInspectorInterface $invocableInspector = null,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
+            null
     ) {
         if (!$labelSequencer) {
             $labelSequencer = Sequencer::sequence('stub-label');
@@ -73,12 +78,17 @@ class StubFactory implements StubFactoryInterface
         if (!$invocableInspector) {
             $invocableInspector = InvocableInspector::instance();
         }
+        if (!$generatorAnswerBuilderFactory) {
+            $generatorAnswerBuilderFactory =
+                GeneratorAnswerBuilderFactory::instance();
+        }
 
         $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
+        $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
     }
 
     /**
@@ -132,6 +142,16 @@ class StubFactory implements StubFactoryInterface
     }
 
     /**
+     * Get the generator answer builder factory.
+     *
+     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
+     */
+    public function generatorAnswerBuilderFactory()
+    {
+        return $this->generatorAnswerBuilderFactory;
+    }
+
+    /**
      * Create a new stub.
      *
      * @param callable|null $callback              The callback, or null to create an anonymous stub.
@@ -153,7 +173,8 @@ class StubFactory implements StubFactoryInterface
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->invoker,
-            $this->invocableInspector
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
         );
     }
 
@@ -163,4 +184,5 @@ class StubFactory implements StubFactoryInterface
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
+    private $generatorAnswerBuilderFactory;
 }

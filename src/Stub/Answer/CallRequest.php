@@ -26,8 +26,8 @@ class CallRequest implements CallRequestInterface
      * @param callable                $callback              The callback.
      * @param ArgumentsInterface|null $arguments             The arguments.
      * @param boolean                 $prefixSelf            True if the self value should be prefixed.
-     * @param boolean                 $suffixArgumentsObject True if arguments object should be appended.
-     * @param boolean                 $suffixArguments       True if arguments should be appended.
+     * @param boolean                 $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                 $suffixArguments       True if the arguments should be appended individually.
      */
     public function __construct(
         $callback,

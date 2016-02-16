@@ -23,6 +23,9 @@ use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyInterface;
 use Eloquent\Phony\Spy\SpyVerifier;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactoryInterface;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderInterface;
 use Error;
 use Exception;
 
@@ -35,14 +38,15 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Construct a new stub verifier.
      *
-     * @param StubInterface|null                $stub                The stub.
-     * @param SpyInterface|null                 $spy                 The spy.
-     * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
-     * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
-     * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param InvokerInterface|null             $invoker             The invoker to use.
+     * @param StubInterface|null                          $stub                          The stub.
+     * @param SpyInterface|null                           $spy                           The spy.
+     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface|null               $matcherVerifier               The macther verifier to use.
+     * @param CallVerifierFactoryInterface|null           $callVerifierFactory           The call verifier factory to use.
+     * @param AssertionRecorderInterface|null             $assertionRecorder             The assertion recorder to use.
+     * @param AssertionRendererInterface|null             $assertionRenderer             The assertion renderer to use.
+     * @param InvokerInterface|null                       $invoker                       The invoker to use.
+     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
         StubInterface $stub = null,
@@ -52,7 +56,9 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
         CallVerifierFactoryInterface $callVerifierFactory = null,
         AssertionRecorderInterface $assertionRecorder = null,
         AssertionRendererInterface $assertionRenderer = null,
-        InvokerInterface $invoker = null
+        InvokerInterface $invoker = null,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
+            null
     ) {
         if (!$stub) {
             $stub = new Stub();
@@ -62,6 +68,10 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
         }
         if (!$invoker) {
             $invoker = Invoker::instance();
+        }
+        if (!$generatorAnswerBuilderFactory) {
+            $generatorAnswerBuilderFactory =
+                GeneratorAnswerBuilderFactory::instance();
         }
 
         parent::__construct(
@@ -75,6 +85,7 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
 
         $this->stub = $stub;
         $this->invoker = $invoker;
+        $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
     }
 
     /**
@@ -95,6 +106,16 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     public function invoker()
     {
         return $this->invoker;
+    }
+
+    /**
+     * Get the generator answer builder factory.
+     *
+     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
+     */
+    public function generatorAnswerBuilderFactory()
+    {
+        return $this->generatorAnswerBuilderFactory;
     }
 
     /**
@@ -209,24 +230,24 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                 $callback             The callback.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback              The callback.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
         $callback,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
         $this->stub->callsWith(
             $callback,
             $arguments,
             $prefixSelf,
-            $suffixArgumentsArray,
+            $suffixArgumentsObject,
             $suffixArguments
         );
 
@@ -259,16 +280,13 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * This method supports reference parameters in the supplied arguments, but
-     * not in the invocation arguments.
-     *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer                  $index                The argument index.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param integer                  $index                 The argument index.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -276,14 +294,14 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
         $index = 0,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
         $this->stub->callsArgumentWith(
             $index,
             $arguments,
             $prefixSelf,
-            $suffixArgumentsArray,
+            $suffixArgumentsObject,
             $suffixArguments
         );
 
@@ -334,11 +352,11 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add a callback as an answer.
      *
-     * @param callable                 $callback             The callback.
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param callable                 $callback              The callback.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -346,14 +364,14 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
         $callback,
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
         $this->stub->doesWith(
             $callback,
             $arguments,
             $prefixSelf,
-            $suffixArgumentsArray,
+            $suffixArgumentsObject,
             $suffixArguments
         );
 
@@ -363,23 +381,23 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param ArgumentsInterface|array $arguments            The arguments.
-     * @param boolean|null             $prefixSelf           True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsArray True if arguments should be appended as an array.
-     * @param boolean                  $suffixArguments      True if arguments should be appended.
+     * @param ArgumentsInterface|array $arguments             The arguments.
+     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
+     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
     public function forwards(
         $arguments = array(),
         $prefixSelf = null,
-        $suffixArgumentsArray = false,
+        $suffixArgumentsObject = false,
         $suffixArguments = true
     ) {
         $this->stub->forwards(
             $arguments,
             $prefixSelf,
-            $suffixArgumentsArray,
+            $suffixArgumentsObject,
             $suffixArguments
         );
 
@@ -446,6 +464,23 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     }
 
     /**
+     * Add an answer that returns a generator, and return a builder for
+     * customizing the generator's behavior.
+     *
+     * @param array $values An array of keys and values to yield.
+     *
+     * @return GeneratorAnswerBuilderInterface The answer builder.
+     */
+    public function generates(array $values = array())
+    {
+        $builder = $this->generatorAnswerBuilderFactory->create($this, $values);
+
+        $this->stub->doesWith($builder->answer(), array(), true, true, false);
+
+        return $builder;
+    }
+
+    /**
      * Close any existing rule.
      *
      * @return $this This stub.
@@ -459,4 +494,5 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
 
     private $stub;
     private $invoker;
+    private $generatorAnswerBuilderFactory;
 }

@@ -976,6 +976,23 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('e', call_user_func($this->subject, 'b'));
     }
 
+    public function testCloseRule()
+    {
+        $this->subject->returns('a');
+        $this->subject->closeRule();
+        $this->subject->returns('b');
+
+        $this->assertSame('b', call_user_func($this->subject));
+    }
+
+    public function testCloseRuleFailureDanglingCriteria()
+    {
+        $this->subject->with();
+
+        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->subject->closeRule();
+    }
+
     public function testDanglingRules()
     {
         $callCountA = 0;

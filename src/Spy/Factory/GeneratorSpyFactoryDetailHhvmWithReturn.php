@@ -18,7 +18,7 @@ use Generator;
 use Throwable;
 
 /**
- * A detail class for generator spy syntax using an expression.
+ * A detail class for generator spies under HHVM.
  *
  * @codeCoverageIgnore
  */
@@ -98,6 +98,7 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
             }
 
             $isFirst = false;
+            unset($value);
         }
     }
 }
