@@ -3238,7 +3238,10 @@ $stub = stub(function (&$a, &$b, &$c) {})
     ->setsArgument(-1, 'z') // sets the last argument to 'z'
     ->returns();
 
-$stub($a, $b, $c);
+$a = null;
+$b = null;
+$c = null;
+$stub->invokeWith([&$a, &$b, &$c]);
 
 echo $a; // outputs 'x'
 echo $b; // outputs 'y'
@@ -3253,7 +3256,8 @@ $stub = stub(function (&$a) {})
     ->setsArgument('x') // sets the first argument to 'x'
     ->returns();
 
-$stub($a);
+$a = null;
+$stub->invokeWith([&$a]);
 
 echo $a; // outputs 'x'
 ```
@@ -3266,7 +3270,8 @@ $stub = stub(function (&$a) {})
     ->setsArgument() // sets the first argument to `null`
     ->returns();
 
-$stub($a);
+$a = 'x';
+$stub->invokeWith([&$a]);
 
 echo gettype($a); // outputs 'NULL'
 ```
@@ -3625,7 +3630,10 @@ $stub = stub(function (&$a, &$b, &$c) {})->generates()
     ->setsArgument(-1, 'z') // sets the last argument to 'z'
     ->returns();
 
-$generator = $stub($a, $b, $c);
+$a = null;
+$b = null;
+$c = null;
+$generator = $stub->invokeWith([&$a, &$b, &$c]);
 iterator_to_array($generator); // consume the generator
 
 echo $a; // outputs 'x'
@@ -3641,7 +3649,8 @@ $stub = stub(function (&$a) {})->generates()
     ->setsArgument('x') // sets the first argument to 'x'
     ->returns();
 
-$generator = $stub($a);
+$a = null;
+$generator = $stub->invokeWith([&$a]);
 iterator_to_array($generator); // consume the generator
 
 echo $a; // outputs 'x'
@@ -3655,7 +3664,8 @@ $stub = stub(function (&$a) {})->generates()
     ->setsArgument() // sets the first argument to `null`
     ->returns();
 
-$generator = $stub($a);
+$a = 'x';
+$generator = $stub->invokeWith([&$a]);
 iterator_to_array($generator); // consume the generator
 
 echo gettype($a); // outputs 'NULL'
@@ -3671,7 +3681,9 @@ $stub = stub(function (&$a) {})->generates()
     ->yields('b')       // second iteration ends
     ->returns();
 
-foreach ($stub($a) as $value) {
+$a = null;
+
+foreach ($stub->invokeWith([&$a]) as $value) {
     printf("%s, %s\n", $value, $a);
 }
 ```
