@@ -22,10 +22,9 @@ interface GeneratorAnswerBuilderFactoryInterface
     /**
      * Create a generator answer builder for the supplied stub.
      *
-     * @param StubInterface $stub   The stub.
-     * @param array         $values An array of keys and values to yield.
+     * @param StubInterface $stub The stub.
      *
      * @return GeneratorAnswerBuilderInterface The newly created builder.
      */
-    public function create(StubInterface $stub, array $values = array());
+    public function create(StubInterface $stub);
 }

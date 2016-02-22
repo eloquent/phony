@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
+use ArrayIterator;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -26,14 +27,12 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->self = (object) array();
         $this->stub = new Stub(null, $this->self);
-        $this->values = array();
         $this->featureDetector = FeatureDetector::instance();
         $this->isGeneratorReturnSupported = $this->featureDetector->isSupported('generator.return');
         $this->invocableInspector = new InvocableInspector();
         $this->invoker = new Invoker();
         $this->subject = new GeneratorAnswerBuilder(
             $this->stub,
-            $this->values,
             $this->isGeneratorReturnSupported,
             $this->invocableInspector,
             $this->invoker
@@ -98,25 +97,6 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->stub, $this->subject->stub());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertSame($this->invoker, $this->subject->invoker());
-    }
-
-    public function testConstructorWithValues()
-    {
-        $this->values = array('a' => 'b', 'c');
-        $this->subject = new GeneratorAnswerBuilder(
-            $this->stub,
-            $this->values,
-            $this->isGeneratorReturnSupported,
-            $this->invocableInspector,
-            $this->invoker
-        );
-
-        $this->answer = $this->subject->answer();
-
-        $this->assertSame(
-            $this->values,
-            iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
-        );
     }
 
     public function testCalls()
@@ -342,6 +322,32 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $arguments = Arguments::create('b', 'c');
 
         $this->assertSame($this->subject, $this->subject->calls($this->callbackA, $this->callbackB)->yields('a'));
+        $this->assertSame(array('a'), iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
+        $this->assertSame(array(array('b', 'c')), $this->callsA);
+        $this->assertSame(array(array('b', 'c')), $this->callsB);
+    }
+
+    public function testYieldsFrom()
+    {
+        $values = array('a' => 'b', 'c' => 'd');
+
+        $this->assertSame($this->subject, $this->subject->yieldsFrom($values));
+        $this->assertSame($values, iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments)));
+    }
+
+    public function testYieldsFromWithIterator()
+    {
+        $values = array('a' => 'b', 'c' => 'd');
+
+        $this->assertSame($this->subject, $this->subject->yieldsFrom(new ArrayIterator($values)));
+        $this->assertSame($values, iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments)));
+    }
+
+    public function testYieldsFromWithSubRequests()
+    {
+        $arguments = Arguments::create('b', 'c');
+
+        $this->assertSame($this->subject, $this->subject->calls($this->callbackA, $this->callbackB)->yieldsFrom(['a']));
         $this->assertSame(array('a'), iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
         $this->assertSame(array(array('b', 'c')), $this->callsA);
         $this->assertSame(array(array('b', 'c')), $this->callsB);

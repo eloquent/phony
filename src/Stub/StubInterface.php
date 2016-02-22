@@ -281,11 +281,12 @@ interface StubInterface extends WrappedInvocableInterface
      *
      * @api
      *
-     * @param array $values An array of keys and values to yield.
+     * @param mixed<mixed,mixed> $values A set of keys and values to yield.
+     * @param mixed<mixed,mixed> ...$additionalValues Additional sets of keys and values to yield, for subsequent invocations.
      *
      * @return GeneratorAnswerBuilderInterface The answer builder.
      */
-    public function generates(array $values = array());
+    public function generates($values = array());
 
     /**
      * Close any existing rule.

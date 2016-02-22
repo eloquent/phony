@@ -6,6 +6,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
         array(
             'artifacts',
             'vendor',
+            'test/fixture/mock-generator/return-type', // weird under PHP 7
         )
     );
 

@@ -52,15 +52,13 @@ class GeneratorAnswerBuilderFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $stub = new Stub();
-        $values = array('a', 'b');
         $expected = new GeneratorAnswerBuilder(
             $stub,
-            $values,
             $this->featureDetector->isSupported('generator.return'),
             $this->invocableInspector,
             $this->invoker
         );
-        $actual = $this->subject->create($stub, $values);
+        $actual = $this->subject->create($stub);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($stub, $actual->stub());

@@ -777,15 +777,26 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
      *
-     * @param array $values An array of keys and values to yield.
+     * @param mixed<mixed,mixed> $values A set of keys and values to yield.
+     * @param mixed<mixed,mixed> ...$additionalValues Additional sets of keys and values to yield, for subsequent invocations.
      *
      * @return GeneratorAnswerBuilderInterface The answer builder.
      */
-    public function generates(array $values = array())
+    public function generates($values = array())
     {
-        $builder = $this->generatorAnswerBuilderFactory->create($this, $values);
-
+        $builder = $this->generatorAnswerBuilderFactory->create($this);
         $this->doesWith($builder->answer(), array(), true, true, false);
+
+        foreach (func_get_args() as $index => $values) {
+            if ($index > 0) {
+                $builder->returns();
+
+                $builder = $this->generatorAnswerBuilderFactory->create($this);
+                $this->doesWith($builder->answer(), array(), true, true, false);
+            }
+
+            $builder->yieldsFrom($values);
+        }
 
         return $builder;
     }

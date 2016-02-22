@@ -30,14 +30,12 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      * Construct a new generator answer builder.
      *
      * @param StubInterface               $stub                       The stub.
-     * @param array                       $values                     An array of keys and values to yield.
      * @param boolean                     $isGeneratorReturnSupported True if generator return values are supported.
      * @param InvocableInspectorInterface $invocableInspector         The invocable inspector to use.
      * @param InvokerInterface            $invoker                    The invoker to use.
      */
     public function __construct(
         StubInterface $stub,
-        array $values,
         $isGeneratorReturnSupported,
         InvocableInspectorInterface $invocableInspector,
         InvokerInterface $invoker
@@ -50,11 +48,6 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
         $this->requests = array();
         $this->iterations = array();
         $this->returnsSelf = false;
-
-        foreach ($values as $key => $value) {
-            $this->iterations[] =
-                array(true, $key, true, $value, $this->requests);
-        }
     }
 
     /**
@@ -312,8 +305,29 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
             $key = null;
         }
 
+        $this->iterations[] = new GeneratorYieldIteration(
+            $this->requests,
+            $hasKey,
+            $key,
+            $hasValue,
+            $value
+        );
+        $this->requests = array();
+
+        return $this;
+    }
+
+    /**
+     * Add a set of yielded values to the answer.
+     *
+     * @param mixed<mixed,mixed> $values The set of keys and values to yield.
+     *
+     * @return $this This builder.
+     */
+    public function yieldsFrom($values)
+    {
         $this->iterations[] =
-            array($hasKey, $key, $hasValue, $value, $this->requests);
+            new GeneratorYieldFromIteration($this->requests, $values);
         $this->requests = array();
 
         return $this;

@@ -130,6 +130,17 @@ interface GeneratorAnswerBuilderInterface
     public function yields($keyOrValue = null, $value = null);
 
     /**
+     * Add a set of yielded values to the answer.
+     *
+     * @api
+     *
+     * @param mixed<mixed,mixed> $values The set of keys and values to yield.
+     *
+     * @return $this This builder.
+     */
+    public function yieldsFrom($values);
+
+    /**
      * End the generator by returning a value.
      *
      * @api

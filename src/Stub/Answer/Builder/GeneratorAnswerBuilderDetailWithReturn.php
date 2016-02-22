@@ -53,22 +53,25 @@ abstract class GeneratorAnswerBuilderDetailWithReturn
             $invoker
         ) {
             foreach ($iterations as $iteration) {
-                list($hasKey, $key, $hasValue, $value, $iterationRequests) =
-                    $iteration;
-
-                foreach ($iterationRequests as $request) {
+                foreach ($iteration->requests as $request) {
                     $invoker->callWith(
                         $request->callback(),
                         $request->finalArguments($self, $arguments)
                     );
                 }
 
-                if ($hasKey) {
-                    yield $key => $value;
-                } elseif ($hasValue) {
-                    yield $value;
+                if ($iteration instanceof GeneratorYieldFromIteration) {
+                    foreach ($iteration->values as $key => $value) {
+                        yield $key => $value;
+                    }
                 } else {
-                    yield;
+                    if ($iteration->hasKey) {
+                        yield $iteration->key => $iteration->value;
+                    } elseif ($iteration->hasValue) {
+                        yield $iteration->value;
+                    } else {
+                        yield;
+                    }
                 }
             }
 

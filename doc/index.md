@@ -2568,6 +2568,19 @@ Add a yielded value to the answer.
 
 *See [Yielding from a generator].*
 
+<a name="generatorAnswer.yieldsFrom" />
+
+----
+
+> *fluent* $generatorAnswer->[**yieldsFrom**](#generatorAnswer.yieldsFrom)($values)
+
+Add a set of yielded values to the answer.
+
+*The `$values` argument can be an array, an iterator, or even another
+generator.*
+
+*See [Yielding from a generator].*
+
 <a name="generatorAnswer.returns" />
 
 ----
@@ -3466,9 +3479,8 @@ Keys and values to be yielded can be passed directly to
 
 ```php
 $stub = stub()
-    ->generates(['a', 'b', 'c', 'd']);
-    ->generates(['a' => 'b', 'c' => 'd'])
-    ->returns();
+    ->generates(['a', 'b', 'c', 'd'])->returns()
+    ->generates(['e' => 'f', 'g' => 'h'])->returns();
 
 $generatorA = $stub();
 $generatorB = $stub();
@@ -3477,7 +3489,7 @@ $valuesA = iterator_to_array($generatorA); // consume the generator
 $valuesB = iterator_to_array($generatorB); // consume the generator
 
 echo json_encode($valuesA); // outputs '["a","b","c","d"]'
-echo json_encode($valuesB); // outputs '{"a":"b","c":"d"}'
+echo json_encode($valuesB); // outputs '{"e":"f","g":"h"}'
 ```
 
 Alternatively, [`yields()`](#generatorAnswer.yields) can be used when yields
@@ -3517,7 +3529,7 @@ will yield with no value:
 
 ```php
 $stub = stub()->generates()
-    ->yields('a', 'b');
+    ->yields('a', 'b')
     ->yields('c')
     ->yields()
     ->returns();
@@ -3525,6 +3537,45 @@ $stub = stub()->generates()
 $values = iterator_to_array($stub()); // consume the generator
 
 echo json_encode($values); // outputs '{"a":"b","0":"c","1":null}'
+```
+
+To yield a set of values from an array, an iterator, or another generator, use
+[`yieldsFrom()`](#generatorAnswer.yieldsFrom):
+
+```php
+$stub = stub()->generates()
+    ->yieldsFrom(['a' => 'b', 'c' => 'd'])
+    ->yieldsFrom(['e' => 'f'])
+    ->returns();
+
+$values = iterator_to_array($stub()); // consume the generator
+
+echo json_encode($values); // outputs '{"a":"b","c":"d","e":"f"}'
+```
+
+Calling [`generates()`](#stub.generates) with multiple sets of values creates
+multiple answers that yield the supplied values on subsequent invocations. The
+returned [generator answer] will allow customization of the final answer only.
+For example, the two following stubs behave the same:
+
+```php
+$stubA = stub()
+    ->generates(['a', 'b'], ['c', 'd'])
+    ->yields('e')
+    ->returns();
+
+echo json_encode(iterator_to_array($stubA())); // outputs '["a","b"]'
+echo json_encode(iterator_to_array($stubA())); // outputs '["c","d","e"]'
+
+$stubB = stub()
+    ->generates(['a', 'b'])
+    ->returns()
+    ->generates(['c', 'd'])
+    ->yields('e')
+    ->returns();
+
+echo json_encode(iterator_to_array($stubB())); // outputs '["a","b"]'
+echo json_encode(iterator_to_array($stubB())); // outputs '["c","d","e"]'
 ```
 
 #### Returning values from a generator
