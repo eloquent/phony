@@ -908,7 +908,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->subject = new Stub(eval('return function (): stdClass {};'));
         $this->subject->returns();
 
-        $this->assertTrue(call_user_func($this->subject) instanceof stdClass);
+        $this->assertInstanceOf('stdClass', call_user_func($this->subject));
     }
 
     public function testReturnsWithCallableReturnType()
@@ -920,7 +920,43 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->subject = new Stub(eval('return function (): callable {};'));
         $this->subject->returns();
 
-        $this->assertTrue(call_user_func($this->subject) instanceof Closure);
+        $this->assertInstanceOf('Closure', call_user_func($this->subject));
+    }
+
+    public function returnsWithTraversableReturnTypeData()
+    {
+        return array(
+            'Generator' => array('Generator'),
+            'Iterator' => array('Iterator'),
+            'IteratorAggregate' => array('IteratorAggregate'),
+            'Traversable' => array('Traversable'),
+            'SplDoublyLinkedList' => array('SplDoublyLinkedList'),
+            'SplFixedArray' => array('SplFixedArray'),
+            'SplMaxHeap' => array('SplMaxHeap'),
+            'SplMinHeap' => array('SplMinHeap'),
+            'SplObjectStorage' => array('SplObjectStorage'),
+            'SplPriorityQueue' => array('SplPriorityQueue'),
+            'SplQueue' => array('SplQueue'),
+            'SplStack' => array('SplStack'),
+        );
+    }
+
+    /**
+     * @dataProvider returnsWithTraversableReturnTypeData
+     */
+    public function testReturnsWithTraversableReturnType($type)
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new Stub(eval("return function (): $type {};"));
+        $this->subject->returns();
+
+        $result = call_user_func($this->subject);
+
+        $this->assertInstanceOf($type, $result);
+        $this->assertSame(array(), iterator_to_array($result));
     }
 
     public function testReturnsWithClassReturnTypeFailure()
@@ -929,7 +965,7 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $this->subject = new Stub(eval('return function (): Iterator {};'));
+        $this->subject = new Stub(eval('return function (): Throwable {};'));
 
         $this->setExpectedException('InvalidArgumentException');
         $this->subject->returns();

@@ -30,6 +30,8 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderInterface;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Stub\Rule\StubRule;
+use EmptyIterator;
+use Generator;
 use Error;
 use Exception;
 use InvalidArgumentException;
@@ -636,6 +638,35 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
                 case 'callable':
                     $value = function () {};
+
+                    break;
+
+                case 'Traversable':
+                case 'Iterator':
+                    $value = new EmptyIterator();
+
+                    break;
+
+                case 'IteratorAggregate':
+                    $value = new EmptyIteratorAggregate();
+
+                    break;
+
+                case 'Generator':
+                    $fn = function () { return; yield; };
+                    $value = $fn();
+
+                    break;
+
+                case 'SplDoublyLinkedList':
+                case 'SplFixedArray':
+                case 'SplMaxHeap':
+                case 'SplMinHeap':
+                case 'SplObjectStorage':
+                case 'SplPriorityQueue':
+                case 'SplQueue':
+                case 'SplStack':
+                    $value = new $type();
 
                     break;
 
