@@ -2991,16 +2991,28 @@ var_dump($stubA()); // outputs 'int(0)'
 This table details the return types that *Phony* handles, and the values
 returned for each:
 
-Return type | Returned value
-------------|---------------
-`bool`      | `false`
-`int`       | `0`
-`float`     | `.0`
-`string`    | `''`
-`array`     | `[]`
-`stdClass`  | `(object) []`
-`callable`  | `function () {}`
-*(none)*    | `null`
+Return type           | Returned value
+----------------------|---------------
+*(none)*              | `null`
+`bool`                | `false`
+`int`                 | `0`
+`float`               | `.0`
+`string`              | `''`
+`array`               | `[]`
+`stdClass`            | `(object) []`
+`callable`            | `function () {}`
+`Traversable`         | `new EmptyIterator()`
+`Iterator`            | `new EmptyIterator()`
+`IteratorAggregate`   | an iterator aggregate for `new EmptyIterator()`
+`Generator`           | `(function () {return; yield;})()`
+`SplDoublyLinkedList` | `new SplDoublyLinkedList()`
+`SplFixedArray`       | `new SplFixedArray()`
+`SplMaxHeap`          | `new SplMaxHeap()`
+`SplMinHeap`          | `new SplMinHeap()`
+`SplObjectStorage`    | `new SplObjectStorage()`
+`SplPriorityQueue`    | `new SplPriorityQueue()`
+`SplQueue`            | `new SplQueue()`
+`SplStack`            | `new SplStack()`
 
 When using a [return type] that is a class name, the return value *must* be
 explicitly passed, or *Phony* will throw an exception:

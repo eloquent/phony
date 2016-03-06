@@ -31,9 +31,9 @@ use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Stub\Rule\StubRule;
 use EmptyIterator;
-use Generator;
 use Error;
 use Exception;
+use Generator;
 use InvalidArgumentException;
 
 /**

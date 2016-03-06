@@ -3,8 +3,11 @@
 ## Next release
 
 - **[NEW]** Implemented generator stubs ([#11]).
+- **[IMPROVED]** More default values for built-in return types ([#138], [#139]).
 
 [#11]: https://github.com/eloquent/phony/issues/11
+[#138]: https://github.com/eloquent/phony/issues/138
+[#139]: https://github.com/eloquent/phony/pull/139
 
 ## 0.8.0 (2016-02-12)
 

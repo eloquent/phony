@@ -12,14 +12,22 @@
 namespace Eloquent\Phony\Stub;
 
 use EmptyIterator;
+use Iterator;
 use IteratorAggregate;
 
 /**
  * An empty iterator aggregate, used as a default return value for callables
  * with return type hints of IteratorAggregate.
+ *
+ * @codeCoverageIgnore
  */
 final class EmptyIteratorAggregate implements IteratorAggregate
 {
+    /**
+     * Get the iterator.
+     *
+     * @return Iterator The iterator.
+     */
     public function getIterator()
     {
         return new EmptyIterator();
