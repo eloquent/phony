@@ -647,26 +647,9 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
                     break;
 
-                case 'IteratorAggregate':
-                    $value = new EmptyIteratorAggregate();
-
-                    break;
-
                 case 'Generator':
                     $fn = function () { return; yield; };
                     $value = $fn();
-
-                    break;
-
-                case 'SplDoublyLinkedList':
-                case 'SplFixedArray':
-                case 'SplMaxHeap':
-                case 'SplMinHeap':
-                case 'SplObjectStorage':
-                case 'SplPriorityQueue':
-                case 'SplQueue':
-                case 'SplStack':
-                    $value = new $type();
 
                     break;
 

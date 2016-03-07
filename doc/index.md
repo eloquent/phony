@@ -2991,39 +2991,30 @@ var_dump($stubA()); // outputs 'int(0)'
 This table details the return types that *Phony* handles, and the values
 returned for each:
 
-Return type           | Returned value
-----------------------|---------------
-*(none)*              | `null`
-`bool`                | `false`
-`int`                 | `0`
-`float`               | `.0`
-`string`              | `''`
-`array`               | `[]`
-`stdClass`            | `(object) []`
-`callable`            | `function () {}`
-`Traversable`         | `new EmptyIterator()`
-`Iterator`            | `new EmptyIterator()`
-`IteratorAggregate`   | an iterator aggregate for `new EmptyIterator()`
-`Generator`           | `(function () {return; yield;})()`
-`SplDoublyLinkedList` | `new SplDoublyLinkedList()`
-`SplFixedArray`       | `new SplFixedArray()`
-`SplMaxHeap`          | `new SplMaxHeap()`
-`SplMinHeap`          | `new SplMinHeap()`
-`SplObjectStorage`    | `new SplObjectStorage()`
-`SplPriorityQueue`    | `new SplPriorityQueue()`
-`SplQueue`            | `new SplQueue()`
-`SplStack`            | `new SplStack()`
+Return type   | Returned value
+--------------|---------------
+*(none)*      | `null`
+`bool`        | `false`
+`int`         | `0`
+`float`       | `.0`
+`string`      | `''`
+`array`       | `[]`
+`stdClass`    | `(object) []`
+`callable`    | `function () {}`
+`Traversable` | `new EmptyIterator()`
+`Iterator`    | `new EmptyIterator()`
+`Generator`   | `(function () {return; yield;})()`
 
-When using a [return type] that is a class name, the return value *must* be
+When using a [return type] that is not listed above, the return value *must* be
 explicitly passed, or *Phony* will throw an exception:
 
 ```php
 $stub = stub(
-    function (): Iterator {}
+    function (): DateTime {}
 );
 
-$stub->returns(new ArrayIterator()); // works fine
-$stub->returns();                    // throws an exception
+$stub->returns(new DateTime()); // works fine
+$stub->returns();               // throws an exception
 ```
 
 ### Returning arguments

@@ -928,16 +928,7 @@ class StubTest extends PHPUnit_Framework_TestCase
         return array(
             'Generator' => array('Generator'),
             'Iterator' => array('Iterator'),
-            'IteratorAggregate' => array('IteratorAggregate'),
             'Traversable' => array('Traversable'),
-            'SplDoublyLinkedList' => array('SplDoublyLinkedList'),
-            'SplFixedArray' => array('SplFixedArray'),
-            'SplMaxHeap' => array('SplMaxHeap'),
-            'SplMinHeap' => array('SplMinHeap'),
-            'SplObjectStorage' => array('SplObjectStorage'),
-            'SplPriorityQueue' => array('SplPriorityQueue'),
-            'SplQueue' => array('SplQueue'),
-            'SplStack' => array('SplStack'),
         );
     }
 
