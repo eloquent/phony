@@ -172,9 +172,9 @@
 
 Available as [Composer] package [eloquent/phony].
 
-This document represents the state of the `develop` branch, and in rare cases
+This document represents the state of the `master` branch, and in rare cases
 may describe features that are not yet tagged. In case of emergency,
-`dev-develop` can be used as the Composer version constraint.
+`dev-master` can be used as the Composer version constraint.
 
 ## Help
 
@@ -7343,7 +7343,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [counterpart]: http://docs.counterpartphp.org/
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [error]: http://php.net/class.error
-[example]: https://github.com/eloquent/phony/tree/develop/doc/example
+[example]: https://github.com/eloquent/phony/tree/HEAD/doc/example
 [exception]: http://php.net/class.exception
 [fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
 [generator::send()]: http://php.net/generator.send
@@ -7352,7 +7352,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [generators]: http://php.net/language.generators.overview
 [github issue]: https://github.com/eloquent/phony/issues
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
-[license file]: https://github.com/eloquent/phony/blob/develop/LICENSE
+[license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
 [mockery matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
 [mockery]: http://docs.mockery.io/
 [peridot]: http://peridot-php.github.io/

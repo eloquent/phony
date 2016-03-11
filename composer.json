@@ -50,10 +50,5 @@
         "files": [
             "test/src/TestClass.php"
         ]
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-develop": "0.8.x-dev"
-        }
     }
 }

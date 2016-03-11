@@ -16,11 +16,10 @@ automatically fix most issues, but be sure to stage changes first.
 As a guideline, please follow this process:
 
 1. [Fork the repository].
-2. Create a topic branch for the change, branching from **develop**
-(`git checkout -b branch-name develop`).
+2. Create a branch from **master** (`git checkout -b branch-name master`).
 3. Make the relevant changes.
-4. [Squash] commits if necessary (`git rebase -i develop`).
-5. Submit a pull request to the **develop** branch.
+4. [Squash] commits if necessary (`git rebase -i master`).
+5. Submit a pull request to the **master** branch.
 
 [fork the repository]: https://help.github.com/articles/fork-a-repo
 [squash]: http://git-scm.com/book/en/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages
