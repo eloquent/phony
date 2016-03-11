@@ -18,8 +18,6 @@ use Mockery;
 use Phake;
 use PHPUnit_Framework_MockObject_Generator;
 use Prophecy\Prophet;
-use SimpleTest;
-use SimpleTestCase;
 
 class TypicalMockEvent extends AthleticEvent
 {
@@ -30,8 +28,6 @@ class TypicalMockEvent extends AthleticEvent
 
         $this->phpunit = new PHPUnit_Framework_MockObject_Generator();
         $this->prophecy = new Prophet();
-
-        SimpleTest::getContext()->setTest(new SimpleTestCase());
     }
 
     /**
@@ -40,15 +36,6 @@ class TypicalMockEvent extends AthleticEvent
     public function phpunit()
     {
         $this->phpunit->getMock($this->className);
-    }
-
-    /**
-     * @iterations 100
-     */
-    public function simpletest()
-    {
-        Mock::generate($this->className, 'SimpleTestTypicalMock');
-        new \SimpleTestTypicalMock();
     }
 
     /**

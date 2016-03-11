@@ -26,12 +26,10 @@ As a guideline, please follow this process:
 
 ## Tests
 
-- Run the tests with `vendor/bin/archer t path/to/tests`, or simply
-  `vendor/bin/archer` to run the entire suite.
-- Generate a coverage report with `vendor/bin/archer c path/to/tests`, or simply
-  `vendor/bin/archer c` to generate coverage for the entire suite. The coverage
-  report will be created at `artifacts/tests/coverage/index.html`.
-- Run the integration tests with `test/integration/run-all`. Each test suite has
-  one passing, and one failing test. This demonstrates *Phony*'s output.
-- Run the benchmarks with `vendor/bin/athletic -p test/benchmarks`. This
-  compares *Phony*'s performance with other mocking frameworks.
+- Run the tests with `make test`.
+- Generate a coverage report with `make coverage`.
+- Run the example test suites with `make examples`.
+- Run the integration tests with `make integration`. Each test suite has one
+  passing test, and one failing test. This demonstrates *Phony*'s output.
+- Run the benchmarks with `make benchmarks`. This compares *Phony*'s performance
+  with other mocking frameworks.

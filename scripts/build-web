@@ -26,7 +26,7 @@ if (file_exists('artifacts/web.json')) {
 if ($needsRender) {
     $header = "Content-type: text/plain\r\n";
 
-    if ($token = getenv('ARCHER_TOKEN')) {
+    if ($token = getenv('GITHUB_TOKEN')) {
         $header .= "Authorization: token $token\r\n";
     }
 

@@ -18,8 +18,6 @@ use Mockery;
 use Phake;
 use PHPUnit_Framework_MockObject_Generator;
 use Prophecy\Prophet;
-use SimpleTest;
-use SimpleTestCase;
 
 class IsolatorMockEvent extends AthleticEvent
 {
@@ -30,17 +28,6 @@ class IsolatorMockEvent extends AthleticEvent
 
         $this->phpunit = new PHPUnit_Framework_MockObject_Generator();
         $this->prophecy = new Prophet();
-
-        SimpleTest::getContext()->setTest(new SimpleTestCase());
-    }
-
-    /**
-     * @iterations 10
-     */
-    public function simpletest()
-    {
-        Mock::generate($this->className, 'SimpleTestIsolatorMock');
-        new \SimpleTestIsolatorMock();
     }
 
     /**

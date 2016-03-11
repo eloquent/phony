@@ -16,14 +16,15 @@ matrix:
 
 before_install:
     - phpenv config-rm xdebug.ini || true
-    - composer config --global github-oauth.github.com $ARCHER_TOKEN
+    - composer config --global github-oauth.github.com $GITHUB_TOKEN
 install: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --ignore-platform-reqs
 script: scripts/travis
+after_script: scripts/travis-after
 
 env:
     global:
-        - ARCHER_PUBLISH_VERSION=7.0
-        - secure: "O3gWqnPXJHfHcaZscfK7RnHsLOChbPTMPd3Siw4pJBU4JluhJRto0S+EnOErce1cKLrD4zHdfPTEXEBLg8dFj2eOCbGDEuJHCguwow3UeeSQ6qnUNZOZlXIb2ajZRJtC4bB+CevyHqVYSUcGxcWmUu0faG26/xh8cHpXK3Daris="
+        - ELOQUENT_PUBLISH_VERSION=7.0
+        - secure: "Mc3vD6Dfe0vZNZUZ6U30r48RRjnvO/B3f22Uj+0cANp6Ql7HTtw/gquTPGa52ho7gKZYC9QuOxlV7LOBwI3N+lBJbYtLAiWruyRjQ2aFI3CdZPU53a4rPCODkYoz7jpLijUgH/GrzBRhCFUJzr3WsIPxob4IkqMAn5heS+3FqGk="
 
 cache:
     directories:
