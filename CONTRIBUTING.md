@@ -6,7 +6,8 @@ changes.
 
 ## Code style
 
-All PHP code must adhere to the [PSR-2] standards.
+All PHP code must adhere to the [PSR-2] standards. Running `make lint` will
+automatically fix most issues, but be sure to stage changes first.
 
 [psr-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 
