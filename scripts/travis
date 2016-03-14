@@ -2,18 +2,60 @@
 
 set -e
 
-if [[ "${TRAVIS_PULL_REQUEST}" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
+if [[ -z "$TRAVIS_PHP_VERSION" ]]; then
+    echo 'TRAVIS_PHP_VERSION not defined.'
+
+    exit 1
+fi
+
+if [[ -z "$TRAVIS_BRANCH" ]]; then
+    echo 'TRAVIS_BRANCH not defined.'
+
+    exit 1
+fi
+
+if [[ -z "$TRAVIS_PULL_REQUEST" ]]; then
+    echo 'TRAVIS_PULL_REQUEST not defined.'
+
+    exit 1
+fi
+
+if [[ -z "$ELOQUENT_PUBLISH_VERSION" ]]; then
+    echo 'ELOQUENT_PUBLISH_VERSION not defined.'
+
+    exit 1
+fi
+
+if [[ -z "$ELOQUENT_DOCUMENTATION_BUILD" ]]; then
+    if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
+        make coverage
+        make examples
+    else
+        make test
+    fi
+else
+    if [[ "${TRAVIS_PULL_REQUEST}" != "false" ]]; then
+        echo 'Skipping documentation build for pull request.'
+
+        exit 0
+    fi
+
+    if [[ "$TRAVIS_BRANCH" != "master" ]]; then
+        echo 'Skipping documentation build for non-master branch.'
+
+        exit 0
+    fi
+
+    if [[ "$TRAVIS_PHP_VERSION" != "$ELOQUENT_PUBLISH_VERSION" ]]; then
+        echo 'Skipping documentation build for non-publish version.'
+
+        exit 0
+    fi
+
     scripts/build-web
     vendor/bin/woodhouse publish eloquent/phony --auth-token "$GITHUB_TOKEN" \
         artifacts/web/index.html:index.html \
         artifacts/web/css:css \
         artifacts/web/img:img \
         artifacts/web/js:js
-fi
-
-if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
-    make coverage
-    make examples
-else
-    make test
 fi
