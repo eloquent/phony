@@ -14,9 +14,9 @@
     </testsuites>
 
     <logging>
-        <log type="coverage-html" target="artifacts/tests/coverage" charset="UTF-8" yui="true" highlight="true" />
-        <log type="coverage-clover" target="artifacts/tests/coverage/coverage.xml" />
-        <log type="coverage-text" target="artifacts/tests/coverage/coverage.txt" />
+        <log type="coverage-html" target="coverage" charset="UTF-8" yui="true" highlight="true" />
+        <log type="coverage-clover" target="coverage/coverage.xml" />
+        <log type="coverage-text" target="coverage/coverage.txt" />
     </logging>
 
     <filter>

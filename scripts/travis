@@ -26,7 +26,7 @@ if [[ -z "$ELOQUENT_PUBLISH_VERSION" ]]; then
     exit 1
 fi
 
-if [[ -z "$ELOQUENT_DOCUMENTATION_BUILD" ]]; then
+if [[ -z "$ELOQUENT_BUILD_WEB" ]]; then
     if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
         make coverage
         make examples
@@ -52,10 +52,5 @@ else
         exit 0
     fi
 
-    scripts/build-web
-    vendor/bin/woodhouse publish eloquent/phony --auth-token "$GITHUB_TOKEN" \
-        artifacts/web/index.html:index.html \
-        artifacts/web/css:css \
-        artifacts/web/img:img \
-        artifacts/web/js:js
+    make publish
 fi

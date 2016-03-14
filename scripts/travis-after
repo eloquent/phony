@@ -26,7 +26,7 @@ if [[ -z "$ELOQUENT_PUBLISH_VERSION" ]]; then
     exit 1
 fi
 
-if [[ -z "$ELOQUENT_DOCUMENTATION_BUILD" ]]; then
+if [[ -z "$ELOQUENT_BUILD_WEB" ]]; then
     if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
         bash <(curl -s https://codecov.io/bash)
     fi

@@ -4,5 +4,8 @@
 */*/*/.git
 */*/*/*/.git
 */*/*/*/*/.git
-artifacts
+assets
+build
+coverage
 doc
+web

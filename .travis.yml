@@ -15,7 +15,7 @@ matrix:
         - php: nightly
     include:
         - php: '7.0'
-          env: ELOQUENT_DOCUMENTATION_BUILD=1
+          env: ELOQUENT_BUILD_WEB=1
 
 before_install:
     - phpenv config-rm xdebug.ini || true

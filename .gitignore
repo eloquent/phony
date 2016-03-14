@@ -1,5 +1,7 @@
-/artifacts/
+/build/
+/coverage/
 /doc/*.html
 /doc/example/**/coverage/
 /vendor/
+/web/
 README.html

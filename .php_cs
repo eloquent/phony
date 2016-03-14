@@ -4,9 +4,11 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->in(__DIR__)
     ->exclude(
         array(
-            'artifacts',
-            'vendor',
+            'build',
+            'coverage',
             'test/fixture/mock-generator/return-type', // weird under PHP 7
+            'vendor',
+            'web',
         )
     );
 

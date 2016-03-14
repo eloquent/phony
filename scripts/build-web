@@ -9,14 +9,17 @@ Asplode::install();
 
 echo 'Generating Phony website... ';
 
-passthru('rm -rf artifacts/web');
-passthru('mkdir -p artifacts/web');
+passthru('rm -rf web');
+passthru('mkdir -p web');
+
+passthru('mkdir -p build');
+passthru('rm -rf build/web.json');
 
 $hash = sha1_file('doc/index.md');
 $content = null;
 
-if (file_exists('artifacts/web.json')) {
-    $meta = json_decode(file_get_contents('artifacts/web.json'));
+if (file_exists('build/web.json')) {
+    $meta = json_decode(file_get_contents('build/web.json'));
     $needsRender = $meta->hash !== $hash;
     $content = $meta->content;
 } else {
@@ -52,7 +55,7 @@ if ($needsRender) {
     );
 
     file_put_contents(
-        'artifacts/web.json',
+        'build/web.json',
         json_encode(
             array('content' => $content, 'hash' => $hash),
             JSON_PRETTY_PRINT
@@ -61,15 +64,15 @@ if ($needsRender) {
 }
 
 file_put_contents(
-    'artifacts/web/index.html',
+    'web/index.html',
     strtr(
         file_get_contents('assets/web/site.tpl.html'),
         array('{content}' => $content)
     )
 );
 
-passthru('cp -a assets/web/css artifacts/web/');
-passthru('cp -a assets/web/img artifacts/web/');
-passthru('cp -a assets/web/js artifacts/web/');
+passthru('cp -a assets/web/css web/');
+passthru('cp -a assets/web/img web/');
+passthru('cp -a assets/web/js web/');
 
 echo "done.\n";

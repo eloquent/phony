@@ -20,7 +20,17 @@ benchmarks:
 integration:
 	test/integration/run-all
 
-.PHONY: test coverage lint install examples benchmarks integration
+web: $(shell find doc assets/web)
+	scripts/build-web
+
+publish: web
+	vendor/bin/woodhouse publish eloquent/phony --auth-token "$GITHUB_TOKEN" \
+        web/index.html:index.html \
+        web/css:css \
+        web/img:img \
+        web/js:js
+
+.PHONY: test coverage lint install examples benchmarks integration publish
 
 vendor/autoload.php: composer.lock
 	composer install
