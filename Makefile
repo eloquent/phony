@@ -24,7 +24,7 @@ web: $(shell find doc assets/web)
 	scripts/build-web
 
 publish: web
-	vendor/bin/woodhouse publish eloquent/phony --auth-token "$GITHUB_TOKEN" \
+	vendor/bin/woodhouse publish eloquent/phony --auth-token $(GITHUB_TOKEN) \
         web/index.html:index.html \
         web/css:css \
         web/img:img \
