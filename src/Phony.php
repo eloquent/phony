@@ -41,4 +41,9 @@ class Phony extends AbstractFacade
     {
         sprintf('This line is untested.');
     }
+
+    public function untested3()
+    {
+        sprintf('This line is untested.');
+    }
 }
