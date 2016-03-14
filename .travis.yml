@@ -27,7 +27,7 @@ after_script: scripts/travis-after
 env:
     global:
         - ELOQUENT_PUBLISH_VERSION=7.0
-        - secure: "Mc3vD6Dfe0vZNZUZ6U30r48RRjnvO/B3f22Uj+0cANp6Ql7HTtw/gquTPGa52ho7gKZYC9QuOxlV7LOBwI3N+lBJbYtLAiWruyRjQ2aFI3CdZPU53a4rPCODkYoz7jpLijUgH/GrzBRhCFUJzr3WsIPxob4IkqMAn5heS+3FqGk="
+        - secure: "j+ElTeNDwLIjcifor5MzdTmvxGbDWktWZcKNKy7QKrp/ApQn/A+0gEacaHmEOIXBUEIEFwIyV8VpEDq1qkN63NWL865bKx/vb7X73xilKrcem1y8MxnCsKwqCtnLS8FR9ni7eZnfzhV+kjvXuGAobxY3ZlX/Go0AAAj/l4ziMtc="
 
 cache:
     directories:
