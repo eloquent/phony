@@ -373,6 +373,20 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires generator return values.');
         }
 
+        $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns('c'));
+
+        $generator = call_user_func($this->answer, $this->self, $this->arguments);
+
+        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame('c', $generator->getReturn());
+    }
+
+    public function testReturnsWithInstanceHandleValue()
+    {
+        if (!$this->featureDetector->isSupported('generator.return')) {
+            $this->markTestSkipped('Requires generator return values.');
+        }
+
         $adaptable = Phony::mock();
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns($adaptable));
 
@@ -382,18 +396,25 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($adaptable->mock(), $generator->getReturn());
     }
 
-    public function testReturnsWithInstanceHandleValue()
+    public function testReturnsWithMulitpleValues()
     {
         if (!$this->featureDetector->isSupported('generator.return')) {
             $this->markTestSkipped('Requires generator return values.');
         }
 
-        $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns('c'));
+        $this->stub->doesWith($this->answer, array(), true, true, false);
 
-        $generator = call_user_func($this->answer, $this->self, $this->arguments);
+        $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns('c', 'd'));
+
+        $generator = call_user_func($this->stub);
 
         $this->assertSame(array('a', 'b'), iterator_to_array($generator));
         $this->assertSame('c', $generator->getReturn());
+
+        $generator = call_user_func($this->stub);
+
+        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame('d', $generator->getReturn());
     }
 
     public function testReturnsFailureValueNotSupported()
@@ -561,6 +582,43 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertSame($exception, $actual);
+    }
+
+    public function testThrowsWithMultipleExceptions()
+    {
+        $this->stub->doesWith($this->answer, array(), true, true, false);
+        $exceptionA = new Exception('a');
+        $exceptionB = new Exception('b');
+        $this->subject->throws($exceptionA, $exceptionB);
+        $generator = call_user_func($this->stub);
+        $actual = null;
+
+        try {
+            iterator_to_array($generator);
+        } catch (Exception $actual) {
+        }
+
+        $this->assertSame($exceptionA, $actual);
+
+        $generator = call_user_func($this->stub);
+        $actual = null;
+
+        try {
+            iterator_to_array($generator);
+        } catch (Exception $actual) {
+        }
+
+        $this->assertSame($exceptionB, $actual);
+
+        $generator = call_user_func($this->stub);
+        $actual = null;
+
+        try {
+            iterator_to_array($generator);
+        } catch (Exception $actual) {
+        }
+
+        $this->assertSame($exceptionB, $actual);
     }
 
     public function testThrowsWithMessage()

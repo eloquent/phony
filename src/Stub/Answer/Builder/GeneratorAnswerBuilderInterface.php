@@ -146,6 +146,7 @@ interface GeneratorAnswerBuilderInterface
      * @api
      *
      * @param mixed $value The return value.
+     * @param mixed ...$additionalValues Additional return values for subsequent invocations.
      *
      * @return StubInterface    The stub.
      * @throws RuntimeException If the current runtime does not support the supplied return value.
@@ -181,6 +182,7 @@ interface GeneratorAnswerBuilderInterface
      * @api
      *
      * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
+     * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return StubInterface The stub.
      */

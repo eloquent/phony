@@ -337,12 +337,20 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      * End the generator by returning a value.
      *
      * @param mixed $value The return value.
+     * @param mixed ...$additionalValues Additional return values for subsequent invocations.
      *
      * @return StubInterface    The stub.
      * @throws RuntimeException If the current runtime does not support the supplied return value.
      */
     public function returns($value = null)
     {
+        $argumentCount = func_num_args();
+        $copies = array();
+
+        for ($i = 1; $i < $argumentCount; ++$i) {
+            $copies[$i] = clone $this;
+        }
+
         if (
             $value instanceof InstanceHandleInterface &&
             $value->isAdaptable()
@@ -362,6 +370,13 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
             );
         }
         // @codeCoverageIgnoreEnd
+
+        for ($i = 1; $i < $argumentCount; ++$i) {
+            $this->stub
+                ->doesWith($copies[$i]->answer(), array(), true, true, false);
+
+            $copies[$i]->returns(func_get_arg($i));
+        }
 
         return $this->stub;
     }
@@ -415,11 +430,19 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      * End the generator by throwing an exception.
      *
      * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
+     * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return StubInterface The stub.
      */
     public function throws($exception = null)
     {
+        $argumentCount = func_num_args();
+        $copies = array();
+
+        for ($i = 1; $i < $argumentCount; ++$i) {
+            $copies[$i] = clone $this;
+        }
+
         if (is_string($exception)) {
             $exception = new Exception($exception);
         } elseif (
@@ -432,6 +455,13 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
         }
 
         $this->exception = $exception;
+
+        for ($i = 1; $i < $argumentCount; ++$i) {
+            $this->stub
+                ->doesWith($copies[$i]->answer(), array(), true, true, false);
+
+            $copies[$i]->throws(func_get_arg($i));
+        }
 
         return $this->stub;
     }
@@ -466,6 +496,18 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
             $this->invoker
         );
         // @codeCoverageIgnoreEnd
+    }
+
+    /**
+     * Clone this builder.
+     */
+    public function __clone()
+    {
+        // explicitly break references
+        foreach (get_object_vars($this) as $property => $value) {
+            unset($this->$property);
+            $this->$property = $value;
+        }
     }
 
     private $stub;

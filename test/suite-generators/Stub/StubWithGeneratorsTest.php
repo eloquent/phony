@@ -150,6 +150,13 @@ class StubWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Generator', $generator);
         $this->assertSame($this->subject, $builder->returns());
         $this->assertSame(array('a' => 'b', 0 => 'c'), $actual);
+
+        $generator = call_user_func($this->subject);
+        $actual = iterator_to_array($generator);
+
+        $this->assertInstanceOf('Generator', $generator);
+        $this->assertSame($this->subject, $builder->returns());
+        $this->assertSame(array('a' => 'b', 0 => 'c'), $actual);
     }
 
     public function testGeneratesWithMultipleArguments()
@@ -157,9 +164,11 @@ class StubWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $builder = $this->subject->generates(array('a'), array('b'));
         $actualA = iterator_to_array(call_user_func($this->subject));
         $actualB = iterator_to_array(call_user_func($this->subject));
+        $actualC = iterator_to_array(call_user_func($this->subject));
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderInterface', $builder);
         $this->assertSame(array('a'), $actualA);
         $this->assertSame(array('b'), $actualB);
+        $this->assertSame(array('b'), $actualC);
     }
 }

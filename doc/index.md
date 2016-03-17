@@ -65,6 +65,8 @@
         - [Invoking callables]
     - [Stubbing generators]
         - [Yielding from a generator]
+            - [Yielding individual values from a generator]
+            - [Yielding multiple values from a generator]
         - [Returning values from a generator]
         - [Returning arguments from a generator]
         - [Returning the "self" value from a generator]
@@ -2566,7 +2568,7 @@ Add a yielded value to the answer.
 
 *If no arguments are supplied, the stub will yield like `yield;`.*
 
-*See [Yielding from a generator].*
+*See [Yielding individual values from a generator].*
 
 <a name="generatorAnswer.yieldsFrom" />
 
@@ -2579,13 +2581,13 @@ Add a set of yielded values to the answer.
 *The `$values` argument can be an array, an iterator, or even another
 generator.*
 
-*See [Yielding from a generator].*
+*See [Yielding multiple values from a generator].*
 
 <a name="generatorAnswer.returns" />
 
 ----
 
-> *[stub][stub-api]* $generatorAnswer->[**returns**](#generatorAnswer.returns)($value = null)
+> *[stub][stub-api]* $generatorAnswer->[**returns**](#generatorAnswer.returns)($value = null, ...$additionalValues)
 
 End the generator by returning a value.
 
@@ -2620,7 +2622,7 @@ End the generator by returning the self value.
 
 ----
 
-> *[stub][stub-api]* $generatorAnswer->[**throws**](#generatorAnswer.throws)($exception = null)
+> *[stub][stub-api]* $generatorAnswer->[**throws**](#generatorAnswer.throws)($exception = null, ...$additionalExceptions)
 
 End the generator by throwing an exception.
 
@@ -3447,11 +3449,12 @@ echo json_encode($values);                               // outputs '[]'
 ```
 
 The result of [`generates()`](#stub.generates) is a [generator answer]. This
-object can be used to further customize the behavior of the generator to be
-returned. See the subsequent headings for details of these customizations.
+object can be used to further customize the behavior of the generator. See the
+subsequent headings for details of these customizations.
 
-When a method is called on the generator answer that "ends" the answer (by
-returning or throwing), the original stub is returned, allowing continued
+Certain methods, such as [`returns()`](#generatorAnswer.returns), or
+[`throws()`](#generatorAnswer.throws), mark the "end" of generator answer. When
+a generator answer is "ended", the original stub is returned, allowing continued
 stubbing in a fluent manner:
 
 ```php
@@ -3478,7 +3481,7 @@ echo $resultC instanceof Generator ? 'true' : 'false'; // outputs 'true'
 #### Yielding from a generator
 
 Keys and values to be yielded can be passed directly to
-[`generates()`](#stub.generates) as an array:
+[`generates()`](#stub.generates) as any traversable value:
 
 ```php
 $stub = stub()
@@ -3495,8 +3498,11 @@ echo json_encode($valuesA); // outputs '["a","b","c","d"]'
 echo json_encode($valuesB); // outputs '{"e":"f","g":"h"}'
 ```
 
-Alternatively, [`yields()`](#generatorAnswer.yields) can be used when yields
-need to be interleaved with other actions:
+##### Yielding individual values from a generator
+
+For more complicated generator behavior stubbing,
+[`yields()`](#generatorAnswer.yields) can be used to interleave yields with
+other actions:
 
 ```php
 $count = 0;
@@ -3541,6 +3547,8 @@ $values = iterator_to_array($stub()); // consume the generator
 
 echo json_encode($values); // outputs '{"a":"b","0":"c","1":null}'
 ```
+
+##### Yielding multiple values from a generator
 
 To yield a set of values from an array, an iterator, or another generator, use
 [`yieldsFrom()`](#generatorAnswer.yieldsFrom):
@@ -3595,6 +3603,35 @@ iterator_to_array($generator); // consume the generator
 echo $generator->getReturn(); // outputs 'a'
 ```
 
+Calling [`returns()`](#generatorAnswer.returns) with multiple arguments allows
+for easy specification of the generator return value on subsequent invocations.
+For example, the two following stubs behave the same:
+
+```php
+$stubA = stub()
+    ->generates()->returns('x', 'y');
+
+$generatorA = $stubA();
+$generatorB = $stubA();
+iterator_to_array($generatorA);
+iterator_to_array($generatorB);
+
+echo $generatorA->getReturn(); // outputs 'x'
+echo $generatorB->getReturn(); // outputs 'y'
+
+$stubB = stub()
+    ->generates()->returns('x')
+    ->generates()->returns('y');
+
+$generatorA = $stubB();
+$generatorB = $stubB();
+iterator_to_array($generatorA);
+iterator_to_array($generatorB);
+
+echo $generatorA->getReturn(); // outputs 'x'
+echo $generatorB->getReturn(); // outputs 'y'
+```
+
 Note that attempting to return anything other than `null` will result in an
 exception unless the current runtime supports generator return expressions. For
 older runtimes, it is perfectly valid to call
@@ -3631,7 +3668,7 @@ echo $generatorC->getReturn(); // outputs 'z'
 
 #### Returning the "self" value from a generator
 
-The stub [self value] can be return from a generator by using
+The stub [self value] can be returned from a generator by using
 [`returnsSelf()`](#generatorAnswer.returnsSelf) on any [generator answer]:
 
 ```php
@@ -3662,6 +3699,34 @@ $generatorB = $stubB();
 
 iterator_to_array($generatorA); // throws $exception
 iterator_to_array($generatorB); // throws a generic exception
+```
+
+Calling [`throws()`](#generatorAnswer.throws) with multiple arguments allows for
+easy specification of the thrown exception on subsequent invocations. For
+example, the two following stubs behave the same:
+
+```php
+$exceptionA = new RuntimeException('You done goofed.');
+$exceptionB = new RuntimeException('Consequences will never be the same.');
+
+$stubA = stub()
+    ->generates()->throws($exceptionA, $exceptionB);
+
+$generatorA = $stubA();
+$generatorB = $stubA();
+
+iterator_to_array($generatorA); // throws $exceptionA
+iterator_to_array($generatorB); // throws $exceptionB
+
+$stubB = stub()
+    ->generates()->throws($exceptionA)
+    ->generates()->throws($exceptionB);
+
+$generatorA = $stubB();
+$generatorB = $stubB();
+
+iterator_to_array($generatorA); // throws $exceptionA
+iterator_to_array($generatorB); // throws $exceptionB
 ```
 
 #### Generator iterations that perform multiple actions
@@ -7291,6 +7356,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying values received by spies]: #verifying-values-received-by-spies
 [when to use the "equal to" matcher]: #when-to-use-the-equal-to-matcher
 [yielding from a generator]: #yielding-from-a-generator
+[yielding individual values from a generator]: #yielding-individual-values-from-a-generator
+[yielding multiple values from a generator]: #yielding-multiple-values-from-a-generator
 
 <!-- Shortcut references -->
 
