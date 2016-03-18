@@ -53,6 +53,14 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($isValid, $this->subject->matches($matchers, $this->arguments));
     }
 
+    public function testMatchesExplicitArgumentExistence()
+    {
+        $matchers = array(new EqualToMatcher(null));
+
+        $this->assertTrue($this->subject->matches($matchers, array(null)));
+        $this->assertFalse($this->subject->matches($matchers, array()));
+    }
+
     public function testMatchesWithWildcardAfterValue()
     {
         $matchers = array(new EqualToMatcher('a'), new WildcardMatcher(new EqualToMatcher('b')));

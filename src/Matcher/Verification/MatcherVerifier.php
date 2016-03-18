@@ -65,6 +65,8 @@ class MatcherVerifier implements MatcherVerifierInterface
                 }
 
                 continue;
+            } elseif (empty($pair)) {
+                return false;
             } elseif (!$matcher->matches($pair[1])) {
                 return false;
             }

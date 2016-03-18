@@ -4,9 +4,11 @@
 
 - **[NEW]** Implemented generator stubs ([#11], [#140]).
 - **[IMPROVED]** More default values for built-in return types ([#138], [#139]).
+- **[FIXED]** Omitted arguments no longer pass for `any()` matcher ([#137]).
 - **[FIXED]** Fixed memory leak under PHP 7 ([#143]).
 
 [#11]: https://github.com/eloquent/phony/issues/11
+[#137]: https://github.com/eloquent/phony/issues/137
 [#138]: https://github.com/eloquent/phony/issues/138
 [#139]: https://github.com/eloquent/phony/pull/139
 [#140]: https://github.com/eloquent/phony/issues/140
