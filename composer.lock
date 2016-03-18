@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4c94eb9be2e28c043fe169de4db68ff1",
-    "content-hash": "41ecefe4437ba7920ba7076092790aac",
+    "hash": "ac541679d16e989ccef85e1c3d62ee11",
+    "content-hash": "90885db97a3f400c18a831199da735b5",
     "packages": [],
     "packages-dev": [
         {
@@ -958,16 +958,16 @@
         },
         {
             "name": "peridot-php/peridot",
-            "version": "1.17.0",
+            "version": "1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/peridot-php/peridot.git",
-                "reference": "773c456cf1752c4d3cb249ae85db39651d13e8dd"
+                "reference": "2be30e73b394ce309effab756e4666a1998719a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/peridot-php/peridot/zipball/773c456cf1752c4d3cb249ae85db39651d13e8dd",
-                "reference": "773c456cf1752c4d3cb249ae85db39651d13e8dd",
+                "url": "https://api.github.com/repos/peridot-php/peridot/zipball/2be30e73b394ce309effab756e4666a1998719a3",
+                "reference": "2be30e73b394ce309effab756e4666a1998719a3",
                 "shasum": ""
             },
             "require": {
@@ -1012,7 +1012,7 @@
                 "php",
                 "testing"
             ],
-            "time": "2016-02-23 00:52:05"
+            "time": "2016-03-13 21:08:57"
         },
         {
             "name": "peridot-php/peridot-scope",
@@ -1464,16 +1464,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.8.23",
+            "version": "4.8.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "6e351261f9cd33daf205a131a1ba61c6d33bd483"
+                "reference": "a1066c562c52900a142a0e2bbf0582994671385e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6e351261f9cd33daf205a131a1ba61c6d33bd483",
-                "reference": "6e351261f9cd33daf205a131a1ba61c6d33bd483",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a1066c562c52900a142a0e2bbf0582994671385e",
+                "reference": "a1066c562c52900a142a0e2bbf0582994671385e",
                 "shasum": ""
             },
             "require": {
@@ -1532,7 +1532,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-02-11 14:56:33"
+            "time": "2016-03-14 06:16:08"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

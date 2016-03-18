@@ -5,6 +5,7 @@
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     mapTestClassNameToCoveredClassName="true"
+    convertErrorsToExceptions="true"
 >
     <testsuites>
         <testsuite>
@@ -26,6 +27,7 @@
     </filter>
 
     <php>
+        <ini name="error_reporting" value="-1"/>
         <ini name="memory_limit" value="256M"/>
     </php>
 </phpunit>

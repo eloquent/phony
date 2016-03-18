@@ -70,6 +70,8 @@ final class MockGenerationFailedException extends Exception implements
             );
         }
 
+        $lineNumber = 0;
+
         foreach ($lines as $lineNumber => $line) {
         }
 

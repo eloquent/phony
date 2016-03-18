@@ -18,7 +18,6 @@
         "athletic/athletic": "^0.1",
         "counterpart/counterpart": "^1",
         "danielstjules/pho": "^1",
-        "eloquent/asplode": "^2",
         "fabpot/php-cs-fixer": "^1",
         "hamcrest/hamcrest-php": "^1",
         "icecave/isolator": "^3",

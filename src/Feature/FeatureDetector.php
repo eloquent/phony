@@ -141,13 +141,9 @@ class FeatureDetector implements FeatureDetectorInterface
                     }
                 }
 
-                // syntax causes fatal on HHVM < 3.4
+                // syntax causes fatal on HHVM
                 if ($detector->isSupported('runtime.hhvm')) {
-                    // @codeCoverageIgnoreStart
-                    if (version_compare(HHVM_VERSION, '3.4.x', '<')) {
-                        return false;
-                    }
-                    // @codeCoverageIgnoreEnd
+                    return false; // @codeCoverageIgnore
                 }
 
                 return $detector->checkStatement(
@@ -289,6 +285,14 @@ class FeatureDetector implements FeatureDetectorInterface
             'parameter.type.callable' => function ($detector) {
                 return $detector
                     ->checkInternalMethod('ReflectionParameter', 'isCallable');
+            },
+
+            'parameter.type.self.override' => function ($detector) {
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return true; // @codeCoverageIgnore
+                }
+
+                return !version_compare(PHP_VERSION, '5.4.1.x', '<');
             },
 
             'parameter.variadic' => function ($detector) {

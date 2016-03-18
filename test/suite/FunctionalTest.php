@@ -422,6 +422,10 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultArgumentsNotRecorded()
     {
+        if (!$this->featureDetector->isSupported('parameter.type.self.override')) {
+            $this->markTestSkipped('Requires support for overriding self parameters.');
+        }
+
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassC');
         $handle->mock()->methodB('a');
 
