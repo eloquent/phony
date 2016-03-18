@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
@@ -132,10 +133,16 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
      */
     public function __destruct()
     {
-        try {
-            $this->closeRule();
-        } catch (Exception $e) {
-            printf("WARNING: %s\n", $e->getMessage());
+        if (!$this->answers && null !== $this->criteria) {
+            printf(
+                'WARNING: Stub criteria %s were never used. ' .
+                    "Check for incomplete stub rules.\n",
+                var_export(
+                    AssertionRenderer::instance()
+                        ->renderMatchers($this->criteria),
+                    true
+                )
+            );
         }
     }
 
