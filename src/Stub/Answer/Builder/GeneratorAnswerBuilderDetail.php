@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use Eloquent\Phony\Invocation\InvokerInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
 use Eloquent\Phony\Stub\Answer\CallRequestInterface;
 
 /**
@@ -62,6 +63,20 @@ abstract class GeneratorAnswerBuilderDetail
 
                 if ($iteration instanceof GeneratorYieldFromIteration) {
                     foreach ($iteration->values as $key => $value) {
+                        if (
+                            $key instanceof InstanceHandleInterface &&
+                            $key->isAdaptable()
+                        ) {
+                            $key = $key->mock();
+                        }
+
+                        if (
+                            $value instanceof InstanceHandleInterface &&
+                            $value->isAdaptable()
+                        ) {
+                            $value = $value->mock();
+                        }
+
                         yield $key => $value;
                     }
                 } else {

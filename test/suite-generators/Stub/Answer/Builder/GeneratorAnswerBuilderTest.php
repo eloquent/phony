@@ -18,6 +18,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Test\TupleIterator;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
@@ -327,6 +328,36 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(array('b', 'c')), $this->callsB);
     }
 
+    public function testYieldsWithInstanceHandles()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->yields($adaptable)->yields($unadaptable);
+
+        $this->assertSame(
+            array($adaptable->mock(), $unadaptable),
+            iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
+        );
+    }
+
+    public function testYieldsWithInstanceHandleKeys()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->yields($adaptable, 'a')->yields($unadaptable, 'b');
+        $generator = call_user_func($this->answer, $this->self, $this->arguments);
+
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $generator->next();
+        }
+
+        $this->assertSame($adaptable->mock(), $generator->key());
+
+        $generator->next();
+
+        $this->assertSame($unadaptable, $generator->key());
+    }
+
     public function testYieldsFrom()
     {
         $values = array('a' => 'b', 'c' => 'd');
@@ -351,6 +382,43 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a'), iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
         $this->assertSame(array(array('b', 'c')), $this->callsA);
         $this->assertSame(array(array('b', 'c')), $this->callsB);
+    }
+
+    public function testYieldsFromWithInstanceHandles()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->yieldsFrom(array($adaptable, $unadaptable));
+
+        $this->assertSame(
+            array($adaptable->mock(), $unadaptable),
+            iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
+        );
+    }
+
+    public function testYieldsFromWithInstanceHandleKeys()
+    {
+        $adaptable = Phony::mock();
+        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $this->subject->yieldsFrom(
+            new TupleIterator(
+                array(
+                    array($adaptable, 'a'),
+                    array($unadaptable, 'b'),
+                )
+            )
+        );
+        $generator = call_user_func($this->answer, $this->self, $this->arguments);
+
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $generator->next();
+        }
+
+        $this->assertSame($adaptable->mock(), $generator->key());
+
+        $generator->next();
+
+        $this->assertSame($unadaptable, $generator->key());
     }
 
     public function testReturns()

@@ -305,6 +305,20 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
             $key = null;
         }
 
+        if (
+            $key instanceof InstanceHandleInterface &&
+            $key->isAdaptable()
+        ) {
+            $key = $key->mock();
+        }
+
+        if (
+            $value instanceof InstanceHandleInterface &&
+            $value->isAdaptable()
+        ) {
+            $value = $value->mock();
+        }
+
         $this->iterations[] = new GeneratorYieldIteration(
             $this->requests,
             $hasKey,

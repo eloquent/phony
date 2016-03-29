@@ -2568,6 +2568,8 @@ Add a yielded value to the answer.
 
 *If no arguments are supplied, the stub will yield like `yield;`.*
 
+*This method supports [mock handle substitution].*
+
 *See [Yielding individual values from a generator].*
 
 <a name="generatorAnswer.yieldsFrom" />
@@ -2580,6 +2582,8 @@ Add a set of yielded values to the answer.
 
 *The `$values` argument can be an array, an iterator, or even another
 generator.*
+
+*This method supports [mock handle substitution].*
 
 *See [Yielding multiple values from a generator].*
 

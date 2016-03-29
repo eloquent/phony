@@ -2,7 +2,7 @@
 
 ## Next release
 
-- **[NEW]** Implemented generator stubs ([#11], [#140]).
+- **[NEW]** Implemented generator stubs ([#11], [#140], [#144]).
 - **[IMPROVED]** More default values for built-in return types ([#138], [#139]).
 - **[FIXED]** Omitted arguments no longer pass for `any()` matcher ([#137]).
 - **[FIXED]** Fixed memory leak under PHP 7 ([#143]).
@@ -13,6 +13,7 @@
 [#139]: https://github.com/eloquent/phony/pull/139
 [#140]: https://github.com/eloquent/phony/issues/140
 [#143]: https://github.com/eloquent/phony/issues/143
+[#144]: https://github.com/eloquent/phony/issues/144
 
 ## 0.8.0 (2016-02-12)
 
