@@ -1,5 +1,5 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder('DateTime');
+$builder = $factory->create('DateTime');
 
 return $builder->named('MockGeneratorDateTimeHhvm');

@@ -47,8 +47,9 @@ class MatcherVerifier implements MatcherVerifierInterface
         foreach ($matchers as $matcher) {
             if ($matcher instanceof WildcardMatcherInterface) {
                 $matchCount = 0;
+                $innerMatcher = $matcher->matcher();
 
-                while ($pair && $matcher->matcher()->matches($pair[1])) {
+                while ($pair && $innerMatcher->matches($pair[1])) {
                     ++$matchCount;
                     $pair = each($arguments);
                 }

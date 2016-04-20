@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use PHPUnit_Framework_TestCase;
@@ -25,9 +26,9 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
             return 'custom ' . implode(func_get_args());
         };
         $this->method = new ReflectionMethod($this, 'setUp');
-        $this->mockBuilder = new MockBuilder();
+        $this->mockBuilder = MockBuilderFactory::instance()->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = new HandleFactory();
+        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->createStubbing($this->mock);
         $this->invoker = new Invoker();
         $this->subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
@@ -36,7 +37,6 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $this->assertSame($this->customCallback, $this->subject->customCallback());
-        $this->assertSame($this->invoker, $this->subject->invoker());
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('setUp', $this->subject->name());
         $this->assertSame($this->handle, $this->subject->handle());
@@ -46,13 +46,6 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->label());
     }
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle);
-
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
-    }
-
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB');
@@ -60,7 +53,6 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
         $this->subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
 
         $this->assertSame($this->customCallback, $this->subject->customCallback());
-        $this->assertSame($this->invoker, $this->subject->invoker());
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('testClassAStaticMethodB', $this->subject->name());
         $this->assertSame($this->handle, $this->subject->handle());

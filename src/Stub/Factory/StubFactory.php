@@ -38,7 +38,14 @@ class StubFactory implements StubFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                Sequencer::sequence('stub-label'),
+                MatcherFactory::instance(),
+                MatcherVerifier::instance(),
+                Invoker::instance(),
+                InvocableInspector::instance(),
+                GeneratorAnswerBuilderFactory::instance()
+            );
         }
 
         return self::$instance;
@@ -47,42 +54,21 @@ class StubFactory implements StubFactoryInterface
     /**
      * Construct a new stub factory.
      *
-     * @param SequencerInterface|null                     $labelSequencer                The label sequencer to use.
-     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifierInterface|null               $matcherVerifier               The matcher verifier to use.
-     * @param InvokerInterface|null                       $invoker                       The invoker to use.
-     * @param InvocableInspectorInterface|null            $invocableInspector            The invocable inspector to use.
-     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param SequencerInterface                     $labelSequencer                The label sequencer to use.
+     * @param MatcherFactoryInterface                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface               $matcherVerifier               The matcher verifier to use.
+     * @param InvokerInterface                       $invoker                       The invoker to use.
+     * @param InvocableInspectorInterface            $invocableInspector            The invocable inspector to use.
+     * @param GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer = null,
-        MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null,
-        InvokerInterface $invoker = null,
-        InvocableInspectorInterface $invocableInspector = null,
-        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
-            null
+        SequencerInterface $labelSequencer,
+        MatcherFactoryInterface $matcherFactory,
+        MatcherVerifierInterface $matcherVerifier,
+        InvokerInterface $invoker,
+        InvocableInspectorInterface $invocableInspector,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory
     ) {
-        if (!$labelSequencer) {
-            $labelSequencer = Sequencer::sequence('stub-label');
-        }
-        if (!$matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
-        }
-        if (!$matcherVerifier) {
-            $matcherVerifier = MatcherVerifier::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-        if (!$generatorAnswerBuilderFactory) {
-            $generatorAnswerBuilderFactory =
-                GeneratorAnswerBuilderFactory::instance();
-        }
-
         $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
@@ -92,78 +78,19 @@ class StubFactory implements StubFactoryInterface
     }
 
     /**
-     * Get the label sequencer.
-     *
-     * @return SequencerInterface The label sequencer.
-     */
-    public function labelSequencer()
-    {
-        return $this->labelSequencer;
-    }
-
-    /**
-     * Get the matcher factory.
-     *
-     * @return MatcherFactoryInterface The matcher factory.
-     */
-    public function matcherFactory()
-    {
-        return $this->matcherFactory;
-    }
-
-    /**
-     * Get the matcher verifier.
-     *
-     * @return MatcherVerifierInterface The matcher verifier.
-     */
-    public function matcherVerifier()
-    {
-        return $this->matcherVerifier;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
-    }
-
-    /**
-     * Get the generator answer builder factory.
-     *
-     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
-     */
-    public function generatorAnswerBuilderFactory()
-    {
-        return $this->generatorAnswerBuilderFactory;
-    }
-
-    /**
      * Create a new stub.
      *
      * @param callable|null $callback              The callback, or null to create an anonymous stub.
      * @param mixed         $self                  The self value.
-     * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
+     * @param callable      $defaultAnswerCallback The callback to use when creating a default answer.
      *
      * @return StubInterface The newly created stub.
      */
     public function create(
         $callback = null,
         $self = null,
-        $defaultAnswerCallback = null
+        $defaultAnswerCallback =
+            'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback'
     ) {
         return new Stub(
             $callback,

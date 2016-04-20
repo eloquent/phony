@@ -39,7 +39,8 @@ class MatcherFactory implements MatcherFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance =
+                new self(AnyMatcher::instance(), WildcardMatcher::instance());
             self::$instance->addDefaultMatcherDrivers();
         }
 
@@ -49,30 +50,17 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Construct a new matcher factory.
      *
-     * @param array<MatcherDriverInterface> $drivers            The matcher drivers to use.
-     * @param MatcherInterface|null         $anyMatcher         A matcher that matches any value.
-     * @param WildcardMatcherInterface|null $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
+     * @param MatcherInterface         $anyMatcher         A matcher that matches any value.
+     * @param WildcardMatcherInterface $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
      */
     public function __construct(
-        array $drivers = array(),
-        MatcherInterface $anyMatcher = null,
-        WildcardMatcherInterface $wildcardAnyMatcher = null
+        MatcherInterface $anyMatcher,
+        WildcardMatcherInterface $wildcardAnyMatcher
     ) {
-        if (!$anyMatcher) {
-            $anyMatcher = AnyMatcher::instance();
-        }
-        if (!$wildcardAnyMatcher) {
-            $wildcardAnyMatcher = WildcardMatcher::instance();
-        }
-
         $this->drivers = array();
         $this->driverIndex = array();
         $this->anyMatcher = $anyMatcher;
         $this->wildcardAnyMatcher = $wildcardAnyMatcher;
-
-        foreach ($drivers as $driver) {
-            $this->addMatcherDriver($driver);
-        }
     }
 
     /**

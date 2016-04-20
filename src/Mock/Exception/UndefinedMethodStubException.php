@@ -22,15 +22,11 @@ final class UndefinedMethodStubException extends Exception implements
     /**
      * Construct a new undefined method stub exception.
      *
-     * @param string         $className The class name.
-     * @param string         $name      The method name.
-     * @param Exception|null $cause     The cause, if available.
+     * @param string $className The class name.
+     * @param string $name      The method name.
      */
-    public function __construct(
-        $className,
-        $name,
-        Exception $cause = null
-    ) {
+    public function __construct($className, $name)
+    {
         $this->className = $className;
         $this->name = $name;
 
@@ -39,9 +35,7 @@ final class UndefinedMethodStubException extends Exception implements
                 'The requested method stub %s::%s() does not exist.',
                 $className,
                 $name
-            ),
-            0,
-            $cause
+            )
         );
     }
 

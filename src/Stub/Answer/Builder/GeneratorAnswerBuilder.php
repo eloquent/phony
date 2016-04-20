@@ -51,36 +51,6 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
     }
 
     /**
-     * Get the stub.
-     *
-     * @return StubInterface The stub.
-     */
-    public function stub()
-    {
-        return $this->stub;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
      * Add a callback to be called as part of the answer.
      *
      * @param callable $callback The callback.

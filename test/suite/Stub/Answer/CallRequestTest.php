@@ -42,22 +42,12 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->suffixArguments, $this->subject->suffixArguments());
     }
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CallRequest($this->callback);
-
-        $this->assertEquals(new Arguments(), $this->subject->arguments());
-        $this->assertFalse($this->subject->prefixSelf());
-        $this->assertFalse($this->subject->suffixArgumentsObject());
-        $this->assertTrue($this->subject->suffixArguments());
-    }
-
     public function testConstructorWithInstanceHandles()
     {
         $adaptable = Phony::mock();
         $unadaptable = Phony::mock()->setIsAdaptable(false);
         $this->arguments = new Arguments(array($adaptable, $unadaptable));
-        $this->subject = new CallRequest($this->callback, $this->arguments);
+        $this->subject = new CallRequest($this->callback, $this->arguments, false, false, false);
 
         $this->assertSame($adaptable->mock(), $this->subject->arguments()->get(0));
         $this->assertSame($unadaptable, $this->subject->arguments()->get(1));

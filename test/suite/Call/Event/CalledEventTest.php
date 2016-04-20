@@ -37,15 +37,6 @@ class CalledEventTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->call());
     }
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CalledEvent($this->sequenceNumber, $this->time);
-
-        $this->assertTrue(is_callable($this->subject->callback()));
-        $this->assertNull(call_user_func($this->subject->callback()));
-        $this->assertEquals(new Arguments(), $this->subject->arguments());
-    }
-
     public function testSetCall()
     {
         $call = $this->callFactory->create();

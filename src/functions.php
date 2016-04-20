@@ -46,7 +46,7 @@ use ReflectionClass;
  */
 function mockBuilder($types = array())
 {
-    return FacadeDriver::instance()->mockBuilderFactory()->create($types);
+    return FacadeDriver::instance()->mockBuilderFactory->create($types);
 }
 
 /**
@@ -64,8 +64,10 @@ function mockBuilder($types = array())
  */
 function mock($types = array())
 {
-    return on(
-        FacadeDriver::instance()->mockBuilderFactory()->createFullMock($types)
+    $driver = FacadeDriver::instance();
+
+    return $driver->handleFactory->createStubbing(
+        $driver->mockBuilderFactory->create($types)->full()
     );
 }
 
@@ -89,9 +91,10 @@ function mock($types = array())
  */
 function partialMock($types = array(), $arguments = array())
 {
-    return on(
-        FacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types, $arguments)
+    $driver = FacadeDriver::instance();
+
+    return $driver->handleFactory->createStubbing(
+        $driver->mockBuilderFactory->create($types)->partialWith($arguments)
     );
 }
 
@@ -107,7 +110,7 @@ function partialMock($types = array(), $arguments = array())
  */
 function on($mock)
 {
-    return FacadeDriver::instance()->handleFactory()->createStubbing($mock);
+    return FacadeDriver::instance()->handleFactory->createStubbing($mock);
 }
 
 /**
@@ -122,7 +125,7 @@ function on($mock)
  */
 function verify($mock)
 {
-    return FacadeDriver::instance()->handleFactory()->createVerification($mock);
+    return FacadeDriver::instance()->handleFactory->createVerification($mock);
 }
 
 /**
@@ -137,8 +140,8 @@ function verify($mock)
  */
 function onStatic($class)
 {
-    return FacadeDriver::instance()->handleFactory()
-        ->createStubbingStatic($class);
+    return
+        FacadeDriver::instance()->handleFactory->createStubbingStatic($class);
 }
 
 /**
@@ -153,7 +156,7 @@ function onStatic($class)
  */
 function verifyStatic($class)
 {
-    return FacadeDriver::instance()->handleFactory()
+    return FacadeDriver::instance()->handleFactory
         ->createVerificationStatic($class);
 }
 
@@ -168,7 +171,7 @@ function verifyStatic($class)
  */
 function spy($callback = null)
 {
-    return FacadeDriver::instance()->spyVerifierFactory()
+    return FacadeDriver::instance()->spyVerifierFactory
         ->createFromCallback($callback);
 }
 
@@ -183,7 +186,7 @@ function spy($callback = null)
  */
 function stub($callback = null)
 {
-    return FacadeDriver::instance()->stubVerifierFactory()
+    return FacadeDriver::instance()->stubVerifierFactory
         ->createFromCallback($callback);
 }
 
@@ -198,7 +201,7 @@ function stub($callback = null)
  */
 function checkInOrder()
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
+    return FacadeDriver::instance()->eventOrderVerifier
         ->checkInOrderSequence(func_get_args());
 }
 
@@ -215,7 +218,7 @@ function checkInOrder()
  */
 function inOrder()
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
+    return FacadeDriver::instance()->eventOrderVerifier
         ->inOrderSequence(func_get_args());
 }
 
@@ -230,7 +233,7 @@ function inOrder()
  */
 function checkInOrderSequence($events)
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
+    return FacadeDriver::instance()->eventOrderVerifier
         ->checkInOrderSequence($events);
 }
 
@@ -247,8 +250,8 @@ function checkInOrderSequence($events)
  */
 function inOrderSequence($events)
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
-        ->inOrderSequence($events);
+    return
+        FacadeDriver::instance()->eventOrderVerifier->inOrderSequence($events);
 }
 
 /**
@@ -263,7 +266,7 @@ function inOrderSequence($events)
  */
 function checkAnyOrder()
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
+    return FacadeDriver::instance()->eventOrderVerifier
         ->checkAnyOrderSequence(func_get_args());
 }
 
@@ -280,7 +283,7 @@ function checkAnyOrder()
  */
 function anyOrder()
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
+    return FacadeDriver::instance()->eventOrderVerifier
         ->anyOrderSequence(func_get_args());
 }
 
@@ -296,7 +299,7 @@ function anyOrder()
  */
 function checkAnyOrderSequence($events)
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
+    return FacadeDriver::instance()->eventOrderVerifier
         ->checkAnyOrderSequence($events);
 }
 
@@ -314,8 +317,8 @@ function checkAnyOrderSequence($events)
  */
 function anyOrderSequence($events)
 {
-    return FacadeDriver::instance()->eventOrderVerifier()
-        ->anyOrderSequence($events);
+    return
+        FacadeDriver::instance()->eventOrderVerifier->anyOrderSequence($events);
 }
 
 /**
@@ -327,7 +330,7 @@ function anyOrderSequence($events)
  */
 function any()
 {
-    return FacadeDriver::instance()->matcherFactory()->any();
+    return FacadeDriver::instance()->matcherFactory->any();
 }
 
 /**
@@ -341,7 +344,7 @@ function any()
  */
 function equalTo($value)
 {
-    return FacadeDriver::instance()->matcherFactory()->equalTo($value);
+    return FacadeDriver::instance()->matcherFactory->equalTo($value);
 }
 
 /**
@@ -360,7 +363,7 @@ function wildcard(
     $minimumArguments = 0,
     $maximumArguments = null
 ) {
-    return FacadeDriver::instance()->matcherFactory()
+    return FacadeDriver::instance()->matcherFactory
         ->wildcard($value, $minimumArguments, $maximumArguments);
 }
 
@@ -377,5 +380,5 @@ function wildcard(
  */
 function setExportDepth($depth)
 {
-    return FacadeDriver::instance()->exporter()->setDepth($depth);
+    return FacadeDriver::instance()->exporter->setDepth($depth);
 }

@@ -29,20 +29,6 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $this->subject = new FunctionSignatureInspector($this->invocableInspector, $this->featureDetector);
     }
 
-    public function testConstructor()
-    {
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new FunctionSignatureInspector();
-
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
-    }
-
     public function testSignature()
     {
         $function = new ReflectionFunction(

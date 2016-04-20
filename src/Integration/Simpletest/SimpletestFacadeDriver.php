@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Integration\Simpletest;
 
-use Eloquent\Phony\Facade\FacadeDriverInterface;
+use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
@@ -24,7 +24,7 @@ class SimpletestFacadeDriver extends AbstractIntegratedFacadeDriver
     /**
      * Get the static instance of this driver.
      *
-     * @return FacadeDriverInterface The static driver.
+     * @return FacadeDriver The static driver.
      */
     public static function instance()
     {

@@ -23,17 +23,14 @@ final class UndefinedCallException extends Exception
     /**
      * Construct a new undefined call exception.
      *
-     * @param integer        $index The call index.
-     * @param Exception|null $cause The cause, if available.
+     * @param integer $index The call index.
      */
-    public function __construct($index, Exception $cause = null)
+    public function __construct($index)
     {
         $this->index = $index;
 
         parent::__construct(
-            sprintf('No call defined for index %s.', var_export($index, true)),
-            0,
-            $cause
+            sprintf('No call defined for index %s.', var_export($index, true))
         );
     }
 

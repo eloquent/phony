@@ -32,7 +32,10 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                InvocableInspector::instance(),
+                FeatureDetector::instance()
+            );
         }
 
         return self::$instance;
@@ -41,20 +44,13 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     /**
      * Construct a new function signature inspector.
      *
-     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
-     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
+     * @param InvocableInspectorInterface $invocableInspector The invocable inspector to use.
+     * @param FeatureDetectorInterface    $featureDetector    The feature detector to use.
      */
     public function __construct(
-        InvocableInspectorInterface $invocableInspector = null,
-        FeatureDetectorInterface $featureDetector = null
+        InvocableInspectorInterface $invocableInspector,
+        FeatureDetectorInterface $featureDetector
     ) {
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-        if (!$featureDetector) {
-            $featureDetector = FeatureDetector::instance();
-        }
-
         $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;
         $this->isExportDefaultArraySupported = $featureDetector
@@ -66,26 +62,6 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
         $this->isScalarTypeHintSupported = $featureDetector
             ->isSupported('parameter.hint.scalar');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
-    }
-
-    /**
-     * Get the feature detector.
-     *
-     * @return FeatureDetectorInterface The feature detector.
-     */
-    public function featureDetector()
-    {
-        return $this->featureDetector;
     }
 
     /**

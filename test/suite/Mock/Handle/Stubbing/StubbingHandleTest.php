@@ -16,6 +16,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
@@ -29,22 +30,23 @@ class StubbingHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->state = (object) array(
             'stubs' => (object) array(),
-            'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
+            'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback',
             'isRecording' => true,
             'label' => 'label',
         );
-        $this->stubFactory = new StubFactory();
-        $this->stubVerifierFactory = new StubVerifierFactory();
-        $this->assertionRenderer = new AssertionRenderer();
-        $this->assertionRecorder = new AssertionRecorder();
+        $this->stubFactory = StubFactory::instance();
+        $this->stubVerifierFactory = StubVerifierFactory::instance();
+        $this->assertionRenderer = AssertionRenderer::instance();
+        $this->assertionRecorder = AssertionRecorder::instance();
         $this->invoker = new Invoker();
 
+        $this->mockBuilderFactory = MockBuilderFactory::instance();
         $this->featureDetector = FeatureDetector::instance();
     }
 
     protected function setUpWith($className, $mockClassName = null)
     {
-        $this->mockBuilder = new MockBuilder($className);
+        $this->mockBuilder = $this->mockBuilderFactory->create($className);
         $this->mockBuilder->named($mockClassName);
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
@@ -63,39 +65,6 @@ class StubbingHandleTest extends PHPUnit_Framework_TestCase
         $handleProperty = $this->class->getProperty('_handle');
         $handleProperty->setAccessible(true);
         $handleProperty->setValue($this->mock, $this->subject);
-    }
-
-    public function testConstructor()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
-
-        $this->assertSame($this->mock, $this->subject->mock());
-        $this->assertInstanceOf('ReflectionClass', $this->subject->clazz());
-        $this->assertSame($this->className, $this->subject->clazz()->getName());
-        $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->state->stubs, $this->subject->stubs());
-        $this->assertSame($this->state->label, $this->subject->label());
-        $this->assertTrue($this->subject->isAdaptable());
-        $this->assertSame($this->stubFactory, $this->subject->stubFactory());
-        $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
-        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
-        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->invoker, $this->subject->invoker());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
-        $this->class = $this->mockBuilder->build(true);
-        $this->mock = $this->mockBuilder->partial();
-        $this->subject = new StubbingHandle($this->mock);
-
-        $this->assertEquals((object) array(), $this->subject->stubs());
-        $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
-        $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
-        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
-        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
     public function testSetLabel()
@@ -233,7 +202,7 @@ class StubbingHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->assertEquals(new EventCollection(), $this->subject->noInteraction());
+        $this->assertEquals(new EventCollection(array()), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()
@@ -275,10 +244,18 @@ EOD;
 
     public function testConstruct()
     {
-        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new StubbingHandle($this->mock);
+        $this->subject = new StubbingHandle(
+            $this->mock,
+            $this->state,
+            $this->stubFactory,
+            $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
+            $this->invoker
+        );
 
         $this->assertNull($this->mock->constructorArguments);
         $this->assertSame($this->subject, $this->subject->construct('a', 'b'));
@@ -287,10 +264,18 @@ EOD;
 
     public function testConstructWith()
     {
-        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new StubbingHandle($this->mock);
+        $this->subject = new StubbingHandle(
+            $this->mock,
+            $this->state,
+            $this->stubFactory,
+            $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
+            $this->invoker
+        );
 
         $this->assertNull($this->mock->constructorArguments);
         $this->assertSame($this->subject, $this->subject->constructWith(array('a', 'b')));
@@ -299,10 +284,18 @@ EOD;
 
     public function testConstructWithWithReferenceParameters()
     {
-        $this->mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new StubbingHandle($this->mock);
+        $this->subject = new StubbingHandle(
+            $this->mock,
+            $this->state,
+            $this->stubFactory,
+            $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
+            $this->invoker
+        );
         $a = 'a';
         $b = 'b';
 
@@ -381,7 +374,7 @@ EOD;
 
     public function testStubbingWithCustomMethod()
     {
-        $this->mockBuilder = new MockBuilder(
+        $this->mockBuilder = $this->mockBuilderFactory->create(
             array(
                 'methodA' => function () {
                     return implode(func_get_args());
@@ -390,7 +383,15 @@ EOD;
         );
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new StubbingHandle($this->mock);
+        $this->subject = new StubbingHandle(
+            $this->mock,
+            $this->state,
+            $this->stubFactory,
+            $this->stubVerifierFactory,
+            $this->assertionRenderer,
+            $this->assertionRecorder,
+            $this->invoker
+        );
         $handleProperty = $this->class->getProperty('_handle');
         $handleProperty->setAccessible(true);
         $handleProperty->setValue($this->mock, $this->subject);

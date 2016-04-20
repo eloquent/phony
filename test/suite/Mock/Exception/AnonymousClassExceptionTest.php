@@ -11,18 +11,16 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class AnonymousClassExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $cause = new Exception();
-        $exception = new AnonymousClassException($cause);
+        $exception = new AnonymousClassException();
 
         $this->assertSame('Anonymous classes cannot be mocked.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

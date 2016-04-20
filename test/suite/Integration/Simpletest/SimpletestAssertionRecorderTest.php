@@ -17,7 +17,6 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use SimpleReporter;
-use SimpleTest;
 use SimpleTestContext;
 
 class SimpletestAssertionRecorderTest extends PHPUnit_Framework_TestCase
@@ -36,21 +35,9 @@ class SimpletestAssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->subject = new SimpletestAssertionRecorder($this->simpletestContext);
     }
 
-    public function testConstructor()
-    {
-        $this->assertSame($this->simpletestContext, $this->subject->simpletestContext());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new SimpletestAssertionRecorder();
-
-        $this->assertSame(SimpleTest::getContext(), $this->subject->simpletestContext());
-    }
-
     public function testCreateSuccess()
     {
-        $events = array(new ReturnedEvent(0, 0.0), new ReturnedEvent(1, 1.0));
+        $events = array(new ReturnedEvent(0, 0.0, null), new ReturnedEvent(1, 1.0, null));
         $expected = new EventCollection($events);
         $beforeCount = $this->simpletestReporter->getPassCount();
         $actual = $this->subject->createSuccess($events);
@@ -62,7 +49,7 @@ class SimpletestAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new EventCollection();
+        $expected = new EventCollection(array());
         $beforeCount = $this->simpletestReporter->getPassCount();
         $actual = $this->subject->createSuccess();
         $afterCount = $this->simpletestReporter->getPassCount();

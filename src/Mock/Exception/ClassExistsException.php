@@ -22,10 +22,9 @@ final class ClassExistsException extends Exception implements
     /**
      * Construct a class exists exception.
      *
-     * @param string         $className The class name.
-     * @param Exception|null $cause     The cause, if available.
+     * @param string $className The class name.
      */
-    public function __construct($className, Exception $cause = null)
+    public function __construct($className)
     {
         $this->className = $className;
 
@@ -33,9 +32,7 @@ final class ClassExistsException extends Exception implements
             sprintf(
                 'Class %s is already defined.',
                 var_export($className, true)
-            ),
-            0,
-            $cause
+            )
         );
     }
 

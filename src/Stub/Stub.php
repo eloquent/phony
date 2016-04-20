@@ -53,11 +53,11 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     }
 
     /**
-     * Creates a answer that returns `null` on the supplied stub.
+     * Creates an answer that returns an empty value on the supplied stub.
      *
      * @param StubInterface $stub The stub.
      */
-    public static function returnsNullAnswerCallback(StubInterface $stub)
+    public static function returnsEmptyAnswerCallback(StubInterface $stub)
     {
         $stub->returns();
     }
@@ -65,49 +65,27 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     /**
      * Construct a new stub.
      *
-     * @param callable|null                               $callback                      The callback, or null to create an anonymous stub.
-     * @param mixed                                       $self                          The self value.
-     * @param string|null                                 $label                         The label.
-     * @param callable|null                               $defaultAnswerCallback         The callback to use when creating a default answer.
-     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifierInterface|null               $matcherVerifier               The matcher verifier to use.
-     * @param InvokerInterface|null                       $invoker                       The invoker to use.
-     * @param InvocableInspectorInterface|null            $invocableInspector            The invocable inspector to use.
-     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param callable|null                          $callback                      The callback, or null to create an anonymous stub.
+     * @param mixed                                  $self                          The self value.
+     * @param string|null                            $label                         The label.
+     * @param callable                               $defaultAnswerCallback         The callback to use when creating a default answer.
+     * @param MatcherFactoryInterface                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface               $matcherVerifier               The matcher verifier to use.
+     * @param InvokerInterface                       $invoker                       The invoker to use.
+     * @param InvocableInspectorInterface            $invocableInspector            The invocable inspector to use.
+     * @param GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
-        $callback = null,
-        $self = null,
-        $label = null,
-        $defaultAnswerCallback = null,
-        MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null,
-        InvokerInterface $invoker = null,
-        InvocableInspectorInterface $invocableInspector = null,
-        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
-            null
+        $callback,
+        $self,
+        $label,
+        $defaultAnswerCallback,
+        MatcherFactoryInterface $matcherFactory,
+        MatcherVerifierInterface $matcherVerifier,
+        InvokerInterface $invoker,
+        InvocableInspectorInterface $invocableInspector,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory
     ) {
-        if (!$defaultAnswerCallback) {
-            $defaultAnswerCallback =
-                'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback';
-        }
-        if (!$matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
-        }
-        if (!$matcherVerifier) {
-            $matcherVerifier = MatcherVerifier::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-        if (!$generatorAnswerBuilderFactory) {
-            $generatorAnswerBuilderFactory =
-                GeneratorAnswerBuilderFactory::instance();
-        }
-
         parent::__construct($callback, $label);
 
         if (!$self) {
@@ -154,56 +132,6 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
     public function defaultAnswerCallback()
     {
         return $this->defaultAnswerCallback;
-    }
-
-    /**
-     * Get the matcher factory.
-     *
-     * @return MatcherFactoryInterface The matcher factory.
-     */
-    public function matcherFactory()
-    {
-        return $this->matcherFactory;
-    }
-
-    /**
-     * Get the matcher verifier.
-     *
-     * @return MatcherVerifierInterface The matcher verifier.
-     */
-    public function matcherVerifier()
-    {
-        return $this->matcherVerifier;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
-    }
-
-    /**
-     * Get the generator answer builder factory.
-     *
-     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
-     */
-    public function generatorAnswerBuilderFactory()
-    {
-        return $this->generatorAnswerBuilderFactory;
     }
 
     /**
@@ -605,67 +533,66 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
             $type =
                 $this->invocableInspector->callbackReturnType($this->callback);
 
-            switch ($type) {
-                case 'NULL':
-                    $value = null;
+            if ($type) {
+                switch (strval($type)) {
+                    case 'bool':
+                        $value = false;
 
-                    break;
+                        break;
 
-                case 'bool':
-                    $value = false;
+                    case 'int':
+                        $value = 0;
 
-                    break;
+                        break;
 
-                case 'int':
-                    $value = 0;
+                    case 'float':
+                        $value = .0;
 
-                    break;
+                        break;
 
-                case 'float':
-                    $value = .0;
+                    case 'string':
+                        $value = '';
 
-                    break;
+                        break;
 
-                case 'string':
-                    $value = '';
+                    case 'array':
+                        $value = array();
 
-                    break;
+                        break;
 
-                case 'array':
-                    $value = array();
+                    case 'stdClass':
+                        $value = (object) array();
 
-                    break;
+                        break;
 
-                case 'stdClass':
-                    $value = (object) array();
+                    case 'callable':
+                        $value = function () {};
 
-                    break;
+                        break;
 
-                case 'callable':
-                    $value = function () {};
+                    case 'Traversable':
+                    case 'Iterator':
+                        $value = new EmptyIterator();
 
-                    break;
+                        break;
 
-                case 'Traversable':
-                case 'Iterator':
-                    $value = new EmptyIterator();
+                    case 'Generator':
+                        $fn = function () { return; yield; };
+                        $value = $fn();
 
-                    break;
+                        break;
 
-                case 'Generator':
-                    $fn = function () { return; yield; };
-                    $value = $fn();
-
-                    break;
-
-                default:
-                    throw new InvalidArgumentException(
-                        sprintf(
-                            'Return values of type %s ' .
-                                'must be explicitly specified.',
-                            var_export($type, true)
-                        )
-                    );
+                    default:
+                        throw new InvalidArgumentException(
+                            sprintf(
+                                'Return values of type %s ' .
+                                    'must be explicitly specified.',
+                                var_export($type, true)
+                            )
+                        );
+                }
+            } else {
+                $value = null;
             }
 
             return $this->doesWith(
@@ -832,18 +759,13 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
 
         if ($this->answers) {
             if (null !== $this->criteria) {
-                $rule = new StubRule(
-                    $this->criteria,
-                    $this->answers,
-                    $this->matcherVerifier
-                );
+                $rule = new StubRule($this->criteria, $this->answers);
 
                 $this->criteria = null;
             } else {
                 $rule = new StubRule(
                     array($this->matcherFactory->wildcard()),
-                    $this->answers,
-                    $this->matcherVerifier
+                    $this->answers
                 );
             }
 
@@ -886,7 +808,10 @@ class Stub extends AbstractWrappedInvocable implements StubInterface
         }
 
         foreach ($this->rules as $rule) {
-            if ($rule->matches($argumentsArray)) {
+            if (
+                $this->matcherVerifier
+                    ->matches($rule->criteria(), $argumentsArray)
+            ) {
                 break;
             }
         }

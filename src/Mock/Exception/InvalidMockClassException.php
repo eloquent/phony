@@ -22,10 +22,9 @@ final class InvalidMockClassException extends Exception implements
     /**
      * Construct a new invalid mock class exception.
      *
-     * @param mixed          $value The value.
-     * @param Exception|null $cause The cause, if available.
+     * @param mixed $value The value.
      */
-    public function __construct($value, Exception $cause = null)
+    public function __construct($value)
     {
         $this->value = $value;
 
@@ -33,9 +32,7 @@ final class InvalidMockClassException extends Exception implements
             sprintf(
                 'Value of type %s is not a mock class.',
                 var_export(gettype($value), true)
-            ),
-            0,
-            $cause
+            )
         );
     }
 

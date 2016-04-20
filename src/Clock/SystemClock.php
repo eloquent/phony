@@ -24,7 +24,7 @@ class SystemClock implements ClockInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self('microtime');
         }
 
         return self::$instance;
@@ -35,7 +35,7 @@ class SystemClock implements ClockInterface
      *
      * @param callable $microtime The implementation of microtime() to use.
      */
-    public function __construct($microtime = 'microtime')
+    public function __construct($microtime)
     {
         $this->microtime = $microtime;
     }

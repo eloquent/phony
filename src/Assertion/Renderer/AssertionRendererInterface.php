@@ -160,11 +160,11 @@ interface AssertionRendererInterface
     /**
      * Render an exception.
      *
-     * @param Exception|Error|null $exception The exception.
+     * @param Exception|Error $exception The exception.
      *
      * @return string The rendered exception.
      */
-    public function renderException($exception = null);
+    public function renderException($exception);
 
     /**
      * Render an arbitrary sequence of events.

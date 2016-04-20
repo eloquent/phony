@@ -15,9 +15,6 @@ use ArrayIterator;
 use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\CallInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
-use Eloquent\Phony\Collection\Exception\UndefinedIndexException;
-use Eloquent\Phony\Collection\IndexNormalizer;
-use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Iterator;
 
@@ -29,17 +26,10 @@ class EventCollection implements EventCollectionInterface
     /**
      * Construct a new event collection.
      *
-     * @param array<EventInterface>         $events          The events.
-     * @param IndexNormalizerInterface|null $indexNormalizer The index normalizer to use.
+     * @param array<EventInterface> $events The events.
      */
-    public function __construct(
-        array $events = array(),
-        IndexNormalizerInterface $indexNormalizer = null
-    ) {
-        if (!$indexNormalizer) {
-            $indexNormalizer = IndexNormalizer::instance();
-        }
-
+    public function __construct(array $events)
+    {
         $calls = array();
 
         foreach ($events as $event) {
@@ -49,7 +39,6 @@ class EventCollection implements EventCollectionInterface
         }
 
         $this->events = $events;
-        $this->indexNormalizer = $indexNormalizer;
         $this->calls = $calls;
         $this->eventCount = count($events);
         $this->callCount = count($calls);
@@ -168,11 +157,8 @@ class EventCollection implements EventCollectionInterface
      */
     public function eventAt($index = 0)
     {
-        try {
-            $normalized = $this->indexNormalizer
-                ->normalize($this->eventCount, $index);
-        } catch (UndefinedIndexException $e) {
-            throw new UndefinedEventException($index, $e);
+        if (!$this->normalizeIndex($this->eventCount, $index, $normalized)) {
+            throw new UndefinedEventException($index);
         }
 
         return $this->events[$normalized];
@@ -221,11 +207,8 @@ class EventCollection implements EventCollectionInterface
      */
     public function callAt($index = 0)
     {
-        try {
-            $normalized = $this->indexNormalizer
-                ->normalize($this->callCount, $index);
-        } catch (UndefinedIndexException $e) {
-            throw new UndefinedCallException($index, $e);
+        if (!$this->normalizeIndex($this->callCount, $index, $normalized)) {
+            throw new UndefinedCallException($index);
         }
 
         return $this->calls[$normalized];
@@ -277,8 +260,30 @@ class EventCollection implements EventCollectionInterface
         return new ArrayIterator($this->events);
     }
 
+    private function normalizeIndex($size, $index, &$normalized = null)
+    {
+        $normalized = null;
+
+        if ($index < 0) {
+            $potential = $size + $index;
+
+            if ($potential < 0) {
+                return false;
+            }
+        } else {
+            $potential = $index;
+        }
+
+        if ($potential >= $size) {
+            return false;
+        }
+
+        $normalized = $potential;
+
+        return true;
+    }
+
     private $events;
-    private $indexNormalizer;
     private $calls;
     private $eventCount;
     private $callCount;

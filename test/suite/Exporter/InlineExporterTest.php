@@ -26,7 +26,7 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->depth = -1;
-        $this->subject = new InlineExporter($this->depth);
+        $this->subject = new InlineExporter($this->depth, true);
 
         $this->featureDetector = FeatureDetector::instance();
     }

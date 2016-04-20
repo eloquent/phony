@@ -34,7 +34,10 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                AssertionRecorder::instance(),
+                AssertionRenderer::instance()
+            );
         }
 
         return self::$instance;
@@ -43,42 +46,15 @@ class EventOrderVerifier implements EventOrderVerifierInterface
     /**
      * Construct a new event order verifier.
      *
-     * @param AssertionRecorderInterface|null $assertionRecorder The assertion recorder to use.
-     * @param AssertionRendererInterface|null $assertionRenderer The assertion renderer to use.
+     * @param AssertionRecorderInterface $assertionRecorder The assertion recorder to use.
+     * @param AssertionRendererInterface $assertionRenderer The assertion renderer to use.
      */
     public function __construct(
-        AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null
+        AssertionRecorderInterface $assertionRecorder,
+        AssertionRendererInterface $assertionRenderer
     ) {
-        if (!$assertionRecorder) {
-            $assertionRecorder = AssertionRecorder::instance();
-        }
-        if (!$assertionRenderer) {
-            $assertionRenderer = AssertionRenderer::instance();
-        }
-
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
-    }
-
-    /**
-     * Get the assertion recorder.
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    public function assertionRecorder()
-    {
-        return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the assertion renderer.
-     *
-     * @return AssertionRendererInterface The assertion renderer.
-     */
-    public function assertionRenderer()
-    {
-        return $this->assertionRenderer;
     }
 
     /**

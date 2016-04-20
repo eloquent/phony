@@ -21,7 +21,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
     {
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->eventA = $this->callEventFactory->createReturned();
+        $this->eventA = $this->callEventFactory->createReturned(null);
         $this->eventB =
             $this->callFactory->create($this->callEventFactory->createCalled(null, Arguments::create('a', 'b')));
         $this->eventC = $this->callEventFactory->createCalled(null, Arguments::create('c', 'd'));
@@ -44,7 +44,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new EventCollection();
+        $this->subject = new EventCollection(array());
 
         $this->assertFalse($this->subject->hasEvents());
         $this->assertFalse($this->subject->hasCalls());
@@ -62,7 +62,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testFirstEventFailureUndefined()
     {
-        $this->subject = new EventCollection();
+        $this->subject = new EventCollection(array());
 
         $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->firstEvent();
@@ -75,7 +75,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testLastEventFailureUndefined()
     {
-        $this->subject = new EventCollection();
+        $this->subject = new EventCollection(array());
 
         $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->lastEvent();
@@ -102,7 +102,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testFirstCallFailureUndefined()
     {
-        $this->subject = new EventCollection();
+        $this->subject = new EventCollection(array());
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->firstCall();
@@ -115,7 +115,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testLastCallFailureUndefined()
     {
-        $this->subject = new EventCollection();
+        $this->subject = new EventCollection(array());
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->lastCall();
@@ -156,7 +156,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testArgumentsFailureEmpty()
     {
-        $this->subject = new EventCollection();
+        $this->subject = new EventCollection(array());
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->arguments();
@@ -191,7 +191,7 @@ class EventCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testArgumentFailureNoEvents()
     {
-        $this->subject = new EventCollection();
+        $this->subject = new EventCollection(array());
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->argument();

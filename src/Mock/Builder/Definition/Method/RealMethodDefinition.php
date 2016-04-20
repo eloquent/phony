@@ -23,14 +23,10 @@ class RealMethodDefinition implements MethodDefinitionInterface
      * Construct a new real method definition.
      *
      * @param ReflectionMethod $method The method.
-     * @param string|null      $name   The name.
+     * @param string           $name   The name.
      */
-    public function __construct(ReflectionMethod $method, $name = null)
+    public function __construct(ReflectionMethod $method, $name)
     {
-        if (!$name) {
-            $name = $method->getName();
-        }
-
         $this->method = $method;
         $this->name = $name;
         $this->isCallable = !$this->method->isAbstract();

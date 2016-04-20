@@ -32,22 +32,22 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
     /**
      * Construct a new instance handle.
      *
-     * @param MockInterface                     $mock                The mock.
-     * @param stdClass|null                     $state               The state.
-     * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param InvokerInterface|null             $invoker             The invoker to use.
+     * @param MockInterface                $mock                The mock.
+     * @param stdClass                     $state               The state.
+     * @param StubFactoryInterface         $stubFactory         The stub factory to use.
+     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
+     * @param InvokerInterface             $invoker             The invoker to use.
      */
     public function __construct(
         MockInterface $mock,
-        stdClass $state = null,
-        StubFactoryInterface $stubFactory = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        InvokerInterface $invoker = null
+        stdClass $state,
+        StubFactoryInterface $stubFactory,
+        StubVerifierFactoryInterface $stubVerifierFactory,
+        AssertionRendererInterface $assertionRenderer,
+        AssertionRecorderInterface $assertionRecorder,
+        InvokerInterface $invoker
     ) {
         $class = new ReflectionClass($mock);
 

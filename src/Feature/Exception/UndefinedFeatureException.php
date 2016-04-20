@@ -21,17 +21,14 @@ final class UndefinedFeatureException extends Exception
     /**
      * Construct a new undefined feature exception.
      *
-     * @param string         $feature The feature.
-     * @param Exception|null $cause   The cause, if available.
+     * @param string $feature The feature.
      */
-    public function __construct($feature, Exception $cause = null)
+    public function __construct($feature)
     {
         $this->feature = $feature;
 
         parent::__construct(
-            sprintf('Undefined feature %s.', var_export($feature, true)),
-            0,
-            $cause
+            sprintf('Undefined feature %s.', var_export($feature, true))
         );
     }
 

@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use PHPUnit_Framework_TestCase;
@@ -21,6 +22,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->mockBuilderFactory = MockBuilderFactory::instance();
         $this->featureDetector = FeatureDetector::instance();
 
         if (!$this->featureDetector->isSupported('trait')) {
@@ -30,9 +32,9 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->callTraitMethod = new ReflectionMethod($this, 'setUp');
         $this->traitName = 'Eloquent\Phony\Test\TestTraitA';
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB');
-        $this->mockBuilder = new MockBuilder();
+        $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = new HandleFactory();
+        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->createStubbing($this->mock);
         $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->handle);
     }
@@ -82,7 +84,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
     public function testInvokeMethods()
     {
         $traitName = 'Eloquent\Phony\Test\TestTraitA';
-        $mockBuilder = new MockBuilder($traitName);
+        $mockBuilder = $this->mockBuilderFactory->create($traitName);
         $class = $mockBuilder->build();
         $callTraitMethod = $class->getMethod('_callTrait');
         $callTraitMethod->setAccessible(true);
@@ -99,7 +101,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
     public function testInvokeMethodsWithStatic()
     {
         $traitName = 'Eloquent\Phony\Test\TestTraitA';
-        $mockBuilder = new MockBuilder($traitName);
+        $mockBuilder = $this->mockBuilderFactory->create($traitName);
         $class = $mockBuilder->build();
         $callTraitMethod = $class->getMethod('_callTraitStatic');
         $callTraitMethod->setAccessible(true);

@@ -84,18 +84,4 @@ class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->subject->isCallable());
     }
-
-    public function testConstructorDefaults()
-    {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA');
-        $this->subject = new RealMethodDefinition($this->method);
-
-        $this->assertTrue($this->subject->isCallable());
-        $this->assertTrue($this->subject->isStatic());
-        $this->assertFalse($this->subject->isCustom());
-        $this->assertSame('public', $this->subject->accessLevel());
-        $this->assertSame('testClassAStaticMethodA', $this->subject->name());
-        $this->assertSame($this->method, $this->subject->method());
-        $this->assertNull($this->subject->callback());
-    }
 }

@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Test\EmptyGeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -28,21 +29,26 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->arguments = new Arguments(array('a', 'b'));
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
+        $this->subject = new Call($this->calledEvent);
+
+        $this->events = array($this->calledEvent);
+
         $this->returnValue = 'ab';
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
-        $this->subject = new Call($this->calledEvent, $this->returnedEvent);
-
-        $this->events = array($this->calledEvent, $this->returnedEvent);
     }
 
     public function testConstructorWithGeneratedEventWithReturnEnd()
     {
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createProduced();
-        $generatorEventB = $this->callEventFactory->createReceived();
+        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $generatorEventA = $this->callEventFactory->createProduced(null, null);
+        $generatorEventB = $this->callEventFactory->createReceived(null);
         $generatorEvents = array($generatorEventA, $generatorEventB);
-        $endEvent = $this->callEventFactory->createReturned();
-        $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
+        $endEvent = $this->callEventFactory->createReturned(null);
+        $this->subject = new Call($this->calledEvent);
+        $this->subject->setResponseEvent($generatedEvent);
+        $this->subject->addTraversableEvent($generatorEventA);
+        $this->subject->addTraversableEvent($generatorEventB);
+        $this->subject->setEndEvent($endEvent);
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
@@ -67,13 +73,17 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithGeneratedEventWithThrowEnd()
     {
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createProduced();
-        $generatorEventB = $this->callEventFactory->createReceived();
+        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $generatorEventA = $this->callEventFactory->createProduced(null, null);
+        $generatorEventB = $this->callEventFactory->createReceived(null);
         $generatorEvents = array($generatorEventA, $generatorEventB);
         $exception = new RuntimeException('You done goofed.');
         $endEvent = $this->callEventFactory->createThrew($exception);
-        $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents, $endEvent);
+        $this->subject = new Call($this->calledEvent);
+        $this->subject->setResponseEvent($generatedEvent);
+        $this->subject->addTraversableEvent($generatorEventA);
+        $this->subject->addTraversableEvent($generatorEventB);
+        $this->subject->setEndEvent($endEvent);
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
@@ -99,11 +109,14 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithGeneratedEventWithoutEnd()
     {
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createProduced();
-        $generatorEventB = $this->callEventFactory->createReceived();
+        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $generatorEventA = $this->callEventFactory->createProduced(null, null);
+        $generatorEventB = $this->callEventFactory->createReceived(null);
         $generatorEvents = array($generatorEventA, $generatorEventB);
-        $this->subject = new Call($this->calledEvent, $generatedEvent, $generatorEvents);
+        $this->subject = new Call($this->calledEvent);
+        $this->subject->setResponseEvent($generatedEvent);
+        $this->subject->addTraversableEvent($generatorEventA);
+        $this->subject->addTraversableEvent($generatorEventB);
         $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
@@ -128,8 +141,9 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithGeneratedEventWithoutGeneratorEvents()
     {
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $this->subject = new Call($this->calledEvent, $generatedEvent);
+        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $this->subject = new Call($this->calledEvent);
+        $this->subject->setResponseEvent($generatedEvent);
         $this->events = array($this->calledEvent, $generatedEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
@@ -154,7 +168,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testSetResponseEventWithGeneratedEvent()
     {
-        $generatedEvent = $this->callEventFactory->createGenerated();
+        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
         $this->subject = new Call($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
 
@@ -165,10 +179,11 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testAddTraversableEvent()
     {
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $generatorEventA = $this->callEventFactory->createProduced();
-        $generatorEventB = $this->callEventFactory->createReceived();
-        $this->subject = new Call($this->calledEvent, $generatedEvent);
+        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $generatorEventA = $this->callEventFactory->createProduced(null, null);
+        $generatorEventB = $this->callEventFactory->createReceived(null);
+        $this->subject = new Call($this->calledEvent);
+        $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addTraversableEvent($generatorEventA);
         $this->subject->addTraversableEvent($generatorEventB);
         $generatorEvents = array($generatorEventA, $generatorEventB);
@@ -180,9 +195,11 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testAddTraversableEventFailureAlreadyCompleted()
     {
-        $generatedEvent = $this->callEventFactory->createGenerated();
-        $endEvent = $this->callEventFactory->createReturned();
-        $this->subject = new Call($this->calledEvent, $generatedEvent, array(), $endEvent);
+        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $endEvent = $this->callEventFactory->createReturned(null);
+        $this->subject = new Call($this->calledEvent);
+        $this->subject->setResponseEvent($generatedEvent);
+        $this->subject->setEndEvent($endEvent);
 
         $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
         $this->subject->addTraversableEvent($this->callEventFactory->createReceived('e'));

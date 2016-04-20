@@ -29,31 +29,23 @@ abstract class AbstractStaticHandle extends AbstractHandle implements
     /**
      * Construct a new static handle.
      *
-     * @param ReflectionClass                   $class               The class.
-     * @param stdClass|null                     $state               The state.
-     * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param InvokerInterface|null             $invoker             The invoker to use.
+     * @param ReflectionClass              $class               The class.
+     * @param stdClass                     $state               The state.
+     * @param StubFactoryInterface         $stubFactory         The stub factory to use.
+     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
+     * @param InvokerInterface             $invoker             The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,
-        stdClass $state = null,
-        StubFactoryInterface $stubFactory = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        InvokerInterface $invoker = null
+        stdClass $state,
+        StubFactoryInterface $stubFactory,
+        StubVerifierFactoryInterface $stubVerifierFactory,
+        AssertionRendererInterface $assertionRenderer,
+        AssertionRecorderInterface $assertionRecorder,
+        InvokerInterface $invoker
     ) {
-        if (!$state) {
-            $state = (object) array(
-                'defaultAnswerCallback' =>
-                    'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',
-                'stubs' => (object) array(),
-                'isRecording' => true,
-            );
-        }
         if ($class->hasMethod('_callParentStatic')) {
             $callParentMethod = $class->getMethod('_callParentStatic');
             $callParentMethod->setAccessible(true);

@@ -12,21 +12,22 @@
 namespace Eloquent\Phony\Mock\Builder\Definition;
 
 use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
+use ReflectionFunction;
 use ReflectionMethod;
 
 class MockDefinitionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
+        $this->isTraitSupported = $this->featureDetector->isSupported('trait');
+        $this->isRelaxedKeywordsSupported = $this->featureDetector->isSupported('parser.relaxed-keywords');
 
         $this->typeNames = array(
             'Countable',
@@ -58,8 +59,17 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
 
         $this->callbackA = function () {};
         $this->callbackB = function () {};
+        $this->callbackC = function () {};
         $this->callbackD = function () {};
         $this->callbackE = function () {};
+        $this->callbackF = function () {};
+
+        $this->callbackReflectorA = new ReflectionFunction($this->callbackA);
+        $this->callbackReflectorB = new ReflectionFunction($this->callbackB);
+        $this->callbackReflectorC = new ReflectionFunction($this->callbackC);
+        $this->callbackReflectorD = new ReflectionFunction($this->callbackD);
+        $this->callbackReflectorE = new ReflectionFunction($this->callbackE);
+        $this->callbackReflectorF = new ReflectionFunction($this->callbackF);
     }
 
     protected function setUpWith($typeNames)
@@ -71,15 +81,15 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         }
 
         $this->customMethods = array(
-            'methodA' => $this->callbackA,
-            'methodB' => $this->callbackB,
-            'methodC' => null,
+            'methodA' => array($this->callbackA, $this->callbackReflectorA),
+            'methodB' => array($this->callbackB, $this->callbackReflectorB),
+            'methodC' => array($this->callbackC, $this->callbackReflectorC),
         );
         $this->customProperties = array('a' => 'b', 'c' => 'd');
         $this->customStaticMethods = array(
-            'methodD' => $this->callbackD,
-            'methodE' => $this->callbackE,
-            'methodF' => null,
+            'methodD' => array($this->callbackD, $this->callbackReflectorD),
+            'methodE' => array($this->callbackE, $this->callbackReflectorE),
+            'methodF' => array($this->callbackF, $this->callbackReflectorF),
         );
         $this->customStaticProperties = array('e' => 'f', 'g' => 'h');
         $this->customConstants = array('i' => 'j', 'k' => 'l');
@@ -92,8 +102,8 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             $this->customStaticProperties,
             $this->customConstants,
             $this->className,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
         );
     }
 
@@ -108,8 +118,6 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->customStaticProperties, $this->subject->customStaticProperties());
         $this->assertSame($this->customConstants, $this->subject->customConstants());
         $this->assertSame($this->className, $this->subject->className());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertSame($this->typeNames, $this->subject->typeNames());
         $this->assertSame($this->parentClassName, $this->subject->parentClassName());
         $this->assertSame($this->interfaceNames, $this->subject->interfaceNames());
@@ -132,87 +140,116 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->traitNames, $this->subject->traitNames());
     }
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new MockDefinition();
-
-        $this->assertSame(array(), $this->subject->types());
-        $this->assertSame(array(), $this->subject->customMethods());
-        $this->assertSame(array(), $this->subject->customProperties());
-        $this->assertSame(array(), $this->subject->customStaticMethods());
-        $this->assertSame(array(), $this->subject->customStaticProperties());
-        $this->assertSame(array(), $this->subject->customConstants());
-        $this->assertNull($this->subject->className());
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
-        $this->assertSame(array(), $this->subject->typeNames());
-        $this->assertNull($this->subject->parentClassName());
-        $this->assertSame(array(), $this->subject->interfaceNames());
-        $this->assertSame(array(), $this->subject->traitNames());
-        $this->assertEquals(new MethodDefinitionCollection(), $this->subject->methods());
-    }
-
     public function testMethods()
     {
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
+        }
+
         $this->setUpWith($this->typeNames);
 
         $expected = new MethodDefinitionCollection(
             array(
-                'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count')),
-                'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current')),
-                'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key')),
-                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
-                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
-                'methodC' => new CustomMethodDefinition(false, 'methodC'),
-                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
-                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackE),
-                'methodF' => new CustomMethodDefinition(true, 'methodF'),
-                'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next')),
-                'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind')),
+                'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count'), 'count'),
+                'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current'), 'current'),
+                'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key'), 'key'),
+                'methodA' => new CustomMethodDefinition(
+                    false,
+                    'methodA',
+                    $this->callbackA,
+                    new ReflectionFunction($this->callbackA)
+                ),
+                'methodB' => new CustomMethodDefinition(
+                    false,
+                    'methodB',
+                    $this->callbackB,
+                    new ReflectionFunction($this->callbackB)
+                ),
+                'methodC' => new CustomMethodDefinition(
+                    false,
+                    'methodC',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
+                'methodD' => new CustomMethodDefinition(
+                    true,
+                    'methodD',
+                    $this->callbackD,
+                    new ReflectionFunction($this->callbackD)
+                ),
+                'methodE' => new CustomMethodDefinition(
+                    true,
+                    'methodE',
+                    $this->callbackE,
+                    new ReflectionFunction($this->callbackE)
+                ),
+                'methodF' => new CustomMethodDefinition(
+                    true,
+                    'methodF',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
+                'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next'), 'next'),
+                'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind'), 'rewind'),
                 'testClassAMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'),
+                    'testClassAMethodA'
                 ),
                 'testClassAMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'),
+                    'testClassAMethodB'
                 ),
                 'testClassAMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC'),
+                    'testClassAMethodC'
                 ),
                 'testClassAMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD'),
+                    'testClassAMethodD'
                 ),
                 'testClassAStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'),
+                    'testClassAStaticMethodA'
                 ),
                 'testClassAStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'),
+                    'testClassAStaticMethodB'
                 ),
                 'testClassAStaticMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC'),
+                    'testClassAStaticMethodC'
                 ),
                 'testClassAStaticMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD'),
+                    'testClassAStaticMethodD'
                 ),
                 'testClassBMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'),
+                    'testClassBMethodA'
                 ),
                 'testClassBMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'),
+                    'testClassBMethodB'
                 ),
                 'testClassBStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'),
+                    'testClassBStaticMethodA'
                 ),
                 'testClassBStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'),
+                    'testClassBStaticMethodB'
                 ),
-                'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid')),
+                'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid'), 'valid'),
                 '__call' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__call')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__call'),
+                    '__call'
                 ),
                 '__callStatic' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic'),
+                    '__callStatic'
                 ),
-            )
+            ),
+            array()
         );
         $actual = $this->subject->methods();
 
@@ -225,84 +262,137 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         if (!$this->featureDetector->isSupported('trait')) {
             $this->markTestSkipped('Requires traits.');
         }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
+        }
 
         $this->setUpWith($this->typeNamesTraits);
 
         $expected = new MethodDefinitionCollection(
             array(
-                'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count')),
-                'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current')),
-                'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key')),
-                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
-                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
-                'methodC' => new CustomMethodDefinition(false, 'methodC'),
-                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
-                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackE),
-                'methodF' => new CustomMethodDefinition(true, 'methodF'),
-                'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next')),
-                'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind')),
+                'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count'), 'count'),
+                'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current'), 'current'),
+                'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key'), 'key'),
+                'methodA' => new CustomMethodDefinition(
+                    false,
+                    'methodA',
+                    $this->callbackA,
+                    new ReflectionFunction($this->callbackA)
+                ),
+                'methodB' => new CustomMethodDefinition(
+                    false,
+                    'methodB',
+                    $this->callbackB,
+                    new ReflectionFunction($this->callbackB)
+                ),
+                'methodC' => new CustomMethodDefinition(
+                    false,
+                    'methodC',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
+                'methodD' => new CustomMethodDefinition(
+                    true,
+                    'methodD',
+                    $this->callbackD,
+                    new ReflectionFunction($this->callbackD)
+                ),
+                'methodE' => new CustomMethodDefinition(
+                    true,
+                    'methodE',
+                    $this->callbackE,
+                    new ReflectionFunction($this->callbackE)
+                ),
+                'methodF' => new CustomMethodDefinition(
+                    true,
+                    'methodF',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
+                'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next'), 'next'),
+                'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind'), 'rewind'),
                 'testClassAMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'),
+                    'testClassAMethodA'
                 ),
                 'testClassAMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'),
+                    'testClassAMethodB'
                 ),
                 'testClassAMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC'),
+                    'testClassAMethodC'
                 ),
                 'testClassAMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD'),
+                    'testClassAMethodD'
                 ),
                 'testTraitBMethodA' => new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA'),
+                    'testTraitBMethodA'
                 ),
                 'testClassAStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'),
+                    'testClassAStaticMethodA'
                 ),
                 'testClassAStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'),
+                    'testClassAStaticMethodB'
                 ),
                 'testClassAStaticMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC'),
+                    'testClassAStaticMethodC'
                 ),
                 'testClassAStaticMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD'),
+                    'testClassAStaticMethodD'
                 ),
                 'testClassBMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'),
+                    'testClassBMethodA'
                 ),
                 'testClassBMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'),
+                    'testClassBMethodB'
                 ),
                 'testClassBStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'),
+                    'testClassBStaticMethodA'
                 ),
                 'testClassBStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'),
+                    'testClassBStaticMethodB'
                 ),
-                'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid')),
+                'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid'), 'valid'),
                 '__call' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__call')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__call'),
+                    '__call'
                 ),
                 '__callStatic' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic'),
+                    '__callStatic'
                 ),
             ),
             array(
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA'),
+                    'testClassAStaticMethodA'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB'),
+                    'testClassAMethodB'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB'),
+                    'testClassAMethodB'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA'),
+                    'testTraitBMethodA'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA'),
+                    'testClassAStaticMethodA'
                 ),
             )
         );
@@ -314,6 +404,10 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
 
     public function testMethodsWithFinalMethods()
     {
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
+        }
+
         $this->setUpWith(
             array(
                 'Eloquent\Phony\Test\TestClassF',
@@ -323,13 +417,44 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
 
         $expected = new MethodDefinitionCollection(
             array(
-                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
-                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
-                'methodC' => new CustomMethodDefinition(false, 'methodC'),
-                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
-                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackE),
-                'methodF' => new CustomMethodDefinition(true, 'methodF'),
-            )
+                'methodA' => new CustomMethodDefinition(
+                    false,
+                    'methodA',
+                    $this->callbackA,
+                    new ReflectionFunction($this->callbackA)
+                ),
+                'methodB' => new CustomMethodDefinition(
+                    false,
+                    'methodB',
+                    $this->callbackB,
+                    new ReflectionFunction($this->callbackB)
+                ),
+                'methodC' => new CustomMethodDefinition(
+                    false,
+                    'methodC',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
+                'methodD' => new CustomMethodDefinition(
+                    true,
+                    'methodD',
+                    $this->callbackD,
+                    new ReflectionFunction($this->callbackD)
+                ),
+                'methodE' => new CustomMethodDefinition(
+                    true,
+                    'methodE',
+                    $this->callbackE,
+                    new ReflectionFunction($this->callbackE)
+                ),
+                'methodF' => new CustomMethodDefinition(
+                    true,
+                    'methodF',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
+            ),
+            array()
         );
         $actual = $this->subject->methods();
 
@@ -342,6 +467,9 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         if (!$this->featureDetector->isSupported('trait')) {
             $this->markTestSkipped('Requires traits.');
         }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
+        }
 
         $this->setUpWith(
             array(
@@ -353,19 +481,51 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
 
         $expected = new MethodDefinitionCollection(
             array(
-                'methodA' => new CustomMethodDefinition(false, 'methodA', $this->callbackA),
-                'methodB' => new CustomMethodDefinition(false, 'methodB', $this->callbackB),
-                'methodC' => new CustomMethodDefinition(false, 'methodC'),
-                'methodD' => new CustomMethodDefinition(true, 'methodD', $this->callbackD),
-                'methodE' => new CustomMethodDefinition(true, 'methodE', $this->callbackE),
-                'methodF' => new CustomMethodDefinition(true, 'methodF'),
+                'methodA' => new CustomMethodDefinition(
+                    false,
+                    'methodA',
+                    $this->callbackA,
+                    new ReflectionFunction($this->callbackA)
+                ),
+                'methodB' => new CustomMethodDefinition(
+                    false,
+                    'methodB',
+                    $this->callbackB,
+                    new ReflectionFunction($this->callbackB)
+                ),
+                'methodC' => new CustomMethodDefinition(
+                    false,
+                    'methodC',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
+                'methodD' => new CustomMethodDefinition(
+                    true,
+                    'methodD',
+                    $this->callbackD,
+                    new ReflectionFunction($this->callbackD)
+                ),
+                'methodE' => new CustomMethodDefinition(
+                    true,
+                    'methodE',
+                    $this->callbackE,
+                    new ReflectionFunction($this->callbackE)
+                ),
+                'methodF' => new CustomMethodDefinition(
+                    true,
+                    'methodF',
+                    function () {},
+                    new ReflectionFunction(function () {})
+                ),
             ),
             array(
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFStaticMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFStaticMethodA'),
+                    'testClassFStaticMethodA'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFMethodA')
+                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFMethodA'),
+                    'testClassFMethodA'
                 ),
             )
         );
@@ -381,7 +541,17 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $definitionA = $this->subject;
         $this->setUpWith($this->typeNames);
         $definitionB = $this->subject;
-        $definitionC = new MockDefinition();
+        $definitionC = new MockDefinition(
+            array(),
+            array(),
+            array(),
+            array(),
+            array(),
+            array(),
+            null,
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
+        );
 
         $this->assertTrue($definitionA->isEqualTo($definitionA));
         $this->assertTrue($definitionA->isEqualTo($definitionB));
@@ -399,14 +569,29 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $definitionA = new MockDefinition(
             array(),
             array(
-                'methodA' => function ($a, $b) {},
-            )
+                'methodA' => array(function ($a, $b) {}, new ReflectionFunction(function ($a, $b) {})),
+            ),
+            array(),
+            array(),
+            array(),
+            array(),
+            null,
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
         );
         $definitionB = new MockDefinition(
             array(),
             array(
-                'methodA' => function ($a, array $b = null) {},
-            )
+                'methodA' =>
+                    array(function ($a, array $b = null) {}, new ReflectionFunction(function ($a, array $b = null) {})),
+            ),
+            array(),
+            array(),
+            array(),
+            array(),
+            null,
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));
@@ -419,16 +604,27 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
             array(),
             array(),
             array(
-                'methodA' => function ($a, $b) {},
-            )
+                'methodA' => array(function ($a, $b) {}, new ReflectionFunction(function ($a, $b) {})),
+            ),
+            array(),
+            array(),
+            null,
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
         );
         $definitionB = new MockDefinition(
             array(),
             array(),
             array(),
             array(
-                'methodA' => function ($a, array $b = null) {},
-            )
+                'methodA' =>
+                    array(function ($a, array $b = null) {}, new ReflectionFunction(function ($a, array $b = null) {})),
+            ),
+            array(),
+            array(),
+            null,
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));

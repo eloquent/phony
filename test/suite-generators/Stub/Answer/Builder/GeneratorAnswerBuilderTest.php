@@ -17,6 +17,7 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phpunit\Phony;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Test\TupleIterator;
 use Exception;
@@ -27,7 +28,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->self = (object) array();
-        $this->stub = new Stub(null, $this->self);
+        $this->stub = StubFactory::instance()->create(null, $this->self);
         $this->featureDetector = FeatureDetector::instance();
         $this->isGeneratorReturnSupported = $this->featureDetector->isSupported('generator.return');
         $this->invocableInspector = new InvocableInspector();
@@ -91,13 +92,6 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         };
 
         $this->arguments = Arguments::create();
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->stub, $this->subject->stub());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->invoker, $this->subject->invoker());
     }
 
     public function testCalls()

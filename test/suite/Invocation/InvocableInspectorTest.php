@@ -27,7 +27,7 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
 
         $this->callback = function () {};
         $this->invocable = new TestInvocable();
-        $this->wrappedInvocable = new TestWrappedInvocable($this->callback);
+        $this->wrappedInvocable = new TestWrappedInvocable($this->callback, null);
 
         $this->featureDetector = FeatureDetector::instance();
     }
@@ -88,11 +88,18 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
 
     public function testCallbackReturnType()
     {
-        $this->assertSame('NULL', $this->subject->callbackReturnType(function () {}));
+        $this->assertNull($this->subject->callbackReturnType(function () {}));
 
         if ($this->featureDetector->isSupported('return.type')) {
-            $this->assertSame('int', $this->subject->callbackReturnType(eval('return function () : int {};')));
-            $this->assertSame('stdClass', $this->subject->callbackReturnType(eval('return function () : stdClass {};')));
+            $type = $this->subject->callbackReturnType(eval('return function () : int {};'));
+
+            $this->assertInstanceOf('ReflectionType', $type);
+            $this->assertSame('int', strval($type));
+
+            $type = $this->subject->callbackReturnType(eval('return function () : stdClass {};'));
+
+            $this->assertInstanceOf('ReflectionType', $type);
+            $this->assertSame('stdClass', strval($type));
         }
     }
 

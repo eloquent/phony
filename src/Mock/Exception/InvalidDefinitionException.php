@@ -22,11 +22,10 @@ final class InvalidDefinitionException extends Exception implements
     /**
      * Construct a new invalid definition exception.
      *
-     * @param mixed          $name  The name.
-     * @param mixed          $value The value.
-     * @param Exception|null $cause The cause, if available.
+     * @param mixed $name  The name.
+     * @param mixed $value The value.
      */
-    public function __construct($name, $value, Exception $cause = null)
+    public function __construct($name, $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -36,9 +35,7 @@ final class InvalidDefinitionException extends Exception implements
                 'Invalid mock definition %s: (%s).',
                 var_export($name, true),
                 gettype($value)
-            ),
-            0,
-            $cause
+            )
         );
     }
 

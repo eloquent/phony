@@ -21,15 +21,9 @@ final class AnonymousClassException extends Exception implements
 {
     /**
      * Construct an anonymous class exception.
-     *
-     * @param Exception|null $cause The cause, if available.
      */
-    public function __construct(Exception $cause = null)
+    public function __construct()
     {
-        parent::__construct(
-            'Anonymous classes cannot be mocked.',
-            0,
-            $cause
-        );
+        parent::__construct('Anonymous classes cannot be mocked.');
     }
 }

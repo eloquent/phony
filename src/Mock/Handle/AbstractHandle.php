@@ -45,7 +45,7 @@ abstract class AbstractHandle implements HandleInterface
      * Construct a new handle.
      *
      * @param ReflectionClass                   $class               The class.
-     * @param stdClass|null                     $state               The state.
+     * @param stdClass                          $state               The state.
      * @param ReflectionMethod|null             $callParentMethod    The call parent method, or null if no parent class exists.
      * @param ReflectionMethod|null             $callTraitMethod     The call trait method, or null if no trait methods are implemented.
      * @param ReflectionMethod|null             $callMagicMethod     The call magic method, or null if magic calls are not supported.
@@ -58,41 +58,17 @@ abstract class AbstractHandle implements HandleInterface
      */
     public function __construct(
         ReflectionClass $class,
-        stdClass $state = null,
+        stdClass $state,
         ReflectionMethod $callParentMethod = null,
         ReflectionMethod $callTraitMethod = null,
         ReflectionMethod $callMagicMethod = null,
         MockInterface $mock = null,
-        StubFactoryInterface $stubFactory = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        InvokerInterface $invoker = null
+        StubFactoryInterface $stubFactory,
+        StubVerifierFactoryInterface $stubVerifierFactory,
+        AssertionRendererInterface $assertionRenderer,
+        AssertionRecorderInterface $assertionRecorder,
+        InvokerInterface $invoker
     ) {
-        if (!$state) {
-            $state = (object) array(
-                'defaultAnswerCallback' =>
-                    'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
-                'stubs' => (object) array(),
-                'isRecording' => true,
-            );
-        }
-        if (!$stubFactory) {
-            $stubFactory = StubFactory::instance();
-        }
-        if (!$stubVerifierFactory) {
-            $stubVerifierFactory = StubVerifierFactory::instance();
-        }
-        if (!$assertionRenderer) {
-            $assertionRenderer = AssertionRenderer::instance();
-        }
-        if (!$assertionRecorder) {
-            $assertionRecorder = AssertionRecorder::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-
         $this->mock = $mock;
         $this->class = $class;
         $this->state = $state;
@@ -116,56 +92,6 @@ abstract class AbstractHandle implements HandleInterface
         $customMethodsProperty = $class->getProperty('_customMethods');
         $customMethodsProperty->setAccessible(true);
         $this->customMethods = $customMethodsProperty->getValue(null);
-    }
-
-    /**
-     * Get the stub factory.
-     *
-     * @return StubFactoryInterface The stub factory.
-     */
-    public function stubFactory()
-    {
-        return $this->stubFactory;
-    }
-
-    /**
-     * Get the stub verifier factory.
-     *
-     * @return StubVerifierFactoryInterface The stub verifier factory.
-     */
-    public function stubVerifierFactory()
-    {
-        return $this->stubVerifierFactory;
-    }
-
-    /**
-     * Get the assertion renderer.
-     *
-     * @return AssertionRendererInterface The assertion renderer.
-     */
-    public function assertionRenderer()
-    {
-        return $this->assertionRenderer;
-    }
-
-    /**
-     * Get the assertion recorder.
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    public function assertionRecorder()
-    {
-        return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
     }
 
     /**
@@ -196,7 +122,7 @@ abstract class AbstractHandle implements HandleInterface
     public function full()
     {
         $this->state->defaultAnswerCallback =
-            'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback';
+            'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback';
 
         return $this;
     }

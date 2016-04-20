@@ -31,15 +31,6 @@ class WildcardMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->maximumArguments, $this->subject->maximumArguments());
     }
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new WildcardMatcher();
-
-        $this->assertSame(AnyMatcher::instance(), $this->subject->matcher());
-        $this->assertSame(0, $this->subject->minimumArguments());
-        $this->assertNull($this->subject->maximumArguments());
-    }
-
     public function describeData()
     {
         //                                        matcher                  minimum maximum expected

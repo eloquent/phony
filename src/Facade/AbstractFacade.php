@@ -53,7 +53,7 @@ abstract class AbstractFacade
      */
     public static function mockBuilder($types = array())
     {
-        return static::driver()->mockBuilderFactory()->create($types);
+        return static::driver()->mockBuilderFactory->create($types);
     }
 
     /**
@@ -71,8 +71,10 @@ abstract class AbstractFacade
      */
     public static function mock($types = array())
     {
-        return static::on(
-            static::driver()->mockBuilderFactory()->createFullMock($types)
+        $driver = static::driver();
+
+        return $driver->handleFactory->createStubbing(
+            $driver->mockBuilderFactory->create($types)->full()
         );
     }
 
@@ -96,9 +98,10 @@ abstract class AbstractFacade
      */
     public static function partialMock($types = array(), $arguments = array())
     {
-        return static::on(
-            static::driver()->mockBuilderFactory()
-                ->createPartialMock($types, $arguments)
+        $driver = static::driver();
+
+        return $driver->handleFactory->createStubbing(
+            $driver->mockBuilderFactory->create($types)->partialWith($arguments)
         );
     }
 
@@ -114,7 +117,7 @@ abstract class AbstractFacade
      */
     public static function on($mock)
     {
-        return static::driver()->handleFactory()->createStubbing($mock);
+        return static::driver()->handleFactory->createStubbing($mock);
     }
 
     /**
@@ -129,7 +132,7 @@ abstract class AbstractFacade
      */
     public static function verify($mock)
     {
-        return static::driver()->handleFactory()->createVerification($mock);
+        return static::driver()->handleFactory->createVerification($mock);
     }
 
     /**
@@ -144,7 +147,7 @@ abstract class AbstractFacade
      */
     public static function onStatic($class)
     {
-        return static::driver()->handleFactory()->createStubbingStatic($class);
+        return static::driver()->handleFactory->createStubbingStatic($class);
     }
 
     /**
@@ -159,8 +162,8 @@ abstract class AbstractFacade
      */
     public static function verifyStatic($class)
     {
-        return static::driver()->handleFactory()
-            ->createVerificationStatic($class);
+        return
+            static::driver()->handleFactory->createVerificationStatic($class);
     }
 
     /**
@@ -174,8 +177,8 @@ abstract class AbstractFacade
      */
     public static function spy($callback = null)
     {
-        return static::driver()->spyVerifierFactory()
-            ->createFromCallback($callback);
+        return
+            static::driver()->spyVerifierFactory->createFromCallback($callback);
     }
 
     /**
@@ -189,7 +192,7 @@ abstract class AbstractFacade
      */
     public static function stub($callback = null)
     {
-        return static::driver()->stubVerifierFactory()
+        return static::driver()->stubVerifierFactory
             ->createFromCallback($callback);
     }
 
@@ -204,7 +207,7 @@ abstract class AbstractFacade
      */
     public static function checkInOrder()
     {
-        return static::driver()->eventOrderVerifier()
+        return static::driver()->eventOrderVerifier
             ->checkInOrderSequence(func_get_args());
     }
 
@@ -221,7 +224,7 @@ abstract class AbstractFacade
      */
     public static function inOrder()
     {
-        return static::driver()->eventOrderVerifier()
+        return static::driver()->eventOrderVerifier
             ->inOrderSequence(func_get_args());
     }
 
@@ -236,8 +239,8 @@ abstract class AbstractFacade
      */
     public static function checkInOrderSequence($events)
     {
-        return static::driver()->eventOrderVerifier()
-            ->checkInOrderSequence($events);
+        return
+            static::driver()->eventOrderVerifier->checkInOrderSequence($events);
     }
 
     /**
@@ -253,7 +256,7 @@ abstract class AbstractFacade
      */
     public static function inOrderSequence($events)
     {
-        return static::driver()->eventOrderVerifier()->inOrderSequence($events);
+        return static::driver()->eventOrderVerifier->inOrderSequence($events);
     }
 
     /**
@@ -268,7 +271,7 @@ abstract class AbstractFacade
      */
     public static function checkAnyOrder()
     {
-        return static::driver()->eventOrderVerifier()
+        return static::driver()->eventOrderVerifier
             ->checkAnyOrderSequence(func_get_args());
     }
 
@@ -285,7 +288,7 @@ abstract class AbstractFacade
      */
     public static function anyOrder()
     {
-        return static::driver()->eventOrderVerifier()
+        return static::driver()->eventOrderVerifier
             ->anyOrderSequence(func_get_args());
     }
 
@@ -301,7 +304,7 @@ abstract class AbstractFacade
      */
     public static function checkAnyOrderSequence($events)
     {
-        return static::driver()->eventOrderVerifier()
+        return static::driver()->eventOrderVerifier
             ->checkAnyOrderSequence($events);
     }
 
@@ -319,8 +322,7 @@ abstract class AbstractFacade
      */
     public static function anyOrderSequence($events)
     {
-        return static::driver()->eventOrderVerifier()
-            ->anyOrderSequence($events);
+        return static::driver()->eventOrderVerifier->anyOrderSequence($events);
     }
 
     /**
@@ -332,7 +334,7 @@ abstract class AbstractFacade
      */
     public static function any()
     {
-        return static::driver()->matcherFactory()->any();
+        return static::driver()->matcherFactory->any();
     }
 
     /**
@@ -346,7 +348,7 @@ abstract class AbstractFacade
      */
     public static function equalTo($value)
     {
-        return static::driver()->matcherFactory()->equalTo($value);
+        return static::driver()->matcherFactory->equalTo($value);
     }
 
     /**
@@ -365,7 +367,7 @@ abstract class AbstractFacade
         $minimumArguments = 0,
         $maximumArguments = null
     ) {
-        return static::driver()->matcherFactory()
+        return static::driver()->matcherFactory
             ->wildcard($value, $minimumArguments, $maximumArguments);
     }
 
@@ -382,6 +384,6 @@ abstract class AbstractFacade
      */
     public static function setExportDepth($depth)
     {
-        return static::driver()->exporter()->setDepth($depth);
+        return static::driver()->exporter->setDepth($depth);
     }
 }

@@ -55,7 +55,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
             $callback = array($this->mock, '__call');
         }
 
-        parent::__construct($callback);
+        parent::__construct($callback, null);
     }
 
     /**

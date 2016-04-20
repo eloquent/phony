@@ -46,7 +46,7 @@ use ReflectionClass;
  */
 function mockBuilder($types = array())
 {
-    return PhoFacadeDriver::instance()->mockBuilderFactory()->create($types);
+    return PhoFacadeDriver::instance()->mockBuilderFactory->create($types);
 }
 
 /**
@@ -64,9 +64,10 @@ function mockBuilder($types = array())
  */
 function mock($types = array())
 {
-    return on(
-        PhoFacadeDriver::instance()->mockBuilderFactory()
-            ->createFullMock($types)
+    $driver = PhoFacadeDriver::instance();
+
+    return $driver->handleFactory->createStubbing(
+        $driver->mockBuilderFactory->create($types)->full()
     );
 }
 
@@ -90,9 +91,10 @@ function mock($types = array())
  */
 function partialMock($types = array(), $arguments = array())
 {
-    return on(
-        PhoFacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types, $arguments)
+    $driver = PhoFacadeDriver::instance();
+
+    return $driver->handleFactory->createStubbing(
+        $driver->mockBuilderFactory->create($types)->partialWith($arguments)
     );
 }
 
@@ -108,7 +110,7 @@ function partialMock($types = array(), $arguments = array())
  */
 function on($mock)
 {
-    return PhoFacadeDriver::instance()->handleFactory()->createStubbing($mock);
+    return PhoFacadeDriver::instance()->handleFactory->createStubbing($mock);
 }
 
 /**
@@ -123,7 +125,7 @@ function on($mock)
  */
 function verify($mock)
 {
-    return PhoFacadeDriver::instance()->handleFactory()
+    return PhoFacadeDriver::instance()->handleFactory
         ->createVerification($mock);
 }
 
@@ -139,7 +141,7 @@ function verify($mock)
  */
 function onStatic($class)
 {
-    return PhoFacadeDriver::instance()->handleFactory()
+    return PhoFacadeDriver::instance()->handleFactory
         ->createStubbingStatic($class);
 }
 
@@ -155,7 +157,7 @@ function onStatic($class)
  */
 function verifyStatic($class)
 {
-    return PhoFacadeDriver::instance()->handleFactory()
+    return PhoFacadeDriver::instance()->handleFactory
         ->createVerificationStatic($class);
 }
 
@@ -170,7 +172,7 @@ function verifyStatic($class)
  */
 function spy($callback = null)
 {
-    return PhoFacadeDriver::instance()->spyVerifierFactory()
+    return PhoFacadeDriver::instance()->spyVerifierFactory
         ->createFromCallback($callback);
 }
 
@@ -185,7 +187,7 @@ function spy($callback = null)
  */
 function stub($callback = null)
 {
-    return PhoFacadeDriver::instance()->stubVerifierFactory()
+    return PhoFacadeDriver::instance()->stubVerifierFactory
         ->createFromCallback($callback);
 }
 
@@ -200,7 +202,7 @@ function stub($callback = null)
  */
 function checkInOrder()
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->checkInOrderSequence(func_get_args());
 }
 
@@ -217,7 +219,7 @@ function checkInOrder()
  */
 function inOrder()
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->inOrderSequence(func_get_args());
 }
 
@@ -232,7 +234,7 @@ function inOrder()
  */
 function checkInOrderSequence($events)
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->checkInOrderSequence($events);
 }
 
@@ -249,7 +251,7 @@ function checkInOrderSequence($events)
  */
 function inOrderSequence($events)
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->inOrderSequence($events);
 }
 
@@ -265,7 +267,7 @@ function inOrderSequence($events)
  */
 function checkAnyOrder()
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->checkAnyOrderSequence(func_get_args());
 }
 
@@ -282,7 +284,7 @@ function checkAnyOrder()
  */
 function anyOrder()
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->anyOrderSequence(func_get_args());
 }
 
@@ -298,7 +300,7 @@ function anyOrder()
  */
 function checkAnyOrderSequence($events)
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->checkAnyOrderSequence($events);
 }
 
@@ -316,7 +318,7 @@ function checkAnyOrderSequence($events)
  */
 function anyOrderSequence($events)
 {
-    return PhoFacadeDriver::instance()->eventOrderVerifier()
+    return PhoFacadeDriver::instance()->eventOrderVerifier
         ->anyOrderSequence($events);
 }
 
@@ -329,7 +331,7 @@ function anyOrderSequence($events)
  */
 function any()
 {
-    return PhoFacadeDriver::instance()->matcherFactory()->any();
+    return PhoFacadeDriver::instance()->matcherFactory->any();
 }
 
 /**
@@ -343,7 +345,7 @@ function any()
  */
 function equalTo($value)
 {
-    return PhoFacadeDriver::instance()->matcherFactory()->equalTo($value);
+    return PhoFacadeDriver::instance()->matcherFactory->equalTo($value);
 }
 
 /**
@@ -362,7 +364,7 @@ function wildcard(
     $minimumArguments = 0,
     $maximumArguments = null
 ) {
-    return PhoFacadeDriver::instance()->matcherFactory()
+    return PhoFacadeDriver::instance()->matcherFactory
         ->wildcard($value, $minimumArguments, $maximumArguments);
 }
 
@@ -379,5 +381,5 @@ function wildcard(
  */
 function setExportDepth($depth)
 {
-    return PhoFacadeDriver::instance()->exporter()->setDepth($depth);
+    return PhoFacadeDriver::instance()->exporter->setDepth($depth);
 }

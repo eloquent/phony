@@ -36,6 +36,14 @@ class ProphecyMatcherDriver extends AbstractMatcherDriver
     }
 
     /**
+     * Construct a new Prophecy matcher driver.
+     */
+    public function __construct()
+    {
+        $this->wildcard = WildcardMatcher::instance();
+    }
+
+    /**
      * Returns true if this matcher driver's classes or interfaces exist.
      *
      * @return boolean True if available.
@@ -65,11 +73,12 @@ class ProphecyMatcherDriver extends AbstractMatcherDriver
     public function wrapMatcher($matcher)
     {
         if (is_a($matcher, 'Prophecy\Argument\Token\AnyValuesToken')) {
-            return WildcardMatcher::instance();
+            return $this->wildcard;
         }
 
         return new ProphecyMatcher($matcher);
     }
 
     private static $instance;
+    private $wildcard;
 }

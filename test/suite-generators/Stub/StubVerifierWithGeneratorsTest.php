@@ -15,10 +15,14 @@ use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -34,14 +38,18 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->self = (object) array();
         $this->label = 'label';
-        $this->stub = new Stub($this->callback, $this->self, $this->label);
-        $this->spy = new Spy($this->stub);
-        $this->matcherFactory = new MatcherFactory();
+        $this->stubFactory = StubFactory::instance();
+        $this->stub = $this->stubFactory->create($this->callback, $this->self)->setLabel($this->label);
+        $this->spyFactory = SpyFactory::instance();
+        $this->spy = $this->spyFactory->create($this->stub);
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->callVerifierFactory = new CallVerifierFactory();
-        $this->assertionRecorder = new AssertionRecorder();
-        $this->assertionRenderer = new AssertionRenderer();
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRenderer = AssertionRenderer::instance();
+        $this->invocableInspector = InvocableInspector::instance();
         $this->invoker = new Invoker();
+        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubVerifier(
             $this->stub,
             $this->spy,
@@ -50,7 +58,9 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invoker
+            $this->invocableInspector,
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
         );
 
         $this->callsA = array();

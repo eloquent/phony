@@ -48,7 +48,7 @@ use ReflectionClass;
  */
 function mockBuilder($types = array())
 {
-    return SimpletestFacadeDriver::instance()->mockBuilderFactory()
+    return SimpletestFacadeDriver::instance()->mockBuilderFactory
         ->create($types);
 }
 
@@ -67,9 +67,10 @@ function mockBuilder($types = array())
  */
 function mock($types = array())
 {
-    return on(
-        SimpletestFacadeDriver::instance()->mockBuilderFactory()
-            ->createFullMock($types)
+    $driver = SimpletestFacadeDriver::instance();
+
+    return $driver->handleFactory->createStubbing(
+        $driver->mockBuilderFactory->create($types)->full()
     );
 }
 
@@ -93,9 +94,10 @@ function mock($types = array())
  */
 function partialMock($types = array(), $arguments = array())
 {
-    return on(
-        SimpletestFacadeDriver::instance()->mockBuilderFactory()
-            ->createPartialMock($types, $arguments)
+    $driver = SimpletestFacadeDriver::instance();
+
+    return $driver->handleFactory->createStubbing(
+        $driver->mockBuilderFactory->create($types)->partialWith($arguments)
     );
 }
 
@@ -111,7 +113,7 @@ function partialMock($types = array(), $arguments = array())
  */
 function on($mock)
 {
-    return SimpletestFacadeDriver::instance()->handleFactory()
+    return SimpletestFacadeDriver::instance()->handleFactory
         ->createStubbing($mock);
 }
 
@@ -127,7 +129,7 @@ function on($mock)
  */
 function verify($mock)
 {
-    return SimpletestFacadeDriver::instance()->handleFactory()
+    return SimpletestFacadeDriver::instance()->handleFactory
         ->createVerification($mock);
 }
 
@@ -143,7 +145,7 @@ function verify($mock)
  */
 function onStatic($class)
 {
-    return SimpletestFacadeDriver::instance()->handleFactory()
+    return SimpletestFacadeDriver::instance()->handleFactory
         ->createStubbingStatic($class);
 }
 
@@ -159,7 +161,7 @@ function onStatic($class)
  */
 function verifyStatic($class)
 {
-    return SimpletestFacadeDriver::instance()->handleFactory()
+    return SimpletestFacadeDriver::instance()->handleFactory
         ->createVerificationStatic($class);
 }
 
@@ -174,7 +176,7 @@ function verifyStatic($class)
  */
 function spy($callback = null)
 {
-    return SimpletestFacadeDriver::instance()->spyVerifierFactory()
+    return SimpletestFacadeDriver::instance()->spyVerifierFactory
         ->createFromCallback($callback);
 }
 
@@ -189,7 +191,7 @@ function spy($callback = null)
  */
 function stub($callback = null)
 {
-    return SimpletestFacadeDriver::instance()->stubVerifierFactory()
+    return SimpletestFacadeDriver::instance()->stubVerifierFactory
         ->createFromCallback($callback);
 }
 
@@ -204,7 +206,7 @@ function stub($callback = null)
  */
 function checkInOrder()
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->checkInOrderSequence(func_get_args());
 }
 
@@ -221,7 +223,7 @@ function checkInOrder()
  */
 function inOrder()
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->inOrderSequence(func_get_args());
 }
 
@@ -236,7 +238,7 @@ function inOrder()
  */
 function checkInOrderSequence($events)
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->checkInOrderSequence($events);
 }
 
@@ -253,7 +255,7 @@ function checkInOrderSequence($events)
  */
 function inOrderSequence($events)
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->inOrderSequence($events);
 }
 
@@ -269,7 +271,7 @@ function inOrderSequence($events)
  */
 function checkAnyOrder()
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->checkAnyOrderSequence(func_get_args());
 }
 
@@ -286,7 +288,7 @@ function checkAnyOrder()
  */
 function anyOrder()
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->anyOrderSequence(func_get_args());
 }
 
@@ -302,7 +304,7 @@ function anyOrder()
  */
 function checkAnyOrderSequence($events)
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->checkAnyOrderSequence($events);
 }
 
@@ -320,7 +322,7 @@ function checkAnyOrderSequence($events)
  */
 function anyOrderSequence($events)
 {
-    return SimpletestFacadeDriver::instance()->eventOrderVerifier()
+    return SimpletestFacadeDriver::instance()->eventOrderVerifier
         ->anyOrderSequence($events);
 }
 
@@ -333,7 +335,7 @@ function anyOrderSequence($events)
  */
 function any()
 {
-    return SimpletestFacadeDriver::instance()->matcherFactory()->any();
+    return SimpletestFacadeDriver::instance()->matcherFactory->any();
 }
 
 /**
@@ -347,7 +349,7 @@ function any()
  */
 function equalTo($value)
 {
-    return SimpletestFacadeDriver::instance()->matcherFactory()
+    return SimpletestFacadeDriver::instance()->matcherFactory
         ->equalTo($value);
 }
 
@@ -367,7 +369,7 @@ function wildcard(
     $minimumArguments = 0,
     $maximumArguments = null
 ) {
-    return SimpletestFacadeDriver::instance()->matcherFactory()
+    return SimpletestFacadeDriver::instance()->matcherFactory
         ->wildcard($value, $minimumArguments, $maximumArguments);
 }
 
@@ -384,5 +386,5 @@ function wildcard(
  */
 function setExportDepth($depth)
 {
-    return SimpletestFacadeDriver::instance()->exporter()->setDepth($depth);
+    return SimpletestFacadeDriver::instance()->exporter->setDepth($depth);
 }

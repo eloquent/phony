@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Spy\Factory;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Test\EmptyGeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -30,23 +31,9 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
-            $this->callEventFactory->createGenerated()
+            $this->callEventFactory->createReturned(EmptyGeneratorFactory::create())
         );
         $this->callFactory->reset();
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->callEventFactory, $this->subject->callEventFactory());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new GeneratorSpyFactory();
-
-        $this->assertSame(CallEventFactory::instance(), $this->subject->callEventFactory());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
     public function testCreateWithConsumedEnd()

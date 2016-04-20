@@ -50,37 +50,21 @@ class CallVerifier extends AbstractCardinalityVerifier implements
     /**
      * Construct a new call verifier.
      *
-     * @param CallInterface                    $call               The call.
-     * @param MatcherFactoryInterface|null     $matcherFactory     The matcher factory to use.
-     * @param MatcherVerifierInterface|null    $matcherVerifier    The matcher verifier to use.
-     * @param AssertionRecorderInterface|null  $assertionRecorder  The assertion recorder to use.
-     * @param AssertionRendererInterface|null  $assertionRenderer  The assertion renderer to use.
-     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
+     * @param CallInterface               $call               The call.
+     * @param MatcherFactoryInterface     $matcherFactory     The matcher factory to use.
+     * @param MatcherVerifierInterface    $matcherVerifier    The matcher verifier to use.
+     * @param AssertionRecorderInterface  $assertionRecorder  The assertion recorder to use.
+     * @param AssertionRendererInterface  $assertionRenderer  The assertion renderer to use.
+     * @param InvocableInspectorInterface $invocableInspector The invocable inspector to use.
      */
     public function __construct(
         CallInterface $call,
-        MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        InvocableInspectorInterface $invocableInspector = null
+        MatcherFactoryInterface $matcherFactory,
+        MatcherVerifierInterface $matcherVerifier,
+        AssertionRecorderInterface $assertionRecorder,
+        AssertionRendererInterface $assertionRenderer,
+        InvocableInspectorInterface $invocableInspector
     ) {
-        if (!$matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
-        }
-        if (!$matcherVerifier) {
-            $matcherVerifier = MatcherVerifier::instance();
-        }
-        if (!$assertionRecorder) {
-            $assertionRecorder = AssertionRecorder::instance();
-        }
-        if (!$assertionRenderer) {
-            $assertionRenderer = AssertionRenderer::instance();
-        }
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-
         parent::__construct();
 
         $this->call = $call;
@@ -91,66 +75,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         $this->invocableInspector = $invocableInspector;
 
         $this->argumentCount = count($call->arguments());
-    }
-
-    /**
-     * Get the call.
-     *
-     * @return CallInterface The call.
-     */
-    public function call()
-    {
-        return $this->call;
-    }
-
-    /**
-     * Get the matcher factory.
-     *
-     * @return MatcherFactoryInterface The matcher factory.
-     */
-    public function matcherFactory()
-    {
-        return $this->matcherFactory;
-    }
-
-    /**
-     * Get the matcher verifier.
-     *
-     * @return MatcherVerifierInterface The matcher verifier.
-     */
-    public function matcherVerifier()
-    {
-        return $this->matcherVerifier;
-    }
-
-    /**
-     * Get the assertion recorder.
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    public function assertionRecorder()
-    {
-        return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the assertion renderer.
-     *
-     * @return AssertionRendererInterface The assertion renderer.
-     */
-    public function assertionRenderer()
-    {
-        return $this->assertionRenderer;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
     }
 
     /**
@@ -1492,17 +1416,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements
         );
     }
 
-    /**
-     * Return match details only if the supplied check result is true.
-     *
-     * This is a convenience method for checks involving singular events.
-     *
-     * @param EventInterface|null $event       The event.
-     * @param boolean             $checkResult The check result.
-     *
-     * @return tuple<array<EventInterface>> The match details.
-     */
-    protected function matchIf(EventInterface $event = null, $checkResult)
+    private function matchIf($event, $checkResult)
     {
         if ($checkResult && $event) {
             $matchCount = 1;

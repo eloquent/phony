@@ -22,10 +22,9 @@ final class InvalidMockException extends Exception implements
     /**
      * Construct a new invalid mock exception.
      *
-     * @param mixed          $value The value.
-     * @param Exception|null $cause The cause, if available.
+     * @param mixed $value The value.
      */
-    public function __construct($value, Exception $cause = null)
+    public function __construct($value)
     {
         $this->value = $value;
 
@@ -41,7 +40,7 @@ final class InvalidMockException extends Exception implements
             );
         }
 
-        parent::__construct($message, 0, $cause);
+        parent::__construct($message);
     }
 
     /**

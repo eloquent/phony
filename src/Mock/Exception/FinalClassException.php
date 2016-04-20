@@ -22,10 +22,9 @@ final class FinalClassException extends Exception implements
     /**
      * Construct a final class exception.
      *
-     * @param string         $className The class name.
-     * @param Exception|null $cause     The cause, if available.
+     * @param string $className The class name.
      */
-    public function __construct($className, Exception $cause = null)
+    public function __construct($className)
     {
         $this->className = $className;
 
@@ -33,9 +32,7 @@ final class FinalClassException extends Exception implements
             sprintf(
                 'Unable to extend final class %s.',
                 var_export($className, true)
-            ),
-            0,
-            $cause
+            )
         );
     }
 

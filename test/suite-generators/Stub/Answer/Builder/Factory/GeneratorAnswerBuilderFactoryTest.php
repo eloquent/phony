@@ -15,7 +15,7 @@ use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
-use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -33,25 +33,9 @@ class GeneratorAnswerBuilderFactoryTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testConstructor()
-    {
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->invoker, $this->subject->invoker());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new GeneratorAnswerBuilderFactory();
-
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
-    }
-
     public function testCreate()
     {
-        $stub = new Stub();
+        $stub = StubFactory::instance()->create();
         $expected = new GeneratorAnswerBuilder(
             $stub,
             $this->featureDetector->isSupported('generator.return'),
@@ -61,9 +45,6 @@ class GeneratorAnswerBuilderFactoryTest extends PHPUnit_Framework_TestCase
         $actual = $this->subject->create($stub);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($stub, $actual->stub());
-        $this->assertSame($this->invocableInspector, $actual->invocableInspector());
-        $this->assertSame($this->invoker, $actual->invoker());
     }
 
     public function testInstance()

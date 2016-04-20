@@ -35,7 +35,7 @@ class SimpletestAssertionRecorder extends AssertionRecorder
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(SimpleTest::getContext());
         }
 
         return self::$instance;
@@ -44,25 +44,11 @@ class SimpletestAssertionRecorder extends AssertionRecorder
     /**
      * Construct a new SimpleTest assertion recorder.
      *
-     * @param SimpleTestContext|null $simpletestContext The SimpleTest context to use.
+     * @param SimpleTestContext $simpletestContext The SimpleTest context to use.
      */
-    public function __construct(SimpleTestContext $simpletestContext = null)
+    public function __construct(SimpleTestContext $simpletestContext)
     {
-        if (!$simpletestContext) {
-            $simpletestContext = SimpleTest::getContext();
-        }
-
         $this->simpletestContext = $simpletestContext;
-    }
-
-    /**
-     * Get the SimpleTest context.
-     *
-     * @return SimpleTestContext The context.
-     */
-    public function simpletestContext()
-    {
-        return $this->simpletestContext;
     }
 
     /**
@@ -94,7 +80,7 @@ class SimpletestAssertionRecorder extends AssertionRecorder
             $flags = DEBUG_BACKTRACE_IGNORE_ARGS;
         }
 
-        $call = AssertionException::tracePhonyCall(\debug_backtrace($flags));
+        $call = AssertionException::tracePhonyCall(debug_backtrace($flags));
 
         if ($call && isset($call['file']) && isset($call['line'])) {
             $description .= "\nat [$call[file] line $call[line]]";

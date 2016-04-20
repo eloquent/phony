@@ -24,19 +24,15 @@ class IteratorSpy implements IteratorSpyInterface
     /**
      * Construct a new iterator spy.
      *
-     * @param CallInterface                  $call             The call from which the iterator originated.
-     * @param Iterator                       $iterator         The iterator.
-     * @param CallEventFactoryInterface|null $callEventFactory The call event factory to use.
+     * @param CallInterface             $call             The call from which the iterator originated.
+     * @param Iterator                  $iterator         The iterator.
+     * @param CallEventFactoryInterface $callEventFactory The call event factory to use.
      */
     public function __construct(
         CallInterface $call,
         Iterator $iterator,
-        CallEventFactoryInterface $callEventFactory = null
+        CallEventFactoryInterface $callEventFactory
     ) {
-        if (!$callEventFactory) {
-            $callEventFactory = CallEventFactory::instance();
-        }
-
         $this->call = $call;
         $this->iterator = $iterator;
         $this->callEventFactory = $callEventFactory;
@@ -61,16 +57,6 @@ class IteratorSpy implements IteratorSpyInterface
     public function iterator()
     {
         return $this->iterator;
-    }
-
-    /**
-     * Get the call event factory.
-     *
-     * @return CallEventFactoryInterface The call event factory.
-     */
-    public function callEventFactory()
-    {
-        return $this->callEventFactory;
     }
 
     /**

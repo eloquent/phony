@@ -38,18 +38,14 @@ class Invoker implements InvokerInterface
     /**
      * Calls a callback, maintaining reference parameters.
      *
-     * @param callable                $callback  The callback.
-     * @param ArgumentsInterface|null $arguments The arguments.
+     * @param callable           $callback  The callback.
+     * @param ArgumentsInterface $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function callWith($callback, ArgumentsInterface $arguments = null)
+    public function callWith($callback, ArgumentsInterface $arguments)
     {
-        if (!$arguments) {
-            $arguments = new Arguments();
-        }
-
         if ($callback instanceof InvocableInterface) {
             return $callback->invokeWith($arguments);
         }

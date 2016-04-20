@@ -17,6 +17,8 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -44,7 +46,18 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                StubFactory::instance(),
+                SpyFactory::instance(),
+                MatcherFactory::instance(),
+                MatcherVerifier::instance(),
+                CallVerifierFactory::instance(),
+                AssertionRecorder::instance(),
+                AssertionRenderer::instance(),
+                InvocableInspector::instance(),
+                Invoker::instance(),
+                GeneratorAnswerBuilderFactory::instance()
+            );
         }
 
         return self::$instance;
@@ -53,57 +66,29 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     /**
      * Construct a new stub verifier factory.
      *
-     * @param StubFactoryInterface|null                   $stubFactory                   The stub factory to use.
-     * @param SpyFactoryInterface|null                    $spyFactory                    The spy factory to use.
-     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifierInterface|null               $matcherVerifier               The macther verifier to use.
-     * @param CallVerifierFactoryInterface|null           $callVerifierFactory           The call verifier factory to use.
-     * @param AssertionRecorderInterface|null             $assertionRecorder             The assertion recorder to use.
-     * @param AssertionRendererInterface|null             $assertionRenderer             The assertion renderer to use.
-     * @param InvokerInterface|null                       $invoker                       The invoker to use.
-     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param StubFactoryInterface                   $stubFactory                   The stub factory to use.
+     * @param SpyFactoryInterface                    $spyFactory                    The spy factory to use.
+     * @param MatcherFactoryInterface                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface               $matcherVerifier               The macther verifier to use.
+     * @param CallVerifierFactoryInterface           $callVerifierFactory           The call verifier factory to use.
+     * @param AssertionRecorderInterface             $assertionRecorder             The assertion recorder to use.
+     * @param AssertionRendererInterface             $assertionRenderer             The assertion renderer to use.
+     * @param InvocableInspectorInterface            $invocableInspector            The invocable inspector to use.
+     * @param InvokerInterface                       $invoker                       The invoker to use.
+     * @param GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
-        StubFactoryInterface $stubFactory = null,
-        SpyFactoryInterface $spyFactory = null,
-        MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null,
-        CallVerifierFactoryInterface $callVerifierFactory = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        InvokerInterface $invoker = null,
-        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
-            null
+        StubFactoryInterface $stubFactory,
+        SpyFactoryInterface $spyFactory,
+        MatcherFactoryInterface $matcherFactory,
+        MatcherVerifierInterface $matcherVerifier,
+        CallVerifierFactoryInterface $callVerifierFactory,
+        AssertionRecorderInterface $assertionRecorder,
+        AssertionRendererInterface $assertionRenderer,
+        InvocableInspectorInterface $invocableInspector,
+        InvokerInterface $invoker,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory
     ) {
-        if (!$stubFactory) {
-            $stubFactory = StubFactory::instance();
-        }
-        if (!$spyFactory) {
-            $spyFactory = SpyFactory::instance();
-        }
-        if (!$matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
-        }
-        if (!$matcherVerifier) {
-            $matcherVerifier = MatcherVerifier::instance();
-        }
-        if (!$callVerifierFactory) {
-            $callVerifierFactory = CallVerifierFactory::instance();
-        }
-        if (!$assertionRecorder) {
-            $assertionRecorder = AssertionRecorder::instance();
-        }
-        if (!$assertionRenderer) {
-            $assertionRenderer = AssertionRenderer::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$generatorAnswerBuilderFactory) {
-            $generatorAnswerBuilderFactory =
-                GeneratorAnswerBuilderFactory::instance();
-        }
-
         $this->stubFactory = $stubFactory;
         $this->spyFactory = $spyFactory;
         $this->matcherFactory = $matcherFactory;
@@ -111,98 +96,9 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
-    }
-
-    /**
-     * Get the stub factory.
-     *
-     * @return StubFactoryInterface The stub factory.
-     */
-    public function stubFactory()
-    {
-        return $this->stubFactory;
-    }
-
-    /**
-     * Get the spy factory.
-     *
-     * @return SpyFactoryInterface The spy factory.
-     */
-    public function spyFactory()
-    {
-        return $this->spyFactory;
-    }
-
-    /**
-     * Get the matcher factory.
-     *
-     * @return MatcherFactoryInterface The matcher factory.
-     */
-    public function matcherFactory()
-    {
-        return $this->matcherFactory;
-    }
-
-    /**
-     * Get the matcher verifier.
-     *
-     * @return MatcherVerifierInterface The matcher verifier.
-     */
-    public function matcherVerifier()
-    {
-        return $this->matcherVerifier;
-    }
-
-    /**
-     * Get the call verifier factory.
-     *
-     * @return CallVerifierFactoryInterface The call verifier factory.
-     */
-    public function callVerifierFactory()
-    {
-        return $this->callVerifierFactory;
-    }
-
-    /**
-     * Get the assertion recorder.
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    public function assertionRecorder()
-    {
-        return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the assertion renderer.
-     *
-     * @return AssertionRendererInterface The assertion renderer.
-     */
-    public function assertionRenderer()
-    {
-        return $this->assertionRenderer;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the generator answer builder factory.
-     *
-     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
-     */
-    public function generatorAnswerBuilderFactory()
-    {
-        return $this->generatorAnswerBuilderFactory;
     }
 
     /**
@@ -230,6 +126,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
+            $this->invocableInspector,
             $this->invoker,
             $this->generatorAnswerBuilderFactory
         );
@@ -254,6 +151,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
+            $this->invocableInspector,
             $this->invoker,
             $this->generatorAnswerBuilderFactory
         );
@@ -267,5 +165,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
+    private $invocableInspector;
     private $invoker;
+    private $generatorAnswerBuilderFactory;
 }

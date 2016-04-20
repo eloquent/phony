@@ -36,22 +36,6 @@ class ProducedEventTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->call());
     }
 
-    public function testConstructorWithValueOnly()
-    {
-        $this->subject = new ProducedEvent($this->sequenceNumber, $this->time, $this->value);
-
-        $this->assertNull($this->subject->key());
-        $this->assertSame($this->value, $this->subject->value());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new ProducedEvent($this->sequenceNumber, $this->time);
-
-        $this->assertNull($this->subject->key());
-        $this->assertNull($this->subject->value());
-    }
-
     public function testSetCall()
     {
         $call = $this->callFactory->create();

@@ -21,23 +21,15 @@ class ProducedEvent extends AbstractCallEvent implements ProducedEventInterface
      *
      * @param integer $sequenceNumber The sequence number.
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $keyOrValue     The produced key or value.
+     * @param mixed   $key            The produced key.
      * @param mixed   $value          The produced value.
      */
-    public function __construct(
-        $sequenceNumber,
-        $time,
-        $keyOrValue = null,
-        $value = null
-    ) {
+    public function __construct($sequenceNumber, $time, $key, $value)
+    {
         parent::__construct($sequenceNumber, $time);
 
-        if (func_num_args() > 3) {
-            $this->key = $keyOrValue;
-            $this->value = $value;
-        } else {
-            $this->value = $keyOrValue;
-        }
+        $this->key = $key;
+        $this->value = $value;
     }
 
     /**

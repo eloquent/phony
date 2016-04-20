@@ -20,22 +20,20 @@ use Eloquent\Phony\Call\CallVerifierInterface;
 interface CallVerifierFactoryInterface
 {
     /**
-     * Wrap the supplied call in a verifier, or return unchanged if already
-     * wrapped.
+     * Wrap the supplied call in a verifier.
      *
-     * @param CallInterface|CallVerifierInterface $call The call.
+     * @param CallInterface $call The call.
      *
      * @return CallVerifierInterface The call verifier.
      */
-    public function adapt($call);
+    public function fromCall(CallInterface $call);
 
     /**
-     * Wrap the supplied calls in verifiers, or return unchanged if already
-     * wrapped.
+     * Wrap the supplied calls in verifiers.
      *
-     * @param array<CallInterface|CallVerifierInterface> $calls The calls.
+     * @param array<CallInterface> $calls The calls.
      *
      * @return array<CallVerifierInterface> The call verifiers.
      */
-    public function adaptAll(array $calls);
+    public function fromCalls(array $calls);
 }

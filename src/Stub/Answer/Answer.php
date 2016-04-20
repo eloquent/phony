@@ -19,12 +19,12 @@ class Answer implements AnswerInterface
     /**
      * Construct a new answer.
      *
-     * @param CallRequestInterface|null   $primaryRequest    The primary request.
+     * @param CallRequestInterface        $primaryRequest    The primary request.
      * @param array<CallRequestInterface> $secondaryRequests The secondary requests.
      */
     public function __construct(
-        CallRequestInterface $primaryRequest = null,
-        array $secondaryRequests = array()
+        CallRequestInterface $primaryRequest,
+        array $secondaryRequests
     ) {
         $this->primaryRequest = $primaryRequest;
         $this->secondaryRequests = $secondaryRequests;
@@ -33,7 +33,7 @@ class Answer implements AnswerInterface
     /**
      * Get the primary request.
      *
-     * @return CallRequestInterface|null The primary request, or null if none has been set.
+     * @return CallRequestInterface The primary request.
      */
     public function primaryRequest()
     {

@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
-use Eloquent\Phony\Collection\IndexNormalizer;
-use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -35,7 +33,13 @@ class SpyFactory implements SpyFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                Sequencer::sequence('spy-label'),
+                CallFactory::instance(),
+                Invoker::instance(),
+                GeneratorSpyFactory::instance(),
+                TraversableSpyFactory::instance()
+            );
         }
 
         return self::$instance;
@@ -44,106 +48,24 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param SequencerInterface|null             $labelSequencer        The label sequencer to use.
-     * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
-     * @param CallFactoryInterface|null           $callFactory           The call factory to use.
-     * @param InvokerInterface|null               $invoker               The invoker to use.
-     * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
-     * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
+     * @param SequencerInterface             $labelSequencer        The label sequencer to use.
+     * @param CallFactoryInterface           $callFactory           The call factory to use.
+     * @param InvokerInterface               $invoker               The invoker to use.
+     * @param TraversableSpyFactoryInterface $generatorSpyFactory   The generator spy factory to use.
+     * @param TraversableSpyFactoryInterface $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer = null,
-        IndexNormalizerInterface $indexNormalizer = null,
-        CallFactoryInterface $callFactory = null,
-        InvokerInterface $invoker = null,
-        TraversableSpyFactoryInterface $generatorSpyFactory = null,
-        TraversableSpyFactoryInterface $traversableSpyFactory = null
+        SequencerInterface $labelSequencer,
+        CallFactoryInterface $callFactory,
+        InvokerInterface $invoker,
+        TraversableSpyFactoryInterface $generatorSpyFactory,
+        TraversableSpyFactoryInterface $traversableSpyFactory
     ) {
-        if (!$labelSequencer) {
-            $labelSequencer = Sequencer::sequence('spy-label');
-        }
-        if (!$indexNormalizer) {
-            $indexNormalizer = IndexNormalizer::instance();
-        }
-        if (!$callFactory) {
-            $callFactory = CallFactory::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$generatorSpyFactory) {
-            $generatorSpyFactory = GeneratorSpyFactory::instance();
-        }
-        if (!$traversableSpyFactory) {
-            $traversableSpyFactory = TraversableSpyFactory::instance();
-        }
-
         $this->labelSequencer = $labelSequencer;
-        $this->indexNormalizer = $indexNormalizer;
         $this->callFactory = $callFactory;
         $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->traversableSpyFactory = $traversableSpyFactory;
-    }
-
-    /**
-     * Get the label sequencer.
-     *
-     * @return SequencerInterface The label sequencer.
-     */
-    public function labelSequencer()
-    {
-        return $this->labelSequencer;
-    }
-
-    /**
-     * Get the index normalizer.
-     *
-     * @return IndexNormalizerInterface The index normalizer.
-     */
-    public function indexNormalizer()
-    {
-        return $this->indexNormalizer;
-    }
-
-    /**
-     * Get the call factory.
-     *
-     * @return CallFactoryInterface The call factory.
-     */
-    public function callFactory()
-    {
-        return $this->callFactory;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the generator spy factory.
-     *
-     * @return TraversableSpyFactoryInterface The generator spy factory.
-     */
-    public function generatorSpyFactory()
-    {
-        return $this->generatorSpyFactory;
-    }
-
-    /**
-     * Get the traversable spy factory.
-     *
-     * @return TraversableSpyFactoryInterface The traversable spy factory.
-     */
-    public function traversableSpyFactory()
-    {
-        return $this->traversableSpyFactory;
     }
 
     /**
@@ -158,7 +80,6 @@ class SpyFactory implements SpyFactoryInterface
         return new Spy(
             $callback,
             strval($this->labelSequencer->next()),
-            $this->indexNormalizer,
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
@@ -168,7 +89,6 @@ class SpyFactory implements SpyFactoryInterface
 
     private static $instance;
     private $labelSequencer;
-    private $indexNormalizer;
     private $callFactory;
     private $invoker;
     private $generatorSpyFactory;

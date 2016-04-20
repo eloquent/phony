@@ -28,21 +28,17 @@ class WrappedCustomMethod extends AbstractWrappedMethod
     /**
      * Construct a new wrapped custom method.
      *
-     * @param callable              $customCallback The custom callback.
-     * @param ReflectionMethod      $method         The method.
-     * @param HandleInterface       $handle         The handle.
-     * @param InvokerInterface|null $invoker        The invoker to use.
+     * @param callable         $customCallback The custom callback.
+     * @param ReflectionMethod $method         The method.
+     * @param HandleInterface  $handle         The handle.
+     * @param InvokerInterface $invoker        The invoker to use.
      */
     public function __construct(
         $customCallback,
         ReflectionMethod $method,
         HandleInterface $handle,
-        InvokerInterface $invoker = null
+        InvokerInterface $invoker
     ) {
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-
         $this->customCallback = $customCallback;
         $this->invoker = $invoker;
 
@@ -57,16 +53,6 @@ class WrappedCustomMethod extends AbstractWrappedMethod
     public function customCallback()
     {
         return $this->customCallback;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
     }
 
     /**

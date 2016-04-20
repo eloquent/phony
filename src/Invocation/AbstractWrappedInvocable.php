@@ -23,7 +23,7 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      * @param callable|null $callback The callback.
      * @param string|null   $label    The label.
      */
-    public function __construct($callback = null, $label = null)
+    public function __construct($callback, $label)
     {
         if (!$callback) {
             $this->isAnonymous = true;

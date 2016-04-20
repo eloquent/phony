@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Invocation;
 
 use ReflectionException;
 use ReflectionFunctionAbstract;
+use ReflectionType;
 
 /**
  * The interface implemented by invocable inspectors.
@@ -43,7 +44,7 @@ interface InvocableInspectorInterface
      *
      * @param callable $callback The callback.
      *
-     * @return string The return type.
+     * @return ReflectionType|null The return type, or null if no return type is defined.
      */
     public function callbackReturnType($callback);
 

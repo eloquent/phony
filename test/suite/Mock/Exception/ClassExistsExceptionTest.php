@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class ClassExistsExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,12 +18,11 @@ class ClassExistsExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $className = 'ClassName';
-        $cause = new Exception();
-        $exception = new ClassExistsException($className, $cause);
+        $exception = new ClassExistsException($className);
 
         $this->assertSame($className, $exception->className());
         $this->assertSame("Class 'ClassName' is already defined.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

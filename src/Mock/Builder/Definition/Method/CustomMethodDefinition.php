@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
-use Eloquent\Phony\Invocation\InvocableInspector;
 use ReflectionFunctionAbstract;
 
 /**
@@ -22,25 +21,17 @@ class CustomMethodDefinition implements MethodDefinitionInterface
     /**
      * Construct a new custom method definition.
      *
-     * @param boolean                         $isStatic True if this method is static.
-     * @param string                          $name     The name.
-     * @param callable|null                   $callback The callback.
-     * @param ReflectionFunctionAbstract|null $method   The function implementation.
+     * @param boolean                    $isStatic True if this method is static.
+     * @param string                     $name     The name.
+     * @param callable                   $callback The callback.
+     * @param ReflectionFunctionAbstract $method   The function implementation.
      */
     public function __construct(
         $isStatic,
         $name,
-        $callback = null,
-        ReflectionFunctionAbstract $method = null
+        $callback,
+        ReflectionFunctionAbstract $method
     ) {
-        if (!$callback) {
-            $callback = function () {};
-        }
-        if (!$method) {
-            $method =
-                InvocableInspector::instance()->callbackReflector($callback);
-        }
-
         $this->isStatic = $isStatic;
         $this->name = $name;
         $this->callback = $callback;

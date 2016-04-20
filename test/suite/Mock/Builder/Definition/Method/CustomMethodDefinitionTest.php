@@ -35,12 +35,4 @@ class CustomMethodDefinitionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->method, $this->subject->method());
     }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CustomMethodDefinition($this->isStatic, $this->name);
-
-        $this->assertInstanceOf('Closure', $this->subject->callback());
-        $this->assertInstanceOf('ReflectionFunction', $this->subject->method());
-    }
 }

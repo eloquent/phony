@@ -1,5 +1,5 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder();
+$builder = $factory->create();
 
 return $builder->named('MockGeneratorEmpty');

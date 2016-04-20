@@ -23,7 +23,7 @@ class ReceivedEvent extends AbstractCallEvent implements ReceivedEventInterface
      * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
      * @param mixed   $value          The received value.
      */
-    public function __construct($sequenceNumber, $time, $value = null)
+    public function __construct($sequenceNumber, $time, $value)
     {
         parent::__construct($sequenceNumber, $time);
 

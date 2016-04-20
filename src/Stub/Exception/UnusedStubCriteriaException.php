@@ -24,9 +24,8 @@ final class UnusedStubCriteriaException extends Exception
      * Construct a new unused stub criteria exception.
      *
      * @param array<MatcherInterface> $criteria The criteria.
-     * @param Exception|null          $cause    The cause, if available.
      */
-    public function __construct(array $criteria, Exception $cause = null)
+    public function __construct(array $criteria)
     {
         $this->criteria = $criteria;
 
@@ -38,9 +37,7 @@ final class UnusedStubCriteriaException extends Exception
                     AssertionRenderer::instance()->renderMatchers($criteria),
                     true
                 )
-            ),
-            0,
-            $cause
+            )
         );
     }
 

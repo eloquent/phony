@@ -24,7 +24,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->handleFactory = new HandleFactory();
+        $this->handleFactory = HandleFactory::instance();
 
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);

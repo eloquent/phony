@@ -22,7 +22,6 @@ use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedEventInterface;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
-use Eloquent\Phony\Call\Event\ResponseEventInterface;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ReturnedEventInterface;
 use Eloquent\Phony\Call\Event\ThrewEvent;
@@ -33,7 +32,6 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Sequencer\SequencerInterface;
 use Error;
 use Exception;
-use Generator;
 
 /**
  * Creates call events.
@@ -48,7 +46,10 @@ class CallEventFactory implements CallEventFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                Sequencer::sequence('event-sequence-number'),
+                SystemClock::instance()
+            );
         }
 
         return self::$instance;
@@ -57,86 +58,32 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Construct a new call event factory.
      *
-     * @param SequencerInterface|null $sequencer The sequencer to use.
-     * @param ClockInterface|null     $clock     The clock to use.
+     * @param SequencerInterface $sequencer The sequencer to use.
+     * @param ClockInterface     $clock     The clock to use.
      */
     public function __construct(
-        SequencerInterface $sequencer = null,
-        ClockInterface $clock = null
+        SequencerInterface $sequencer,
+        ClockInterface $clock
     ) {
-        if (!$sequencer) {
-            $sequencer = Sequencer::sequence('event-sequence-number');
-        }
-        if (!$clock) {
-            $clock = SystemClock::instance();
-        }
-
         $this->sequencer = $sequencer;
         $this->clock = $clock;
     }
 
     /**
-     * Get the sequencer.
-     *
-     * @return SequencerInterface The sequencer.
-     */
-    public function sequencer()
-    {
-        return $this->sequencer;
-    }
-
-    /**
-     * Get the clock.
-     *
-     * @return ClockInterface The clock.
-     */
-    public function clock()
-    {
-        return $this->clock;
-    }
-
-    /**
      * Create a new 'called' event.
      *
-     * @param callable|null           $callback  The callback.
-     * @param ArgumentsInterface|null $arguments The arguments.
+     * @param callable           $callback  The callback.
+     * @param ArgumentsInterface $arguments The arguments.
      *
      * @return CalledEventInterface The newly created event.
      */
-    public function createCalled(
-        $callback = null,
-        ArgumentsInterface $arguments = null
-    ) {
+    public function createCalled($callback, ArgumentsInterface $arguments)
+    {
         return new CalledEvent(
             $this->sequencer->next(),
             $this->clock->time(),
             $callback,
             $arguments
-        );
-    }
-
-    /**
-     * Create a new response event.
-     *
-     * @param mixed                $returnValue The return value.
-     * @param Exception|Error|null $exception   The thrown exception, or null if no exception was thrown.
-     *
-     * @return ResponseEventInterface The newly created event.
-     */
-    public function createResponse($returnValue = null, $exception = null)
-    {
-        if ($exception) {
-            return new ThrewEvent(
-                $this->sequencer->next(),
-                $this->clock->time(),
-                $exception
-            );
-        }
-
-        return new ReturnedEvent(
-            $this->sequencer->next(),
-            $this->clock->time(),
-            $returnValue
         );
     }
 
@@ -147,7 +94,7 @@ class CallEventFactory implements CallEventFactoryInterface
      *
      * @return ReturnedEventInterface The newly created event.
      */
-    public function createReturned($value = null)
+    public function createReturned($value)
     {
         return new ReturnedEvent(
             $this->sequencer->next(),
@@ -157,29 +104,13 @@ class CallEventFactory implements CallEventFactoryInterface
     }
 
     /**
-     * Create a new 'returned' event for a generator.
-     *
-     * @param Generator|null $generator The generator.
-     *
-     * @return ReturnedEventInterface The newly created event.
-     */
-    public function createGenerated(Generator $generator = null)
-    {
-        if (!$generator) {
-            $generator = CallEventFactoryDetail::createEmptyGenerator();
-        }
-
-        return $this->createReturned($generator);
-    }
-
-    /**
      * Create a new 'thrown' event.
      *
-     * @param Exception|Error|null $exception The thrown exception.
+     * @param Exception|Error $exception The thrown exception.
      *
      * @return ThrewEventInterface The newly created event.
      */
-    public function createThrew($exception = null)
+    public function createThrew($exception)
     {
         return new ThrewEvent(
             $this->sequencer->next(),
@@ -191,25 +122,13 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'produced' event.
      *
-     * If called with one argument, the argument is treated as the value.
-     *
-     * If called with two arguments, the first is treated as the key, and the
-     * second as the value.
-     *
-     * @param mixed $keyOrValue The produced key or value.
-     * @param mixed $value      The produced value.
+     * @param mixed $key   The produced key.
+     * @param mixed $value The produced value.
      *
      * @return ProducedEventInterface The newly created event.
      */
-    public function createProduced($keyOrValue = null, $value = null)
+    public function createProduced($key, $value)
     {
-        if (func_num_args() > 1) {
-            $key = $keyOrValue;
-        } else {
-            $key = null;
-            $value = $keyOrValue;
-        }
-
         return new ProducedEvent(
             $this->sequencer->next(),
             $this->clock->time(),
@@ -225,7 +144,7 @@ class CallEventFactory implements CallEventFactoryInterface
      *
      * @return ReceivedEventInterface The newly created event.
      */
-    public function createReceived($value = null)
+    public function createReceived($value)
     {
         return new ReceivedEvent(
             $this->sequencer->next(),
@@ -237,11 +156,11 @@ class CallEventFactory implements CallEventFactoryInterface
     /**
      * Create a new 'received exception' event.
      *
-     * @param Exception|Error|null $exception The received exception.
+     * @param Exception|Error $exception The received exception.
      *
      * @return ReceivedExceptionEventInterface The newly created event.
      */
-    public function createReceivedException($exception = null)
+    public function createReceivedException($exception)
     {
         return new ReceivedExceptionEvent(
             $this->sequencer->next(),

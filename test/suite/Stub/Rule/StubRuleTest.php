@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Rule;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use PHPUnit_Framework_TestCase;
@@ -22,31 +22,16 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->criteria = array(new EqualToMatcher('a'), new EqualToMatcher('b'));
-        $this->answerA = new Answer(new CallRequest('implode'));
-        $this->answerB = new Answer(new CallRequest('implode'));
+        $this->answerA = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), array());
+        $this->answerB = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), array());
         $this->answers = array($this->answerA, $this->answerB);
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->subject = new StubRule($this->criteria, $this->answers, $this->matcherVerifier);
+        $this->subject = new StubRule($this->criteria, $this->answers);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->criteria, $this->subject->criteria());
         $this->assertSame($this->answers, $this->subject->answers());
-        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new StubRule($this->criteria, $this->answers);
-
-        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-    }
-
-    public function testMatches()
-    {
-        $this->assertTrue($this->subject->matches(array('a', 'b')));
-        $this->assertFalse($this->subject->matches(array('a')));
     }
 
     public function testNext()
@@ -59,7 +44,7 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
 
     public function testNextFailureUndefined()
     {
-        $this->subject = new StubRule($this->criteria, array(), $this->matcherVerifier);
+        $this->subject = new StubRule($this->criteria, array());
 
         $this->setExpectedException('Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException');
         $this->subject->next();

@@ -1,6 +1,6 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+$builder = $factory->create(
     array(
         'methodA' => function ($a, $b, ...$c) {},
         'methodB' => function ($a, $b, stdClass ...$c) {},

@@ -34,13 +34,6 @@ class ReturnedEventTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->call());
     }
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new ReturnedEvent($this->sequenceNumber, $this->time);
-
-        $this->assertNull($this->subject->value());
-    }
-
     public function testSetCall()
     {
         $call = $this->callFactory->create();

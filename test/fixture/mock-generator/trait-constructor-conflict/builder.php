@@ -1,6 +1,6 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+$builder = $factory->create(
     array(
         'Eloquent\Phony\Test\TestTraitD',
         'Eloquent\Phony\Test\TestTraitE',

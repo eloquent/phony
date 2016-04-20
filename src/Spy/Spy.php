@@ -21,9 +21,6 @@ use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallFactoryInterface;
-use Eloquent\Phony\Collection\Exception\UndefinedIndexException;
-use Eloquent\Phony\Collection\IndexNormalizer;
-use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
@@ -46,42 +43,23 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     /**
      * Construct a new spy.
      *
-     * @param callable|null                       $callback              The callback, or null to create an anonymous spy.
-     * @param string|null                         $label                 The label.
-     * @param IndexNormalizerInterface|null       $indexNormalizer       The index normalizer to use.
-     * @param CallFactoryInterface|null           $callFactory           The call factory to use.
-     * @param InvokerInterface|null               $invoker               The invoker to use.
-     * @param TraversableSpyFactoryInterface|null $generatorSpyFactory   The generator spy factory to use.
-     * @param TraversableSpyFactoryInterface|null $traversableSpyFactory The traversable spy factory to use.
+     * @param callable|null                  $callback              The callback, or null to create an anonymous spy.
+     * @param string|null                    $label                 The label.
+     * @param CallFactoryInterface           $callFactory           The call factory to use.
+     * @param InvokerInterface               $invoker               The invoker to use.
+     * @param TraversableSpyFactoryInterface $generatorSpyFactory   The generator spy factory to use.
+     * @param TraversableSpyFactoryInterface $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
-        $callback = null,
-        $label = null,
-        IndexNormalizerInterface $indexNormalizer = null,
-        CallFactoryInterface $callFactory = null,
-        InvokerInterface $invoker = null,
-        TraversableSpyFactoryInterface $generatorSpyFactory = null,
-        TraversableSpyFactoryInterface $traversableSpyFactory = null
+        $callback,
+        $label,
+        CallFactoryInterface $callFactory,
+        InvokerInterface $invoker,
+        TraversableSpyFactoryInterface $generatorSpyFactory,
+        TraversableSpyFactoryInterface $traversableSpyFactory
     ) {
-        if (!$indexNormalizer) {
-            $indexNormalizer = IndexNormalizer::instance();
-        }
-        if (!$callFactory) {
-            $callFactory = CallFactory::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$generatorSpyFactory) {
-            $generatorSpyFactory = GeneratorSpyFactory::instance();
-        }
-        if (!$traversableSpyFactory) {
-            $traversableSpyFactory = TraversableSpyFactory::instance();
-        }
-
         parent::__construct($callback, $label);
 
-        $this->indexNormalizer = $indexNormalizer;
         $this->callFactory = $callFactory;
         $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
@@ -139,56 +117,6 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
     public function useTraversableSpies()
     {
         return $this->useTraversableSpies;
-    }
-
-    /**
-     * Get the index normalizer.
-     *
-     * @return IndexNormalizerInterface The index normalizer.
-     */
-    public function indexNormalizer()
-    {
-        return $this->indexNormalizer;
-    }
-
-    /**
-     * Get the call factory.
-     *
-     * @return CallFactoryInterface The call factory.
-     */
-    public function callFactory()
-    {
-        return $this->callFactory;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the generator spy factory.
-     *
-     * @return TraversableSpyFactoryInterface The generator spy factory.
-     */
-    public function generatorSpyFactory()
-    {
-        return $this->generatorSpyFactory;
-    }
-
-    /**
-     * Get the traversable spy factory.
-     *
-     * @return TraversableSpyFactoryInterface The traversable spy factory.
-     */
-    public function traversableSpyFactory()
-    {
-        return $this->traversableSpyFactory;
     }
 
     /**
@@ -348,12 +276,8 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      */
     public function eventAt($index = 0)
     {
-        $count = count($this->calls);
-
-        try {
-            $normalized = $this->indexNormalizer->normalize($count, $index);
-        } catch (UndefinedIndexException $e) {
-            throw new UndefinedEventException($index, $e);
+        if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
+            throw new UndefinedEventException($index);
         }
 
         return $this->calls[$normalized];
@@ -402,12 +326,8 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
      */
     public function callAt($index = 0)
     {
-        $count = count($this->calls);
-
-        try {
-            $normalized = $this->indexNormalizer->normalize($count, $index);
-        } catch (UndefinedIndexException $e) {
-            throw new UndefinedCallException($index, $e);
+        if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
+            throw new UndefinedCallException($index);
         }
 
         return $this->calls[$normalized];
@@ -505,7 +425,29 @@ class Spy extends AbstractWrappedInvocable implements SpyInterface
         return $returnValue;
     }
 
-    private $indexNormalizer;
+    private function normalizeIndex($size, $index, &$normalized = null)
+    {
+        $normalized = null;
+
+        if ($index < 0) {
+            $potential = $size + $index;
+
+            if ($potential < 0) {
+                return false;
+            }
+        } else {
+            $potential = $index;
+        }
+
+        if ($potential >= $size) {
+            return false;
+        }
+
+        $normalized = $potential;
+
+        return true;
+    }
+
     private $callFactory;
     private $invoker;
     private $generatorSpyFactory;

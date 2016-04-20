@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Feature\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class UndefinedFeatureExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,12 +18,11 @@ class UndefinedFeatureExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $feature = 'feature';
-        $cause = new Exception();
-        $exception = new UndefinedFeatureException($feature, $cause);
+        $exception = new UndefinedFeatureException($feature);
 
         $this->assertSame($feature, $exception->feature());
         $this->assertSame("Undefined feature 'feature'.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

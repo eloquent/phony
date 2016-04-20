@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -19,7 +20,21 @@ class MockGenerationFailedExceptionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->definition = new MockDefinition(array(), array(), array(), array(), array(), array(), 'ClassName');
+        $this->featureDetector = new FeatureDetector();
+        $this->isTraitSupported = $this->featureDetector->isSupported('trait');
+        $this->isRelaxedKeywordsSupported = $this->featureDetector->isSupported('parser.relaxed-keywords');
+
+        $this->definition = new MockDefinition(
+            array(),
+            array(),
+            array(),
+            array(),
+            array(),
+            array(),
+            'ClassName',
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
+        );
         $this->cause = new Exception();
     }
 

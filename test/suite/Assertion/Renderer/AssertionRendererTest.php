@@ -19,9 +19,11 @@ use Eloquent\Phony\Event\NullEvent;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
@@ -41,19 +43,21 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $property->setValue(InlineExporter::instance(), false);
 
         $this->invocableInspector = new InvocableInspector();
-        $this->exporter = new InlineExporter(false);
+        $this->exporter = new InlineExporter(1, false);
         $this->subject = new AssertionRenderer($this->invocableInspector, $this->exporter);
         $this->handleFactory = HandleFactory::instance();
 
         $this->thisObjectA = new TestClassA();
 
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $mockBuilderFactory = MockBuilderFactory::instance();
+
+        $mockBuilder = $mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
         $this->thisObjectB = $mockBuilder->get();
         $this->thisObjectBHandle = $this->handleFactory->createStubbing($this->thisObjectB);
         $this->thisObjectBHandle->setLabel('label');
         $this->thisObjectB->testClassAMethodA();
 
-        $mockBuilder = new MockBuilder('IteratorAggregate');
+        $mockBuilder = $mockBuilderFactory->create('IteratorAggregate');
         $mockBuilder->named('PhonyMockAssertionRendererTestIteratorAggregate');
         $this->thisObjectC = $mockBuilder->get();
         $this->thisObjectCHandle = $this->handleFactory->createStubbing($this->thisObjectC);
@@ -84,20 +88,6 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
             $this->callEventFactory->createCalled(array($this->thisObjectC, 'getIterator'))
         );
         $this->callF = $this->thisObjectBHandle->testClassAMethodA->callAt();
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->exporter, $this->subject->exporter());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new AssertionRenderer();
-
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(InlineExporter::instance(), $this->subject->exporter());
     }
 
     public function testRenderValue()
@@ -238,10 +228,14 @@ EOD;
         $callFactory = new TestCallFactory();
         $callEventFactory = $callFactory->eventFactory();
 
-        $spyWithLabel = new Spy();
+        $spyFactory = SpyFactory::instance();
+
+        $spyWithLabel = $spyFactory->create();
         $spyWithLabel->setLabel('label');
 
-        $stubWithLabel = new Stub();
+        $stubFactory = StubFactory::instance();
+
+        $stubWithLabel = $stubFactory->create();
         $stubWithLabel->setLabel('label');
 
         return array(
@@ -262,7 +256,7 @@ EOD;
                 'Eloquent\Phony\Assertion\Renderer\{closure}()',
             ),
             'Spy' => array(
-                $callFactory->create($callEventFactory->createCalled(new Spy())),
+                $callFactory->create($callEventFactory->createCalled($spyFactory->create()->setLabel(null))),
                 '{spy}()',
             ),
             'Spy with label' => array(
@@ -270,7 +264,7 @@ EOD;
                 '{spy}[label]()',
             ),
             'Stub' => array(
-                $callFactory->create($callEventFactory->createCalled(new Stub())),
+                $callFactory->create($callEventFactory->createCalled($stubFactory->create()->setLabel(null))),
                 '{stub}()',
             ),
             'Stub with label' => array(
@@ -326,7 +320,6 @@ EOD;
 
     public function testRenderException()
     {
-        $this->assertSame('<none>', $this->subject->renderException());
         $this->assertSame('Exception()', $this->subject->renderException(new Exception()));
         $this->assertSame('RuntimeException()', $this->subject->renderException(new RuntimeException()));
         $this->assertSame(

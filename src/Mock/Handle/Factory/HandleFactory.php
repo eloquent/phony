@@ -52,7 +52,13 @@ class HandleFactory implements HandleFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                StubFactory::instance(),
+                StubVerifierFactory::instance(),
+                AssertionRenderer::instance(),
+                AssertionRecorder::instance(),
+                Invoker::instance()
+            );
         }
 
         return self::$instance;
@@ -61,90 +67,24 @@ class HandleFactory implements HandleFactoryInterface
     /**
      * Construct a new handle factory.
      *
-     * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param InvokerInterface|null             $invoker             The invoker to use.
+     * @param StubFactoryInterface         $stubFactory         The stub factory to use.
+     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
+     * @param InvokerInterface             $invoker             The invoker to use.
      */
     public function __construct(
-        StubFactoryInterface $stubFactory = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        InvokerInterface $invoker = null
+        StubFactoryInterface $stubFactory,
+        StubVerifierFactoryInterface $stubVerifierFactory,
+        AssertionRendererInterface $assertionRenderer,
+        AssertionRecorderInterface $assertionRecorder,
+        InvokerInterface $invoker
     ) {
-        if (!$stubFactory) {
-            $stubFactory = StubFactory::instance();
-        }
-        if (!$stubVerifierFactory) {
-            $stubVerifierFactory = StubVerifierFactory::instance();
-        }
-        if (!$assertionRenderer) {
-            $assertionRenderer = AssertionRenderer::instance();
-        }
-        if (!$assertionRecorder) {
-            $assertionRecorder = AssertionRecorder::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->assertionRenderer = $assertionRenderer;
         $this->assertionRecorder = $assertionRecorder;
         $this->invoker = $invoker;
-    }
-
-    /**
-     * Get the stub factory.
-     *
-     * @return StubFactoryInterface The stub factory.
-     */
-    public function stubFactory()
-    {
-        return $this->stubFactory;
-    }
-
-    /**
-     * Get the stub verifier factory.
-     *
-     * @return StubVerifierFactoryInterface The stub verifier factory.
-     */
-    public function stubVerifierFactory()
-    {
-        return $this->stubVerifierFactory;
-    }
-
-    /**
-     * Get the assertion renderer.
-     *
-     * @return AssertionRendererInterface The assertion renderer.
-     */
-    public function assertionRenderer()
-    {
-        return $this->assertionRenderer;
-    }
-
-    /**
-     * Get the assertion recorder.
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    public function assertionRecorder()
-    {
-        return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
     }
 
     /**
@@ -183,7 +123,7 @@ class HandleFactory implements HandleFactoryInterface
             $mock,
             (object) array(
                 'defaultAnswerCallback' =>
-                    'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
+                    'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback',
                 'stubs' => (object) array(),
                 'isRecording' => true,
                 'label' => $label,
@@ -268,7 +208,12 @@ class HandleFactory implements HandleFactoryInterface
 
         $handle = new StaticStubbingHandle(
             $class,
-            null,
+            (object) array(
+                'defaultAnswerCallback' =>
+                    'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',
+                'stubs' => (object) array(),
+                'isRecording' => true,
+            ),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->assertionRenderer,

@@ -1,5 +1,5 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder('AMQPQueue');
+$builder = $factory->create('AMQPQueue');
 
 return $builder->named('MockGeneratorKeywordMethod');

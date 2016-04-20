@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class UndefinedResponseExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,11 +18,10 @@ class UndefinedResponseExceptionTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $message = 'You done goofed.';
-        $cause = new Exception();
-        $exception = new UndefinedResponseException($message, $cause);
+        $exception = new UndefinedResponseException($message);
 
         $this->assertSame($message, $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

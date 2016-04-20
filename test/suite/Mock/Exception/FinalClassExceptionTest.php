@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class FinalClassExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,12 +18,11 @@ class FinalClassExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $className = 'ClassName';
-        $cause = new Exception();
-        $exception = new FinalClassException($className, $cause);
+        $exception = new FinalClassException($className);
 
         $this->assertSame($className, $exception->className());
         $this->assertSame("Unable to extend final class 'ClassName'.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

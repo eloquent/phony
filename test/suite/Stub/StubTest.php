@@ -37,11 +37,11 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->defaultAnswerCallback = function ($stub) {
             $stub->returns('default answer');
         };
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory();
+        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new Stub(
             $this->callback,
             $this->self,
@@ -155,28 +155,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->self, $this->subject->self());
         $this->assertSame($this->label, $this->subject->label());
         $this->assertSame($this->defaultAnswerCallback, $this->subject->defaultAnswerCallback());
-        $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame($this->invoker, $this->subject->invoker());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->generatorAnswerBuilderFactory, $this->subject->generatorAnswerBuilderFactory());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new Stub();
-
-        $this->assertTrue($this->subject->isAnonymous());
-        $this->assertTrue(is_callable($this->subject->callback()));
-        $this->assertNull(call_user_func($this->subject->callback()));
-        $this->assertTrue(is_callable($this->subject->self()));
-        $this->assertNull($this->subject->label());
-        $this->assertSame('Eloquent\Phony\Stub\Stub::forwardsAnswerCallback', $this->subject->defaultAnswerCallback());
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
-        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(GeneratorAnswerBuilderFactory::instance(), $this->subject->generatorAnswerBuilderFactory());
     }
 
     public function testSetSelf()
@@ -407,7 +385,18 @@ class StubTest extends PHPUnit_Framework_TestCase
     public function testCallsWithSelfParameterAutoDetection()
     {
         $self = (object) array();
-        $subject = new Stub(null, $self);
+        $subject = new Stub(
+            null,
+            $self,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
+
         $actual = null;
         $subject->callsWith(
                 function ($phonySelf) use (&$actual) {
@@ -735,7 +724,17 @@ class StubTest extends PHPUnit_Framework_TestCase
     public function testDoesWithSelfParameterAutoDetection()
     {
         $self = (object) array();
-        $subject = new Stub(null, $self);
+        $subject = new Stub(
+            null,
+            $self,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
         $actual = null;
         $subject->doesWith(
             function ($phonySelf) use (&$actual) {
@@ -764,7 +763,17 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testForwards()
     {
-        $this->subject = new Stub($this->callbackA, $this->self);
+        $this->subject = new Stub(
+            $this->callbackA,
+            $this->self,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
 
         $this->assertSame($this->subject, $this->subject->forwards(array(1, 2), true, true, true));
         $this->assertEquals(
@@ -841,7 +850,17 @@ class StubTest extends PHPUnit_Framework_TestCase
      */
     public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
     {
-        $subject = new Stub($callback, $self);
+        $subject = new Stub(
+            $callback,
+            $self,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
         $subject->forwards();
 
         $this->assertEquals($expected, call_user_func_array($subject, $arguments));
@@ -849,7 +868,17 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testForwardsWithReferenceParameters()
     {
-        $this->subject = new Stub($this->referenceCallback, $this->self);
+        $this->subject = new Stub(
+            $this->referenceCallback,
+            $this->self,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
         $a = null;
         $b = null;
         $c = null;
@@ -893,7 +922,17 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $this->subject = new Stub(eval("return function (): $type {};"));
+        $this->subject = new Stub(
+            eval("return function (): $type {};"),
+            null,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
         $this->subject->returns();
 
         $this->assertSame($expected, call_user_func($this->subject));
@@ -905,7 +944,17 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $this->subject = new Stub(eval('return function (): stdClass {};'));
+        $this->subject = new Stub(
+            eval('return function (): stdClass {};'),
+            null,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
         $this->subject->returns();
 
         $this->assertInstanceOf('stdClass', call_user_func($this->subject));
@@ -917,7 +966,17 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $this->subject = new Stub(eval('return function (): callable {};'));
+        $this->subject = new Stub(
+            eval('return function (): callable {};'),
+            null,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
         $this->subject->returns();
 
         $this->assertInstanceOf('Closure', call_user_func($this->subject));
@@ -941,7 +1000,17 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $this->subject = new Stub(eval("return function (): $type {};"));
+        $this->subject = new Stub(
+            eval("return function (): $type {};"),
+            null,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
         $this->subject->returns();
 
         $result = call_user_func($this->subject);
@@ -956,7 +1025,17 @@ class StubTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $this->subject = new Stub(eval('return function (): Throwable {};'));
+        $this->subject = new Stub(
+            eval('return function (): Throwable {};'),
+            null,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
 
         $this->setExpectedException('InvalidArgumentException');
         $this->subject->returns();
@@ -1169,46 +1248,6 @@ class StubTest extends PHPUnit_Framework_TestCase
         $this->assertSame(1, $callCountB);
     }
 
-    public function testDanglingRulesWithNullDefaultAnswerCallback()
-    {
-        $this->defaultAnswerCallback = null;
-        $this->subject = new Stub(
-            $this->callback,
-            $this->self,
-            $this->label,
-            $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector
-        );
-
-        $callCountA = 0;
-        $callbackA = function () use (&$callCountA) {
-            ++$callCountA;
-        };
-        $callCountB = 0;
-        $callbackB = function () use (&$callCountB) {
-            ++$callCountB;
-        };
-
-        $this->assertSame(
-            $this->subject,
-            $this->subject
-                ->with(array('a', 'b'))->calls($callbackA)
-                ->with(array('c', 'd'))->calls($callbackA, $callbackB)
-        );
-        $this->assertSame('ab', call_user_func($this->subject, array('a', 'b')));
-        $this->assertSame(1, $callCountA);
-        $this->assertSame(0, $callCountB);
-        $this->assertSame('cd', call_user_func($this->subject, array('c', 'd')));
-        $this->assertSame(2, $callCountA);
-        $this->assertSame(1, $callCountB);
-        $this->assertSame('ef', call_user_func($this->subject, array('e', 'f')));
-        $this->assertSame(2, $callCountA);
-        $this->assertSame(1, $callCountB);
-    }
-
     public function testInvokeMethods()
     {
         $this->subject->returns();
@@ -1235,8 +1274,18 @@ class StubTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeWithNoRules()
     {
-        $stub = new Stub();
+        $stub = new Stub(
+            null,
+            null,
+            null,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->generatorAnswerBuilderFactory
+        );
 
-        $this->assertNull($stub());
+        $this->assertSame('default answer', $stub());
     }
 }

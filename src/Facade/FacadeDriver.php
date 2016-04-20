@@ -30,17 +30,25 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
  * A service container that supplies all of the underlying services required by
  * the facades.
  */
-class FacadeDriver implements FacadeDriverInterface
+class FacadeDriver
 {
     /**
      * Get the static instance of this driver.
      *
-     * @return FacadeDriverInterface The static driver.
+     * @return FacadeDriver The static driver.
      */
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                MockBuilderFactory::instance(),
+                HandleFactory::instance(),
+                SpyVerifierFactory::instance(),
+                StubVerifierFactory::instance(),
+                EventOrderVerifier::instance(),
+                MatcherFactory::instance(),
+                InlineExporter::instance()
+            );
         }
 
         return self::$instance;
@@ -49,45 +57,23 @@ class FacadeDriver implements FacadeDriverInterface
     /**
      * Construct a new facade driver.
      *
-     * @param MockBuilderFactoryInterface|null  $mockBuilderFactory  The mock builder factory to use.
-     * @param HandleFactoryInterface|null       $handleFactory       The handle factory to use.
-     * @param SpyVerifierFactoryInterface|null  $spyVerifierFactory  The spy verifier factory to use.
-     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param EventOrderVerifierInterface|null  $eventOrderVerifier  The event order verifier to use.
-     * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
-     * @param ExporterInterface|null            $exporter            The exporter to use.
+     * @param MockBuilderFactoryInterface  $mockBuilderFactory  The mock builder factory to use.
+     * @param HandleFactoryInterface       $handleFactory       The handle factory to use.
+     * @param SpyVerifierFactoryInterface  $spyVerifierFactory  The spy verifier factory to use.
+     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
+     * @param EventOrderVerifierInterface  $eventOrderVerifier  The event order verifier to use.
+     * @param MatcherFactoryInterface      $matcherFactory      The matcher factory to use.
+     * @param ExporterInterface            $exporter            The exporter to use.
      */
     public function __construct(
-        MockBuilderFactoryInterface $mockBuilderFactory = null,
-        HandleFactoryInterface $handleFactory = null,
-        SpyVerifierFactoryInterface $spyVerifierFactory = null,
-        StubVerifierFactoryInterface $stubVerifierFactory = null,
-        EventOrderVerifierInterface $eventOrderVerifier = null,
-        MatcherFactoryInterface $matcherFactory = null,
-        ExporterInterface $exporter = null
+        MockBuilderFactoryInterface $mockBuilderFactory,
+        HandleFactoryInterface $handleFactory,
+        SpyVerifierFactoryInterface $spyVerifierFactory,
+        StubVerifierFactoryInterface $stubVerifierFactory,
+        EventOrderVerifierInterface $eventOrderVerifier,
+        MatcherFactoryInterface $matcherFactory,
+        ExporterInterface $exporter
     ) {
-        if (!$mockBuilderFactory) {
-            $mockBuilderFactory = MockBuilderFactory::instance();
-        }
-        if (!$handleFactory) {
-            $handleFactory = HandleFactory::instance();
-        }
-        if (!$spyVerifierFactory) {
-            $spyVerifierFactory = SpyVerifierFactory::instance();
-        }
-        if (!$stubVerifierFactory) {
-            $stubVerifierFactory = StubVerifierFactory::instance();
-        }
-        if (!$eventOrderVerifier) {
-            $eventOrderVerifier = EventOrderVerifier::instance();
-        }
-        if (!$matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
-        }
-        if (!$exporter) {
-            $exporter = InlineExporter::instance();
-        }
-
         $this->mockBuilderFactory = $mockBuilderFactory;
         $this->handleFactory = $handleFactory;
         $this->spyVerifierFactory = $spyVerifierFactory;
@@ -97,82 +83,12 @@ class FacadeDriver implements FacadeDriverInterface
         $this->exporter = $exporter;
     }
 
-    /**
-     * Get the mock builder factory.
-     *
-     * @return MockBuilderFactoryInterface The mock builder factory.
-     */
-    public function mockBuilderFactory()
-    {
-        return $this->mockBuilderFactory;
-    }
-
-    /**
-     * Get the handle factory.
-     *
-     * @return HandleFactoryInterface The handle factory.
-     */
-    public function handleFactory()
-    {
-        return $this->handleFactory;
-    }
-
-    /**
-     * Get the spy verifier factory.
-     *
-     * @return SpyVerifierFactoryInterface The spy verifier factory.
-     */
-    public function spyVerifierFactory()
-    {
-        return $this->spyVerifierFactory;
-    }
-
-    /**
-     * Get the stub verifier factory.
-     *
-     * @return StubVerifierFactoryInterface The stub verifier factory.
-     */
-    public function stubVerifierFactory()
-    {
-        return $this->stubVerifierFactory;
-    }
-
-    /**
-     * Get the event order verifier.
-     *
-     * @return EventOrderVerifierInterface The event order verifier.
-     */
-    public function eventOrderVerifier()
-    {
-        return $this->eventOrderVerifier;
-    }
-
-    /**
-     * Get the matcher factory.
-     *
-     * @return MatcherFactoryInterface The matcher factory.
-     */
-    public function matcherFactory()
-    {
-        return $this->matcherFactory;
-    }
-
-    /**
-     * Get the exporter.
-     *
-     * @return ExporterInterface The exporter.
-     */
-    public function exporter()
-    {
-        return $this->exporter;
-    }
-
+    public $mockBuilderFactory;
+    public $handleFactory;
+    public $spyVerifierFactory;
+    public $stubVerifierFactory;
+    public $eventOrderVerifier;
+    public $matcherFactory;
+    public $exporter;
     private static $instance;
-    private $mockBuilderFactory;
-    private $handleFactory;
-    private $spyVerifierFactory;
-    private $stubVerifierFactory;
-    private $eventOrderVerifier;
-    private $matcherFactory;
-    private $exporter;
 }

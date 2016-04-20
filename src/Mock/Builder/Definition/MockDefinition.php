@@ -11,18 +11,13 @@
 
 namespace Eloquent\Phony\Mock\Builder\Definition;
 
-use Closure;
-use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Feature\FeatureDetectorInterface;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
 use ReflectionClass;
-use ReflectionFunction;
+use ReflectionFunctionAbstract;
 
 /**
  * Represents a mock class definition.
@@ -32,34 +27,27 @@ class MockDefinition implements MockDefinitionInterface
     /**
      * Construct a new mock definition.
      *
-     * @param array<string,ReflectionClass>    $types                  The types.
-     * @param array<string,callable|null>      $customMethods          The custom methods.
-     * @param array<string,mixed>              $customProperties       The custom properties.
-     * @param array<string,callable|null>      $customStaticMethods    The custom static methods.
-     * @param array<string,mixed>              $customStaticProperties The custom static properties.
-     * @param array<string,mixed>              $customConstants        The custom constants.
-     * @param string|null                      $className              The class name.
-     * @param InvocableInspectorInterface|null $invocableInspector     The invocable inspector.
-     * @param FeatureDetectorInterface|null    $featureDetector        The feature detector to use.
+     * @param array<string,ReflectionClass>                            $types                      The types.
+     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customMethods              The custom methods.
+     * @param array<string,mixed>                                      $customProperties           The custom properties.
+     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customStaticMethods        The custom static methods.
+     * @param array<string,mixed>                                      $customStaticProperties     The custom static properties.
+     * @param array<string,mixed>                                      $customConstants            The custom constants.
+     * @param string|null                                              $className                  The class name.
+     * @param boolean                                                  $isTraitSupported           True if traits are supported.
+     * @param boolean                                                  $isRelaxedKeywordsSupported True if relaxed keywords are supported.
      */
     public function __construct(
-        array $types = array(),
-        array $customMethods = array(),
-        array $customProperties = array(),
-        array $customStaticMethods = array(),
-        array $customStaticProperties = array(),
-        array $customConstants = array(),
-        $className = null,
-        InvocableInspectorInterface $invocableInspector = null,
-        FeatureDetectorInterface $featureDetector = null
+        array $types,
+        array $customMethods,
+        array $customProperties,
+        array $customStaticMethods,
+        array $customStaticProperties,
+        array $customConstants,
+        $className,
+        $isTraitSupported,
+        $isRelaxedKeywordsSupported
     ) {
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-        if (!$featureDetector) {
-            $featureDetector = FeatureDetector::instance();
-        }
-
         $this->types = $types;
         $this->customMethods = $customMethods;
         $this->customProperties = $customProperties;
@@ -67,8 +55,8 @@ class MockDefinition implements MockDefinitionInterface
         $this->customStaticProperties = $customStaticProperties;
         $this->customConstants = $customConstants;
         $this->className = $className;
-        $this->invocableInspector = $invocableInspector;
-        $this->featureDetector = $featureDetector;
+        $this->isTraitSupported = $isTraitSupported;
+        $this->isRelaxedKeywordsSupported = $isRelaxedKeywordsSupported;
 
         $this->signature = array(
             'types' => array_keys($types),
@@ -81,36 +69,26 @@ class MockDefinition implements MockDefinitionInterface
         );
 
         foreach ($customMethods as $name => $method) {
-            if ($method instanceof Closure) {
-                $reflector = new ReflectionFunction($method);
-                $this->signature['customMethods'][$name] = array(
-                    'custom',
-                    $reflector->getFileName(),
-                    $reflector->getStartLine(),
-                    $reflector->getEndLine(),
-                );
-            } else {
-                $this->signature['customMethods'][$name] = $method;
-            }
+            list($callable, $reflector) = $method;
+
+            $this->signature['customMethods'][$name] = array(
+                'custom',
+                $reflector->getFileName(),
+                $reflector->getStartLine(),
+                $reflector->getEndLine(),
+            );
         }
 
         foreach ($customStaticMethods as $name => $method) {
-            if ($method instanceof Closure) {
-                $reflector = new ReflectionFunction($method);
-                $this->signature['customStaticMethods'][$name] = array(
-                    'custom',
-                    $reflector->getFileName(),
-                    $reflector->getStartLine(),
-                    $reflector->getEndLine(),
-                );
-            } else {
-                $this->signature['customStaticMethods'][$name] = $method;
-            }
-        }
+            list($callable, $reflector) = $method;
 
-        $this->isTraitSupported = $this->featureDetector->isSupported('trait');
-        $this->isRelaxedKeywordsSupported
-             = $this->featureDetector->isSupported('parser.relaxed-keywords');
+            $this->signature['customStaticMethods'][$name] = array(
+                'custom',
+                $reflector->getFileName(),
+                $reflector->getStartLine(),
+                $reflector->getEndLine(),
+            );
+        }
     }
 
     /**
@@ -126,7 +104,7 @@ class MockDefinition implements MockDefinitionInterface
     /**
      * Get the custom methods.
      *
-     * @return array<string,callable|null> The custom methods.
+     * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom methods.
      */
     public function customMethods()
     {
@@ -146,7 +124,7 @@ class MockDefinition implements MockDefinitionInterface
     /**
      * Get the custom static methods.
      *
-     * @return array<string,callable|null> The custom static methods.
+     * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom static methods.
      */
     public function customStaticMethods()
     {
@@ -194,26 +172,6 @@ class MockDefinition implements MockDefinitionInterface
     public function signature()
     {
         return $this->signature;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
-    }
-
-    /**
-     * Get the feature detector.
-     *
-     * @return FeatureDetectorInterface The feature detector.
-     */
-    public function featureDetector()
-    {
-        return $this->featureDetector;
     }
 
     /**
@@ -337,7 +295,8 @@ class MockDefinition implements MockDefinitionInterface
                 if ($method->isConstructor() || $method->isFinal()) {
                     $unmockable[$methodName] = true;
                 } else {
-                    $methods[$methodName] = new RealMethodDefinition($method);
+                    $methods[$methodName] =
+                        new RealMethodDefinition($method, $methodName);
                 }
             }
         }
@@ -346,8 +305,9 @@ class MockDefinition implements MockDefinitionInterface
 
         foreach ($this->traitNames() as $typeName) {
             foreach ($this->types[$typeName]->getMethods() as $method) {
-                $methodDefinition = new TraitMethodDefinition($method);
-                $methodName = $methodDefinition->name();
+                $methodName = $method->getName();
+                $methodDefinition =
+                    new TraitMethodDefinition($method, $methodName);
 
                 if (!$method->isAbstract()) {
                     $traitMethods[] = $methodDefinition;
@@ -372,7 +332,8 @@ class MockDefinition implements MockDefinitionInterface
                 }
 
                 if (!isset($methods[$methodName])) {
-                    $methods[$methodName] = new RealMethodDefinition($method);
+                    $methods[$methodName] =
+                        new RealMethodDefinition($method, $methodName);
                 }
             }
         }
@@ -398,13 +359,8 @@ class MockDefinition implements MockDefinitionInterface
         }
         // @codeCoverageIgnoreEnd
 
-        foreach ($this->customStaticMethods as $methodName => $callback) {
-            if (!$callback) {
-                $reflector = null;
-            } else {
-                $reflector =
-                    $this->invocableInspector->callbackReflector($callback);
-            }
+        foreach ($this->customStaticMethods as $methodName => $method) {
+            list($callback, $reflector) = $method;
 
             $methods[$methodName] = new CustomMethodDefinition(
                 true,
@@ -414,13 +370,8 @@ class MockDefinition implements MockDefinitionInterface
             );
         }
 
-        foreach ($this->customMethods as $methodName => $callback) {
-            if (!$callback) {
-                $reflector = null;
-            } else {
-                $reflector =
-                    $this->invocableInspector->callbackReflector($callback);
-            }
+        foreach ($this->customMethods as $methodName => $method) {
+            list($callback, $reflector) = $method;
 
             $methods[$methodName] = new CustomMethodDefinition(
                 false,
@@ -442,8 +393,6 @@ class MockDefinition implements MockDefinitionInterface
     private $customConstants;
     private $className;
     private $signature;
-    private $invocableInspector;
-    private $featureDetector;
     private $isTraitSupported;
     private $isRelaxedKeywordsSupported;
     private $typeNames;

@@ -35,13 +35,6 @@ class ThrewEventTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->call());
     }
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new ThrewEvent($this->sequenceNumber, $this->time);
-
-        $this->assertEquals($this->exception, $this->subject->exception());
-    }
-
     public function testSetCall()
     {
         $call = $this->callFactory->create();

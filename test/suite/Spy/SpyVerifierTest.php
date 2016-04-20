@@ -21,9 +21,12 @@ use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
+use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Error;
@@ -43,14 +46,24 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
+        $this->invoker = Invoker::instance();
+        $this->generatorSpyFactory = GeneratorSpyFactory::instance();
+        $this->traversableSpyFactory = TraversableSpyFactory::instance();
         $this->label = 'label';
-        $this->spy = new Spy($this->callback, $this->label, null, $this->callFactory);
+        $this->spy = new Spy(
+            $this->callback,
+            $this->label,
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
 
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->callVerifierFactory = new CallVerifierFactory();
-        $this->assertionRecorder = new AssertionRecorder();
-        $this->assertionRenderer = new AssertionRenderer();
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new SpyVerifier(
             $this->spy,
@@ -103,11 +116,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callDResponse = $this->callD->responseEvent();
         $this->callE = $this->callFactory->create($this->callEventFactory->createCalled('implode'));
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD, $this->callE);
-        $this->wrappedCallA = $this->callVerifierFactory->adapt($this->callA);
-        $this->wrappedCallB = $this->callVerifierFactory->adapt($this->callB);
-        $this->wrappedCallC = $this->callVerifierFactory->adapt($this->callC);
-        $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
-        $this->wrappedCallE = $this->callVerifierFactory->adapt($this->callE);
+        $this->wrappedCallA = $this->callVerifierFactory->fromCall($this->callA);
+        $this->wrappedCallB = $this->callVerifierFactory->fromCall($this->callB);
+        $this->wrappedCallC = $this->callVerifierFactory->fromCall($this->callC);
+        $this->wrappedCallD = $this->callVerifierFactory->fromCall($this->callD);
+        $this->wrappedCallE = $this->callVerifierFactory->fromCall($this->callE);
         $this->wrappedCalls = array(
             $this->wrappedCallA,
             $this->wrappedCallB,
@@ -129,7 +142,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iteratorEventE,
             $this->iteratorEventG,
         );
-        $this->traversableEndEvent = $this->callEventFactory->createReturned();
+        $this->traversableEndEvent = $this->callEventFactory->createReturned(null);
         $this->iteratorCall = $this->callFactory->create(
             $this->traversableCalledEvent,
             $this->returnedTraversableEvent,
@@ -145,26 +158,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $this->assertSame($this->spy, $this->subject->spy());
-        $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
-        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
         $this->assertEquals(new Cardinality(1, null), $this->subject->cardinality());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new SpyVerifier();
-
-        $this->assertEquals(new Spy(), $this->subject->spy());
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
-        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-        $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
-        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testProxyMethods()
@@ -424,8 +418,23 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithoutSubject()
     {
-        $spy = new Spy(null, '111', null, $this->callFactory);
-        $verifier = new SpyVerifier($spy);
+        $spy = new Spy(
+            null,
+            '111',
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
+        $verifier = new SpyVerifier(
+            $spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
         $verifier->invokeWith(array('a'));
         $verifier->invoke('b', 'c');
         $verifier('d');
@@ -433,19 +442,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('a')),
-                ($responseEvent = $this->callEventFactory->createReturned()),
+                ($responseEvent = $this->callEventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('b', 'c')),
-                ($responseEvent = $this->callEventFactory->createReturned()),
+                ($responseEvent = $this->callEventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('d')),
-                ($responseEvent = $this->callEventFactory->createReturned()),
+                ($responseEvent = $this->callEventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
@@ -461,8 +470,23 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             list(, $exception) = each($exceptions);
             throw $exception;
         };
-        $spy = new Spy($callback, '111', null, $this->callFactory);
-        $verifier = new SpyVerifier($spy);
+        $spy = new Spy(
+            $callback,
+            '111',
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
+        $verifier = new SpyVerifier(
+            $spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
         $caughtExceptions = array();
         try {
             $verifier->invokeWith(array('a'));
@@ -509,8 +533,23 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $callback = function (&$argument) {
             $argument = 'x';
         };
-        $spy = new Spy($callback, '111', null, $this->callFactory);
-        $verifier = new SpyVerifier($spy);
+        $spy = new Spy(
+            $callback,
+            '111',
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
+        $verifier = new SpyVerifier(
+            $spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
         $value = null;
         $arguments = array(&$value);
         $verifier->invokeWith($arguments);
@@ -523,8 +562,23 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $callback = function () {
             return 'x';
         };
-        $spy = new Spy($callback, '111', null, $this->callFactory);
-        $verifier = new SpyVerifier($spy);
+        $spy = new Spy(
+            $callback,
+            '111',
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
+        $verifier = new SpyVerifier(
+            $spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
         $verifier->stopRecording()->invokeWith();
         $this->callFactory->reset();
 
@@ -536,8 +590,23 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $callback = function () {
             return 'x';
         };
-        $spy = new Spy($callback, '111', null, $this->callFactory);
-        $verifier = new SpyVerifier($spy);
+        $spy = new Spy(
+            $callback,
+            '111',
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->traversableSpyFactory
+        );
+        $verifier = new SpyVerifier(
+            $spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
         $verifier->stopRecording()->invoke('a');
         $verifier->startRecording()->invoke('b');
         $this->callFactory->reset();
@@ -1046,7 +1115,7 @@ EOD;
 
     public function testNeverCalledWith()
     {
-        $expected = new EventCollection();
+        $expected = new EventCollection(array());
 
         $this->assertEquals($expected, $this->subject->never()->calledWith());
 
@@ -1513,8 +1582,8 @@ EOD;
         );
         $this->callDResponse = $this->callD->responseEvent();
         $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD);
-        $this->wrappedCallC = $this->callVerifierFactory->adapt($this->callC);
-        $this->wrappedCallD = $this->callVerifierFactory->adapt($this->callD);
+        $this->wrappedCallC = $this->callVerifierFactory->fromCall($this->callC);
+        $this->wrappedCallD = $this->callVerifierFactory->fromCall($this->callD);
         $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
         $this->subject->setCalls($this->calls);
 
@@ -1931,7 +2000,7 @@ EOD;
             new EventCollection(array($this->iteratorEventA)),
             $this->subject->once()->produced('n')
         );
-        $this->assertEquals(new EventCollection(), $this->subject->never()->produced('m'));
+        $this->assertEquals(new EventCollection(array()), $this->subject->never()->produced('m'));
 
         $this->subject->setCalls(array($this->iteratorCall));
 
@@ -2197,9 +2266,9 @@ EOD;
             new EventCollection(array($this->iteratorEventG)),
             $this->subject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
         );
-        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('q', 's', 'v'));
-        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('n', 's', 'v'));
-        $this->assertEquals(new EventCollection(), $this->subject->never()->producedAll('n', 'q', 's'));
+        $this->assertEquals(new EventCollection(array()), $this->subject->never()->producedAll('q', 's', 'v'));
+        $this->assertEquals(new EventCollection(array()), $this->subject->never()->producedAll('n', 's', 'v'));
+        $this->assertEquals(new EventCollection(array()), $this->subject->never()->producedAll('n', 'q', 's'));
     }
 
     public function testProducedAllFailureNeverCalled()

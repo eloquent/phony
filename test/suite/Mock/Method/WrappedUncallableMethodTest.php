@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use PHPUnit_Framework_TestCase;
@@ -21,9 +22,9 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA');
-        $this->mockBuilder = new MockBuilder();
+        $this->mockBuilder = MockBuilderFactory::instance()->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = new HandleFactory();
+        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->createStubbing($this->mock);
         $this->subject = new WrappedUncallableMethod($this->method, $this->handle);
     }

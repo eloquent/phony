@@ -12,13 +12,25 @@
 namespace Eloquent\Phony\Integration;
 
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Event\Verification\EventOrderVerifier;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Facade\FacadeDriver;
+use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Matcher\Factory\MatcherFactory;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Factory\MockFactory;
+use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 
 /**
@@ -28,40 +40,70 @@ use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
 {
     /**
-     * Construct a new PHPUnit facade driver.
+     * Construct a new integrated facade driver.
      */
     public function __construct()
     {
         $assertionRecorder = $this->createAssertionRecorder();
-        $callVerifierFactory =
-            new CallVerifierFactory(null, null, $assertionRecorder);
+        $assertionRenderer = AssertionRenderer::instance();
+        $matcherFactory = MatcherFactory::instance();
+        $matcherVerifier = MatcherVerifier::instance();
+        $invocableInspector = InvocableInspector::instance();
+        $callVerifierFactory = new CallVerifierFactory(
+            $matcherFactory,
+            $matcherVerifier,
+            $assertionRecorder,
+            $assertionRenderer,
+            $invocableInspector
+        );
+        $spyFactory = SpyFactory::instance();
+        $stubFactory = StubFactory::instance();
+        $invoker = Invoker::instance();
         $stubVerifierFactory = new StubVerifierFactory(
-            null,
-            null,
-            null,
-            null,
+            $stubFactory,
+            $spyFactory,
+            $matcherFactory,
+            $matcherVerifier,
             $callVerifierFactory,
-            $assertionRecorder
+            $assertionRecorder,
+            $assertionRenderer,
+            $invocableInspector,
+            $invoker,
+            GeneratorAnswerBuilderFactory::instance()
         );
         $handleFactory = new HandleFactory(
-            null,
+            $stubFactory,
             $stubVerifierFactory,
-            null,
-            $assertionRecorder
+            $assertionRenderer,
+            $assertionRecorder,
+            $invoker
         );
 
         parent::__construct(
-            new MockBuilderFactory(new MockFactory(null, null, $handleFactory)),
+            new MockBuilderFactory(
+                new MockFactory(
+                    Sequencer::sequence('mock-label'),
+                    MockGenerator::instance(),
+                    $handleFactory
+                ),
+                $handleFactory,
+                $invocableInspector,
+                FeatureDetector::instance()
+            ),
             $handleFactory,
             new SpyVerifierFactory(
-                null,
-                null,
-                null,
+                $spyFactory,
+                $matcherFactory,
+                $matcherVerifier,
                 $callVerifierFactory,
-                $assertionRecorder
+                $assertionRecorder,
+                $assertionRenderer,
+                $invocableInspector
             ),
             $stubVerifierFactory,
-            new EventOrderVerifier($assertionRecorder)
+            new EventOrderVerifier($assertionRecorder, $assertionRenderer),
+            $matcherFactory,
+            InlineExporter::instance()
         );
     }
 

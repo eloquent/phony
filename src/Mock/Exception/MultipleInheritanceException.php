@@ -22,10 +22,9 @@ final class MultipleInheritanceException extends Exception implements
     /**
      * Construct a multiple inheritance exception.
      *
-     * @param array<string>  $classNames The class names.
-     * @param Exception|null $cause      The cause, if available.
+     * @param array<string> $classNames The class names.
      */
-    public function __construct(array $classNames, Exception $cause = null)
+    public function __construct(array $classNames)
     {
         $this->classNames = $classNames;
 
@@ -41,9 +40,7 @@ final class MultipleInheritanceException extends Exception implements
                         $classNames
                     )
                 )
-            ),
-            0,
-            $cause
+            )
         );
     }
 

@@ -17,6 +17,7 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
+use ReflectionType;
 
 /**
  * Utilities for inspecting invocables.
@@ -117,18 +118,15 @@ class InvocableInspector implements InvocableInspectorInterface
      *
      * @param callable $callback The callback.
      *
-     * @return string The return type.
+     * @return ReflectionType|null The return type, or null if no return type is defined.
      */
     public function callbackReturnType($callback)
     {
-        if (
-            $this->isReturnTypeSupported &&
-            $type = $this->callbackReflector($callback)->getReturnType()
-        ) {
-            return strval($type);
+        if (!$this->isReturnTypeSupported) {
+            return null; // @codeCoverageIgnore
         }
 
-        return 'NULL';
+        return $this->callbackReflector($callback)->getReturnType();
     }
 
     /**

@@ -29,7 +29,7 @@ class InlineExporter implements ExporterInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(1, true);
         }
 
         return self::$instance;
@@ -41,7 +41,7 @@ class InlineExporter implements ExporterInterface
      * @param integer $depth        The depth.
      * @param boolean $incrementIds True if IDs should increment. Used for testing purposes.
      */
-    public function __construct($depth = 1, $incrementIds = true)
+    public function __construct($depth, $incrementIds)
     {
         $this->incrementIds = $incrementIds;
         $this->depth = $depth;

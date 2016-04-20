@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Stub\Rule;
 
+use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Stub\Answer\AnswerInterface;
 use Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException;
 
@@ -20,20 +21,18 @@ use Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException;
 interface StubRuleInterface
 {
     /**
+     * Get the criteria.
+     *
+     * @return array<MatcherInterface> The criteria.
+     */
+    public function criteria();
+
+    /**
      * Get the answers.
      *
      * @return array<AnswerInterface> The answers.
      */
     public function answers();
-
-    /**
-     * Returns true if this rule's criteria match the supplied arguments.
-     *
-     * @param array $arguments The arguments.
-     *
-     * @return boolean True if the criteria matches.
-     */
-    public function matches(array $arguments);
 
     /**
      * Get the next answer.

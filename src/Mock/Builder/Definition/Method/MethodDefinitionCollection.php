@@ -24,10 +24,8 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
      * @param array<string,MethodDefinitionInterface> $methods      The methods.
      * @param array<TraitMethodDefinitionInterface>   $traitMethods The trait methods.
      */
-    public function __construct(
-        array $methods = array(),
-        array $traitMethods = array()
-    ) {
+    public function __construct(array $methods, array $traitMethods)
+    {
         $this->methodNames = array();
         $this->allMethods = $methods;
         $this->traitMethods = $traitMethods;

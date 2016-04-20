@@ -24,7 +24,7 @@ class WildcardMatcher implements WildcardMatcherInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(AnyMatcher::instance(), 0, null);
         }
 
         return self::$instance;
@@ -33,19 +33,15 @@ class WildcardMatcher implements WildcardMatcherInterface
     /**
      * Construct a new wildcard matcher.
      *
-     * @param MatcherInterface|null $matcher          The matcher to use for each argument.
-     * @param integer               $minimumArguments The minimum number of arguments.
-     * @param integer|null          $maximumArguments The maximum number of arguments.
+     * @param MatcherInterface $matcher          The matcher to use for each argument.
+     * @param integer          $minimumArguments The minimum number of arguments.
+     * @param integer|null     $maximumArguments The maximum number of arguments.
      */
     public function __construct(
-        MatcherInterface $matcher = null,
-        $minimumArguments = 0,
-        $maximumArguments = null
+        MatcherInterface $matcher,
+        $minimumArguments,
+        $maximumArguments
     ) {
-        if (!$matcher) {
-            $matcher = AnyMatcher::instance();
-        }
-
         $this->matcher = $matcher;
         $this->minimumArguments = $minimumArguments;
         $this->maximumArguments = $maximumArguments;

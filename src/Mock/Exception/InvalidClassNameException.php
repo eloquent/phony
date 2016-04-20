@@ -22,17 +22,14 @@ final class InvalidClassNameException extends Exception implements
     /**
      * Construct a new invalid class name exception.
      *
-     * @param mixed          $className The class name.
-     * @param Exception|null $cause     The cause, if available.
+     * @param mixed $className The class name.
      */
-    public function __construct($className, Exception $cause = null)
+    public function __construct($className)
     {
         $this->className = $className;
 
         parent::__construct(
-            sprintf('Invalid class name %s.', var_export($className, true)),
-            0,
-            $cause
+            sprintf('Invalid class name %s.', var_export($className, true))
         );
     }
 

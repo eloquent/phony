@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class UndefinedMethodStubExceptionTest extends PHPUnit_Framework_TestCase
@@ -20,13 +19,12 @@ class UndefinedMethodStubExceptionTest extends PHPUnit_Framework_TestCase
     {
         $className = 'ClassName';
         $name = 'method';
-        $cause = new Exception();
-        $exception = new UndefinedMethodStubException($className, $name, $cause);
+        $exception = new UndefinedMethodStubException($className, $name);
 
         $this->assertSame($className, $exception->className());
         $this->assertSame($name, $exception->name());
         $this->assertSame('The requested method stub ClassName::method() does not exist.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

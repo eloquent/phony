@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Collection\IndexNormalizer;
+use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
@@ -26,16 +26,14 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->callback = 'implode';
         $this->label = 'label';
-        $this->indexNormalizer = new IndexNormalizer();
         $this->callFactory = new TestCallFactory();
         $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory);
+        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, FeatureDetector::instance());
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
         $this->subject = new Spy(
             $this->callback,
             $this->label,
-            $this->indexNormalizer,
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
@@ -60,7 +58,6 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $spy = new Spy(
             $this->callback,
             null,
-            null,
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
@@ -74,21 +71,21 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $expected = array(
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')),
-                $this->callEventFactory->createGenerated($generator),
+                $this->callEventFactory->createReturned($generator),
                 array(
                     $this->callEventFactory->createProduced(0, 'A'),
-                    $this->callEventFactory->createReceived(),
+                    $this->callEventFactory->createReceived(null),
                     $this->callEventFactory->createProduced(1, 'B'),
-                    $this->callEventFactory->createReceived(),
+                    $this->callEventFactory->createReceived(null),
                 ),
                 $this->callEventFactory->createConsumed()
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('c')),
-                $this->callEventFactory->createGenerated($generator),
+                $this->callEventFactory->createReturned($generator),
                 array(
                     $this->callEventFactory->createProduced(0, 'C'),
-                    $this->callEventFactory->createReceived(),
+                    $this->callEventFactory->createReceived(null),
                 ),
                 $this->callEventFactory->createConsumed()
             ),

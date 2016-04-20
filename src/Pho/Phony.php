@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Pho;
 
 use Eloquent\Phony\Facade\AbstractFacade;
-use Eloquent\Phony\Facade\FacadeDriverInterface;
+use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Integration\Pho\PhoFacadeDriver;
 
 /**
@@ -25,7 +25,7 @@ class Phony extends AbstractFacade
     /**
      * Get the facade driver.
      *
-     * @return FacadeDriverInterface The facade driver.
+     * @return FacadeDriver The facade driver.
      */
     protected static function driver()
     {

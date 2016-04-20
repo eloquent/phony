@@ -29,8 +29,10 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
      * @param ReflectionMethod $method The method.
      * @param HandleInterface  $handle The handle.
      */
-    public function __construct(ReflectionMethod $method, HandleInterface $handle)
-    {
+    public function __construct(
+        ReflectionMethod $method,
+        HandleInterface $handle
+    ) {
         $this->method = $method;
         $this->handle = $handle;
         $this->name = $method->getName();
@@ -46,7 +48,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
             $callback = array($this->mock, $this->name);
         }
 
-        parent::__construct($callback);
+        parent::__construct($callback, null);
     }
 
     /**

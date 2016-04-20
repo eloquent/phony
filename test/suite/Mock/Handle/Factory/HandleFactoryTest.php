@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Mock\Handle\Factory;
 use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
 use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
 use Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle;
 use Eloquent\Phony\Stub\Factory\StubFactory;
@@ -27,10 +27,10 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->stubFactory = new StubFactory();
-        $this->stubVerifierFactory = new StubVerifierFactory();
-        $this->assertionRenderer = new AssertionRenderer();
-        $this->assertionRecorder = new AssertionRecorder();
+        $this->stubFactory = StubFactory::instance();
+        $this->stubVerifierFactory = StubVerifierFactory::instance();
+        $this->assertionRenderer = AssertionRenderer::instance();
+        $this->assertionRecorder = AssertionRecorder::instance();
         $this->invoker = new Invoker();
         $this->subject = new HandleFactory(
             $this->stubFactory,
@@ -39,31 +39,13 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
             $this->assertionRecorder,
             $this->invoker
         );
-    }
 
-    public function testConstructor()
-    {
-        $this->assertSame($this->stubFactory, $this->subject->stubFactory());
-        $this->assertSame($this->stubVerifierFactory, $this->subject->stubVerifierFactory());
-        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
-        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->invoker, $this->subject->invoker());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new HandleFactory();
-
-        $this->assertSame(StubFactory::instance(), $this->subject->stubFactory());
-        $this->assertSame(StubVerifierFactory::instance(), $this->subject->stubVerifierFactory());
-        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
-        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
+        $this->mockBuilderFactory = MockBuilderFactory::instance();
     }
 
     public function testCreateStubbingNew()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
         $handleProperty = new ReflectionProperty($mock, '_handle');
         $handleProperty->setAccessible(true);
@@ -71,7 +53,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
         $expected = new StubbingHandle(
             $mock,
             (object) array(
-                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsNullAnswerCallback',
+                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback',
                 'stubs' => (object) array(),
                 'isRecording' => true,
                 'label' => 'label',
@@ -89,7 +71,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateStubbingAdapt()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
         $handleProperty = new ReflectionProperty($mock, '_handle');
         $handleProperty->setAccessible(true);
@@ -102,7 +84,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateStubbingFromVerifier()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
         $handleProperty = new ReflectionProperty($mock, '_handle');
         $handleProperty->setAccessible(true);
@@ -121,7 +103,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateVerification()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
         $handleProperty = new ReflectionProperty($mock, '_handle');
         $handleProperty->setAccessible(true);
@@ -136,7 +118,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateVerificationAdapt()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
         $actual = $this->subject->createVerification($mock);
 
@@ -145,7 +127,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateVerificationFromStubbing()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $mock = $mockBuilder->full();
         $stubbingHandle = $this->subject->createStubbing($mock);
         $actual = $this->subject->createVerification($mock);
@@ -158,14 +140,18 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateStubbingStaticNew()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
         $handleProperty->setValue(null, null);
         $expected = new StaticStubbingHandle(
             $class,
-            null,
+            (object) array(
+                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',
+                'stubs' => (object) array(),
+                'isRecording' => true,
+            ),
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->assertionRenderer,
@@ -179,7 +165,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateStubbingStaticAdapt()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -192,7 +178,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateStubbingStaticFromVerifier()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -205,7 +191,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateStubbingStaticFromMock()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -217,7 +203,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateStubbingStaticFromSting()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -253,7 +239,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateVerificationStatic()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -267,7 +253,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateVerificationStaticAdapt()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $actual = $this->subject->createVerificationStatic($class);
 
@@ -276,7 +262,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateVerificationStaticFromStubbing()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build(true);
         $stubbingHandle = $this->subject->createStubbingStatic($class);
         $actual = $this->subject->createVerificationStatic($class);

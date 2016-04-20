@@ -33,33 +33,18 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->anyMatcher = new AnyMatcher();
+        $this->wildcardAnyMatcher = WildcardMatcher::instance();
+        $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher);
+
         $this->driverA = new TestMatcherDriverA();
         $this->driverB = new TestMatcherDriverB();
         $this->drivers = array($this->driverA, $this->driverB);
-        $this->anyMatcher = new AnyMatcher();
-        $this->wildcardAnyMatcher = new WildcardMatcher();
-        $this->subject = new MatcherFactory($this->drivers, $this->anyMatcher, $this->wildcardAnyMatcher);
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->drivers, $this->subject->drivers());
-        $this->assertSame($this->anyMatcher, $this->subject->any());
-        $this->assertSame($this->wildcardAnyMatcher, $this->subject->wildcard());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new MatcherFactory();
-
-        $this->assertSame(array(), $this->subject->drivers());
-        $this->assertSame(AnyMatcher::instance(), $this->subject->any());
-        $this->assertSame(WildcardMatcher::instance(), $this->subject->wildcard());
     }
 
     public function testAddMatcherDriver()
     {
-        $this->subject = new MatcherFactory(array(), $this->anyMatcher, $this->wildcardAnyMatcher);
+        $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher);
         $this->subject->addMatcherDriver($this->driverA);
 
         $this->assertSame(array($this->driverA), $this->subject->drivers());
@@ -74,7 +59,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
      */
     public function testAddDefaultMatcherDrivers()
     {
-        $this->subject = new MatcherFactory(array(), $this->anyMatcher, $this->wildcardAnyMatcher);
+        $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher);
         $this->subject->addDefaultMatcherDrivers();
 
         $this->assertSame(
@@ -93,6 +78,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testIsMatcher()
     {
+        $this->subject->addMatcherDriver($this->driverA);
+        $this->subject->addMatcherDriver($this->driverB);
+
         $this->assertTrue($this->subject->isMatcher(new EqualToMatcher('a')));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherA()));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherB()));
@@ -130,6 +118,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptViaDriver()
     {
+        $this->subject->addMatcherDriver($this->driverA);
+        $this->subject->addMatcherDriver($this->driverB);
         $driverAMatcher = new TestMatcherA();
         $driverBMatcher = new TestMatcherB();
 
@@ -154,6 +144,9 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testAdaptAll()
     {
+        $this->subject->addMatcherDriver($this->driverA);
+        $this->subject->addMatcherDriver($this->driverB);
+
         $valueB = new EqualToMatcher('b');
         $valueC = (object) array();
         $valueD = Phony::mock();

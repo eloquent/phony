@@ -33,7 +33,10 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                CallEventFactory::instance(),
+                FeatureDetector::instance()
+            );
         }
 
         return self::$instance;
@@ -42,46 +45,19 @@ class GeneratorSpyFactory implements TraversableSpyFactoryInterface
     /**
      * Construct a new generator spy factory.
      *
-     * @param CallEventFactoryInterface|null $callEventFactory The call event factory to use.
-     * @param FeatureDetectorInterface|null  $featureDetector  The feature detector to use.
+     * @param CallEventFactoryInterface $callEventFactory The call event factory to use.
+     * @param FeatureDetectorInterface  $featureDetector  The feature detector to use.
      */
     public function __construct(
-        CallEventFactoryInterface $callEventFactory = null,
-        FeatureDetectorInterface $featureDetector = null
+        CallEventFactoryInterface $callEventFactory,
+        FeatureDetectorInterface $featureDetector
     ) {
-        if (!$callEventFactory) {
-            $callEventFactory = CallEventFactory::instance();
-        }
-        if (!$featureDetector) {
-            $featureDetector = FeatureDetector::instance();
-        }
-
         $this->callEventFactory = $callEventFactory;
         $this->featureDetector = $featureDetector;
 
         $this->isGeneratorReturnSupported = $featureDetector
             ->isSupported('generator.return');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
-    }
-
-    /**
-     * Get the call event factory.
-     *
-     * @return CallEventFactoryInterface The call event factory.
-     */
-    public function callEventFactory()
-    {
-        return $this->callEventFactory;
-    }
-
-    /**
-     * Get the feature detector.
-     *
-     * @return FeatureDetectorInterface The feature detector.
-     */
-    public function featureDetector()
-    {
-        return $this->featureDetector;
     }
 
     /**

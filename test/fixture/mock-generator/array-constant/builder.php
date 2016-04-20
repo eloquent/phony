@@ -1,6 +1,6 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+$builder = $factory->create(
     array(
         'const CONSTANT_A' => array(),
         'const CONSTANT_B' => array('a', 'b'),

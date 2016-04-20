@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Matcher;
 
-use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
@@ -26,21 +25,12 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     protected function setUp($value = '<string>')
     {
         $this->value = 'x';
-        $this->exporter = new InlineExporter(false);
-        $this->subject = new EqualToMatcher($this->value, $this->exporter);
+        $this->subject = new EqualToMatcher($this->value);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->value, $this->subject->value());
-        $this->assertSame($this->exporter, $this->subject->exporter());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new EqualToMatcher($this->value);
-
-        $this->assertSame(InlineExporter::instance(), $this->subject->exporter());
     }
 
     public function problematicScalarValues()

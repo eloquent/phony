@@ -40,7 +40,15 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                SpyFactory::instance(),
+                MatcherFactory::instance(),
+                MatcherVerifier::instance(),
+                CallVerifierFactory::instance(),
+                AssertionRecorder::instance(),
+                AssertionRenderer::instance(),
+                InvocableInspector::instance()
+            );
         }
 
         return self::$instance;
@@ -49,45 +57,23 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
     /**
      * Construct a new spy verifier factory.
      *
-     * @param SpyFactoryInterface|null          $spyFactory          The spy factory to use.
-     * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
-     * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
-     * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param InvocableInspectorInterface|null  $invocableInspector  The invocable inspector to use.
+     * @param SpyFactoryInterface          $spyFactory          The spy factory to use.
+     * @param MatcherFactoryInterface      $matcherFactory      The matcher factory to use.
+     * @param MatcherVerifierInterface     $matcherVerifier     The macther verifier to use.
+     * @param CallVerifierFactoryInterface $callVerifierFactory The call verifier factory to use.
+     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
+     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
+     * @param InvocableInspectorInterface  $invocableInspector  The invocable inspector to use.
      */
     public function __construct(
-        SpyFactoryInterface $spyFactory = null,
-        MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null,
-        CallVerifierFactoryInterface $callVerifierFactory = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        InvocableInspectorInterface $invocableInspector = null
+        SpyFactoryInterface $spyFactory,
+        MatcherFactoryInterface $matcherFactory,
+        MatcherVerifierInterface $matcherVerifier,
+        CallVerifierFactoryInterface $callVerifierFactory,
+        AssertionRecorderInterface $assertionRecorder,
+        AssertionRendererInterface $assertionRenderer,
+        InvocableInspectorInterface $invocableInspector
     ) {
-        if (!$spyFactory) {
-            $spyFactory = SpyFactory::instance();
-        }
-        if (!$matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
-        }
-        if (!$matcherVerifier) {
-            $matcherVerifier = MatcherVerifier::instance();
-        }
-        if (!$callVerifierFactory) {
-            $callVerifierFactory = CallVerifierFactory::instance();
-        }
-        if (!$assertionRecorder) {
-            $assertionRecorder = AssertionRecorder::instance();
-        }
-        if (!$assertionRenderer) {
-            $assertionRenderer = AssertionRenderer::instance();
-        }
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-
         $this->spyFactory = $spyFactory;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
@@ -95,76 +81,6 @@ class SpyVerifierFactory implements SpyVerifierFactoryInterface
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->invocableInspector = $invocableInspector;
-    }
-
-    /**
-     * Get the spy factory.
-     *
-     * @return SpyFactoryInterface The spy factory.
-     */
-    public function spyFactory()
-    {
-        return $this->spyFactory;
-    }
-
-    /**
-     * Get the matcher factory.
-     *
-     * @return MatcherFactoryInterface The matcher factory.
-     */
-    public function matcherFactory()
-    {
-        return $this->matcherFactory;
-    }
-
-    /**
-     * Get the matcher verifier.
-     *
-     * @return MatcherVerifierInterface The matcher verifier.
-     */
-    public function matcherVerifier()
-    {
-        return $this->matcherVerifier;
-    }
-
-    /**
-     * Get the call verifier factory.
-     *
-     * @return CallVerifierFactoryInterface The call verifier factory.
-     */
-    public function callVerifierFactory()
-    {
-        return $this->callVerifierFactory;
-    }
-
-    /**
-     * Get the assertion recorder.
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    public function assertionRecorder()
-    {
-        return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the assertion renderer.
-     *
-     * @return AssertionRendererInterface The assertion renderer.
-     */
-    public function assertionRenderer()
-    {
-        return $this->assertionRenderer;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
     }
 
     /**

@@ -35,15 +35,7 @@ class IteratorSpyTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->call, $this->subject->call());
         $this->assertSame($this->iterator, $this->subject->iterator());
-        $this->assertSame($this->callEventFactory, $this->subject->callEventFactory());
         $this->assertSame($this->values, iterator_to_array($this->subject));
         $this->assertSame($this->values, iterator_to_array($this->subject));
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new IteratorSpy($this->call, $this->iterator);
-
-        $this->assertSame(CallEventFactory::instance(), $this->subject->callEventFactory());
     }
 }

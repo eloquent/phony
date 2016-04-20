@@ -16,11 +16,15 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
@@ -39,14 +43,18 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->self = (object) array();
         $this->label = 'label';
-        $this->stub = new Stub($this->callback, $this->self, $this->label);
-        $this->spy = new Spy($this->stub);
-        $this->matcherFactory = new MatcherFactory();
+        $this->stubFactory = StubFactory::instance();
+        $this->stub = $this->stubFactory->create($this->callback, $this->self)->setLabel($this->label);
+        $this->spyFactory = SpyFactory::instance();
+        $this->spy = $this->spyFactory->create($this->stub);
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->callVerifierFactory = new CallVerifierFactory();
-        $this->assertionRecorder = new AssertionRecorder();
-        $this->assertionRenderer = new AssertionRenderer();
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRenderer = AssertionRenderer::instance();
+        $this->invocableInspector = InvocableInspector::instance();
         $this->invoker = new Invoker();
+        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubVerifier(
             $this->stub,
             $this->spy,
@@ -55,7 +63,9 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invoker
+            $this->invocableInspector,
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
         );
 
         $this->callsA = array();
@@ -154,26 +164,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->stub, $this->subject->stub());
         $this->assertSame($this->spy, $this->subject->spy());
-        $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame($this->callVerifierFactory, $this->subject->callVerifierFactory());
-        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
-        $this->assertSame($this->invoker, $this->subject->invoker());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new StubVerifier();
-
-        $this->assertEquals(new Stub(), $this->subject->stub());
-        $this->assertEquals(new Spy($this->subject->stub()), $this->subject->spy());
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
-        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-        $this->assertSame(CallVerifierFactory::instance(), $this->subject->callVerifierFactory());
-        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
     }
 
     public function testProxyMethods()
@@ -722,8 +712,20 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testForwards()
     {
-        $this->stub = new Stub($this->callbackA, $this->self);
-        $this->subject = new StubVerifier($this->stub);
+        $this->stub = $this->stubFactory->create($this->callbackA, $this->self);
+        $this->spy = $this->spyFactory->create($this->stub);
+        $this->subject = new StubVerifier(
+            $this->stub,
+            $this->spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector,
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
+        );
 
         $this->assertSame($this->subject, $this->subject->forwards(array(1, 2), true, true, true));
         $this->assertEquals(
@@ -800,17 +802,41 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
      */
     public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
     {
-        $stub = new Stub($callback, $self);
+        $stub = $this->stubFactory->create($callback, $self);
         $stub->forwards();
-        $subject = new StubVerifier($stub);
+        $spy = $this->spyFactory->create($stub);
+        $subject = new StubVerifier(
+            $stub,
+            $spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector,
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
+        );
 
         $this->assertEquals($expected, call_user_func_array($subject, $arguments));
     }
 
     public function testForwardsWithReferenceParameters()
     {
-        $this->stub = new Stub($this->referenceCallback, $this->self);
-        $this->subject = new StubVerifier($this->stub);
+        $this->stub = $this->stubFactory->create($this->referenceCallback, $this->self);
+        $this->spy = $this->spyFactory->create($this->stub);
+        $this->subject = new StubVerifier(
+            $this->stub,
+            $this->spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector,
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
+        );
         $a = null;
         $b = null;
         $c = null;

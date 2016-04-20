@@ -26,7 +26,7 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateSuccess()
     {
-        $events = array(new ReturnedEvent(0, 0.0), new ReturnedEvent(1, 1.0));
+        $events = array(new ReturnedEvent(0, 0.0, null), new ReturnedEvent(1, 1.0, null));
         $expected = new EventCollection($events);
         $beforeCount = PHPUnit_Framework_Assert::getCount();
         $actual = $this->subject->createSuccess($events);
@@ -38,7 +38,7 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new EventCollection();
+        $expected = new EventCollection(array());
         $beforeCount = PHPUnit_Framework_Assert::getCount();
         $actual = $this->subject->createSuccess();
         $afterCount = PHPUnit_Framework_Assert::getCount();

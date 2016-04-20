@@ -11,8 +11,7 @@
 
 namespace Eloquent\Phony\Stub\Rule;
 
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
+use Eloquent\Phony\Matcher\MatcherInterface;
 use Eloquent\Phony\Stub\Answer\AnswerInterface;
 use Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException;
 
@@ -24,22 +23,13 @@ class StubRule implements StubRuleInterface
     /**
      * Construct a new stub rule.
      *
-     * @param array<MatcherInterface>       $criteria        The criteria.
-     * @param array<AnswerInterface>        $answers         The answers.
-     * @param MatcherVerifierInterface|null $matcherVerifier The matcher verifier to use.
+     * @param array<MatcherInterface> $criteria The criteria.
+     * @param array<AnswerInterface>  $answers  The answers.
      */
-    public function __construct(
-        array $criteria,
-        array $answers,
-        MatcherVerifierInterface $matcherVerifier = null
-    ) {
-        if (!$matcherVerifier) {
-            $matcherVerifier = MatcherVerifier::instance();
-        }
-
+    public function __construct(array $criteria, array $answers)
+    {
         $this->criteria = $criteria;
         $this->answers = $answers;
-        $this->matcherVerifier = $matcherVerifier;
 
         $this->lastIndex = count($answers) - 1;
         $this->calledCount = 0;
@@ -56,16 +46,6 @@ class StubRule implements StubRuleInterface
     }
 
     /**
-     * Get the matcher verifier.
-     *
-     * @return MatcherVerifierInterface The matcher verifier.
-     */
-    public function matcherVerifier()
-    {
-        return $this->matcherVerifier;
-    }
-
-    /**
      * Get the answers.
      *
      * @return array<AnswerInterface> The answers.
@@ -73,18 +53,6 @@ class StubRule implements StubRuleInterface
     public function answers()
     {
         return $this->answers;
-    }
-
-    /**
-     * Returns true if this rule's criteria match the supplied arguments.
-     *
-     * @param array $arguments The arguments.
-     *
-     * @return boolean True if the criteria matches.
-     */
-    public function matches(array $arguments)
-    {
-        return $this->matcherVerifier->matches($this->criteria, $arguments);
     }
 
     /**
@@ -115,7 +83,6 @@ class StubRule implements StubRuleInterface
 
     private $criteria;
     private $answers;
-    private $matcherVerifier;
     private $lastIndex;
     private $calledCount;
 }

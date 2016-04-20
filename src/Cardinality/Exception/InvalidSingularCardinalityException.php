@@ -24,17 +24,14 @@ final class InvalidSingularCardinalityException extends Exception implements
      * Construct a new invalid singular cardinality exception.
      *
      * @param tuple<integer,integer|null> $cardinality The cardinality.
-     * @param Exception|null              $cause       The cause, if available.
      */
-    public function __construct($cardinality, Exception $cause = null)
+    public function __construct($cardinality)
     {
         $this->cardinality = $cardinality;
 
         parent::__construct(
             'The specified cardinality is invalid for events ' .
-                'that can only happen once or not at all.',
-            0,
-            $cause
+                'that can only happen once or not at all.'
         );
     }
 

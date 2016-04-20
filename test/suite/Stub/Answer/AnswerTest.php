@@ -11,15 +11,16 @@
 
 namespace Eloquent\Phony\Stub\Answer;
 
+use Eloquent\Phony\Call\Argument\Arguments;
 use PHPUnit_Framework_TestCase;
 
 class AnswerTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->primaryRequest = new CallRequest('implode');
-        $this->secondaryRequestA = new CallRequest('implode');
-        $this->secondaryRequestB = new CallRequest('implode');
+        $this->primaryRequest = new CallRequest('implode', Arguments::create(), false, false, false);
+        $this->secondaryRequestA = new CallRequest('implode', Arguments::create(), false, false, false);
+        $this->secondaryRequestB = new CallRequest('implode', Arguments::create(), false, false, false);
         $this->secondaryRequests = array($this->secondaryRequestA, $this->secondaryRequestB);
         $this->subject = new Answer($this->primaryRequest, $this->secondaryRequests);
     }
@@ -28,13 +29,5 @@ class AnswerTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->primaryRequest, $this->subject->primaryRequest());
         $this->assertSame($this->secondaryRequests, $this->subject->secondaryRequests());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new Answer();
-
-        $this->assertNull($this->subject->primaryRequest());
-        $this->assertSame(array(), $this->subject->secondaryRequests());
     }
 }

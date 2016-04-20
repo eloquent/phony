@@ -11,18 +11,16 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class FinalizedMockExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $cause = new Exception();
-        $exception = new FinalizedMockException($cause);
+        $exception = new FinalizedMockException();
 
         $this->assertSame('Unable to modify a finalized mock.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Cardinality\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class InvalidSingularCardinalityExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,8 +18,7 @@ class InvalidSingularCardinalityExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $cardinality = array(2, 3);
-        $cause = new Exception();
-        $exception = new InvalidSingularCardinalityException($cardinality, $cause);
+        $exception = new InvalidSingularCardinalityException($cardinality);
 
         $this->assertSame($cardinality, $exception->cardinality());
         $this->assertSame(
@@ -28,6 +26,6 @@ class InvalidSingularCardinalityExceptionTest extends PHPUnit_Framework_TestCase
             $exception->getMessage()
         );
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

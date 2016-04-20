@@ -27,7 +27,7 @@ class InvokerTest extends PHPUnit_Framework_TestCase
 
     public function testCallWith()
     {
-        $this->assertSame(phpversion(), $this->subject->callWith('phpversion'));
+        $this->assertSame(phpversion(), $this->subject->callWith('phpversion', Arguments::create()));
         $this->assertSame(1, $this->subject->callWith('strlen', Arguments::create('a')));
         $this->assertSame(
             array('invokeWith', array('a', 'b')),

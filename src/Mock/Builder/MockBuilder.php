@@ -27,7 +27,6 @@ use Eloquent\Phony\Mock\Exception\InvalidDefinitionException;
 use Eloquent\Phony\Mock\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
-use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
@@ -54,37 +53,28 @@ class MockBuilder implements MockBuilderInterface
      * definition. If only a single type is being mocked, the class name or
      * definition can be passed without being wrapped in an array.
      *
-     * @param mixed                            $types              The types to mock.
-     * @param MockFactoryInterface|null        $factory            The factory to use.
-     * @param HandleFactoryInterface|null      $handleFactory      The handle factory to use.
-     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector.
-     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
+     * @param mixed                       $types              The types to mock.
+     * @param MockFactoryInterface        $factory            The factory to use.
+     * @param HandleFactoryInterface      $handleFactory      The handle factory to use.
+     * @param InvocableInspectorInterface $invocableInspector The invocable inspector.
+     * @param FeatureDetectorInterface    $featureDetector    The feature detector to use.
      *
      * @throws MockExceptionInterface If invalid input is supplied.
      */
     public function __construct(
-        $types = null,
-        MockFactoryInterface $factory = null,
-        HandleFactoryInterface $handleFactory = null,
-        InvocableInspectorInterface $invocableInspector = null,
-        FeatureDetectorInterface $featureDetector = null
+        $types,
+        MockFactoryInterface $factory,
+        HandleFactoryInterface $handleFactory,
+        InvocableInspectorInterface $invocableInspector,
+        FeatureDetectorInterface $featureDetector
     ) {
-        if (!$factory) {
-            $factory = MockFactory::instance();
-        }
-        if (!$handleFactory) {
-            $handleFactory = HandleFactory::instance();
-        }
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-        if (!$featureDetector) {
-            $featureDetector = FeatureDetector::instance();
-        }
-
         $this->isTraitSupported = $featureDetector->isSupported('trait');
         $this->isAnonymousClassSupported =
             $featureDetector->isSupported('class.anonymous');
+        $this->isRelaxedKeywordsSupported =
+            $featureDetector->isSupported('parser.relaxed-keywords');
+        $this->isEngineErrorExceptionSupported =
+            $featureDetector->isSupported('error.exception.engine');
 
         $this->factory = $factory;
         $this->handleFactory = $handleFactory;
@@ -99,6 +89,7 @@ class MockBuilder implements MockBuilderInterface
         $this->customStaticProperties = array();
         $this->customConstants = array();
         $this->isFinalized = false;
+        $this->emptyCallback = function () {};
 
         if (null !== $types) {
             $this->like($types);
@@ -290,8 +281,14 @@ class MockBuilder implements MockBuilderInterface
         if ($this->isFinalized) {
             throw new FinalizedMockException();
         }
+        if (!$callback) {
+            $callback = $this->emptyCallback;
+        }
 
-        $this->customMethods[$name] = $callback;
+        $this->customMethods[$name] = array(
+            $callback,
+            $this->invocableInspector->callbackReflector($callback),
+        );
 
         return $this;
     }
@@ -330,8 +327,14 @@ class MockBuilder implements MockBuilderInterface
         if ($this->isFinalized) {
             throw new FinalizedMockException();
         }
+        if (!$callback) {
+            $callback = $this->emptyCallback;
+        }
 
-        $this->customStaticMethods[$name] = $callback;
+        $this->customStaticMethods[$name] = array(
+            $callback,
+            $this->invocableInspector->callbackReflector($callback),
+        );
 
         return $this;
     }
@@ -423,7 +426,17 @@ class MockBuilder implements MockBuilderInterface
         if (!$this->isFinalized) {
             $this->normalizeDefinition();
             $this->isFinalized = true;
-            $this->definition = $this->buildDefinition();
+            $this->definition = new MockDefinition(
+                $this->types,
+                $this->customMethods,
+                $this->customProperties,
+                $this->customStaticMethods,
+                $this->customStaticProperties,
+                $this->customConstants,
+                $this->className,
+                $this->isTraitSupported,
+                $this->isRelaxedKeywordsSupported
+            );
         }
 
         return $this;
@@ -466,7 +479,8 @@ class MockBuilder implements MockBuilderInterface
     public function build($createNew = false)
     {
         if (!$this->class) {
-            $this->class = $this->factory->createMockClass($this, $createNew);
+            $this->class = $this->factory
+                ->createMockClass($this->definition(), $createNew);
         }
 
         return $this->class;
@@ -506,7 +520,7 @@ class MockBuilder implements MockBuilderInterface
             return $this->mock;
         }
 
-        $this->mock = $this->factory->createFullMock($this);
+        $this->mock = $this->factory->createFullMock($this->build());
 
         return $this->mock;
     }
@@ -524,7 +538,7 @@ class MockBuilder implements MockBuilderInterface
      */
     public function full()
     {
-        $this->mock = $this->factory->createFullMock($this);
+        $this->mock = $this->factory->createFullMock($this->build());
 
         return $this->mock;
     }
@@ -544,7 +558,8 @@ class MockBuilder implements MockBuilderInterface
      */
     public function partial()
     {
-        $this->mock = $this->factory->createPartialMock($this, func_get_args());
+        $this->mock = $this->factory
+            ->createPartialMock($this->build(), func_get_args());
 
         return $this->mock;
     }
@@ -566,7 +581,8 @@ class MockBuilder implements MockBuilderInterface
      */
     public function partialWith($arguments = array())
     {
-        $this->mock = $this->factory->createPartialMock($this, $arguments);
+        $this->mock =
+            $this->factory->createPartialMock($this->build(), $arguments);
 
         return $this->mock;
     }
@@ -620,7 +636,7 @@ class MockBuilder implements MockBuilderInterface
             );
         }
 
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
+        if (!$this->isEngineErrorExceptionSupported) {
             return; // @codeCoverageIgnore
         }
 
@@ -690,27 +706,14 @@ class MockBuilder implements MockBuilderInterface
         return $this;
     }
 
-    private function buildDefinition()
-    {
-        return new MockDefinition(
-            $this->types,
-            $this->customMethods,
-            $this->customProperties,
-            $this->customStaticMethods,
-            $this->customStaticProperties,
-            $this->customConstants,
-            $this->className,
-            $this->invocableInspector,
-            $this->featureDetector
-        );
-    }
-
     private $factory;
     private $handleFactory;
     private $invocableInspector;
     private $featureDetector;
     private $isTraitSupported;
     private $isAnonymousClassSupported;
+    private $isRelaxedKeywordsSupported;
+    private $isEngineErrorExceptionSupported;
     private $types;
     private $parentClassName;
     private $customMethods;
@@ -720,6 +723,7 @@ class MockBuilder implements MockBuilderInterface
     private $customConstants;
     private $className;
     private $isFinalized;
+    private $emptyCallback;
     private $definition;
     private $class;
     private $mock;

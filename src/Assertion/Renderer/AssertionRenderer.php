@@ -54,7 +54,10 @@ class AssertionRenderer implements AssertionRendererInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                InvocableInspector::instance(),
+                InlineExporter::instance()
+            );
         }
 
         return self::$instance;
@@ -63,42 +66,15 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Construct a new call renderer.
      *
-     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
-     * @param ExporterInterface|null           $exporter           The exporter to use.
+     * @param InvocableInspectorInterface $invocableInspector The invocable inspector to use.
+     * @param ExporterInterface           $exporter           The exporter to use.
      */
     public function __construct(
-        InvocableInspectorInterface $invocableInspector = null,
-        ExporterInterface $exporter = null
+        InvocableInspectorInterface $invocableInspector,
+        ExporterInterface $exporter
     ) {
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-        if (!$exporter) {
-            $exporter = InlineExporter::instance();
-        }
-
         $this->invocableInspector = $invocableInspector;
         $this->exporter = $exporter;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
-    }
-
-    /**
-     * Get the exporter.
-     *
-     * @return Exporter The exporter.
-     */
-    public function exporter()
-    {
-        return $this->exporter;
     }
 
     /**
@@ -560,16 +536,12 @@ class AssertionRenderer implements AssertionRendererInterface
     /**
      * Render an exception.
      *
-     * @param Exception|Error|null $exception The exception.
+     * @param Exception|Error $exception The exception.
      *
      * @return string The rendered exception.
      */
-    public function renderException($exception = null)
+    public function renderException($exception)
     {
-        if (!$exception) {
-            return '<none>';
-        }
-
         if ('' === $exception->getMessage()) {
             $renderedMessage = '';
         } else {

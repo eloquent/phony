@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Integration\Phpunit;
 
-use Eloquent\Phony\Facade\FacadeDriverInterface;
+use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
@@ -22,7 +22,7 @@ class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
     /**
      * Get the static instance of this driver.
      *
-     * @return FacadeDriverInterface The static driver.
+     * @return FacadeDriver The static driver.
      */
     public static function instance()
     {

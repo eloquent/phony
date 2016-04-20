@@ -23,11 +23,10 @@ final class UndefinedResponseException extends Exception
     /**
      * Construct a new undefined return value exception.
      *
-     * @param string         $message The message.
-     * @param Exception|null $cause   The cause, if available.
+     * @param string $message The message.
      */
-    public function __construct($message, Exception $cause = null)
+    public function __construct($message)
     {
-        parent::__construct($message, 0, $cause);
+        parent::__construct($message);
     }
 }

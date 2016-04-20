@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Stub\Exception;
 
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class UnusedStubCriteriaExceptionTest extends PHPUnit_Framework_TestCase
@@ -20,8 +19,7 @@ class UnusedStubCriteriaExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $criteria = array(new EqualToMatcher('a'), new EqualToMatcher('b'));
-        $cause = new Exception();
-        $exception = new UnusedStubCriteriaException($criteria, $cause);
+        $exception = new UnusedStubCriteriaException($criteria);
 
         $this->assertSame($criteria, $exception->criteria());
         $this->assertSame(
@@ -29,6 +27,6 @@ class UnusedStubCriteriaExceptionTest extends PHPUnit_Framework_TestCase
             $exception->getMessage()
         );
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

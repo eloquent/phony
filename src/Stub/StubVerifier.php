@@ -16,6 +16,7 @@ use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
+use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
@@ -38,49 +39,37 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     /**
      * Construct a new stub verifier.
      *
-     * @param StubInterface|null                          $stub                          The stub.
-     * @param SpyInterface|null                           $spy                           The spy.
-     * @param MatcherFactoryInterface|null                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifierInterface|null               $matcherVerifier               The macther verifier to use.
-     * @param CallVerifierFactoryInterface|null           $callVerifierFactory           The call verifier factory to use.
-     * @param AssertionRecorderInterface|null             $assertionRecorder             The assertion recorder to use.
-     * @param AssertionRendererInterface|null             $assertionRenderer             The assertion renderer to use.
-     * @param InvokerInterface|null                       $invoker                       The invoker to use.
-     * @param GeneratorAnswerBuilderFactoryInterface|null $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param StubInterface                          $stub                          The stub.
+     * @param SpyInterface                           $spy                           The spy.
+     * @param MatcherFactoryInterface                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifierInterface               $matcherVerifier               The macther verifier to use.
+     * @param CallVerifierFactoryInterface           $callVerifierFactory           The call verifier factory to use.
+     * @param AssertionRecorderInterface             $assertionRecorder             The assertion recorder to use.
+     * @param AssertionRendererInterface             $assertionRenderer             The assertion renderer to use.
+     * @param InvocableInspectorInterface            $invocableInspector            The invocable inspector to use.
+     * @param InvokerInterface                       $invoker                       The invoker to use.
+     * @param GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
-        StubInterface $stub = null,
-        SpyInterface $spy = null,
-        MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null,
-        CallVerifierFactoryInterface $callVerifierFactory = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        InvokerInterface $invoker = null,
-        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory =
-            null
+        StubInterface $stub,
+        SpyInterface $spy,
+        MatcherFactoryInterface $matcherFactory,
+        MatcherVerifierInterface $matcherVerifier,
+        CallVerifierFactoryInterface $callVerifierFactory,
+        AssertionRecorderInterface $assertionRecorder,
+        AssertionRendererInterface $assertionRenderer,
+        InvocableInspectorInterface $invocableInspector,
+        InvokerInterface $invoker,
+        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory
     ) {
-        if (!$stub) {
-            $stub = new Stub();
-        }
-        if (!$spy) {
-            $spy = new Spy($stub);
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$generatorAnswerBuilderFactory) {
-            $generatorAnswerBuilderFactory =
-                GeneratorAnswerBuilderFactory::instance();
-        }
-
         parent::__construct(
             $spy,
             $matcherFactory,
             $matcherVerifier,
             $callVerifierFactory,
             $assertionRecorder,
-            $assertionRenderer
+            $assertionRenderer,
+            $invocableInspector
         );
 
         $this->stub = $stub;
@@ -96,26 +85,6 @@ class StubVerifier extends SpyVerifier implements StubVerifierInterface
     public function stub()
     {
         return $this->stub;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the generator answer builder factory.
-     *
-     * @return GeneratorAnswerBuilderFactoryInterface The generator answer builder factory.
-     */
-    public function generatorAnswerBuilderFactory()
-    {
-        return $this->generatorAnswerBuilderFactory;
     }
 
     /**

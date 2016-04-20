@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Assertion\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class AssertionExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,12 +18,11 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $message = 'message';
-        $cause = new Exception();
-        $exception = new AssertionException($message, $cause);
+        $exception = new AssertionException($message);
 
         $this->assertSame($message, $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 
     public function tracePhonyCallData()

@@ -13,12 +13,9 @@ namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
-use Eloquent\Phony\Collection\IndexNormalizer;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
 use Error;
 use PHPUnit_Framework_TestCase;
@@ -31,26 +28,10 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->eventFactory = new TestCallEventFactory();
         $this->invoker = new Invoker();
-        $this->indexNormalizer = new IndexNormalizer();
-        $this->subject = new CallFactory($this->eventFactory, $this->invoker, $this->indexNormalizer);
+        $this->subject = new CallFactory($this->eventFactory, $this->invoker);
 
+        $this->spyFactory = SpyFactory::instance();
         $this->featureDetector = new FeatureDetector();
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->eventFactory, $this->subject->eventFactory());
-        $this->assertSame($this->invoker, $this->subject->invoker());
-        $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CallFactory();
-
-        $this->assertSame(CallEventFactory::instance(), $this->subject->eventFactory());
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
-        $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
     }
 
     public function testRecord()
@@ -58,11 +39,9 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $callback = 'implode';
         $arguments = Arguments::create(array('a', 'b'));
         $returnValue = 'ab';
-        $spy = new Spy();
-        $expected = $this->subject->create(
-            $this->eventFactory->createCalled($spy, $arguments),
-            $this->eventFactory->createReturned($returnValue)
-        );
+        $spy = $this->spyFactory->create();
+        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected->setResponseEvent($this->eventFactory->createReturned($returnValue));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);
 
@@ -77,11 +56,9 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
             throw $exception;
         };
         $arguments = Arguments::create(array('a', 'b'));
-        $spy = new Spy();
-        $expected = $this->subject->create(
-            $this->eventFactory->createCalled($spy, $arguments),
-            $this->eventFactory->createThrew($exception)
-        );
+        $spy = $this->spyFactory->create();
+        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);
 
@@ -100,63 +77,14 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
             throw $exception;
         };
         $arguments = Arguments::create(array('a', 'b'));
-        $spy = new Spy();
-        $expected = $this->subject->create(
-            $this->eventFactory->createCalled($spy, $arguments),
-            $this->eventFactory->createThrew($exception)
-        );
+        $spy = $this->spyFactory->create();
+        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals(array($expected), $spy->allCalls());
-    }
-
-    public function testRecordWithoutSpy()
-    {
-        $callback = 'implode';
-        $arguments = Arguments::create(array('a', 'b'));
-        $returnValue = 'ab';
-        $expected = $this->subject->create(
-            $this->eventFactory->createCalled($callback, $arguments),
-            $this->eventFactory->createReturned($returnValue)
-        );
-        $this->eventFactory->reset();
-        $actual = $this->subject->record($callback, $arguments);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testRecordDefaults()
-    {
-        $actual = $this->subject->record();
-
-        $this->assertInstanceOf('Eloquent\Phony\Call\Call', $actual);
-
-        $this->assertInstanceOf('Eloquent\Phony\Call\Event\CalledEvent', $actual->calledEvent());
-        $this->assertEquals(new Arguments(), $actual->calledEvent()->arguments());
-        $this->assertInstanceOf('Eloquent\Phony\Call\Event\ReturnedEvent', $actual->responseEvent());
-        $this->assertNull($actual->responseEvent()->value());
-    }
-
-    public function testCreate()
-    {
-        $calledEvent = $this->eventFactory->createCalled();
-        $returnedEvent = $this->eventFactory->createReturned();
-        $expected = new Call($calledEvent, $returnedEvent);
-        $actual = $this->subject->create($calledEvent, $returnedEvent);
-
-        $this->assertEquals($expected, $actual);
-        $this->assertSame($this->indexNormalizer, $actual->indexNormalizer());
-    }
-
-    public function testCreateDefaults()
-    {
-        $expected = new Call($this->eventFactory->createCalled());
-        $this->eventFactory->reset();
-        $actual = $this->subject->create();
-
-        $this->assertEquals($expected, $actual);
     }
 
     public function testInstance()

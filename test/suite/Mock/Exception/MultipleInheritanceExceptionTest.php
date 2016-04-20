@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class MultipleInheritanceExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,8 +18,7 @@ class MultipleInheritanceExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $classNames = array('ClassNameA', 'ClassNameB', 'ClassNameC');
-        $cause = new Exception();
-        $exception = new MultipleInheritanceException($classNames, $cause);
+        $exception = new MultipleInheritanceException($classNames);
 
         $this->assertSame($classNames, $exception->classNames());
         $this->assertSame(
@@ -28,6 +26,6 @@ class MultipleInheritanceExceptionTest extends PHPUnit_Framework_TestCase
             $exception->getMessage()
         );
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

@@ -29,11 +29,11 @@ class StubWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->defaultAnswerCallback = function ($stub) {
             $stub->returns('default answer');
         };
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory();
+        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new Stub(
             $this->callback,
             $this->self,

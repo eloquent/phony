@@ -23,10 +23,9 @@ final class UndefinedArgumentException extends Exception
     /**
      * Construct a new undefined argument exception.
      *
-     * @param integer        $index The index.
-     * @param Exception|null $cause The cause, if available.
+     * @param integer $index The index.
      */
-    public function __construct($index, Exception $cause = null)
+    public function __construct($index)
     {
         $this->index = $index;
 
@@ -34,9 +33,7 @@ final class UndefinedArgumentException extends Exception
             sprintf(
                 'No argument defined for index %s.',
                 var_export($index, true)
-            ),
-            0,
-            $cause
+            )
         );
     }
 

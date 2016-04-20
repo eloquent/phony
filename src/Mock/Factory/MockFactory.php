@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
@@ -41,7 +41,11 @@ class MockFactory implements MockFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                Sequencer::sequence('mock-label'),
+                MockGenerator::instance(),
+                HandleFactory::instance()
+            );
         }
 
         return self::$instance;
@@ -50,25 +54,15 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
-     * @param SequencerInterface|null     $labelSequencer The label sequencer to use.
-     * @param MockGeneratorInterface|null $generator      The generator to use.
-     * @param HandleFactoryInterface|null $handleFactory  The handle factory to use.
+     * @param SequencerInterface     $labelSequencer The label sequencer to use.
+     * @param MockGeneratorInterface $generator      The generator to use.
+     * @param HandleFactoryInterface $handleFactory  The handle factory to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer = null,
-        MockGeneratorInterface $generator = null,
-        HandleFactoryInterface $handleFactory = null
+        SequencerInterface $labelSequencer,
+        MockGeneratorInterface $generator,
+        HandleFactoryInterface $handleFactory
     ) {
-        if (!$labelSequencer) {
-            $labelSequencer = Sequencer::sequence('mock-label');
-        }
-        if (!$generator) {
-            $generator = MockGenerator::instance();
-        }
-        if (!$handleFactory) {
-            $handleFactory = HandleFactory::instance();
-        }
-
         $this->labelSequencer = $labelSequencer;
         $this->generator = $generator;
         $this->handleFactory = $handleFactory;
@@ -76,49 +70,18 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Get the label sequencer.
+     * Create the mock class for the supplied definition.
      *
-     * @return SequencerInterface The label sequencer.
-     */
-    public function labelSequencer()
-    {
-        return $this->labelSequencer;
-    }
-
-    /**
-     * Get the generator.
-     *
-     * @return MockGeneratorInterface The generator.
-     */
-    public function generator()
-    {
-        return $this->generator;
-    }
-
-    /**
-     * Get the handle factory.
-     *
-     * @return HandleFactoryInterface The handle factory.
-     */
-    public function handleFactory()
-    {
-        return $this->handleFactory;
-    }
-
-    /**
-     * Create the mock class for the supplied builder.
-     *
-     * @param MockBuilderInterface $builder   The builder.
-     * @param boolean              $createNew True if a new class should be created even when a compatible one exists.
+     * @param MockDefinitionInterface $definition The definition.
+     * @param boolean                 $createNew  True if a new class should be created even when a compatible one exists.
      *
      * @return ReflectionClass        The class.
      * @throws MockExceptionInterface If the mock generation fails.
      */
     public function createMockClass(
-        MockBuilderInterface $builder,
+        MockDefinitionInterface $definition,
         $createNew = false
     ) {
-        $definition = $builder->definition();
         $signature = $definition->signature();
 
         if (!$createNew) {
@@ -175,10 +138,10 @@ class MockFactory implements MockFactoryInterface
         $customMethods = array();
 
         foreach ($definition->customStaticMethods() as $methodName => $method) {
-            $customMethods[strtolower($methodName)] = $method;
+            $customMethods[strtolower($methodName)] = $method[0];
         }
         foreach ($definition->customMethods() as $methodName => $method) {
-            $customMethods[strtolower($methodName)] = $method;
+            $customMethods[strtolower($methodName)] = $method[0];
         }
 
         $customMethodsProperty = $class->getProperty('_customMethods');
@@ -193,16 +156,16 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Create a new full mock instance for the supplied builder.
+     * Create a new full mock instance for the supplied class.
      *
-     * @param MockBuilderInterface $builder The builder.
+     * @param ReflectionClass $class The class.
      *
      * @return MockInterface          The newly created mock.
      * @throws MockExceptionInterface If the mock generation fails.
      */
-    public function createFullMock(MockBuilderInterface $builder)
+    public function createFullMock(ReflectionClass $class)
     {
-        $mock = $builder->build()->newInstanceArgs();
+        $mock = $class->newInstanceArgs();
         $this->handleFactory
             ->createStubbing($mock, strval($this->labelSequencer->next()));
 
@@ -210,19 +173,19 @@ class MockFactory implements MockFactoryInterface
     }
 
     /**
-     * Create a new partial mock instance for the supplied builder.
+     * Create a new partial mock instance for the supplied definition.
      *
-     * @param MockBuilderInterface          $builder   The builder.
+     * @param ReflectionClass               $class     The class.
      * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return MockInterface          The newly created mock.
      * @throws MockExceptionInterface If the mock generation fails.
      */
     public function createPartialMock(
-        MockBuilderInterface $builder,
+        ReflectionClass $class,
         $arguments = array()
     ) {
-        $mock = $builder->build()->newInstanceArgs();
+        $mock = $class->newInstanceArgs();
         $handle = $this->handleFactory
             ->createStubbing($mock, strval($this->labelSequencer->next()));
 

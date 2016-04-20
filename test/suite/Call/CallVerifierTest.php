@@ -52,10 +52,10 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
 
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->assertionRecorder = new AssertionRecorder();
-        $this->assertionRenderer = new AssertionRenderer();
+        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifier(
             $this->call,
@@ -115,7 +115,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertionResult = new EventCollection(array($this->call));
         $this->returnedAssertionResult = new EventCollection(array($this->call->responseEvent()));
         $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new EventCollection();
+        $this->emptyAssertionResult = new EventCollection(array());
 
         $this->returnedTraversableEvent =
             $this->callEventFactory->createReturned(array('m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v'));
@@ -149,30 +149,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->featureDetector = new FeatureDetector();
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->call, $this->subject->call());
-        $this->assertEquals($this->duration, $this->subject->duration());
-        $this->assertSame($this->argumentCount, $this->subject->argumentCount());
-        $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertEquals(new Cardinality(1, null), $this->subject->cardinality());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CallVerifier($this->call);
-
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
-        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
     }
 
     public function testProxyMethods()
@@ -226,8 +202,15 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $traversableEventA = $this->callEventFactory->createProduced('a', 'b');
         $traversableEventB = $this->callEventFactory->createProduced('c', 'd');
         $traversableEvents = array($traversableEventA, $traversableEventB);
-        $this->call = new Call($this->calledEvent, $returnedEvent);
-        $this->subject = new CallVerifier($this->call);
+        $this->call = $this->callFactory->create($this->calledEvent, $returnedEvent);
+        $this->subject = new CallVerifier(
+            $this->call,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
         $this->subject->addTraversableEvent($traversableEventA);
         $this->subject->addTraversableEvent($traversableEventB);
 
@@ -262,6 +245,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals($this->duration, $this->subject->responseDuration());
         $this->assertNull($this->subjectWithNoResponse->responseDuration());
+    }
+
+    public function testArgumentCount()
+    {
+        $this->assertSame($this->argumentCount, $this->subject->argumentCount());
     }
 
     public function calledWithData()
@@ -792,7 +780,7 @@ EOD;
             new EventCollection(array($this->iteratorEventA)),
             $this->traversableSubject->once()->produced('n')
         );
-        $this->assertEquals(new EventCollection(), $this->traversableSubject->never()->produced('m'));
+        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->produced('m'));
     }
 
     public function testProducedFailureWithNoMatchers()
@@ -949,9 +937,9 @@ EOD;
             $expected,
             $this->traversableSubject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
         );
-        $this->assertEquals(new EventCollection(), $this->traversableSubject->never()->producedAll('q', 's', 'v'));
-        $this->assertEquals(new EventCollection(), $this->traversableSubject->never()->producedAll('n', 's', 'v'));
-        $this->assertEquals(new EventCollection(), $this->traversableSubject->never()->producedAll('n', 'q', 's'));
+        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->producedAll('q', 's', 'v'));
+        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->producedAll('n', 's', 'v'));
+        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->producedAll('n', 'q', 's'));
     }
 
     public function testProducedAllFailureNothingProduced()

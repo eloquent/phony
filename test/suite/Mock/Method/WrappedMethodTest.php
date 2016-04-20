@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use PHPUnit_Framework_TestCase;
@@ -20,11 +21,13 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->mockBuilderFactory = MockBuilderFactory::instance();
+
         $this->callParentMethod = new ReflectionMethod($this, 'setUp');
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodE');
-        $this->mockBuilder = new MockBuilder();
+        $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = new HandleFactory();
+        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->createStubbing($this->mock);
         $this->subject = new WrappedMethod($this->callParentMethod, $this->method, $this->handle);
     }
@@ -72,7 +75,7 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethods()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
         $class = $mockBuilder->build();
         $callParentMethod = $class->getMethod('_callParent');
         $callParentMethod->setAccessible(true);
@@ -89,7 +92,7 @@ class WrappedMethodTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithStatic()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassA');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
         $class = $mockBuilder->build();
         $callParentMethod = $class->getMethod('_callParentStatic');
         $callParentMethod->setAccessible(true);

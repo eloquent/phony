@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call\Argument;
 
-use Eloquent\Phony\Collection\IndexNormalizer;
 use PHPUnit_Framework_TestCase;
 
 class ArgumentsTest extends PHPUnit_Framework_TestCase
@@ -21,8 +20,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->a = 'a';
         $this->b = 'b';
         $this->arguments = array(&$this->a, &$this->b);
-        $this->indexNormalizer = new IndexNormalizer();
-        $this->subject = new Arguments($this->arguments, $this->indexNormalizer);
+        $this->subject = new Arguments($this->arguments);
     }
 
     public function testConstructor()
@@ -30,15 +28,6 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->arguments, $this->subject->all());
         $this->assertSame($this->arguments, iterator_to_array($this->subject));
         $this->assertSame(2, count($this->subject));
-        $this->assertSame($this->indexNormalizer, $this->subject->indexNormalizer());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new Arguments();
-
-        $this->assertSame(array(), $this->subject->all());
-        $this->assertSame(IndexNormalizer::instance(), $this->subject->indexNormalizer());
     }
 
     public function testCopy()
@@ -84,7 +73,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
 
     public function testSetFailureNoArguments()
     {
-        $this->subject = new Arguments();
+        $this->subject = new Arguments(array());
 
         $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
         $this->subject->set('value');
@@ -101,7 +90,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->has(111));
         $this->assertFalse($this->subject->has(-111));
 
-        $this->subject = new Arguments();
+        $this->subject = new Arguments(array());
 
         $this->assertFalse($this->subject->has());
         $this->assertFalse($this->subject->has(0));
@@ -131,7 +120,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
 
     public function testGetFailureNoArguments()
     {
-        $this->subject = new Arguments();
+        $this->subject = new Arguments(array());
 
         $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
         $this->subject->get();

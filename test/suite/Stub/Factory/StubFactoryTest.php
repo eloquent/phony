@@ -26,11 +26,11 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->labelSequencer = new Sequencer();
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory();
+        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubFactory(
             $this->labelSequencer,
             $this->matcherFactory,
@@ -39,28 +39,6 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
             $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->labelSequencer, $this->subject->labelSequencer());
-        $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame($this->invoker, $this->subject->invoker());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->generatorAnswerBuilderFactory, $this->subject->generatorAnswerBuilderFactory());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new StubFactory();
-
-        $this->assertSame(Sequencer::sequence('stub-label'), $this->subject->labelSequencer());
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
-        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-        $this->assertSame(Invoker::instance(), $this->subject->invoker());
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-        $this->assertSame(GeneratorAnswerBuilderFactory::instance(), $this->subject->generatorAnswerBuilderFactory());
     }
 
     public function testCreate()
@@ -84,11 +62,6 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
         $this->assertSame('a', call_user_func($actual->callback()));
         $this->assertSame($self, $actual->self());
-        $this->assertSame($this->matcherFactory, $actual->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $actual->matcherVerifier());
-        $this->assertSame($this->invoker, $actual->invoker());
-        $this->assertSame($this->invocableInspector, $actual->invocableInspector());
-        $this->assertSame($this->generatorAnswerBuilderFactory, $actual->generatorAnswerBuilderFactory());
     }
 
     public function testInstance()

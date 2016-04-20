@@ -25,13 +25,12 @@ final class PhpunitAssertionException extends
     /**
      * Construct a new PHPUnit assertion exception.
      *
-     * @param string         $description The failure description.
-     * @param Exception|null $cause       The cause, if available.
+     * @param string $description The failure description.
      */
-    public function __construct($description, Exception $cause = null)
+    public function __construct($description)
     {
         AssertionException::trim($this);
 
-        parent::__construct($description, null, $cause);
+        parent::__construct($description);
     }
 }

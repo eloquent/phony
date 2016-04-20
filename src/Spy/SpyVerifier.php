@@ -51,45 +51,23 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Construct a new spy verifier.
      *
-     * @param SpyInterface|null                 $spy                 The spy.
-     * @param MatcherFactoryInterface|null      $matcherFactory      The matcher factory to use.
-     * @param MatcherVerifierInterface|null     $matcherVerifier     The macther verifier to use.
-     * @param CallVerifierFactoryInterface|null $callVerifierFactory The call verifier factory to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param InvocableInspectorInterface|null  $invocableInspector  The invocable inspector to use.
+     * @param SpyInterface                 $spy                 The spy.
+     * @param MatcherFactoryInterface      $matcherFactory      The matcher factory to use.
+     * @param MatcherVerifierInterface     $matcherVerifier     The macther verifier to use.
+     * @param CallVerifierFactoryInterface $callVerifierFactory The call verifier factory to use.
+     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
+     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
+     * @param InvocableInspectorInterface  $invocableInspector  The invocable inspector to use.
      */
     public function __construct(
-        SpyInterface $spy = null,
-        MatcherFactoryInterface $matcherFactory = null,
-        MatcherVerifierInterface $matcherVerifier = null,
-        CallVerifierFactoryInterface $callVerifierFactory = null,
-        AssertionRecorderInterface $assertionRecorder = null,
-        AssertionRendererInterface $assertionRenderer = null,
-        InvocableInspectorInterface $invocableInspector = null
+        SpyInterface $spy,
+        MatcherFactoryInterface $matcherFactory,
+        MatcherVerifierInterface $matcherVerifier,
+        CallVerifierFactoryInterface $callVerifierFactory,
+        AssertionRecorderInterface $assertionRecorder,
+        AssertionRendererInterface $assertionRenderer,
+        InvocableInspectorInterface $invocableInspector
     ) {
-        if (!$spy) {
-            $spy = new Spy();
-        }
-        if (!$matcherFactory) {
-            $matcherFactory = MatcherFactory::instance();
-        }
-        if (!$matcherVerifier) {
-            $matcherVerifier = MatcherVerifier::instance();
-        }
-        if (!$callVerifierFactory) {
-            $callVerifierFactory = CallVerifierFactory::instance();
-        }
-        if (!$assertionRecorder) {
-            $assertionRecorder = AssertionRecorder::instance();
-        }
-        if (!$assertionRenderer) {
-            $assertionRenderer = AssertionRenderer::instance();
-        }
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-
         parent::__construct();
 
         $this->spy = $spy;
@@ -109,66 +87,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     public function spy()
     {
         return $this->spy;
-    }
-
-    /**
-     * Get the matcher factory.
-     *
-     * @return MatcherFactoryInterface The matcher factory.
-     */
-    public function matcherFactory()
-    {
-        return $this->matcherFactory;
-    }
-
-    /**
-     * Get the matcher verifier.
-     *
-     * @return MatcherVerifierInterface The matcher verifier.
-     */
-    public function matcherVerifier()
-    {
-        return $this->matcherVerifier;
-    }
-
-    /**
-     * Get the call verifier factory.
-     *
-     * @return CallVerifierFactoryInterface The call verifier factory.
-     */
-    public function callVerifierFactory()
-    {
-        return $this->callVerifierFactory;
-    }
-
-    /**
-     * Get the assertion recorder.
-     *
-     * @return AssertionRecorderInterface The assertion recorder.
-     */
-    public function assertionRecorder()
-    {
-        return $this->assertionRecorder;
-    }
-
-    /**
-     * Get the assertion renderer.
-     *
-     * @return AssertionRendererInterface The assertion renderer.
-     */
-    public function assertionRenderer()
-    {
-        return $this->assertionRenderer;
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
     }
 
     /**
@@ -364,7 +282,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function allCalls()
     {
-        return $this->callVerifierFactory->adaptAll($this->spy->allCalls());
+        return $this->callVerifierFactory->fromCalls($this->spy->allCalls());
     }
 
     /**
@@ -413,7 +331,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function firstCall()
     {
-        return $this->callVerifierFactory->adapt($this->spy->firstCall());
+        return $this->callVerifierFactory->fromCall($this->spy->firstCall());
     }
 
     /**
@@ -424,7 +342,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function lastCall()
     {
-        return $this->callVerifierFactory->adapt($this->spy->lastCall());
+        return $this->callVerifierFactory->fromCall($this->spy->lastCall());
     }
 
     /**
@@ -440,7 +358,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      */
     public function callAt($index = 0)
     {
-        return $this->callVerifierFactory->adapt($this->spy->callAt($index));
+        return $this->callVerifierFactory->fromCall($this->spy->callAt($index));
     }
 
     /**

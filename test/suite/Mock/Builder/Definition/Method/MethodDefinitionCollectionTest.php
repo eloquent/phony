@@ -12,27 +12,62 @@
 namespace Eloquent\Phony\Mock\Builder\Definition\Method;
 
 use PHPUnit_Framework_TestCase;
+use ReflectionFunction;
 use ReflectionMethod;
 
 class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->callbackA = function () {};
+        $this->callbackB = function () {};
         $this->methods = array(
-            'methodA' => new CustomMethodDefinition(true, 'methodA'),
-            'methodB' => new CustomMethodDefinition(false, 'methodB'),
-            'testClassAMethodA' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA')),
-            'testClassAMethodB' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodB')),
-            'testClassAMethodC' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodC')),
-            'testClassAMethodD' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodD')),
-            'testClassAStaticMethodA' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA')),
-            'testClassAStaticMethodB' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodB')),
-            'testClassAStaticMethodC' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC')),
-            'testClassAStaticMethodD' => new RealMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodD')),
+            'methodA' =>
+                new CustomMethodDefinition(true, 'methodA', $this->callbackA, new ReflectionFunction($this->callbackA)),
+            'methodB' =>
+                new CustomMethodDefinition(false, 'methodB', $this->callbackB, new ReflectionFunction($this->callbackB)),
+            'testClassAMethodA' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA'),
+                'testClassAMethodA'
+            ),
+            'testClassAMethodB' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodB'),
+                'testClassAMethodB'
+            ),
+            'testClassAMethodC' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodC'),
+                'testClassAMethodC'
+            ),
+            'testClassAMethodD' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodD'),
+                'testClassAMethodD'
+            ),
+            'testClassAStaticMethodA' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA'),
+                'testClassAStaticMethodA'
+            ),
+            'testClassAStaticMethodB' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodB'),
+                'testClassAStaticMethodB'
+            ),
+            'testClassAStaticMethodC' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC'),
+                'testClassAStaticMethodC'
+            ),
+            'testClassAStaticMethodD' => new RealMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodD'),
+                'testClassAStaticMethodD'
+            ),
         );
         $this->traitMethods = array(
-            new TraitMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA')),
-            new TraitMethodDefinition(new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodB')),
+            new TraitMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA'),
+                'testClassAMethodA'
+            ),
+            new TraitMethodDefinition(
+                new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodB'),
+                'testClassAMethodB'
+            ),
         );
         $this->subject = new MethodDefinitionCollection($this->methods, $this->traitMethods);
     }
@@ -91,20 +126,6 @@ class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
             ),
             $this->subject->protectedMethods()
         );
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new MethodDefinitionCollection();
-
-        $this->assertSame(array(), $this->subject->allMethods());
-        $this->assertSame(array(), $this->subject->staticMethods());
-        $this->assertSame(array(), $this->subject->methods());
-        $this->assertSame(array(), $this->subject->publicStaticMethods());
-        $this->assertSame(array(), $this->subject->publicMethods());
-        $this->assertSame(array(), $this->subject->protectedStaticMethods());
-        $this->assertSame(array(), $this->subject->protectedMethods());
-        $this->assertSame(array(), $this->subject->traitMethods());
     }
 
     public function testMethodName()

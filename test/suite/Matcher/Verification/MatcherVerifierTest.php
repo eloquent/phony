@@ -23,7 +23,7 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new MatcherVerifier();
 
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = MatcherFactory::instance();
         $this->arguments = array('a', 'b', 'c');
     }
 
@@ -63,7 +63,7 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testMatchesWithWildcardAfterValue()
     {
-        $matchers = array(new EqualToMatcher('a'), new WildcardMatcher(new EqualToMatcher('b')));
+        $matchers = array(new EqualToMatcher('a'), new WildcardMatcher(new EqualToMatcher('b'), 0, null));
 
         $this->assertTrue($this->subject->matches($matchers, array('a')));
         $this->assertTrue($this->subject->matches($matchers, array('a', 'b')));
@@ -76,7 +76,7 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testMatchesWithWildcardBeforeValue()
     {
-        $matchers = array(new WildcardMatcher(new EqualToMatcher('b')), new EqualToMatcher('a'));
+        $matchers = array(new WildcardMatcher(new EqualToMatcher('b'), 0, null), new EqualToMatcher('a'));
 
         $this->assertTrue($this->subject->matches($matchers, array('a')));
         $this->assertTrue($this->subject->matches($matchers, array('b', 'a')));
@@ -89,14 +89,14 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testMatchesWithWildcardBeforeValueGreedy()
     {
-        $matchers = array(new WildcardMatcher(new EqualToMatcher('a')), new EqualToMatcher('a'));
+        $matchers = array(new WildcardMatcher(new EqualToMatcher('a'), 0, null), new EqualToMatcher('a'));
 
         $this->assertFalse($this->subject->matches($matchers, array('a', 'a')));
     }
 
     public function testMatchesWithOnlyWildcard()
     {
-        $matchers = array(new WildcardMatcher(new EqualToMatcher('b')));
+        $matchers = array(new WildcardMatcher(new EqualToMatcher('b'), 0, null));
 
         $this->assertTrue($this->subject->matches($matchers, array()));
         $this->assertTrue($this->subject->matches($matchers, array('b')));
@@ -109,7 +109,7 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testMatchesWithWildcardMinimumArguments()
     {
-        $matchers = array(new EqualToMatcher('a'), new WildcardMatcher(new EqualToMatcher('b'), 1));
+        $matchers = array(new EqualToMatcher('a'), new WildcardMatcher(new EqualToMatcher('b'), 1, null));
 
         $this->assertFalse($this->subject->matches($matchers, array('a')));
         $this->assertTrue($this->subject->matches($matchers, array('a', 'b')));

@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Generator;
 
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
@@ -23,25 +24,11 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->labelSequencer = new Sequencer();
-        $this->signatureInspector = new FunctionSignatureInspector();
+        $this->signatureInspector = FunctionSignatureInspector::instance();
         $this->featureDetector = new FeatureDetector();
+        $this->isTraitSupported = $this->featureDetector->isSupported('trait');
+        $this->isRelaxedKeywordsSupported = $this->featureDetector->isSupported('parser.relaxed-keywords');
         $this->subject = new MockGenerator($this->labelSequencer, $this->signatureInspector, $this->featureDetector);
-    }
-
-    public function testConstructor()
-    {
-        $this->assertSame($this->labelSequencer, $this->subject->labelSequencer());
-        $this->assertSame($this->signatureInspector, $this->subject->signatureInspector());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new MockGenerator();
-
-        $this->assertSame(Sequencer::sequence('mock-class-label'), $this->subject->labelSequencer());
-        $this->assertSame(FunctionSignatureInspector::instance(), $this->subject->signatureInspector());
-        $this->assertSame(FeatureDetector::instance(), $this->subject->featureDetector());
     }
 
     public function classNameData()
@@ -61,7 +48,17 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
     public function testClassName($types, $expected)
     {
         $types = array_map(function ($type) { return new ReflectionClass($type); }, $types);
-        $definition = new MockDefinition($types);
+        $definition = new MockDefinition(
+            $types,
+            array(),
+            array(),
+            array(),
+            array(),
+            array(),
+            null,
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
+        );
 
         $this->assertSame($expected, $this->subject->generateClassName($definition));
     }
@@ -76,7 +73,17 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
             new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
             new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
         );
-        $definition = new MockDefinition($this->types);
+        $definition = new MockDefinition(
+            $this->types,
+            array(),
+            array(),
+            array(),
+            array(),
+            array(),
+            null,
+            $this->isTraitSupported,
+            $this->isRelaxedKeywordsSupported
+        );
 
         $this->assertSame('PhonyMock_TestTraitA_0', $this->subject->generateClassName($definition));
     }
@@ -116,6 +123,7 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped($message);
         }
 
+        $factory = MockBuilderFactory::instance();
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
         $actual = $builder->source($this->subject);

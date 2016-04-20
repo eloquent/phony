@@ -11,15 +11,23 @@
 
 namespace Eloquent\Phony\Simpletest;
 
+use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\Factory\MatcherFactory;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
+use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
@@ -47,16 +55,32 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $property->setAccessible(true);
         $property->setValue(null, $this->assertionRecorder);
 
-        $this->callVerifierFactory = new CallVerifierFactory(null, null, $this->assertionRecorder);
-        $this->stubVerifierFactory = new StubVerifierFactory(
-            null,
-            null,
-            null,
-            null,
-            $this->callVerifierFactory,
-            $this->assertionRecorder
+        $this->callVerifierFactory = new CallVerifierFactory(
+            MatcherFactory::instance(),
+            MatcherVerifier::instance(),
+            $this->assertionRecorder,
+            AssertionRenderer::instance(),
+            InvocableInspector::instance()
         );
-        $this->handleFactory = new HandleFactory(null, $this->stubVerifierFactory);
+        $this->stubVerifierFactory = new StubVerifierFactory(
+            StubFactory::instance(),
+            SpyFactory::instance(),
+            MatcherFactory::instance(),
+            MatcherVerifier::instance(),
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            AssertionRenderer::instance(),
+            InvocableInspector::instance(),
+            Invoker::instance(),
+            GeneratorAnswerBuilderFactory::instance()
+        );
+        $this->handleFactory = new HandleFactory(
+            StubFactory::instance(),
+            $this->stubVerifierFactory,
+            AssertionRenderer::instance(),
+            $this->assertionRecorder,
+            Invoker::instance()
+        );
 
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);
@@ -288,10 +312,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertInstanceOf(
-            'Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder',
-            $actual->callVerifierFactory()->assertionRecorder()
-        );
+        $this->assertSpyAssertionRecorder('Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder', $actual);
     }
 
     public function testSpyFunction()
@@ -301,10 +322,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertInstanceOf(
-            'Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder',
-            $actual->callVerifierFactory()->assertionRecorder()
-        );
+        $this->assertSpyAssertionRecorder('Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder', $actual);
     }
 
     public function testStub()
@@ -315,9 +333,9 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
-        $this->assertInstanceOf(
+        $this->assertStubAssertionRecorder(
             'Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder',
-            $actual->callVerifierFactory()->assertionRecorder()
+            $actual
         );
     }
 
@@ -329,9 +347,9 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
-        $this->assertInstanceOf(
+        $this->assertStubAssertionRecorder(
             'Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder',
-            $actual->callVerifierFactory()->assertionRecorder()
+            $actual
         );
     }
 
@@ -437,5 +455,39 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame(1, setExportDepth(111));
         $this->assertSame(111, setExportDepth(1));
+    }
+
+    private function assertSpyAssertionRecorder($expected, $spy)
+    {
+        $reflector = new ReflectionObject($spy);
+        $property = $reflector->getProperty('callVerifierFactory');
+        $property->setAccessible(true);
+
+        $callVerifierFactory = $property->getValue($spy);
+
+        $reflector = new ReflectionObject($callVerifierFactory);
+        $property = $reflector->getProperty('assertionRecorder');
+        $property->setAccessible(true);
+
+        $assertionRecorder = $property->getValue($callVerifierFactory);
+
+        $this->assertInstanceOf($expected, $assertionRecorder);
+    }
+
+    private function assertStubAssertionRecorder($expected, $stub)
+    {
+        $reflector = new ReflectionObject($stub);
+        $property = $reflector->getParentClass()->getProperty('callVerifierFactory');
+        $property->setAccessible(true);
+
+        $callVerifierFactory = $property->getValue($stub);
+
+        $reflector = new ReflectionObject($callVerifierFactory);
+        $property = $reflector->getProperty('assertionRecorder');
+        $property->setAccessible(true);
+
+        $assertionRecorder = $property->getValue($callVerifierFactory);
+
+        $this->assertInstanceOf($expected, $assertionRecorder);
     }
 }

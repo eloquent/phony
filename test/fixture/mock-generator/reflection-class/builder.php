@@ -1,5 +1,5 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder('ReflectionClass');
+$builder = $factory->create('ReflectionClass');
 
 return $builder->named('MockGeneratorReflectionClass');

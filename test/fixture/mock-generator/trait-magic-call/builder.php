@@ -1,6 +1,6 @@
 <?php
 
-$builder = new Eloquent\Phony\Mock\Builder\MockBuilder(
+$builder = $factory->create(
     'Eloquent\Phony\Test\TestTraitJ'
 );
 

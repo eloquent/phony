@@ -21,11 +21,9 @@ final class InvalidCardinalityException extends Exception implements
 {
     /**
      * Construct a new invalid cardinality exception.
-     *
-     * @param Exception|null $cause The cause, if available.
      */
-    public function __construct(Exception $cause = null)
+    public function __construct()
     {
-        parent::__construct('Invalid cardinality.', 0, $cause);
+        parent::__construct('Invalid cardinality.');
     }
 }

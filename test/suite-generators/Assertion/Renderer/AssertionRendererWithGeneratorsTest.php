@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Assertion\Renderer;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Test\EmptyGeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -30,7 +31,7 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $property->setValue(InlineExporter::instance(), false);
 
         $this->invocableInspector = new InvocableInspector();
-        $this->exporter = new InlineExporter();
+        $this->exporter = InlineExporter::instance();
         $this->subject = new AssertionRenderer($this->invocableInspector, $this->exporter);
 
         $this->callFactory = new TestCallFactory();
@@ -55,7 +56,7 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         $this->generatorCall = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
-            $this->callEventFactory->createGenerated(),
+            $this->callEventFactory->createReturned(EmptyGeneratorFactory::create()),
             array(
                 $this->callEventFactory->createProduced('m', 'n'),
                 $this->callEventFactory->createReceived('o'),
@@ -65,7 +66,7 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
                 $this->callEventFactory->createProduced('r', 's'),
                 $this->callEventFactory->createReceived('t'),
             ),
-            $this->callEventFactory->createReturned()
+            $this->callEventFactory->createReturned(null)
         );
     }
 

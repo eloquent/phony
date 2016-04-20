@@ -22,15 +22,11 @@ final class FinalMethodStubException extends Exception implements
     /**
      * Construct a new final method stub exception.
      *
-     * @param string         $className The class name.
-     * @param string         $name      The method name.
-     * @param Exception|null $cause     The cause, if available.
+     * @param string $className The class name.
+     * @param string $name      The method name.
      */
-    public function __construct(
-        $className,
-        $name,
-        Exception $cause = null
-    ) {
+    public function __construct($className, $name)
+    {
         $this->className = $className;
         $this->name = $name;
 
@@ -39,9 +35,7 @@ final class FinalMethodStubException extends Exception implements
                 'The method %s::%s() cannot be stubbed because it is final.',
                 $className,
                 $name
-            ),
-            0,
-            $cause
+            )
         );
     }
 

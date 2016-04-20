@@ -35,7 +35,11 @@ class MockGenerator implements MockGeneratorInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                Sequencer::sequence('mock-class-label'),
+                FunctionSignatureInspector::instance(),
+                FeatureDetector::instance()
+            );
         }
 
         return self::$instance;
@@ -44,25 +48,15 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Construct a new mock generator.
      *
-     * @param SequencerInterface|null                  $labelSequencer     The label sequencer to use.
-     * @param FunctionSignatureInspectorInterface|null $signatureInspector The function signature inspector to use.
-     * @param FeatureDetectorInterface|null            $featureDetector    The feature detector to use.
+     * @param SequencerInterface                  $labelSequencer     The label sequencer to use.
+     * @param FunctionSignatureInspectorInterface $signatureInspector The function signature inspector to use.
+     * @param FeatureDetectorInterface            $featureDetector    The feature detector to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer = null,
-        FunctionSignatureInspectorInterface $signatureInspector = null,
-        FeatureDetectorInterface $featureDetector = null
+        SequencerInterface $labelSequencer,
+        FunctionSignatureInspectorInterface $signatureInspector,
+        FeatureDetectorInterface $featureDetector
     ) {
-        if (!$labelSequencer) {
-            $labelSequencer = Sequencer::sequence('mock-class-label');
-        }
-        if (!$signatureInspector) {
-            $signatureInspector = FunctionSignatureInspector::instance();
-        }
-        if (!$featureDetector) {
-            $featureDetector = FeatureDetector::instance();
-        }
-
         $this->labelSequencer = $labelSequencer;
         $this->signatureInspector = $signatureInspector;
         $this->featureDetector = $featureDetector;
@@ -71,36 +65,6 @@ class MockGenerator implements MockGeneratorInterface
             $this->featureDetector->isSupported('closure.bind');
         $this->isReturnTypeSupported =
             $this->featureDetector->isSupported('return.type');
-    }
-
-    /**
-     * Get the label sequencer.
-     *
-     * @return SequencerInterface The label sequencer.
-     */
-    public function labelSequencer()
-    {
-        return $this->labelSequencer;
-    }
-
-    /**
-     * Get the function signature inspector.
-     *
-     * @return FunctionSignatureInspectorInterface The function signature inspector.
-     */
-    public function signatureInspector()
-    {
-        return $this->signatureInspector;
-    }
-
-    /**
-     * Get the feature detector.
-     *
-     * @return FeatureDetectorInterface The feature detector.
-     */
-    public function featureDetector()
-    {
-        return $this->featureDetector;
     }
 
     /**

@@ -25,11 +25,11 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->matcherFactory = new MatcherFactory();
+        $this->matcherFactory = MatcherFactory::instance();
         $this->matcherFactory->addDefaultMatcherDrivers();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->assertionRecorder = new AssertionRecorder();
-        $this->assertionRenderer = new AssertionRenderer();
+        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifierFactory(
             $this->matcherFactory,
@@ -44,47 +44,43 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->callB = $this->callFactory->create();
     }
 
-    public function testConstructor()
+    public function testFromCall()
     {
-        $this->assertSame($this->matcherFactory, $this->subject->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $this->subject->matcherVerifier());
-        $this->assertSame($this->assertionRecorder, $this->subject->assertionRecorder());
-        $this->assertSame($this->assertionRenderer, $this->subject->assertionRenderer());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-    }
+        $verifier = new CallVerifier(
+            $this->callA,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+        $adaptedCall = $this->subject->fromCall($this->callA);
 
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CallVerifierFactory();
-
-        $this->assertSame(MatcherFactory::instance(), $this->subject->matcherFactory());
-        $this->assertSame(MatcherVerifier::instance(), $this->subject->matcherVerifier());
-        $this->assertSame(AssertionRecorder::instance(), $this->subject->assertionRecorder());
-        $this->assertSame(AssertionRenderer::instance(), $this->subject->assertionRenderer());
-        $this->assertSame(InvocableInspector::instance(), $this->subject->invocableInspector());
-    }
-
-    public function testAdapt()
-    {
-        $verifier = new CallVerifier($this->callA);
-        $adaptedCall = $this->subject->adapt($this->callA);
-
-        $this->assertSame($verifier, $this->subject->adapt($verifier));
-        $this->assertNotSame($verifier, $adaptedCall);
         $this->assertEquals($verifier, $adaptedCall);
-        $this->assertSame($this->matcherFactory, $adaptedCall->matcherFactory());
-        $this->assertSame($this->matcherVerifier, $adaptedCall->matcherVerifier());
-        $this->assertSame($this->assertionRecorder, $adaptedCall->assertionRecorder());
-        $this->assertSame($this->assertionRenderer, $adaptedCall->assertionRenderer());
-        $this->assertSame($this->invocableInspector, $adaptedCall->invocableInspector());
     }
 
-    public function testAdaptAll()
+    public function testFromCalls()
     {
-        $callBVerifier = new CallVerifier($this->callB);
-        $calls = array($this->callA, $callBVerifier);
-        $actual = $this->subject->adaptAll($calls);
-        $expected = array(new CallVerifier($this->callA), $callBVerifier);
+        $calls = array($this->callA, $this->callB);
+        $actual = $this->subject->fromCalls($calls);
+        $expected = array(
+            new CallVerifier(
+                $this->callA,
+                $this->matcherFactory,
+                $this->matcherVerifier,
+                $this->assertionRecorder,
+                $this->assertionRenderer,
+                $this->invocableInspector
+            ),
+            new CallVerifier(
+                $this->callB,
+                $this->matcherFactory,
+                $this->matcherVerifier,
+                $this->assertionRecorder,
+                $this->assertionRenderer,
+                $this->invocableInspector
+            ),
+        );
 
         $this->assertEquals($expected, $actual);
     }

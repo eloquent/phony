@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class InvalidClassNameExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,12 +18,11 @@ class InvalidClassNameExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $className = '1';
-        $cause = new Exception();
-        $exception = new InvalidClassNameException($className, $cause);
+        $exception = new InvalidClassNameException($className);
 
         $this->assertSame($className, $exception->className());
         $this->assertSame("Invalid class name '1'.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

@@ -100,12 +100,11 @@ final class AssertionException extends Exception implements
     /**
      * Construct a new assertion exception.
      *
-     * @param string         $description The failure description.
-     * @param Exception|null $cause       The cause, if available.
+     * @param string $description The failure description.
      */
-    public function __construct($description, Exception $cause = null)
+    public function __construct($description)
     {
-        parent::__construct($description, 0, $cause);
+        parent::__construct($description);
 
         static::trim($this);
     }

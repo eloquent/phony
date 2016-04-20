@@ -36,7 +36,11 @@ class GeneratorAnswerBuilderFactory implements
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                InvocableInspector::instance(),
+                Invoker::instance(),
+                FeatureDetector::instance()
+            );
         }
 
         return self::$instance;
@@ -45,61 +49,21 @@ class GeneratorAnswerBuilderFactory implements
     /**
      * Construct a new generator answer builder factory.
      *
-     * @param InvocableInspectorInterface|null $invocableInspector The invocable inspector to use.
-     * @param InvokerInterface|null            $invoker            The invoker to use.
-     * @param FeatureDetectorInterface|null    $featureDetector    The feature detector to use.
+     * @param InvocableInspectorInterface $invocableInspector The invocable inspector to use.
+     * @param InvokerInterface            $invoker            The invoker to use.
+     * @param FeatureDetectorInterface    $featureDetector    The feature detector to use.
      */
     public function __construct(
-        InvocableInspectorInterface $invocableInspector = null,
-        InvokerInterface $invoker = null,
-        FeatureDetectorInterface $featureDetector = null
+        InvocableInspectorInterface $invocableInspector,
+        InvokerInterface $invoker,
+        FeatureDetectorInterface $featureDetector
     ) {
-        if (!$invocableInspector) {
-            $invocableInspector = InvocableInspector::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$featureDetector) {
-            $featureDetector = FeatureDetector::instance();
-        }
-
         $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
         $this->featureDetector = $featureDetector;
 
         $this->isGeneratorReturnSupported =
             $featureDetector->isSupported('generator.return');
-    }
-
-    /**
-     * Get the invocable inspector.
-     *
-     * @return InvocableInspectorInterface The invocable inspector.
-     */
-    public function invocableInspector()
-    {
-        return $this->invocableInspector;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the feature detector.
-     *
-     * @return FeatureDetectorInterface The feature detector.
-     */
-    public function featureDetector()
-    {
-        return $this->featureDetector;
     }
 
     /**

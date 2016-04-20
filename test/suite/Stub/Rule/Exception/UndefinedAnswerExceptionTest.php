@@ -11,18 +11,16 @@
 
 namespace Eloquent\Phony\Stub\Rule\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class UndefinedAnswerExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $cause = new Exception();
-        $exception = new UndefinedAnswerException($cause);
+        $exception = new UndefinedAnswerException();
 
         $this->assertSame('No answer was defined, or the answer is incomplete.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

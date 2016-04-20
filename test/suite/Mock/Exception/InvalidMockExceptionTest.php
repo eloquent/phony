@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class InvalidMockExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,24 +18,22 @@ class InvalidMockExceptionTest extends PHPUnit_Framework_TestCase
     public function testException()
     {
         $value = 111;
-        $cause = new Exception();
-        $exception = new InvalidMockException($value, $cause);
+        $exception = new InvalidMockException($value);
 
         $this->assertSame($value, $exception->value());
         $this->assertSame("Value of type 'integer' is not a mock.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 
     public function testExceptionWithObject()
     {
         $value = (object) array();
-        $cause = new Exception();
-        $exception = new InvalidMockException($value, $cause);
+        $exception = new InvalidMockException($value);
 
         $this->assertSame($value, $exception->value());
         $this->assertSame("Object of type 'stdClass' is not a mock.", $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

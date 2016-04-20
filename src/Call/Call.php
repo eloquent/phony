@@ -21,9 +21,6 @@ use Eloquent\Phony\Call\Event\ThrewEventInterface;
 use Eloquent\Phony\Call\Event\TraversableEventInterface;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
-use Eloquent\Phony\Collection\Exception\UndefinedIndexException;
-use Eloquent\Phony\Collection\IndexNormalizer;
-use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Event\EventInterface;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Error;
@@ -41,55 +38,16 @@ class Call implements CallInterface
     /**
      * Construct a new call.
      *
-     * @param CalledEventInterface                  $calledEvent       The 'called' event.
-     * @param ResponseEventInterface|null           $responseEvent     The response event, or null if the call has not yet responded.
-     * @param array<TraversableEventInterface>|null $traversableEvents The traversable events.
-     * @param EndEventInterface|null                $endEvent          The end event, or null if the call has not yet completed.
-     * @param IndexNormalizerInterface|null         $indexNormalizer   The index normalizer to use.
+     * @param CalledEventInterface $calledEvent The 'called' event.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
-    public function __construct(
-        CalledEventInterface $calledEvent,
-        ResponseEventInterface $responseEvent = null,
-        array $traversableEvents = null,
-        EndEventInterface $endEvent = null,
-        IndexNormalizerInterface $indexNormalizer = null
-    ) {
-        if (!$indexNormalizer) {
-            $indexNormalizer = IndexNormalizer::instance();
-        }
-
-        $this->indexNormalizer = $indexNormalizer;
-
+    public function __construct(CalledEventInterface $calledEvent)
+    {
         $calledEvent->setCall($this);
         $this->calledEvent = $calledEvent;
 
         $this->traversableEvents = array();
-
-        if ($responseEvent) {
-            $this->setResponseEvent($responseEvent);
-        }
-
-        if (null !== $traversableEvents) {
-            foreach ($traversableEvents as $traversableEvent) {
-                $this->addTraversableEvent($traversableEvent);
-            }
-        }
-
-        if ($endEvent) {
-            $this->setEndEvent($endEvent);
-        }
-    }
-
-    /**
-     * Get the index normalizer.
-     *
-     * @return IndexNormalizerInterface The index normalizer.
-     */
-    public function indexNormalizer()
-    {
-        return $this->indexNormalizer;
     }
 
     /**
@@ -224,10 +182,8 @@ class Call implements CallInterface
         $events = $this->allEvents();
         $count = count($events);
 
-        try {
-            $normalized = $this->indexNormalizer->normalize($count, $index);
-        } catch (UndefinedIndexException $e) {
-            throw new UndefinedEventException($index, $e);
+        if (!$this->normalizeIndex($count, $index, $normalized)) {
+            throw new UndefinedEventException($index);
         }
 
         return $events[$normalized];
@@ -597,9 +553,31 @@ class Call implements CallInterface
         }
     }
 
+    private function normalizeIndex($size, $index, &$normalized = null)
+    {
+        $normalized = null;
+
+        if ($index < 0) {
+            $potential = $size + $index;
+
+            if ($potential < 0) {
+                return false;
+            }
+        } else {
+            $potential = $index;
+        }
+
+        if ($potential >= $size) {
+            return false;
+        }
+
+        $normalized = $potential;
+
+        return true;
+    }
+
     private $calledEvent;
     private $responseEvent;
     private $traversableEvents;
     private $endEvent;
-    private $indexNormalizer;
 }

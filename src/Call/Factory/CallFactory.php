@@ -15,19 +15,12 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
-use Eloquent\Phony\Call\Event\ResponseEventInterface;
-use Eloquent\Phony\Call\Event\TraversableEventInterface;
-use Eloquent\Phony\Collection\IndexNormalizer;
-use Eloquent\Phony\Collection\IndexNormalizerInterface;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Spy\SpyInterface;
 use Exception;
-use InvalidArgumentException;
 use Throwable;
 
 /**
@@ -43,7 +36,10 @@ class CallFactory implements CallFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                CallEventFactory::instance(),
+                Invoker::instance()
+            );
         }
 
         return self::$instance;
@@ -52,93 +48,37 @@ class CallFactory implements CallFactoryInterface
     /**
      * Construct a new call factory.
      *
-     * @param CallEventFactoryInterface|null $eventFactory    The call event factory to use.
-     * @param InvokerInterface|null          $invoker         The invoker to use.
-     * @param IndexNormalizerInterface|null  $indexNormalizer The index normalizer to use.
+     * @param CallEventFactoryInterface $eventFactory The call event factory to use.
+     * @param InvokerInterface          $invoker      The invoker to use.
      */
     public function __construct(
-        CallEventFactoryInterface $eventFactory = null,
-        InvokerInterface $invoker = null,
-        IndexNormalizerInterface $indexNormalizer = null
+        CallEventFactoryInterface $eventFactory,
+        InvokerInterface $invoker
     ) {
-        if (!$eventFactory) {
-            $eventFactory = CallEventFactory::instance();
-        }
-        if (!$invoker) {
-            $invoker = Invoker::instance();
-        }
-        if (!$indexNormalizer) {
-            $indexNormalizer = IndexNormalizer::instance();
-        }
-
         $this->eventFactory = $eventFactory;
         $this->invoker = $invoker;
-        $this->indexNormalizer = $indexNormalizer;
-    }
-
-    /**
-     * Get the call event factory.
-     *
-     * @return CallEventFactoryInterface The call event factory.
-     */
-    public function eventFactory()
-    {
-        return $this->eventFactory;
-    }
-
-    /**
-     * Get the invoker.
-     *
-     * @return InvokerInterface The invoker.
-     */
-    public function invoker()
-    {
-        return $this->invoker;
-    }
-
-    /**
-     * Get the index normalizer.
-     *
-     * @return IndexNormalizerInterface The index normalizer.
-     */
-    public function indexNormalizer()
-    {
-        return $this->indexNormalizer;
     }
 
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable|null           $callback  The callback.
-     * @param ArgumentsInterface|null $arguments The arguments.
-     * @param SpyInterface|null       $spy       The spy to record the call to.
+     * @param callable           $callback  The callback.
+     * @param ArgumentsInterface $arguments The arguments.
+     * @param SpyInterface       $spy       The spy to record the call to.
      *
      * @return CallInterface The newly created call.
      */
     public function record(
-        $callback = null,
-        ArgumentsInterface $arguments = null,
-        SpyInterface $spy = null
+        $callback,
+        ArgumentsInterface $arguments,
+        SpyInterface $spy
     ) {
-        if (!$callback) {
-            $callback = function () {};
-        }
-        if (!$arguments) {
-            $arguments = new Arguments();
-        }
-
         $originalArguments = $arguments->copy();
 
-        if ($spy) {
-            $call = $this->create(
-                $this->eventFactory->createCalled($spy, $originalArguments)
-            );
-            $spy->addCall($call);
-        } else {
-            $call = $this->create(
-                $this->eventFactory->createCalled($callback, $originalArguments)
-            );
-        }
+        $call = new Call(
+            $this->eventFactory->createCalled($spy, $originalArguments)
+        );
+        $spy->addCall($call);
 
         $returnValue = null;
         $exception = null;
@@ -151,45 +91,18 @@ class CallFactory implements CallFactoryInterface
         }
         // @codeCoverageIgnoreEnd
 
-        $call->setResponseEvent(
-            $this->eventFactory->createResponse($returnValue, $exception)
-        );
-
-        return $call;
-    }
-
-    /**
-     * Create a new call.
-     *
-     * @param CalledEventInterface|null             $calledEvent       The 'called' event.
-     * @param ResponseEventInterface|null           $responseEvent     The response event, or null if the call has not yet responded.
-     * @param array<TraversableEventInterface>|null $traversableEvents The traversable events.
-     * @param EndEventInterface|null                $endEvent          The end event, or null if the call has not yet completed.
-     *
-     * @return CallInterface            The newly created call.
-     * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
-     */
-    public function create(
-        CalledEventInterface $calledEvent = null,
-        ResponseEventInterface $responseEvent = null,
-        array $traversableEvents = null,
-        EndEventInterface $endEvent = null
-    ) {
-        if (!$calledEvent) {
-            $calledEvent = $this->eventFactory->createCalled();
+        if ($exception) {
+            $responseEvent = $this->eventFactory->createThrew($exception);
+        } else {
+            $responseEvent = $this->eventFactory->createReturned($returnValue);
         }
 
-        return new Call(
-            $calledEvent,
-            $responseEvent,
-            $traversableEvents,
-            $endEvent,
-            $this->indexNormalizer
-        );
+        $call->setResponseEvent($responseEvent);
+
+        return $call;
     }
 
     private static $instance;
     private $eventFactory;
     private $invoker;
-    private $indexNormalizer;
 }

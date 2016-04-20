@@ -15,7 +15,7 @@ use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Spy\Factory\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -31,6 +31,7 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->invoker = new Invoker();
         $this->subject = new CallFactory($this->eventFactory, $this->invoker);
 
+        $this->spyFactory = SpyFactory::instance();
         $this->exception = new RuntimeException('You done goofed.');
     }
 
@@ -39,13 +40,11 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $callback = function () { return; yield null; };
         $arguments = Arguments::create(array('a', 'b'));
         $generator = call_user_func($callback);
-        $spy = new Spy();
-        $expected = $this->subject->create(
-            $this->eventFactory->createCalled($spy, $arguments),
-            $this->eventFactory->createGenerated($generator)
-        );
+        $spy = $this->spyFactory->create();
+        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected->setResponseEvent($this->eventFactory->createReturned($generator));
         $this->eventFactory->reset();
-        $actual = $this->subject->record($callback, $arguments, $spy, true);
+        $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals(array($expected), $spy->allCalls());
@@ -56,18 +55,7 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generatorFactory = eval('return function () { return; yield null; };');
         $generator = call_user_func($generatorFactory);
         $expected = new ReturnedEvent(0, 0.0, $generator);
-        $actual = $this->eventFactory->createGenerated($generator);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateWithGeneratorEvents()
-    {
-        $calledEvent = $this->eventFactory->createCalled();
-        $generatedEvent = $this->eventFactory->createGenerated();
-        $generatorEvents = array($this->eventFactory->createReceived());
-        $expected = new Call($calledEvent, $generatedEvent, $generatorEvents);
-        $actual = $this->subject->create($calledEvent, $generatedEvent, $generatorEvents);
+        $actual = $this->eventFactory->createReturned($generator);
 
         $this->assertEquals($expected, $actual);
     }

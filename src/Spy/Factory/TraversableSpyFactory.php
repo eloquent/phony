@@ -33,7 +33,7 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(CallEventFactory::instance());
         }
 
         return self::$instance;
@@ -42,26 +42,11 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     /**
      * Construct a new traversable spy factory.
      *
-     * @param CallEventFactoryInterface|null $callEventFactory The call event factory to use.
+     * @param CallEventFactoryInterface $callEventFactory The call event factory to use.
      */
-    public function __construct(
-        CallEventFactoryInterface $callEventFactory = null
-    ) {
-        if (!$callEventFactory) {
-            $callEventFactory = CallEventFactory::instance();
-        }
-
-        $this->callEventFactory = $callEventFactory;
-    }
-
-    /**
-     * Get the call event factory.
-     *
-     * @return CallEventFactoryInterface The call event factory.
-     */
-    public function callEventFactory()
+    public function __construct(CallEventFactoryInterface $callEventFactory)
     {
-        return $this->callEventFactory;
+        $this->callEventFactory = $callEventFactory;
     }
 
     /**

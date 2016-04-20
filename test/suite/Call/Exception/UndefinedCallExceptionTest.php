@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Call\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class UndefinedCallExceptionTest extends PHPUnit_Framework_TestCase
@@ -19,12 +18,11 @@ class UndefinedCallExceptionTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $index = 111;
-        $cause = new Exception();
-        $exception = new UndefinedCallException($index, $cause);
+        $exception = new UndefinedCallException($index);
 
         $this->assertSame($index, $exception->index());
         $this->assertSame('No call defined for index 111.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }

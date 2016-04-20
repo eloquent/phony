@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
 use PHPUnit_Framework_TestCase;
@@ -20,12 +21,14 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->mockBuilderFactory = MockBuilderFactory::instance();
+
         $this->name = 'nonexistent';
         $this->callMagicMethod = new ReflectionMethod($this, 'setUp');
         $this->isUncallable = false;
-        $this->mockBuilder = new MockBuilder();
+        $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = new HandleFactory();
+        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->createStubbing($this->mock);
         $this->subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, $this->isUncallable, $this->handle);
     }
@@ -73,7 +76,7 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethods()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build();
         $callMagicMethod = $class->getMethod('_callMagic');
         $callMagicMethod->setAccessible(true);
@@ -89,7 +92,7 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeMethodsWithStatic()
     {
-        $mockBuilder = new MockBuilder('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $class = $mockBuilder->build();
         $callMagicMethod = $class->getMethod('_callMagicStatic');
         $callMagicMethod->setAccessible(true);

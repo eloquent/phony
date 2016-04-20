@@ -18,7 +18,6 @@ use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
-use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit_Framework_TestCase;
@@ -36,51 +35,12 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
         $this->exception = new RuntimeException('You done goofed.');
     }
 
-    public function testConstructor()
-    {
-        $this->assertSame($this->sequencer, $this->subject->sequencer());
-        $this->assertSame($this->clock, $this->subject->clock());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new CallEventFactory();
-
-        $this->assertSame(Sequencer::sequence('event-sequence-number'), $this->subject->sequencer());
-        $this->assertSame(SystemClock::instance(), $this->subject->clock());
-    }
-
     public function testCreateCalled()
     {
         $callback = 'implode';
         $arguments = Arguments::create('a', 'b');
         $expected = new CalledEvent(0, 0.0, $callback, $arguments);
         $actual = $this->subject->createCalled($callback, $arguments);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateResponseWithNoException()
-    {
-        $value = 'x';
-        $expected = new ReturnedEvent(0, 0.0, $value);
-        $actual = $this->subject->createResponse($value);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateResponseWithException()
-    {
-        $expected = new ThrewEvent(0, 0.0, $this->exception);
-        $actual = $this->subject->createResponse(null, $this->exception);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testCreateResponseDefaults()
-    {
-        $expected = new ReturnedEvent(0, 0.0);
-        $actual = $this->subject->createResponse();
 
         $this->assertEquals($expected, $actual);
     }
@@ -108,11 +68,6 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
         $value = 'y';
         $expected = new ProducedEvent(0, 0.0, $key, $value);
         $actual = $this->subject->createProduced($key, $value);
-
-        $this->assertEquals($expected, $actual);
-
-        $expected = new ProducedEvent(1, 1.0, $value);
-        $actual = $this->subject->createProduced($value);
 
         $this->assertEquals($expected, $actual);
     }

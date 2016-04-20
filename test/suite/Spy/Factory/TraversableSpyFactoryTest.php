@@ -28,18 +28,6 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject = new TraversableSpyFactory($this->callEventFactory);
     }
 
-    public function testConstructor()
-    {
-        $this->assertSame($this->callEventFactory, $this->subject->callEventFactory());
-    }
-
-    public function testConstructorDefaults()
-    {
-        $this->subject = new TraversableSpyFactory();
-
-        $this->assertSame(CallEventFactory::instance(), $this->subject->callEventFactory());
-    }
-
     public function testCreateWithArrayReturn()
     {
         $values = array('a' => 'b', 'c' => 'd');

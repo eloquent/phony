@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Exception;
 use PHPUnit_Framework_TestCase;
 
 class FinalMethodStubExceptionTest extends PHPUnit_Framework_TestCase
@@ -20,13 +19,12 @@ class FinalMethodStubExceptionTest extends PHPUnit_Framework_TestCase
     {
         $className = 'ClassName';
         $name = 'method';
-        $cause = new Exception();
-        $exception = new FinalMethodStubException($className, $name, $cause);
+        $exception = new FinalMethodStubException($className, $name);
 
         $this->assertSame($className, $exception->className());
         $this->assertSame($name, $exception->name());
         $this->assertSame('The method ClassName::method() cannot be stubbed because it is final.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
-        $this->assertSame($cause, $exception->getPrevious());
+        $this->assertNull($exception->getPrevious());
     }
 }
