@@ -55,7 +55,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $protectedMethod->setAccessible(true);
 
         $this->assertInstanceOf('ReflectionClass', $actual);
-        $this->assertTrue($actual->implementsInterface('Eloquent\Phony\Mock\MockInterface'));
+        $this->assertTrue($actual->implementsInterface('Eloquent\Phony\Mock\Mock'));
         $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassB'));
         $this->assertSame($actual, $this->subject->createMockClass($builder->definition()));
         $this->assertSame('ab', PhonyMockFactoryTestCreateMockClass::testClassAStaticMethodA('a', 'b'));
@@ -105,7 +105,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $protectedStaticMethod = $class->getMethod('testClassAStaticMethodC');
         $protectedStaticMethod->setAccessible(true);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
         $this->assertSame('0', $this->handleFactory->createStubbing($actual)->label());
         $this->assertNull($actual->testClassAMethodA('a', 'b'));
@@ -139,7 +139,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $protectedStaticMethod = $class->getMethod('testClassAStaticMethodC');
         $protectedStaticMethod->setAccessible(true);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\MockInterface', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
         $this->assertSame('0', $this->handleFactory->createStubbing($actual)->label());
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));

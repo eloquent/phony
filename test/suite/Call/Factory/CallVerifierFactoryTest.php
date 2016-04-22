@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
@@ -28,7 +28,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherFactory->addDefaultMatcherDrivers();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifierFactory(

@@ -12,9 +12,7 @@
 namespace Eloquent\Phony\Value;
 
 use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use EmptyIterator;
 use ReflectionClass;
 use ReflectionFunctionAbstract;
@@ -24,12 +22,12 @@ use ReflectionType;
 /**
  * Creates empty values from arbitrary types.
  */
-class EmptyValueFactory implements ValueFactoryInterface
+class EmptyValueFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return ValueFactoryInterface The static factory.
+     * @return EmptyValueFactory The static factory.
      */
     public static function instance()
     {
@@ -44,12 +42,12 @@ class EmptyValueFactory implements ValueFactoryInterface
     /**
      * Construct a new empty value factory.
      *
-     * @param MockFactoryInterface   $mockFactory   The mock factory to use.
-     * @param HandleFactoryInterface $handleFactory The handle factory to use.
+     * @param MockFactory   $mockFactory   The mock factory to use.
+     * @param HandleFactory $handleFactory The handle factory to use.
      */
     public function __construct(
-        MockFactoryInterface $mockFactory,
-        HandleFactoryInterface $handleFactory
+        MockFactory $mockFactory,
+        HandleFactory $handleFactory
     ) {
         $this->mockFactory = $mockFactory;
         $this->handleFactory = $handleFactory;

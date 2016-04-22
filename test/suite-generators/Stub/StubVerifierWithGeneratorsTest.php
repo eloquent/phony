@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -45,7 +45,7 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = InvocableInspector::instance();
         $this->invoker = new Invoker();
@@ -161,7 +161,7 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generator = call_user_func($this->subject);
         $actual = iterator_to_array($generator);
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderInterface', $builder);
+        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
         $this->assertInstanceOf('Generator', $generator);
         $this->assertSame($this->subject, $builder->returns());
         $this->assertSame(array('a' => 'b', 0 => 'c'), $actual);
@@ -173,7 +173,7 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $actualA = iterator_to_array(call_user_func($this->subject));
         $actualB = iterator_to_array(call_user_func($this->subject));
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderInterface', $builder);
+        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
         $this->assertSame(array('a'), $actualA);
         $this->assertSame(array('b'), $actualB);
     }

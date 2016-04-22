@@ -17,7 +17,7 @@ use Exception;
 /**
  * Represents the end of a call by throwing an exception.
  */
-class ThrewEvent extends AbstractCallEvent implements ThrewEventInterface
+class ThrewEvent extends AbstractCallEvent implements ResponseEvent
 {
     /**
      * Construct a 'threw' event.

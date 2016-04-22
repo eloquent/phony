@@ -14,12 +14,12 @@ namespace Eloquent\Phony\Event;
 /**
  * A special event that represents the absence of an event.
  */
-class NullEvent extends AbstractEvent implements NullEventInterface
+class NullEvent extends AbstractEvent
 {
     /**
      * Get the static instance of this event.
      *
-     * @return NullEventInterface The static event.
+     * @return NullEvent The static event.
      */
     public static function instance()
     {

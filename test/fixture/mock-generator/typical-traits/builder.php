@@ -23,7 +23,7 @@ $builder = $factory->create(
             'static propertyA' => 'valueA',
             'static propertyB' => 222,
             'methodC' => function (
-                Eloquent\Phony\Mock\MockInterface $phonySelf,
+                Eloquent\Phony\Mock\Mock $phonySelf,
                 Eloquent\Phony\Test\TestClassA $first,
                 Eloquent\Phony\Test\TestClassA $second = null,
                 array $third = array(),

@@ -12,26 +12,25 @@
 namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
 
 /**
  * Represents a call request.
  */
-class CallRequest implements CallRequestInterface
+class CallRequest
 {
     /**
      * Construct a call request.
      *
-     * @param callable           $callback              The callback.
-     * @param ArgumentsInterface $arguments             The arguments.
-     * @param boolean            $prefixSelf            True if the self value should be prefixed.
-     * @param boolean            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean            $suffixArguments       True if the arguments should be appended individually.
+     * @param callable  $callback              The callback.
+     * @param Arguments $arguments             The arguments.
+     * @param boolean   $prefixSelf            True if the self value should be prefixed.
+     * @param boolean   $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean   $suffixArguments       True if the arguments should be appended individually.
      */
     public function __construct(
         $callback,
-        ArgumentsInterface $arguments,
+        Arguments $arguments,
         $prefixSelf,
         $suffixArgumentsObject,
         $suffixArguments
@@ -44,7 +43,7 @@ class CallRequest implements CallRequestInterface
 
         foreach ($this->arguments->all() as $index => $argument) {
             if (
-                $argument instanceof InstanceHandleInterface &&
+                $argument instanceof InstanceHandle &&
                 $argument->isAdaptable()
             ) {
                 $this->arguments->set($index, $argument->mock());
@@ -65,12 +64,12 @@ class CallRequest implements CallRequestInterface
     /**
      * Get the final arguments.
      *
-     * @param object             $self      The self value.
-     * @param ArgumentsInterface $arguments The incoming arguments.
+     * @param object    $self      The self value.
+     * @param Arguments $arguments The incoming arguments.
      *
-     * @return ArgumentsInterface The final arguments.
+     * @return Arguments The final arguments.
      */
-    public function finalArguments($self, ArgumentsInterface $arguments)
+    public function finalArguments($self, Arguments $arguments)
     {
         $finalArguments = $this->arguments->all();
 
@@ -91,7 +90,7 @@ class CallRequest implements CallRequestInterface
     /**
      * Get the hard-coded arguments.
      *
-     * @return ArgumentsInterface The hard-coded arguments.
+     * @return Arguments The hard-coded arguments.
      */
     public function arguments()
     {

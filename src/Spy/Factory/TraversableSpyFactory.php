@@ -12,9 +12,8 @@
 namespace Eloquent\Phony\Spy\Factory;
 
 use ArrayIterator;
-use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
+use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Spy\IteratorSpy;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -23,12 +22,12 @@ use Traversable;
 /**
  * Creates traversable spies.
  */
-class TraversableSpyFactory implements TraversableSpyFactoryInterface
+class TraversableSpyFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return TraversableSpyFactoryInterface The static factory.
+     * @return TraversableSpyFactory The static factory.
      */
     public static function instance()
     {
@@ -42,9 +41,9 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     /**
      * Construct a new traversable spy factory.
      *
-     * @param CallEventFactoryInterface $callEventFactory The call event factory to use.
+     * @param CallEventFactory $callEventFactory The call event factory to use.
      */
-    public function __construct(CallEventFactoryInterface $callEventFactory)
+    public function __construct(CallEventFactory $callEventFactory)
     {
         $this->callEventFactory = $callEventFactory;
     }
@@ -52,13 +51,13 @@ class TraversableSpyFactory implements TraversableSpyFactoryInterface
     /**
      * Create a new traversable spy.
      *
-     * @param CallInterface     $call        The call from which the traversable originated.
+     * @param Call              $call        The call from which the traversable originated.
      * @param Traversable|array $traversable The traversable.
      *
      * @return Traversable              The newly created traversable spy.
      * @throws InvalidArgumentException If the supplied traversable is invalid.
      */
-    public function create(CallInterface $call, $traversable)
+    public function create(Call $call, $traversable)
     {
         if (!$traversable instanceof Traversable && !is_array($traversable)) {
             if (is_object($traversable)) {

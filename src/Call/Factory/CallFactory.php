@@ -12,26 +12,22 @@
 namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
+use Eloquent\Phony\Call\CallData;
+use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Spy\Spy;
 use Exception;
 use Throwable;
 
 /**
  * Creates calls.
  */
-class CallFactory implements CallFactoryInterface
+class CallFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return CallFactoryInterface The static factory.
+     * @return CallFactory The static factory.
      */
     public static function instance()
     {
@@ -48,12 +44,12 @@ class CallFactory implements CallFactoryInterface
     /**
      * Construct a new call factory.
      *
-     * @param CallEventFactoryInterface $eventFactory The call event factory to use.
-     * @param InvokerInterface          $invoker      The invoker to use.
+     * @param CallEventFactory $eventFactory The call event factory to use.
+     * @param Invoker          $invoker      The invoker to use.
      */
     public function __construct(
-        CallEventFactoryInterface $eventFactory,
-        InvokerInterface $invoker
+        CallEventFactory $eventFactory,
+        Invoker $invoker
     ) {
         $this->eventFactory = $eventFactory;
         $this->invoker = $invoker;
@@ -62,20 +58,20 @@ class CallFactory implements CallFactoryInterface
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable           $callback  The callback.
-     * @param ArgumentsInterface $arguments The arguments.
-     * @param SpyInterface       $spy       The spy to record the call to.
+     * @param callable  $callback  The callback.
+     * @param Arguments $arguments The arguments.
+     * @param Spy       $spy       The spy to record the call to.
      *
-     * @return CallInterface The newly created call.
+     * @return CallData The newly created call.
      */
     public function record(
         $callback,
-        ArgumentsInterface $arguments,
-        SpyInterface $spy
+        Arguments $arguments,
+        Spy $spy
     ) {
         $originalArguments = $arguments->copy();
 
-        $call = new Call(
+        $call = new CallData(
             $this->eventFactory->createCalled($spy, $originalArguments)
         );
         $spy->addCall($call);

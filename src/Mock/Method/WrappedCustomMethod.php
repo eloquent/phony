@@ -12,10 +12,8 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\Handle;
 use Error;
 use Exception;
 use ReflectionMethod;
@@ -30,14 +28,14 @@ class WrappedCustomMethod extends AbstractWrappedMethod
      *
      * @param callable         $customCallback The custom callback.
      * @param ReflectionMethod $method         The method.
-     * @param HandleInterface  $handle         The handle.
-     * @param InvokerInterface $invoker        The invoker to use.
+     * @param Handle           $handle         The handle.
+     * @param Invoker          $invoker        The invoker to use.
      */
     public function __construct(
         $customCallback,
         ReflectionMethod $method,
-        HandleInterface $handle,
-        InvokerInterface $invoker
+        Handle $handle,
+        Invoker $invoker
     ) {
         $this->customCallback = $customCallback;
         $this->invoker = $invoker;
@@ -60,14 +58,14 @@ class WrappedCustomMethod extends AbstractWrappedMethod
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param Arguments|array $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
     public function invokeWith($arguments = array())
     {
-        if (!$arguments instanceof ArgumentsInterface) {
+        if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);
         }
 

@@ -11,11 +11,11 @@
 
 namespace Eloquent\Phony\Mock\Handle;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Stub\Factory\StubFactory;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use ReflectionClass;
 use ReflectionObject;
 use stdClass;
@@ -24,27 +24,27 @@ use stdClass;
  * An abstract base class for implementing static handles.
  */
 abstract class AbstractStaticHandle extends AbstractHandle implements
-    StaticHandleInterface
+    StaticHandle
 {
     /**
      * Construct a new static handle.
      *
-     * @param ReflectionClass              $class               The class.
-     * @param stdClass                     $state               The state.
-     * @param StubFactoryInterface         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
-     * @param InvokerInterface             $invoker             The invoker to use.
+     * @param ReflectionClass     $class               The class.
+     * @param stdClass            $state               The state.
+     * @param StubFactory         $stubFactory         The stub factory to use.
+     * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
+     * @param Invoker             $invoker             The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,
         stdClass $state,
-        StubFactoryInterface $stubFactory,
-        StubVerifierFactoryInterface $stubVerifierFactory,
-        AssertionRendererInterface $assertionRenderer,
-        AssertionRecorderInterface $assertionRecorder,
-        InvokerInterface $invoker
+        StubFactory $stubFactory,
+        StubVerifierFactory $stubVerifierFactory,
+        AssertionRenderer $assertionRenderer,
+        AssertionRecorder $assertionRecorder,
+        Invoker $invoker
     ) {
         if ($class->hasMethod('_callParentStatic')) {
             $callParentMethod = $class->getMethod('_callParentStatic');

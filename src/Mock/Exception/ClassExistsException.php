@@ -17,7 +17,7 @@ use Exception;
  * The class is already defined.
  */
 final class ClassExistsException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a class exists exception.

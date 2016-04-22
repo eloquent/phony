@@ -17,7 +17,7 @@ use Exception;
  * The supplied value is not a mock.
  */
 final class InvalidMockException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a new invalid mock exception.

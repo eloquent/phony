@@ -12,32 +12,32 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
-use Eloquent\Phony\Mock\Handle\HandleInterface;
-use Eloquent\Phony\Mock\Handle\StaticHandleInterface;
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Handle\StaticHandle;
+use Eloquent\Phony\Mock\Mock;
 use ReflectionMethod;
 
 /**
  * An abstract base class for implementing wrapped methods.
  */
 abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
-    WrappedMethodInterface
+    WrappedMethod
 {
     /**
      * Construct a new wrapped method.
      *
      * @param ReflectionMethod $method The method.
-     * @param HandleInterface  $handle The handle.
+     * @param Handle           $handle The handle.
      */
     public function __construct(
         ReflectionMethod $method,
-        HandleInterface $handle
+        Handle $handle
     ) {
         $this->method = $method;
         $this->handle = $handle;
         $this->name = $method->getName();
 
-        if ($handle instanceof StaticHandleInterface) {
+        if ($handle instanceof StaticHandle) {
             $this->mock = null;
             $callback = array(
                 $method->getDeclaringClass()->getName(),
@@ -74,7 +74,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
     /**
      * Get the handle.
      *
-     * @return HandleInterface The handle.
+     * @return Handle The handle.
      */
     public function handle()
     {
@@ -84,7 +84,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
     /**
      * Get the mock.
      *
-     * @return MockInterface|null The mock.
+     * @return Mock|null The mock.
      */
     public function mock()
     {

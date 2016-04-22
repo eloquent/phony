@@ -11,20 +11,20 @@
 
 namespace Eloquent\Phony\Matcher\Driver;
 
-use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * An abstract base class for implementing matcher drivers.
  */
-abstract class AbstractMatcherDriver implements MatcherDriverInterface
+abstract class AbstractMatcherDriver implements MatcherDriver
 {
     /**
      * Wrap the supplied third party matcher.
      *
      * @param object $matcher The matcher to wrap.
      *
-     * @return MatcherInterface The wrapped matcher.
+     * @return Matcher The wrapped matcher.
      */
     public function wrapMatcher($matcher)
     {

@@ -11,20 +11,20 @@
 
 namespace Eloquent\Phony\Stub\Rule;
 
-use Eloquent\Phony\Matcher\MatcherInterface;
-use Eloquent\Phony\Stub\Answer\AnswerInterface;
+use Eloquent\Phony\Matcher\Matcher;
+use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Rule\Exception\UndefinedAnswerException;
 
 /**
  * Represents a set of criteria and associated answers.
  */
-class StubRule implements StubRuleInterface
+class StubRule
 {
     /**
      * Construct a new stub rule.
      *
-     * @param array<MatcherInterface> $criteria The criteria.
-     * @param array<AnswerInterface>  $answers  The answers.
+     * @param array<Matcher> $criteria The criteria.
+     * @param array<Answer>  $answers  The answers.
      */
     public function __construct(array $criteria, array $answers)
     {
@@ -38,7 +38,7 @@ class StubRule implements StubRuleInterface
     /**
      * Get the criteria.
      *
-     * @return array<MatcherInterface> The criteria.
+     * @return array<Matcher> The criteria.
      */
     public function criteria()
     {
@@ -48,7 +48,7 @@ class StubRule implements StubRuleInterface
     /**
      * Get the answers.
      *
-     * @return array<AnswerInterface> The answers.
+     * @return array<Answer> The answers.
      */
     public function answers()
     {
@@ -58,7 +58,7 @@ class StubRule implements StubRuleInterface
     /**
      * Get the next answer.
      *
-     * @return AnswerInterface          The answer.
+     * @return Answer                   The answer.
      * @throws UndefinedAnswerException If an undefined or incomplete answer is encountered.
      */
     public function next()

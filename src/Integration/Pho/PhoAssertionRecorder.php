@@ -11,19 +11,20 @@
 
 namespace Eloquent\Phony\Integration\Pho;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Event\EventSequence;
 use Exception;
 
 /**
  * An assertion recorder for Pho.
  */
-class PhoAssertionRecorder extends AssertionRecorder
+class PhoAssertionRecorder implements AssertionRecorder
 {
     /**
      * Get the static instance of this recorder.
      *
-     * @return AssertionRecorderInterface The static recorder.
+     * @return AssertionRecorder The static recorder.
      */
     public static function instance()
     {
@@ -32,6 +33,18 @@ class PhoAssertionRecorder extends AssertionRecorder
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Record that a successful assertion occurred.
+     *
+     * @param array<Event> $events The events.
+     *
+     * @return EventCollection The result.
+     */
+    public function createSuccess(array $events = array())
+    {
+        return new EventSequence($events);
     }
 
     /**

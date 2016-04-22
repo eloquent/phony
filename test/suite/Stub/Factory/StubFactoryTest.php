@@ -17,7 +17,7 @@ use Eloquent\Phony\Matcher\Factory\MatcherFactory;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Stub\StubData;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -46,7 +46,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $callback = function () { return 'a'; };
         $self = (object) array();
         $defaultAnswerCallback = function ($stub) { $stub->forwards(); };
-        $expected = new Stub(
+        $expected = new StubData(
             $callback,
             $self,
             0,

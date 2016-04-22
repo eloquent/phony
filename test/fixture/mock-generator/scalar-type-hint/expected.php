@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorScalarTypeHint
-implements \Eloquent\Phony\Mock\MockInterface,
+implements \Eloquent\Phony\Mock\Mock,
            \Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint
 {
     public function method(

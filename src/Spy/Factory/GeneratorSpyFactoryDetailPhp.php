@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Spy\Factory;
 
-use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
+use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\Event\CallEventFactory;
 use Exception;
 use Generator;
 use Throwable;
@@ -27,16 +27,16 @@ abstract class GeneratorSpyFactoryDetailPhp
     /**
      * Create a new generator spy.
      *
-     * @param CallInterface             $call             The call from which the generator originated.
-     * @param Generator                 $generator        The generator.
-     * @param CallEventFactoryInterface $callEventFactory The call event factory to use.
+     * @param Call             $call             The call from which the generator originated.
+     * @param Generator        $generator        The generator.
+     * @param CallEventFactory $callEventFactory The call event factory to use.
      *
      * @return Generator The newly created generator spy.
      */
     public static function &createGeneratorSpy(
-        CallInterface $call,
+        Call $call,
         Generator $generator,
-        CallEventFactoryInterface $callEventFactory
+        CallEventFactory $callEventFactory
     ) {
         $isFirst = true;
         $received = null;

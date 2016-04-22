@@ -11,19 +11,11 @@
 
 namespace Eloquent\Phony\Cardinality\Exception;
 
-use Exception;
-
 /**
- * The specified cardinality is invalid.
+ * The interface used to identify invalid cardinality exceptions.
+ *
+ * @api
  */
-final class InvalidCardinalityException extends Exception implements
-    InvalidCardinalityExceptionInterface
+interface InvalidCardinalityException
 {
-    /**
-     * Construct a new invalid cardinality exception.
-     */
-    public function __construct()
-    {
-        parent::__construct('Invalid cardinality.');
-    }
 }

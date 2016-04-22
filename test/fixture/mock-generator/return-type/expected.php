@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorReturnType
-implements \Eloquent\Phony\Mock\MockInterface,
+implements \Eloquent\Phony\Mock\Mock,
            \Eloquent\Phony\Test\TestInterfaceWithReturnType
 {
     public static function __callStatic(
@@ -90,7 +90,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
@@ -98,7 +98,7 @@ implements \Eloquent\Phony\Mock\MockInterface,
 
     private function _callMagic(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array($this, 'parent::__call'),

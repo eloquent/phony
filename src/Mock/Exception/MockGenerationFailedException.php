@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use EngineException;
 use Error;
 use Exception;
@@ -20,18 +20,18 @@ use Exception;
  * Mock generation failed.
  */
 final class MockGenerationFailedException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a mock generation failed exception.
      *
-     * @param MockDefinitionInterface              $definition The definition.
+     * @param MockDefinition                       $definition The definition.
      * @param string                               $source     The generated source code.
      * @param array<string,mixed>|null             $error      The error details.
      * @param Exception|Error|EngineException|null $cause      The cause, if available.
      */
     public function __construct(
-        MockDefinitionInterface $definition,
+        MockDefinition $definition,
         $source,
         array $error = null,
         $cause = null
@@ -99,7 +99,7 @@ final class MockGenerationFailedException extends Exception implements
     /**
      * Get the definition.
      *
-     * @return MockDefinitionInterface The definition.
+     * @return MockDefinition The definition.
      */
     public function definition()
     {

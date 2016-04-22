@@ -11,17 +11,17 @@
 
 namespace Eloquent\Phony\Matcher\Verification;
 
-use Eloquent\Phony\Matcher\WildcardMatcherInterface;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 
 /**
  * Verifies argument lists against matcher lists.
  */
-class MatcherVerifier implements MatcherVerifierInterface
+class MatcherVerifier
 {
     /**
      * Get the static instance of this verifier.
      *
-     * @return MatcherVerifierInterface The static verifier.
+     * @return MatcherVerifier The static verifier.
      */
     public static function instance()
     {
@@ -35,8 +35,8 @@ class MatcherVerifier implements MatcherVerifierInterface
     /**
      * Verify that the supplied arguments match the supplied matchers.
      *
-     * @param array<MatcherInterface> $matchers  The matchers.
-     * @param array                   $arguments The arguments.
+     * @param array<Matcher> $matchers  The matchers.
+     * @param array          $arguments The arguments.
      *
      * @return boolean True if the arguments match.
      */
@@ -45,7 +45,7 @@ class MatcherVerifier implements MatcherVerifierInterface
         $pair = each($arguments);
 
         foreach ($matchers as $matcher) {
-            if ($matcher instanceof WildcardMatcherInterface) {
+            if ($matcher instanceof WildcardMatcher) {
                 $matchCount = 0;
                 $innerMatcher = $matcher->matcher();
 

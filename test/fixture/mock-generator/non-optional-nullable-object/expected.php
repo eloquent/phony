@@ -3,7 +3,7 @@
 namespace Phony\Test;
 
 class MockGeneratorNonOptionalNullableObject
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
         \stdClass $a0 = null,

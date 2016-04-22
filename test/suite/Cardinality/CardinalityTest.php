@@ -43,25 +43,25 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorFailureNegativeMin()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
         new Cardinality(-1);
     }
 
     public function testConstructorFailureNegativeMax()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
         new Cardinality(null, -1);
     }
 
     public function testConstructorFailureInvalidMinMax()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
         new Cardinality($this->maximum, $this->minimum);
     }
 
     public function testConstructorFailureInvalidIsAlways()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
         new Cardinality(null, 0, true);
     }
 
@@ -83,7 +83,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Cardinality(null, 0);
 
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
         $this->subject->setIsAlways(true);
     }
 

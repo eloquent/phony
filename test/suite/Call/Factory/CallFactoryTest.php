@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallData;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Factory\SpyFactory;
@@ -40,7 +40,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $arguments = Arguments::create(array('a', 'b'));
         $returnValue = 'ab';
         $spy = $this->spyFactory->create();
-        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected = new CallData($this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createReturned($returnValue));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);
@@ -57,7 +57,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         };
         $arguments = Arguments::create(array('a', 'b'));
         $spy = $this->spyFactory->create();
-        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected = new CallData($this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);
@@ -78,7 +78,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         };
         $arguments = Arguments::create(array('a', 'b'));
         $spy = $this->spyFactory->create();
-        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected = new CallData($this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);

@@ -12,28 +12,22 @@
 namespace Eloquent\Phony\Stub\Factory;
 
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactoryInterface;
-use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Stub\StubData;
 
 /**
  * Creates stubs.
  */
-class StubFactory implements StubFactoryInterface
+class StubFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return StubFactoryInterface The static factory.
+     * @return StubFactory The static factory.
      */
     public static function instance()
     {
@@ -54,20 +48,20 @@ class StubFactory implements StubFactoryInterface
     /**
      * Construct a new stub factory.
      *
-     * @param SequencerInterface                     $labelSequencer                The label sequencer to use.
-     * @param MatcherFactoryInterface                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifierInterface               $matcherVerifier               The matcher verifier to use.
-     * @param InvokerInterface                       $invoker                       The invoker to use.
-     * @param InvocableInspectorInterface            $invocableInspector            The invocable inspector to use.
-     * @param GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param Sequencer                     $labelSequencer                The label sequencer to use.
+     * @param MatcherFactory                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifier               $matcherVerifier               The matcher verifier to use.
+     * @param Invoker                       $invoker                       The invoker to use.
+     * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
+     * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer,
-        MatcherFactoryInterface $matcherFactory,
-        MatcherVerifierInterface $matcherVerifier,
-        InvokerInterface $invoker,
-        InvocableInspectorInterface $invocableInspector,
-        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory
+        Sequencer $labelSequencer,
+        MatcherFactory $matcherFactory,
+        MatcherVerifier $matcherVerifier,
+        Invoker $invoker,
+        InvocableInspector $invocableInspector,
+        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
@@ -84,15 +78,15 @@ class StubFactory implements StubFactoryInterface
      * @param mixed         $self                  The self value.
      * @param callable      $defaultAnswerCallback The callback to use when creating a default answer.
      *
-     * @return StubInterface The newly created stub.
+     * @return Stub The newly created stub.
      */
     public function create(
         $callback = null,
         $self = null,
         $defaultAnswerCallback =
-            'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback'
+            'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback'
     ) {
-        return new Stub(
+        return new StubData(
             $callback,
             $self,
             strval($this->labelSequencer->next()),

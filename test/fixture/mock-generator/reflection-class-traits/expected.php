@@ -2,7 +2,7 @@
 
 class MockGeneratorReflectionClassTraits
 extends \ReflectionClass
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     public static function export(
         $a0,
@@ -870,7 +870,7 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     private static function _callParentStatic(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(__CLASS__, 'parent::' . $name),
@@ -880,7 +880,7 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     private function _callParent(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array($this, 'parent::' . $name),
@@ -889,7 +889,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     }
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         \call_user_func_array(
             array($this, 'parent::__construct'),

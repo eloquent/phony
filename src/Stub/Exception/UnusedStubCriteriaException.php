@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Exception;
 
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Matcher\Matcher;
 use Exception;
 
 /**
@@ -23,7 +23,7 @@ final class UnusedStubCriteriaException extends Exception
     /**
      * Construct a new unused stub criteria exception.
      *
-     * @param array<MatcherInterface> $criteria The criteria.
+     * @param array<Matcher> $criteria The criteria.
      */
     public function __construct(array $criteria)
     {
@@ -44,7 +44,7 @@ final class UnusedStubCriteriaException extends Exception
     /**
      * Get the criteria.
      *
-     * @return array<MatcherInterface> The criteria.
+     * @return array<Matcher> The criteria.
      */
     public function criteria()
     {

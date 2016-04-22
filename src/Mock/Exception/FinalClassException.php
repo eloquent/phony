@@ -17,7 +17,7 @@ use Exception;
  * Unable to extend final class.
  */
 final class FinalClassException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a final class exception.

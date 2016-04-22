@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Event;
 /**
  * An abstract base class for implementing events.
  */
-abstract class AbstractEvent implements EventInterface
+abstract class AbstractEvent implements Event
 {
     /**
      * Construct a new event.

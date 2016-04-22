@@ -18,7 +18,7 @@ use Exception;
  * not at all.
  */
 final class InvalidSingularCardinalityException extends Exception implements
-    InvalidCardinalityExceptionInterface
+    InvalidCardinalityException
 {
     /**
      * Construct a new invalid singular cardinality exception.

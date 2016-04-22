@@ -12,22 +12,20 @@
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use ReflectionFunctionAbstract;
 
 /**
  * Inspects functions to determine their signature.
  */
-class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
+class FunctionSignatureInspector
 {
     const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^\]]+)? ]$/m';
 
     /**
      * Get the static instance of this inspector.
      *
-     * @return FunctionSignatureInspectorInterface The static inspector.
+     * @return FunctionSignatureInspector The static inspector.
      */
     public static function instance()
     {
@@ -44,12 +42,12 @@ class FunctionSignatureInspector implements FunctionSignatureInspectorInterface
     /**
      * Construct a new function signature inspector.
      *
-     * @param InvocableInspectorInterface $invocableInspector The invocable inspector to use.
-     * @param FeatureDetectorInterface    $featureDetector    The feature detector to use.
+     * @param InvocableInspector $invocableInspector The invocable inspector to use.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
-        InvocableInspectorInterface $invocableInspector,
-        FeatureDetectorInterface $featureDetector
+        InvocableInspector $invocableInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;

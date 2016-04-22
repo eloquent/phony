@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorUndefinedTypeHint
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
         \Non\Existent $a0,

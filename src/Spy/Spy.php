@@ -11,449 +11,86 @@
 
 namespace Eloquent\Phony\Spy;
 
-use ArrayIterator;
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\ThrewEventInterface;
-use Eloquent\Phony\Call\Exception\UndefinedCallException;
-use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Call\Factory\CallFactoryInterface;
-use Eloquent\Phony\Event\EventInterface;
-use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
-use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
-use Eloquent\Phony\Spy\Factory\TraversableSpyFactoryInterface;
-use Error;
-use Exception;
-use Generator;
-use Iterator;
-use Traversable;
+use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Invocation\WrappedInvocable;
 
 /**
- * Spies on a function or method.
+ * The interface implemented by spies.
+ *
+ * @api
  */
-class Spy extends AbstractWrappedInvocable implements SpyInterface
+interface Spy extends WrappedInvocable, EventCollection
 {
     /**
-     * Construct a new spy.
-     *
-     * @param callable|null                  $callback              The callback, or null to create an anonymous spy.
-     * @param string|null                    $label                 The label.
-     * @param CallFactoryInterface           $callFactory           The call factory to use.
-     * @param InvokerInterface               $invoker               The invoker to use.
-     * @param TraversableSpyFactoryInterface $generatorSpyFactory   The generator spy factory to use.
-     * @param TraversableSpyFactoryInterface $traversableSpyFactory The traversable spy factory to use.
-     */
-    public function __construct(
-        $callback,
-        $label,
-        CallFactoryInterface $callFactory,
-        InvokerInterface $invoker,
-        TraversableSpyFactoryInterface $generatorSpyFactory,
-        TraversableSpyFactoryInterface $traversableSpyFactory
-    ) {
-        parent::__construct($callback, $label);
-
-        $this->callFactory = $callFactory;
-        $this->invoker = $invoker;
-        $this->generatorSpyFactory = $generatorSpyFactory;
-        $this->traversableSpyFactory = $traversableSpyFactory;
-
-        $this->calls = array();
-        $this->useGeneratorSpies = true;
-        $this->useTraversableSpies = false;
-        $this->isRecording = true;
-    }
-
-    /**
      * Turn on or off the use of generator spies.
+     *
+     * @api
      *
      * @param boolean $useGeneratorSpies True to use generator spies.
      *
      * @return $this This spy.
      */
-    public function setUseGeneratorSpies($useGeneratorSpies)
-    {
-        $this->useGeneratorSpies = $useGeneratorSpies;
-
-        return $this;
-    }
+    public function setUseGeneratorSpies($useGeneratorSpies);
 
     /**
      * Returns true if this spy uses generator spies.
      *
+     * @api
+     *
      * @return boolean True if this spy uses generator spies.
      */
-    public function useGeneratorSpies()
-    {
-        return $this->useGeneratorSpies;
-    }
+    public function useGeneratorSpies();
 
     /**
      * Turn on or off the use of traversable spies.
+     *
+     * @api
      *
      * @param boolean $useTraversableSpies True to use traversable spies.
      *
      * @return $this This spy.
      */
-    public function setUseTraversableSpies($useTraversableSpies)
-    {
-        $this->useTraversableSpies = $useTraversableSpies;
-
-        return $this;
-    }
+    public function setUseTraversableSpies($useTraversableSpies);
 
     /**
      * Returns true if this spy uses traversable spies.
      *
+     * @api
+     *
      * @return boolean True if this spy uses traversable spies.
      */
-    public function useTraversableSpies()
-    {
-        return $this->useTraversableSpies;
-    }
+    public function useTraversableSpies();
 
     /**
      * Stop recording calls.
      *
+     * @api
+     *
      * @return $this This spy.
      */
-    public function stopRecording()
-    {
-        $this->isRecording = false;
-
-        return $this;
-    }
+    public function stopRecording();
 
     /**
      * Start recording calls.
      *
+     * @api
+     *
      * @return $this This spy.
      */
-    public function startRecording()
-    {
-        $this->isRecording = true;
-
-        return $this;
-    }
+    public function startRecording();
 
     /**
      * Set the calls.
      *
-     * @param array<CallInterface> $calls The calls.
+     * @param array<Call> $calls The calls.
      */
-    public function setCalls(array $calls)
-    {
-        $this->calls = $calls;
-    }
+    public function setCalls(array $calls);
 
     /**
      * Add a call.
      *
-     * @param CallInterface $call The call.
+     * @param Call $call The call.
      */
-    public function addCall(CallInterface $call)
-    {
-        $this->calls[] = $call;
-    }
-
-    /**
-     * Returns true if this collection contains any events.
-     *
-     * @return boolean True if this collection contains any events.
-     */
-    public function hasEvents()
-    {
-        return (boolean) $this->calls;
-    }
-
-    /**
-     * Returns true if this collection contains any calls.
-     *
-     * @return boolean True if this collection contains any calls.
-     */
-    public function hasCalls()
-    {
-        return (boolean) $this->calls;
-    }
-
-    /**
-     * Get the number of events.
-     *
-     * @return integer The event count.
-     */
-    public function eventCount()
-    {
-        return count($this->calls);
-    }
-
-    /**
-     * Get the number of calls.
-     *
-     * @return integer The call count.
-     */
-    public function callCount()
-    {
-        return count($this->calls);
-    }
-
-    /**
-     * Get the event count.
-     *
-     * @return integer The event count.
-     */
-    public function count()
-    {
-        return count($this->calls);
-    }
-
-    /**
-     * Get all events as an array.
-     *
-     * @return array<EventInterface> The events.
-     */
-    public function allEvents()
-    {
-        return $this->calls;
-    }
-
-    /**
-     * Get all calls as an array.
-     *
-     * @return array<CallInterface> The calls.
-     */
-    public function allCalls()
-    {
-        return $this->calls;
-    }
-
-    /**
-     * Get the first event.
-     *
-     * @return EventInterface          The event.
-     * @throws UndefinedEventException If there are no events.
-     */
-    public function firstEvent()
-    {
-        if (!$this->calls) {
-            throw new UndefinedEventException(0);
-        }
-
-        return $this->calls[0];
-    }
-
-    /**
-     * Get the last event.
-     *
-     * @return EventInterface          The event.
-     * @throws UndefinedEventException If there are no events.
-     */
-    public function lastEvent()
-    {
-        if ($count = count($this->calls)) {
-            return $this->calls[$count - 1];
-        }
-
-        throw new UndefinedEventException(0);
-    }
-
-    /**
-     * Get an event by index.
-     *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @param integer $index The index.
-     *
-     * @return EventInterface          The event.
-     * @throws UndefinedEventException If the requested event is undefined, or there are no events.
-     */
-    public function eventAt($index = 0)
-    {
-        if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
-            throw new UndefinedEventException($index);
-        }
-
-        return $this->calls[$normalized];
-    }
-
-    /**
-     * Get the first call.
-     *
-     * @return CallInterface          The call.
-     * @throws UndefinedCallException If there are no calls.
-     */
-    public function firstCall()
-    {
-        if (isset($this->calls[0])) {
-            return $this->calls[0];
-        }
-
-        throw new UndefinedCallException(0);
-    }
-
-    /**
-     * Get the last call.
-     *
-     * @return CallInterface          The call.
-     * @throws UndefinedCallException If there are no calls.
-     */
-    public function lastCall()
-    {
-        if ($count = count($this->calls)) {
-            return $this->calls[$count - 1];
-        }
-
-        throw new UndefinedCallException(0);
-    }
-
-    /**
-     * Get a call by index.
-     *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @param integer $index The index.
-     *
-     * @return CallInterface          The call.
-     * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
-     */
-    public function callAt($index = 0)
-    {
-        if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
-            throw new UndefinedCallException($index);
-        }
-
-        return $this->calls[$normalized];
-    }
-
-    /**
-     * Get the arguments.
-     *
-     * @return ArgumentsInterface|null The arguments.
-     * @throws UndefinedCallException  If there are no calls.
-     */
-    public function arguments()
-    {
-        foreach ($this->calls as $call) {
-            return $call->arguments();
-        }
-
-        throw new UndefinedCallException(0);
-    }
-
-    /**
-     * Get an argument by index.
-     *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @param integer $index The index.
-     *
-     * @return mixed                      The argument.
-     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
-     */
-    public function argument($index = 0)
-    {
-        foreach ($this->calls as $call) {
-            return $call->arguments()->get($index);
-        }
-
-        throw new UndefinedArgumentException($index);
-    }
-
-    /**
-     * Get an iterator for this collection.
-     *
-     * @return Iterator The iterator.
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->calls);
-    }
-
-    /**
-     * Invoke this object.
-     *
-     * This method supports reference parameters.
-     *
-     * @param ArgumentsInterface|array $arguments The arguments.
-     *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
-     */
-    public function invokeWith($arguments = array())
-    {
-        if (!$arguments instanceof ArgumentsInterface) {
-            $arguments = new Arguments($arguments);
-        }
-
-        if (!$this->isRecording) {
-            return $this->invoker->callWith($this->callback, $arguments);
-        }
-
-        $call = $this->callFactory->record($this->callback, $arguments, $this);
-        $responseEvent = $call->responseEvent();
-
-        if ($responseEvent instanceof ThrewEventInterface) {
-            $call->setEndEvent($responseEvent);
-
-            throw $responseEvent->exception();
-        }
-
-        $returnValue = $responseEvent->value();
-
-        if ($this->useGeneratorSpies && $returnValue instanceof Generator) {
-            return $this->generatorSpyFactory->create($call, $returnValue);
-        }
-
-        if (
-            $this->useTraversableSpies &&
-            ($returnValue instanceof Traversable || is_array($returnValue))
-        ) {
-            return $this->traversableSpyFactory->create($call, $returnValue);
-        }
-
-        $call->setEndEvent($call->responseEvent());
-
-        return $returnValue;
-    }
-
-    private function normalizeIndex($size, $index, &$normalized = null)
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
-    }
-
-    private $callFactory;
-    private $invoker;
-    private $generatorSpyFactory;
-    private $traversableSpyFactory;
-    private $useGeneratorSpies;
-    private $useTraversableSpies;
-    private $isRecording;
-    private $calls;
+    public function addCall(Call $call);
 }

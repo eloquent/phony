@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Clock\ClockInterface;
+use Eloquent\Phony\Clock\Clock;
 
-class TestClock implements ClockInterface
+class TestClock implements Clock
 {
     public function time()
     {

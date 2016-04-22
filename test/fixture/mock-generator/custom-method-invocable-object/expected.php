@@ -3,7 +3,7 @@
 namespace Phony\Test;
 
 class MockGeneratorCustomMethodInvocableObject
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA()
     {

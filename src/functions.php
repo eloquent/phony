@@ -11,22 +11,22 @@
 
 namespace Eloquent\Phony;
 
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Event\EventCollectionInterface;
-use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Event\Event;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Matcher\MatcherInterface;
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
-use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
-use Eloquent\Phony\Mock\Handle\HandleInterface;
-use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
-use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandleInterface;
-use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandleInterface;
-use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandleInterface;
-use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandleInterface;
-use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Spy\SpyVerifierInterface;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Eloquent\Phony\Matcher\Matcher;
+use Eloquent\Phony\Mock\Builder\MockBuilder;
+use Eloquent\Phony\Mock\Exception\MockException;
+use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandle;
+use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
+use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle;
+use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle;
+use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Spy\SpyVerifier;
+use Eloquent\Phony\Stub\StubVerifier;
 use Exception;
 use InvalidArgumentException;
 use ReflectionClass;
@@ -42,7 +42,7 @@ use ReflectionClass;
  *
  * @param mixed $types The types to mock.
  *
- * @return MockBuilderInterface The mock builder.
+ * @return MockBuilder The mock builder.
  */
 function mockBuilder($types = array())
 {
@@ -60,7 +60,7 @@ function mockBuilder($types = array())
  *
  * @param mixed $types The types to mock.
  *
- * @return InstanceStubbingHandleInterface A stubbing handle around the new mock.
+ * @return InstanceStubbingHandle A stubbing handle around the new mock.
  */
 function mock($types = array())
 {
@@ -84,10 +84,10 @@ function mock($types = array())
  *
  * @api
  *
- * @param mixed                         $types     The types to mock.
- * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
+ * @param mixed                $types     The types to mock.
+ * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
  *
- * @return InstanceStubbingHandleInterface A stubbing handle around the new mock.
+ * @return InstanceStubbingHandle A stubbing handle around the new mock.
  */
 function partialMock($types = array(), $arguments = array())
 {
@@ -103,10 +103,10 @@ function partialMock($types = array(), $arguments = array())
  *
  * @api
  *
- * @param MockInterface|InstanceHandleInterface $mock The mock.
+ * @param Mock|InstanceHandle $mock The mock.
  *
- * @return InstanceStubbingHandleInterface The newly created handle.
- * @throws MockExceptionInterface          If the supplied mock is invalid.
+ * @return InstanceStubbingHandle The newly created handle.
+ * @throws MockException          If the supplied mock is invalid.
  */
 function on($mock)
 {
@@ -118,10 +118,10 @@ function on($mock)
  *
  * @api
  *
- * @param MockInterface|InstanceHandleInterface $mock The mock.
+ * @param Mock|InstanceHandle $mock The mock.
  *
- * @return InstanceVerificationHandleInterface The newly created handle.
- * @throws MockExceptionInterface              If the supplied mock is invalid.
+ * @return InstanceVerificationHandle The newly created handle.
+ * @throws MockException              If the supplied mock is invalid.
  */
 function verify($mock)
 {
@@ -133,10 +133,10 @@ function verify($mock)
  *
  * @api
  *
- * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
+ * @param Mock|Handle|ReflectionClass|string $class The class.
  *
- * @return StaticStubbingHandleInterface The newly created handle.
- * @throws MockExceptionInterface        If the supplied class name is not a mock class.
+ * @return StaticStubbingHandle The newly created handle.
+ * @throws MockException        If the supplied class name is not a mock class.
  */
 function onStatic($class)
 {
@@ -149,10 +149,10 @@ function onStatic($class)
  *
  * @api
  *
- * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
+ * @param Mock|Handle|ReflectionClass|string $class The class.
  *
- * @return StaticVerificationHandleInterface The newly created handle.
- * @throws MockExceptionInterface            If the supplied class name is not a mock class.
+ * @return StaticVerificationHandle The newly created handle.
+ * @throws MockException            If the supplied class name is not a mock class.
  */
 function verifyStatic($class)
 {
@@ -167,7 +167,7 @@ function verifyStatic($class)
  *
  * @param callable|null $callback The callback, or null to create an anonymous spy.
  *
- * @return SpyVerifierInterface The new spy.
+ * @return SpyVerifier The new spy.
  */
 function spy($callback = null)
 {
@@ -182,7 +182,7 @@ function spy($callback = null)
  *
  * @param callable|null $callback The callback, or null to create an anonymous stub.
  *
- * @return StubVerifierInterface The new stub.
+ * @return StubVerifier The new stub.
  */
 function stub($callback = null)
 {
@@ -195,9 +195,9 @@ function stub($callback = null)
  *
  * @api
  *
- * @param EventInterface|EventCollectionInterface ...$events The events.
+ * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollectionInterface|null The result.
+ * @return EventCollection|null The result.
  */
 function checkInOrder()
 {
@@ -211,10 +211,10 @@ function checkInOrder()
  *
  * @api
  *
- * @param EventInterface|EventCollectionInterface ...$events The events.
+ * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollectionInterface The result.
- * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollection The result.
+ * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrder()
 {
@@ -227,9 +227,9 @@ function inOrder()
  *
  * @api
  *
- * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
+ * @param mixed<Event|EventCollection> $events The event sequence.
  *
- * @return EventCollectionInterface|null The result.
+ * @return EventCollection|null The result.
  */
 function checkInOrderSequence($events)
 {
@@ -243,10 +243,10 @@ function checkInOrderSequence($events)
  *
  * @api
  *
- * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
+ * @param mixed<Event|EventCollection> $events The event sequence.
  *
- * @return EventCollectionInterface The result.
- * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollection The result.
+ * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrderSequence($events)
 {
@@ -259,10 +259,10 @@ function inOrderSequence($events)
  *
  * @api
  *
- * @param EventInterface|EventCollectionInterface ...$events The events.
+ * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollectionInterface|null The result.
- * @throws InvalidArgumentException      If invalid input is supplied.
+ * @return EventCollection|null     The result.
+ * @throws InvalidArgumentException If invalid input is supplied.
  */
 function checkAnyOrder()
 {
@@ -275,9 +275,9 @@ function checkAnyOrder()
  *
  * @api
  *
- * @param EventInterface|EventCollectionInterface ...$events The events.
+ * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollectionInterface The result.
+ * @return EventCollection          The result.
  * @throws InvalidArgumentException If invalid input is supplied.
  * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
  */
@@ -292,10 +292,10 @@ function anyOrder()
  *
  * @api
  *
- * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
+ * @param mixed<Event|EventCollection> $events The event sequence.
  *
- * @return EventCollectionInterface|null The result.
- * @throws InvalidArgumentException      If invalid input is supplied.
+ * @return EventCollection|null     The result.
+ * @throws InvalidArgumentException If invalid input is supplied.
  */
 function checkAnyOrderSequence($events)
 {
@@ -309,9 +309,9 @@ function checkAnyOrderSequence($events)
  *
  * @api
  *
- * @param mixed<EventInterface|EventCollectionInterface> $events The event sequence.
+ * @param mixed<Event|EventCollection> $events The event sequence.
  *
- * @return EventCollectionInterface The result.
+ * @return EventCollection          The result.
  * @throws InvalidArgumentException If invalid input is supplied.
  * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
  */
@@ -326,7 +326,7 @@ function anyOrderSequence($events)
  *
  * @api
  *
- * @return MatcherInterface The newly created matcher.
+ * @return Matcher The newly created matcher.
  */
 function any()
 {
@@ -340,7 +340,7 @@ function any()
  *
  * @param mixed $value The value to check.
  *
- * @return MatcherInterface The newly created matcher.
+ * @return Matcher The newly created matcher.
  */
 function equalTo($value)
 {
@@ -356,7 +356,7 @@ function equalTo($value)
  * @param integer      $minimumArguments The minimum number of arguments.
  * @param integer|null $maximumArguments The maximum number of arguments.
  *
- * @return WildcardMatcherInterface The newly created wildcard matcher.
+ * @return WildcardMatcher The newly created wildcard matcher.
  */
 function wildcard(
     $value = null,

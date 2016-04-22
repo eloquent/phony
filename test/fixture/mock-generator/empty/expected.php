@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorEmpty
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     private static $_uncallableMethods = array();
     private static $_traitMethods = array();

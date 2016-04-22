@@ -12,9 +12,8 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
-use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\Handle;
 use Error;
 use Exception;
 use ReflectionMethod;
@@ -23,7 +22,7 @@ use ReflectionMethod;
  * A wrapper that allows calling of the parent magic method in mocks.
  */
 class WrappedMagicMethod extends AbstractWrappedInvocable implements
-    WrappedMethodInterface
+    WrappedMethod
 {
     /**
      * Construct a new wrapped magic method.
@@ -31,13 +30,13 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      * @param string           $name            The name.
      * @param ReflectionMethod $callMagicMethod The _callMagic() method.
      * @param boolean          $isUncallable    True if the underlying magic method is uncallable.
-     * @param HandleInterface  $handle          The handle.
+     * @param Handle           $handle          The handle.
      */
     public function __construct(
         $name,
         ReflectionMethod $callMagicMethod,
         $isUncallable,
-        HandleInterface $handle
+        Handle $handle
     ) {
         $this->name = $name;
         $this->callMagicMethod = $callMagicMethod;
@@ -91,7 +90,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
     /**
      * Get the handle.
      *
-     * @return HandleInterface The handle.
+     * @return Handle The handle.
      */
     public function handle()
     {
@@ -101,7 +100,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
     /**
      * Get the mock.
      *
-     * @return MockInterface|null The mock.
+     * @return Mock|null The mock.
      */
     public function mock()
     {
@@ -113,7 +112,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param Arguments|array $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
@@ -124,7 +123,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
             return;
         }
 
-        if (!$arguments instanceof ArgumentsInterface) {
+        if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);
         }
 

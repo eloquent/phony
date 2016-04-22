@@ -18,7 +18,7 @@ use PHPUnit_Framework_TestCase;
 use RuntimeException;
 
 /**
- * @covers \Eloquent\Phony\Call\Call
+ * @covers \Eloquent\Phony\Call\CallData
  */
 class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
@@ -29,7 +29,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callback = 'implode';
         $this->arguments = new Arguments(array('a', 'b'));
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
 
         $this->events = array($this->calledEvent);
 
@@ -44,7 +44,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generatorEventB = $this->callEventFactory->createReceived(null);
         $generatorEvents = array($generatorEventA, $generatorEventB);
         $endEvent = $this->callEventFactory->createReturned(null);
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addTraversableEvent($generatorEventA);
         $this->subject->addTraversableEvent($generatorEventB);
@@ -79,7 +79,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generatorEvents = array($generatorEventA, $generatorEventB);
         $exception = new RuntimeException('You done goofed.');
         $endEvent = $this->callEventFactory->createThrew($exception);
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addTraversableEvent($generatorEventA);
         $this->subject->addTraversableEvent($generatorEventB);
@@ -113,7 +113,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generatorEventA = $this->callEventFactory->createProduced(null, null);
         $generatorEventB = $this->callEventFactory->createReceived(null);
         $generatorEvents = array($generatorEventA, $generatorEventB);
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addTraversableEvent($generatorEventA);
         $this->subject->addTraversableEvent($generatorEventB);
@@ -142,7 +142,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithGeneratedEventWithoutGeneratorEvents()
     {
         $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->events = array($this->calledEvent, $generatedEvent);
 
@@ -169,7 +169,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testSetResponseEventWithGeneratedEvent()
     {
         $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
 
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
@@ -182,7 +182,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
         $generatorEventA = $this->callEventFactory->createProduced(null, null);
         $generatorEventB = $this->callEventFactory->createReceived(null);
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addTraversableEvent($generatorEventA);
         $this->subject->addTraversableEvent($generatorEventB);
@@ -197,7 +197,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
         $endEvent = $this->callEventFactory->createReturned(null);
-        $this->subject = new Call($this->calledEvent);
+        $this->subject = new CallData($this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->setEndEvent($endEvent);
 

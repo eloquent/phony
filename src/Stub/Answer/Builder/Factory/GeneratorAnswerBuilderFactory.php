@@ -12,26 +12,22 @@
 namespace Eloquent\Phony\Stub\Answer\Builder\Factory;
 
 use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
-use Eloquent\Phony\Stub\StubInterface;
+use Eloquent\Phony\Stub\Stub;
 
 /**
  * Creates generator answer builders.
  *
  * @api
  */
-class GeneratorAnswerBuilderFactory implements
-    GeneratorAnswerBuilderFactoryInterface
+class GeneratorAnswerBuilderFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return GeneratorAnswerBuilderFactoryInterface The static factory.
+     * @return GeneratorAnswerBuilderFactory The static factory.
      */
     public static function instance()
     {
@@ -49,14 +45,14 @@ class GeneratorAnswerBuilderFactory implements
     /**
      * Construct a new generator answer builder factory.
      *
-     * @param InvocableInspectorInterface $invocableInspector The invocable inspector to use.
-     * @param InvokerInterface            $invoker            The invoker to use.
-     * @param FeatureDetectorInterface    $featureDetector    The feature detector to use.
+     * @param InvocableInspector $invocableInspector The invocable inspector to use.
+     * @param Invoker            $invoker            The invoker to use.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
-        InvocableInspectorInterface $invocableInspector,
-        InvokerInterface $invoker,
-        FeatureDetectorInterface $featureDetector
+        InvocableInspector $invocableInspector,
+        Invoker $invoker,
+        FeatureDetector $featureDetector
     ) {
         $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
@@ -69,11 +65,11 @@ class GeneratorAnswerBuilderFactory implements
     /**
      * Create a generator answer builder for the supplied stub.
      *
-     * @param StubInterface $stub The stub.
+     * @param Stub $stub The stub.
      *
-     * @return GeneratorAnswerBuilderInterface The newly created builder.
+     * @return GeneratorAnswerBuilder The newly created builder.
      */
-    public function create(StubInterface $stub)
+    public function create(Stub $stub)
     {
         return new GeneratorAnswerBuilder(
             $stub,

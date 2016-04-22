@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Spy\Factory;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Exporter\InlineExporter;
@@ -45,7 +45,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new SpyVerifierFactory(

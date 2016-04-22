@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Mock;
 use Exception;
 use Throwable;
 
@@ -21,7 +21,7 @@ use Throwable;
  * value. Arrays and objects are descended into, comparing each key/value
  * pair individually.
  */
-class EqualToMatcher extends AbstractMatcher
+class EqualToMatcher implements Matcher
 {
     /**
      * Construct a new equal to matcher.
@@ -42,6 +42,7 @@ class EqualToMatcher extends AbstractMatcher
     {
         return $this->value;
     }
+
     /**
      * Returns `true` if `$value` matches this matcher's criteria.
      *
@@ -232,7 +233,7 @@ class EqualToMatcher extends AbstractMatcher
          * @see https://github.com/php/php-src/commit/5721132
          */
 
-        $leftIsMock = $left instanceof MockInterface;
+        $leftIsMock = $left instanceof Mock;
         $leftIsException =
             $left instanceof Throwable || $left instanceof Exception;
 
@@ -259,7 +260,7 @@ class EqualToMatcher extends AbstractMatcher
             );
         }
 
-        $rightIsMock = $right instanceof MockInterface;
+        $rightIsMock = $right instanceof Mock;
         $rightIsException =
             $right instanceof Throwable || $right instanceof Exception;
 
@@ -316,6 +317,16 @@ class EqualToMatcher extends AbstractMatcher
      * @return string The description.
      */
     public function describe()
+    {
+        return InlineExporter::instance()->export($this->value);
+    }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString()
     {
         return InlineExporter::instance()->export($this->value);
     }

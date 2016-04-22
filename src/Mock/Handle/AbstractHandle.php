@@ -11,27 +11,22 @@
 
 namespace Eloquent\Phony\Mock\Handle;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Event\EventCollectionInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
 use Eloquent\Phony\Mock\Method\WrappedMagicMethod;
-use Eloquent\Phony\Mock\Method\WrappedMethod;
+use Eloquent\Phony\Mock\Method\WrappedParentMethod;
 use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
 use Eloquent\Phony\Mock\Method\WrappedUncallableMethod;
-use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\Factory\StubFactory;
-use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Eloquent\Phony\Stub\StubVerifier;
 use ReflectionClass;
 use ReflectionMethod;
 use stdClass;
@@ -39,22 +34,22 @@ use stdClass;
 /**
  * An abstract base class for implementing handles.
  */
-abstract class AbstractHandle implements HandleInterface
+abstract class AbstractHandle implements Handle
 {
     /**
      * Construct a new handle.
      *
-     * @param ReflectionClass                   $class               The class.
-     * @param stdClass                          $state               The state.
-     * @param ReflectionMethod|null             $callParentMethod    The call parent method, or null if no parent class exists.
-     * @param ReflectionMethod|null             $callTraitMethod     The call trait method, or null if no trait methods are implemented.
-     * @param ReflectionMethod|null             $callMagicMethod     The call magic method, or null if magic calls are not supported.
-     * @param MockInterface|null                $mock                The mock, or null if this is a static handle.
-     * @param StubFactoryInterface|null         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactoryInterface|null $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRendererInterface|null   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorderInterface|null   $assertionRecorder   The assertion recorder to use.
-     * @param InvokerInterface|null             $invoker             The invoker to use.
+     * @param ReflectionClass          $class               The class.
+     * @param stdClass                 $state               The state.
+     * @param ReflectionMethod|null    $callParentMethod    The call parent method, or null if no parent class exists.
+     * @param ReflectionMethod|null    $callTraitMethod     The call trait method, or null if no trait methods are implemented.
+     * @param ReflectionMethod|null    $callMagicMethod     The call magic method, or null if magic calls are not supported.
+     * @param Mock|null                $mock                The mock, or null if this is a static handle.
+     * @param StubFactory|null         $stubFactory         The stub factory to use.
+     * @param StubVerifierFactory|null $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRenderer|null   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorder|null   $assertionRecorder   The assertion recorder to use.
+     * @param Invoker|null             $invoker             The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,
@@ -62,12 +57,12 @@ abstract class AbstractHandle implements HandleInterface
         ReflectionMethod $callParentMethod = null,
         ReflectionMethod $callTraitMethod = null,
         ReflectionMethod $callMagicMethod = null,
-        MockInterface $mock = null,
-        StubFactoryInterface $stubFactory,
-        StubVerifierFactoryInterface $stubVerifierFactory,
-        AssertionRendererInterface $assertionRenderer,
-        AssertionRecorderInterface $assertionRecorder,
-        InvokerInterface $invoker
+        Mock $mock = null,
+        StubFactory $stubFactory,
+        StubVerifierFactory $stubVerifierFactory,
+        AssertionRenderer $assertionRenderer,
+        AssertionRecorder $assertionRecorder,
+        Invoker $invoker
     ) {
         $this->mock = $mock;
         $this->class = $class;
@@ -122,7 +117,7 @@ abstract class AbstractHandle implements HandleInterface
     public function full()
     {
         $this->state->defaultAnswerCallback =
-            'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback';
+            'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback';
 
         return $this;
     }
@@ -135,7 +130,7 @@ abstract class AbstractHandle implements HandleInterface
     public function partial()
     {
         $this->state->defaultAnswerCallback =
-            'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback';
+            'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback';
 
         return $this;
     }
@@ -184,8 +179,8 @@ abstract class AbstractHandle implements HandleInterface
      * @param string  $name      The method name.
      * @param boolean $isNewRule True if a new rule should be started.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
+     * @return StubVerifier  The stub verifier.
+     * @throws MockException If the stub does not exist.
      */
     public function stub($name, $isNewRule = true)
     {
@@ -211,8 +206,8 @@ abstract class AbstractHandle implements HandleInterface
      *
      * @param string $name The method name.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
+     * @return StubVerifier  The stub verifier.
+     * @throws MockException If the stub does not exist.
      */
     public function __get($name)
     {
@@ -232,8 +227,8 @@ abstract class AbstractHandle implements HandleInterface
      *
      * @param string $name The method name.
      *
-     * @return SpyInterface           The stub.
-     * @throws MockExceptionInterface If the spy does not exist.
+     * @return Spy           The spy.
+     * @throws MockException If the spy does not exist.
      */
     public function spy($name)
     {
@@ -243,7 +238,7 @@ abstract class AbstractHandle implements HandleInterface
     /**
      * Checks if there was no interaction with the mock.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkNoInteraction()
     {
@@ -259,8 +254,8 @@ abstract class AbstractHandle implements HandleInterface
     /**
      * Throws an exception unless there was no interaction with the mock.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction()
     {
@@ -330,8 +325,8 @@ abstract class AbstractHandle implements HandleInterface
      *
      * @param string $name The method name.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the method does not exist.
+     * @return StubVerifier  The stub verifier.
+     * @throws MockException If the method does not exist.
      */
     protected function createStub($name)
     {
@@ -407,7 +402,7 @@ abstract class AbstractHandle implements HandleInterface
             }
 
             $stub = $this->stubFactory->create(
-                new WrappedMethod($this->callParentMethod, $method, $this),
+                new WrappedParentMethod($this->callParentMethod, $method, $this),
                 $mock,
                 $this->state->defaultAnswerCallback
             );

@@ -12,13 +12,13 @@
 namespace Eloquent\Phony\Cardinality;
 
 use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException;
-use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
+use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException;
 use Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException;
 
 /**
  * Represents the cardinality of a verification.
  */
-class Cardinality implements CardinalityInterface
+class Cardinality
 {
     /**
      * Construct a new cardinality.
@@ -27,7 +27,7 @@ class Cardinality implements CardinalityInterface
      * @param integer|null $maximum  The maximum, or null for no maximum.
      * @param boolean      $isAlways True if 'always' should be enabled.
      *
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function __construct(
         $minimum = 0,
@@ -35,11 +35,11 @@ class Cardinality implements CardinalityInterface
         $isAlways = false
     ) {
         if ($minimum < 0 || $maximum < 0) {
-            throw new InvalidCardinalityException();
+            throw new InvalidCardinalityStateException();
         }
 
         if (null !== $maximum && $minimum > $maximum) {
-            throw new InvalidCardinalityException();
+            throw new InvalidCardinalityStateException();
         }
 
         $this->minimum = $minimum;
@@ -80,13 +80,13 @@ class Cardinality implements CardinalityInterface
     /**
      * Turn 'always' on or off.
      *
-     * @param  boolean                              $isAlways True to enable 'always'.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @param  boolean                     $isAlways True to enable 'always'.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function setIsAlways($isAlways)
     {
         if ($isAlways && $this->isNever()) {
-            throw new InvalidCardinalityException();
+            throw new InvalidCardinalityStateException();
         }
 
         $this->isAlways = $isAlways;
@@ -134,8 +134,8 @@ class Cardinality implements CardinalityInterface
      * Asserts that this cardinality is suitable for events that can only happen
      * once or not at all.
      *
-     * @return $this                                This cardinality.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @return $this                       This cardinality.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function assertSingular()
     {

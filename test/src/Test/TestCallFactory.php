@@ -12,10 +12,10 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Event\CalledEventInterface;
-use Eloquent\Phony\Call\Event\EndEventInterface;
-use Eloquent\Phony\Call\Event\ResponseEventInterface;
+use Eloquent\Phony\Call\CallData;
+use Eloquent\Phony\Call\Event\CalledEvent;
+use Eloquent\Phony\Call\Event\EndEvent;
+use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
 
@@ -42,17 +42,17 @@ class TestCallFactory extends CallFactory
     }
 
     public function create(
-        CalledEventInterface $calledEvent = null,
-        ResponseEventInterface $responseEvent = null,
+        CalledEvent $calledEvent = null,
+        ResponseEvent $responseEvent = null,
         array $traversableEvents = null,
-        EndEventInterface $endEvent = null
+        EndEvent $endEvent = null
     ) {
         if (!$calledEvent) {
             $calledEvent = $this->eventFactory
                 ->createCalled(function () {}, new Arguments(array()));
         }
 
-        $call = new Call($calledEvent);
+        $call = new CallData($calledEvent);
 
         if ($responseEvent) {
             $call->setResponseEvent($responseEvent);

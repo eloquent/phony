@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Call\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallData;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\Factory\SpyFactory;
@@ -41,7 +41,7 @@ class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $arguments = Arguments::create(array('a', 'b'));
         $generator = call_user_func($callback);
         $spy = $this->spyFactory->create();
-        $expected = new Call($this->eventFactory->createCalled($spy, $arguments));
+        $expected = new CallData($this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createReturned($generator));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);

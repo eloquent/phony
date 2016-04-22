@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * Represents the end of a call by returning a value.
  */
-class ReturnedEvent extends AbstractCallEvent implements ReturnedEventInterface
+class ReturnedEvent extends AbstractCallEvent implements ResponseEvent
 {
     /**
      * Construct a 'returned' event.

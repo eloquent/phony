@@ -17,7 +17,7 @@ use Exception;
  * The supplied class is not a mock class.
  */
 final class NonMockClassException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a non-mock class exception.

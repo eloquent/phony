@@ -12,26 +12,25 @@
 namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 
 /**
  * Represents the start of a call.
  */
-class CalledEvent extends AbstractCallEvent implements CalledEventInterface
+class CalledEvent extends AbstractCallEvent
 {
     /**
      * Construct a new 'called' event.
      *
-     * @param integer            $sequenceNumber The sequence number.
-     * @param float              $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param callable           $callback       The callback.
-     * @param ArgumentsInterface $arguments      The arguments.
+     * @param integer   $sequenceNumber The sequence number.
+     * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param callable  $callback       The callback.
+     * @param Arguments $arguments      The arguments.
      */
     public function __construct(
         $sequenceNumber,
         $time,
         $callback,
-        ArgumentsInterface $arguments
+        Arguments $arguments
     ) {
         parent::__construct($sequenceNumber, $time);
 
@@ -52,7 +51,7 @@ class CalledEvent extends AbstractCallEvent implements CalledEventInterface
     /**
      * Get the received arguments.
      *
-     * @return ArgumentsInterface The received arguments.
+     * @return Arguments The received arguments.
      */
     public function arguments()
     {

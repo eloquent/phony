@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
@@ -53,7 +53,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             GeneratorAnswerBuilderFactory::instance()
         );
         $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = InvocableInspector::instance();
         $this->invoker = new Invoker();

@@ -12,34 +12,30 @@
 namespace Eloquent\Phony\Mock\Builder;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
 use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
 use Eloquent\Phony\Mock\Exception\AnonymousClassException;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalizedMockException;
 use Eloquent\Phony\Mock\Exception\InvalidClassNameException;
 use Eloquent\Phony\Mock\Exception\InvalidDefinitionException;
 use Eloquent\Phony\Mock\Exception\InvalidTypeException;
-use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
+use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
-use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
+use Eloquent\Phony\Mock\Factory\MockFactory;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Mock;
 use ReflectionClass;
 use ReflectionException;
 
 /**
  * Builds mock classes.
+ *
+ * @api
  */
-class MockBuilder implements MockBuilderInterface
+class MockBuilder
 {
     /**
      * The regular expression used to validate symbol names.
@@ -53,20 +49,20 @@ class MockBuilder implements MockBuilderInterface
      * definition. If only a single type is being mocked, the class name or
      * definition can be passed without being wrapped in an array.
      *
-     * @param mixed                       $types              The types to mock.
-     * @param MockFactoryInterface        $factory            The factory to use.
-     * @param HandleFactoryInterface      $handleFactory      The handle factory to use.
-     * @param InvocableInspectorInterface $invocableInspector The invocable inspector.
-     * @param FeatureDetectorInterface    $featureDetector    The feature detector to use.
+     * @param mixed              $types              The types to mock.
+     * @param MockFactory        $factory            The factory to use.
+     * @param HandleFactory      $handleFactory      The handle factory to use.
+     * @param InvocableInspector $invocableInspector The invocable inspector.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      *
-     * @throws MockExceptionInterface If invalid input is supplied.
+     * @throws MockException If invalid input is supplied.
      */
     public function __construct(
         $types,
-        MockFactoryInterface $factory,
-        HandleFactoryInterface $handleFactory,
-        InvocableInspectorInterface $invocableInspector,
-        FeatureDetectorInterface $featureDetector
+        MockFactory $factory,
+        HandleFactory $handleFactory,
+        InvocableInspector $invocableInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->isTraitSupported = $featureDetector->isSupported('trait');
         $this->isAnonymousClassSupported =
@@ -110,7 +106,7 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Get the factory.
      *
-     * @return MockFactoryInterface The factory.
+     * @return MockFactory The factory.
      */
     public function factory()
     {
@@ -120,7 +116,7 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Get the handle factory.
      *
-     * @return HandleFactoryInterface The handle factory.
+     * @return HandleFactory The handle factory.
      */
     public function handleFactory()
     {
@@ -130,7 +126,7 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Get the invocable inspector.
      *
-     * @return InvocableInspectorInterface The invocable inspector.
+     * @return InvocableInspector The invocable inspector.
      */
     public function invocableInspector()
     {
@@ -140,7 +136,7 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Get the feature detector.
      *
-     * @return FeatureDetectorInterface The feature detector.
+     * @return FeatureDetector The feature detector.
      */
     public function featureDetector()
     {
@@ -149,6 +145,8 @@ class MockBuilder implements MockBuilderInterface
 
     /**
      * Get the types.
+     *
+     * @api
      *
      * @return array<string,ReflectionClass> The types.
      */
@@ -164,11 +162,13 @@ class MockBuilder implements MockBuilderInterface
      * definition. If only a single type is being mocked, the class name or
      * definition can be passed without being wrapped in an array.
      *
+     * @api
+     *
      * @param mixed $type A type, or types to add.
      * @param mixed ...$types Additional types to add.
      *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If invalid input is supplied, or this builder is already finalized.
+     * @return $this         This builder.
+     * @throws MockException If invalid input is supplied, or this builder is already finalized.
      */
     public function like($type)
     {
@@ -270,11 +270,13 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add a custom method.
      *
+     * @api
+     *
      * @param string        $name     The name.
      * @param callable|null $callback The callback.
      *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If this builder is already finalized.
+     * @return $this         This builder.
+     * @throws MockException If this builder is already finalized.
      */
     public function addMethod($name, $callback = null)
     {
@@ -296,11 +298,13 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add a custom property.
      *
+     * @api
+     *
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If this builder is already finalized.
+     * @return $this         This builder.
+     * @throws MockException If this builder is already finalized.
      */
     public function addProperty($name, $value = null)
     {
@@ -316,11 +320,13 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add a custom static method.
      *
+     * @api
+     *
      * @param string        $name     The name.
      * @param callable|null $callback The callback.
      *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If this builder is already finalized.
+     * @return $this         This builder.
+     * @throws MockException If this builder is already finalized.
      */
     public function addStaticMethod($name, $callback = null)
     {
@@ -342,11 +348,13 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add a custom static property.
      *
+     * @api
+     *
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If this builder is already finalized.
+     * @return $this         This builder.
+     * @throws MockException If this builder is already finalized.
      */
     public function addStaticProperty($name, $value = null)
     {
@@ -362,11 +370,13 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Add a custom class constant.
      *
+     * @api
+     *
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If this builder is already finalized.
+     * @return $this         This builder.
+     * @throws MockException If this builder is already finalized.
      */
     public function addConstant($name, $value)
     {
@@ -382,10 +392,12 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Set the class name.
      *
+     * @api
+     *
      * @param string $className|null The class name, or null to use a generated name.
      *
-     * @return $this                  This builder.
-     * @throws MockExceptionInterface If this builder is already finalized.
+     * @return $this         This builder.
+     * @throws MockException If this builder is already finalized.
      */
     public function named($className = null)
     {
@@ -409,6 +421,8 @@ class MockBuilder implements MockBuilderInterface
     /**
      * Returns true if this builder is finalized.
      *
+     * @api
+     *
      * @return boolean True if finalized.
      */
     public function isFinalized()
@@ -418,6 +432,8 @@ class MockBuilder implements MockBuilderInterface
 
     /**
      * Finalize the mock builder.
+     *
+     * @api
      *
      * @return $this This builder.
      */
@@ -447,7 +463,7 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @return MockDefinitionInterface The mock definition.
+     * @return MockDefinition The mock definition.
      */
     public function definition()
     {
@@ -458,6 +474,8 @@ class MockBuilder implements MockBuilderInterface
 
     /**
      * Returns true if the mock class has been built.
+     *
+     * @api
      *
      * @return boolean True if the mock class has been built.
      */
@@ -471,10 +489,12 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @api
+     *
      * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
-     * @return ReflectionClass        The class.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @return ReflectionClass The class.
+     * @throws MockException   If the mock generation fails.
      */
     public function build($createNew = false)
     {
@@ -491,10 +511,12 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @api
+     *
      * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
-     * @return string                 The class name.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @return string        The class name.
+     * @throws MockException If the mock generation fails.
      */
     public function className($createNew = false)
     {
@@ -511,8 +533,10 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @api
+     *
+     * @return Mock          The mock instance.
+     * @throws MockException If the mock generation fails.
      */
     public function get()
     {
@@ -533,8 +557,10 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @api
+     *
+     * @return Mock          The mock instance.
+     * @throws MockException If the mock generation fails.
      */
     public function full()
     {
@@ -551,10 +577,12 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
+     * @api
+     *
      * @param mixed ...$arguments The constructor arguments.
      *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @return Mock          The mock instance.
+     * @throws MockException If the mock generation fails.
      */
     public function partial()
     {
@@ -574,10 +602,12 @@ class MockBuilder implements MockBuilderInterface
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @api
      *
-     * @return MockInterface          The mock instance.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     *
+     * @return Mock          The mock instance.
+     * @throws MockException If the mock generation fails.
      */
     public function partialWith($arguments = array())
     {
@@ -592,12 +622,12 @@ class MockBuilder implements MockBuilderInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param MockGeneratorInterface|null $generator The mock generator to use.
+     * @param MockGenerator|null $generator The mock generator to use.
      *
-     * @return string                 The source code.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @return string        The source code.
+     * @throws MockException If the mock generation fails.
      */
-    public function source(MockGeneratorInterface $generator = null)
+    public function source(MockGenerator $generator = null)
     {
         if (!$generator) {
             $generator = MockGenerator::instance();

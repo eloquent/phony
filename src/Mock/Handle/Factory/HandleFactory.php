@@ -11,43 +11,35 @@
 
 namespace Eloquent\Phony\Mock\Handle\Factory;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
 use Eloquent\Phony\Mock\Exception\InvalidMockException;
-use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
+use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
-use Eloquent\Phony\Mock\Handle\HandleInterface;
-use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
-use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandleInterface;
+use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandle;
 use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
-use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandleInterface;
-use Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle;
-use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandleInterface;
+use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle;
 use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle;
-use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandleInterface;
-use Eloquent\Phony\Mock\Handle\Verification\VerificationHandle;
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Stub\Factory\StubFactory;
-use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 use ReflectionClass;
 use ReflectionException;
 
 /**
  * Creates handles.
  */
-class HandleFactory implements HandleFactoryInterface
+class HandleFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return HandleFactoryInterface The static factory.
+     * @return HandleFactory The static factory.
      */
     public static function instance()
     {
@@ -56,7 +48,7 @@ class HandleFactory implements HandleFactoryInterface
                 StubFactory::instance(),
                 StubVerifierFactory::instance(),
                 AssertionRenderer::instance(),
-                AssertionRecorder::instance(),
+                ExceptionAssertionRecorder::instance(),
                 Invoker::instance()
             );
         }
@@ -67,18 +59,18 @@ class HandleFactory implements HandleFactoryInterface
     /**
      * Construct a new handle factory.
      *
-     * @param StubFactoryInterface         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
-     * @param InvokerInterface             $invoker             The invoker to use.
+     * @param StubFactory         $stubFactory         The stub factory to use.
+     * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
+     * @param Invoker             $invoker             The invoker to use.
      */
     public function __construct(
-        StubFactoryInterface $stubFactory,
-        StubVerifierFactoryInterface $stubVerifierFactory,
-        AssertionRendererInterface $assertionRenderer,
-        AssertionRecorderInterface $assertionRecorder,
-        InvokerInterface $invoker
+        StubFactory $stubFactory,
+        StubVerifierFactory $stubVerifierFactory,
+        AssertionRenderer $assertionRenderer,
+        AssertionRecorder $assertionRecorder,
+        Invoker $invoker
     ) {
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
@@ -90,23 +82,23 @@ class HandleFactory implements HandleFactoryInterface
     /**
      * Create a new stubbing handle.
      *
-     * @param MockInterface|InstanceHandleInterface $mock  The mock.
-     * @param string|null                           $label The label.
+     * @param Mock|InstanceHandle $mock  The mock.
+     * @param string|null         $label The label.
      *
-     * @return InstanceStubbingHandleInterface The newly created handle.
-     * @throws MockExceptionInterface          If the supplied mock is invalid.
+     * @return InstanceStubbingHandle The newly created handle.
+     * @throws MockException          If the supplied mock is invalid.
      */
     public function createStubbing($mock, $label = null)
     {
-        if ($mock instanceof InstanceStubbingHandleInterface) {
+        if ($mock instanceof InstanceStubbingHandle) {
             return $mock;
         }
 
-        if ($mock instanceof InstanceHandleInterface) {
+        if ($mock instanceof InstanceHandle) {
             $mock = $mock->mock();
         }
 
-        if (!$mock instanceof MockInterface) {
+        if (!$mock instanceof Mock) {
             throw new InvalidMockException($mock);
         }
 
@@ -119,11 +111,11 @@ class HandleFactory implements HandleFactoryInterface
             return $handle;
         }
 
-        $handle = new StubbingHandle(
+        $handle = new InstanceStubbingHandle(
             $mock,
             (object) array(
                 'defaultAnswerCallback' =>
-                    'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback',
+                    'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
                 'stubs' => (object) array(),
                 'isRecording' => true,
                 'label' => $label,
@@ -143,20 +135,20 @@ class HandleFactory implements HandleFactoryInterface
     /**
      * Create a new verification handle.
      *
-     * @param MockInterface|InstanceHandleInterface $mock The mock.
+     * @param Mock|InstanceHandle $mock The mock.
      *
-     * @return InstanceVerificationHandleInterface The newly created handle.
-     * @throws MockExceptionInterface              If the supplied mock is invalid.
+     * @return InstanceVerificationHandle The newly created handle.
+     * @throws MockException              If the supplied mock is invalid.
      */
     public function createVerification($mock)
     {
-        if ($mock instanceof InstanceVerificationHandleInterface) {
+        if ($mock instanceof InstanceVerificationHandle) {
             return $mock;
         }
 
         $stubbingHandle = $this->createStubbing($mock);
 
-        return new VerificationHandle(
+        return new InstanceVerificationHandle(
             $stubbingHandle->mock(),
             $stubbingHandle->state(),
             $this->stubFactory,
@@ -170,20 +162,20 @@ class HandleFactory implements HandleFactoryInterface
     /**
      * Create a new static stubbing handle.
      *
-     * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
+     * @param Mock|Handle|ReflectionClass|string $class The class.
      *
-     * @return StaticStubbingHandleInterface The newly created handle.
-     * @throws MockExceptionInterface        If the supplied class name is not a mock class.
+     * @return StaticStubbingHandle The newly created handle.
+     * @throws MockException        If the supplied class name is not a mock class.
      */
     public function createStubbingStatic($class)
     {
-        if ($class instanceof StaticStubbingHandleInterface) {
+        if ($class instanceof StaticStubbingHandle) {
             return $class;
         }
 
-        if ($class instanceof HandleInterface) {
+        if ($class instanceof Handle) {
             $class = $class->clazz();
-        } elseif ($class instanceof MockInterface) {
+        } elseif ($class instanceof Mock) {
             $class = new ReflectionClass($class);
         } elseif (is_string($class)) {
             try {
@@ -195,7 +187,7 @@ class HandleFactory implements HandleFactoryInterface
             throw new InvalidMockClassException($class);
         }
 
-        if (!$class->isSubclassOf('Eloquent\Phony\Mock\MockInterface')) {
+        if (!$class->isSubclassOf('Eloquent\Phony\Mock\Mock')) {
             throw new NonMockClassException($class->getName());
         }
 
@@ -210,7 +202,7 @@ class HandleFactory implements HandleFactoryInterface
             $class,
             (object) array(
                 'defaultAnswerCallback' =>
-                    'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',
+                    'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback',
                 'stubs' => (object) array(),
                 'isRecording' => true,
             ),
@@ -229,14 +221,14 @@ class HandleFactory implements HandleFactoryInterface
     /**
      * Create a new static verification handle.
      *
-     * @param MockInterface|HandleInterface|ReflectionClass|string $class The class.
+     * @param Mock|Handle|ReflectionClass|string $class The class.
      *
-     * @return StaticVerificationHandleInterface The newly created handle.
-     * @throws MockExceptionInterface            If the supplied class name is not a mock class.
+     * @return StaticVerificationHandle The newly created handle.
+     * @throws MockException            If the supplied class name is not a mock class.
      */
     public function createVerificationStatic($class)
     {
-        if ($class instanceof StaticVerificationHandleInterface) {
+        if ($class instanceof StaticVerificationHandle) {
             return $class;
         }
 

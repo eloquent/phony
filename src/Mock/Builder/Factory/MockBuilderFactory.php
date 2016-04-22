@@ -12,25 +12,20 @@
 namespace Eloquent\Phony\Mock\Builder\Factory;
 
 use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Feature\FeatureDetectorInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Builder\MockBuilderInterface;
 use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Factory\MockFactoryInterface;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 
 /**
  * Creates mock builders.
  */
-class MockBuilderFactory implements MockBuilderFactoryInterface
+class MockBuilderFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return MockBuilderFactoryInterface The static factory.
+     * @return MockBuilderFactory The static factory.
      */
     public static function instance()
     {
@@ -49,16 +44,16 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
     /**
      * Construct a new mock builder factory.
      *
-     * @param MockFactoryInterface        $mockFactory        The mock factory to use.
-     * @param HandleFactoryInterface      $handleFactory      The handle factory to use.
-     * @param InvocableInspectorInterface $invocableInspector The invocable inspector.
-     * @param FeatureDetectorInterface    $featureDetector    The feature detector to use.
+     * @param MockFactory        $mockFactory        The mock factory to use.
+     * @param HandleFactory      $handleFactory      The handle factory to use.
+     * @param InvocableInspector $invocableInspector The invocable inspector.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
-        MockFactoryInterface $mockFactory,
-        HandleFactoryInterface $handleFactory,
-        InvocableInspectorInterface $invocableInspector,
-        FeatureDetectorInterface $featureDetector
+        MockFactory $mockFactory,
+        HandleFactory $handleFactory,
+        InvocableInspector $invocableInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->mockFactory = $mockFactory;
         $this->handleFactory = $handleFactory;
@@ -75,7 +70,7 @@ class MockBuilderFactory implements MockBuilderFactoryInterface
      *
      * @param mixed $types The types to mock.
      *
-     * @return MockBuilderInterface The mock builder.
+     * @return MockBuilder The mock builder.
      */
     public function create($types = array())
     {

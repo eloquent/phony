@@ -17,7 +17,7 @@ use Exception;
  * Anonymous classes cannot be mocked.
  */
 final class AnonymousClassException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct an anonymous class exception.

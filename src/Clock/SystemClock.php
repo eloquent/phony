@@ -14,12 +14,12 @@ namespace Eloquent\Phony\Clock;
 /**
  * Provides access to the system clock.
  */
-class SystemClock implements ClockInterface
+class SystemClock implements Clock
 {
     /**
      * Get the static instance of this clock.
      *
-     * @return ClockInterface The static clock.
+     * @return Clock The static clock.
      */
     public static function instance()
     {

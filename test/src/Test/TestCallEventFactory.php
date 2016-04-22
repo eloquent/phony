@@ -12,8 +12,7 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
+use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 
 class TestCallEventFactory extends CallEventFactory
@@ -44,7 +43,7 @@ class TestCallEventFactory extends CallEventFactory
 
     public function createCalled(
         $callback = null,
-        ArgumentsInterface $arguments = null
+        Arguments $arguments = null
     ) {
         if (!$callback) {
             $callback = function () {};

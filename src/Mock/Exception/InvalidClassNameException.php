@@ -17,7 +17,7 @@ use Exception;
  * The supplied class name is invalid.
  */
 final class InvalidClassNameException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a new invalid class name exception.

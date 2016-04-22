@@ -12,25 +12,22 @@
 namespace Eloquent\Phony\Mock\Generator;
 
 use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Feature\FeatureDetectorInterface;
-use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionInterface;
-use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinitionInterface;
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspectorInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Sequencer\SequencerInterface;
 use ReflectionMethod;
 
 /**
  * Generates mock classes.
  */
-class MockGenerator implements MockGeneratorInterface
+class MockGenerator
 {
     /**
      * Get the static instance of this generator.
      *
-     * @return MockGeneratorInterface The static generator.
+     * @return MockGenerator The static generator.
      */
     public static function instance()
     {
@@ -48,14 +45,14 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Construct a new mock generator.
      *
-     * @param SequencerInterface                  $labelSequencer     The label sequencer to use.
-     * @param FunctionSignatureInspectorInterface $signatureInspector The function signature inspector to use.
-     * @param FeatureDetectorInterface            $featureDetector    The feature detector to use.
+     * @param Sequencer                  $labelSequencer     The label sequencer to use.
+     * @param FunctionSignatureInspector $signatureInspector The function signature inspector to use.
+     * @param FeatureDetector            $featureDetector    The feature detector to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer,
-        FunctionSignatureInspectorInterface $signatureInspector,
-        FeatureDetectorInterface $featureDetector
+        Sequencer $labelSequencer,
+        FunctionSignatureInspector $signatureInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->signatureInspector = $signatureInspector;
@@ -70,11 +67,11 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Generate a mock class name.
      *
-     * @param MockDefinitionInterface $definition The definition.
+     * @param MockDefinition $definition The definition.
      *
      * @return string The mock class name.
      */
-    public function generateClassName(MockDefinitionInterface $definition)
+    public function generateClassName(MockDefinition $definition)
     {
         $className = $definition->className();
 
@@ -108,13 +105,13 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Generate a mock class and return the source code.
      *
-     * @param MockDefinitionInterface $definition The definition.
-     * @param string|null             $className  The class name.
+     * @param MockDefinition $definition The definition.
+     * @param string|null    $className  The class name.
      *
      * @return string The source code.
      */
     public function generate(
-        MockDefinitionInterface $definition,
+        MockDefinition $definition,
         $className = null
     ) {
         if (!$className) {
@@ -142,13 +139,13 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Generate the class header.
      *
-     * @param MockDefinitionInterface $definition The definition.
-     * @param string                  $className  The class name.
+     * @param MockDefinition $definition The definition.
+     * @param string         $className  The class name.
      *
      * @return string The source code.
      */
     protected function generateHeader(
-        MockDefinitionInterface $definition,
+        MockDefinition $definition,
         $className
     ) {
         if ($typeNames = $definition->typeNames()) {
@@ -181,7 +178,7 @@ class MockGenerator implements MockGeneratorInterface
             $source .= "\nextends \\" . $parentClassName;
         }
 
-        array_unshift($interfaceNames, 'Eloquent\Phony\Mock\MockInterface');
+        array_unshift($interfaceNames, 'Eloquent\Phony\Mock\Mock');
         $source .= "\nimplements \\" .
             implode(",\n           \\", $interfaceNames);
 
@@ -227,11 +224,11 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Generate the class constants.
      *
-     * @param MockDefinitionInterface $definition The definition.
+     * @param MockDefinition $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateConstants(MockDefinitionInterface $definition)
+    protected function generateConstants(MockDefinition $definition)
     {
         $constants = $definition->customConstants();
         $source = '';
@@ -254,12 +251,12 @@ class MockGenerator implements MockGeneratorInterface
     /**
      * Generate the __callStatic() method.
      *
-     * @param MockDefinitionInterface $definition The definition.
+     * @param MockDefinition $definition The definition.
      *
      * @return string The source code.
      */
     protected function generateMagicCallStatic(
-        MockDefinitionInterface $definition
+        MockDefinition $definition
     ) {
         $methods = $definition->methods();
         $callStaticName = $methods->methodName('__callstatic');
@@ -324,11 +321,11 @@ EOD;
     /**
      * Generate the constructors.
      *
-     * @param MockDefinitionInterface $definition The definition.
+     * @param MockDefinition $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateConstructors(MockDefinitionInterface $definition)
+    protected function generateConstructors(MockDefinition $definition)
     {
         $constructor = null;
 
@@ -356,7 +353,7 @@ EOD;
     /**
      * Generate the supplied methods.
      *
-     * @param array<string,MethodDefinitionInterface> $methods The methods.
+     * @param array<string,MethodDefinition> $methods The methods.
      *
      * @return string The source code.
      */
@@ -527,11 +524,11 @@ EOD;
     /**
      * Generate the __call() method.
      *
-     * @param MockDefinitionInterface $definition The definition.
+     * @param MockDefinition $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateMagicCall(MockDefinitionInterface $definition)
+    protected function generateMagicCall(MockDefinition $definition)
     {
         $methods = $definition->methods();
         $callName = $methods->methodName('__call');
@@ -594,12 +591,12 @@ EOD;
     /**
      * Generate the call parent methods.
      *
-     * @param MockDefinitionInterface $definition The definition.
+     * @param MockDefinition $definition The definition.
      *
      * @return string The source code.
      */
     protected function generateCallParentMethods(
-        MockDefinitionInterface $definition
+        MockDefinition $definition
     ) {
         $methods = $definition->methods();
         $traitNames = $definition->traitNames();
@@ -615,7 +612,7 @@ EOD;
 
     private static function _callParentStatic(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(__CLASS__, 'parent::' . $name),
@@ -632,7 +629,7 @@ EOD;
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -654,7 +651,7 @@ EOD;
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
@@ -668,7 +665,7 @@ EOD;
 
     private function _callParent(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array($this, 'parent::' . $name),
@@ -688,7 +685,7 @@ EOD;
                         $source .= <<<EOD
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+        \Eloquent\Phony\Call\Argument\Arguments \$arguments
     ) {
         \$constructor = function () use (\$arguments) {
             \call_user_func_array(
@@ -706,7 +703,7 @@ EOD;
                     $source .= <<<EOD
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+        \Eloquent\Phony\Call\Argument\Arguments \$arguments
     ) {
         \call_user_func_array(
             array(\$this, 'parent::$constructorName'),
@@ -741,7 +738,7 @@ EOD;
                     $source .= <<<EOD
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+        \Eloquent\Phony\Call\Argument\Arguments \$arguments
     ) {
         \call_user_func_array(
             array(
@@ -761,7 +758,7 @@ EOD;
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -785,7 +782,7 @@ EOD;
                 $methods = $methods->methods();
                 $method = $methods[$name];
 
-                if ($method instanceof TraitMethodDefinitionInterface) {
+                if ($method instanceof TraitMethodDefinition) {
                     $traitName =
                         $method->method()->getDeclaringClass()->getName();
                     $methodName = var_export(
@@ -802,7 +799,7 @@ EOD;
 
     private function _callMagic(
         \$name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface \$arguments
+        \Eloquent\Phony\Call\Argument\Arguments \$arguments
     ) {
         return \call_user_func_array(
             array(\$this, $methodName),
@@ -819,11 +816,11 @@ EOD;
     /**
      * Generate the properties.
      *
-     * @param MockDefinitionInterface $definition The definition.
+     * @param MockDefinition $definition The definition.
      *
      * @return string The source code.
      */
-    protected function generateProperties(MockDefinitionInterface $definition)
+    protected function generateProperties(MockDefinition $definition)
     {
         $staticProperties = $definition->customStaticProperties();
         $properties = $definition->customProperties();
@@ -856,7 +853,7 @@ EOD;
 
             if (!$method->isCallable()) {
                 $uncallableMethodNames[$methodName] = true;
-            } elseif ($method instanceof TraitMethodDefinitionInterface) {
+            } elseif ($method instanceof TraitMethodDefinition) {
                 $traitMethodNames[$methodName] =
                     $method->method()->getDeclaringClass()->getName();
             }

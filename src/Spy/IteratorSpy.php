@@ -11,27 +11,26 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactoryInterface;
+use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\Event\CallEventFactory;
 use Iterator;
 
 /**
  * Spies on an iterator.
  */
-class IteratorSpy implements IteratorSpyInterface
+class IteratorSpy implements Iterator
 {
     /**
      * Construct a new iterator spy.
      *
-     * @param CallInterface             $call             The call from which the iterator originated.
-     * @param Iterator                  $iterator         The iterator.
-     * @param CallEventFactoryInterface $callEventFactory The call event factory to use.
+     * @param Call             $call             The call from which the iterator originated.
+     * @param Iterator         $iterator         The iterator.
+     * @param CallEventFactory $callEventFactory The call event factory to use.
      */
     public function __construct(
-        CallInterface $call,
+        Call $call,
         Iterator $iterator,
-        CallEventFactoryInterface $callEventFactory
+        CallEventFactory $callEventFactory
     ) {
         $this->call = $call;
         $this->iterator = $iterator;
@@ -42,7 +41,7 @@ class IteratorSpy implements IteratorSpyInterface
     /**
      * Get the call.
      *
-     * @return CallInterface The call.
+     * @return Call The call.
      */
     public function call()
     {

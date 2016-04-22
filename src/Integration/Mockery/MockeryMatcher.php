@@ -39,4 +39,14 @@ class MockeryMatcher extends WrappedMatcher
     {
         return strval($this->matcher);
     }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString()
+    {
+        return strval($this->matcher);
+    }
 }

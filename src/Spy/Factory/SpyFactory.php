@@ -12,23 +12,20 @@
 namespace Eloquent\Phony\Spy\Factory;
 
 use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Call\Factory\CallFactoryInterface;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Sequencer\SequencerInterface;
 use Eloquent\Phony\Spy\Spy;
-use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Spy\SpyData;
 
 /**
  * Creates spies.
  */
-class SpyFactory implements SpyFactoryInterface
+class SpyFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return SpyFactoryInterface The static factory.
+     * @return SpyFactory The static factory.
      */
     public static function instance()
     {
@@ -48,18 +45,18 @@ class SpyFactory implements SpyFactoryInterface
     /**
      * Construct a new spy factory.
      *
-     * @param SequencerInterface             $labelSequencer        The label sequencer to use.
-     * @param CallFactoryInterface           $callFactory           The call factory to use.
-     * @param InvokerInterface               $invoker               The invoker to use.
-     * @param TraversableSpyFactoryInterface $generatorSpyFactory   The generator spy factory to use.
-     * @param TraversableSpyFactoryInterface $traversableSpyFactory The traversable spy factory to use.
+     * @param Sequencer             $labelSequencer        The label sequencer to use.
+     * @param CallFactory           $callFactory           The call factory to use.
+     * @param Invoker               $invoker               The invoker to use.
+     * @param GeneratorSpyFactory   $generatorSpyFactory   The generator spy factory to use.
+     * @param TraversableSpyFactory $traversableSpyFactory The traversable spy factory to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer,
-        CallFactoryInterface $callFactory,
-        InvokerInterface $invoker,
-        TraversableSpyFactoryInterface $generatorSpyFactory,
-        TraversableSpyFactoryInterface $traversableSpyFactory
+        Sequencer $labelSequencer,
+        CallFactory $callFactory,
+        Invoker $invoker,
+        GeneratorSpyFactory $generatorSpyFactory,
+        TraversableSpyFactory $traversableSpyFactory
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->callFactory = $callFactory;
@@ -73,11 +70,11 @@ class SpyFactory implements SpyFactoryInterface
      *
      * @param callable|null $callback The callback, or null to create an anonymous spy.
      *
-     * @return SpyInterface The newly created spy.
+     * @return Spy The newly created spy.
      */
     public function create($callback = null)
     {
-        return new Spy(
+        return new SpyData(
             $callback,
             strval($this->labelSequencer->next()),
             $this->callFactory,

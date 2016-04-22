@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Exporter;
 
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Mock;
 use Exception;
 use SplObjectStorage;
 use Throwable;
@@ -19,12 +19,12 @@ use Throwable;
 /**
  * Exports values to inline strings.
  */
-class InlineExporter implements ExporterInterface
+class InlineExporter implements Exporter
 {
     /**
      * Get the static instance of this exporter.
      *
-     * @return ExporterInterface The static exporter.
+     * @return Exporter The static exporter.
      */
     public static function instance()
     {
@@ -231,7 +231,7 @@ class InlineExporter implements ExporterInterface
 
                     unset($phpValues["\0gcdata"]);
 
-                    if ($value instanceof MockInterface) {
+                    if ($value instanceof Mock) {
                         $handleProperty = "\0" . $result->type . "\0_handle";
 
                         if ($phpValues[$handleProperty]) {

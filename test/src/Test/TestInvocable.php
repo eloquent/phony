@@ -12,14 +12,13 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Invocation\InvocableInterface;
+use Eloquent\Phony\Invocation\Invocable;
 
-class TestInvocable implements InvocableInterface
+class TestInvocable implements Invocable
 {
     public function invokeWith($arguments = array())
     {
-        if (!$arguments instanceof ArgumentsInterface) {
+        if (!$arguments instanceof Arguments) {
             $arguments = Arguments::fromArray($arguments);
         }
 

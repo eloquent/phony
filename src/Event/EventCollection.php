@@ -11,138 +11,94 @@
 
 namespace Eloquent\Phony\Event;
 
-use ArrayIterator;
+use Countable;
+use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
-use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Iterator;
+use IteratorAggregate;
 
 /**
- * Represents a collection of events.
+ * The interface implemented by event collections.
+ *
+ * @api
  */
-class EventCollection implements EventCollectionInterface
+interface EventCollection extends IteratorAggregate, Countable
 {
-    /**
-     * Construct a new event collection.
-     *
-     * @param array<EventInterface> $events The events.
-     */
-    public function __construct(array $events)
-    {
-        $calls = array();
-
-        foreach ($events as $event) {
-            if ($event instanceof CallInterface) {
-                $calls[] = $event;
-            }
-        }
-
-        $this->events = $events;
-        $this->calls = $calls;
-        $this->eventCount = count($events);
-        $this->callCount = count($calls);
-    }
-
     /**
      * Returns true if this collection contains any events.
      *
+     * @api
+     *
      * @return boolean True if this collection contains any events.
      */
-    public function hasEvents()
-    {
-        return $this->eventCount > 0;
-    }
+    public function hasEvents();
 
     /**
      * Returns true if this collection contains any calls.
      *
+     * @api
+     *
      * @return boolean True if this collection contains any calls.
      */
-    public function hasCalls()
-    {
-        return $this->callCount > 0;
-    }
+    public function hasCalls();
 
     /**
      * Get the number of events.
      *
+     * @api
+     *
      * @return integer The event count.
      */
-    public function eventCount()
-    {
-        return $this->eventCount;
-    }
+    public function eventCount();
 
     /**
      * Get the number of calls.
      *
+     * @api
+     *
      * @return integer The call count.
      */
-    public function callCount()
-    {
-        return $this->callCount;
-    }
-
-    /**
-     * Get the event count.
-     *
-     * @return integer The event count.
-     */
-    public function count()
-    {
-        return $this->eventCount;
-    }
+    public function callCount();
 
     /**
      * Get all events as an array.
      *
-     * @return array<EventInterface> The events.
+     * @api
+     *
+     * @return array<Event> The events.
      */
-    public function allEvents()
-    {
-        return $this->events;
-    }
+    public function allEvents();
 
     /**
      * Get all calls as an array.
      *
-     * @return array<CallInterface> The calls.
+     * @api
+     *
+     * @return array<Call> The calls.
      */
-    public function allCalls()
-    {
-        return $this->calls;
-    }
+    public function allCalls();
 
     /**
      * Get the first event.
      *
-     * @return EventInterface          The event.
+     * @api
+     *
+     * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent()
-    {
-        if (!$this->events) {
-            throw new UndefinedEventException(0);
-        }
-
-        return $this->events[0];
-    }
+    public function firstEvent();
 
     /**
      * Get the last event.
      *
-     * @return EventInterface          The event.
+     * @api
+     *
+     * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent()
-    {
-        if ($count = count($this->events)) {
-            return $this->events[$count - 1];
-        }
-
-        throw new UndefinedEventException(0);
-    }
+    public function lastEvent();
 
     /**
      * Get an event by index.
@@ -150,49 +106,34 @@ class EventCollection implements EventCollectionInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
+     * @api
+     *
      * @param integer $index The index.
      *
-     * @return EventInterface          The event.
+     * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = 0)
-    {
-        if (!$this->normalizeIndex($this->eventCount, $index, $normalized)) {
-            throw new UndefinedEventException($index);
-        }
-
-        return $this->events[$normalized];
-    }
+    public function eventAt($index = 0);
 
     /**
      * Get the first call.
      *
-     * @return CallInterface          The call.
+     * @api
+     *
+     * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall()
-    {
-        if (isset($this->calls[0])) {
-            return $this->calls[0];
-        }
-
-        throw new UndefinedCallException(0);
-    }
+    public function firstCall();
 
     /**
      * Get the last call.
      *
-     * @return CallInterface          The call.
+     * @api
+     *
+     * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall()
-    {
-        if ($count = count($this->calls)) {
-            return $this->calls[$count - 1];
-        }
-
-        throw new UndefinedCallException(0);
-    }
+    public function lastCall();
 
     /**
      * Get a call by index.
@@ -200,34 +141,24 @@ class EventCollection implements EventCollectionInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
+     * @api
+     *
      * @param integer $index The index.
      *
-     * @return CallInterface          The call.
+     * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = 0)
-    {
-        if (!$this->normalizeIndex($this->callCount, $index, $normalized)) {
-            throw new UndefinedCallException($index);
-        }
-
-        return $this->calls[$normalized];
-    }
+    public function callAt($index = 0);
 
     /**
      * Get the arguments.
      *
-     * @return ArgumentsInterface|null The arguments.
-     * @throws UndefinedCallException  If there are no calls.
+     * @api
+     *
+     * @return Arguments|null         The arguments.
+     * @throws UndefinedCallException If there are no calls.
      */
-    public function arguments()
-    {
-        foreach ($this->calls as $call) {
-            return $call->arguments();
-        }
-
-        throw new UndefinedCallException(0);
-    }
+    public function arguments();
 
     /**
      * Get an argument by index.
@@ -235,56 +166,13 @@ class EventCollection implements EventCollectionInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
+     * @api
+     *
      * @param integer $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedCallException     If there are no calls.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function argument($index = 0)
-    {
-        foreach ($this->calls as $call) {
-            return $call->arguments()->get($index);
-        }
-
-        throw new UndefinedCallException(0);
-    }
-
-    /**
-     * Get an iterator for this collection.
-     *
-     * @return Iterator The iterator.
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->events);
-    }
-
-    private function normalizeIndex($size, $index, &$normalized = null)
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
-    }
-
-    private $events;
-    private $calls;
-    private $eventCount;
-    private $callCount;
+    public function argument($index = 0);
 }

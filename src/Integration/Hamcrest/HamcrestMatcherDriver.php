@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Integration\Hamcrest;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
-use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
+use Eloquent\Phony\Matcher\Driver\MatcherDriver;
 
 /**
  * A matcher driver for Hamcrest matchers.
@@ -22,7 +22,7 @@ class HamcrestMatcherDriver extends AbstractMatcherDriver
     /**
      * Get the static instance of this driver.
      *
-     * @return MatcherDriverInterface The static driver.
+     * @return MatcherDriver The static driver.
      */
     public static function instance()
     {

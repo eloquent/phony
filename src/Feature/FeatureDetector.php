@@ -21,12 +21,12 @@ use ReflectionMethod;
 /**
  * Detects support for language features in the current runtime environment.
  */
-class FeatureDetector implements FeatureDetectorInterface
+class FeatureDetector
 {
     /**
      * Get the static instance of this detector.
      *
-     * @return FeatureDetectorInterface The static detector.
+     * @return FeatureDetector The static detector.
      */
     public static function instance()
     {

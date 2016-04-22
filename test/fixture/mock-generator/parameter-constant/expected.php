@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorParameterConstant
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
         $a0 = 256

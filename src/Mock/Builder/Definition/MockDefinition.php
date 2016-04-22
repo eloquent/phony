@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Mock\Builder\Definition;
 
 use Eloquent\Phony\Mock\Builder\Definition\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollection;
-use Eloquent\Phony\Mock\Builder\Definition\Method\MethodDefinitionCollectionInterface;
 use Eloquent\Phony\Mock\Builder\Definition\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Definition\Method\TraitMethodDefinition;
 use ReflectionClass;
@@ -22,7 +21,7 @@ use ReflectionFunctionAbstract;
 /**
  * Represents a mock class definition.
  */
-class MockDefinition implements MockDefinitionInterface
+class MockDefinition
 {
     /**
      * Construct a new mock definition.
@@ -227,7 +226,7 @@ class MockDefinition implements MockDefinitionInterface
      *
      * Calling this method will finalize the mock builder.
      *
-     * @return MethodDefinitionCollectionInterface The method definitions.
+     * @return MethodDefinitionCollection The method definitions.
      */
     public function methods()
     {
@@ -241,7 +240,7 @@ class MockDefinition implements MockDefinitionInterface
      *
      * @return boolean True if equal.
      */
-    public function isEqualTo(MockDefinitionInterface $definition)
+    public function isEqualTo(MockDefinition $definition)
     {
         return $definition->signature() === $this->signature;
     }

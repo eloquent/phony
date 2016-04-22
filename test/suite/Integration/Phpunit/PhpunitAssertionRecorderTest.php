@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Integration\Phpunit;
 
 use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Event\EventSequence;
 use PHPUnit_Framework_Assert;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -27,7 +27,7 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
     public function testCreateSuccess()
     {
         $events = array(new ReturnedEvent(0, 0.0, null), new ReturnedEvent(1, 1.0, null));
-        $expected = new EventCollection($events);
+        $expected = new EventSequence($events);
         $beforeCount = PHPUnit_Framework_Assert::getCount();
         $actual = $this->subject->createSuccess($events);
         $afterCount = PHPUnit_Framework_Assert::getCount();
@@ -38,7 +38,7 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new EventCollection(array());
+        $expected = new EventSequence(array());
         $beforeCount = PHPUnit_Framework_Assert::getCount();
         $actual = $this->subject->createSuccess();
         $afterCount = PHPUnit_Framework_Assert::getCount();

@@ -16,13 +16,13 @@ use ReflectionMethod;
 /**
  * Represents a collection of methods.
  */
-class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
+class MethodDefinitionCollection
 {
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinitionInterface> $methods      The methods.
-     * @param array<TraitMethodDefinitionInterface>   $traitMethods The trait methods.
+     * @param array<string,MethodDefinition> $methods      The methods.
+     * @param array<TraitMethodDefinition>   $traitMethods The trait methods.
      */
     public function __construct(array $methods, array $traitMethods)
     {
@@ -84,7 +84,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the methods.
      *
-     * @return array<string,MethodDefinitionInterface> The methods.
+     * @return array<string,MethodDefinition> The methods.
      */
     public function allMethods()
     {
@@ -94,7 +94,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the static methods.
      *
-     * @return array<string,MethodDefinitionInterface> The methods.
+     * @return array<string,MethodDefinition> The methods.
      */
     public function staticMethods()
     {
@@ -104,7 +104,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the instance methods.
      *
-     * @return array<string,MethodDefinitionInterface> The methods.
+     * @return array<string,MethodDefinition> The methods.
      */
     public function methods()
     {
@@ -114,7 +114,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the public static methods.
      *
-     * @return array<string,MethodDefinitionInterface> The methods.
+     * @return array<string,MethodDefinition> The methods.
      */
     public function publicStaticMethods()
     {
@@ -124,7 +124,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the public instance methods.
      *
-     * @return array<string,MethodDefinitionInterface> The methods.
+     * @return array<string,MethodDefinition> The methods.
      */
     public function publicMethods()
     {
@@ -134,7 +134,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the protected static methods.
      *
-     * @return array<string,MethodDefinitionInterface> The methods.
+     * @return array<string,MethodDefinition> The methods.
      */
     public function protectedStaticMethods()
     {
@@ -144,7 +144,7 @@ class MethodDefinitionCollection implements MethodDefinitionCollectionInterface
     /**
      * Get the protected instance methods.
      *
-     * @return array<string,MethodDefinitionInterface> The methods.
+     * @return array<string,MethodDefinition> The methods.
      */
     public function protectedMethods()
     {

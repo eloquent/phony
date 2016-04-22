@@ -11,64 +11,32 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Handle\HandleInterface;
-use Error;
-use Exception;
-use ReflectionMethod;
+use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Mock;
 
 /**
- * A wrapper that allows calling of the parent method in mocks.
+ * The interface implemented by wrapped methods.
  */
-class WrappedMethod extends AbstractWrappedMethod
+interface WrappedMethod
 {
     /**
-     * Construct a new wrapped method.
+     * Get the name.
      *
-     * @param ReflectionMethod $callParentMethod The _callParent() method.
-     * @param ReflectionMethod $method           The method.
-     * @param HandleInterface  $handle           The handle.
+     * @return string The name.
      */
-    public function __construct(
-        ReflectionMethod $callParentMethod,
-        ReflectionMethod $method,
-        HandleInterface $handle
-    ) {
-        $this->callParentMethod = $callParentMethod;
-
-        parent::__construct($method, $handle);
-    }
+    public function name();
 
     /**
-     * Get the _callParent() method.
+     * Get the handle.
      *
-     * @return ReflectionMethod The _callParent() method.
+     * @return Handle The handle.
      */
-    public function callParentMethod()
-    {
-        return $this->callParentMethod;
-    }
+    public function handle();
 
     /**
-     * Invoke this object.
+     * Get the mock.
      *
-     * This method supports reference parameters.
-     *
-     * @param ArgumentsInterface|array $arguments The arguments.
-     *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return Mock|null The mock.
      */
-    public function invokeWith($arguments = array())
-    {
-        if (!$arguments instanceof ArgumentsInterface) {
-            $arguments = new Arguments($arguments);
-        }
-
-        return $this->callParentMethod
-            ->invoke($this->mock, $this->name, $arguments);
-    }
-
-    private $callParentMethod;
+    public function mock();
 }

@@ -17,7 +17,7 @@ use Exception;
  * The requested method stub does not exist.
  */
 final class UndefinedMethodStubException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a new undefined method stub exception.

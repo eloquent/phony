@@ -15,7 +15,7 @@ namespace Eloquent\Phony\Invocation;
  * An abstract base class for implementing wrapped invocables.
  */
 abstract class AbstractWrappedInvocable extends AbstractInvocable implements
-    WrappedInvocableInterface
+    WrappedInvocable
 {
     /**
      * Construct a new wrapped invocable.

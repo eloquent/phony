@@ -17,7 +17,7 @@ use Exception;
  * Unable to add the supplied type.
  */
 final class InvalidTypeException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a new invalid type exception.

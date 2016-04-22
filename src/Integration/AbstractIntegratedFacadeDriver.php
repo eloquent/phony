@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Integration;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
 use Eloquent\Phony\Event\Verification\EventOrderVerifier;
 use Eloquent\Phony\Exporter\InlineExporter;
@@ -110,7 +110,7 @@ abstract class AbstractIntegratedFacadeDriver extends FacadeDriver
     /**
      * Create the assertion recorder.
      *
-     * @return AssertionRecorderInterface The assertion recorder.
+     * @return AssertionRecorder The assertion recorder.
      */
     abstract protected function createAssertionRecorder();
 }

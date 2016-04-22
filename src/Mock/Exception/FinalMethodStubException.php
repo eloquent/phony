@@ -17,7 +17,7 @@ use Exception;
  * The method cannot be stubbed because it is final.
  */
 final class FinalMethodStubException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a new final method stub exception.

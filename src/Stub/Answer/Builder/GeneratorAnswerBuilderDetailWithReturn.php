@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
-use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
-use Eloquent\Phony\Stub\Answer\CallRequestInterface;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Stub\Answer\CallRequest;
 
 /**
  * A detail class for generator answer builders.
@@ -23,13 +23,13 @@ abstract class GeneratorAnswerBuilderDetailWithReturn
     /**
      * Get the answer.
      *
-     * @param array<tuple<boolean,mixed,boolean,mixed,array<CallRequestInterface>>> &$iterations      The iteration details.
-     * @param array<CallRequestInterface>                                           &$requests        The call requests
-     * @param Exception|Error|null                                                  &$exception       The exception to throw.
-     * @param mixed                                                                 &$returnValue     The return value.
-     * @param integer|null                                                          &$returnsArgument The index of the argument to return.
-     * @param boolean                                                               &$returnsSelf     True if the self value should be returned.
-     * @param InvokerInterface                                                      $invoker          The invoker to use.
+     * @param array<tuple<boolean,mixed,boolean,mixed,array<CallRequest>>> &$iterations      The iteration details.
+     * @param array<CallRequest>                                           &$requests        The call requests
+     * @param Exception|Error|null                                         &$exception       The exception to throw.
+     * @param mixed                                                        &$returnValue     The return value.
+     * @param integer|null                                                 &$returnsArgument The index of the argument to return.
+     * @param boolean                                                      &$returnsSelf     True if the self value should be returned.
+     * @param Invoker                                                      $invoker          The invoker to use.
      *
      * @return callable The answer.
      */
@@ -40,7 +40,7 @@ abstract class GeneratorAnswerBuilderDetailWithReturn
         &$returnValue,
         &$returnsArgument,
         &$returnsSelf,
-        InvokerInterface $invoker
+        Invoker $invoker
     ) {
         return function ($self, $arguments) use (
             &$iterations,
@@ -62,14 +62,14 @@ abstract class GeneratorAnswerBuilderDetailWithReturn
                 if ($iteration instanceof GeneratorYieldFromIteration) {
                     foreach ($iteration->values as $key => $value) {
                         if (
-                            $key instanceof InstanceHandleInterface &&
+                            $key instanceof InstanceHandle &&
                             $key->isAdaptable()
                         ) {
                             $key = $key->mock();
                         }
 
                         if (
-                            $value instanceof InstanceHandleInterface &&
+                            $value instanceof InstanceHandle &&
                             $value->isAdaptable()
                         ) {
                             $value = $value->mock();

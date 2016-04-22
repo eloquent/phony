@@ -19,22 +19,21 @@ use Eloquent\Phony\Integration\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Integration\Prophecy\ProphecyMatcherDriver;
 use Eloquent\Phony\Integration\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Matcher\AnyMatcher;
-use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
+use Eloquent\Phony\Matcher\Driver\MatcherDriver;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Matcher\WildcardMatcherInterface;
-use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
 
 /**
  * Creates matchers.
  */
-class MatcherFactory implements MatcherFactoryInterface
+class MatcherFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return MatcherFactoryInterface The static factory.
+     * @return MatcherFactory The static factory.
      */
     public static function instance()
     {
@@ -50,12 +49,12 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Construct a new matcher factory.
      *
-     * @param MatcherInterface         $anyMatcher         A matcher that matches any value.
-     * @param WildcardMatcherInterface $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
+     * @param Matcher         $anyMatcher         A matcher that matches any value.
+     * @param WildcardMatcher $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
      */
     public function __construct(
-        MatcherInterface $anyMatcher,
-        WildcardMatcherInterface $wildcardAnyMatcher
+        Matcher $anyMatcher,
+        WildcardMatcher $wildcardAnyMatcher
     ) {
         $this->drivers = array();
         $this->driverIndex = array();
@@ -66,9 +65,9 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Add a matcher driver.
      *
-     * @param MatcherDriverInterface $driver The matcher driver.
+     * @param MatcherDriver $driver The matcher driver.
      */
-    public function addMatcherDriver(MatcherDriverInterface $driver)
+    public function addMatcherDriver(MatcherDriver $driver)
     {
         if (!in_array($driver, $this->drivers, true)) {
             $this->drivers[] = $driver;
@@ -98,7 +97,7 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Get the matcher drivers.
      *
-     * @return array<MatcherDriverInterface> The matcher drivers.
+     * @return array<MatcherDriver> The matcher drivers.
      */
     public function drivers()
     {
@@ -115,11 +114,11 @@ class MatcherFactory implements MatcherFactoryInterface
     public function isMatcher($value)
     {
         if (is_object($value)) {
-            if ($value instanceof MatcherInterface) {
+            if ($value instanceof Matcher) {
                 return true;
             }
 
-            if ($value instanceof InstanceHandleInterface) {
+            if ($value instanceof InstanceHandle) {
                 return $value->isAdaptable();
             }
 
@@ -138,19 +137,19 @@ class MatcherFactory implements MatcherFactoryInterface
      *
      * @param mixed $value The value to create a matcher for.
      *
-     * @return MatcherInterface The newly created matcher.
+     * @return Matcher The newly created matcher.
      */
     public function adapt($value)
     {
         if (
-            $value instanceof MatcherInterface ||
-            $value instanceof WildcardMatcherInterface
+            $value instanceof Matcher ||
+            $value instanceof WildcardMatcher
         ) {
             return $value;
         }
 
         if (is_object($value)) {
-            if ($value instanceof InstanceHandleInterface) {
+            if ($value instanceof InstanceHandle) {
                 if ($value->isAdaptable()) {
                     return new EqualToMatcher($value->mock());
                 }
@@ -179,7 +178,7 @@ class MatcherFactory implements MatcherFactoryInterface
      *
      * @param array $values The values to create matchers for.
      *
-     * @return array<MatcherInterface> The newly created matchers.
+     * @return array<Matcher> The newly created matchers.
      */
     public function adaptAll(array $values)
     {
@@ -187,8 +186,8 @@ class MatcherFactory implements MatcherFactoryInterface
 
         foreach ($values as $value) {
             if (
-                $value instanceof MatcherInterface ||
-                $value instanceof WildcardMatcherInterface
+                $value instanceof Matcher ||
+                $value instanceof WildcardMatcher
             ) {
                 $matchers[] = $value;
 
@@ -196,7 +195,7 @@ class MatcherFactory implements MatcherFactoryInterface
             }
 
             if (is_object($value)) {
-                if ($value instanceof InstanceHandleInterface) {
+                if ($value instanceof InstanceHandle) {
                     if ($value->isAdaptable()) {
                         $matchers[] = new EqualToMatcher($value->mock());
 
@@ -228,7 +227,7 @@ class MatcherFactory implements MatcherFactoryInterface
     /**
      * Create a new matcher that matches anything.
      *
-     * @return MatcherInterface The newly created matcher.
+     * @return Matcher The newly created matcher.
      */
     public function any()
     {
@@ -240,7 +239,7 @@ class MatcherFactory implements MatcherFactoryInterface
      *
      * @param mixed $value The value to check.
      *
-     * @return MatcherInterface The newly created matcher.
+     * @return Matcher The newly created matcher.
      */
     public function equalTo($value)
     {
@@ -254,7 +253,7 @@ class MatcherFactory implements MatcherFactoryInterface
      * @param integer      $minimumArguments The minimum number of arguments.
      * @param integer|null $maximumArguments The maximum number of arguments.
      *
-     * @return WildcardMatcherInterface The newly created wildcard matcher.
+     * @return WildcardMatcher The newly created wildcard matcher.
      */
     public function wildcard(
         $value = null,

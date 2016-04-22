@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorTraitMagicCall
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     use \Eloquent\Phony\Test\TestTraitJ
     {
@@ -34,7 +34,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -50,7 +50,7 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
@@ -59,7 +59,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -75,7 +75,7 @@ implements \Eloquent\Phony\Mock\MockInterface
 
     private function _callMagic(
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array($this, '_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__call'),

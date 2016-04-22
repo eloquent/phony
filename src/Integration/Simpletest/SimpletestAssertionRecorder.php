@@ -11,11 +11,11 @@
 
 namespace Eloquent\Phony\Integration\Simpletest;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Event\EventCollectionInterface;
-use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Event\Event;
+use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Event\EventSequence;
 use Exception;
 use SimpleTest;
 use SimpleTestContext;
@@ -25,12 +25,12 @@ use SimpleTestContext;
  *
  * @codeCoverageIgnore
  */
-class SimpletestAssertionRecorder extends AssertionRecorder
+class SimpletestAssertionRecorder implements AssertionRecorder
 {
     /**
      * Get the static instance of this recorder.
      *
-     * @return AssertionRecorderInterface The static recorder.
+     * @return AssertionRecorder The static recorder.
      */
     public static function instance()
     {
@@ -54,15 +54,15 @@ class SimpletestAssertionRecorder extends AssertionRecorder
     /**
      * Record that a successful assertion occurred.
      *
-     * @param array<EventInterface> $events The events.
+     * @param array<Event> $events The events.
      *
-     * @return EventCollectionInterface The result.
+     * @return EventCollection The result.
      */
     public function createSuccess(array $events = array())
     {
         $this->simpletestContext->getReporter()->paintPass('');
 
-        return parent::createSuccess($events);
+        return new EventSequence($events);
     }
 
     /**

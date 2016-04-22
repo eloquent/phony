@@ -11,14 +11,14 @@
 
 namespace Eloquent\Phony\Call;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Cardinality\Cardinality;
-use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -54,7 +54,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
-        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifier(
@@ -112,10 +112,10 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
 
-        $this->assertionResult = new EventCollection(array($this->call));
-        $this->returnedAssertionResult = new EventCollection(array($this->call->responseEvent()));
-        $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new EventCollection(array());
+        $this->assertionResult = new EventSequence(array($this->call));
+        $this->returnedAssertionResult = new EventSequence(array($this->call->responseEvent()));
+        $this->threwAssertionResult = new EventSequence(array($this->callWithException->responseEvent()));
+        $this->emptyAssertionResult = new EventSequence(array());
 
         $this->returnedTraversableEvent =
             $this->callEventFactory->createReturned(array('m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v'));
@@ -622,7 +622,7 @@ EOD;
             $this->assertionRenderer,
             $this->invocableInspector
         );
-        $this->threwAssertionResult = new EventCollection(array($this->callWithException->responseEvent()));
+        $this->threwAssertionResult = new EventSequence(array($this->callWithException->responseEvent()));
 
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw());
     }
@@ -757,30 +757,30 @@ EOD;
     public function testProduced()
     {
         $this->assertEquals(
-            new EventCollection(
+            new EventSequence(
                 array($this->iteratorEventA, $this->iteratorEventB, $this->iteratorEventE, $this->iteratorEventG)
             ),
             $this->traversableSubject->produced()
         );
         $this->assertEquals(
-            new EventCollection(array($this->iteratorEventA)),
+            new EventSequence(array($this->iteratorEventA)),
             $this->traversableSubject->produced('n')
         );
         $this->assertEquals(
-            new EventCollection(array($this->iteratorEventA)),
+            new EventSequence(array($this->iteratorEventA)),
             $this->traversableSubject->produced('m', 'n')
         );
         $this->assertEquals(
-            new EventCollection(
+            new EventSequence(
                 array($this->iteratorEventA, $this->iteratorEventB, $this->iteratorEventE, $this->iteratorEventG)
             ),
             $this->traversableSubject->times(4)->produced()
         );
         $this->assertEquals(
-            new EventCollection(array($this->iteratorEventA)),
+            new EventSequence(array($this->iteratorEventA)),
             $this->traversableSubject->once()->produced('n')
         );
-        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->produced('m'));
+        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->produced('m'));
     }
 
     public function testProducedFailureWithNoMatchers()
@@ -926,7 +926,7 @@ EOD;
 
     public function testProducedAll()
     {
-        $expected = new EventCollection(array($this->iteratorEventG));
+        $expected = new EventSequence(array($this->iteratorEventG));
 
         $this->assertEquals($expected, $this->traversableSubject->producedAll('n', 'q', 's', 'v'));
         $this->assertEquals(
@@ -937,9 +937,9 @@ EOD;
             $expected,
             $this->traversableSubject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
         );
-        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->producedAll('q', 's', 'v'));
-        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->producedAll('n', 's', 'v'));
-        $this->assertEquals(new EventCollection(array()), $this->traversableSubject->never()->producedAll('n', 'q', 's'));
+        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->producedAll('q', 's', 'v'));
+        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->producedAll('n', 's', 'v'));
+        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->producedAll('n', 'q', 's'));
     }
 
     public function testProducedAllFailureNothingProduced()

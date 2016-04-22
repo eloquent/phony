@@ -38,7 +38,7 @@ class SimpletestFacadeDriver extends AbstractIntegratedFacadeDriver
     /**
      * Create the assertion recorder.
      *
-     * @return AssertionRecorderInterface The assertion recorder.
+     * @return AssertionRecorder The assertion recorder.
      */
     protected function createAssertionRecorder()
     {

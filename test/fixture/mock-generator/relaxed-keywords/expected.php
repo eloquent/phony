@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorRelaxedKeywords
-implements \Eloquent\Phony\Mock\MockInterface,
+implements \Eloquent\Phony\Mock\Mock,
            \Eloquent\Phony\Test\TestInterfaceWithKeywordMethods
 {
     public function return()

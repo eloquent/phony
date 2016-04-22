@@ -12,14 +12,12 @@
 namespace Eloquent\Phony\Cardinality\Verification;
 
 use Eloquent\Phony\Cardinality\Cardinality;
-use Eloquent\Phony\Cardinality\CardinalityInterface;
-use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityExceptionInterface;
+use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException;
 
 /**
  * An abstract base class for implementing cardinality verifiers.
  */
-abstract class AbstractCardinalityVerifier implements
-    CardinalityVerifierInterface
+abstract class AbstractCardinalityVerifier implements CardinalityVerifier
 {
     /**
      * Construct a new cardinality verifier.
@@ -114,8 +112,8 @@ abstract class AbstractCardinalityVerifier implements
      * @param integer      $minimum The minimum match count.
      * @param integer|null $maximum The maximum match count, or null for no maximum.
      *
-     * @return $this                                This verifier.
-     * @throws InvalidCardinalityExceptionInterface If the cardinality is invalid.
+     * @return $this                       This verifier.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function between($minimum, $maximum)
     {
@@ -139,7 +137,7 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Reset the cardinality to its default value.
      *
-     * @return CardinalityInterface The current cardinality.
+     * @return Cardinality The current cardinality.
      */
     public function resetCardinality()
     {
@@ -152,7 +150,7 @@ abstract class AbstractCardinalityVerifier implements
     /**
      * Get the cardinality.
      *
-     * @return CardinalityInterface The cardinality.
+     * @return Cardinality The cardinality.
      */
     public function cardinality()
     {

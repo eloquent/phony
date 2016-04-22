@@ -12,33 +12,34 @@
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
-use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Mock\Handle\InstanceHandleInterface;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Stub\Answer\CallRequest;
-use Eloquent\Phony\Stub\StubInterface;
+use Eloquent\Phony\Stub\Stub;
 use Exception;
 use RuntimeException;
 
 /**
  * Builds generator stub answers.
+ *
+ * @api
  */
-class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
+class GeneratorAnswerBuilder
 {
     /**
      * Construct a new generator answer builder.
      *
-     * @param StubInterface               $stub                       The stub.
-     * @param boolean                     $isGeneratorReturnSupported True if generator return values are supported.
-     * @param InvocableInspectorInterface $invocableInspector         The invocable inspector to use.
-     * @param InvokerInterface            $invoker                    The invoker to use.
+     * @param Stub               $stub                       The stub.
+     * @param boolean            $isGeneratorReturnSupported True if generator return values are supported.
+     * @param InvocableInspector $invocableInspector         The invocable inspector to use.
+     * @param Invoker            $invoker                    The invoker to use.
      */
     public function __construct(
-        StubInterface $stub,
+        Stub $stub,
         $isGeneratorReturnSupported,
-        InvocableInspectorInterface $invocableInspector,
-        InvokerInterface $invoker
+        InvocableInspector $invocableInspector,
+        Invoker $invoker
     ) {
         $this->stub = $stub;
         $this->isGeneratorReturnSupported = $isGeneratorReturnSupported;
@@ -52,6 +53,8 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
 
     /**
      * Add a callback to be called as part of the answer.
+     *
+     * @api
      *
      * @param callable $callback The callback.
      * @param callable ...$additionalCallbacks Additional callbacks.
@@ -72,11 +75,13 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      *
      * This method supports reference parameters.
      *
-     * @param callable                 $callback              The callback.
-     * @param ArgumentsInterface|array $arguments             The arguments.
-     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
+     * @api
+     *
+     * @param callable        $callback              The callback.
+     * @param Arguments|array $arguments             The arguments.
+     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
+     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
         $callback,
@@ -93,7 +98,7 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
                 'phonySelf' === $parameters[0]->getName();
         }
 
-        if (!$arguments instanceof ArgumentsInterface) {
+        if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);
         }
 
@@ -113,6 +118,8 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @api
      *
      * @param integer $index The argument index.
      * @param integer ...$additionalIndices Additional argument indices to call.
@@ -138,11 +145,13 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer                  $index                 The argument index.
-     * @param ArgumentsInterface|array $arguments             The arguments.
-     * @param boolean|null             $prefixSelf            True if the self value should be prefixed.
-     * @param boolean                  $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean                  $suffixArguments       True if the arguments should be appended individually.
+     * @api
+     *
+     * @param integer         $index                 The argument index.
+     * @param Arguments|array $arguments             The arguments.
+     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
+     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
+     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This builder.
      */
@@ -155,7 +164,7 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
     ) {
         $invoker = $this->invoker;
 
-        if (!$arguments instanceof ArgumentsInterface) {
+        if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);
         }
 
@@ -206,6 +215,8 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      * If called with two arguments, sets the argument at $indexOrValue to
      * $value.
      *
+     * @api
+     *
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
      *
@@ -221,7 +232,7 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
         }
 
         if (
-            $value instanceof InstanceHandleInterface &&
+            $value instanceof InstanceHandle &&
             $value->isAdaptable()
         ) {
             $value = $value->mock();
@@ -251,6 +262,8 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      *
      * If no arguments are supplied, the stub will yield like `yield;`.
      *
+     * @api
+     *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
@@ -276,14 +289,14 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
         }
 
         if (
-            $key instanceof InstanceHandleInterface &&
+            $key instanceof InstanceHandle &&
             $key->isAdaptable()
         ) {
             $key = $key->mock();
         }
 
         if (
-            $value instanceof InstanceHandleInterface &&
+            $value instanceof InstanceHandle &&
             $value->isAdaptable()
         ) {
             $value = $value->mock();
@@ -304,6 +317,8 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
     /**
      * Add a set of yielded values to the answer.
      *
+     * @api
+     *
      * @param mixed<mixed,mixed> $values The set of keys and values to yield.
      *
      * @return $this This builder.
@@ -320,10 +335,12 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
     /**
      * End the generator by returning a value.
      *
+     * @api
+     *
      * @param mixed $value The return value.
      * @param mixed ...$additionalValues Additional return values for subsequent invocations.
      *
-     * @return StubInterface    The stub.
+     * @return Stub             The stub.
      * @throws RuntimeException If the current runtime does not support the supplied return value.
      */
     public function returns($value = null)
@@ -336,7 +353,7 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
         }
 
         if (
-            $value instanceof InstanceHandleInterface &&
+            $value instanceof InstanceHandle &&
             $value->isAdaptable()
         ) {
             $value = $value->mock();
@@ -371,9 +388,11 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
+     * @api
+     *
      * @param integer $index The argument index.
      *
-     * @return StubInterface The stub.
+     * @return Stub The stub.
      */
     public function returnsArgument($index = 0)
     {
@@ -393,7 +412,9 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
     /**
      * End the generator by returning the self value.
      *
-     * @return StubInterface The stub.
+     * @api
+     *
+     * @return Stub The stub.
      */
     public function returnsSelf()
     {
@@ -413,10 +434,12 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
     /**
      * End the generator by throwing an exception.
      *
+     * @api
+     *
      * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
      * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
-     * @return StubInterface The stub.
+     * @return Stub The stub.
      */
     public function throws($exception = null)
     {
@@ -430,7 +453,7 @@ class GeneratorAnswerBuilder implements GeneratorAnswerBuilderInterface
         if (is_string($exception)) {
             $exception = new Exception($exception);
         } elseif (
-            $exception instanceof InstanceHandleInterface &&
+            $exception instanceof InstanceHandle &&
             $exception->isAdaptable()
         ) {
             $exception = $exception->mock();

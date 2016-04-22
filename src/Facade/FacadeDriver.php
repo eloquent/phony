@@ -12,19 +12,13 @@
 namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Event\Verification\EventOrderVerifier;
-use Eloquent\Phony\Event\Verification\EventOrderVerifierInterface;
-use Eloquent\Phony\Exporter\ExporterInterface;
+use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
-use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactoryInterface;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
 use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
-use Eloquent\Phony\Spy\Factory\SpyVerifierFactoryInterface;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
 
 /**
  * A service container that supplies all of the underlying services required by
@@ -57,22 +51,22 @@ class FacadeDriver
     /**
      * Construct a new facade driver.
      *
-     * @param MockBuilderFactoryInterface  $mockBuilderFactory  The mock builder factory to use.
-     * @param HandleFactoryInterface       $handleFactory       The handle factory to use.
-     * @param SpyVerifierFactoryInterface  $spyVerifierFactory  The spy verifier factory to use.
-     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
-     * @param EventOrderVerifierInterface  $eventOrderVerifier  The event order verifier to use.
-     * @param MatcherFactoryInterface      $matcherFactory      The matcher factory to use.
-     * @param ExporterInterface            $exporter            The exporter to use.
+     * @param MockBuilderFactory  $mockBuilderFactory  The mock builder factory to use.
+     * @param HandleFactory       $handleFactory       The handle factory to use.
+     * @param SpyVerifierFactory  $spyVerifierFactory  The spy verifier factory to use.
+     * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
+     * @param EventOrderVerifier  $eventOrderVerifier  The event order verifier to use.
+     * @param MatcherFactory      $matcherFactory      The matcher factory to use.
+     * @param Exporter            $exporter            The exporter to use.
      */
     public function __construct(
-        MockBuilderFactoryInterface $mockBuilderFactory,
-        HandleFactoryInterface $handleFactory,
-        SpyVerifierFactoryInterface $spyVerifierFactory,
-        StubVerifierFactoryInterface $stubVerifierFactory,
-        EventOrderVerifierInterface $eventOrderVerifier,
-        MatcherFactoryInterface $matcherFactory,
-        ExporterInterface $exporter
+        MockBuilderFactory $mockBuilderFactory,
+        HandleFactory $handleFactory,
+        SpyVerifierFactory $spyVerifierFactory,
+        StubVerifierFactory $stubVerifierFactory,
+        EventOrderVerifier $eventOrderVerifier,
+        MatcherFactory $matcherFactory,
+        Exporter $exporter
     ) {
         $this->mockBuilderFactory = $mockBuilderFactory;
         $this->handleFactory = $handleFactory;

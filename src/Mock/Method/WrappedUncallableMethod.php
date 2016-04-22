@@ -24,7 +24,7 @@ class WrappedUncallableMethod extends AbstractWrappedMethod
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param Arguments|array $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.

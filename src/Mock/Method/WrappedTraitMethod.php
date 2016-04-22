@@ -12,8 +12,7 @@
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Handle\HandleInterface;
+use Eloquent\Phony\Mock\Handle\Handle;
 use Error;
 use Exception;
 use ReflectionMethod;
@@ -29,13 +28,13 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      * @param ReflectionMethod $callTraitMethod The _callTrait() method.
      * @param string           $traitName       The trait name.
      * @param ReflectionMethod $method          The method.
-     * @param HandleInterface  $handle          The handle.
+     * @param Handle           $handle          The handle.
      */
     public function __construct(
         ReflectionMethod $callTraitMethod,
         $traitName,
         ReflectionMethod $method,
-        HandleInterface $handle
+        Handle $handle
     ) {
         $this->callTraitMethod = $callTraitMethod;
         $this->traitName = $traitName;
@@ -68,14 +67,14 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param Arguments|array $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
     public function invokeWith($arguments = array())
     {
-        if (!$arguments instanceof ArgumentsInterface) {
+        if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);
         }
 

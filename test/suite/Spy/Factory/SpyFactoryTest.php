@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Spy\Factory;
 use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Spy\SpyData;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -39,7 +39,7 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $callback = function () {};
-        $expected = new Spy(
+        $expected = new SpyData(
             $callback,
             '0',
             $this->callFactory,

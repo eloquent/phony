@@ -17,8 +17,7 @@ use ReflectionClass;
 /**
  * Represents a failed assertion.
  */
-final class AssertionException extends Exception implements
-    AssertionExceptionInterface
+final class AssertionException extends Exception
 {
     /**
      * Trim the supplied exception's stack trace to only include relevant

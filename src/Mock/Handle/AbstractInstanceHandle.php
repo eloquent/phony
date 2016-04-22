@@ -11,14 +11,13 @@
 
 namespace Eloquent\Phony\Mock\Handle;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Invocation\InvokerInterface;
-use Eloquent\Phony\Mock\MockInterface;
-use Eloquent\Phony\Stub\Factory\StubFactoryInterface;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactoryInterface;
+use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Stub\Factory\StubFactory;
+use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use ReflectionClass;
 use ReflectionObject;
 use stdClass;
@@ -27,27 +26,27 @@ use stdClass;
  * An abstract base class for implementing instance handles.
  */
 abstract class AbstractInstanceHandle extends AbstractHandle implements
-    InstanceHandleInterface
+    InstanceHandle
 {
     /**
      * Construct a new instance handle.
      *
-     * @param MockInterface                $mock                The mock.
-     * @param stdClass                     $state               The state.
-     * @param StubFactoryInterface         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactoryInterface $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
-     * @param InvokerInterface             $invoker             The invoker to use.
+     * @param Mock                $mock                The mock.
+     * @param stdClass            $state               The state.
+     * @param StubFactory         $stubFactory         The stub factory to use.
+     * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
+     * @param Invoker             $invoker             The invoker to use.
      */
     public function __construct(
-        MockInterface $mock,
+        Mock $mock,
         stdClass $state,
-        StubFactoryInterface $stubFactory,
-        StubVerifierFactoryInterface $stubVerifierFactory,
-        AssertionRendererInterface $assertionRenderer,
-        AssertionRecorderInterface $assertionRecorder,
-        InvokerInterface $invoker
+        StubFactory $stubFactory,
+        StubVerifierFactory $stubVerifierFactory,
+        AssertionRenderer $assertionRenderer,
+        AssertionRecorder $assertionRecorder,
+        Invoker $invoker
     ) {
         $class = new ReflectionClass($mock);
 
@@ -101,7 +100,7 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
     /**
      * Get the mock.
      *
-     * @return MockInterface The mock.
+     * @return Mock The mock.
      */
     public function mock()
     {
@@ -123,14 +122,14 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
     /**
      * Call the original constructor.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param Arguments|array $arguments The arguments.
      *
      * @return $this This handle.
      */
     public function constructWith($arguments = array())
     {
         if ($this->callParentConstructorMethod) {
-            if (!$arguments instanceof ArgumentsInterface) {
+            if (!$arguments instanceof Arguments) {
                 $arguments = new Arguments($arguments);
             }
 

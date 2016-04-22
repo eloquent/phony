@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
+use Eloquent\Phony\Matcher\Driver\MatcherDriver;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 
-class TestMatcherDriverB implements MatcherDriverInterface
+class TestMatcherDriverB implements MatcherDriver
 {
     public function isAvailable()
     {

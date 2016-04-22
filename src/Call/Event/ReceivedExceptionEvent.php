@@ -18,7 +18,7 @@ use Exception;
  * Represents an exception received by a generator.
  */
 class ReceivedExceptionEvent extends AbstractCallEvent implements
-    ReceivedExceptionEventInterface
+    TraversableEvent
 {
     /**
      * Construct a 'received exception' event.

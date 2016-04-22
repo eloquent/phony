@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Mock\Handle\Verification;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
+use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
@@ -29,13 +29,13 @@ class StaticVerificationHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->state = (object) array(
             'stubs' => (object) array(),
-            'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback',
+            'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
             'isRecording' => true,
         );
         $this->stubFactory = StubFactory::instance();
         $this->stubVerifierFactory = StubVerifierFactory::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
-        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invoker = new Invoker();
 
         $this->mockBuilderFactory = MockBuilderFactory::instance();
@@ -151,7 +151,7 @@ class StaticVerificationHandleTest extends PHPUnit_Framework_TestCase
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
         $actual = $this->subject->spy('testClassAStaticMethodA');
 
-        $this->assertInstanceOf('Eloquent\Phony\Spy\Spy', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Spy\SpyData', $actual);
         $this->assertSame($actual, $this->subject->spy('testClassAStaticMethodA'));
         $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda->spy());
     }
@@ -172,7 +172,7 @@ class StaticVerificationHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->assertEquals(new EventCollection(array()), $this->subject->noInteraction());
+        $this->assertEquals(new EventSequence(array()), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()

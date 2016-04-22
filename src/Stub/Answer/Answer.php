@@ -14,16 +14,16 @@ namespace Eloquent\Phony\Stub\Answer;
 /**
  * Represents a stub answer.
  */
-class Answer implements AnswerInterface
+class Answer
 {
     /**
      * Construct a new answer.
      *
-     * @param CallRequestInterface        $primaryRequest    The primary request.
-     * @param array<CallRequestInterface> $secondaryRequests The secondary requests.
+     * @param CallRequest        $primaryRequest    The primary request.
+     * @param array<CallRequest> $secondaryRequests The secondary requests.
      */
     public function __construct(
-        CallRequestInterface $primaryRequest,
+        CallRequest $primaryRequest,
         array $secondaryRequests
     ) {
         $this->primaryRequest = $primaryRequest;
@@ -33,7 +33,7 @@ class Answer implements AnswerInterface
     /**
      * Get the primary request.
      *
-     * @return CallRequestInterface The primary request.
+     * @return CallRequest The primary request.
      */
     public function primaryRequest()
     {
@@ -43,7 +43,7 @@ class Answer implements AnswerInterface
     /**
      * Get the secondary requests.
      *
-     * @return array<CallRequestInterface> The secondary requests.
+     * @return array<CallRequest> The secondary requests.
      */
     public function secondaryRequests()
     {

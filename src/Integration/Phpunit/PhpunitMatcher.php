@@ -39,4 +39,14 @@ class PhpunitMatcher extends WrappedMatcher
     {
         return '<' . $this->matcher->toString() . '>';
     }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString()
+    {
+        return '<' . $this->matcher->toString() . '>';
+    }
 }

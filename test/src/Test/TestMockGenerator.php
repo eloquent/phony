@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -30,10 +30,8 @@ class TestMockGenerator extends MockGenerator
         );
     }
 
-    public function generate(
-        MockDefinitionInterface $definition,
-        $className = null
-    ) {
+    public function generate(MockDefinition $definition, $className = null)
+    {
         return $this->source;
     }
 

@@ -11,15 +11,19 @@
 
 namespace Eloquent\Phony\Mock\Handle\Verification;
 
-use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
+use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Handle\AbstractStaticHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Exception;
 
 /**
  * A handle for verifying a mock class.
+ *
+ * @api
  */
 class StaticVerificationHandle extends AbstractStaticHandle implements
-    StaticVerificationHandleInterface
+    StaticHandle,
+    VerificationHandle
 {
     /**
      * Throws an exception unless the specified method was called with the
@@ -28,9 +32,9 @@ class StaticVerificationHandle extends AbstractStaticHandle implements
      * @param string $name      The method name.
      * @param array  $arguments The arguments.
      *
-     * @return $this                  This handle.
-     * @throws MockExceptionInterface If the stub does not exist.
-     * @throws Exception              If the assertion fails, and the assertion recorder throws exceptions.
+     * @return $this         This handle.
+     * @throws MockException If the stub does not exist.
+     * @throws Exception     If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function __call($name, array $arguments)
     {

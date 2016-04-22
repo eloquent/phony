@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Integration\Mockery;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
-use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
-use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\Driver\MatcherDriver;
+use Eloquent\Phony\Matcher\Matcher;
 
 /**
  * A matcher driver for Mockery matchers.
@@ -23,7 +23,7 @@ class MockeryMatcherDriver extends AbstractMatcherDriver
     /**
      * Get the static instance of this driver.
      *
-     * @return MatcherDriverInterface The static driver.
+     * @return MatcherDriver The static driver.
      */
     public static function instance()
     {
@@ -59,7 +59,7 @@ class MockeryMatcherDriver extends AbstractMatcherDriver
      *
      * @param object $matcher The matcher to wrap.
      *
-     * @return MatcherInterface The wrapped matcher.
+     * @return Matcher The wrapped matcher.
      */
     public function wrapMatcher($matcher)
     {

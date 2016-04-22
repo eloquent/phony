@@ -14,12 +14,12 @@ namespace Eloquent\Phony\Matcher;
 /**
  * A matcher that always returns true.
  */
-class AnyMatcher extends AbstractMatcher
+class AnyMatcher implements Matcher
 {
     /**
      * Get the static instance of this matcher.
      *
-     * @return MatcherInterface The static matcher.
+     * @return Matcher The static matcher.
      */
     public static function instance()
     {
@@ -48,6 +48,16 @@ class AnyMatcher extends AbstractMatcher
      * @return string The description.
      */
     public function describe()
+    {
+        return '<any>';
+    }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString()
     {
         return '<any>';
     }

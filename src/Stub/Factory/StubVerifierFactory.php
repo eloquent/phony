@@ -11,37 +11,29 @@
 
 namespace Eloquent\Phony\Stub\Factory;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
-use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Invocation\InvokerInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Eloquent\Phony\Spy\Factory\SpyFactory;
-use Eloquent\Phony\Spy\Factory\SpyFactoryInterface;
-use Eloquent\Phony\Spy\SpyInterface;
+use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactoryInterface;
-use Eloquent\Phony\Stub\StubInterface;
+use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Stub\StubVerifier;
 
 /**
  * Creates stub verifiers.
  */
-class StubVerifierFactory implements StubVerifierFactoryInterface
+class StubVerifierFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return StubVerifierFactoryInterface The static factory.
+     * @return StubVerifierFactory The static factory.
      */
     public static function instance()
     {
@@ -52,7 +44,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
                 MatcherFactory::instance(),
                 MatcherVerifier::instance(),
                 CallVerifierFactory::instance(),
-                AssertionRecorder::instance(),
+                ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
                 InvocableInspector::instance(),
                 Invoker::instance(),
@@ -66,28 +58,28 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     /**
      * Construct a new stub verifier factory.
      *
-     * @param StubFactoryInterface                   $stubFactory                   The stub factory to use.
-     * @param SpyFactoryInterface                    $spyFactory                    The spy factory to use.
-     * @param MatcherFactoryInterface                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifierInterface               $matcherVerifier               The macther verifier to use.
-     * @param CallVerifierFactoryInterface           $callVerifierFactory           The call verifier factory to use.
-     * @param AssertionRecorderInterface             $assertionRecorder             The assertion recorder to use.
-     * @param AssertionRendererInterface             $assertionRenderer             The assertion renderer to use.
-     * @param InvocableInspectorInterface            $invocableInspector            The invocable inspector to use.
-     * @param InvokerInterface                       $invoker                       The invoker to use.
-     * @param GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param StubFactory                   $stubFactory                   The stub factory to use.
+     * @param SpyFactory                    $spyFactory                    The spy factory to use.
+     * @param MatcherFactory                $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifier               $matcherVerifier               The macther verifier to use.
+     * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.
+     * @param AssertionRecorder             $assertionRecorder             The assertion recorder to use.
+     * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
+     * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
+     * @param Invoker                       $invoker                       The invoker to use.
+     * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
-        StubFactoryInterface $stubFactory,
-        SpyFactoryInterface $spyFactory,
-        MatcherFactoryInterface $matcherFactory,
-        MatcherVerifierInterface $matcherVerifier,
-        CallVerifierFactoryInterface $callVerifierFactory,
-        AssertionRecorderInterface $assertionRecorder,
-        AssertionRendererInterface $assertionRenderer,
-        InvocableInspectorInterface $invocableInspector,
-        InvokerInterface $invoker,
-        GeneratorAnswerBuilderFactoryInterface $generatorAnswerBuilderFactory
+        StubFactory $stubFactory,
+        SpyFactory $spyFactory,
+        MatcherFactory $matcherFactory,
+        MatcherVerifier $matcherVerifier,
+        CallVerifierFactory $callVerifierFactory,
+        AssertionRecorder $assertionRecorder,
+        AssertionRenderer $assertionRenderer,
+        InvocableInspector $invocableInspector,
+        Invoker $invoker,
+        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
     ) {
         $this->stubFactory = $stubFactory;
         $this->spyFactory = $spyFactory;
@@ -104,12 +96,12 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
     /**
      * Create a new stub verifier.
      *
-     * @param StubInterface|null $stub The stub, or null to create an anonymous stub.
-     * @param SpyInterface|null  $spy  The spy, or null to spy on the supplied stub.
+     * @param Stub|null $stub The stub, or null to create an anonymous stub.
+     * @param Spy|null  $spy  The spy, or null to spy on the supplied stub.
      *
-     * @return StubVerifierInterface The newly created stub verifier.
+     * @return StubVerifier The newly created stub verifier.
      */
-    public function create(StubInterface $stub = null, SpyInterface $spy = null)
+    public function create(Stub $stub = null, Spy $spy = null)
     {
         if (!$stub) {
             $stub = $this->stubFactory->create();
@@ -137,7 +129,7 @@ class StubVerifierFactory implements StubVerifierFactoryInterface
      *
      * @param callable|null $callback The callback, or null to create an anonymous stub.
      *
-     * @return StubVerifierInterface The newly created stub verifier.
+     * @return StubVerifier The newly created stub verifier.
      */
     public function createFromCallback($callback = null)
     {

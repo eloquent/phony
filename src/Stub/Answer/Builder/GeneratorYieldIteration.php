@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
-use Eloquent\Phony\Stub\Answer\CallRequestInterface;
+use Eloquent\Phony\Stub\Answer\CallRequest;
 
 /**
  * Represents an iteration of a generator that ends in a yield.
@@ -23,11 +23,11 @@ class GeneratorYieldIteration
     /**
      * Construct a new generator yield iteration.
      *
-     * @param array<CallRequestInterface> $requests The requests.
-     * @param boolean                     $hasKey   True if the key should be yielded.
-     * @param mixed                       $key      The key.
-     * @param boolean                     $hasValue True if the value should be yielded.
-     * @param mixed                       $value    The value.
+     * @param array<CallRequest> $requests The requests.
+     * @param boolean            $hasKey   True if the key should be yielded.
+     * @param mixed              $key      The key.
+     * @param boolean            $hasValue True if the value should be yielded.
+     * @param mixed              $value    The value.
      */
     public function __construct(
         array $requests,

@@ -39,4 +39,14 @@ class SimpletestMatcher extends WrappedMatcher
     {
         return '<' . get_class($this->matcher) . '>';
     }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString()
+    {
+        return '<' . get_class($this->matcher) . '>';
+    }
 }

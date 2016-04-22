@@ -11,12 +11,12 @@
 
 namespace Eloquent\Phony\Mock\Handle\Factory;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandle;
 use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
-use Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle;
 use Eloquent\Phony\Stub\Factory\StubFactory;
 use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
@@ -30,7 +30,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
         $this->stubFactory = StubFactory::instance();
         $this->stubVerifierFactory = StubVerifierFactory::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
-        $this->assertionRecorder = AssertionRecorder::instance();
+        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invoker = new Invoker();
         $this->subject = new HandleFactory(
             $this->stubFactory,
@@ -50,10 +50,10 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
         $handleProperty = new ReflectionProperty($mock, '_handle');
         $handleProperty->setAccessible(true);
         $handleProperty->setValue($mock, null);
-        $expected = new StubbingHandle(
+        $expected = new InstanceStubbingHandle(
             $mock,
             (object) array(
-                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::returnsEmptyAnswerCallback',
+                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
                 'stubs' => (object) array(),
                 'isRecording' => true,
                 'label' => 'label',
@@ -110,7 +110,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
         $stubbingHandle = $handleProperty->getValue($mock);
         $actual = $this->subject->createVerification($mock);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\VerificationHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle', $actual);
         $this->assertSame($stubbingHandle->mock(), $actual->mock());
         $this->assertSame($stubbingHandle->stubs(), $actual->stubs());
         $this->assertSame($stubbingHandle->label(), $actual->label());
@@ -132,7 +132,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
         $stubbingHandle = $this->subject->createStubbing($mock);
         $actual = $this->subject->createVerification($mock);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\VerificationHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle', $actual);
         $this->assertSame($stubbingHandle->mock(), $actual->mock());
         $this->assertSame($stubbingHandle->stubs(), $actual->stubs());
         $this->assertSame($stubbingHandle->label(), $actual->label());
@@ -148,7 +148,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
         $expected = new StaticStubbingHandle(
             $class,
             (object) array(
-                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\Stub::forwardsAnswerCallback',
+                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback',
                 'stubs' => (object) array(),
                 'isRecording' => true,
             ),

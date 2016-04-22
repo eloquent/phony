@@ -12,30 +12,23 @@
 namespace Eloquent\Phony\Spy;
 
 use ArrayIterator;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Call\CallInterface;
-use Eloquent\Phony\Call\CallVerifierInterface;
-use Eloquent\Phony\Call\Event\ProducedEventInterface;
-use Eloquent\Phony\Call\Event\ReceivedEventInterface;
-use Eloquent\Phony\Call\Event\ReceivedExceptionEventInterface;
+use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallVerifier;
+use Eloquent\Phony\Call\Event\ProducedEvent;
+use Eloquent\Phony\Call\Event\ReceivedEvent;
+use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Factory\CallVerifierFactory;
-use Eloquent\Phony\Call\Factory\CallVerifierFactoryInterface;
 use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
-use Eloquent\Phony\Event\EventCollectionInterface;
-use Eloquent\Phony\Event\EventInterface;
+use Eloquent\Phony\Event\Event;
+use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 use Error;
 use Exception;
 use InvalidArgumentException;
@@ -45,28 +38,27 @@ use Throwable;
 /**
  * Provides convenience methods for verifying interactions with a spy.
  */
-class SpyVerifier extends AbstractCardinalityVerifier implements
-    SpyVerifierInterface
+class SpyVerifier extends AbstractCardinalityVerifier implements Spy
 {
     /**
      * Construct a new spy verifier.
      *
-     * @param SpyInterface                 $spy                 The spy.
-     * @param MatcherFactoryInterface      $matcherFactory      The matcher factory to use.
-     * @param MatcherVerifierInterface     $matcherVerifier     The macther verifier to use.
-     * @param CallVerifierFactoryInterface $callVerifierFactory The call verifier factory to use.
-     * @param AssertionRecorderInterface   $assertionRecorder   The assertion recorder to use.
-     * @param AssertionRendererInterface   $assertionRenderer   The assertion renderer to use.
-     * @param InvocableInspectorInterface  $invocableInspector  The invocable inspector to use.
+     * @param Spy                 $spy                 The spy.
+     * @param MatcherFactory      $matcherFactory      The matcher factory to use.
+     * @param MatcherVerifier     $matcherVerifier     The macther verifier to use.
+     * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
+     * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
+     * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
+     * @param InvocableInspector  $invocableInspector  The invocable inspector to use.
      */
     public function __construct(
-        SpyInterface $spy,
-        MatcherFactoryInterface $matcherFactory,
-        MatcherVerifierInterface $matcherVerifier,
-        CallVerifierFactoryInterface $callVerifierFactory,
-        AssertionRecorderInterface $assertionRecorder,
-        AssertionRendererInterface $assertionRenderer,
-        InvocableInspectorInterface $invocableInspector
+        Spy $spy,
+        MatcherFactory $matcherFactory,
+        MatcherVerifier $matcherVerifier,
+        CallVerifierFactory $callVerifierFactory,
+        AssertionRecorder $assertionRecorder,
+        AssertionRenderer $assertionRenderer,
+        InvocableInspector $invocableInspector
     ) {
         parent::__construct();
 
@@ -82,7 +74,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the spy.
      *
-     * @return SpyInterface The spy.
+     * @return Spy The spy.
      */
     public function spy()
     {
@@ -208,7 +200,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Set the calls.
      *
-     * @param array<CallInterface> $calls The calls.
+     * @param array<Call> $calls The calls.
      */
     public function setCalls(array $calls)
     {
@@ -218,9 +210,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Add a call.
      *
-     * @param CallInterface $call The call.
+     * @param Call $call The call.
      */
-    public function addCall(CallInterface $call)
+    public function addCall(Call $call)
     {
         $this->spy->addCall($call);
     }
@@ -268,7 +260,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get all events as an array.
      *
-     * @return array<EventInterface> The events.
+     * @return array<Event> The events.
      */
     public function allEvents()
     {
@@ -278,7 +270,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get all calls as an array.
      *
-     * @return array<CallVerifierInterface> The calls.
+     * @return array<CallVerifier> The calls.
      */
     public function allCalls()
     {
@@ -288,7 +280,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the first event.
      *
-     * @return EventInterface          The event.
+     * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
     public function firstEvent()
@@ -299,7 +291,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the last event.
      *
-     * @return EventInterface          The event.
+     * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
     public function lastEvent()
@@ -315,7 +307,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param integer $index The index.
      *
-     * @return EventInterface          The event.
+     * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
     public function eventAt($index = 0)
@@ -326,7 +318,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the first call.
      *
-     * @return CallInterface          The call.
+     * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
     public function firstCall()
@@ -337,7 +329,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the last call.
      *
-     * @return CallInterface          The call.
+     * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
     public function lastCall()
@@ -353,7 +345,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param integer $index The index.
      *
-     * @return CallVerifierInterface  The call.
+     * @return CallVerifier           The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
     public function callAt($index = 0)
@@ -384,8 +376,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Get the arguments.
      *
-     * @return ArgumentsInterface|null The arguments.
-     * @throws UndefinedCallException  If there are no calls.
+     * @return Arguments|null         The arguments.
+     * @throws UndefinedCallException If there are no calls.
      */
     public function arguments()
     {
@@ -413,7 +405,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * This method supports reference parameters.
      *
-     * @param ArgumentsInterface|array $arguments The arguments.
+     * @param Arguments|array $arguments The arguments.
      *
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
@@ -452,7 +444,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Checks if called.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkCalled()
     {
@@ -469,8 +461,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
     /**
      * Throws an exception unless called.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function called()
     {
@@ -507,7 +499,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed ...$argument The arguments.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkCalledWith()
     {
@@ -539,8 +531,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed ...$argument The arguments.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith()
     {
@@ -586,7 +578,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param object|null $value The possible $this value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkCalledOn($value)
     {
@@ -632,8 +624,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param object|null $value The possible $this value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledOn($value)
     {
@@ -677,7 +669,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkReturned($value = null)
     {
@@ -728,8 +720,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null)
     {
@@ -789,8 +781,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface|null The result.
-     * @throws InvalidArgumentException      If the type is invalid.
+     * @return EventCollection|null     The result.
+     * @throws InvalidArgumentException If the type is invalid.
      */
     public function checkThrew($type = null)
     {
@@ -886,7 +878,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface The result.
+     * @return EventCollection          The result.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -960,7 +952,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkProduced($keyOrValue = null, $value = null)
     {
@@ -989,7 +981,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         foreach ($calls as $call) {
             foreach ($call->traversableEvents() as $event) {
-                if ($event instanceof ProducedEventInterface) {
+                if ($event instanceof ProducedEvent) {
                     if ($checkKey && !$key->matches($event->key())) {
                         continue;
                     }
@@ -1024,8 +1016,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -1097,7 +1089,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed ...$pairs The key-value pairs.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkProducedAll()
     {
@@ -1129,7 +1121,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
             $producedEvents = array();
 
             foreach ($call->traversableEvents() as $event) {
-                if ($event instanceof ProducedEventInterface) {
+                if ($event instanceof ProducedEvent) {
                     $producedEvents[] = $event;
                     $lastEvent = $event;
                 }
@@ -1178,8 +1170,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed ...$pairs The key-value pairs.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function producedAll()
     {
@@ -1258,7 +1250,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface|null The result.
+     * @return EventCollection|null The result.
      */
     public function checkReceived($value = null)
     {
@@ -1280,7 +1272,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
         foreach ($calls as $call) {
             foreach ($call->traversableEvents() as $event) {
-                if ($event instanceof ReceivedEventInterface) {
+                if ($event instanceof ReceivedEvent) {
                     if (!$checkValue || $value->matches($event->value())) {
                         $matchingEvents[] = $event;
                         ++$matchCount;
@@ -1302,8 +1294,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param mixed $value The value.
      *
-     * @return EventCollectionInterface The result.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null)
     {
@@ -1366,8 +1358,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface|null The result.
-     * @throws InvalidArgumentException      If the type is invalid.
+     * @return EventCollection|null     The result.
+     * @throws InvalidArgumentException If the type is invalid.
      */
     public function checkReceivedException($type = null)
     {
@@ -1384,7 +1376,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
             foreach ($calls as $call) {
                 foreach ($call->traversableEvents() as $event) {
-                    if ($event instanceof ReceivedExceptionEventInterface) {
+                    if ($event instanceof ReceivedExceptionEvent) {
                         $matchingEvents[] = $event;
                         ++$matchCount;
                     }
@@ -1395,7 +1387,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
             foreach ($calls as $call) {
                 foreach ($call->traversableEvents() as $event) {
-                    if ($event instanceof ReceivedExceptionEventInterface) {
+                    if ($event instanceof ReceivedExceptionEvent) {
                         if (is_a($event->exception(), $type)) {
                             $matchingEvents[] = $event;
                             ++$matchCount;
@@ -1409,7 +1401,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
                 foreach ($calls as $call) {
                     foreach ($call->traversableEvents() as $event) {
-                        if ($event instanceof ReceivedExceptionEventInterface) {
+                        if ($event instanceof ReceivedExceptionEvent) {
                             if ($event->exception() == $type) {
                                 $matchingEvents[] = $event;
                                 ++$matchCount;
@@ -1423,7 +1415,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
 
                 foreach ($calls as $call) {
                     foreach ($call->traversableEvents() as $event) {
-                        if ($event instanceof ReceivedExceptionEventInterface) {
+                        if ($event instanceof ReceivedExceptionEvent) {
                             if ($type->matches($event->exception())) {
                                 $matchingEvents[] = $event;
                                 ++$matchCount;
@@ -1454,7 +1446,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements
      *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollectionInterface The result.
+     * @return EventCollection          The result.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
      */

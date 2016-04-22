@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Integration\Phake;
 
 use Eloquent\Phony\Matcher\Driver\AbstractMatcherDriver;
-use Eloquent\Phony\Matcher\Driver\MatcherDriverInterface;
-use Eloquent\Phony\Matcher\MatcherInterface;
+use Eloquent\Phony\Matcher\Driver\MatcherDriver;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Matcher\WrappedMatcher;
 
@@ -25,7 +25,7 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
     /**
      * Get the static instance of this driver.
      *
-     * @return MatcherDriverInterface The static driver.
+     * @return MatcherDriver The static driver.
      */
     public static function instance()
     {
@@ -65,7 +65,7 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
      *
      * @param object $matcher The matcher to wrap.
      *
-     * @return MatcherInterface The wrapped matcher.
+     * @return Matcher The wrapped matcher.
      */
     public function wrapMatcher($matcher)
     {

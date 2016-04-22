@@ -22,12 +22,12 @@ use ReflectionType;
 /**
  * Utilities for inspecting invocables.
  */
-class InvocableInspector implements InvocableInspectorInterface
+class InvocableInspector
 {
     /**
      * Get the static instance of this inspector.
      *
-     * @return InvocableInspectorInterface The static inspector.
+     * @return InvocableInspector The static inspector.
      */
     public static function instance()
     {
@@ -60,7 +60,7 @@ class InvocableInspector implements InvocableInspectorInterface
      */
     public function callbackReflector($callback)
     {
-        while ($callback instanceof WrappedInvocableInterface) {
+        while ($callback instanceof WrappedInvocable) {
             $callback = $callback->callback();
         }
 

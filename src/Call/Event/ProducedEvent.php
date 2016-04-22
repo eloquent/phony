@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * Represents a produced key-value pair.
  */
-class ProducedEvent extends AbstractCallEvent implements ProducedEventInterface
+class ProducedEvent extends AbstractCallEvent implements TraversableEvent
 {
     /**
      * Construct a 'produced' event.

@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorTraitConflict
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     use \Eloquent\Phony\Test\TestTraitA,
         \Eloquent\Phony\Test\TestTraitB,
@@ -112,7 +112,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -129,7 +129,7 @@ implements \Eloquent\Phony\Mock\MockInterface
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\ArgumentsInterface $arguments
+        \Eloquent\Phony\Call\Argument\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(

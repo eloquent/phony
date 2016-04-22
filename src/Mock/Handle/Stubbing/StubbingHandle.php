@@ -11,36 +11,28 @@
 
 namespace Eloquent\Phony\Mock\Handle\Stubbing;
 
-use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
-use Eloquent\Phony\Mock\Handle\AbstractInstanceHandle;
-use Eloquent\Phony\Stub\StubVerifierInterface;
+use Eloquent\Phony\Mock\Exception\MockException;
+use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Stub\StubVerifier;
 
 /**
- * A handle for stubbing a mock.
+ * The interface implemented by stubbing handles.
+ *
+ * @api
  */
-class StubbingHandle extends AbstractInstanceHandle implements
-    InstanceStubbingHandleInterface
+interface StubbingHandle extends Handle
 {
     /**
      * Get a stub verifier, and modify its current criteria to match the
      * supplied arguments.
      *
+     * @api
+     *
      * @param string $name      The method name.
      * @param array  $arguments The arguments.
      *
-     * @return StubVerifierInterface  The stub verifier.
-     * @throws MockExceptionInterface If the stub does not exist.
+     * @return StubVerifier  The stub verifier.
+     * @throws MockException If the stub does not exist.
      */
-    public function __call($name, array $arguments)
-    {
-        $key = strtolower($name);
-
-        if (isset($this->state->stubs->$key)) {
-            $stub = $this->state->stubs->$key;
-        } else {
-            $stub = $this->state->stubs->$key = $this->createStub($name);
-        }
-
-        return call_user_func_array(array($stub, 'with'), $arguments);
-    }
+    public function __call($name, array $arguments);
 }

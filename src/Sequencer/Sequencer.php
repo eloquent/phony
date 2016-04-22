@@ -14,14 +14,14 @@ namespace Eloquent\Phony\Sequencer;
 /**
  * Provides a sequential series of numbers.
  */
-class Sequencer implements SequencerInterface
+class Sequencer
 {
     /**
      * Get a sequencer for a named sequence.
      *
      * @param string $name The sequence name.
      *
-     * @return SequencerInterface The sequencer.
+     * @return Sequencer The sequencer.
      */
     public static function sequence($name)
     {

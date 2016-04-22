@@ -12,18 +12,14 @@
 namespace Eloquent\Phony\Mock\Factory;
 
 use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\ArgumentsInterface;
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinitionInterface;
+use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
-use Eloquent\Phony\Mock\Exception\MockExceptionInterface;
+use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Generator\MockGeneratorInterface;
 use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactoryInterface;
-use Eloquent\Phony\Mock\MockInterface;
+use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Sequencer\SequencerInterface;
 use ParseError;
 use ParseException;
 use ReflectionClass;
@@ -31,12 +27,12 @@ use ReflectionClass;
 /**
  * Creates mock instances.
  */
-class MockFactory implements MockFactoryInterface
+class MockFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return MockFactoryInterface The static factory.
+     * @return MockFactory The static factory.
      */
     public static function instance()
     {
@@ -54,14 +50,14 @@ class MockFactory implements MockFactoryInterface
     /**
      * Cosntruct a new mock factory.
      *
-     * @param SequencerInterface     $labelSequencer The label sequencer to use.
-     * @param MockGeneratorInterface $generator      The generator to use.
-     * @param HandleFactoryInterface $handleFactory  The handle factory to use.
+     * @param Sequencer     $labelSequencer The label sequencer to use.
+     * @param MockGenerator $generator      The generator to use.
+     * @param HandleFactory $handleFactory  The handle factory to use.
      */
     public function __construct(
-        SequencerInterface $labelSequencer,
-        MockGeneratorInterface $generator,
-        HandleFactoryInterface $handleFactory
+        Sequencer $labelSequencer,
+        MockGenerator $generator,
+        HandleFactory $handleFactory
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->generator = $generator;
@@ -72,14 +68,14 @@ class MockFactory implements MockFactoryInterface
     /**
      * Create the mock class for the supplied definition.
      *
-     * @param MockDefinitionInterface $definition The definition.
-     * @param boolean                 $createNew  True if a new class should be created even when a compatible one exists.
+     * @param MockDefinition $definition The definition.
+     * @param boolean        $createNew  True if a new class should be created even when a compatible one exists.
      *
-     * @return ReflectionClass        The class.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @return ReflectionClass The class.
+     * @throws MockException   If the mock generation fails.
      */
     public function createMockClass(
-        MockDefinitionInterface $definition,
+        MockDefinition $definition,
         $createNew = false
     ) {
         $signature = $definition->signature();
@@ -160,8 +156,8 @@ class MockFactory implements MockFactoryInterface
      *
      * @param ReflectionClass $class The class.
      *
-     * @return MockInterface          The newly created mock.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @return Mock          The newly created mock.
+     * @throws MockException If the mock generation fails.
      */
     public function createFullMock(ReflectionClass $class)
     {
@@ -175,11 +171,11 @@ class MockFactory implements MockFactoryInterface
     /**
      * Create a new partial mock instance for the supplied definition.
      *
-     * @param ReflectionClass               $class     The class.
-     * @param ArgumentsInterface|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param ReflectionClass      $class     The class.
+     * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
      *
-     * @return MockInterface          The newly created mock.
-     * @throws MockExceptionInterface If the mock generation fails.
+     * @return Mock          The newly created mock.
+     * @throws MockException If the mock generation fails.
      */
     public function createPartialMock(
         ReflectionClass $class,

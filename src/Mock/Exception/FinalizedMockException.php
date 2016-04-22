@@ -17,7 +17,7 @@ use Exception;
  * Unable to modify a finalized mock.
  */
 final class FinalizedMockException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a finalized mock exception.

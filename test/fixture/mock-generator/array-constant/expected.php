@@ -1,7 +1,7 @@
 <?php
 
 class MockGeneratorArrayConstant
-implements \Eloquent\Phony\Mock\MockInterface
+implements \Eloquent\Phony\Mock\Mock
 {
     const CONSTANT_A = array(
 );

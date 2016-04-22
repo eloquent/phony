@@ -31,7 +31,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, FeatureDetector::instance());
         $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
-        $this->subject = new Spy(
+        $this->subject = new SpyData(
             $this->callback,
             $this->label,
             $this->callFactory,
@@ -55,7 +55,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             }
         };
         $generator = call_user_func($this->callback);
-        $spy = new Spy(
+        $spy = new SpyData(
             $this->callback,
             null,
             $this->callFactory,

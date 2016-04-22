@@ -12,20 +12,24 @@
 namespace Eloquent\Phony\Call\Argument;
 
 use ArrayIterator;
+use Countable;
 use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Iterator;
+use IteratorAggregate;
 
 /**
  * Represents a set of call arguments.
+ *
+ * @api
  */
-class Arguments implements ArgumentsInterface
+class Arguments implements Countable, IteratorAggregate
 {
     /**
      * Create a new set of call arguments from the supplied arguments.
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return ArgumentsInterface The arguments object.
+     * @return Arguments The arguments object.
      */
     public static function create()
     {
@@ -46,7 +50,9 @@ class Arguments implements ArgumentsInterface
     /**
      * Copy these arguments, breaking any references.
      *
-     * @return ArgumentsInterface The copied arguments.
+     * @api
+     *
+     * @return Arguments The copied arguments.
      */
     public function copy()
     {
@@ -64,6 +70,8 @@ class Arguments implements ArgumentsInterface
      *
      * This method supports reference parameters.
      *
+     * @api
+     *
      * @return array<mixed> The arguments.
      */
     public function all()
@@ -80,6 +88,8 @@ class Arguments implements ArgumentsInterface
      *
      * If called with two arguments, sets the argument at `$indexOrValue` to
      * `$value`.
+     *
+     * @api
      *
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
@@ -111,6 +121,8 @@ class Arguments implements ArgumentsInterface
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @api
      *
      * @param integer $index The index.
      *
@@ -149,6 +161,8 @@ class Arguments implements ArgumentsInterface
 
     /**
      * Get the number of arguments.
+     *
+     * @api
      *
      * @return integer The number of arguments.
      */

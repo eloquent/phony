@@ -11,29 +11,24 @@
 
 namespace Eloquent\Phony\Call\Factory;
 
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorder;
-use Eloquent\Phony\Assertion\Recorder\AssertionRecorderInterface;
-use Eloquent\Phony\Assertion\Renderer\AssertionRenderer;
-use Eloquent\Phony\Assertion\Renderer\AssertionRendererInterface;
-use Eloquent\Phony\Call\CallInterface;
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
+use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifier;
-use Eloquent\Phony\Call\CallVerifierInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\InvocableInspectorInterface;
 use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Factory\MatcherFactoryInterface;
 use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifierInterface;
 
 /**
  * Creates call verifiers.
  */
-class CallVerifierFactory implements CallVerifierFactoryInterface
+class CallVerifierFactory
 {
     /**
      * Get the static instance of this factory.
      *
-     * @return CallVerifierFactoryInterface The static factory.
+     * @return CallVerifierFactory The static factory.
      */
     public static function instance()
     {
@@ -41,7 +36,7 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
             self::$instance = new self(
                 MatcherFactory::instance(),
                 MatcherVerifier::instance(),
-                AssertionRecorder::instance(),
+                ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
                 InvocableInspector::instance()
             );
@@ -53,18 +48,18 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     /**
      * Construct a new call verifier factory.
      *
-     * @param MatcherFactoryInterface     $matcherFactory     The matcher factory to use.
-     * @param MatcherVerifierInterface    $matcherVerifier    The macther verifier to use.
-     * @param AssertionRecorderInterface  $assertionRecorder  The assertion recorder to use.
-     * @param AssertionRendererInterface  $assertionRenderer  The assertion renderer to use.
-     * @param InvocableInspectorInterface $invocableInspector The invocable inspector to use.
+     * @param MatcherFactory     $matcherFactory     The matcher factory to use.
+     * @param MatcherVerifier    $matcherVerifier    The macther verifier to use.
+     * @param AssertionRecorder  $assertionRecorder  The assertion recorder to use.
+     * @param AssertionRenderer  $assertionRenderer  The assertion renderer to use.
+     * @param InvocableInspector $invocableInspector The invocable inspector to use.
      */
     public function __construct(
-        MatcherFactoryInterface $matcherFactory,
-        MatcherVerifierInterface $matcherVerifier,
-        AssertionRecorderInterface $assertionRecorder,
-        AssertionRendererInterface $assertionRenderer,
-        InvocableInspectorInterface $invocableInspector
+        MatcherFactory $matcherFactory,
+        MatcherVerifier $matcherVerifier,
+        AssertionRecorder $assertionRecorder,
+        AssertionRenderer $assertionRenderer,
+        InvocableInspector $invocableInspector
     ) {
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
@@ -76,11 +71,11 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     /**
      * Wrap the supplied call in a verifier.
      *
-     * @param CallInterface $call The call.
+     * @param Call $call The call.
      *
-     * @return CallVerifierInterface The call verifier.
+     * @return CallVerifier The call verifier.
      */
-    public function fromCall(CallInterface $call)
+    public function fromCall(Call $call)
     {
         return new CallVerifier(
             $call,
@@ -95,9 +90,9 @@ class CallVerifierFactory implements CallVerifierFactoryInterface
     /**
      * Wrap the supplied calls in verifiers.
      *
-     * @param array<CallInterface> $calls The calls.
+     * @param array<Call> $calls The calls.
      *
-     * @return array<CallVerifierInterface> The call verifiers.
+     * @return array<CallVerifier> The call verifiers.
      */
     public function fromCalls(array $calls)
     {

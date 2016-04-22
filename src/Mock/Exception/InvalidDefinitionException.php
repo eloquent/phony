@@ -17,7 +17,7 @@ use Exception;
  * An invalid definition was encountered.
  */
 final class InvalidDefinitionException extends Exception implements
-    MockExceptionInterface
+    MockException
 {
     /**
      * Construct a new invalid definition exception.
