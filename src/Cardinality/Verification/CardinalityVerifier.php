@@ -16,15 +16,11 @@ use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException;
 
 /**
  * The interface implemented by cardinality verifiers.
- *
- * @api
  */
 interface CardinalityVerifier
 {
     /**
      * Requires that the next verification never matches.
-     *
-     * @api
      *
      * @return $this This verifier.
      */
@@ -33,16 +29,12 @@ interface CardinalityVerifier
     /**
      * Requires that the next verification matches only once.
      *
-     * @api
-     *
      * @return $this This verifier.
      */
     public function once();
 
     /**
      * Requires that the next verification matches exactly two times.
-     *
-     * @api
      *
      * @return $this This verifier.
      */
@@ -51,16 +43,12 @@ interface CardinalityVerifier
     /**
      * Requires that the next verification matches exactly three times.
      *
-     * @api
-     *
      * @return $this This verifier.
      */
     public function thrice();
 
     /**
      * Requires that the next verification matches an exact number of times.
-     *
-     * @api
      *
      * @param integer $times The match count.
      *
@@ -72,8 +60,6 @@ interface CardinalityVerifier
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum.
      *
-     * @api
-     *
      * @param integer $minimum The minimum match count.
      *
      * @return $this This verifier.
@@ -83,8 +69,6 @@ interface CardinalityVerifier
     /**
      * Requires that the next verification matches a number of times less than
      * or equal to $maximum.
-     *
-     * @api
      *
      * @param integer $maximum The maximum match count.
      *
@@ -96,8 +80,6 @@ interface CardinalityVerifier
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum, and less than or equal to $maximum.
      *
-     * @api
-     *
      * @param integer      $minimum The minimum match count.
      * @param integer|null $maximum The maximum match count, or null for no maximum.
      *
@@ -108,8 +90,6 @@ interface CardinalityVerifier
 
     /**
      * Requires that the next verification matches for all possible items.
-     *
-     * @api
      *
      * @return $this This verifier.
      */

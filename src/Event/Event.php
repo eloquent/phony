@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Event;
 
 /**
  * The interface implemented by events.
- *
- * @api
  */
 interface Event
 {
@@ -25,16 +23,12 @@ interface Event
      * records. The numbers are assigned sequentially, meaning that sequence
      * numbers can be used to determine event order.
      *
-     * @api
-     *
      * @return integer The sequence number.
      */
     public function sequenceNumber();
 
     /**
      * Get the time at which the event occurred.
-     *
-     * @api
      *
      * @return float The time at which the event occurred, in seconds since the Unix epoch.
      */

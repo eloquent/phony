@@ -19,8 +19,6 @@ use IteratorAggregate;
 
 /**
  * Represents a set of call arguments.
- *
- * @api
  */
 class Arguments implements Countable, IteratorAggregate
 {
@@ -50,8 +48,6 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Copy these arguments, breaking any references.
      *
-     * @api
-     *
      * @return Arguments The copied arguments.
      */
     public function copy()
@@ -70,8 +66,6 @@ class Arguments implements Countable, IteratorAggregate
      *
      * This method supports reference parameters.
      *
-     * @api
-     *
      * @return array<mixed> The arguments.
      */
     public function all()
@@ -88,8 +82,6 @@ class Arguments implements Countable, IteratorAggregate
      *
      * If called with two arguments, sets the argument at `$indexOrValue` to
      * `$value`.
-     *
-     * @api
      *
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
@@ -122,8 +114,6 @@ class Arguments implements Countable, IteratorAggregate
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @api
-     *
      * @param integer $index The index.
      *
      * @return boolean True if the argument exists.
@@ -143,8 +133,6 @@ class Arguments implements Countable, IteratorAggregate
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @api
-     *
      * @param integer $index The index.
      *
      * @return mixed                      The argument.
@@ -161,8 +149,6 @@ class Arguments implements Countable, IteratorAggregate
 
     /**
      * Get the number of arguments.
-     *
-     * @api
      *
      * @return integer The number of arguments.
      */

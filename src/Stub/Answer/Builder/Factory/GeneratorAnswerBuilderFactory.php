@@ -19,8 +19,6 @@ use Eloquent\Phony\Stub\Stub;
 
 /**
  * Creates generator answer builders.
- *
- * @api
  */
 class GeneratorAnswerBuilderFactory
 {

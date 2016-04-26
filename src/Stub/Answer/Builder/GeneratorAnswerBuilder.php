@@ -22,8 +22,6 @@ use RuntimeException;
 
 /**
  * Builds generator stub answers.
- *
- * @api
  */
 class GeneratorAnswerBuilder
 {
@@ -54,8 +52,6 @@ class GeneratorAnswerBuilder
     /**
      * Add a callback to be called as part of the answer.
      *
-     * @api
-     *
      * @param callable $callback The callback.
      * @param callable ...$additionalCallbacks Additional callbacks.
      *
@@ -74,8 +70,6 @@ class GeneratorAnswerBuilder
      * Add a callback to be called as part of the answer.
      *
      * This method supports reference parameters.
-     *
-     * @api
      *
      * @param callable        $callback              The callback.
      * @param Arguments|array $arguments             The arguments.
@@ -119,8 +113,6 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @api
-     *
      * @param integer $index The argument index.
      * @param integer ...$additionalIndices Additional argument indices to call.
      *
@@ -144,8 +136,6 @@ class GeneratorAnswerBuilder
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @api
      *
      * @param integer         $index                 The argument index.
      * @param Arguments|array $arguments             The arguments.
@@ -215,8 +205,6 @@ class GeneratorAnswerBuilder
      * If called with two arguments, sets the argument at $indexOrValue to
      * $value.
      *
-     * @api
-     *
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
      *
@@ -261,8 +249,6 @@ class GeneratorAnswerBuilder
      * `yield $keyOrValue;`.
      *
      * If no arguments are supplied, the stub will yield like `yield;`.
-     *
-     * @api
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
@@ -317,8 +303,6 @@ class GeneratorAnswerBuilder
     /**
      * Add a set of yielded values to the answer.
      *
-     * @api
-     *
      * @param mixed<mixed,mixed> $values The set of keys and values to yield.
      *
      * @return $this This builder.
@@ -334,8 +318,6 @@ class GeneratorAnswerBuilder
 
     /**
      * End the generator by returning a value.
-     *
-     * @api
      *
      * @param mixed $value The return value.
      * @param mixed ...$additionalValues Additional return values for subsequent invocations.
@@ -388,8 +370,6 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @api
-     *
      * @param integer $index The argument index.
      *
      * @return Stub The stub.
@@ -412,8 +392,6 @@ class GeneratorAnswerBuilder
     /**
      * End the generator by returning the self value.
      *
-     * @api
-     *
      * @return Stub The stub.
      */
     public function returnsSelf()
@@ -433,8 +411,6 @@ class GeneratorAnswerBuilder
 
     /**
      * End the generator by throwing an exception.
-     *
-     * @api
      *
      * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
      * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.

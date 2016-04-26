@@ -17,8 +17,6 @@ use Exception;
 
 /**
  * The interface implemented by invocables.
- *
- * @api
  */
 interface Invocable
 {
@@ -26,8 +24,6 @@ interface Invocable
      * Invoke this object.
      *
      * This method supports reference parameters.
-     *
-     * @api
      *
      * @param Arguments|array $arguments The arguments.
      *
@@ -39,8 +35,6 @@ interface Invocable
     /**
      * Invoke this object.
      *
-     * @api
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return mixed           The result of invocation.
@@ -50,8 +44,6 @@ interface Invocable
 
     /**
      * Invoke this object.
-     *
-     * @api
      *
      * @param mixed ...$arguments The arguments.
      *

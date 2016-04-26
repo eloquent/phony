@@ -32,8 +32,6 @@ use ReflectionException;
 
 /**
  * Builds mock classes.
- *
- * @api
  */
 class MockBuilder
 {
@@ -146,8 +144,6 @@ class MockBuilder
     /**
      * Get the types.
      *
-     * @api
-     *
      * @return array<string,ReflectionClass> The types.
      */
     public function types()
@@ -161,8 +157,6 @@ class MockBuilder
      * Each value in `$types` can be either a class name, or an ad hoc mock
      * definition. If only a single type is being mocked, the class name or
      * definition can be passed without being wrapped in an array.
-     *
-     * @api
      *
      * @param mixed $type A type, or types to add.
      * @param mixed ...$types Additional types to add.
@@ -270,8 +264,6 @@ class MockBuilder
     /**
      * Add a custom method.
      *
-     * @api
-     *
      * @param string        $name     The name.
      * @param callable|null $callback The callback.
      *
@@ -298,8 +290,6 @@ class MockBuilder
     /**
      * Add a custom property.
      *
-     * @api
-     *
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
@@ -319,8 +309,6 @@ class MockBuilder
 
     /**
      * Add a custom static method.
-     *
-     * @api
      *
      * @param string        $name     The name.
      * @param callable|null $callback The callback.
@@ -348,8 +336,6 @@ class MockBuilder
     /**
      * Add a custom static property.
      *
-     * @api
-     *
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
@@ -370,8 +356,6 @@ class MockBuilder
     /**
      * Add a custom class constant.
      *
-     * @api
-     *
      * @param string $name  The name.
      * @param mixed  $value The value.
      *
@@ -391,8 +375,6 @@ class MockBuilder
 
     /**
      * Set the class name.
-     *
-     * @api
      *
      * @param string $className|null The class name, or null to use a generated name.
      *
@@ -421,8 +403,6 @@ class MockBuilder
     /**
      * Returns true if this builder is finalized.
      *
-     * @api
-     *
      * @return boolean True if finalized.
      */
     public function isFinalized()
@@ -432,8 +412,6 @@ class MockBuilder
 
     /**
      * Finalize the mock builder.
-     *
-     * @api
      *
      * @return $this This builder.
      */
@@ -475,8 +453,6 @@ class MockBuilder
     /**
      * Returns true if the mock class has been built.
      *
-     * @api
-     *
      * @return boolean True if the mock class has been built.
      */
     public function isBuilt()
@@ -488,8 +464,6 @@ class MockBuilder
      * Generate and define the mock class.
      *
      * Calling this method will finalize the mock builder.
-     *
-     * @api
      *
      * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
@@ -511,8 +485,6 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * @api
-     *
      * @param boolean $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return string        The class name.
@@ -532,8 +504,6 @@ class MockBuilder
      * If no existing mock is available, the created mock will be a full mock.
      *
      * Calling this method will finalize the mock builder.
-     *
-     * @api
      *
      * @return Mock          The mock instance.
      * @throws MockException If the mock generation fails.
@@ -557,8 +527,6 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * @api
-     *
      * @return Mock          The mock instance.
      * @throws MockException If the mock generation fails.
      */
@@ -576,8 +544,6 @@ class MockBuilder
      * mock.
      *
      * Calling this method will finalize the mock builder.
-     *
-     * @api
      *
      * @param mixed ...$arguments The constructor arguments.
      *
@@ -601,8 +567,6 @@ class MockBuilder
      * Calling this method will finalize the mock builder.
      *
      * This method supports reference parameters.
-     *
-     * @api
      *
      * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
      *

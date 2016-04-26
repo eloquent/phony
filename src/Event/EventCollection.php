@@ -21,15 +21,11 @@ use IteratorAggregate;
 
 /**
  * The interface implemented by event collections.
- *
- * @api
  */
 interface EventCollection extends IteratorAggregate, Countable
 {
     /**
      * Returns true if this collection contains any events.
-     *
-     * @api
      *
      * @return boolean True if this collection contains any events.
      */
@@ -38,16 +34,12 @@ interface EventCollection extends IteratorAggregate, Countable
     /**
      * Returns true if this collection contains any calls.
      *
-     * @api
-     *
      * @return boolean True if this collection contains any calls.
      */
     public function hasCalls();
 
     /**
      * Get the number of events.
-     *
-     * @api
      *
      * @return integer The event count.
      */
@@ -56,16 +48,12 @@ interface EventCollection extends IteratorAggregate, Countable
     /**
      * Get the number of calls.
      *
-     * @api
-     *
      * @return integer The call count.
      */
     public function callCount();
 
     /**
      * Get all events as an array.
-     *
-     * @api
      *
      * @return array<Event> The events.
      */
@@ -74,16 +62,12 @@ interface EventCollection extends IteratorAggregate, Countable
     /**
      * Get all calls as an array.
      *
-     * @api
-     *
      * @return array<Call> The calls.
      */
     public function allCalls();
 
     /**
      * Get the first event.
-     *
-     * @api
      *
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
@@ -92,8 +76,6 @@ interface EventCollection extends IteratorAggregate, Countable
 
     /**
      * Get the last event.
-     *
-     * @api
      *
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
@@ -106,8 +88,6 @@ interface EventCollection extends IteratorAggregate, Countable
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @api
-     *
      * @param integer $index The index.
      *
      * @return Event                   The event.
@@ -118,8 +98,6 @@ interface EventCollection extends IteratorAggregate, Countable
     /**
      * Get the first call.
      *
-     * @api
-     *
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
@@ -127,8 +105,6 @@ interface EventCollection extends IteratorAggregate, Countable
 
     /**
      * Get the last call.
-     *
-     * @api
      *
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
@@ -141,8 +117,6 @@ interface EventCollection extends IteratorAggregate, Countable
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @api
-     *
      * @param integer $index The index.
      *
      * @return Call                   The call.
@@ -152,8 +126,6 @@ interface EventCollection extends IteratorAggregate, Countable
 
     /**
      * Get the arguments.
-     *
-     * @api
      *
      * @return Arguments|null         The arguments.
      * @throws UndefinedCallException If there are no calls.
@@ -165,8 +137,6 @@ interface EventCollection extends IteratorAggregate, Countable
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @api
      *
      * @param integer $index The index.
      *

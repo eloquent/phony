@@ -18,8 +18,6 @@ use Exception;
 
 /**
  * A handle for verifying a mock class.
- *
- * @api
  */
 class StaticVerificationHandle extends AbstractStaticHandle implements
     StaticHandle,

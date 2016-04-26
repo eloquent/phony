@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Mock;
 
 /**
  * The interface used to identify mocks.
- *
- * @api
  */
 interface Mock
 {

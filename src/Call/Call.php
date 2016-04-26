@@ -24,8 +24,6 @@ use InvalidArgumentException;
 
 /**
  * The interface implemented by calls.
- *
- * @api
  */
 interface Call extends Event, EventCollection
 {
@@ -34,8 +32,6 @@ interface Call extends Event, EventCollection
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @api
-     *
      * @return boolean True if this call has responded.
      */
     public function hasResponded();
@@ -43,16 +39,12 @@ interface Call extends Event, EventCollection
     /**
      * Returns true if this call has responded with a traversable.
      *
-     * @api
-     *
      * @return boolean True if this call has responded with a traversable.
      */
     public function isTraversable();
 
     /**
      * Returns true if this call has responded with a generator.
-     *
-     * @api
      *
      * @return boolean True if this call has responded with a generator.
      */
@@ -69,8 +61,6 @@ interface Call extends Event, EventCollection
      * traversable will not be considered complete until the traversable has
      * been completely consumed via iteration.
      *
-     * @api
-     *
      * @return boolean True if this call has completed.
      */
     public function hasCompleted();
@@ -85,8 +75,6 @@ interface Call extends Event, EventCollection
     /**
      * Get the returned value.
      *
-     * @api
-     *
      * @return mixed                      The returned value.
      * @throws UndefinedResponseException If this call has not yet returned a value.
      */
@@ -95,8 +83,6 @@ interface Call extends Event, EventCollection
     /**
      * Get the thrown exception.
      *
-     * @api
-     *
      * @return Exception|Error            The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
@@ -104,8 +90,6 @@ interface Call extends Event, EventCollection
 
     /**
      * Get the response.
-     *
-     * @api
      *
      * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException        If this call has not yet responded.
@@ -116,8 +100,6 @@ interface Call extends Event, EventCollection
      * Get the time at which the call responded.
      *
      * A call that has responded has returned a value, or thrown an exception.
-     *
-     * @api
      *
      * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
@@ -133,8 +115,6 @@ interface Call extends Event, EventCollection
      * Similarly, when traversable spies are in use, a call that returns a
      * traversable will not be considered complete until the traversable has
      * been completely consumed via iteration.
-     *
-     * @api
      *
      * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */

@@ -18,8 +18,6 @@ use Eloquent\Phony\Stub\StubVerifier;
 
 /**
  * A handle for stubbing a mock class.
- *
- * @api
  */
 class StaticStubbingHandle extends AbstractStaticHandle implements
     StaticHandle,

@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * The call has not yet produced a response of the requested type.
- *
- * @api
  */
 final class UndefinedResponseException extends Exception
 {

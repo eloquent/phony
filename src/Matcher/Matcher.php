@@ -13,15 +13,11 @@ namespace Eloquent\Phony\Matcher;
 
 /**
  * The interface implemented by matchers.
- *
- * @api
  */
 interface Matcher
 {
     /**
      * Returns `true` if `$value` matches this matcher's criteria.
-     *
-     * @api
      *
      * @param mixed $value The value to check.
      *
@@ -32,16 +28,12 @@ interface Matcher
     /**
      * Describe this matcher.
      *
-     * @api
-     *
      * @return string The description.
      */
     public function describe();
 
     /**
      * Describe this matcher.
-     *
-     * @api
      *
      * @return string The description.
      */

@@ -17,16 +17,12 @@ use Exception;
 
 /**
  * The interface implemented by verification handles.
- *
- * @api
  */
 interface VerificationHandle extends Handle
 {
     /**
      * Throws an exception unless the specified method was called with the
      * supplied arguments.
-     *
-     * @api
      *
      * @param string $name      The method name.
      * @param array  $arguments The arguments.

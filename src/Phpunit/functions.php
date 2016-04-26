@@ -38,8 +38,6 @@ use ReflectionClass;
  * definition. If only a single type is being mocked, the class name or
  * definition can be passed without being wrapped in an array.
  *
- * @api
- *
  * @param mixed $types The types to mock.
  *
  * @return MockBuilder The mock builder.
@@ -56,8 +54,6 @@ function mockBuilder($types = array())
  * Each value in `$types` can be either a class name, or an ad hoc mock
  * definition. If only a single type is being mocked, the class name or
  * definition can be passed without being wrapped in an array.
- *
- * @api
  *
  * @param mixed $types The types to mock.
  *
@@ -83,8 +79,6 @@ function mock($types = array())
  * with an empty argument list. However, if a `null` value is supplied for
  * `$arguments`, the original constructor will not be called at all.
  *
- * @api
- *
  * @param mixed                $types     The types to mock.
  * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
  *
@@ -102,8 +96,6 @@ function partialMock($types = array(), $arguments = array())
 /**
  * Create a new stubbing handle.
  *
- * @api
- *
  * @param Mock|InstanceHandle $mock The mock.
  *
  * @return InstanceStubbingHandle The newly created handle.
@@ -117,8 +109,6 @@ function on($mock)
 
 /**
  * Create a new verification handle.
- *
- * @api
  *
  * @param Mock|Handle|ReflectionClass|string $class The class.
  *
@@ -134,8 +124,6 @@ function verify($mock)
 /**
  * Create a new static stubbing handle.
  *
- * @api
- *
  * @param Handle|ReflectionClass|object|string $class The class.
  *
  * @return StaticStubbingHandle The newly created handle.
@@ -149,8 +137,6 @@ function onStatic($class)
 
 /**
  * Create a new static verification handle.
- *
- * @api
  *
  * @param Mock|Handle|ReflectionClass|string $class The class.
  *
@@ -166,8 +152,6 @@ function verifyStatic($class)
 /**
  * Create a new spy.
  *
- * @api
- *
  * @param callable|null $callback The callback, or null to create an anonymous spy.
  *
  * @return SpyVerifier The new spy.
@@ -181,8 +165,6 @@ function spy($callback = null)
 /**
  * Create a new stub.
  *
- * @api
- *
  * @param callable|null $callback The callback, or null to create an anonymous stub.
  *
  * @return StubVerifier The new stub.
@@ -195,8 +177,6 @@ function stub($callback = null)
 
 /**
  * Checks if the supplied events happened in chronological order.
- *
- * @api
  *
  * @param Event|EventCollection ...$events The events.
  *
@@ -212,8 +192,6 @@ function checkInOrder()
  * Throws an exception unless the supplied events happened in chronological
  * order.
  *
- * @api
- *
  * @param Event|EventCollection ...$events The events.
  *
  * @return EventCollection The result.
@@ -227,8 +205,6 @@ function inOrder()
 
 /**
  * Checks if the supplied event sequence happened in chronological order.
- *
- * @api
  *
  * @param mixed<Event|EventCollection> $events The event sequence.
  *
@@ -244,8 +220,6 @@ function checkInOrderSequence($events)
  * Throws an exception unless the supplied event sequence happened in
  * chronological order.
  *
- * @api
- *
  * @param mixed<Event|EventCollection> $events The event sequence.
  *
  * @return EventCollection The result.
@@ -260,8 +234,6 @@ function inOrderSequence($events)
 /**
  * Checks that at least one event is supplied.
  *
- * @api
- *
  * @param Event|EventCollection ...$events The events.
  *
  * @return EventCollection|null     The result.
@@ -275,8 +247,6 @@ function checkAnyOrder()
 
 /**
  * Throws an exception unless at least one event is supplied.
- *
- * @api
  *
  * @param Event|EventCollection ...$events The events.
  *
@@ -293,8 +263,6 @@ function anyOrder()
 /**
  * Checks if the supplied event sequence contains at least one event.
  *
- * @api
- *
  * @param mixed<Event|EventCollection> $events The event sequence.
  *
  * @return EventCollection|null     The result.
@@ -309,8 +277,6 @@ function checkAnyOrderSequence($events)
 /**
  * Throws an exception unless the supplied event sequence contains at least
  * one event.
- *
- * @api
  *
  * @param mixed<Event|EventCollection> $events The event sequence.
  *
@@ -327,8 +293,6 @@ function anyOrderSequence($events)
 /**
  * Create a new matcher that matches anything.
  *
- * @api
- *
  * @return Matcher The newly created matcher.
  */
 function any()
@@ -338,8 +302,6 @@ function any()
 
 /**
  * Create a new equal to matcher.
- *
- * @api
  *
  * @param mixed $value The value to check.
  *
@@ -352,8 +314,6 @@ function equalTo($value)
 
 /**
  * Create a new matcher that matches multiple arguments.
- *
- * @api
  *
  * @param mixed        $value            The value to check for each argument.
  * @param integer      $minimumArguments The minimum number of arguments.
@@ -374,8 +334,6 @@ function wildcard(
  * Set the default export depth.
  *
  * Negative depths are treated as infinite depth.
- *
- * @api
  *
  * @param integer $depth The depth.
  *

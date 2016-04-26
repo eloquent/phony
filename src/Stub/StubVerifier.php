@@ -29,8 +29,6 @@ use Exception;
 /**
  * Pairs a stub and a spy, and provides convenience methods for verifying
  * interactions with the spy.
- *
- * @api
  */
 class StubVerifier extends SpyVerifier implements Stub
 {

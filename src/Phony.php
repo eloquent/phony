@@ -16,8 +16,6 @@ use Eloquent\Phony\Facade\FacadeDriver;
 
 /**
  * A facade for standalone Phony usage.
- *
- * @api
  */
 class Phony extends AbstractFacade
 {

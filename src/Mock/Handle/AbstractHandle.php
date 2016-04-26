@@ -138,8 +138,6 @@ abstract class AbstractHandle implements Handle
     /**
      * Set the callback to use when creating a default answer.
      *
-     * @api
-     *
      * @param callable $defaultAnswerCallback The default answer callback.
      *
      * @return $this This handle.
@@ -153,8 +151,6 @@ abstract class AbstractHandle implements Handle
 
     /**
      * Get the default answer callback.
-     *
-     * @api
      *
      * @return callable The default answer callback.
      */

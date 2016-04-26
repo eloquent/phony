@@ -19,8 +19,6 @@ use Exception;
 
 /**
  * The interface implemented by stubs.
- *
- * @api
  */
 interface Stub extends WrappedInvocable
 {
@@ -28,8 +26,6 @@ interface Stub extends WrappedInvocable
      * Set the self value of this stub.
      *
      * This value is used by returnsSelf().
-     *
-     * @api
      *
      * @param mixed $self The self value.
      *
@@ -40,16 +36,12 @@ interface Stub extends WrappedInvocable
     /**
      * Get the self value of this stub.
      *
-     * @api
-     *
      * @return mixed The self value.
      */
     public function self();
 
     /**
      * Set the callback to use when creating a default answer.
-     *
-     * @api
      *
      * @param callable $defaultAnswerCallback The default answer callback.
      *
@@ -60,16 +52,12 @@ interface Stub extends WrappedInvocable
     /**
      * Get the default answer callback.
      *
-     * @api
-     *
      * @return callable The default answer callback.
      */
     public function defaultAnswerCallback();
 
     /**
      * Modify the current criteria to match the supplied arguments.
-     *
-     * @api
      *
      * @param mixed ...$argument The arguments.
      *
@@ -81,8 +69,6 @@ interface Stub extends WrappedInvocable
      * Add a callback to be called as part of an answer.
      *
      * Note that all supplied callbacks will be called in the same invocation.
-     *
-     * @api
      *
      * @param callable $callback The callback.
      * @param callable ...$additionalCallbacks Additional callbacks.
@@ -97,8 +83,6 @@ interface Stub extends WrappedInvocable
      * This method supports reference parameters.
      *
      * Note that all supplied callbacks will be called in the same invocation.
-     *
-     * @api
      *
      * @param callable        $callback              The callback.
      * @param Arguments|array $arguments             The arguments.
@@ -122,8 +106,6 @@ interface Stub extends WrappedInvocable
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @api
-     *
      * @param integer $index The argument index.
      * @param integer ...$additionalIndices Additional argument indices to call.
      *
@@ -138,8 +120,6 @@ interface Stub extends WrappedInvocable
      * indicates the last element, and `-2` indicates the second last element.
      *
      * Note that all supplied callbacks will be called in the same invocation.
-     *
-     * @api
      *
      * @param integer         $index                 The argument index.
      * @param Arguments|array $arguments             The arguments.
@@ -167,8 +147,6 @@ interface Stub extends WrappedInvocable
      * If called with two arguments, sets the argument at $indexOrValue to
      * $value.
      *
-     * @api
-     *
      * @param mixed $indexOrValue The index, or value if no index is specified.
      * @param mixed $value        The value.
      *
@@ -179,8 +157,6 @@ interface Stub extends WrappedInvocable
     /**
      * Add a callback as an answer.
      *
-     * @api
-     *
      * @param callable $callback The callback.
      * @param callable ...$additionalCallbacks Additional callbacks for subsequent invocations.
      *
@@ -190,8 +166,6 @@ interface Stub extends WrappedInvocable
 
     /**
      * Add a callback as an answer.
-     *
-     * @api
      *
      * @param callable        $callback              The callback.
      * @param Arguments|array $arguments             The arguments.
@@ -212,8 +186,6 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @api
-     *
      * @param Arguments|array $arguments             The arguments.
      * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
      * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
@@ -231,8 +203,6 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that returns a value.
      *
-     * @api
-     *
      * @param mixed $value The return value.
      * @param mixed ...$additionalValues Additional return values for subsequent invocations.
      *
@@ -246,8 +216,6 @@ interface Stub extends WrappedInvocable
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @api
-     *
      * @param integer $index The argument index.
      *
      * @return $this This stub.
@@ -257,16 +225,12 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that returns the self value.
      *
-     * @api
-     *
      * @return $this This stub.
      */
     public function returnsSelf();
 
     /**
      * Add an answer that throws an exception.
-     *
-     * @api
      *
      * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
      * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
@@ -278,8 +242,6 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
-     *
-     * @api
      *
      * @param mixed<mixed,mixed> $values A set of keys and values to yield.
      * @param mixed<mixed,mixed> ...$additionalValues Additional sets of keys and values to yield, for subsequent invocations.

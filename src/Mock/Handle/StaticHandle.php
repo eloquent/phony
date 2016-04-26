@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Mock\Handle;
 
 /**
  * The interface used to identify static handles.
- *
- * @api
  */
 interface StaticHandle extends Handle
 {

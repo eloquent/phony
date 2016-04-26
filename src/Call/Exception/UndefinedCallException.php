@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * An undefined call was requested.
- *
- * @api
  */
 final class UndefinedCallException extends Exception
 {
@@ -36,8 +34,6 @@ final class UndefinedCallException extends Exception
 
     /**
      * Get the call index.
-     *
-     * @api
      *
      * @return integer The call index.
      */

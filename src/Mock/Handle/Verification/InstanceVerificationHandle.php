@@ -18,8 +18,6 @@ use Exception;
 
 /**
  * A handle for verifying a mock.
- *
- * @api
  */
 class InstanceVerificationHandle extends AbstractInstanceHandle implements
     InstanceHandle,

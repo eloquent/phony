@@ -13,15 +13,11 @@ namespace Eloquent\Phony\Invocation;
 
 /**
  * The interface implemented by wrapped invocables.
- *
- * @api
  */
 interface WrappedInvocable extends Invocable
 {
     /**
      * Set the label.
-     *
-     * @api
      *
      * @param string|null $label The label.
      *
@@ -31,8 +27,6 @@ interface WrappedInvocable extends Invocable
 
     /**
      * Get the label.
-     *
-     * @api
      *
      * @return string|null The label.
      */

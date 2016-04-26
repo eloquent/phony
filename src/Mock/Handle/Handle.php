@@ -20,15 +20,11 @@ use stdClass;
 
 /**
  * The interface implemented by handles.
- *
- * @api
  */
 interface Handle
 {
     /**
      * Get the class.
-     *
-     * @api
      *
      * @return ReflectionClass The class.
      */
@@ -37,8 +33,6 @@ interface Handle
     /**
      * Get the class name.
      *
-     * @api
-     *
      * @return string The class name.
      */
     public function className();
@@ -46,16 +40,12 @@ interface Handle
     /**
      * Turn the mock into a full mock.
      *
-     * @api
-     *
      * @return $this This handle.
      */
     public function full();
 
     /**
      * Turn the mock into a partial mock.
-     *
-     * @api
      *
      * @return $this This handle.
      */
@@ -68,8 +58,6 @@ interface Handle
      * This method may help when partial mocking of a particular implementation
      * is not possible; as in the case of a final class.
      *
-     * @api
-     *
      * @param object $object The object to use.
      *
      * @return $this This handle.
@@ -78,8 +66,6 @@ interface Handle
 
     /**
      * Set the callback to use when creating a default answer.
-     *
-     * @api
      *
      * @param callable $defaultAnswerCallback The default answer callback.
      *
@@ -90,16 +76,12 @@ interface Handle
     /**
      * Get the default answer callback.
      *
-     * @api
-     *
      * @return callable The default answer callback.
      */
     public function defaultAnswerCallback();
 
     /**
      * Get a stub verifier.
-     *
-     * @api
      *
      * @param string  $name      The method name.
      * @param boolean $isNewRule True if a new rule should be started.
@@ -114,8 +96,6 @@ interface Handle
      *
      * Using this method will always start a new rule.
      *
-     * @api
-     *
      * @param string $name The method name.
      *
      * @return StubVerifier  The stub verifier.
@@ -126,16 +106,12 @@ interface Handle
     /**
      * Checks if there was no interaction with the mock.
      *
-     * @api
-     *
      * @return EventCollection|null The result.
      */
     public function checkNoInteraction();
 
     /**
      * Throws an exception unless there was no interaction with the mock.
-     *
-     * @api
      *
      * @return EventCollection The result.
      * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
@@ -145,16 +121,12 @@ interface Handle
     /**
      * Stop recording calls.
      *
-     * @api
-     *
      * @return $this This handle.
      */
     public function stopRecording();
 
     /**
      * Start recording calls.
-     *
-     * @api
      *
      * @return $this This handle.
      */

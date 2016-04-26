@@ -15,8 +15,6 @@ use Exception;
 
 /**
  * Thrown when an argument that was requested by index does not exist.
- *
- * @api
  */
 final class UndefinedArgumentException extends Exception
 {
@@ -39,8 +37,6 @@ final class UndefinedArgumentException extends Exception
 
     /**
      * Get the index.
-     *
-     * @api
      *
      * @return integer The index.
      */

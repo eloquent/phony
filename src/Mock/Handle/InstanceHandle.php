@@ -16,15 +16,11 @@ use Eloquent\Phony\Mock\Mock;
 
 /**
  * The interface implemented by instance handles.
- *
- * @api
  */
 interface InstanceHandle extends Handle
 {
     /**
      * Get the mock.
-     *
-     * @api
      *
      * @return Mock The mock.
      */
@@ -32,8 +28,6 @@ interface InstanceHandle extends Handle
 
     /**
      * Call the original constructor.
-     *
-     * @api
      *
      * @param mixed ...$arguments The arguments.
      *
@@ -44,8 +38,6 @@ interface InstanceHandle extends Handle
     /**
      * Call the original constructor.
      *
-     * @api
-     *
      * @param Arguments|array $arguments The arguments.
      *
      * @return $this This handle.
@@ -55,8 +47,6 @@ interface InstanceHandle extends Handle
     /**
      * Set the label.
      *
-     * @api
-     *
      * @param string|null $label The label.
      *
      * @return $this This handle.
@@ -65,8 +55,6 @@ interface InstanceHandle extends Handle
 
     /**
      * Get the label.
-     *
-     * @api
      *
      * @return string|null The label.
      */

@@ -39,8 +39,6 @@ use Throwable;
 
 /**
  * Provides convenience methods for verifying the details of a call.
- *
- * @api
  */
 class CallVerifier extends AbstractCardinalityVerifier implements Call,
     CardinalityVerifier
@@ -484,8 +482,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
     /**
      * Get the call duration.
      *
-     * @api
-     *
      * @return float|null The call duration in seconds, or null if the call has not yet completed.
      */
     public function duration()
@@ -501,8 +497,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
 
     /**
      * Get the call response duration.
-     *
-     * @api
      *
      * @return float|null The call response duration in seconds, or null if the call has not yet responded.
      */
@@ -520,8 +514,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
     /**
      * Get the number of arguments.
      *
-     * @api
-     *
      * @return integer The number of arguments.
      */
     public function argumentCount()
@@ -531,8 +523,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
 
     /**
      * Checks if called with the supplied arguments.
-     *
-     * @api
      *
      * @param mixed ...$argument The arguments.
      *
@@ -558,8 +548,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
 
     /**
      * Throws an exception unless called with the supplied arguments.
-     *
-     * @api
      *
      * @param mixed ...$argument The arguments.
      *
@@ -594,8 +582,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
 
     /**
      * Checks if the $this value is equal to the supplied value.
-     *
-     * @api
      *
      * @param object|null $value The possible $this value.
      *
@@ -633,8 +619,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
     /**
      * Throws an exception unless the $this value is equal to the supplied
      * value.
-     *
-     * @api
      *
      * @param object|null $value The possible $this value.
      *
@@ -690,8 +674,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      * When called with no arguments, this method simply checks that the call
      * returned any value.
      *
-     * @api
-     *
      * @param mixed $value The value.
      *
      * @return EventCollection|null        The result.
@@ -739,8 +721,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      * When called with no arguments, this method simply checks that the call
      * returned any value.
      *
-     * @api
-     *
      * @param mixed $value The value.
      *
      * @return EventCollection             The result.
@@ -785,8 +765,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
 
     /**
      * Checks if an exception of the supplied type was thrown.
-     *
-     * @api
      *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
@@ -869,8 +847,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      * Throws an exception unless this call threw an exception of the supplied
      * type.
      *
-     * @api
-     *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection             The result.
@@ -925,8 +901,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      *
      * With two arguments, it checks that a key and value matching the
      * respective arguments were produced together.
-     *
-     * @api
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
@@ -989,8 +963,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      *
      * With two arguments, it checks that a key and value matching the
      * respective arguments were produced together.
-     *
-     * @api
      *
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
@@ -1058,8 +1030,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      * Checks if this call produced all of the supplied key-value pairs, in the
      * supplied order.
      *
-     * @api
-     *
      * @param mixed ...$pairs The key-value pairs.
      *
      * @return EventCollection|null The result.
@@ -1122,8 +1092,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
     /**
      * Throws an exception unless this call produced all of the supplied
      * key-value pairs, in the supplied order.
-     *
-     * @api
      *
      * @param mixed ...$pairs The key-value pairs.
      *
@@ -1199,8 +1167,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      * When called with no arguments, this method simply checks that the call
      * received any value.
      *
-     * @api
-     *
      * @param mixed $value The value.
      *
      * @return EventCollection|null The result.
@@ -1245,8 +1211,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
      *
      * When called with no arguments, this method simply checks that the call
      * received any value.
-     *
-     * @api
      *
      * @param mixed $value The value.
      *
@@ -1303,8 +1267,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
 
     /**
      * Checks if this call received an exception of the supplied type.
-     *
-     * @api
      *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
@@ -1399,8 +1361,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call,
     /**
      * Throws an exception unless this call received an exception of the
      * supplied type.
-     *
-     * @api
      *
      * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
