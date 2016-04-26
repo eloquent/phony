@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Assertion;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CallEvent;

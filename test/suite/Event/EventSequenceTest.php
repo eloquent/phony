@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Event;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
@@ -177,7 +177,7 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
 
     public function testArgumentFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->argument(111);
     }
 

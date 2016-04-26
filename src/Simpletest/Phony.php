@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Facade\AbstractFacade;
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Integration\Simpletest\SimpletestFacadeDriver;
 
 /**
  * A facade for Phony usage under SimpleTest.

@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Matcher\Driver\MatcherDriver;
 use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\MatcherDriver;
 
 class TestMatcherDriverA implements MatcherDriver
 {

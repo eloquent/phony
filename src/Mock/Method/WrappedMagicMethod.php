@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Error;

@@ -11,12 +11,12 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallData;
+use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\ResponseEvent;
-use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
 
 class TestCallFactory extends CallFactory

@@ -13,11 +13,11 @@ namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Mock;
-use Eloquent\Phony\Stub\Factory\StubFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
 use ReflectionObject;
 use stdClass;

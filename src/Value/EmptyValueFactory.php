@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Value;
 
-use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Mock\MockFactory;
 use EmptyIterator;
 use ReflectionClass;
 use ReflectionFunctionAbstract;

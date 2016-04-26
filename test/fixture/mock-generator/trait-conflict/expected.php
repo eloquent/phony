@@ -38,7 +38,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -71,7 +71,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -87,7 +87,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -103,7 +103,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -112,7 +112,7 @@ implements \Eloquent\Phony\Mock\Mock
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -129,7 +129,7 @@ implements \Eloquent\Phony\Mock\Mock
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(

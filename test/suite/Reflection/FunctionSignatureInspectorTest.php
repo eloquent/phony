@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Reflection;
 
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -61,7 +60,7 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
             'f' => array('\Type ',                                   '&', '', ''),
             'g' => array('\Namespaced\Type ',                        '',  '', ''),
             'h' => array('\Namespaced\Type ',                        '&', '', ''),
-            'i' => array('\Eloquent\Phony\Feature\FeatureDetector ', '',  '', ''),
+            'i' => array('\Eloquent\Phony\Reflection\FeatureDetector ', '',  '', ''),
             'j' => array('',                                         '',  '', " = 'string'"),
             'k' => array('',                                         '&', '', ' = 111'),
             'm' => array('array ',                                   '&', '', ' = null'),

@@ -12,18 +12,16 @@
 namespace Eloquent\Phony\Spy;
 
 use ArrayIterator;
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
-use Eloquent\Phony\Call\Factory\CallFactory;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
-use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
 use Error;
 use Exception;
 use Generator;

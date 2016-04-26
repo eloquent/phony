@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit_Framework_TestCase;

@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Generator;
+namespace Eloquent\Phony\Mock;
 
 use Athletic\AthleticEvent;
 use Eloquent\Phony\Phpunit\Phony;

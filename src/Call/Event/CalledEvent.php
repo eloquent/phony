@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 
 /**
  * Represents the start of a call.

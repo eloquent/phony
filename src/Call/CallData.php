@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Call;
 
 use ArrayIterator;
-use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\ResponseEvent;

@@ -13,16 +13,16 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Error;
 use Exception;
 

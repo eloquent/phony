@@ -13,16 +13,15 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Spy\Factory\SpyFactory;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\Factory\StubFactory;
+use Eloquent\Phony\Spy\SpyFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 

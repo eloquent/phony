@@ -11,12 +11,10 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
-use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 

@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
+use Eloquent\Phony\Mock\Builder\MockDefinition;
 use EngineException;
 use Error;
 use Exception;

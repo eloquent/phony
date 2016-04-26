@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Facade;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Matcher\Matcher;

@@ -12,23 +12,22 @@
 namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\EventSequence;
-use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Spy\Factory\SpyFactory;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\Factory\StubFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Spy\SpyFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
@@ -312,7 +311,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertSpyAssertionRecorder('Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder', $actual);
+        $this->assertSpyAssertionRecorder('Eloquent\Phony\Simpletest\SimpletestAssertionRecorder', $actual);
     }
 
     public function testSpyFunction()
@@ -322,7 +321,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertSpyAssertionRecorder('Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder', $actual);
+        $this->assertSpyAssertionRecorder('Eloquent\Phony\Simpletest\SimpletestAssertionRecorder', $actual);
     }
 
     public function testStub()
@@ -334,7 +333,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
         $this->assertStubAssertionRecorder(
-            'Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder',
+            'Eloquent\Phony\Simpletest\SimpletestAssertionRecorder',
             $actual
         );
     }
@@ -348,7 +347,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
         $this->assertStubAssertionRecorder(
-            'Eloquent\Phony\Integration\Simpletest\SimpletestAssertionRecorder',
+            'Eloquent\Phony\Simpletest\SimpletestAssertionRecorder',
             $actual
         );
     }

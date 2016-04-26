@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Invocation;
 
-use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestWrappedInvocable;
 use PHPUnit_Framework_TestCase;

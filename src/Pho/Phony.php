@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Pho;
 
 use Eloquent\Phony\Facade\AbstractFacade;
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Integration\Pho\PhoFacadeDriver;
 
 /**
  * A facade for Phony usage under Pho.

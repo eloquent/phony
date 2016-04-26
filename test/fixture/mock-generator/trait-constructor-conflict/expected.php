@@ -19,7 +19,7 @@ implements \Eloquent\Phony\Mock\Mock
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -34,7 +34,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         \call_user_func_array(
             array(
@@ -48,7 +48,7 @@ implements \Eloquent\Phony\Mock\Mock
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(

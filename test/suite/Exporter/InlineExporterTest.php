@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Exporter;
 
-use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
 use PHPUnit_Framework_TestCase;

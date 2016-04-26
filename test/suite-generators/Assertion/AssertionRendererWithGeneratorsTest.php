@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Assertion;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Test\EmptyGeneratorFactory;

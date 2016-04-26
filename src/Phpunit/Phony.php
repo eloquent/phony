@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Facade\AbstractFacade;
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 
 /**
  * A facade for Phony usage under PHPUnit.

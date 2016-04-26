@@ -11,10 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
 use Eloquent\Phony\Mock\Exception\AnonymousClassException;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalizedMockException;
@@ -23,10 +21,11 @@ use Eloquent\Phony\Mock\Exception\InvalidDefinitionException;
 use Eloquent\Phony\Mock\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
-use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Mock\MockFactory;
+use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionClass;
 use ReflectionException;
 

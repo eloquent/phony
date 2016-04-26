@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
+use Eloquent\Phony\Mock\Builder\MockDefinition;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Exception;
 use PHPUnit_Framework_TestCase;
 

@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 

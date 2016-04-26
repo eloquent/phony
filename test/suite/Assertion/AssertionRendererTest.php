@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Assertion;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventSequence;
@@ -19,12 +19,12 @@ use Eloquent\Phony\Event\NullEvent;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Spy\Factory\SpyFactory;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Spy\Spy;
-use Eloquent\Phony\Stub\Factory\StubFactory;
+use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestEvent;

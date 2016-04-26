@@ -31,7 +31,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -52,7 +52,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;

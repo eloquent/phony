@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\Invocable;
 
 class TestInvocable implements Invocable

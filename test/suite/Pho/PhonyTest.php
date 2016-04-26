@@ -12,22 +12,21 @@
 namespace Eloquent\Phony\Pho;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\EventSequence;
-use Eloquent\Phony\Integration\Pho\PhoAssertionRecorder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Spy\Factory\SpyFactory;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\Factory\StubFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Spy\SpyFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
@@ -350,7 +349,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
      */
     public function testInOrderMethodFailure()
     {
-        $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
+        $this->setExpectedException('Eloquent\Phony\Pho\PhoAssertionException');
         Phony::inOrder($this->eventB, $this->eventA);
     }
 
@@ -359,7 +358,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
      */
     public function testInOrderSequenceMethodFailure()
     {
-        $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
+        $this->setExpectedException('Eloquent\Phony\Pho\PhoAssertionException');
         Phony::inOrderSequence(array($this->eventB, $this->eventA));
     }
 
@@ -396,7 +395,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
      */
     public function testInOrderFunctionFailure()
     {
-        $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
+        $this->setExpectedException('Eloquent\Phony\Pho\PhoAssertionException');
         inOrder($this->eventB, $this->eventA);
     }
 
@@ -405,7 +404,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
      */
     public function testInOrderSequenceFunctionFailure()
     {
-        $this->setExpectedException('Eloquent\Phony\Integration\Pho\PhoAssertionException');
+        $this->setExpectedException('Eloquent\Phony\Pho\PhoAssertionException');
         inOrderSequence(array($this->eventB, $this->eventA));
     }
 

@@ -10,9 +10,9 @@
  */
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestInvocable;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase

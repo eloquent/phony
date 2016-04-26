@@ -13,25 +13,25 @@ namespace Eloquent\Phony\Integration;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
-use Eloquent\Phony\Event\Verification\EventOrderVerifier;
+use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Event\EventOrderVerifier;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
-use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Mock\MockFactory;
+use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\Factory\SpyFactory;
-use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\Factory\StubFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Spy\SpyFactory;
+use Eloquent\Phony\Spy\SpyVerifierFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Stub\StubVerifierFactory;
 
 /**
  * An abstract base class for implementing facade drivers that integrate with

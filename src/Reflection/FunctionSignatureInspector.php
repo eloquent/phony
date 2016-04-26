@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Reflection;
 
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use ReflectionFunctionAbstract;
 

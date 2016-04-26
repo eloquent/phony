@@ -12,19 +12,18 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Stub\Answer\Answer;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
-use Eloquent\Phony\Stub\Rule\StubRule;
 use EmptyIterator;
 use Error;
 use Exception;

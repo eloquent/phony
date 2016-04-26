@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\ProducedEvent;
@@ -21,16 +20,16 @@ use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Event\TraversableEvent;
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
-use Eloquent\Phony\Cardinality\Verification\AbstractCardinalityVerifier;
-use Eloquent\Phony\Cardinality\Verification\CardinalityVerifier;
+use Eloquent\Phony\Cardinality\AbstractCardinalityVerifier;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Error;
 use Exception;
 use InvalidArgumentException;
@@ -40,8 +39,7 @@ use Throwable;
 /**
  * Provides convenience methods for verifying the details of a call.
  */
-class CallVerifier extends AbstractCardinalityVerifier implements Call,
-    CardinalityVerifier
+class CallVerifier extends AbstractCardinalityVerifier implements Call
 {
     /**
      * Construct a new call verifier.

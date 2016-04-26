@@ -11,10 +11,9 @@
 
 namespace Eloquent\Phony\Phpunit;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
-use Eloquent\Phony\Integration\Phpunit\PhpunitFacadeDriver;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Exception\MockException;

@@ -12,13 +12,13 @@
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use ArrayIterator;
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phpunit\Phony;
-use Eloquent\Phony\Stub\Factory\StubFactory;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;
 use Exception;
 use PHPUnit_Framework_TestCase;

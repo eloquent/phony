@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Invocation;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestInvocable;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;

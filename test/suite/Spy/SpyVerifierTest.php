@@ -13,20 +13,18 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Factory\CallVerifierFactory;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
-use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Error;
@@ -380,7 +378,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testArgumentFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->argument();
     }
 

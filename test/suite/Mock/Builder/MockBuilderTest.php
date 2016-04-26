@@ -12,12 +12,12 @@
 namespace Eloquent\Phony\Mock\Builder;
 
 use ArrayIterator;
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
-use Eloquent\Phony\Mock\Factory\MockFactory;
-use Eloquent\Phony\Mock\Generator\MockGenerator;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Mock\MockFactory;
+use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;

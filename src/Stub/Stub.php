@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Error;

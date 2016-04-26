@@ -11,12 +11,10 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Call\Argument\Arguments;
-use Eloquent\Phony\Call\Factory\CallFactory;
-use Eloquent\Phony\Feature\FeatureDetector;
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Spy\Factory\GeneratorSpyFactory;
-use Eloquent\Phony\Spy\Factory\TraversableSpyFactory;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -271,7 +269,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
 
     public function testArgumentFailureUndefined()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Argument\Exception\UndefinedArgumentException');
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->argument();
     }
 

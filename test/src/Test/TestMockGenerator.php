@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Feature\FeatureDetector;
-use Eloquent\Phony\Mock\Builder\Definition\MockDefinition;
-use Eloquent\Phony\Mock\Generator\MockGenerator;
+use Eloquent\Phony\Mock\Builder\MockDefinition;
+use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 

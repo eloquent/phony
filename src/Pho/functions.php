@@ -11,10 +11,9 @@
 
 namespace Eloquent\Phony\Pho;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
-use Eloquent\Phony\Integration\Pho\PhoFacadeDriver;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Exception\MockException;

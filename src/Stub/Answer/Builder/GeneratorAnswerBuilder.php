@@ -11,10 +11,12 @@
 
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Stub\Answer\Builder\Detail\GeneratorAnswerBuilderDetail;
+use Eloquent\Phony\Stub\Answer\Builder\Detail\GeneratorAnswerBuilderDetailWithReturn;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Stub;
 use Exception;

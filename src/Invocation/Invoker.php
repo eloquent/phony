@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Invocation;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Error;
 use Exception;
 

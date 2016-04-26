@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Stub\Answer;
 
-use Eloquent\Phony\Call\Argument\Arguments;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Phpunit\Phony;
 use PHPUnit_Framework_TestCase;
 

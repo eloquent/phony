@@ -16,7 +16,7 @@ implements \Eloquent\Phony\Mock\Mock
         array $a1
     ) {
         $result = self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
         return $result;
     }
@@ -26,7 +26,7 @@ implements \Eloquent\Phony\Mock\Mock
         array $a1
     ) {
         $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Argument\Arguments($a1));
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
         return $result;
     }
@@ -34,7 +34,7 @@ implements \Eloquent\Phony\Mock\Mock
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -50,7 +50,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return self::$_staticHandle
             ->spy('__callStatic')->invoke($name, $arguments->all());
@@ -59,7 +59,7 @@ implements \Eloquent\Phony\Mock\Mock
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(
@@ -75,7 +75,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     private function _callMagic(
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array($this, '_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__call'),

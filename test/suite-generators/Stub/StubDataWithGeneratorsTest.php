@@ -11,12 +11,12 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Feature\FeatureDetector;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
-use Eloquent\Phony\Stub\Answer\Builder\Factory\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use PHPUnit_Framework_TestCase;
 
 class StubDataWithGeneratorsTest extends PHPUnit_Framework_TestCase

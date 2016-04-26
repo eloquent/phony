@@ -23,7 +23,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -43,7 +43,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -59,7 +59,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -75,7 +75,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -91,7 +91,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -107,7 +107,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -123,7 +123,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -139,7 +139,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -155,7 +155,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -171,7 +171,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -187,7 +187,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -208,7 +208,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -229,7 +229,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -250,7 +250,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -271,7 +271,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -292,7 +292,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -313,7 +313,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -334,7 +334,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -350,7 +350,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -371,7 +371,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -387,7 +387,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -403,7 +403,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -419,7 +419,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -435,7 +435,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -451,7 +451,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -467,7 +467,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -488,7 +488,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -509,7 +509,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -530,7 +530,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -546,7 +546,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -567,7 +567,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -583,7 +583,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -608,7 +608,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -633,7 +633,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -649,7 +649,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -665,7 +665,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -686,7 +686,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -702,7 +702,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -718,7 +718,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -734,7 +734,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -750,7 +750,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -766,7 +766,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Argument\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($arguments)
         );
 
         return $result;
@@ -774,7 +774,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     private static function _callParentStatic(
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array(__CLASS__, 'parent::' . $name),
@@ -784,7 +784,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     private function _callParent(
         $name,
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
             array($this, 'parent::' . $name),
@@ -793,7 +793,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Argument\Arguments $arguments
+        \Eloquent\Phony\Call\Arguments $arguments
     ) {
         \call_user_func_array(
             array($this, 'parent::__construct'),

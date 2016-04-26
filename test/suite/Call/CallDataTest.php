@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Call;
 
 use ArrayIterator;
-use Eloquent\Phony\Call\Argument\Arguments;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;

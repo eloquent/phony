@@ -11,14 +11,14 @@
 
 namespace Eloquent\Phony\Facade;
 
-use Eloquent\Phony\Event\Verification\EventOrderVerifier;
+use Eloquent\Phony\Event\EventOrderVerifier;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Matcher\Factory\MatcherFactory;
-use Eloquent\Phony\Mock\Builder\Factory\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\Factory\HandleFactory;
-use Eloquent\Phony\Spy\Factory\SpyVerifierFactory;
-use Eloquent\Phony\Stub\Factory\StubVerifierFactory;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Spy\SpyVerifierFactory;
+use Eloquent\Phony\Stub\StubVerifierFactory;
 
 /**
  * A service container that supplies all of the underlying services required by
