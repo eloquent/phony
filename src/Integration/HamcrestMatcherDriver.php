@@ -11,13 +11,14 @@
 
 namespace Eloquent\Phony\Integration;
 
-use Eloquent\Phony\Matcher\AbstractMatcherDriver;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
+use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
  * A matcher driver for Hamcrest matchers.
  */
-class HamcrestMatcherDriver extends AbstractMatcherDriver
+class HamcrestMatcherDriver implements MatcherDriver
 {
     /**
      * Get the static instance of this driver.
@@ -51,6 +52,18 @@ class HamcrestMatcherDriver extends AbstractMatcherDriver
     public function matcherClassNames()
     {
         return array('Hamcrest\Matcher');
+    }
+
+    /**
+     * Wrap the supplied third party matcher.
+     *
+     * @param object $matcher The matcher to wrap.
+     *
+     * @return Matcher The wrapped matcher.
+     */
+    public function wrapMatcher($matcher)
+    {
+        return new WrappedMatcher($matcher);
     }
 
     private static $instance;

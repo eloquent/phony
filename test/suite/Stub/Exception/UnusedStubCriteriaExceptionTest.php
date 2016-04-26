@@ -11,14 +11,15 @@
 
 namespace Eloquent\Phony\Stub\Exception;
 
-use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\MatcherFactory;
 use PHPUnit_Framework_TestCase;
 
 class UnusedStubCriteriaExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $criteria = array(new EqualToMatcher('a'), new EqualToMatcher('b'));
+        $matcherFactory = MatcherFactory::instance();
+        $criteria = array($matcherFactory->equalTo('a'), $matcherFactory->equalTo('b'));
         $exception = new UnusedStubCriteriaException($criteria);
 
         $this->assertSame($criteria, $exception->criteria());

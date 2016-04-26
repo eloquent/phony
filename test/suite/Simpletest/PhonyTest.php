@@ -18,7 +18,6 @@ use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
-use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -32,7 +31,7 @@ use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
 use SimpleReporter;
-use SimpleTestContext;
+use SimpleTest;
 
 class PhonyTest extends PHPUnit_Framework_TestCase
 {
@@ -44,15 +43,10 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires PHP4-style constructors.');
         }
 
-        $this->simpletestContext = new SimpleTestContext();
+        $this->simpletestContext = SimpleTest::getContext();
         $this->simpletestReporter = new SimpleReporter();
         $this->simpletestContext->setReporter($this->simpletestReporter);
         $this->assertionRecorder = new SimpletestAssertionRecorder($this->simpletestContext);
-
-        $reflector = new ReflectionObject($this->assertionRecorder);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, $this->assertionRecorder);
 
         $this->callVerifierFactory = new CallVerifierFactory(
             MatcherFactory::instance(),
@@ -80,6 +74,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             $this->assertionRecorder,
             Invoker::instance()
         );
+        $this->matcherFactory = MatcherFactory::instance();
 
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);
@@ -414,7 +409,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testEqualTo()
     {
-        $expected = new EqualToMatcher('a');
+        $expected = $this->matcherFactory->equalTo('a');
         $actual = Phony::equalTo('a');
 
         $this->assertEquals($expected, $actual);
@@ -422,7 +417,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testEqualToFunction()
     {
-        $expected = new EqualToMatcher('a');
+        $expected = $this->matcherFactory->equalTo('a');
         $actual = equalTo('a');
 
         $this->assertEquals($expected, $actual);
@@ -430,7 +425,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testWildcard()
     {
-        $expected = new WildcardMatcher(new EqualToMatcher('a'), 1, 2);
+        $expected = new WildcardMatcher($this->matcherFactory->equalTo('a'), 1, 2);
         $actual = Phony::wildcard('a', 1, 2);
 
         $this->assertEquals($expected, $actual);
@@ -438,7 +433,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testWildcardFunction()
     {
-        $expected = new WildcardMatcher(new EqualToMatcher('a'), 1, 2);
+        $expected = new WildcardMatcher($this->matcherFactory->equalTo('a'), 1, 2);
         $actual = wildcard('a', 1, 2);
 
         $this->assertEquals($expected, $actual);

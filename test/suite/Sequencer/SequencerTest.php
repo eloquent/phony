@@ -53,6 +53,7 @@ class SequencerTest extends PHPUnit_Framework_TestCase
         $reflector = new ReflectionClass('Eloquent\Phony\Sequencer\Sequencer');
         $property = $reflector->getProperty('instances');
         $property->setAccessible(true);
+        $instances = $property->getValue(null);
         $property->setValue(null, null);
         $instanceA = Sequencer::sequence('a');
         $instanceB = Sequencer::sequence('b');
@@ -62,5 +63,7 @@ class SequencerTest extends PHPUnit_Framework_TestCase
         $this->assertSame($instanceA, Sequencer::sequence('a'));
         $this->assertSame($instanceB, Sequencer::sequence('b'));
         $this->assertNotSame($instanceA, $instanceB);
+
+        $property->setValue(null, $instances);
     }
 }

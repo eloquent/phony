@@ -168,7 +168,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires PHP4-style constructors.');
         }
 
-        require_once __DIR__ . '/../../../src/TestClassOldConstructor.php';
+        require_once __DIR__ . '/../../src/TestClassOldConstructor.php';
 
         $builder = $this->builderFactory->create('TestClassOldConstructor');
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithOldConstructor');

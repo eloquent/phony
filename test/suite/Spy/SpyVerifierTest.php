@@ -21,27 +21,22 @@ use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Error;
 use Exception;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
 use RuntimeException;
 
 class SpyVerifierTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
-        $property = $exporterReflector->getProperty('incrementIds');
-        $property->setAccessible(true);
-        $property->setValue(InlineExporter::instance(), false);
-
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();
         $this->invoker = Invoker::instance();
@@ -57,12 +52,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->traversableSpyFactory
         );
 
-        $this->matcherFactory = MatcherFactory::instance();
+        $this->exporter = new InlineExporter(1, false);
+        $this->matcherFactory =
+            new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
+        $this->assertionRenderer = new AssertionRenderer($this->invocableInspector, $this->exporter);
         $this->subject = new SpyVerifier(
             $this->spy,
             $this->matcherFactory,
@@ -1165,7 +1162,7 @@ EOD;
         $this->assertFalse((boolean) $this->subject->checkCalledOn(null));
         $this->assertFalse((boolean) $this->subject->checkCalledOn($this->thisValueA));
         $this->assertFalse((boolean) $this->subject->checkCalledOn($this->thisValueB));
-        $this->assertFalse((boolean) $this->subject->checkCalledOn(new EqualToMatcher($this->thisValueA)));
+        $this->assertFalse((boolean) $this->subject->checkCalledOn($this->matcherFactory->equalTo($this->thisValueA)));
         $this->assertFalse((boolean) $this->subject->checkCalledOn((object) array()));
 
         $this->subject->setCalls($this->calls);
@@ -1173,7 +1170,7 @@ EOD;
         $this->assertTrue((boolean) $this->subject->checkCalledOn(null));
         $this->assertTrue((boolean) $this->subject->checkCalledOn($this->thisValueA));
         $this->assertTrue((boolean) $this->subject->checkCalledOn($this->thisValueB));
-        $this->assertTrue((boolean) $this->subject->checkCalledOn(new EqualToMatcher($this->thisValueA)));
+        $this->assertTrue((boolean) $this->subject->checkCalledOn($this->matcherFactory->equalTo($this->thisValueA)));
         $this->assertFalse((boolean) $this->subject->checkCalledOn((object) array()));
     }
 
@@ -1189,7 +1186,7 @@ EOD;
         $this->assertEquals(new EventSequence(array($this->callB)), $this->subject->calledOn($this->thisValueB));
         $this->assertEquals(
             new EventSequence(array($this->callA, $this->callB, $this->callC)),
-            $this->subject->calledOn(new EqualToMatcher($this->thisValueA))
+            $this->subject->calledOn($this->matcherFactory->equalTo($this->thisValueA))
         );
     }
 
@@ -1229,7 +1226,7 @@ Expected call on object like #0{property: "value"}. Called on:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->calledOn(new EqualToMatcher((object) array('property' => 'value')));
+        $this->subject->calledOn($this->matcherFactory->equalTo((object) array('property' => 'value')));
     }
 
     public function testCalledOnFailureWithMatcherWithNoCalls()
@@ -1238,7 +1235,7 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'Expected call on object like #0{property: "value"}. Never called.'
         );
-        $this->subject->calledOn(new EqualToMatcher((object) array('property' => 'value')));
+        $this->subject->calledOn($this->matcherFactory->equalTo((object) array('property' => 'value')));
     }
 
     public function testCheckAlwaysCalledOn()
@@ -1246,7 +1243,9 @@ EOD;
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn(null));
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn($this->thisValueA));
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn($this->thisValueB));
-        $this->assertFalse((boolean) $this->subject->always()->checkCalledOn(new EqualToMatcher($this->thisValueA)));
+        $this->assertFalse(
+            (boolean) $this->subject->always()->checkCalledOn($this->matcherFactory->equalTo($this->thisValueA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn((object) array()));
 
         $this->subject->setCalls($this->calls);
@@ -1254,13 +1253,17 @@ EOD;
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn(null));
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn($this->thisValueA));
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn($this->thisValueB));
-        $this->assertFalse((boolean) $this->subject->always()->checkCalledOn(new EqualToMatcher($this->thisValueA)));
+        $this->assertFalse(
+            (boolean) $this->subject->always()->checkCalledOn($this->matcherFactory->equalTo($this->thisValueA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn((object) array()));
 
         $this->subject->setCalls(array($this->callC, $this->callC));
 
         $this->assertTrue((boolean) $this->subject->always()->checkCalledOn($this->thisValueA));
-        $this->assertTrue((boolean) $this->subject->always()->checkCalledOn(new EqualToMatcher($this->thisValueA)));
+        $this->assertTrue(
+            (boolean) $this->subject->always()->checkCalledOn($this->matcherFactory->equalTo($this->thisValueA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn(null));
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn($this->thisValueB));
         $this->assertFalse((boolean) $this->subject->always()->checkCalledOn((object) array()));
@@ -1272,7 +1275,10 @@ EOD;
         $expected = new EventSequence(array($this->callC, $this->callC));
 
         $this->assertEquals($expected, $this->subject->always()->calledOn($this->thisValueA));
-        $this->assertEquals($expected, $this->subject->always()->calledOn(new EqualToMatcher($this->thisValueA)));
+        $this->assertEquals(
+            $expected,
+            $this->subject->always()->calledOn($this->matcherFactory->equalTo($this->thisValueA))
+        );
     }
 
     public function testAlwaysCalledOnFailure()
@@ -1311,16 +1317,17 @@ Expected every call on object like Eloquent\Phony\Test\TestClassA#0{constructorA
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->calledOn(new EqualToMatcher($this->thisValueA));
+        $this->subject->always()->calledOn($this->matcherFactory->equalTo($this->thisValueA));
     }
 
     public function testAlwaysCalledOnFailureWithMatcherWithNoCalls()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on object like Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}. Never called.'
+            'Expected every call on object like Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}. ' .
+                'Never called.'
         );
-        $this->subject->always()->calledOn(new EqualToMatcher($this->thisValueA));
+        $this->subject->always()->calledOn($this->matcherFactory->equalTo($this->thisValueA));
     }
 
     public function testCheckReturned()
@@ -1329,7 +1336,9 @@ EOD;
         $this->assertFalse((boolean) $this->subject->checkReturned(null));
         $this->assertFalse((boolean) $this->subject->checkReturned($this->returnValueA));
         $this->assertFalse((boolean) $this->subject->checkReturned($this->returnValueB));
-        $this->assertFalse((boolean) $this->subject->checkReturned(new EqualToMatcher($this->returnValueA)));
+        $this->assertFalse(
+            (boolean) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+        );
         $this->assertFalse((boolean) $this->subject->checkReturned('z'));
 
         $this->subject->setCalls($this->calls);
@@ -1338,7 +1347,7 @@ EOD;
         $this->assertFalse((boolean) $this->subject->checkReturned(null));
         $this->assertTrue((boolean) $this->subject->checkReturned($this->returnValueA));
         $this->assertTrue((boolean) $this->subject->checkReturned($this->returnValueB));
-        $this->assertTrue((boolean) $this->subject->checkReturned(new EqualToMatcher($this->returnValueA)));
+        $this->assertTrue((boolean) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA)));
         $this->assertFalse((boolean) $this->subject->checkReturned('z'));
     }
 
@@ -1360,7 +1369,7 @@ EOD;
         );
         $this->assertEquals(
             new EventSequence(array($this->callAResponse)),
-            $this->subject->returned(new EqualToMatcher($this->returnValueA))
+            $this->subject->returned($this->matcherFactory->equalTo($this->returnValueA))
         );
     }
 
@@ -1409,7 +1418,9 @@ EOD;
         $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
         $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueA));
         $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueB));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(new EqualToMatcher($this->returnValueA)));
+        $this->assertFalse(
+            (boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkReturned('z'));
 
         $this->subject->setCalls($this->calls);
@@ -1418,14 +1429,18 @@ EOD;
         $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
         $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueA));
         $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueB));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(new EqualToMatcher($this->returnValueA)));
+        $this->assertFalse(
+            (boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkReturned('z'));
 
         $this->subject->setCalls(array($this->callA, $this->callA));
 
         $this->assertTrue((boolean) $this->subject->always()->checkReturned());
         $this->assertTrue((boolean) $this->subject->always()->checkReturned($this->returnValueA));
-        $this->assertTrue((boolean) $this->subject->always()->checkReturned(new EqualToMatcher($this->returnValueA)));
+        $this->assertTrue(
+            (boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
         $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueB));
         $this->assertFalse((boolean) $this->subject->always()->checkReturned('y'));
@@ -1438,7 +1453,10 @@ EOD;
 
         $this->assertEquals($expected, $this->subject->always()->returned());
         $this->assertEquals($expected, $this->subject->always()->returned($this->returnValueA));
-        $this->assertEquals($expected, $this->subject->always()->returned(new EqualToMatcher($this->returnValueA)));
+        $this->assertEquals(
+            $expected,
+            $this->subject->always()->returned($this->matcherFactory->equalTo($this->returnValueA))
+        );
     }
 
     public function testAlwaysReturnedFailure()
@@ -1489,11 +1507,11 @@ EOD;
         $this->assertFalse((boolean) $this->subject->checkThrew('RuntimeException'));
         $this->assertFalse((boolean) $this->subject->checkThrew($this->exceptionA));
         $this->assertFalse((boolean) $this->subject->checkThrew($this->exceptionB));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher($this->exceptionA)));
+        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
         $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
         $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls($this->calls);
 
@@ -1502,11 +1520,11 @@ EOD;
         $this->assertTrue((boolean) $this->subject->checkThrew('RuntimeException'));
         $this->assertTrue((boolean) $this->subject->checkThrew($this->exceptionA));
         $this->assertTrue((boolean) $this->subject->checkThrew($this->exceptionB));
-        $this->assertTrue((boolean) $this->subject->checkThrew(new EqualToMatcher($this->exceptionA)));
+        $this->assertTrue((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
         $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
         $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
     }
 
     public function testCheckThrewFailureInvalidInput()
@@ -1553,7 +1571,7 @@ EOD;
         );
         $this->assertEquals(
             new EventSequence(array($this->callCResponse)),
-            $this->subject->threw(new EqualToMatcher($this->exceptionA))
+            $this->subject->threw($this->matcherFactory->equalTo($this->exceptionA))
         );
     }
 
@@ -1630,8 +1648,8 @@ EOD;
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. ' .
-                'Never called.'
+            'Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException ' .
+                'exception. Never called.'
         );
         $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
@@ -1694,7 +1712,7 @@ Expected call on implode[label] to throw exception like RuntimeException#0{}. Re
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->threw(new EqualToMatcher(new RuntimeException()));
+        $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureExpectingMatcherWithNoCalls()
@@ -1703,7 +1721,7 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'Expected call on implode[label] to throw exception like RuntimeException#0{}. Never called.'
         );
-        $this->subject->threw(new EqualToMatcher(new RuntimeException()));
+        $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureExpectingMatcherWithNoExceptions()
@@ -1716,7 +1734,7 @@ Expected call on implode[label] to throw exception like RuntimeException#0{}. Re
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->threw(new EqualToMatcher(new RuntimeException()));
+        $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureInvalidInput()
@@ -1744,11 +1762,13 @@ EOD;
         $this->assertFalse((boolean) $this->subject->always()->checkThrew('RuntimeException'));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionB));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new EqualToMatcher($this->exceptionA)));
+        $this->assertFalse(
+            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls($this->calls);
 
@@ -1757,11 +1777,13 @@ EOD;
         $this->assertFalse((boolean) $this->subject->always()->checkThrew('RuntimeException'));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionB));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new EqualToMatcher($this->exceptionA)));
+        $this->assertFalse(
+            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls(array($this->callC, $this->callC));
 
@@ -1770,15 +1792,17 @@ EOD;
         $this->assertTrue((boolean) $this->subject->always()->checkThrew('RuntimeException'));
         $this->assertTrue((boolean) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionB));
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew(new EqualToMatcher($this->exceptionA)));
+        $this->assertTrue(
+            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+        );
         $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
         $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls(array($this->callA, $this->callA));
 
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
     }
 
     public function testAlwaysThrew()
@@ -1790,7 +1814,10 @@ EOD;
         $this->assertEquals($expected, $this->subject->always()->threw('Exception'));
         $this->assertEquals($expected, $this->subject->always()->threw('RuntimeException'));
         $this->assertEquals($expected, $this->subject->always()->threw($this->exceptionA));
-        $this->assertEquals($expected, $this->subject->always()->threw(new EqualToMatcher($this->exceptionA)));
+        $this->assertEquals(
+            $expected,
+            $this->subject->always()->threw($this->matcherFactory->equalTo($this->exceptionA))
+        );
     }
 
     public function testAlwaysThrewFailureExpectingAny()
@@ -1911,7 +1938,7 @@ Expected every call on implode[label] to throw exception like RuntimeException#0
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->threw(new EqualToMatcher(new RuntimeException()));
+        $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testAlwaysThrewFailureExpectingMatcherWithNoCalls()
@@ -1920,7 +1947,7 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'Expected every call on implode[label] to throw exception like RuntimeException#0{}. Never called.'
         );
-        $this->subject->always()->threw(new EqualToMatcher(new RuntimeException()));
+        $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testAlwaysThrewFailureExpectingMatcherWithNoExceptions()
@@ -1933,7 +1960,7 @@ Expected every call on implode[label] to throw exception like RuntimeException#0
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->threw(new EqualToMatcher(new RuntimeException()));
+        $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testCheckProduced()

@@ -154,6 +154,14 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         };
     }
 
+    protected function tearDown()
+    {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), true);
+    }
+
     public function testGenerates()
     {
         $builder = $this->subject->generates(array('a' => 'b', 'c'));

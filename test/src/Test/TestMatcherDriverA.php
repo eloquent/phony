@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Test;
 
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
 
@@ -28,6 +29,6 @@ class TestMatcherDriverA implements MatcherDriver
 
     public function wrapMatcher($matcher)
     {
-        return new EqualToMatcher('a');
+        return new EqualToMatcher('a', InlineExporter::instance());
     }
 }

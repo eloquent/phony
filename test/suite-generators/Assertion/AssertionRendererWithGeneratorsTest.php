@@ -70,6 +70,14 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    protected function tearDown()
+    {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), true);
+    }
+
     public function testRenderResponsesWithGenerators()
     {
         $expected = <<<'EOD'

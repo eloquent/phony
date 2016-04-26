@@ -57,6 +57,14 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    protected function tearDown()
+    {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), true);
+    }
+
     public function testCreate()
     {
         $spy = $this->spyFactory->create()->setLabel('0');

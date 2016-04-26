@@ -19,25 +19,20 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Test\EmptyGeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
 use RuntimeException;
 
 class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
-        $property = $exporterReflector->getProperty('incrementIds');
-        $property->setAccessible(true);
-        $property->setValue(InlineExporter::instance(), false);
-
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callEventFactory->sequencer()->set(111);
@@ -49,11 +44,13 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
 
-        $this->matcherFactory = MatcherFactory::instance();
+        $this->exporter = new InlineExporter(1, false);
+        $this->matcherFactory =
+            new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
+        $this->assertionRenderer = new AssertionRenderer($this->invocableInspector, $this->exporter);
         $this->subject = new CallVerifier(
             $this->call,
             $this->matcherFactory,
@@ -639,15 +636,19 @@ EOD;
         $this->assertTrue((boolean) $this->generatorSubject->checkReceivedException($this->receivedExceptionA));
         $this->assertTrue((boolean) $this->generatorSubject->checkReceivedException($this->receivedExceptionB));
         $this->assertTrue(
-            (boolean) $this->generatorSubject->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
+            (boolean) $this->generatorSubject
+                ->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
         $this->assertFalse((boolean) $this->generatorSubject->checkReceivedException('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->generatorSubject->checkReceivedException(new Exception()));
         $this->assertFalse((boolean) $this->generatorSubject->checkReceivedException(new RuntimeException()));
         $this->assertFalse(
-            (boolean) $this->generatorSubject->checkReceivedException(new EqualToMatcher(new RuntimeException()))
+            (boolean) $this->generatorSubject
+                ->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
         );
-        $this->assertFalse((boolean) $this->generatorSubject->checkReceivedException(new EqualToMatcher(null)));
+        $this->assertFalse(
+            (boolean) $this->generatorSubject->checkReceivedException($this->matcherFactory->equalTo(null))
+        );
         $this->assertFalse((boolean) $this->generatorSubject->never()->checkReceivedException());
         $this->assertFalse((boolean) $this->generatorSubject->never()->checkReceivedException('Exception'));
         $this->assertFalse((boolean) $this->generatorSubject->never()->checkReceivedException('RuntimeException'));
@@ -656,7 +657,7 @@ EOD;
         );
         $this->assertFalse(
             (boolean) $this->generatorSubject->never()
-                ->checkReceivedException(new EqualToMatcher($this->receivedExceptionA))
+                ->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
     }
 
@@ -696,7 +697,7 @@ EOD;
         );
         $this->assertEquals(
             new EventSequence(array($this->generatorEventD)),
-            $this->generatorSubject->receivedException(new EqualToMatcher($this->receivedExceptionA))
+            $this->generatorSubject->receivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
     }
 
@@ -877,7 +878,7 @@ Expected generator to receive exception like RuntimeException#0{}. Produced:
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->receivedException(new EqualToMatcher(new RuntimeException()));
+        $this->generatorSubject->receivedException($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testReceivedExceptionFailureMatcherNever()
@@ -895,7 +896,7 @@ Expected no generator to receive exception like RuntimeException#0{message: "Con
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->receivedException(new EqualToMatcher($this->receivedExceptionA));
+        $this->generatorSubject->never()->receivedException($this->matcherFactory->equalTo($this->receivedExceptionA));
     }
 
     public function testReceivedExceptionFailureInvalidInput()

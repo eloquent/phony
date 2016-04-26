@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Integration;
 
-use Eloquent\Phony\Matcher\AbstractMatcherDriver;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -19,7 +18,7 @@ use Eloquent\Phony\Matcher\WildcardMatcher;
 /**
  * A matcher driver for Prophecy tokens.
  */
-class ProphecyMatcherDriver extends AbstractMatcherDriver
+class ProphecyMatcherDriver implements MatcherDriver
 {
     /**
      * Get the static instance of this driver.
@@ -29,7 +28,7 @@ class ProphecyMatcherDriver extends AbstractMatcherDriver
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(WildcardMatcher::instance());
         }
 
         return self::$instance;
@@ -37,10 +36,12 @@ class ProphecyMatcherDriver extends AbstractMatcherDriver
 
     /**
      * Construct a new Prophecy matcher driver.
+     *
+     * @param WildcardMatcher $wildcard The wildcard matcher to use.
      */
-    public function __construct()
+    public function __construct(WildcardMatcher $wildcard)
     {
-        $this->wildcard = WildcardMatcher::instance();
+        $this->wildcard = $wildcard;
     }
 
     /**

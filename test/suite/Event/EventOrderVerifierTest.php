@@ -24,7 +24,8 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
-        $this->subject = new EventOrderVerifier($this->assertionRecorder, $this->assertionRenderer);
+        $this->nullEvent = new NullEvent();
+        $this->subject = new EventOrderVerifier($this->assertionRecorder, $this->assertionRenderer, $this->nullEvent);
 
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();

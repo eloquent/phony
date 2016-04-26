@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Matcher;
 
-use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Mock\Mock;
 use Exception;
 use Throwable;
@@ -26,11 +26,13 @@ class EqualToMatcher implements Matcher
     /**
      * Construct a new equal to matcher.
      *
-     * @param mixed $value The value to check against.
+     * @param mixed    $value    The value to check against.
+     * @param Exporter $exporter The exporter to use.
      */
-    public function __construct($value)
+    public function __construct($value, Exporter $exporter)
     {
         $this->value = $value;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -318,7 +320,7 @@ class EqualToMatcher implements Matcher
      */
     public function describe()
     {
-        return InlineExporter::instance()->export($this->value);
+        return $this->exporter->export($this->value);
     }
 
     /**
@@ -328,10 +330,11 @@ class EqualToMatcher implements Matcher
      */
     public function __toString()
     {
-        return InlineExporter::instance()->export($this->value);
+        return $this->exporter->export($this->value);
     }
 
     const ARRAY_ID_KEY = "\0__phony__\0";
 
     private $value;
+    private $exporter;
 }

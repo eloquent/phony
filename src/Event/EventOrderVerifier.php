@@ -31,7 +31,8 @@ class EventOrderVerifier
         if (!self::$instance) {
             self::$instance = new self(
                 ExceptionAssertionRecorder::instance(),
-                AssertionRenderer::instance()
+                AssertionRenderer::instance(),
+                NullEvent::instance()
             );
         }
 
@@ -46,10 +47,12 @@ class EventOrderVerifier
      */
     public function __construct(
         AssertionRecorder $assertionRecorder,
-        AssertionRenderer $assertionRenderer
+        AssertionRenderer $assertionRenderer,
+        NullEvent $nullEvent
     ) {
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->nullEvent = $nullEvent;
     }
 
     /**
@@ -293,7 +296,7 @@ class EventOrderVerifier
                 }
 
                 if (!$subEvent) {
-                    $subEvent = NullEvent::instance();
+                    $subEvent = $this->nullEvent;
                 }
 
                 $expected[] = $earliestEvent = $subEvent;
@@ -333,4 +336,5 @@ class EventOrderVerifier
     private static $instance;
     private $assertionRecorder;
     private $assertionRenderer;
+    private $nullEvent;
 }

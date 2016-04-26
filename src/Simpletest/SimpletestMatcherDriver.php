@@ -11,14 +11,13 @@
 
 namespace Eloquent\Phony\Simpletest;
 
-use Eloquent\Phony\Matcher\AbstractMatcherDriver;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
 
 /**
  * A matcher driver for SimpleTest expectations.
  */
-class SimpletestMatcherDriver extends AbstractMatcherDriver
+class SimpletestMatcherDriver implements MatcherDriver
 {
     /**
      * Get the static instance of this driver.

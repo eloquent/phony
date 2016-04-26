@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\Exporter;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Integration\CounterpartMatcherDriver;
 use Eloquent\Phony\Integration\HamcrestMatcherDriver;
 use Eloquent\Phony\Integration\MockeryMatcherDriver;
@@ -33,8 +35,11 @@ class MatcherFactory
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance =
-                new self(AnyMatcher::instance(), WildcardMatcher::instance());
+            self::$instance = new self(
+                AnyMatcher::instance(),
+                WildcardMatcher::instance(),
+                InlineExporter::instance()
+            );
             self::$instance->addDefaultMatcherDrivers();
         }
 
@@ -46,15 +51,18 @@ class MatcherFactory
      *
      * @param Matcher         $anyMatcher         A matcher that matches any value.
      * @param WildcardMatcher $wildcardAnyMatcher A matcher that matches any number of arguments of any value.
+     * @param Exporter        $exporter           The exporter to use.
      */
     public function __construct(
         Matcher $anyMatcher,
-        WildcardMatcher $wildcardAnyMatcher
+        WildcardMatcher $wildcardAnyMatcher,
+        Exporter $exporter
     ) {
         $this->drivers = array();
         $this->driverIndex = array();
         $this->anyMatcher = $anyMatcher;
         $this->wildcardAnyMatcher = $wildcardAnyMatcher;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -146,7 +154,7 @@ class MatcherFactory
         if (is_object($value)) {
             if ($value instanceof InstanceHandle) {
                 if ($value->isAdaptable()) {
-                    return new EqualToMatcher($value->mock());
+                    return new EqualToMatcher($value->mock(), $this->exporter);
                 }
             } else {
                 foreach ($this->driverIndex as $className => $driver) {
@@ -165,7 +173,7 @@ class MatcherFactory
             return $this->anyMatcher;
         }
 
-        return new EqualToMatcher($value);
+        return new EqualToMatcher($value, $this->exporter);
     }
 
     /**
@@ -192,7 +200,8 @@ class MatcherFactory
             if (is_object($value)) {
                 if ($value instanceof InstanceHandle) {
                     if ($value->isAdaptable()) {
-                        $matchers[] = new EqualToMatcher($value->mock());
+                        $matchers[] =
+                            new EqualToMatcher($value->mock(), $this->exporter);
 
                         continue;
                     }
@@ -212,7 +221,7 @@ class MatcherFactory
             } elseif ('~' === $value) {
                 $matchers[] = $this->anyMatcher;
             } else {
-                $matchers[] = new EqualToMatcher($value);
+                $matchers[] = new EqualToMatcher($value, $this->exporter);
             }
         }
 
@@ -238,7 +247,7 @@ class MatcherFactory
      */
     public function equalTo($value)
     {
-        return new EqualToMatcher($value);
+        return new EqualToMatcher($value, $this->exporter);
     }
 
     /**
@@ -274,4 +283,5 @@ class MatcherFactory
     private $driverIndex;
     private $anyMatcher;
     private $wildcardAnyMatcher;
+    private $exporter;
 }

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
@@ -25,7 +26,8 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     protected function setUp($value = '<string>')
     {
         $this->value = 'x';
-        $this->subject = new EqualToMatcher($this->value);
+        $this->exporter = InlineExporter::instance();
+        $this->subject = new EqualToMatcher($this->value, $this->exporter);
     }
 
     public function testConstructor()
@@ -80,7 +82,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $snapshot = unserialize(serialize($left));
         $right = unserialize(serialize($left));
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
         $this->assertTrue($matcher->matches($right));
 
         // ensure that the comparison does not modify the arguments in any way
@@ -102,7 +104,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     {
         $left = new TestDerivedClassWithTraitA();
         $right = new TestDerivedClassWithTraitA();
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertTrue($matcher->matches($right));
     }
@@ -213,7 +215,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchesNotEqual($left, $right)
     {
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertFalse($matcher->matches($right));
     }
@@ -223,7 +225,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchesNotEqualInverse($left, $right)
     {
-        $matcher = new EqualToMatcher($right);
+        $matcher = new EqualToMatcher($right, $this->exporter);
 
         $this->assertFalse($matcher->matches($left));
     }
@@ -234,7 +236,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     public function testMatchesNotEqualWithTraits()
     {
         $left = new TestDerivedClassWithTraitA();
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         // different public property
         $right = new TestDerivedClassWithTraitA('XXX');
@@ -269,7 +271,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $right->cycle = $right;
         $right->after = 'bar';
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertTrue($matcher->matches($right));
     }
@@ -286,7 +288,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $right->cycle = $right;
         $right->after = 'XXX';
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertFalse($matcher->matches($right));
     }
@@ -311,7 +313,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $rightB->cycle = $rightA;
         $rightA->cycle = $rightB;
 
-        $matcher = new EqualToMatcher($leftA);
+        $matcher = new EqualToMatcher($leftA, $this->exporter);
 
         $this->assertTrue($matcher->matches($rightA));
     }
@@ -336,7 +338,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $rightB->cycle = $rightA;
         $rightA->cycle = $rightB;
 
-        $matcher = new EqualToMatcher($leftA);
+        $matcher = new EqualToMatcher($leftA, $this->exporter);
 
         $this->assertFalse($matcher->matches($rightA));
     }
@@ -353,7 +355,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $right['cycle'] = &$right;
         $right['after'] = 'bar';
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertTrue($matcher->matches($right));
     }
@@ -370,7 +372,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $right['cycle'] = &$right;
         $right['after'] = 'XXX';
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertFalse($matcher->matches($right));
     }
@@ -395,7 +397,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $rightB['cycle'] = &$rightA;
         $rightA['cycle'] = &$rightB;
 
-        $matcher = new EqualToMatcher($leftA);
+        $matcher = new EqualToMatcher($leftA, $this->exporter);
 
         $this->assertTrue($matcher->matches($rightA));
     }
@@ -420,7 +422,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $rightB['cycle'] = &$rightA;
         $rightA['cycle'] = &$rightB;
 
-        $matcher = new EqualToMatcher($leftA);
+        $matcher = new EqualToMatcher($leftA, $this->exporter);
 
         $this->assertFalse($matcher->matches($rightA));
     }
@@ -439,7 +441,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $leftArray['object'] = $left;
         $rightArray['object'] = $right;
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertTrue($matcher->matches($right));
     }
@@ -450,7 +452,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $left  = array(&$shared);
         $right = array(&$shared);
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertTrue($matcher->matches($right));
     }
@@ -468,7 +470,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         Phony::on($mockB1)->setLabel('b');
         $mockX1 = new $className();
 
-        $matcher = new EqualToMatcher($mockA1);
+        $matcher = new EqualToMatcher($mockA1, $this->exporter);
 
         $this->assertTrue($matcher->matches($mockA2));
         $this->assertFalse($matcher->matches($mockB1));
@@ -483,7 +485,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     {
         $left  = new Exception('The message.', 123);
         $right = new Exception('The message.', 123);
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertTrue($matcher->matches($right));
     }
@@ -495,7 +497,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 
         next($left);
 
-        $matcher = new EqualToMatcher($left);
+        $matcher = new EqualToMatcher($left, $this->exporter);
 
         $this->assertTrue($matcher->matches($right));
     }
@@ -507,14 +509,14 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
 
     public function testDescribeWithMultilineString()
     {
-        $this->subject = new EqualToMatcher("line\nline");
+        $this->subject = new EqualToMatcher("line\nline", $this->exporter);
 
         $this->assertSame('"line\nline"', $this->subject->describe());
     }
 
     public function testDescribeWithNonString()
     {
-        $this->subject = new EqualToMatcher(111);
+        $this->subject = new EqualToMatcher(111, $this->exporter);
 
         $this->assertSame('111', $this->subject->describe());
     }

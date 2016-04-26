@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Integration;
 
-use Eloquent\Phony\Matcher\AbstractMatcherDriver;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -20,7 +19,7 @@ use Eloquent\Phony\Matcher\WrappedMatcher;
 /**
  * A matcher driver for Phake matchers.
  */
-class PhakeMatcherDriver extends AbstractMatcherDriver
+class PhakeMatcherDriver implements MatcherDriver
 {
     /**
      * Get the static instance of this driver.
@@ -30,10 +29,20 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(WildcardMatcher::instance());
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Construct a new Phake matcher driver.
+     *
+     * @param WildcardMatcher $wildcard The wildcard matcher to use.
+     */
+    public function __construct(WildcardMatcher $wildcard)
+    {
+        $this->wildcard = $wildcard;
     }
 
     /**
@@ -70,11 +79,12 @@ class PhakeMatcherDriver extends AbstractMatcherDriver
     public function wrapMatcher($matcher)
     {
         if (is_a($matcher, 'Phake_Matchers_AnyParameters')) {
-            return WildcardMatcher::instance();
+            return $this->wildcard;
         }
 
         return new WrappedMatcher($matcher);
     }
 
     private static $instance;
+    private $wildcard;
 }

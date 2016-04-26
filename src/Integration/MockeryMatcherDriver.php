@@ -11,14 +11,13 @@
 
 namespace Eloquent\Phony\Integration;
 
-use Eloquent\Phony\Matcher\AbstractMatcherDriver;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
 
 /**
  * A matcher driver for Mockery matchers.
  */
-class MockeryMatcherDriver extends AbstractMatcherDriver
+class MockeryMatcherDriver implements MatcherDriver
 {
     /**
      * Get the static instance of this driver.

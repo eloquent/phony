@@ -40,7 +40,7 @@ class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
      */
     protected function createAssertionRecorder()
     {
-        return PhpunitAssertionRecorder::instance();
+        return new PhpunitAssertionRecorder();
     }
 
     private static $instance;

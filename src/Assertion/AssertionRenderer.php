@@ -225,7 +225,7 @@ class AssertionRenderer
 
         $rendered = array();
         foreach ($matchers as $matcher) {
-            $rendered[] = $matcher->describe();
+            $rendered[] = $matcher->describe($this->exporter);
         }
 
         return implode(', ', $rendered);

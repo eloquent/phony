@@ -46,10 +46,8 @@ class CallEventFactory
      * @param Sequencer $sequencer The sequencer to use.
      * @param Clock     $clock     The clock to use.
      */
-    public function __construct(
-        Sequencer $sequencer,
-        Clock $clock
-    ) {
+    public function __construct(Sequencer $sequencer, Clock $clock)
+    {
         $this->sequencer = $sequencer;
         $this->clock = $clock;
     }

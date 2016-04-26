@@ -11,14 +11,13 @@
 
 namespace Eloquent\Phony\Phpunit;
 
-use Eloquent\Phony\Matcher\AbstractMatcherDriver;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
 
 /**
  * A matcher driver for PHPUnit constraints.
  */
-class PhpunitMatcherDriver extends AbstractMatcherDriver
+class PhpunitMatcherDriver implements MatcherDriver
 {
     /**
      * Get the static instance of this driver.

@@ -40,7 +40,7 @@ class PhoFacadeDriver extends AbstractIntegratedFacadeDriver
      */
     protected function createAssertionRecorder()
     {
-        return PhoAssertionRecorder::instance();
+        return new PhoAssertionRecorder();
     }
 
     private static $instance;

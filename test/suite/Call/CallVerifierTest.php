@@ -20,7 +20,6 @@ use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
@@ -148,6 +147,14 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->featureDetector = new FeatureDetector();
+    }
+
+    protected function tearDown()
+    {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), true);
     }
 
     public function testProxyMethods()
@@ -387,7 +394,7 @@ EOD;
     public function testCheckCalledOn()
     {
         $this->assertTrue((boolean) $this->subject->checkCalledOn($this->thisValue));
-        $this->assertTrue((boolean) $this->subject->checkCalledOn(new EqualToMatcher($this->thisValue)));
+        $this->assertTrue((boolean) $this->subject->checkCalledOn($this->matcherFactory->equalTo($this->thisValue)));
         $this->assertTrue((boolean) $this->subject->never()->checkCalledOn((object) array('property' => 'value')));
         $this->assertFalse((boolean) $this->subject->checkCalledOn((object) array('property' => 'value')));
         $this->assertFalse((boolean) $this->subject->never()->checkCalledOn($this->thisValue));
@@ -396,7 +403,7 @@ EOD;
     public function testCalledOn()
     {
         $this->assertEquals($this->assertionResult, $this->subject->calledOn($this->thisValue));
-        $this->assertEquals($this->assertionResult, $this->subject->calledOn(new EqualToMatcher($this->thisValue)));
+        $this->assertEquals($this->assertionResult, $this->subject->calledOn($this->matcherFactory->equalTo($this->thisValue)));
         $this->assertEquals(
             $this->emptyAssertionResult,
             $this->subject->never()->calledOn((object) array('property' => 'value'))
@@ -427,7 +434,7 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'Not called on object like #0{property: "value"}. Object was #0{}.'
         );
-        $this->subject->calledOn(new EqualToMatcher((object) array('property' => 'value')));
+        $this->subject->calledOn($this->matcherFactory->equalTo((object) array('property' => 'value')));
     }
 
     public function testCalledOnFailureWithMatcherNever()
@@ -436,7 +443,7 @@ EOD;
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'Called on object like #0{}. Object was #0{}.'
         );
-        $this->subject->never()->calledOn(new EqualToMatcher($this->thisValue));
+        $this->subject->never()->calledOn($this->matcherFactory->equalTo($this->thisValue));
     }
 
     public function testCheckReturned()
@@ -543,31 +550,31 @@ EOD;
         $this->assertFalse((boolean) $this->subject->checkThrew('Exception'));
         $this->assertFalse((boolean) $this->subject->checkThrew('RuntimeException'));
         $this->assertFalse((boolean) $this->subject->checkThrew($this->exception));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher($this->exception)));
+        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exception)));
         $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
         $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher(new RuntimeException())));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(new RuntimeException())));
+        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->assertTrue((boolean) $this->subjectWithException->checkThrew());
         $this->assertTrue((boolean) $this->subjectWithException->checkThrew('Exception'));
         $this->assertTrue((boolean) $this->subjectWithException->checkThrew('RuntimeException'));
         $this->assertTrue((boolean) $this->subjectWithException->checkThrew($this->exception));
-        $this->assertTrue((boolean) $this->subjectWithException->checkThrew(new EqualToMatcher($this->exception)));
+        $this->assertTrue((boolean) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo($this->exception)));
         $this->assertFalse((boolean) $this->subjectWithException->checkThrew('InvalidArgumentException'));
         $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new Exception()));
         $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new RuntimeException()));
         $this->assertFalse(
-            (boolean) $this->subjectWithException->checkThrew(new EqualToMatcher(new RuntimeException()))
+            (boolean) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo(new RuntimeException()))
         );
-        $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new EqualToMatcher(null)));
+        $this->assertFalse((boolean) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo(null)));
         $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew());
         $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew('Exception'));
         $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew('RuntimeException'));
         $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew($this->exception));
         $this->assertFalse(
-            (boolean) $this->subjectWithException->never()->checkThrew(new EqualToMatcher($this->exception))
+            (boolean) $this->subjectWithException->never()->checkThrew($this->matcherFactory->equalTo($this->exception))
         );
     }
 
@@ -597,7 +604,7 @@ EOD;
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw($this->exception));
         $this->assertEquals(
             $this->threwAssertionResult,
-            $this->subjectWithException->threw(new EqualToMatcher($this->exception))
+            $this->subjectWithException->threw($this->matcherFactory->equalTo($this->exception))
         );
 
         $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->threw());
@@ -715,7 +722,7 @@ EOD;
             'Expected exception like RuntimeException#0{}. ' .
                 'Threw RuntimeException("You done goofed.").'
         );
-        $this->subjectWithException->threw(new EqualToMatcher(new RuntimeException()));
+        $this->subjectWithException->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureMatcherNever()
@@ -725,7 +732,7 @@ EOD;
             'Expected no exception like RuntimeException#0{message: "You done goofed."}. ' .
                 'Threw RuntimeException("You done goofed.").'
         );
-        $this->subjectWithException->never()->threw(new EqualToMatcher($this->exception));
+        $this->subjectWithException->never()->threw($this->matcherFactory->equalTo($this->exception));
     }
 
     public function testThrewFailureInvalidInput()

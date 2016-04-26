@@ -12,7 +12,7 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use PHPUnit_Framework_TestCase;
@@ -21,7 +21,8 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->criteria = array(new EqualToMatcher('a'), new EqualToMatcher('b'));
+        $this->matcherFactory = MatcherFactory::instance();
+        $this->criteria = array($this->matcherFactory->equalTo('a'), $this->matcherFactory->equalTo('b'));
         $this->answerA = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), array());
         $this->answerB = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), array());
         $this->answers = array($this->answerA, $this->answerB);

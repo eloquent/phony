@@ -18,7 +18,7 @@ use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Event\NullEvent;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Spy\Spy;
@@ -88,6 +88,16 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
             $this->callEventFactory->createCalled(array($this->thisObjectC, 'getIterator'))
         );
         $this->callF = $this->thisObjectBHandle->testClassAMethodA->callAt();
+
+        $this->matcherFactory = MatcherFactory::instance();
+    }
+
+    protected function tearDown()
+    {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), true);
     }
 
     public function testRenderValue()
@@ -123,8 +133,8 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
 
     public function testRenderMatchers()
     {
-        $matcherA = new EqualToMatcher('a');
-        $matcherB = new EqualToMatcher(111);
+        $matcherA = $this->matcherFactory->equalTo('a');
+        $matcherB = $this->matcherFactory->equalTo(111);
 
         $this->assertSame('<none>', $this->subject->renderMatchers(array()));
         $this->assertSame('"a"', $this->subject->renderMatchers(array($matcherA)));

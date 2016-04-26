@@ -15,7 +15,6 @@ use Closure;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Phpunit\Phony;
@@ -192,7 +191,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->subject,
             $this->subject
                 ->returns()
-                ->with('a', new EqualToMatcher('b'))
+                ->with('a', $this->matcherFactory->equalTo('b'))
                 ->returns('x')
         );
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));

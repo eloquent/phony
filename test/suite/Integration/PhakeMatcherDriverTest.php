@@ -21,7 +21,8 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new PhakeMatcherDriver();
+        $this->wildcardMatcher = WildcardMatcher::instance();
+        $this->subject = new PhakeMatcherDriver($this->wildcardMatcher);
 
         $this->matcher = Phake::equalTo('x');
     }
@@ -51,7 +52,7 @@ class PhakeMatcherDriverTest extends PHPUnit_Framework_TestCase
     {
         $this->matcher = Phake::anyParameters();
 
-        $this->assertSame(WildcardMatcher::instance(), $this->subject->wrapMatcher($this->matcher));
+        $this->assertSame($this->wildcardMatcher, $this->subject->wrapMatcher($this->matcher));
     }
 
     public function testInstance()

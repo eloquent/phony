@@ -18,7 +18,6 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
@@ -159,6 +158,14 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         };
     }
 
+    protected function tearDown()
+    {
+        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
+        $property = $exporterReflector->getProperty('incrementIds');
+        $property->setAccessible(true);
+        $property->setValue(InlineExporter::instance(), true);
+    }
+
     public function testConstructor()
     {
         $this->assertSame($this->stub, $this->subject->stub());
@@ -206,7 +213,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->subject,
             $this->subject
                 ->returns()
-                ->with('a', new EqualToMatcher('b'))
+                ->with('a', $this->matcherFactory->equalTo('b'))
                 ->returns('x')
         );
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));

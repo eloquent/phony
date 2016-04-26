@@ -20,7 +20,8 @@ class ProphecyMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->subject = new ProphecyMatcherDriver();
+        $this->wildcard = WildcardMatcher::instance();
+        $this->subject = new ProphecyMatcherDriver($this->wildcard);
 
         $this->matcher = Argument::is('x');
     }
