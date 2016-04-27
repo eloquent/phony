@@ -1,5 +1,15 @@
 # Phony changelog
 
+## Next release
+
+- **[NEW]** Mocks as default stub return values for arbitrary object return
+  types ([#149]).
+- **[FIXED]** Fixed exception when stubbing functions with return values
+  ([#147]).
+
+[#147]: https://github.com/eloquent/phony/issues/147
+[#149]: https://github.com/eloquent/phony/issues/149
+
 ## 0.9.0 (2016-04-27)
 
 - **[NEW]** Implemented generator stubs ([#11], [#140], [#144]).
