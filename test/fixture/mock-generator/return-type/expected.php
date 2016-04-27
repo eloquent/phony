@@ -14,7 +14,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    public function classType() : \stdClass
+    public function classType() : \Eloquent\Phony\Test\TestClassA
     {
         $argumentCount = \func_num_args();
         $arguments = array();

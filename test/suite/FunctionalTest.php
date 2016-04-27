@@ -13,6 +13,7 @@ use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
 
 class FunctionalTest extends PHPUnit_Framework_TestCase
@@ -176,7 +177,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         }
 
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
-        $object = (object) array();
+        $object = new TestClassA();
         $handle->classType('x')->does(
             function () use ($object) {
                 return $object;
@@ -189,7 +190,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame($object, $handle->mock()->classType('x'));
-        $this->assertInstanceOf('stdClass', $handle->mock()->classType());
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $handle->mock()->classType());
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $handle->mock()->classType());
+        $this->assertInstanceOf(
+            'Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandle',
+            x\on($handle->mock()->classType())
+        );
         $this->assertSame(123, $handle->mock()->scalarType('x'));
         $this->assertSame(0, $handle->mock()->scalarType());
     }

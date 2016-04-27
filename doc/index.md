@@ -3011,17 +3011,17 @@ Return type   | Returned value
 `Iterator`    | `new EmptyIterator()`
 `Generator`   | `(function () {return; yield;})()`
 
-When using a [return type] that is not listed above, the return value *must* be
-explicitly passed, or *Phony* will throw an exception:
+When using a [return type] that is not listed above, the return value will be a
+[mock] of the specified type:
 
 ```php
-$stub = stub(
-    function (): DateTime {}
-);
+$stub = stub(function (): DateTime {})->returns();
+$result = $stub();
 
-$stub->returns(new DateTime()); // works fine
-$stub->returns();               // throws an exception
+echo $result instanceof DateTime ? 'true' : 'false'; // outputs 'true'
 ```
+
+By necessity, the returned value will not be wrapped in a [mock handle].
 
 ### Returning arguments
 
@@ -7139,7 +7139,7 @@ public API methods.
 
 Thrown when an argument that was requested does not exist.
 
-Namespace: `Eloquent\Phony\Call\Argument\Exception`
+Namespace: `Eloquent\Phony\Call\Exception`
 
 <a name="undefinedargumentexception.index" />
 

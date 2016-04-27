@@ -11,9 +11,11 @@
 
 namespace Eloquent\Phony\Test;
 
+use Eloquent\Phony\Test\TestClassA;
+
 interface TestInterfaceWithReturnType
 {
-    public function classType() : \stdClass;
+    public function classType() : TestClassA;
     public function scalarType() : int;
 
     public function __call($name, array $arguments) : string;
