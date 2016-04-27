@@ -177,19 +177,21 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $object = (object) array();
-        $handle->classType->does(
+        $handle->classType('x')->does(
             function () use ($object) {
                 return $object;
             }
         );
-        $handle->scalarType->does(
+        $handle->scalarType('x')->does(
             function () {
                 return 123;
             }
         );
 
-        $this->assertSame($object, $handle->mock()->classType());
-        $this->assertSame(123, $handle->mock()->scalarType());
+        $this->assertSame($object, $handle->mock()->classType('x'));
+        $this->assertInstanceOf('stdClass', $handle->mock()->classType());
+        $this->assertSame(123, $handle->mock()->scalarType('x'));
+        $this->assertSame(0, $handle->mock()->scalarType());
     }
 
     public function testMagicMethodReturnTypeMocking()

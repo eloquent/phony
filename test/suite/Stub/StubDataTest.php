@@ -17,6 +17,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
@@ -40,6 +41,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
+        $this->emptyValueFactory = new EmptyValueFactory();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubData(
             $this->callback,
@@ -50,8 +52,11 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
+
+        $this->emptyValueFactory->setMockBuilderFactory(MockBuilderFactory::instance());
 
         $this->callsA = array();
         $callsA = &$this->callsA;
@@ -393,6 +398,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
 
@@ -732,6 +738,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
         $actual = null;
@@ -771,6 +778,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
 
@@ -858,6 +866,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
         $subject->forwards();
@@ -876,6 +885,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
         $a = null;
@@ -930,6 +940,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
         $this->subject->returns();
@@ -952,11 +963,35 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
         $this->subject->returns();
 
         $this->assertInstanceOf('stdClass', call_user_func($this->subject));
+    }
+
+    public function testReturnsWithObjectReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+
+        $this->subject = new StubData(
+            eval('return function (): Eloquent\Phony\Test\TestClassA {};'),
+            null,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->emptyValueFactory,
+            $this->generatorAnswerBuilderFactory
+        );
+        $this->subject->returns();
+
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', call_user_func($this->subject));
     }
 
     public function testReturnsWithCallableReturnType()
@@ -974,6 +1009,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
         $this->subject->returns();
@@ -1008,6 +1044,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
         $this->subject->returns();
@@ -1016,28 +1053,6 @@ class StubDataTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf($type, $result);
         $this->assertSame(array(), iterator_to_array($result));
-    }
-
-    public function testReturnsWithClassReturnTypeFailure()
-    {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-
-        $this->subject = new StubData(
-            eval('return function (): Throwable {};'),
-            null,
-            $this->label,
-            $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->generatorAnswerBuilderFactory
-        );
-
-        $this->setExpectedException('InvalidArgumentException');
-        $this->subject->returns();
     }
 
     public function testReturnsWithInstanceHandles()
@@ -1282,6 +1297,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
 

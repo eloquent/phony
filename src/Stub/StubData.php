@@ -24,11 +24,9 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
-use EmptyIterator;
 use Error;
 use Exception;
 use Generator;
-use InvalidArgumentException;
 
 /**
  * Provides canned answers to function or method invocations.
@@ -66,6 +64,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @param MatcherVerifier               $matcherVerifier               The matcher verifier to use.
      * @param Invoker                       $invoker                       The invoker to use.
      * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
+     * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
@@ -77,6 +76,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         MatcherVerifier $matcherVerifier,
         Invoker $invoker,
         InvocableInspector $invocableInspector,
+        EmptyValueFactory $emptyValueFactory,
         GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
     ) {
         parent::__construct($callback, $label);
@@ -90,6 +90,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
+        $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
 
         $this->secondaryRequests = array();
@@ -526,64 +527,11 @@ class StubData extends AbstractWrappedInvocable implements Stub
             $type =
                 $this->invocableInspector->callbackReturnType($this->callback);
 
-            if ($type) {
-                switch (strval($type)) {
-                    case 'bool':
-                        $value = false;
-
-                        break;
-
-                    case 'int':
-                        $value = 0;
-
-                        break;
-
-                    case 'float':
-                        $value = .0;
-
-                        break;
-
-                    case 'string':
-                        $value = '';
-
-                        break;
-
-                    case 'array':
-                        $value = array();
-
-                        break;
-
-                    case 'stdClass':
-                        $value = (object) array();
-
-                        break;
-
-                    case 'callable':
-                        $value = function () {};
-
-                        break;
-
-                    case 'Traversable':
-                    case 'Iterator':
-                        $value = new EmptyIterator();
-
-                        break;
-
-                    case 'Generator':
-                        $fn = function () { return; yield; };
-                        $value = $fn();
-
-                        break;
-
-                    default:
-                        throw new InvalidArgumentException(
-                            sprintf(
-                                'Return values of type %s ' .
-                                    'must be explicitly specified.',
-                                var_export($type, true)
-                            )
-                        );
-                }
+            if (
+                $type = $this->invocableInspector
+                    ->callbackReturnType($this->callback)
+            ) {
+                $value = $this->emptyValueFactory->fromType($type);
             } else {
                 $value = null;
             }
@@ -832,6 +780,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
+    private $emptyValueFactory;
     private $generatorAnswerBuilderFactory;
     private $criteria;
     private $secondaryRequests;

@@ -33,6 +33,7 @@ class StubDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
+        $this->emptyValueFactory = new EmptyValueFactory();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubData(
             $this->callback,
@@ -43,6 +44,7 @@ class StubDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
 

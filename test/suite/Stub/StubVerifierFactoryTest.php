@@ -48,6 +48,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherVerifier,
             Invoker::instance(),
             InvocableInspector::instance(),
+            new EmptyValueFactory(),
             GeneratorAnswerBuilderFactory::instance()
         );
         $this->callVerifierFactory = CallVerifierFactory::instance();

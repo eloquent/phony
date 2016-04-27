@@ -505,6 +505,7 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
     public function testDescribe()
     {
         $this->assertSame('"x"', $this->subject->describe());
+        $this->assertSame('"x"', strval($this->subject));
     }
 
     public function testDescribeWithMultilineString()

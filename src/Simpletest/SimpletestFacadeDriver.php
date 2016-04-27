@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 use SimpleTest;
 
 /**
@@ -20,7 +19,7 @@ use SimpleTest;
  *
  * @codeCoverageIgnore
  */
-class SimpletestFacadeDriver extends AbstractIntegratedFacadeDriver
+class SimpletestFacadeDriver extends FacadeDriver
 {
     /**
      * Get the static instance of this driver.
@@ -37,13 +36,13 @@ class SimpletestFacadeDriver extends AbstractIntegratedFacadeDriver
     }
 
     /**
-     * Create the assertion recorder.
-     *
-     * @return AssertionRecorder The assertion recorder.
+     * Construct a new SimpleTest facade driver.
      */
-    protected function createAssertionRecorder()
+    public function __construct()
     {
-        return new SimpletestAssertionRecorder(SimpleTest::getContext());
+        parent::__construct(
+            new SimpletestAssertionRecorder(SimpleTest::getContext())
+        );
     }
 
     private static $instance;

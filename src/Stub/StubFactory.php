@@ -37,6 +37,7 @@ class StubFactory
                 MatcherVerifier::instance(),
                 Invoker::instance(),
                 InvocableInspector::instance(),
+                EmptyValueFactory::instance(),
                 GeneratorAnswerBuilderFactory::instance()
             );
         }
@@ -52,6 +53,7 @@ class StubFactory
      * @param MatcherVerifier               $matcherVerifier               The matcher verifier to use.
      * @param Invoker                       $invoker                       The invoker to use.
      * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
+     * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
@@ -60,6 +62,7 @@ class StubFactory
         MatcherVerifier $matcherVerifier,
         Invoker $invoker,
         InvocableInspector $invocableInspector,
+        EmptyValueFactory $emptyValueFactory,
         GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
     ) {
         $this->labelSequencer = $labelSequencer;
@@ -67,6 +70,7 @@ class StubFactory
         $this->matcherVerifier = $matcherVerifier;
         $this->invoker = $invoker;
         $this->invocableInspector = $invocableInspector;
+        $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
     }
 
@@ -94,6 +98,7 @@ class StubFactory
             $this->matcherVerifier,
             $this->invoker,
             $this->invocableInspector,
+            $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
     }
@@ -104,5 +109,6 @@ class StubFactory
     private $matcherVerifier;
     private $invoker;
     private $invocableInspector;
+    private $emptyValueFactory;
     private $generatorAnswerBuilderFactory;
 }

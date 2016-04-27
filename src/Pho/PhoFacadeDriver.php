@@ -12,12 +12,11 @@
 namespace Eloquent\Phony\Pho;
 
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
  * A facade driver for Pho.
  */
-class PhoFacadeDriver extends AbstractIntegratedFacadeDriver
+class PhoFacadeDriver extends FacadeDriver
 {
     /**
      * Get the static instance of this driver.
@@ -34,13 +33,11 @@ class PhoFacadeDriver extends AbstractIntegratedFacadeDriver
     }
 
     /**
-     * Create the assertion recorder.
-     *
-     * @return AssertionRecorder The assertion recorder.
+     * Construct a new Pho facade driver.
      */
-    protected function createAssertionRecorder()
+    public function __construct()
     {
-        return new PhoAssertionRecorder();
+        parent::__construct(new PhoAssertionRecorder());
     }
 
     private static $instance;

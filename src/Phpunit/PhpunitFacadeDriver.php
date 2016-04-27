@@ -12,12 +12,11 @@
 namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Facade\FacadeDriver;
-use Eloquent\Phony\Integration\AbstractIntegratedFacadeDriver;
 
 /**
  * A facade driver for PHPUnit.
  */
-class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
+class PhpunitFacadeDriver extends FacadeDriver
 {
     /**
      * Get the static instance of this driver.
@@ -34,13 +33,11 @@ class PhpunitFacadeDriver extends AbstractIntegratedFacadeDriver
     }
 
     /**
-     * Create the assertion recorder.
-     *
-     * @return AssertionRecorder The assertion recorder.
+     * Construct a new Phpunit facade driver.
      */
-    protected function createAssertionRecorder()
+    public function __construct()
     {
-        return new PhpunitAssertionRecorder();
+        parent::__construct(new PhpunitAssertionRecorder());
     }
 
     private static $instance;
