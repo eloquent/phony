@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Integration\Hamcrest;
 
 use Eloquent\Phony\Matcher\WrappedMatcher;
+use Hamcrest\Util;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -19,6 +20,8 @@ class HamcrestMatcherDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        Util::registerGlobalFunctions();
+
         $this->subject = new HamcrestMatcherDriver();
 
         $this->matcher = equalTo('x');
