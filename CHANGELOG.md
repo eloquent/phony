@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.9.0 (2016-04-27)
 
 - **[NEW]** Implemented generator stubs ([#11], [#140], [#144]).
 - **[IMPROVED]** More default values for built-in return types ([#138], [#139]).
