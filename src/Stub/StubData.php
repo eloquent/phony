@@ -524,20 +524,34 @@ class StubData extends AbstractWrappedInvocable implements Stub
     public function returns($value = null)
     {
         if (0 === func_num_args()) {
-            $type =
-                $this->invocableInspector->callbackReturnType($this->callback);
+            $callback = $this->callback;
+            $invocableInspector = $this->invocableInspector;
+            $emptyValueFactory = $this->emptyValueFactory;
 
-            if (
-                $type = $this->invocableInspector
-                    ->callbackReturnType($this->callback)
-            ) {
-                $value = $this->emptyValueFactory->fromType($type);
-            } else {
-                $value = null;
-            }
+            $value = null;
+            $valueIsSet = false;
 
             return $this->doesWith(
-                function () use ($value) {
+                function () use (
+                    &$value,
+                    &$valueIsSet,
+                    $callback,
+                    $invocableInspector,
+                    $emptyValueFactory
+                ) {
+                    if (!$valueIsSet) {
+                        $type =
+                            $invocableInspector->callbackReturnType($callback);
+
+                        if ($type) {
+                            $value = $emptyValueFactory->fromType($type);
+                        } else {
+                            $value = null;
+                        }
+
+                        $valueIsSet = true;
+                    }
+
                     return $value;
                 },
                 array(),
