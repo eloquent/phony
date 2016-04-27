@@ -540,10 +540,10 @@ class StubData extends AbstractWrappedInvocable implements Stub
                     $emptyValueFactory
                 ) {
                     if (!$valueIsSet) {
-                        $type =
-                            $invocableInspector->callbackReturnType($callback);
-
-                        if ($type) {
+                        if (
+                            $type = $invocableInspector
+                                ->callbackReturnType($callback)
+                        ) {
                             $value = $emptyValueFactory->fromType($type);
                         } else {
                             $value = null;
@@ -562,10 +562,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         }
 
         foreach (func_get_args() as $value) {
-            if (
-                $value instanceof InstanceHandle &&
-                $value->isAdaptable()
-            ) {
+            if ($value instanceof InstanceHandle && $value->isAdaptable()) {
                 $value = $value->mock();
             }
 

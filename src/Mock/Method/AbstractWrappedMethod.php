@@ -29,10 +29,8 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
      * @param ReflectionMethod $method The method.
      * @param Handle           $handle The handle.
      */
-    public function __construct(
-        ReflectionMethod $method,
-        Handle $handle
-    ) {
+    public function __construct(ReflectionMethod $method, Handle $handle)
+    {
         $this->method = $method;
         $this->handle = $handle;
         $this->name = $method->getName();
