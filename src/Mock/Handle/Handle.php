@@ -83,8 +83,8 @@ interface Handle
     /**
      * Get a stub verifier.
      *
-     * @param string  $name      The method name.
-     * @param boolean $isNewRule True if a new rule should be started.
+     * @param string $name      The method name.
+     * @param bool   $isNewRule True if a new rule should be started.
      *
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.

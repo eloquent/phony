@@ -21,7 +21,7 @@ class CalledEvent extends AbstractCallEvent
     /**
      * Construct a new 'called' event.
      *
-     * @param integer   $sequenceNumber The sequence number.
+     * @param int       $sequenceNumber The sequence number.
      * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
      * @param callable  $callback       The callback.
      * @param Arguments $arguments      The arguments.

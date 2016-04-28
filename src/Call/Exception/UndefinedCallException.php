@@ -21,7 +21,7 @@ final class UndefinedCallException extends Exception
     /**
      * Construct a new undefined call exception.
      *
-     * @param integer $index The call index.
+     * @param int $index The call index.
      */
     public function __construct($index)
     {
@@ -35,7 +35,7 @@ final class UndefinedCallException extends Exception
     /**
      * Get the call index.
      *
-     * @return integer The call index.
+     * @return int The call index.
      */
     public function index()
     {

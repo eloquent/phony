@@ -21,9 +21,9 @@ interface Exporter
      *
      * Negative depths are treated as infinite depth.
      *
-     * @param integer $depth The depth.
+     * @param int $depth The depth.
      *
-     * @return integer The previous depth.
+     * @return int The previous depth.
      */
     public function setDepth($depth);
 
@@ -32,8 +32,8 @@ interface Exporter
      *
      * Negative depths are treated as infinite depth.
      *
-     * @param mixed        &$value The value.
-     * @param integer|null $depth  The depth, or null to use the default.
+     * @param mixed    &$value The value.
+     * @param int|null $depth  The depth, or null to use the default.
      *
      * @return string The exported value.
      */

@@ -97,7 +97,7 @@ class IteratorSpy implements Iterator
     /**
      * Returns true if the current iterator position is valid.
      *
-     * @return boolean True if the current iterator position is valid.
+     * @return bool True if the current iterator position is valid.
      */
     public function valid()
     {

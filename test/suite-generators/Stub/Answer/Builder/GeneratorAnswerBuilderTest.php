@@ -372,7 +372,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
     {
         $arguments = Arguments::create('b', 'c');
 
-        $this->assertSame($this->subject, $this->subject->calls($this->callbackA, $this->callbackB)->yieldsFrom(['a']));
+        $this->assertSame($this->subject, $this->subject->calls($this->callbackA, $this->callbackB)->yieldsFrom(array('a')));
         $this->assertSame(array('a'), iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
         $this->assertSame(array(array('b', 'c')), $this->callsA);
         $this->assertSame(array(array('b', 'c')), $this->callsB);

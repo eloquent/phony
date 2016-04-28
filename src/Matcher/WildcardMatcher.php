@@ -33,9 +33,9 @@ class WildcardMatcher
     /**
      * Construct a new wildcard matcher.
      *
-     * @param Matcher      $matcher          The matcher to use for each argument.
-     * @param integer      $minimumArguments The minimum number of arguments.
-     * @param integer|null $maximumArguments The maximum number of arguments.
+     * @param Matcher  $matcher          The matcher to use for each argument.
+     * @param int      $minimumArguments The minimum number of arguments.
+     * @param int|null $maximumArguments The maximum number of arguments.
      */
     public function __construct(
         Matcher $matcher,
@@ -60,7 +60,7 @@ class WildcardMatcher
     /**
      * Get the minimum number of arguments to match.
      *
-     * @return integer The minimum number of arguments.
+     * @return int The minimum number of arguments.
      */
     public function minimumArguments()
     {
@@ -70,7 +70,7 @@ class WildcardMatcher
     /**
      * Get the maximum number of arguments to match.
      *
-     * @return integer|null The maximum number of arguments.
+     * @return int|null The maximum number of arguments.
      */
     public function maximumArguments()
     {

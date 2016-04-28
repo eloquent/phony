@@ -47,7 +47,7 @@ class ProphecyMatcherDriver implements MatcherDriver
     /**
      * Returns true if this matcher driver's classes or interfaces exist.
      *
-     * @return boolean True if available.
+     * @return bool True if available.
      */
     public function isAvailable()
     {

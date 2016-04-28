@@ -27,13 +27,13 @@ abstract class GeneratorAnswerBuilderDetail
     /**
      * Get the answer.
      *
-     * @param array<tuple<boolean,mixed,boolean,mixed,array<CallRequest>>> &$iterations      The iteration details.
-     * @param array<CallRequest>                                           &$requests        The call requests
-     * @param Exception|Error|null                                         &$exception       The exception to throw.
-     * @param mixed                                                        &$returnValue     The return value.
-     * @param integer|null                                                 &$returnsArgument The index of the argument to return.
-     * @param boolean                                                      &$returnsSelf     True if the self value should be returned.
-     * @param Invoker                                                      $invoker          The invoker to use.
+     * @param array<tuple<bool,mixed,bool,mixed,array<CallRequest>>> &$iterations      The iteration details.
+     * @param array<CallRequest>                                     &$requests        The call requests
+     * @param Exception|Error|null                                   &$exception       The exception to throw.
+     * @param mixed                                                  &$returnValue     The return value.
+     * @param int|null                                               &$returnsArgument The index of the argument to return.
+     * @param bool                                                   &$returnsSelf     True if the self value should be returned.
+     * @param Invoker                                                $invoker          The invoker to use.
      *
      * @return callable The answer.
      */

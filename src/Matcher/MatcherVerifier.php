@@ -36,7 +36,7 @@ class MatcherVerifier
      * @param array<Matcher> $matchers  The matchers.
      * @param array          $arguments The arguments.
      *
-     * @return boolean True if the arguments match.
+     * @return bool True if the arguments match.
      */
     public function matches(array $matchers, array $arguments)
     {

@@ -21,7 +21,7 @@ final class UndefinedArgumentException extends Exception
     /**
      * Construct a new undefined argument exception.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      */
     public function __construct($index)
     {
@@ -38,7 +38,7 @@ final class UndefinedArgumentException extends Exception
     /**
      * Get the index.
      *
-     * @return integer The index.
+     * @return int The index.
      */
     public function index()
     {

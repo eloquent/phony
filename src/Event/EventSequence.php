@@ -47,7 +47,7 @@ class EventSequence implements EventCollection
     /**
      * Returns true if this collection contains any events.
      *
-     * @return boolean True if this collection contains any events.
+     * @return bool True if this collection contains any events.
      */
     public function hasEvents()
     {
@@ -57,7 +57,7 @@ class EventSequence implements EventCollection
     /**
      * Returns true if this collection contains any calls.
      *
-     * @return boolean True if this collection contains any calls.
+     * @return bool True if this collection contains any calls.
      */
     public function hasCalls()
     {
@@ -67,7 +67,7 @@ class EventSequence implements EventCollection
     /**
      * Get the number of events.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function eventCount()
     {
@@ -77,7 +77,7 @@ class EventSequence implements EventCollection
     /**
      * Get the number of calls.
      *
-     * @return integer The call count.
+     * @return int The call count.
      */
     public function callCount()
     {
@@ -87,7 +87,7 @@ class EventSequence implements EventCollection
     /**
      * Get the event count.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function count()
     {
@@ -150,7 +150,7 @@ class EventSequence implements EventCollection
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
@@ -200,7 +200,7 @@ class EventSequence implements EventCollection
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
@@ -235,7 +235,7 @@ class EventSequence implements EventCollection
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedCallException     If there are no calls.

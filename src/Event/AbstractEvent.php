@@ -19,8 +19,8 @@ abstract class AbstractEvent implements Event
     /**
      * Construct a new event.
      *
-     * @param integer $sequenceNumber The sequence number.
-     * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param int   $sequenceNumber The sequence number.
+     * @param float $time           The time at which the event occurred, in seconds since the Unix epoch.
      */
     public function __construct($sequenceNumber, $time)
     {
@@ -35,7 +35,7 @@ abstract class AbstractEvent implements Event
      * records. The numbers are assigned sequentially, meaning that sequence
      * numbers can be used to determine event order.
      *
-     * @return integer The sequence number.
+     * @return int The sequence number.
      */
     public function sequenceNumber()
     {

@@ -402,7 +402,7 @@ class MockBuilder
     /**
      * Returns true if this builder is finalized.
      *
-     * @return boolean True if finalized.
+     * @return bool True if finalized.
      */
     public function isFinalized()
     {
@@ -452,11 +452,11 @@ class MockBuilder
     /**
      * Returns true if the mock class has been built.
      *
-     * @return boolean True if the mock class has been built.
+     * @return bool True if the mock class has been built.
      */
     public function isBuilt()
     {
-        return (boolean) $this->class;
+        return (bool) $this->class;
     }
 
     /**
@@ -464,7 +464,7 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param boolean $createNew True if a new class should be created even when a compatible one exists.
+     * @param bool $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return ReflectionClass The class.
      * @throws MockException   If the mock generation fails.
@@ -484,7 +484,7 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param boolean $createNew True if a new class should be created even when a compatible one exists.
+     * @param bool $createNew True if a new class should be created even when a compatible one exists.
      *
      * @return string        The class name.
      * @throws MockException If the mock generation fails.

@@ -24,9 +24,9 @@ class CallRequest
      *
      * @param callable  $callback              The callback.
      * @param Arguments $arguments             The arguments.
-     * @param boolean   $prefixSelf            True if the self value should be prefixed.
-     * @param boolean   $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean   $suffixArguments       True if the arguments should be appended individually.
+     * @param bool      $prefixSelf            True if the self value should be prefixed.
+     * @param bool      $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool      $suffixArguments       True if the arguments should be appended individually.
      */
     public function __construct(
         $callback,
@@ -100,7 +100,7 @@ class CallRequest
     /**
      * Returns true if the self value should be prefixed to the final arguments.
      *
-     * @return boolean True if the self value should be prefixed.
+     * @return bool True if the self value should be prefixed.
      */
     public function prefixSelf()
     {
@@ -111,7 +111,7 @@ class CallRequest
      * Returns true if the incoming arguments should be appended to the final
      * arguments as an object.
      *
-     * @return boolean True if arguments object should be appended.
+     * @return bool True if arguments object should be appended.
      */
     public function suffixArgumentsObject()
     {
@@ -122,7 +122,7 @@ class CallRequest
      * Returns true if the incoming arguments should be appended to the final
      * arguments.
      *
-     * @return boolean True if arguments should be appended.
+     * @return bool True if arguments should be appended.
      */
     public function suffixArguments()
     {

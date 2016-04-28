@@ -23,11 +23,11 @@ class PhpunitMatcher extends WrappedMatcher
      *
      * @param mixed $value The value to check.
      *
-     * @return boolean True if the value matches.
+     * @return bool True if the value matches.
      */
     public function matches($value)
     {
-        return (boolean) $this->matcher->evaluate($value, null, true);
+        return (bool) $this->matcher->evaluate($value, null, true);
     }
 
     /**

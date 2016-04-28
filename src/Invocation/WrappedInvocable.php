@@ -35,7 +35,7 @@ interface WrappedInvocable extends Invocable
     /**
      * Returns true if anonymous.
      *
-     * @return boolean True if anonymous.
+     * @return bool True if anonymous.
      */
     public function isAnonymous();
 

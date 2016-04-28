@@ -33,8 +33,8 @@ class MockDefinition
      * @param array<string,mixed>                                      $customStaticProperties     The custom static properties.
      * @param array<string,mixed>                                      $customConstants            The custom constants.
      * @param string|null                                              $className                  The class name.
-     * @param boolean                                                  $isTraitSupported           True if traits are supported.
-     * @param boolean                                                  $isRelaxedKeywordsSupported True if relaxed keywords are supported.
+     * @param bool                                                     $isTraitSupported           True if traits are supported.
+     * @param bool                                                     $isRelaxedKeywordsSupported True if relaxed keywords are supported.
      */
     public function __construct(
         array $types,
@@ -238,7 +238,7 @@ class MockDefinition
     /**
      * Check if the supplied definition is equal to this definition.
      *
-     * @return boolean True if equal.
+     * @return bool True if equal.
      */
     public function isEqualTo(MockDefinition $definition)
     {

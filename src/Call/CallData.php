@@ -56,7 +56,7 @@ class CallData implements Call
      * records. The numbers are assigned sequentially, meaning that sequence
      * numbers can be used to determine event order.
      *
-     * @return integer The sequence number.
+     * @return int The sequence number.
      */
     public function sequenceNumber()
     {
@@ -76,7 +76,7 @@ class CallData implements Call
     /**
      * Returns true if this collection contains any events.
      *
-     * @return boolean True if this collection contains any events.
+     * @return bool True if this collection contains any events.
      */
     public function hasEvents()
     {
@@ -86,7 +86,7 @@ class CallData implements Call
     /**
      * Returns true if this collection contains any calls.
      *
-     * @return boolean True if this collection contains any calls.
+     * @return bool True if this collection contains any calls.
      */
     public function hasCalls()
     {
@@ -96,7 +96,7 @@ class CallData implements Call
     /**
      * Get the number of events.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function eventCount()
     {
@@ -108,7 +108,7 @@ class CallData implements Call
     /**
      * Get the number of calls.
      *
-     * @return integer The call count.
+     * @return int The call count.
      */
     public function callCount()
     {
@@ -118,7 +118,7 @@ class CallData implements Call
     /**
      * Get the event count.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function count()
     {
@@ -167,7 +167,7 @@ class CallData implements Call
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
@@ -216,7 +216,7 @@ class CallData implements Call
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
@@ -377,17 +377,17 @@ class CallData implements Call
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @return boolean True if this call has responded.
+     * @return bool True if this call has responded.
      */
     public function hasResponded()
     {
-        return (boolean) $this->responseEvent;
+        return (bool) $this->responseEvent;
     }
 
     /**
      * Returns true if this call has responded with a traversable.
      *
-     * @return boolean True if this call has responded with a traversable.
+     * @return bool True if this call has responded with a traversable.
      */
     public function isTraversable()
     {
@@ -403,7 +403,7 @@ class CallData implements Call
     /**
      * Returns true if this call has responded with a generator.
      *
-     * @return boolean True if this call has responded with a generator.
+     * @return bool True if this call has responded with a generator.
      */
     public function isGenerator()
     {
@@ -422,11 +422,11 @@ class CallData implements Call
      * traversable will not be considered complete until the traversable has
      * been completely consumed via iteration.
      *
-     * @return boolean True if this call has completed.
+     * @return bool True if this call has completed.
      */
     public function hasCompleted()
     {
-        return (boolean) $this->endEvent;
+        return (bool) $this->endEvent;
     }
 
     /**
@@ -455,7 +455,7 @@ class CallData implements Call
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.

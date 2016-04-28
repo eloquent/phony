@@ -23,7 +23,7 @@ class ReceivedExceptionEvent extends AbstractCallEvent implements
     /**
      * Construct a 'received exception' event.
      *
-     * @param integer         $sequenceNumber The sequence number.
+     * @param int             $sequenceNumber The sequence number.
      * @param float           $time           The time at which the event occurred, in seconds since the Unix epoch.
      * @param Exception|Error $exception      The received exception.
      */

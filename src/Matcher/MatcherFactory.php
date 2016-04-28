@@ -112,7 +112,7 @@ class MatcherFactory
      *
      * @param mixed $value The value to test.
      *
-     * @return boolean True if the value is a matcher.
+     * @return bool True if the value is a matcher.
      */
     public function isMatcher($value)
     {
@@ -253,9 +253,9 @@ class MatcherFactory
     /**
      * Create a new matcher that matches multiple arguments.
      *
-     * @param mixed        $value            The value to check for each argument.
-     * @param integer      $minimumArguments The minimum number of arguments.
-     * @param integer|null $maximumArguments The maximum number of arguments.
+     * @param mixed    $value            The value to check for each argument.
+     * @param int      $minimumArguments The minimum number of arguments.
+     * @param int|null $maximumArguments The maximum number of arguments.
      *
      * @return WildcardMatcher The newly created wildcard matcher.
      */

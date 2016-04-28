@@ -27,28 +27,28 @@ interface EventCollection extends IteratorAggregate, Countable
     /**
      * Returns true if this collection contains any events.
      *
-     * @return boolean True if this collection contains any events.
+     * @return bool True if this collection contains any events.
      */
     public function hasEvents();
 
     /**
      * Returns true if this collection contains any calls.
      *
-     * @return boolean True if this collection contains any calls.
+     * @return bool True if this collection contains any calls.
      */
     public function hasCalls();
 
     /**
      * Get the number of events.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function eventCount();
 
     /**
      * Get the number of calls.
      *
-     * @return integer The call count.
+     * @return int The call count.
      */
     public function callCount();
 
@@ -88,7 +88,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
@@ -117,7 +117,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
@@ -138,7 +138,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedCallException     If there are no calls.

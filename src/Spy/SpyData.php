@@ -67,7 +67,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Turn on or off the use of generator spies.
      *
-     * @param boolean $useGeneratorSpies True to use generator spies.
+     * @param bool $useGeneratorSpies True to use generator spies.
      *
      * @return $this This spy.
      */
@@ -81,7 +81,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Returns true if this spy uses generator spies.
      *
-     * @return boolean True if this spy uses generator spies.
+     * @return bool True if this spy uses generator spies.
      */
     public function useGeneratorSpies()
     {
@@ -91,7 +91,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Turn on or off the use of traversable spies.
      *
-     * @param boolean $useTraversableSpies True to use traversable spies.
+     * @param bool $useTraversableSpies True to use traversable spies.
      *
      * @return $this This spy.
      */
@@ -105,7 +105,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Returns true if this spy uses traversable spies.
      *
-     * @return boolean True if this spy uses traversable spies.
+     * @return bool True if this spy uses traversable spies.
      */
     public function useTraversableSpies()
     {
@@ -159,27 +159,27 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Returns true if this collection contains any events.
      *
-     * @return boolean True if this collection contains any events.
+     * @return bool True if this collection contains any events.
      */
     public function hasEvents()
     {
-        return (boolean) $this->calls;
+        return (bool) $this->calls;
     }
 
     /**
      * Returns true if this collection contains any calls.
      *
-     * @return boolean True if this collection contains any calls.
+     * @return bool True if this collection contains any calls.
      */
     public function hasCalls()
     {
-        return (boolean) $this->calls;
+        return (bool) $this->calls;
     }
 
     /**
      * Get the number of events.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function eventCount()
     {
@@ -189,7 +189,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Get the number of calls.
      *
-     * @return integer The call count.
+     * @return int The call count.
      */
     public function callCount()
     {
@@ -199,7 +199,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Get the event count.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function count()
     {
@@ -262,7 +262,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
@@ -312,7 +312,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
@@ -347,7 +347,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.

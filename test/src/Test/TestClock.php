@@ -17,7 +17,7 @@ class TestClock implements Clock
 {
     public function time()
     {
-        return ($this->time += 1.0);
+        return $this->time += 1.0;
     }
 
     public function setTime($time)

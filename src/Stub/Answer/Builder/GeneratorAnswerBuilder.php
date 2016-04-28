@@ -31,7 +31,7 @@ class GeneratorAnswerBuilder
      * Construct a new generator answer builder.
      *
      * @param Stub               $stub                       The stub.
-     * @param boolean            $isGeneratorReturnSupported True if generator return values are supported.
+     * @param bool               $isGeneratorReturnSupported True if generator return values are supported.
      * @param InvocableInspector $invocableInspector         The invocable inspector to use.
      * @param Invoker            $invoker                    The invoker to use.
      */
@@ -75,9 +75,9 @@ class GeneratorAnswerBuilder
      *
      * @param callable        $callback              The callback.
      * @param Arguments|array $arguments             The arguments.
-     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
-     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
+     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool            $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
         $callback,
@@ -115,8 +115,8 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The argument index.
-     * @param integer ...$additionalIndices Additional argument indices to call.
+     * @param int $index The argument index.
+     * @param int ...$additionalIndices Additional argument indices to call.
      *
      * @return $this This builder.
      */
@@ -139,11 +139,11 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer         $index                 The argument index.
+     * @param int             $index                 The argument index.
      * @param Arguments|array $arguments             The arguments.
-     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
-     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
+     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This builder.
      */
@@ -372,7 +372,7 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The argument index.
+     * @param int $index The argument index.
      *
      * @return Stub The stub.
      */

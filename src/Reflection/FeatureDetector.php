@@ -41,7 +41,7 @@ class FeatureDetector
      * Construct a new feature detector.
      *
      * @param array<string,callable>|null $features  The features.
-     * @param array<string,boolean>       $supported The known feature support.
+     * @param array<string,bool>          $supported The known feature support.
      */
     public function __construct(
         array $features = null,
@@ -82,7 +82,7 @@ class FeatureDetector
     /**
      * Get the known feature support.
      *
-     * @return array<string,boolean> The known feature support.
+     * @return array<string,bool> The known feature support.
      */
     public function supported()
     {
@@ -95,7 +95,7 @@ class FeatureDetector
      *
      * @param string $feature The feature.
      *
-     * @return boolean                   True if supported.
+     * @return bool                      True if supported.
      * @throws UndefinedFeatureException If the specified feature is undefined.
      */
     public function isSupported($feature)
@@ -106,7 +106,7 @@ class FeatureDetector
             }
 
             $this->supported[$feature] =
-                (boolean) call_user_func($this->features[$feature], $this);
+                (bool) call_user_func($this->features[$feature], $this);
         }
 
         return $this->supported[$feature];
@@ -388,7 +388,7 @@ class FeatureDetector
      * @param string $keyword      The keyword.
      * @param string $constantName The name of the token type constant.
      *
-     * @return boolean True if the keyword is interpreted as expected.
+     * @return bool True if the keyword is interpreted as expected.
      */
     public function checkToken($keyword, $constantName)
     {
@@ -405,10 +405,10 @@ class FeatureDetector
     /**
      * Check that the supplied syntax is valid.
      *
-     * @param string  $source     The source to check.
-     * @param boolean $useClosure True to wrap the supplied source code in a closure.
+     * @param string $source     The source to check.
+     * @param bool   $useClosure True to wrap the supplied source code in a closure.
      *
-     * @return boolean True if the syntax is valid.
+     * @return bool True if the syntax is valid.
      */
     public function checkStatement($source, $useClosure = true)
     {
@@ -447,7 +447,7 @@ class FeatureDetector
      *
      * @param string $className The class name.
      *
-     * @return boolean True if the class exists, and is internal.
+     * @return bool True if the class exists, and is internal.
      */
     public function checkInternalClass($className)
     {
@@ -467,7 +467,7 @@ class FeatureDetector
      * @param string $className  The class name.
      * @param string $methodName The class name.
      *
-     * @return boolean True if the method exists, and is internal.
+     * @return bool True if the method exists, and is internal.
      */
     public function checkInternalMethod($className, $methodName)
     {

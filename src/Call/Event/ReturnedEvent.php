@@ -19,9 +19,9 @@ class ReturnedEvent extends AbstractCallEvent implements ResponseEvent
     /**
      * Construct a 'returned' event.
      *
-     * @param integer $sequenceNumber The sequence number.
-     * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $value          The return value.
+     * @param int   $sequenceNumber The sequence number.
+     * @param float $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param mixed $value          The return value.
      */
     public function __construct($sequenceNumber, $time, $value)
     {

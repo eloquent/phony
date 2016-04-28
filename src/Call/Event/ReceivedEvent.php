@@ -19,9 +19,9 @@ class ReceivedEvent extends AbstractCallEvent implements TraversableEvent
     /**
      * Construct a 'received' event.
      *
-     * @param integer $sequenceNumber The sequence number.
-     * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $value          The received value.
+     * @param int   $sequenceNumber The sequence number.
+     * @param float $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param mixed $value          The received value.
      */
     public function __construct($sequenceNumber, $time, $value)
     {

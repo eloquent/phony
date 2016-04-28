@@ -42,7 +42,7 @@ class RealMethodDefinition implements MethodDefinition
     /**
      * Returns true if this method is callable.
      *
-     * @return boolean True if this method is callable.
+     * @return bool True if this method is callable.
      */
     public function isCallable()
     {
@@ -52,7 +52,7 @@ class RealMethodDefinition implements MethodDefinition
     /**
      * Returns true if this method is static.
      *
-     * @return boolean True if this method is static.
+     * @return bool True if this method is static.
      */
     public function isStatic()
     {
@@ -62,7 +62,7 @@ class RealMethodDefinition implements MethodDefinition
     /**
      * Returns true if this method is custom.
      *
-     * @return boolean True if this method is custom.
+     * @return bool True if this method is custom.
      */
     public function isCustom()
     {

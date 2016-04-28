@@ -23,7 +23,7 @@ interface Spy extends WrappedInvocable, EventCollection
     /**
      * Turn on or off the use of generator spies.
      *
-     * @param boolean $useGeneratorSpies True to use generator spies.
+     * @param bool $useGeneratorSpies True to use generator spies.
      *
      * @return $this This spy.
      */
@@ -32,14 +32,14 @@ interface Spy extends WrappedInvocable, EventCollection
     /**
      * Returns true if this spy uses generator spies.
      *
-     * @return boolean True if this spy uses generator spies.
+     * @return bool True if this spy uses generator spies.
      */
     public function useGeneratorSpies();
 
     /**
      * Turn on or off the use of traversable spies.
      *
-     * @param boolean $useTraversableSpies True to use traversable spies.
+     * @param bool $useTraversableSpies True to use traversable spies.
      *
      * @return $this This spy.
      */
@@ -48,7 +48,7 @@ interface Spy extends WrappedInvocable, EventCollection
     /**
      * Returns true if this spy uses traversable spies.
      *
-     * @return boolean True if this spy uses traversable spies.
+     * @return bool True if this spy uses traversable spies.
      */
     public function useTraversableSpies();
 

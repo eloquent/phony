@@ -314,9 +314,9 @@ abstract class AbstractFacade
     /**
      * Create a new matcher that matches multiple arguments.
      *
-     * @param mixed        $value            The value to check for each argument.
-     * @param integer      $minimumArguments The minimum number of arguments.
-     * @param integer|null $maximumArguments The maximum number of arguments.
+     * @param mixed    $value            The value to check for each argument.
+     * @param int      $minimumArguments The minimum number of arguments.
+     * @param int|null $maximumArguments The maximum number of arguments.
      *
      * @return WildcardMatcher The newly created wildcard matcher.
      */
@@ -334,9 +334,9 @@ abstract class AbstractFacade
      *
      * Negative depths are treated as infinite depth.
      *
-     * @param integer $depth The depth.
+     * @param int $depth The depth.
      *
-     * @return integer The previous depth.
+     * @return int The previous depth.
      */
     public static function setExportDepth($depth)
     {

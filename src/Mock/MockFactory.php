@@ -67,7 +67,7 @@ class MockFactory
      * Create the mock class for the supplied definition.
      *
      * @param MockDefinition $definition The definition.
-     * @param boolean        $createNew  True if a new class should be created even when a compatible one exists.
+     * @param bool           $createNew  True if a new class should be created even when a compatible one exists.
      *
      * @return ReflectionClass The class.
      * @throws MockException   If the mock generation fails.

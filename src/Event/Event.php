@@ -23,7 +23,7 @@ interface Event
      * records. The numbers are assigned sequentially, meaning that sequence
      * numbers can be used to determine event order.
      *
-     * @return integer The sequence number.
+     * @return int The sequence number.
      */
     public function sequenceNumber();
 

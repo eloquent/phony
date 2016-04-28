@@ -22,7 +22,7 @@ class ThrewEvent extends AbstractCallEvent implements ResponseEvent
     /**
      * Construct a 'threw' event.
      *
-     * @param integer         $sequenceNumber The sequence number.
+     * @param int             $sequenceNumber The sequence number.
      * @param float           $time           The time at which the event occurred, in seconds since the Unix epoch.
      * @param Exception|Error $exception      The thrown exception.
      */

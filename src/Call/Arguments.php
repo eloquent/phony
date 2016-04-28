@@ -114,9 +114,9 @@ class Arguments implements Countable, IteratorAggregate
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
-     * @return boolean True if the argument exists.
+     * @return bool True if the argument exists.
      */
     public function has($index = 0)
     {
@@ -133,7 +133,7 @@ class Arguments implements Countable, IteratorAggregate
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
@@ -150,7 +150,7 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Get the number of arguments.
      *
-     * @return integer The number of arguments.
+     * @return int The number of arguments.
      */
     public function count()
     {

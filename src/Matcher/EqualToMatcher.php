@@ -50,7 +50,7 @@ class EqualToMatcher implements Matcher
      *
      * @param mixed $value The value to check.
      *
-     * @return boolean True if the value matches.
+     * @return bool True if the value matches.
      */
     public function matches($value)
     {
@@ -58,7 +58,7 @@ class EqualToMatcher implements Matcher
         $right = $value;
 
         /*
-         * @var array<string, boolean> The set of object comparisons that have been made.
+         * @var array<string,bool> The set of object comparisons that have been made.
          *
          * Keys are of the format "<left spl hash>:<right spl hash>"; values are
          * always TRUE. This set is used to detect comparisons that have already
@@ -68,7 +68,7 @@ class EqualToMatcher implements Matcher
         $visitedObjects = array();
 
         /*
-         * @var array<string, boolean> The set of array comparisons that have been made.
+         * @var array<string,bool> The set of array comparisons that have been made.
          *
          * Keys are of the format "<left id>:<right id>"; values are always
          * TRUE. This set is used to detect comparisons that have already been
@@ -102,7 +102,7 @@ class EqualToMatcher implements Matcher
         $rightStack = array();
 
         /*
-         * @var integer The number of elements on the stacks.
+         * @var int The number of elements on the stacks.
          */
         $stackSize = 0;
 
@@ -171,7 +171,7 @@ class EqualToMatcher implements Matcher
                 next($right);
             }
 
-            // Keys can only be string|integer (or null, if end of array).
+            // Keys can only be string|int (or null, if end of array).
             // Compare them using regular PHP comparison.
             if ($leftKey !== $rightKey) {
                 return false;

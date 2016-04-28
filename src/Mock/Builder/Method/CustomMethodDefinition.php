@@ -21,7 +21,7 @@ class CustomMethodDefinition implements MethodDefinition
     /**
      * Construct a new custom method definition.
      *
-     * @param boolean                    $isStatic True if this method is static.
+     * @param bool                       $isStatic True if this method is static.
      * @param string                     $name     The name.
      * @param callable                   $callback The callback.
      * @param ReflectionFunctionAbstract $method   The function implementation.
@@ -41,7 +41,7 @@ class CustomMethodDefinition implements MethodDefinition
     /**
      * Returns true if this method is callable.
      *
-     * @return boolean True if this method is callable.
+     * @return bool True if this method is callable.
      */
     public function isCallable()
     {
@@ -51,7 +51,7 @@ class CustomMethodDefinition implements MethodDefinition
     /**
      * Returns true if this method is static.
      *
-     * @return boolean True if this method is static.
+     * @return bool True if this method is static.
      */
     public function isStatic()
     {
@@ -61,7 +61,7 @@ class CustomMethodDefinition implements MethodDefinition
     /**
      * Returns true if this method is custom.
      *
-     * @return boolean True if this method is custom.
+     * @return bool True if this method is custom.
      */
     public function isCustom()
     {

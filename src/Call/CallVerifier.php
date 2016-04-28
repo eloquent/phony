@@ -78,7 +78,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * records. The numbers are assigned sequentially, meaning that sequence
      * numbers can be used to determine event order.
      *
-     * @return integer The sequence number.
+     * @return int The sequence number.
      */
     public function sequenceNumber()
     {
@@ -98,7 +98,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Returns true if this collection contains any events.
      *
-     * @return boolean True if this collection contains any events.
+     * @return bool True if this collection contains any events.
      */
     public function hasEvents()
     {
@@ -108,7 +108,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Returns true if this collection contains any calls.
      *
-     * @return boolean True if this collection contains any calls.
+     * @return bool True if this collection contains any calls.
      */
     public function hasCalls()
     {
@@ -118,7 +118,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the number of events.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function eventCount()
     {
@@ -128,7 +128,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the number of calls.
      *
-     * @return integer The call count.
+     * @return int The call count.
      */
     public function callCount()
     {
@@ -138,7 +138,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the event count.
      *
-     * @return integer The event count.
+     * @return int The event count.
      */
     public function count()
     {
@@ -173,7 +173,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
@@ -211,7 +211,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
@@ -333,7 +333,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @return boolean True if this call has responded.
+     * @return bool True if this call has responded.
      */
     public function hasResponded()
     {
@@ -343,7 +343,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Returns true if this call has responded with a traversable.
      *
-     * @return boolean True if this call has responded with a traversable.
+     * @return bool True if this call has responded with a traversable.
      */
     public function isTraversable()
     {
@@ -353,7 +353,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Returns true if this call has responded with a generator.
      *
-     * @return boolean True if this call has responded with a generator.
+     * @return bool True if this call has responded with a generator.
      */
     public function isGenerator()
     {
@@ -371,7 +371,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * traversable will not be considered complete until the traversable has
      * been completely consumed via iteration.
      *
-     * @return boolean True if this call has completed.
+     * @return bool True if this call has completed.
      */
     public function hasCompleted()
     {
@@ -404,7 +404,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The index.
+     * @param int $index The index.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
@@ -512,7 +512,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the number of arguments.
      *
-     * @return integer The number of arguments.
+     * @return int The number of arguments.
      */
     public function argumentCount()
     {

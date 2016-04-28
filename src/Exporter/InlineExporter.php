@@ -38,8 +38,8 @@ class InlineExporter implements Exporter
     /**
      * Construct a new inline exporter.
      *
-     * @param integer $depth        The depth.
-     * @param boolean $incrementIds True if IDs should increment. Used for testing purposes.
+     * @param int  $depth        The depth.
+     * @param bool $incrementIds True if IDs should increment. Used for testing purposes.
      */
     public function __construct($depth, $incrementIds)
     {
@@ -62,9 +62,9 @@ class InlineExporter implements Exporter
      *
      * Negative depths are treated as infinite depth.
      *
-     * @param integer $depth The depth.
+     * @param int $depth The depth.
      *
-     * @return integer The previous depth.
+     * @return int The previous depth.
      */
     public function setDepth($depth)
     {
@@ -79,8 +79,8 @@ class InlineExporter implements Exporter
      *
      * Negative depths are treated as infinite depth.
      *
-     * @param mixed        &$value The value.
-     * @param integer|null $depth  The depth, or null to use the default.
+     * @param mixed    &$value The value.
+     * @param int|null $depth  The depth, or null to use the default.
      *
      * @return string The exported value.
      */

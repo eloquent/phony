@@ -24,9 +24,9 @@ class GeneratorYieldIteration
      * Construct a new generator yield iteration.
      *
      * @param array<CallRequest> $requests The requests.
-     * @param boolean            $hasKey   True if the key should be yielded.
+     * @param bool               $hasKey   True if the key should be yielded.
      * @param mixed              $key      The key.
-     * @param boolean            $hasValue True if the value should be yielded.
+     * @param bool               $hasValue True if the value should be yielded.
      * @param mixed              $value    The value.
      */
     public function __construct(

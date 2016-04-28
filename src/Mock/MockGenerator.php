@@ -600,7 +600,7 @@ EOD;
     ) {
         $methods = $definition->methods();
         $traitNames = $definition->traitNames();
-        $hasTraits = (boolean) $traitNames;
+        $hasTraits = (bool) $traitNames;
         $parentClassName = $definition->parentClassName();
         $hasParentClass = null !== $parentClassName;
         $constructor = null;

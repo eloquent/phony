@@ -19,10 +19,10 @@ class ProducedEvent extends AbstractCallEvent implements TraversableEvent
     /**
      * Construct a 'produced' event.
      *
-     * @param integer $sequenceNumber The sequence number.
-     * @param float   $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param mixed   $key            The produced key.
-     * @param mixed   $value          The produced value.
+     * @param int   $sequenceNumber The sequence number.
+     * @param float $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param mixed $key            The produced key.
+     * @param mixed $value          The produced value.
      */
     public function __construct($sequenceNumber, $time, $key, $value)
     {

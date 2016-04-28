@@ -29,7 +29,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * @param string           $name            The name.
      * @param ReflectionMethod $callMagicMethod The _callMagic() method.
-     * @param boolean          $isUncallable    True if the underlying magic method is uncallable.
+     * @param bool             $isUncallable    True if the underlying magic method is uncallable.
      * @param Handle           $handle          The handle.
      */
     public function __construct(
@@ -70,7 +70,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
     /**
      * Returns true if uncallable.
      *
-     * @return boolean True if uncallable.
+     * @return bool True if uncallable.
      */
     public function isUncallable()
     {

@@ -35,7 +35,7 @@ class Sequencer
     /**
      * Set the sequence number.
      *
-     * @param integer $current The sequence number.
+     * @param int $current The sequence number.
      */
     public function set($current)
     {
@@ -53,7 +53,7 @@ class Sequencer
     /**
      * Get the sequence number.
      *
-     * @return integer The sequence number.
+     * @return int The sequence number.
      */
     public function get()
     {
@@ -63,7 +63,7 @@ class Sequencer
     /**
      * Increment and return the sequence number.
      *
-     * @return integer The sequence number.
+     * @return int The sequence number.
      */
     public function next()
     {

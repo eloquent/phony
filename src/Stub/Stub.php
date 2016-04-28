@@ -86,9 +86,9 @@ interface Stub extends WrappedInvocable
      *
      * @param callable        $callback              The callback.
      * @param Arguments|array $arguments             The arguments.
-     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
-     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
+     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool            $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
         $callback,
@@ -106,8 +106,8 @@ interface Stub extends WrappedInvocable
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer $index The argument index.
-     * @param integer ...$additionalIndices Additional argument indices to call.
+     * @param int $index The argument index.
+     * @param int ...$additionalIndices Additional argument indices to call.
      *
      * @return $this This stub.
      */
@@ -121,11 +121,11 @@ interface Stub extends WrappedInvocable
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param integer         $index                 The argument index.
+     * @param int             $index                 The argument index.
      * @param Arguments|array $arguments             The arguments.
-     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
-     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
+     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -169,9 +169,9 @@ interface Stub extends WrappedInvocable
      *
      * @param callable        $callback              The callback.
      * @param Arguments|array $arguments             The arguments.
-     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
-     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
+     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -187,9 +187,9 @@ interface Stub extends WrappedInvocable
      * Add an answer that calls the wrapped callback.
      *
      * @param Arguments|array $arguments             The arguments.
-     * @param boolean|null    $prefixSelf            True if the self value should be prefixed.
-     * @param boolean         $suffixArgumentsObject True if the arguments object should be appended.
-     * @param boolean         $suffixArguments       True if the arguments should be appended individually.
+     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -216,7 +216,7 @@ interface Stub extends WrappedInvocable
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param integer $index The argument index.
+     * @param int $index The argument index.
      *
      * @return $this This stub.
      */

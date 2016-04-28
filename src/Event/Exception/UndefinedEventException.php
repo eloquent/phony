@@ -21,7 +21,7 @@ final class UndefinedEventException extends Exception
     /**
      * Construct a new undefined event exception.
      *
-     * @param integer        $index The index.
+     * @param int            $index The index.
      * @param Exception|null $cause The cause, if available.
      */
     public function __construct($index, Exception $cause = null)
@@ -38,7 +38,7 @@ final class UndefinedEventException extends Exception
     /**
      * Get the index.
      *
-     * @return integer The index.
+     * @return int The index.
      */
     public function index()
     {

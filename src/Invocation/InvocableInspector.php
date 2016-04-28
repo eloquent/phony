@@ -132,7 +132,7 @@ class InvocableInspector
     /**
      * Returns true if bound closures are supported.
      *
-     * @return boolean True if bound closures are supported.
+     * @return bool True if bound closures are supported.
      */
     public function isBoundClosureSupported()
     {

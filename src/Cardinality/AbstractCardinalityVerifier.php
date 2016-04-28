@@ -69,7 +69,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
     /**
      * Requires that the next verification matches an exact number of times.
      *
-     * @param integer $times The match count.
+     * @param int $times The match count.
      *
      * @return $this This verifier.
      */
@@ -82,7 +82,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum.
      *
-     * @param integer $minimum The minimum match count.
+     * @param int $minimum The minimum match count.
      *
      * @return $this This verifier.
      */
@@ -95,7 +95,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      * Requires that the next verification matches a number of times less than
      * or equal to $maximum.
      *
-     * @param integer $maximum The maximum match count.
+     * @param int $maximum The maximum match count.
      *
      * @return $this This verifier.
      */
@@ -108,8 +108,8 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum, and less than or equal to $maximum.
      *
-     * @param integer      $minimum The minimum match count.
-     * @param integer|null $maximum The maximum match count, or null for no maximum.
+     * @param int      $minimum The minimum match count.
+     * @param int|null $maximum The maximum match count, or null for no maximum.
      *
      * @return $this                       This verifier.
      * @throws InvalidCardinalityException If the cardinality is invalid.

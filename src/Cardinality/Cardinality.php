@@ -23,9 +23,9 @@ class Cardinality
     /**
      * Construct a new cardinality.
      *
-     * @param integer      $minimum  The minimum.
-     * @param integer|null $maximum  The maximum, or null for no maximum.
-     * @param boolean      $isAlways True if 'always' should be enabled.
+     * @param int      $minimum  The minimum.
+     * @param int|null $maximum  The maximum, or null for no maximum.
+     * @param bool     $isAlways True if 'always' should be enabled.
      *
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
@@ -50,7 +50,7 @@ class Cardinality
     /**
      * Get the minimum.
      *
-     * @return integer The minimum.
+     * @return int The minimum.
      */
     public function minimum()
     {
@@ -60,7 +60,7 @@ class Cardinality
     /**
      * Get the maximum.
      *
-     * @return integer|null The maximum.
+     * @return int|null The maximum.
      */
     public function maximum()
     {
@@ -70,7 +70,7 @@ class Cardinality
     /**
      * Returns true if this cardinality is 'never'.
      *
-     * @return boolean True if this cardinality is 'never'.
+     * @return bool True if this cardinality is 'never'.
      */
     public function isNever()
     {
@@ -80,7 +80,7 @@ class Cardinality
     /**
      * Turn 'always' on or off.
      *
-     * @param  boolean                     $isAlways True to enable 'always'.
+     * @param  bool                        $isAlways True to enable 'always'.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function setIsAlways($isAlways)
@@ -95,7 +95,7 @@ class Cardinality
     /**
      * Returns true if 'always' is enabled.
      *
-     * @return boolean True if 'always' is enabled.
+     * @return bool True if 'always' is enabled.
      */
     public function isAlways()
     {
@@ -105,10 +105,10 @@ class Cardinality
     /**
      * Returns true if the supplied count matches this cardinality.
      *
-     * @param integer|boolean $count        The count or result to check.
-     * @param integer         $maximumCount The maximum possible count.
+     * @param int|bool $count        The count or result to check.
+     * @param int      $maximumCount The maximum possible count.
      *
-     * @return boolean True if the supplied count matches this cardinality.
+     * @return bool True if the supplied count matches this cardinality.
      */
     public function matches($count, $maximumCount)
     {

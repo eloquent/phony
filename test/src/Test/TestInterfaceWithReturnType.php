@@ -11,8 +11,6 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Test\TestClassA;
-
 interface TestInterfaceWithReturnType
 {
     public function classType() : TestClassA;

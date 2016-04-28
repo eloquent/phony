@@ -211,7 +211,7 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
     /**
      * Set whether this handle should be adapted to its mock automatically.
      *
-     * @param boolean $isAdaptable True if this handle should be adapted automatically.
+     * @param bool $isAdaptable True if this handle should be adapted automatically.
      *
      * @return $this This handle.
      */
@@ -225,7 +225,7 @@ abstract class AbstractInstanceHandle extends AbstractHandle implements
     /**
      * Returns true if this handle should be adapted to its mock automatically.
      *
-     * @return boolean True if this handle should be adapted automatically.
+     * @return bool True if this handle should be adapted automatically.
      */
     public function isAdaptable()
     {

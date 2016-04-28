@@ -32,21 +32,21 @@ interface Call extends Event, EventCollection
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @return boolean True if this call has responded.
+     * @return bool True if this call has responded.
      */
     public function hasResponded();
 
     /**
      * Returns true if this call has responded with a traversable.
      *
-     * @return boolean True if this call has responded with a traversable.
+     * @return bool True if this call has responded with a traversable.
      */
     public function isTraversable();
 
     /**
      * Returns true if this call has responded with a generator.
      *
-     * @return boolean True if this call has responded with a generator.
+     * @return bool True if this call has responded with a generator.
      */
     public function isGenerator();
 
@@ -61,7 +61,7 @@ interface Call extends Event, EventCollection
      * traversable will not be considered complete until the traversable has
      * been completely consumed via iteration.
      *
-     * @return boolean True if this call has completed.
+     * @return bool True if this call has completed.
      */
     public function hasCompleted();
 

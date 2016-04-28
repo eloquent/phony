@@ -360,7 +360,7 @@ class AssertionRenderer
      * Render the responses of a sequence of calls.
      *
      * @param array<Call> $calls              The calls.
-     * @param boolean     $expandTraversables True if traversable events should be rendered.
+     * @param bool        $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered call responses.
      */
