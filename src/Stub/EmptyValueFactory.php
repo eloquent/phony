@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use EmptyIterator;
 use ReflectionClass;
 use ReflectionType;
 
@@ -45,6 +44,12 @@ class EmptyValueFactory
             $functionReflector->hasMethod('getReturnType');
     }
 
+    public function setStubVerifierFactory(
+        StubVerifierFactory $stubVerifierFactory
+    ) {
+        $this->stubVerifierFactory = $stubVerifierFactory;
+    }
+
     public function setMockBuilderFactory(
         MockBuilderFactory $mockBuilderFactory
     ) {
@@ -72,12 +77,13 @@ class EmptyValueFactory
             case 'float': return .0;
             case 'string': return '';
             case 'array': return array();
-            case 'callable': return function () {};
             case 'stdclass': return (object) array();
 
-            case 'traversable':
-            case 'iterator':
-                return new EmptyIterator();
+            case 'callable':
+                return $this->stubVerifierFactory->create();
+
+            case 'closure':
+                return function () {};
 
             case 'generator':
                 $fn = function () { return; yield; };
@@ -89,6 +95,7 @@ class EmptyValueFactory
     }
 
     private static $instance;
+    private $stubVerifierFactory;
     private $mockBuilderFactory;
     private $isReturnTypeSupported;
 }

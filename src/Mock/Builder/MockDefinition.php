@@ -284,7 +284,9 @@ class MockDefinition
         $unmockable = array();
 
         if ($typeName = $this->parentClassName()) {
-            foreach ($this->types[$typeName]->getMethods() as $method) {
+            $type = $this->types[strtolower($typeName)];
+
+            foreach ($type->getMethods() as $method) {
                 if ($method->isPrivate()) {
                     continue;
                 }
@@ -303,7 +305,9 @@ class MockDefinition
         $traitMethods = array();
 
         foreach ($this->traitNames() as $typeName) {
-            foreach ($this->types[$typeName]->getMethods() as $method) {
+            $type = $this->types[strtolower($typeName)];
+
+            foreach ($type->getMethods() as $method) {
                 $methodName = $method->getName();
                 $methodDefinition =
                     new TraitMethodDefinition($method, $methodName);
@@ -323,7 +327,9 @@ class MockDefinition
         }
 
         foreach ($this->interfaceNames() as $typeName) {
-            foreach ($this->types[$typeName]->getMethods() as $method) {
+            $type = $this->types[strtolower($typeName)];
+
+            foreach ($type->getMethods() as $method) {
                 $methodName = $method->getName();
 
                 if (isset($unmockable[$methodName])) {

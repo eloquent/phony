@@ -90,10 +90,29 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $types = array();
 
         foreach ($typeNames as $typeName) {
-            $types[$typeName] = new ReflectionClass($typeName);
+            $types[strtolower($typeName)] = new ReflectionClass($typeName);
         }
 
         return $types;
+    }
+
+    protected function assertTypes(array $expectedTypes, array $expectedNonTypes, ReflectionClass $actual)
+    {
+        foreach ($expectedTypes as $type) {
+            if (interface_exists($type)) {
+                $this->assertTrue($actual->implementsInterface($type));
+            } else {
+                $this->assertTrue($actual->isSubclassOf($type));
+            }
+        }
+
+        foreach ($expectedNonTypes as $type) {
+            if (interface_exists($type)) {
+                $this->assertFalse($actual->implementsInterface($type));
+            } else {
+                $this->assertFalse($actual->isSubclassOf($type));
+            }
+        }
     }
 
     public function testConstructor()
@@ -504,80 +523,193 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->build());
     }
 
-    public function testBuildWithTraversableOnly()
+    public function buildTraversablesData()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceC');
-        $actual = $this->subject->build();
-
-        $this->assertTrue($actual->implementsInterface('Traversable'));
-        $this->assertTrue($actual->implementsInterface('IteratorAggregate'));
-        $this->assertFalse($actual->implementsInterface('Iterator'));
-    }
-
-    public function testBuildWithTraversableAndIteratorAggregate()
-    {
-        $this->setUpWith(
-            array('IteratorAggregate', 'Eloquent\Phony\Test\TestInterfaceC')
+        return array(
+            'Traversable' => array(
+                'Traversable',
+                array('Traversable', 'Iterator'),
+                array('IteratorAggregate'),
+            ),
+            'Iterator' => array(
+                'Iterator',
+                array('Traversable', 'Iterator'),
+                array('IteratorAggregate'),
+            ),
+            'IteratorAggregate' => array(
+                'IteratorAggregate',
+                array('Traversable', 'IteratorAggregate'),
+                array('Iterator'),
+            ),
+            'Traversable + Iterator' => array(
+                array('Traversable', 'Iterator'),
+                array('Traversable', 'Iterator'),
+                array('IteratorAggregate'),
+            ),
+            'Traversable + IteratorAggregate' => array(
+                array('Traversable', 'IteratorAggregate'),
+                array('Traversable', 'IteratorAggregate'),
+                array('Iterator'),
+            ),
+            'Traversable child' => array(
+                'Eloquent\Phony\Test\TestInterfaceC',
+                array('Traversable', 'Iterator'),
+                array('IteratorAggregate'),
+            ),
+            'Traversable child + Iterator' => array(
+                array('Iterator', 'Eloquent\Phony\Test\TestInterfaceC'),
+                array('Traversable', 'Iterator'),
+                array('IteratorAggregate'),
+            ),
+            'Traversable child + IteratorAggregate' => array(
+                array('IteratorAggregate', 'Eloquent\Phony\Test\TestInterfaceC'),
+                array('Traversable', 'IteratorAggregate'),
+                array('Iterator'),
+            ),
+            'ArrayObject' => array(
+                'ArrayObject',
+                array('Traversable', 'IteratorAggregate'),
+                array('Iterator'),
+            ),
         );
-        $actual = $this->subject->build();
-
-        $this->assertTrue($actual->implementsInterface('Traversable'));
-        $this->assertTrue($actual->implementsInterface('IteratorAggregate'));
-        $this->assertFalse($actual->implementsInterface('Iterator'));
     }
 
-    public function testBuildWithTraversableAndIterator()
+    /**
+     * @dataProvider buildTraversablesData
+     */
+    public function testBuildTraversables($typeNames, $expectedTypes, $expectedNonTypes)
     {
-        $this->setUpWith(
-            array('Iterator', 'Eloquent\Phony\Test\TestInterfaceC')
+        $this->setUpWith($typeNames);
+
+        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());
+    }
+
+    public function buildThrowablesData()
+    {
+        return array(
+            'Throwable' => array(
+                'Throwable',
+                array('Throwable', 'Exception'),
+                array('Error'),
+            ),
+            'Exception' => array(
+                'Exception',
+                array('Throwable', 'Exception'),
+                array('Error'),
+            ),
+            'Error' => array(
+                'Error',
+                array('Throwable', 'Error'),
+                array('Exception'),
+            ),
+            'Throwable + Exception' => array(
+                array('Throwable', 'Exception'),
+                array('Throwable', 'Exception'),
+                array('Error'),
+            ),
+            'Throwable + Error' => array(
+                array('Throwable', 'Error'),
+                array('Throwable', 'Error'),
+                array('Exception'),
+            ),
+            'Throwable child' => array(
+                'Eloquent\Phony\Test\TestInterfaceF',
+                array('Throwable', 'Exception'),
+                array('Error'),
+            ),
+            'Throwable child + Exception' => array(
+                array('Exception', 'Eloquent\Phony\Test\TestInterfaceF'),
+                array('Throwable', 'Exception'),
+                array('Error'),
+            ),
+            'Throwable child + Error' => array(
+                array('Error', 'Eloquent\Phony\Test\TestInterfaceF'),
+                array('Throwable', 'Error'),
+                array('Exception'),
+            ),
         );
-        $actual = $this->subject->build();
-
-        $this->assertTrue($actual->implementsInterface('Traversable'));
-        $this->assertFalse($actual->implementsInterface('IteratorAggregate'));
-        $this->assertTrue($actual->implementsInterface('Iterator'));
     }
 
-    public function testBuildWithThrowableOnly()
+    /**
+     * @dataProvider buildThrowablesData
+     */
+    public function testBuildThrowables($typeNames, $expectedTypes, $expectedNonTypes)
     {
         if (!$this->featureDetector->isSupported('error.exception.engine')) {
             $this->markTestSkipped('Requires engine error exceptions.');
         }
 
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceF');
-        $actual = $this->subject->build();
+        $this->setUpWith($typeNames);
 
-        $this->assertTrue($actual->implementsInterface('Throwable'));
-        $this->assertTrue($actual->isSubclassOf('Exception'));
-        $this->assertFalse($actual->isSubclassOf('Error'));
+        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());
     }
 
-    public function testBuildWithThrowableAndException()
+    public function buildDateTimesData()
     {
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            $this->markTestSkipped('Requires engine error exceptions.');
-        }
-
-        $this->setUpWith('Exception', 'Eloquent\Phony\Test\TestInterfaceF');
-        $actual = $this->subject->build();
-
-        $this->assertTrue($actual->implementsInterface('Throwable'));
-        $this->assertTrue($actual->isSubclassOf('Exception'));
-        $this->assertFalse($actual->isSubclassOf('Error'));
+        return array(
+            'DateTimeInterface' => array(
+                'DateTimeInterface',
+                array('DateTimeInterface', 'DateTimeImmutable'),
+                array('DateTime'),
+            ),
+            'DateTimeImmutable' => array(
+                'DateTimeImmutable',
+                array('DateTimeInterface', 'DateTimeImmutable'),
+                array('DateTime'),
+            ),
+            'DateTime' => array(
+                'DateTime',
+                array('DateTimeInterface', 'DateTime'),
+                array('DateTimeImmutable'),
+            ),
+            'DateTimeInterface + DateTimeImmutable' => array(
+                array('DateTimeInterface', 'DateTimeImmutable'),
+                array('DateTimeInterface', 'DateTimeImmutable'),
+                array('DateTime'),
+            ),
+            'DateTimeInterface + DateTime' => array(
+                array('DateTimeInterface', 'DateTime'),
+                array('DateTimeInterface', 'DateTime'),
+                array('DateTimeImmutable'),
+            ),
+            'DateTimeInterface child' => array(
+                'Eloquent\Phony\Test\TestInterfaceH',
+                array('DateTimeInterface', 'DateTimeImmutable'),
+                array('DateTime'),
+            ),
+            'DateTimeInterface child + DateTimeImmutable' => array(
+                array('DateTimeImmutable', 'Eloquent\Phony\Test\TestInterfaceH'),
+                array('DateTimeInterface', 'DateTimeImmutable'),
+                array('DateTime'),
+            ),
+            'DateTimeInterface child + DateTime' => array(
+                array('DateTime', 'Eloquent\Phony\Test\TestInterfaceH'),
+                array('DateTimeInterface', 'DateTime'),
+                array('DateTimeImmutable'),
+            ),
+        );
     }
 
-    public function testBuildWithThrowableAndError()
+    /**
+     * @dataProvider buildDateTimesData
+     */
+    public function testBuildDateTimes($typeNames, $expectedTypes, $expectedNonTypes)
     {
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            $this->markTestSkipped('Requires engine error exceptions.');
+        if (!interface_exists('DateTimeInterface')) {
+            $this->markTestSkipped('Requires DateTimeInterface interface.');
         }
 
-        $this->setUpWith('Error', 'Eloquent\Phony\Test\TestInterfaceF');
+        $this->setUpWith($typeNames);
+
+        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());
+    }
+
+    public function testBuildWithReflectorInterface()
+    {
+        $this->setUpWith('Reflector');
         $actual = $this->subject->build();
 
-        $this->assertTrue($actual->implementsInterface('Throwable'));
-        $this->assertTrue($actual->isSubclassOf('Error'));
-        $this->assertFalse($actual->isSubclassOf('Exception'));
+        $this->assertTrue($actual->implementsInterface('Reflector'));
     }
 
     public function testBuildWithFinalConstructor()

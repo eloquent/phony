@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Closure;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
@@ -25,7 +24,6 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit_Framework_TestCase;
-use stdClass;
 
 class StubDataTest extends PHPUnit_Framework_TestCase
 {
@@ -56,6 +54,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->generatorAnswerBuilderFactory
         );
 
+        $this->emptyValueFactory->setStubVerifierFactory(StubVerifierFactory::instance());
         $this->emptyValueFactory->setMockBuilderFactory(MockBuilderFactory::instance());
 
         $this->callsA = array();
@@ -946,113 +945,6 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $this->subject->returns();
 
         $this->assertSame($expected, call_user_func($this->subject));
-    }
-
-    public function testReturnsWithStdClassReturnType()
-    {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-
-        $this->subject = new StubData(
-            eval('return function (): stdClass {};'),
-            null,
-            $this->label,
-            $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
-        );
-        $this->subject->returns();
-
-        $this->assertInstanceOf('stdClass', call_user_func($this->subject));
-    }
-
-    public function testReturnsWithObjectReturnType()
-    {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-
-        $this->subject = new StubData(
-            eval('return function (): Eloquent\Phony\Test\TestClassA {};'),
-            null,
-            $this->label,
-            $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
-        );
-        $this->subject->returns();
-
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', call_user_func($this->subject));
-    }
-
-    public function testReturnsWithCallableReturnType()
-    {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-
-        $this->subject = new StubData(
-            eval('return function (): callable {};'),
-            null,
-            $this->label,
-            $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
-        );
-        $this->subject->returns();
-
-        $this->assertInstanceOf('Closure', call_user_func($this->subject));
-    }
-
-    public function returnsWithTraversableReturnTypeData()
-    {
-        return array(
-            'Generator' => array('Generator'),
-            'Iterator' => array('Iterator'),
-            'Traversable' => array('Traversable'),
-        );
-    }
-
-    /**
-     * @dataProvider returnsWithTraversableReturnTypeData
-     */
-    public function testReturnsWithTraversableReturnType($type)
-    {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-
-        $this->subject = new StubData(
-            eval("return function (): $type {};"),
-            null,
-            $this->label,
-            $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
-        );
-        $this->subject->returns();
-
-        $result = call_user_func($this->subject);
-
-        $this->assertInstanceOf($type, $result);
-        $this->assertSame(array(), iterator_to_array($result));
     }
 
     public function testReturnsWithInstanceHandles()

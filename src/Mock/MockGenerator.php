@@ -675,7 +675,7 @@ EOD;
 
 EOD;
 
-            $parentClass = $types[$parentClassName];
+            $parentClass = $types[strtolower($parentClassName)];
 
             if ($constructor = $parentClass->getConstructor()) {
                 $constructorName = $constructor->getName();
@@ -721,7 +721,7 @@ EOD;
                 $constructorTraitName = null;
 
                 foreach ($traitNames as $traitName) {
-                    $trait = $types[$traitName];
+                    $trait = $types[strtolower($traitName)];
 
                     if ($traitConstructor = $trait->getConstructor()) {
                         $constructor = $traitConstructor;

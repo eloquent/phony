@@ -3,13 +3,18 @@
 ## Next release
 
 - **[NEW]** Mocks as default stub return values for arbitrary object return
-  types ([#149]).
+  types ([#149], [#150]).
 - **[FIXED]** Fixed exception when stubbing functions with return values
   ([#147]).
+- **[FIXED]** Fixed mocking of `Traversable` ([#152]).
+- **[FIXED]** Fixed mocking of `DateTimeInterface` ([#153]).
 - **[FIXED]** Fixed mocking of classes with final constructors ([#154]).
 
 [#147]: https://github.com/eloquent/phony/issues/147
 [#149]: https://github.com/eloquent/phony/issues/149
+[#150]: https://github.com/eloquent/phony/issues/150
+[#152]: https://github.com/eloquent/phony/issues/152
+[#153]: https://github.com/eloquent/phony/issues/153
 [#154]: https://github.com/eloquent/phony/issues/154
 
 ## 0.9.0 (2016-04-27)

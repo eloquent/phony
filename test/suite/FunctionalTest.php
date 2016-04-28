@@ -215,6 +215,21 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('z', $mock->nonexistent());
     }
 
+    public function testGeneratorReturnTypeSpying()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+        if (!$this->featureDetector->isSupported('generator')) {
+            $this->markTestSkipped('Requires generators.');
+        }
+
+        $stub = x\stub(eval('return function (): Generator {};'))->returns();
+        iterator_to_array($stub());
+
+        $stub->producedAll();
+    }
+
     public function testReturnTypeMockingInvalidType()
     {
         if (!$this->featureDetector->isSupported('return.type')) {

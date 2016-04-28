@@ -77,7 +77,7 @@ class MockDefinitionTest extends PHPUnit_Framework_TestCase
         $this->types = array();
 
         foreach ($typeNames as $typeName) {
-            $this->types[$typeName] = new ReflectionClass($typeName);
+            $this->types[strtolower($typeName)] = new ReflectionClass($typeName);
         }
 
         $this->customMethods = array(

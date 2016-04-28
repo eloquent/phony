@@ -68,6 +68,8 @@ class MockBuilder
             $featureDetector->isSupported('parser.relaxed-keywords');
         $this->isEngineErrorExceptionSupported =
             $featureDetector->isSupported('error.exception.engine');
+        $this->isDateTimeInterfaceSupported =
+            interface_exists('DateTimeInterface');
 
         $this->factory = $factory;
         $this->handleFactory = $handleFactory;
@@ -242,7 +244,7 @@ class MockBuilder
         }
 
         foreach ($toAdd as $type) {
-            $name = $type->getName();
+            $name = strtolower($type->getName());
 
             if (!isset($this->types[$name])) {
                 $this->types[$name] = $type;
@@ -601,61 +603,57 @@ class MockBuilder
 
     private function normalizeDefinition()
     {
-        $isTraversable = false;
-        $isIterator = false;
+        $this->resolveInternalInterface(
+            'traversable',
+            'iterator',
+            'iteratoraggregate'
+        );
 
-        foreach ($this->types as $type) {
+        if ($this->isDateTimeInterfaceSupported) {
+            $this->resolveInternalInterface(
+                'datetimeinterface',
+                'datetimeimmutable',
+                'datetime'
+            );
+        }
+
+        if ($this->isEngineErrorExceptionSupported) {
+            $this->resolveInternalInterface('throwable', 'exception', 'error');
+        }
+    }
+
+    private function resolveInternalInterface(
+        $interface,
+        $preferred,
+        $alternate
+    ) {
+        $isImplementor = false;
+        $isConcrete = false;
+
+        foreach ($this->types as $name => $type) {
             if (
-                $type->implementsInterface('Iterator') ||
-                $type->implementsInterface('IteratorAggregate')
+                $preferred === $name ||
+                $alternate === $name ||
+                $type->isSubclassOf($preferred) ||
+                $type->isSubclassOf($alternate)
             ) {
-                $isIterator = true;
+                $isConcrete = true;
 
                 break;
             }
 
-            if ($type->implementsInterface('Traversable')) {
-                $isTraversable = true;
+            if ($type->implementsInterface($interface)) {
+                $isImplementor = true;
+
+                if ($interface === $name) {
+                    unset($this->types[$name]);
+                }
             }
         }
 
-        if ($isTraversable && !$isIterator) {
+        if ($isImplementor && !$isConcrete) {
             $this->types = array_merge(
-                array(
-                    'IteratorAggregate' =>
-                        new ReflectionClass('IteratorAggregate'),
-                ),
-                $this->types
-            );
-        }
-
-        if (!$this->isEngineErrorExceptionSupported) {
-            return; // @codeCoverageIgnore
-        }
-
-        $isThrowable = false;
-
-        foreach ($this->types as $type) {
-            if (
-                $type->isSubclassOf('Exception') || $type->isSubclassOf('Error')
-            ) {
-                return;
-            }
-
-            $name = $type->getName();
-
-            if ('Exception' === $name || 'Error' === $type) {
-                return;
-            }
-
-            if ($type->implementsInterface('Throwable')) {
-                $isThrowable = true;
-            }
-        }
-
-        if ($isThrowable) {
-            $this->types = array_merge(
-                array('Exception' => new ReflectionClass('Exception')),
+                array($preferred => new ReflectionClass($preferred)),
                 $this->types
             );
         }
@@ -707,6 +705,7 @@ class MockBuilder
     private $isAnonymousClassSupported;
     private $isRelaxedKeywordsSupported;
     private $isEngineErrorExceptionSupported;
+    private $isDateTimeInterfaceSupported;
     private $types;
     private $parentClassName;
     private $customMethods;

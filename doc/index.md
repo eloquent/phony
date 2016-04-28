@@ -3006,9 +3006,8 @@ Return type   | Returned value
 `string`      | `''`
 `array`       | `[]`
 `stdClass`    | `(object) []`
-`callable`    | `function () {}`
-`Traversable` | `new EmptyIterator()`
-`Iterator`    | `new EmptyIterator()`
+`callable`    | `stub()`
+`Closure`     | `function () {}`
 `Generator`   | `(function () {return; yield;})()`
 
 When using a [return type] that is not listed above, the return value will be a

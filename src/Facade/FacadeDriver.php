@@ -208,6 +208,7 @@ class FacadeDriver
             $nullEvent
         );
 
+        $emptyValueFactory->setStubVerifierFactory($stubVerifierFactory);
         $emptyValueFactory->setMockBuilderFactory($mockBuilderFactory);
 
         $this->mockBuilderFactory = $mockBuilderFactory;
