@@ -580,6 +580,14 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($actual->isSubclassOf('Exception'));
     }
 
+    public function testBuildWithFinalConstructor()
+    {
+        $this->setUpWith('Eloquent\Phony\Test\TestClassI');
+        $actual = $this->subject->build();
+
+        $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassI'));
+    }
+
     public function testBuildFailureClassExists()
     {
         $builder = $this->setUpWith(array());

@@ -177,6 +177,32 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $actual->constructorArguments);
     }
 
+    public function testCreateFullMockWithFinalConstructor()
+    {
+        if (!method_exists('ReflectionClass', 'newInstanceWithoutConstructor')) {
+            $this->markTestSkipped('Requires constructor bypassing.');
+        }
+
+        $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassI');
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateFullMockWithFinalConstructor');
+        $actual = $this->subject->createFullMock($builder->build());
+
+        $this->assertNull($actual->constructorArguments);
+    }
+
+    public function testCreatePartialMockWithFinalConstructor()
+    {
+        if (!method_exists('ReflectionClass', 'newInstanceWithoutConstructor')) {
+            $this->markTestSkipped('Requires constructor bypassing.');
+        }
+
+        $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassI');
+        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithFinalConstructor');
+        $actual = $this->subject->createPartialMock($builder->build(), array('a', 'b'));
+
+        $this->assertSame(array('a', 'b'), $actual->constructorArguments);
+    }
+
     public function testInstance()
     {
         $class = get_class($this->subject);

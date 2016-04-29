@@ -6,9 +6,11 @@
   types ([#149]).
 - **[FIXED]** Fixed exception when stubbing functions with return values
   ([#147]).
+- **[FIXED]** Fixed mocking of classes with final constructors ([#154]).
 
 [#147]: https://github.com/eloquent/phony/issues/147
 [#149]: https://github.com/eloquent/phony/issues/149
+[#154]: https://github.com/eloquent/phony/issues/154
 
 ## 0.9.0 (2016-04-27)
 

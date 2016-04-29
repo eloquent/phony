@@ -21,6 +21,7 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use ParseError;
 use ParseException;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * Creates mock instances.
@@ -61,6 +62,9 @@ class MockFactory
         $this->generator = $generator;
         $this->handleFactory = $handleFactory;
         $this->definitions = array();
+
+        $this->isConstructorBypassSupported =
+            method_exists('ReflectionClass', 'newInstanceWithoutConstructor');
     }
 
     /**
@@ -159,7 +163,18 @@ class MockFactory
      */
     public function createFullMock(ReflectionClass $class)
     {
-        $mock = $class->newInstanceArgs();
+        if ($this->isConstructorBypassSupported) {
+            try {
+                $mock = $class->newInstanceWithoutConstructor();
+                // @codeCoverageIgnoreStart
+            } catch (ReflectionException $e) {
+                $mock = $class->newInstanceArgs();
+            }
+        } else {
+            $mock = $class->newInstanceArgs();
+        }
+        // @codeCoverageIgnoreEnd
+
         $this->handleFactory
             ->createStubbing($mock, strval($this->labelSequencer->next()));
 
@@ -179,7 +194,18 @@ class MockFactory
         ReflectionClass $class,
         $arguments = array()
     ) {
-        $mock = $class->newInstanceArgs();
+        if ($this->isConstructorBypassSupported) {
+            try {
+                $mock = $class->newInstanceWithoutConstructor();
+                // @codeCoverageIgnoreStart
+            } catch (ReflectionException $e) {
+                $mock = $class->newInstanceArgs();
+            }
+        } else {
+            $mock = $class->newInstanceArgs();
+        }
+        // @codeCoverageIgnoreEnd
+
         $handle = $this->handleFactory
             ->createStubbing($mock, strval($this->labelSequencer->next()));
 
@@ -197,4 +223,5 @@ class MockFactory
     private $generator;
     private $handleFactory;
     private $definitions;
+    private $isConstructorBypassSupported;
 }

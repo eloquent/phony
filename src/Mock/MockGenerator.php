@@ -337,7 +337,7 @@ EOD;
             }
         }
 
-        if (!$constructor) {
+        if (!$constructor || $constructor->isFinal()) {
             return '';
         }
 
