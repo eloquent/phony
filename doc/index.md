@@ -737,7 +737,7 @@ Set the class name.
 
 ----
 
-> *boolean* $builder->[**isFinalized**](#builder.isFinalized)()
+> *bool* $builder->[**isFinalized**](#builder.isFinalized)()
 
 Returns `true` if this builder is finalized.
 
@@ -753,7 +753,7 @@ Finalize the mock builder.
 
 ----
 
-> *boolean* $builder->[**isBuilt**](#builder.isBuilt)()
+> *bool* $builder->[**isBuilt**](#builder.isBuilt)()
 
 Returns `true` if the mock class has been built.
 
@@ -1899,7 +1899,7 @@ behavior customization.
 
 ----
 
-> *boolean* $stub->[**useGeneratorSpies**](#stub.useGeneratorSpies)()
+> *bool* $stub->[**useGeneratorSpies**](#stub.useGeneratorSpies)()
 
 Returns `true` if this stub uses [generator spies].
 
@@ -1915,7 +1915,7 @@ Turn on or off the use of [generator spies].
 
 ----
 
-> *boolean* $stub->[**useTraversableSpies**](#stub.useTraversableSpies)()
+> *bool* $stub->[**useTraversableSpies**](#stub.useTraversableSpies)()
 
 Returns `true` if this stub uses [traversable spies].
 
@@ -1969,7 +1969,7 @@ Get the argument of the first call at `$index`.
 
 ----
 
-> *boolean* $stub->[**hasCalls**](#stub.hasCalls)()
+> *bool* $stub->[**hasCalls**](#stub.hasCalls)()
 
 Returns `true` if any calls were recorded.
 
@@ -1977,7 +1977,7 @@ Returns `true` if any calls were recorded.
 
 ----
 
-> *integer* $stub->[**callCount**](#stub.callCount)()
+> *int* $stub->[**callCount**](#stub.callCount)()
 
 Get the number of calls.
 
@@ -2023,7 +2023,7 @@ the last element, and `-2` indicates the second last element.*
 
 ----
 
-> *boolean* $stub->[**hasEvents**](#stub.hasEvents)()
+> *bool* $stub->[**hasEvents**](#stub.hasEvents)()
 
 Returns `true` if any events were recorded.
 
@@ -2031,7 +2031,7 @@ Returns `true` if any events were recorded.
 
 ----
 
-> *integer* $stub->[**eventCount**](#stub.eventCount)()
+> *int* $stub->[**eventCount**](#stub.eventCount)()
 
 Get the number of events.
 
@@ -4098,7 +4098,7 @@ Set the [label][labeling spies].
 
 ----
 
-> *boolean* $spy->[**useGeneratorSpies**](#spy.useGeneratorSpies)()
+> *bool* $spy->[**useGeneratorSpies**](#spy.useGeneratorSpies)()
 
 Returns `true` if this spy uses [generator spies].
 
@@ -4114,7 +4114,7 @@ Turn on or off the use of [generator spies].
 
 ----
 
-> *boolean* $spy->[**useTraversableSpies**](#spy.useTraversableSpies)()
+> *bool* $spy->[**useTraversableSpies**](#spy.useTraversableSpies)()
 
 Returns `true` if this spy uses [traversable spies].
 
@@ -4168,7 +4168,7 @@ Get the argument of the first call at `$index`.
 
 ----
 
-> *boolean* $spy->[**hasCalls**](#spy.hasCalls)()
+> *bool* $spy->[**hasCalls**](#spy.hasCalls)()
 
 Returns `true` if any calls were recorded.
 
@@ -4176,7 +4176,7 @@ Returns `true` if any calls were recorded.
 
 ----
 
-> *integer* $spy->[**callCount**](#spy.callCount)()
+> *int* $spy->[**callCount**](#spy.callCount)()
 
 Get the number of calls.
 
@@ -4222,7 +4222,7 @@ the last element, and `-2` indicates the second last element.*
 
 ----
 
-> *boolean* $spy->[**hasEvents**](#spy.hasEvents)()
+> *bool* $spy->[**hasEvents**](#spy.hasEvents)()
 
 Returns `true` if any events were recorded.
 
@@ -4230,7 +4230,7 @@ Returns `true` if any events were recorded.
 
 ----
 
-> *integer* $spy->[**eventCount**](#spy.eventCount)()
+> *int* $spy->[**eventCount**](#spy.eventCount)()
 
 Get the number of events.
 
@@ -5104,7 +5104,7 @@ the last element, and `-2` indicates the second last element.*
 
 ----
 
-> *integer* $call->[**argumentCount**](#call.argumentCount)()
+> *int* $call->[**argumentCount**](#call.argumentCount)()
 
 Get the number of arguments.
 
@@ -5152,7 +5152,7 @@ responded.*
 
 ----
 
-> *boolean* $call->[**hasResponded**](#call.hasResponded)()
+> *bool* $call->[**hasResponded**](#call.hasResponded)()
 
 Returns true if this call has responded.
 
@@ -5162,7 +5162,7 @@ Returns true if this call has responded.
 
 ----
 
-> *boolean* $call->[**isTraversable**](#call.isTraversable)()
+> *bool* $call->[**isTraversable**](#call.isTraversable)()
 
 Returns true if this call has responded with a traversable.
 
@@ -5172,7 +5172,7 @@ Returns true if this call has responded with a traversable.
 
 ----
 
-> *boolean* $call->[**isGenerator**](#call.isGenerator)()
+> *bool* $call->[**isGenerator**](#call.isGenerator)()
 
 Returns true if this call has responded with a generator.
 
@@ -5182,7 +5182,7 @@ Returns true if this call has responded with a generator.
 
 ----
 
-> *boolean* $call->[**hasCompleted**](#call.hasCompleted)()
+> *bool* $call->[**hasCompleted**](#call.hasCompleted)()
 
 Returns true if this call has completed.
 
@@ -5266,7 +5266,7 @@ completely consumed via iteration.*
 
 ----
 
-> *integer* $call->[**sequenceNumber**](#call.sequenceNumber)()
+> *int* $call->[**sequenceNumber**](#call.sequenceNumber)()
 
 Get the sequence number.
 
@@ -5669,11 +5669,29 @@ Get the arguments as an array.
 
 *Arguments passed by reference will be references in the returned array.*
 
+<a name="arguments.count" />
+
+----
+
+> *int* $arguments->[**count**](#arguments.count)() or
+> [**count($arguments)**](#arguments.count)
+
+Returns the total number of arguments.
+
+<a name="arguments.implements.Traversable" />
+
+----
+
+> [**foreach ($arguments as $index => $argument)**](#arguments.implements.Traversable) { /* ... */ }
+
+Arguments implement the [Traversable] interface, allowing them to be used in a
+`foreach` statement.
+
 <a name="arguments.has" />
 
 ----
 
-> *boolean* $arguments->[**has**](#arguments.has)($index = 0)
+> *bool* $arguments->[**has**](#arguments.has)($index = 0)
 
 Returns `true` if an argument exists at `$index`.
 
@@ -6011,7 +6029,7 @@ Get the arguments of the first call.
 
 ----
 
-> *boolean* $verification->[**hasCalls**](#verification.hasCalls)()
+> *bool* $verification->[**hasCalls**](#verification.hasCalls)()
 
 Returns `true` if this verification matched any calls.
 
@@ -6019,7 +6037,7 @@ Returns `true` if this verification matched any calls.
 
 ----
 
-> *integer* $verification->[**callCount**](#verification.callCount)()
+> *int* $verification->[**callCount**](#verification.callCount)()
 
 Get the number of calls.
 
@@ -6065,7 +6083,7 @@ the last element, and `-2` indicates the second last element.*
 
 ----
 
-> *boolean* $verification->[**hasEvents**](#verification.hasEvents)()
+> *bool* $verification->[**hasEvents**](#verification.hasEvents)()
 
 Returns `true` if this verification matched any events.
 
@@ -6073,7 +6091,7 @@ Returns `true` if this verification matched any events.
 
 ----
 
-> *integer* $verification->[**eventCount**](#verification.eventCount)()
+> *int* $verification->[**eventCount**](#verification.eventCount)()
 
 Get the number of events.
 
@@ -6129,7 +6147,7 @@ Get the time at which the event occurred, in seconds since the Unix epoch.
 
 ----
 
-> *integer* $event->[**sequenceNumber**](#event.sequenceNumber)()
+> *int* $event->[**sequenceNumber**](#event.sequenceNumber)()
 
 Get the sequence number.
 
@@ -6559,7 +6577,7 @@ Create a new ["equal to" matcher].
 
 ----
 
-> *boolean* $matcher->[**matches**](#matcher.matches)($value)
+> *bool* $matcher->[**matches**](#matcher.matches)($value)
 
 Returns `true` if `$value` matches this matcher's criteria.
 
@@ -6600,7 +6618,7 @@ Get the matcher to use for each argument.
 
 ----
 
-> *integer* $wildcard->[**minimumArguments**](#wildcard.minimumArguments)()
+> *int* $wildcard->[**minimumArguments**](#wildcard.minimumArguments)()
 
 Get the minimum number of arguments to match.
 
@@ -6608,7 +6626,7 @@ Get the minimum number of arguments to match.
 
 ----
 
-> *integer|null* $wildcard->[**maximumArguments**](#wildcard.maximumArguments)()
+> *int|null* $wildcard->[**maximumArguments**](#wildcard.maximumArguments)()
 
 Get the maximum number of arguments to match.
 
@@ -6941,9 +6959,9 @@ representations are generated by *Phony*'s internal exporter.
 
 ----
 
-> *integer* [**setExportDepth**](#facade.setExportDepth)($depth) *(with [use function])*<br />
-> *integer* x\\[**setExportDepth**](#facade.setExportDepth)($depth) *(without [use function])*<br />
-> *integer* Phony::[**setExportDepth**](#facade.setExportDepth)($depth) *(static)*
+> *int* [**setExportDepth**](#facade.setExportDepth)($depth) *(with [use function])*<br />
+> *int* x\\[**setExportDepth**](#facade.setExportDepth)($depth) *(without [use function])*<br />
+> *int* Phony::[**setExportDepth**](#facade.setExportDepth)($depth) *(static)*
 
 Set the default export depth, and return the previous depth.
 
@@ -7144,7 +7162,7 @@ Namespace: `Eloquent\Phony\Call\Exception`
 
 ----
 
-> *integer* $exception->[**index**](#undefinedargumentexception.index)()
+> *int* $exception->[**index**](#undefinedargumentexception.index)()
 
 Get the index.
 
@@ -7158,7 +7176,7 @@ Namespace: `Eloquent\Phony\Call\Exception`
 
 ----
 
-> *integer* $exception->[**index**](#undefinedcallexception.index)()
+> *int* $exception->[**index**](#undefinedcallexception.index)()
 
 Get the index.
 
@@ -7172,7 +7190,7 @@ Namespace: `Eloquent\Phony\Event\Exception`
 
 ----
 
-> *integer* $exception->[**index**](#undefinedeventexception.index)()
+> *int* $exception->[**index**](#undefinedeventexception.index)()
 
 Get the index.
 
@@ -7440,6 +7458,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
 [simpletest]: https://github.com/simpletest/simpletest
 [throwable]: http://php.net/class.throwable
+[traversable]: http://php.net/traversable
 [twitter]: https://twitter.com/ezzatron
 [use function]: http://php.net/language.namespaces.importing
 [yield]: http://php.net/language.generators.syntax#control-structures.yield

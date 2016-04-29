@@ -104,6 +104,16 @@ var run = function () {
                             '$' + matches[1] + '->' + matches[2] + '() - Phony';
                     }
                 }
+
+                var matches = hash.match(/^(\w+)\.(\w+)\.(\w+)$/);
+
+                if (matches) {
+                    document.title =
+                        '$' + matches[1] +
+                        ' ' + matches[2] +
+                        ' ' + matches[3] +
+                        ' - Phony';
+                }
             }
         } else {
             document.title = 'Phony';
