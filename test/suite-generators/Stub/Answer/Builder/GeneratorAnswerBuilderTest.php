@@ -194,23 +194,23 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->callsArgument(0, 1, 2, 111, -111)
+                ->callsArgument(0, 1)
                 ->callsArgument()
         );
 
-        $arguments = Arguments::create($this->callbackA, $this->callbackB, 'c');
+        $arguments = Arguments::create($this->callbackA, $this->callbackB);
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertEquals(
             array(
-                array($this->callbackA, $this->callbackB, 'c'),
-                array($this->callbackA, $this->callbackB, 'c'),
+                array($this->callbackA, $this->callbackB),
+                array($this->callbackA, $this->callbackB),
             ),
             $this->callsA
         );
         $this->assertEquals(
             array(
-                array($this->callbackA, $this->callbackB, 'c'),
+                array($this->callbackA, $this->callbackB),
             ),
             $this->callsB
         );
@@ -225,25 +225,22 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
                 ->callsArgumentWith(0, array('A', 'B'), true, true, true)
                 ->callsArgumentWith(0, array('C', 'D'), true, true, true)
                 ->callsArgumentWith(1, array('E', 'F'), true, true, true)
-                ->callsArgumentWith(2, array('X', 'Y'), true, true, true)
-                ->callsArgumentWith(111, array('X', 'Y'), true, true, true)
-                ->callsArgumentWith(-111, array('X', 'Y'), true, true, true)
         );
 
-        $arguments = Arguments::create($this->callbackA, $this->callbackB, 'c');
+        $arguments = Arguments::create($this->callbackA, $this->callbackB);
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertEquals(
             array(
-                array($this->callbackA, $this->callbackB, 'c'),
-                array($this->self, 'A', 'B', $arguments, $this->callbackA, $this->callbackB, 'c'),
-                array($this->self, 'C', 'D', $arguments, $this->callbackA, $this->callbackB, 'c'),
+                array($this->callbackA, $this->callbackB),
+                array($this->self, 'A', 'B', $arguments, $this->callbackA, $this->callbackB),
+                array($this->self, 'C', 'D', $arguments, $this->callbackA, $this->callbackB),
             ),
             $this->callsA
         );
         $this->assertEquals(
             array(
-                array($this->self, 'E', 'F', $arguments, $this->callbackA, $this->callbackB, 'c'),
+                array($this->self, 'E', 'F', $arguments, $this->callbackA, $this->callbackB),
             ),
             $this->callsB
         );
@@ -273,8 +270,6 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
                 ->setsArgument('a')
                 ->setsArgument(1, 'b')
                 ->setsArgument(-1, 'c')
-                ->setsArgument(111, 'd')
-                ->setsArgument(-111, 'e')
         );
 
         $a = null;
@@ -547,9 +542,9 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
 
         $arguments = Arguments::create();
         $generator = call_user_func($this->answer, $this->self, $arguments);
-        iterator_to_array($generator);
 
-        $this->assertNull($generator->getReturn());
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        iterator_to_array($generator);
     }
 
     public function testReturnsArgumentFailureUnsupported()

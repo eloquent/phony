@@ -423,15 +423,9 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->callsArgument(111, -111)->returns()
                 ->callsArgument()->returns()
                 ->callsArgument(1)->callsArgument(2, 0)->returns()
         );
-
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
-        $this->assertSame(0, $this->callCountA);
-        $this->assertSame(0, $this->callCountB);
-        $this->assertSame(0, $this->callCountC);
 
         $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
         $this->assertSame(1, $this->callCountA);
@@ -447,8 +441,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(3, $this->callCountA);
         $this->assertSame(2, $this->callCountB);
         $this->assertSame(2, $this->callCountC);
-
-        $this->assertNull(call_user_func($this->subject, 'a', 'b', 'c'));
     }
 
     public function testCallsArgumentWith()
@@ -456,9 +448,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->callsArgumentWith(111)
-                ->callsArgumentWith(-111)
-                ->returns()
                 ->callsArgumentWith(0, array('A', 'B'), true, true, true)
                 ->returns()
                 ->callsArgumentWith(0, array('C', 'D'), true, true, true)
@@ -467,10 +456,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
-        $this->assertSame(array(), $this->callsA);
-        $this->assertSame(array(), $this->callsB);
-
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertEquals(
             array(
                 array(
@@ -573,8 +558,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             ),
             $this->callsB
         );
-
-        $this->assertNull(call_user_func($this->subject, 'a', 'b'));
     }
 
     public function testCallsArgumentWithDefaults()
@@ -622,8 +605,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->setsArgument('a')
                 ->setsArgument(1, 'b')
                 ->setsArgument(-1, 'c')
-                ->setsArgument(111, 'd')
-                ->setsArgument(-111, 'e')
                 ->returns()
         );
 
@@ -631,7 +612,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $b = null;
         $c = null;
         $this->subject->invokeWith(array(&$a, &$b, &$c));
-        $this->subject->invokeWith();
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -871,23 +851,14 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->subject, $this->subject->returnsArgument());
         $this->assertSame('a', call_user_func($this->subject, 'a'));
         $this->assertSame('b', call_user_func($this->subject, 'b'));
-        $this->assertNull(call_user_func($this->subject));
 
         $this->assertSame($this->subject, $this->subject->returnsArgument(1));
         $this->assertSame('b', call_user_func($this->subject, 'a', 'b', 'c'));
         $this->assertSame('c', call_user_func($this->subject, 'b', 'c', 'd'));
-        $this->assertNull(call_user_func($this->subject, 'a'));
 
         $this->assertSame($this->subject, $this->subject->returnsArgument(-1));
         $this->assertSame('c', call_user_func($this->subject, 'a', 'b', 'c'));
         $this->assertSame('d', call_user_func($this->subject, 'b', 'c', 'd'));
-        $this->assertNull(call_user_func($this->subject));
-
-        $this->assertSame($this->subject, $this->subject->returnsArgument(111));
-        $this->assertNull(call_user_func($this->subject, 'a'));
-
-        $this->assertSame($this->subject, $this->subject->returnsArgument(-111));
-        $this->assertNull(call_user_func($this->subject, 'a'));
     }
 
     public function testReturnsSelf()

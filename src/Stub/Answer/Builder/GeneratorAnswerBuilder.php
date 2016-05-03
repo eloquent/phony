@@ -169,15 +169,7 @@ class GeneratorAnswerBuilder
                 $suffixArgumentsObject,
                 $suffixArguments
             ) {
-                if (!$incoming->has($index)) {
-                    return;
-                }
-
                 $callback = $incoming->get($index);
-
-                if (!is_callable($callback)) {
-                    return;
-                }
 
                 $request = new CallRequest(
                     $callback,
@@ -230,9 +222,7 @@ class GeneratorAnswerBuilder
 
         return $this->callsWith(
             function ($arguments) use ($index, $value) {
-                if ($arguments->has($index)) {
-                    $arguments->set($index, $value);
-                }
+                $arguments->set($index, $value);
             },
             array(),
             false,

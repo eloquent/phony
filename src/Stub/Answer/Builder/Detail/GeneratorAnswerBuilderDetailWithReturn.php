@@ -105,11 +105,7 @@ abstract class GeneratorAnswerBuilderDetailWithReturn
             }
 
             if (null !== $returnsArgument) {
-                if ($arguments->has($returnsArgument)) {
-                    return $arguments->get($returnsArgument);
-                }
-
-                return null;
+                return $arguments->get($returnsArgument);
             }
 
             return $returnValue;

@@ -2,6 +2,9 @@
 
 ## Next release
 
+- **[BC BREAK]** Usage of `setsArgument()`, `callsArgument()`,
+  `callsArgumentWith()`, and `returnsArgument()` can now result in exceptions
+  when a specified argument is undefined at call time ([#136]).
 - **[NEW]** Mocks as default stub return values for arbitrary object return
   types ([#149], [#150]).
 - **[FIXED]** Fixed exception when stubbing functions with return values
@@ -10,6 +13,7 @@
 - **[FIXED]** Fixed mocking of `DateTimeInterface` ([#153]).
 - **[FIXED]** Fixed mocking of classes with final constructors ([#154]).
 
+[#136]: https://github.com/eloquent/phony/issues/136
 [#147]: https://github.com/eloquent/phony/issues/147
 [#149]: https://github.com/eloquent/phony/issues/149
 [#150]: https://github.com/eloquent/phony/issues/150

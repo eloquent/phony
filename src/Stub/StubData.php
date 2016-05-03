@@ -321,15 +321,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
                 $suffixArgumentsObject,
                 $suffixArguments
             ) {
-                if (!$incoming->has($index)) {
-                    return;
-                }
-
                 $callback = $incoming->get($index);
-
-                if (!is_callable($callback)) {
-                    return;
-                }
 
                 $request = new CallRequest(
                     $callback,
@@ -382,9 +374,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
 
         return $this->callsWith(
             function ($arguments) use ($index, $value) {
-                if ($arguments->has($index)) {
-                    $arguments->set($index, $value);
-                }
+                $arguments->set($index, $value);
             },
             array(),
             false,
@@ -594,9 +584,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     {
         return $this->doesWith(
             function ($arguments) use ($index) {
-                if ($arguments->has($index)) {
-                    return $arguments->get($index);
-                }
+                return $arguments->get($index);
             },
             array(),
             false,

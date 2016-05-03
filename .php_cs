@@ -10,7 +10,8 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
             'vendor',
             'web',
         )
-    );
+    )
+    ->notPath('test/src/Test/TestInterfaceWithKeywordMethods.php');
 
 return Symfony\CS\Config\Config::create()
     ->level(Symfony\CS\FixerInterface::PSR2_LEVEL)
