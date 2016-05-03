@@ -35,6 +35,7 @@ class IteratorSpy implements Iterator
         $this->call = $call;
         $this->iterator = $iterator;
         $this->callEventFactory = $callEventFactory;
+        $this->isUsed = false;
         $this->isConsumed = false;
     }
 
@@ -101,6 +102,12 @@ class IteratorSpy implements Iterator
      */
     public function valid()
     {
+        if (!$this->isUsed) {
+            $this->call
+                ->addTraversableEvent($this->callEventFactory->createUsed());
+            $this->isUsed = true;
+        }
+
         if ($isValid = $this->iterator->valid()) {
             $this->key = $this->iterator->key();
             $this->value = $this->iterator->current();
@@ -131,5 +138,6 @@ class IteratorSpy implements Iterator
     private $callEventFactory;
     private $key;
     private $value;
+    private $isUsed;
     private $isConsumed;
 }

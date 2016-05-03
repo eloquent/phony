@@ -44,6 +44,7 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->clock()->setTime(1.0);
         $this->callFactory->reset();
         $traversableEvents = array(
+            $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
         );
@@ -75,6 +76,7 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->clock()->setTime(1.0);
         $this->callFactory->reset();
         $traversableEvents = array(
+            $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
         );
@@ -106,6 +108,7 @@ class TraversableSpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->clock()->setTime(1.0);
         $this->callFactory->reset();
         $traversableEvents = array(
+            $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
         );

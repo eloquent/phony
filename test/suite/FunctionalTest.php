@@ -227,7 +227,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub = x\stub(eval('return function (): Generator {};'))->returns();
         iterator_to_array($stub());
 
-        $stub->producedAll();
+        $stub->generated();
     }
 
     public function testReturnTypeMockingInvalidType()
@@ -383,13 +383,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->returns(array('a' => 'b', 'c' => 'd'));
         iterator_to_array($stub());
 
-        $stub->produced();
-        $stub->produced('b');
-        $stub->produced('d');
-        $stub->produced('a', 'b');
-        $stub->produced('c', 'd');
-        $stub->producedAll('b', 'd');
-        $stub->producedAll(array('a', 'b'), array('c', 'd'));
+        $stub->traversed()->produced();
+        $stub->traversed()->produced('b');
+        $stub->traversed()->produced('d');
+        $stub->traversed()->produced('a', 'b');
+        $stub->traversed()->produced('c', 'd');
     }
 
     public function testDefaultStubAnswerCanBeOverridden()

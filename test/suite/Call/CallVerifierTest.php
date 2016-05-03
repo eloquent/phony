@@ -24,6 +24,8 @@ use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use Error;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -52,6 +54,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
+        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
+        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
@@ -59,10 +63,16 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->call,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
         );
+
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
+        $this->traversableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
 
         $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
         $this->argumentCount = count($this->arguments);
@@ -78,6 +88,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->callWithException,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -90,6 +102,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->callWithNoArguments,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -100,6 +114,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->callWithNoResponse,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -141,6 +157,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->traversableCall,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -213,6 +231,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->call,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -624,6 +644,8 @@ EOD;
             $this->callWithException,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -747,273 +769,6 @@ EOD;
         $this->subjectWithException->threw((object) array());
     }
 
-    public function testCheckProduced()
-    {
-        $this->assertTrue((boolean) $this->traversableSubject->checkProduced());
-        $this->assertTrue((boolean) $this->traversableSubject->checkProduced('n'));
-        $this->assertTrue((boolean) $this->traversableSubject->checkProduced('m', 'n'));
-        $this->assertTrue((boolean) $this->traversableSubject->times(4)->checkProduced());
-        $this->assertTrue((boolean) $this->traversableSubject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->traversableSubject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->traversableSubject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->traversableSubject->checkProduced('m', 'o'));
-        $this->assertFalse((boolean) $this->subject->checkProduced());
-    }
-
-    public function testProduced()
-    {
-        $this->assertEquals(
-            new EventSequence(
-                array($this->iteratorEventA, $this->iteratorEventB, $this->iteratorEventE, $this->iteratorEventG)
-            ),
-            $this->traversableSubject->produced()
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->iteratorEventA)),
-            $this->traversableSubject->produced('n')
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->iteratorEventA)),
-            $this->traversableSubject->produced('m', 'n')
-        );
-        $this->assertEquals(
-            new EventSequence(
-                array($this->iteratorEventA, $this->iteratorEventB, $this->iteratorEventE, $this->iteratorEventG)
-            ),
-            $this->traversableSubject->times(4)->produced()
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->iteratorEventA)),
-            $this->traversableSubject->once()->produced('n')
-        );
-        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->produced('m'));
-    }
-
-    public function testProducedFailureWithNoMatchers()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to produce. Produced nothing.'
-        );
-        $this->subject->produced();
-    }
-
-    public function testProducedFailureWithNoMatchersNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce. Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->never()->produced();
-    }
-
-    public function testProducedFailureWithValueOnly()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like "m". Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->produced('m');
-    }
-
-    public function testProducedFailureWithValueOnlyNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce like "n". Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->never()->produced('n');
-    }
-
-    public function testProducedFailureWithValueOnlyAlways()
-    {
-        $expected = <<<'EOD'
-Expected every call to produce like "n". Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->always()->produced('n');
-    }
-
-    public function testProducedFailureWithValueOnlyWithNoTraversableEvents()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to produce like "n". Produced nothing.'
-        );
-        $this->subject->produced('n');
-    }
-
-    public function testProducedFailureWithKeyAndValue()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like "m": "o". Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->produced('m', 'o');
-    }
-
-    public function testProducedFailureWithKeyAndValueNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce like "m": "n". Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->never()->produced('m', 'n');
-    }
-
-    public function testProducedFailureWithKeyAndValueWithNoTraversableEvents()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to produce like "m": "n". Produced nothing.'
-        );
-        $this->subject->produced('m', 'n');
-    }
-
-    public function testCheckProducedAll()
-    {
-        $this->assertTrue((boolean) $this->subject->checkProducedAll());
-        $this->assertTrue((boolean) $this->traversableSubject->checkProducedAll('n', 'q', 's', 'v'));
-        $this->assertTrue(
-            (boolean) $this->traversableSubject
-                ->checkProducedAll('n', array('p', 'q'), 's', array('u', 'v'))
-        );
-        $this->assertTrue(
-            (boolean) $this->traversableSubject
-                ->checkProducedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
-        );
-        $this->assertFalse((boolean) $this->traversableSubject->checkProducedAll('x', 'q', 's', 'v'));
-        $this->assertFalse((boolean) $this->traversableSubject->checkProducedAll('n', 'q', 's', array('x', 'v')));
-        $this->assertFalse((boolean) $this->traversableSubject->checkProducedAll('q', 's', 'v'));
-        $this->assertFalse((boolean) $this->traversableSubject->checkProducedAll('n', 's', 'v'));
-        $this->assertFalse((boolean) $this->traversableSubject->checkProducedAll('n', 'q', 's'));
-        $this->assertFalse((boolean) $this->subject->never()->checkProducedAll());
-        $this->assertTrue((boolean) $this->traversableSubject->never()->checkProducedAll());
-        $this->assertTrue((boolean) $this->traversableSubject->never()->checkProducedAll('q', 's', 'v'));
-        $this->assertTrue((boolean) $this->traversableSubject->never()->checkProducedAll('n', 's', 'v'));
-        $this->assertTrue((boolean) $this->traversableSubject->never()->checkProducedAll('n', 'q', 's'));
-    }
-
-    public function testProducedAll()
-    {
-        $expected = new EventSequence(array($this->iteratorEventG));
-
-        $this->assertEquals($expected, $this->traversableSubject->producedAll('n', 'q', 's', 'v'));
-        $this->assertEquals(
-            $expected,
-            $this->traversableSubject->producedAll('n', array('p', 'q'), 's', array('u', 'v'))
-        );
-        $this->assertEquals(
-            $expected,
-            $this->traversableSubject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
-        );
-        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->producedAll('q', 's', 'v'));
-        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->producedAll('n', 's', 'v'));
-        $this->assertEquals(new EventSequence(array()), $this->traversableSubject->never()->producedAll('n', 'q', 's'));
-    }
-
-    public function testProducedAllFailureNothingProduced()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like:
-    - "a"
-    - "b": "c"
-Produced nothing.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->producedAll('a', array('b', 'c'));
-    }
-
-    public function testProducedAllFailureMismatch()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like:
-    - "a"
-    - "b": "c"
-Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->producedAll('a', array('b', 'c'));
-    }
-
-    public function testProducedAllFailureMismatchNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce like:
-    - "n"
-    - "q"
-    - "s"
-    - "v"
-Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->never()->producedAll('n', 'q', 's', 'v');
-    }
-
-    public function testProducedAllFailureExpectedNothing()
-    {
-        $expected = <<<'EOD'
-Expected call to produce nothing. Produced:
-    - produced "m": "n"
-    - produced "p": "q"
-    - produced "r": "s"
-    - produced "u": "v"
-    - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->traversableSubject->producedAll();
-    }
-
     public function testCardinalityMethods()
     {
         $this->subject->never();
@@ -1027,5 +782,63 @@ EOD;
         $this->assertEquals(new Cardinality(null, 4), $this->subject->atMost(4)->cardinality());
         $this->assertEquals(new Cardinality(5, 6), $this->subject->between(5, 6)->cardinality());
         $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
+    }
+
+    public function testCheckTraversed()
+    {
+        $this->assertTrue((boolean) $this->traversableSubject->checkTraversed());
+        $this->assertTrue((boolean) $this->traversableSubject->once()->checkTraversed());
+        $this->assertFalse((boolean) $this->subject->checkTraversed());
+        $this->assertTrue((boolean) $this->subject->never()->checkTraversed());
+        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkTraversed());
+        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkTraversed());
+    }
+
+    public function testTraversed()
+    {
+        $this->assertEquals(
+            $this->traversableVerifierFactory->create($this->traversableSubject, array($this->traversableCall)),
+            $this->traversableSubject->traversed()
+        );
+        $this->assertEquals(
+            $this->traversableVerifierFactory->create($this->subject, array()),
+            $this->subject->never()->traversed()
+        );
+    }
+
+    public function testTraversedFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected traversable. Returned "abc".'
+        );
+        $this->subject->traversed();
+    }
+
+    public function testTraversedFailureNever()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected no traversable. Returned #0["m": "n", "p": "q", "r": "s", "u": "v"].'
+        );
+        $this->traversableSubject->never()->traversed();
+    }
+
+    public function testTraversedFailureWithException()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected traversable. Threw RuntimeException("You done goofed.").'
+        );
+        $this->subjectWithException->traversed();
+    }
+
+    public function testTraversedFailureNeverResponded()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected traversable. Never responded.'
+        );
+        $this->subjectWithNoResponse->traversed();
     }
 }

@@ -21,6 +21,7 @@ use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Call\Event\UsedEvent;
 use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\NullEvent;
@@ -386,13 +387,13 @@ class AssertionRenderer
                 if ($call->isGenerator()) {
                     $rendered[] = sprintf(
                         "    - generated:\n%s",
-                        $this->indent($this->renderProduced($call))
+                        $this->indent($this->renderTraversableEvents($call))
                     );
                 } else {
                     $rendered[] = sprintf(
                         "    - returned %s producing:\n%s",
                         $this->exporter->export($returnValue, 0),
-                        $this->indent($this->renderProduced($call))
+                        $this->indent($this->renderTraversableEvents($call))
                     );
                 }
             } else {
@@ -475,12 +476,14 @@ class AssertionRenderer
      *
      * @return string The rendered traversable events.
      */
-    public function renderProduced(Call $call)
+    public function renderTraversableEvents(Call $call)
     {
         $rendered = array();
 
         foreach ($call->traversableEvents() as $event) {
-            if ($event instanceof ProducedEvent) {
+            if ($event instanceof UsedEvent) {
+                $rendered[] = '    - started iterating';
+            } elseif ($event instanceof ProducedEvent) {
                 $rendered[] = sprintf(
                     '    - produced %s: %s',
                     $this->renderValue($event->key()),
@@ -499,8 +502,20 @@ class AssertionRenderer
             }
         }
 
-        if ($call->endEvent()) {
+        $event = $call->endEvent();
+
+        if ($event instanceof ConsumedEvent) {
             $rendered[] = '    - finished iterating';
+        } elseif ($event instanceof ReturnedEvent) {
+            $rendered[] = sprintf(
+                '    - returned %s',
+                $this->renderValue($event->value())
+            );
+        } elseif ($event instanceof ThrewEvent) {
+            $rendered[] = sprintf(
+                '    - threw %s',
+                $this->renderException($event->exception())
+            );
         } else {
             $rendered[] = '    - did not finish iterating';
         }

@@ -22,6 +22,8 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -43,6 +45,8 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->spy = $this->spyFactory->create($this->stub);
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
+        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
+        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
@@ -54,6 +58,8 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->spy,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,

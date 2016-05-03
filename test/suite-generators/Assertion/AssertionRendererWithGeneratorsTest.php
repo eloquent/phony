@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Assertion;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Test\EmptyGeneratorFactory;
+use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -56,7 +56,7 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         $this->generatorCall = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
-            $this->callEventFactory->createReturned(EmptyGeneratorFactory::create()),
+            $this->callEventFactory->createReturned(GeneratorFactory::createEmpty()),
             array(
                 $this->callEventFactory->createProduced('m', 'n'),
                 $this->callEventFactory->createReceived('o'),
@@ -66,7 +66,7 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
                 $this->callEventFactory->createProduced('r', 's'),
                 $this->callEventFactory->createReceived('t'),
             ),
-            $this->callEventFactory->createReturned(null)
+            $this->callEventFactory->createReturned('u')
         );
     }
 
@@ -103,7 +103,7 @@ EOD;
         - received exception RuntimeException("Consequences will never be the same.")
         - produced "r": "s"
         - received "t"
-        - finished iterating
+        - returned "u"
     - threw RuntimeException("You done goofed.")
 EOD;
 
@@ -113,7 +113,7 @@ EOD;
         );
     }
 
-    public function testRenderProduced()
+    public function testRenderTraversableEvents()
     {
         $expected = <<<'EOD'
     - produced "m": "n"
@@ -122,9 +122,25 @@ EOD;
     - received exception RuntimeException("Consequences will never be the same.")
     - produced "r": "s"
     - received "t"
-    - finished iterating
+    - returned "u"
 EOD;
 
-        $this->assertSame($expected, $this->subject->renderProduced($this->generatorCall));
+        $this->assertSame($expected, $this->subject->renderTraversableEvents($this->generatorCall));
+    }
+
+    public function testRenderTraversableEventsWithThrewEnd()
+    {
+        $this->generatorCall = $this->callFactory->create(
+            $this->callEventFactory->createCalled(),
+            $this->callEventFactory->createReturned(GeneratorFactory::createEmpty()),
+            array(),
+            $this->callEventFactory->createThrew(new RuntimeException('You done goofed.'))
+        );
+
+        $expected = <<<'EOD'
+    - threw RuntimeException("You done goofed.")
+EOD;
+
+        $this->assertSame($expected, $this->subject->renderTraversableEvents($this->generatorCall));
     }
 }

@@ -22,6 +22,8 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 
 /**
  * Creates stub verifiers.
@@ -41,6 +43,8 @@ class StubVerifierFactory
                 SpyFactory::instance(),
                 MatcherFactory::instance(),
                 MatcherVerifier::instance(),
+                GeneratorVerifierFactory::instance(),
+                TraversableVerifierFactory::instance(),
                 CallVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
@@ -60,6 +64,8 @@ class StubVerifierFactory
      * @param SpyFactory                    $spyFactory                    The spy factory to use.
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
      * @param MatcherVerifier               $matcherVerifier               The macther verifier to use.
+     * @param GeneratorVerifierFactory      $generatorVerifierFactory      The generator verifier factory to use.
+     * @param TraversableVerifierFactory    $traversableVerifierFactory    The traversable verifier factory to use.
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.
      * @param AssertionRecorder             $assertionRecorder             The assertion recorder to use.
      * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
@@ -72,6 +78,8 @@ class StubVerifierFactory
         SpyFactory $spyFactory,
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
+        GeneratorVerifierFactory $generatorVerifierFactory,
+        TraversableVerifierFactory $traversableVerifierFactory,
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
@@ -83,6 +91,8 @@ class StubVerifierFactory
         $this->spyFactory = $spyFactory;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->generatorVerifierFactory = $generatorVerifierFactory;
+        $this->traversableVerifierFactory = $traversableVerifierFactory;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
@@ -113,6 +123,8 @@ class StubVerifierFactory
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -138,6 +150,8 @@ class StubVerifierFactory
             $this->spyFactory->create($stub),
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -152,6 +166,8 @@ class StubVerifierFactory
     private $spyFactory;
     private $matcherFactory;
     private $matcherVerifier;
+    private $generatorVerifierFactory;
+    private $traversableVerifierFactory;
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;

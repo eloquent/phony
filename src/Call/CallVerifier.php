@@ -15,9 +15,6 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
-use Eloquent\Phony\Call\Event\ProducedEvent;
-use Eloquent\Phony\Call\Event\ReceivedEvent;
-use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Event\TraversableEvent;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
@@ -30,11 +27,17 @@ use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Verification\GeneratorVerifier;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifier;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use Error;
 use Exception;
+use Generator;
 use InvalidArgumentException;
 use Iterator;
 use Throwable;
+use Traversable;
 
 /**
  * Provides convenience methods for verifying the details of a call.
@@ -44,17 +47,21 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Construct a new call verifier.
      *
-     * @param Call               $call               The call.
-     * @param MatcherFactory     $matcherFactory     The matcher factory to use.
-     * @param MatcherVerifier    $matcherVerifier    The matcher verifier to use.
-     * @param AssertionRecorder  $assertionRecorder  The assertion recorder to use.
-     * @param AssertionRenderer  $assertionRenderer  The assertion renderer to use.
-     * @param InvocableInspector $invocableInspector The invocable inspector to use.
+     * @param Call                       $call                       The call.
+     * @param MatcherFactory             $matcherFactory             The matcher factory to use.
+     * @param MatcherVerifier            $matcherVerifier            The matcher verifier to use.
+     * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
+     * @param TraversableVerifierFactory $traversableVerifierFactory The traversable verifier factory to use.
+     * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
+     * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
+     * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
      */
     public function __construct(
         Call $call,
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
+        GeneratorVerifierFactory $generatorVerifierFactory,
+        TraversableVerifierFactory $traversableVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
         InvocableInspector $invocableInspector
@@ -64,6 +71,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->generatorVerifierFactory = $generatorVerifierFactory;
+        $this->traversableVerifierFactory = $traversableVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->invocableInspector = $invocableInspector;
@@ -426,6 +435,17 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
+     * Get the value returned from the generator.
+     *
+     * @return mixed                      The returned value.
+     * @throws UndefinedResponseException If this call has not yet returned a value via generator.
+     */
+    public function generatorReturnValue()
+    {
+        return $this->call->generatorReturnValue();
+    }
+
+    /**
      * Get the thrown exception.
      *
      * @return Exception|Error            The thrown exception.
@@ -437,6 +457,17 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
+     * Get the exception thrown from the generator.
+     *
+     * @return Exception|Error            The thrown exception.
+     * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
+     */
+    public function generatorException()
+    {
+        return $this->call->generatorException();
+    }
+
+    /**
      * Get the response.
      *
      * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
@@ -445,6 +476,17 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     public function response()
     {
         return $this->call->response();
+    }
+
+    /**
+     * Get the response from the generator.
+     *
+     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException        If this call has not yet responded via generator.
+     */
+    public function generatorResponse()
+    {
+        return $this->call->generatorResponse();
     }
 
     /**
@@ -889,523 +931,109 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
-     * Checks if this call produced the supplied values.
+     * Checks if this call returned a generator.
      *
-     * When called with no arguments, this method simply checks that the call
-     * produced any value.
-     *
-     * With a single argument, it checks that a value matching the argument was
-     * produced.
-     *
-     * With two arguments, it checks that a key and value matching the
-     * respective arguments were produced together.
-     *
-     * @param mixed $keyOrValue The key or value.
-     * @param mixed $value      The value.
-     *
-     * @return EventCollection|null The result.
+     * @return GeneratorVerifier|null      The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function checkProduced($keyOrValue = null, $value = null)
-    {
-        $cardinality = $this->resetCardinality();
-
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = false;
-        } elseif (1 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = true;
-            $value = $this->matcherFactory->adapt($keyOrValue);
-        } else {
-            $checkKey = true;
-            $checkValue = true;
-            $key = $this->matcherFactory->adapt($keyOrValue);
-            $value = $this->matcherFactory->adapt($value);
-        }
-
-        $matchingEvents = array();
-        $matchCount = 0;
-        $totalCount = 0;
-
-        foreach ($this->call->traversableEvents() as $event) {
-            if ($event instanceof ProducedEvent) {
-                ++$totalCount;
-
-                if ($checkKey && !$key->matches($event->key())) {
-                    continue;
-                }
-                if ($checkValue && !$value->matches($event->value())) {
-                    continue;
-                }
-
-                $matchingEvents[] = $event;
-                ++$matchCount;
-            }
-        }
-
-        if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    /**
-     * Throws an exception unless this call produced the supplied values.
-     *
-     * When called with no arguments, this method simply checks that the call
-     * produced any value.
-     *
-     * With a single argument, it checks that a value matching the argument was
-     * produced.
-     *
-     * With two arguments, it checks that a key and value matching the
-     * respective arguments were produced together.
-     *
-     * @param mixed $keyOrValue The key or value.
-     * @param mixed $value      The value.
-     *
-     * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public function produced($keyOrValue = null, $value = null)
-    {
-        $cardinality = $this->cardinality;
-
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $arguments = array();
-        } elseif (1 === $argumentCount) {
-            $value = $this->matcherFactory->adapt($keyOrValue);
-            $arguments = array($value);
-        } else {
-            $key = $this->matcherFactory->adapt($keyOrValue);
-            $value = $this->matcherFactory->adapt($value);
-            $arguments = array($key, $value);
-        }
-
-        if (
-            $result =
-                call_user_func_array(array($this, 'checkProduced'), $arguments)
-        ) {
-            return $result;
-        }
-
-        if (0 === $argumentCount) {
-            $renderedType = 'call to produce';
-        } elseif (1 === $argumentCount) {
-            $renderedType =
-                sprintf('call to produce like %s', $value->describe());
-        } else {
-            $renderedType = sprintf(
-                'call to produce like %s: %s',
-                $key->describe(),
-                $value->describe()
-            );
-        }
-
-        if ($this->call->traversableEvents()) {
-            $renderedProduced = sprintf(
-                ":\n%s",
-                $this->assertionRenderer->renderProduced($this->call)
-            );
-        } else {
-            $renderedProduced = ' nothing.';
-        }
-
-        return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. Produced%s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedProduced
-            )
-        );
-    }
-
-    /**
-     * Checks if this call produced all of the supplied key-value pairs, in the
-     * supplied order.
-     *
-     * @param mixed ...$pairs The key-value pairs.
-     *
-     * @return EventCollection|null The result.
-     */
-    public function checkProducedAll()
+    public function checkGenerated()
     {
         $cardinality = $this->resetCardinality()->assertSingular();
 
-        $pairCount = func_num_args();
-        $producedEvents = array();
-        $lastEvent = $this->call->responseEvent();
+        if ($responseEvent = $this->call->responseEvent()) {
+            list($exception, $returnValue) = $this->call->response();
 
-        foreach ($this->call->traversableEvents() as $event) {
-            if ($event instanceof ProducedEvent) {
-                $producedEvents[] = $event;
-                $lastEvent = $event;
-            }
-        }
-
-        if (count($producedEvents) === $pairCount) {
-            $isMatch = true;
-
-            foreach (func_get_args() as $index => $pair) {
-                if (is_array($pair)) {
-                    $checkKey = true;
-                    $key = $this->matcherFactory->adapt($pair[0]);
-                    $value = $this->matcherFactory->adapt($pair[1]);
-                } else {
-                    $checkKey = false;
-                    $value = $this->matcherFactory->adapt($pair);
-                }
-
-                if (!$value->matches($producedEvents[$index]->value())) {
-                    $isMatch = false;
-
-                    break;
-                }
-
-                if (
-                    $checkKey &&
-                    !$key->matches($producedEvents[$index]->key())
-                ) {
-                    $isMatch = false;
-
-                    break;
-                }
-            }
+            $isMatch = $returnValue instanceof Generator;
         } else {
             $isMatch = false;
         }
 
         list($matchCount, $matchingEvents) =
-            $this->matchIf($lastEvent, $isMatch);
+            $this->matchIf($this->call, $isMatch);
 
         if ($cardinality->matches($matchCount, 1)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
+            return $this->assertionRecorder->createSuccessFromEventCollection(
+                $this->generatorVerifierFactory->create($this, $matchingEvents)
+            );
         }
     }
 
     /**
-     * Throws an exception unless this call produced all of the supplied
-     * key-value pairs, in the supplied order.
+     * Throws an exception unless this call returned a generator.
      *
-     * @param mixed ...$pairs The key-value pairs.
-     *
-     * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return GeneratorVerifier           The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
+     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function producedAll()
+    public function generated()
     {
         $cardinality = $this->cardinality;
 
-        $pairs = array();
-
-        foreach (func_get_args() as $pair) {
-            if (is_array($pair)) {
-                $pairs[] = array(
-                    $this->matcherFactory->adapt($pair[0]),
-                    $this->matcherFactory->adapt($pair[1]),
-                );
-            } else {
-                $pairs[] = $this->matcherFactory->adapt($pair);
-            }
-        }
-
-        if (
-            $result =
-                call_user_func_array(array($this, 'checkProducedAll'), $pairs)
-        ) {
+        if ($result = $this->checkGenerated()) {
             return $result;
-        }
-
-        if (0 === func_num_args()) {
-            $renderedType = 'call to produce nothing. ';
-        } else {
-            $renderedType = 'call to produce like:';
-
-            foreach ($pairs as $pair) {
-                if (is_array($pair)) {
-                    $renderedType .= sprintf(
-                        "\n    - %s: %s",
-                        $pair[0]->describe(),
-                        $pair[1]->describe()
-                    );
-                } else {
-                    $renderedType .= sprintf("\n    - %s", $pair->describe());
-                }
-            }
-
-            $renderedType .= "\n";
-        }
-
-        if ($this->call->traversableEvents()) {
-            $renderedProduced = sprintf(
-                ":\n%s",
-                $this->assertionRenderer->renderProduced($this->call)
-            );
-        } else {
-            $renderedProduced = ' nothing.';
         }
 
         return $this->assertionRecorder->createFailure(
             sprintf(
-                'Expected %sProduced%s',
+                'Expected %s. %s',
                 $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedProduced
+                    ->renderCardinality($cardinality, 'generator'),
+                $this->assertionRenderer->renderResponse($this->call)
             )
         );
     }
 
     /**
-     * Checks if this call received the supplied value.
+     * Checks if this call returned a traversable.
      *
-     * When called with no arguments, this method simply checks that the call
-     * received any value.
-     *
-     * @param mixed $value The value.
-     *
-     * @return EventCollection|null The result.
+     * @return TraversableVerifier|null    The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function checkReceived($value = null)
+    public function checkTraversed()
     {
-        $cardinality = $this->resetCardinality();
+        $cardinality = $this->resetCardinality()->assertSingular();
 
-        $argumentCount = func_num_args();
+        if ($responseEvent = $this->call->responseEvent()) {
+            list($exception, $returnValue) = $this->call->response();
 
-        if (0 === $argumentCount) {
-            $checkValue = false;
+            $isMatch =
+                $returnValue instanceof Traversable || is_array($returnValue);
         } else {
-            $checkValue = true;
-            $value = $this->matcherFactory->adapt($value);
+            $isMatch = false;
         }
 
-        $matchingEvents = array();
-        $matchCount = 0;
-        $totalCount = 0;
+        list($matchCount, $matchingEvents) =
+            $this->matchIf($this->call, $isMatch);
 
-        foreach ($this->call->traversableEvents() as $event) {
-            if ($event instanceof ReceivedEvent) {
-                ++$totalCount;
-
-                if (!$checkValue || $value->matches($event->value())) {
-                    $matchingEvents[] = $event;
-                    ++$matchCount;
-                }
-            } elseif ($event instanceof ReceivedExceptionEvent) {
-                ++$totalCount;
-            }
-        }
-
-        if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
+        if ($cardinality->matches($matchCount, 1)) {
+            return $this->assertionRecorder->createSuccessFromEventCollection(
+                $this->traversableVerifierFactory
+                    ->create($this, $matchingEvents)
+            );
         }
     }
 
     /**
-     * Throws an exception unless this call received the supplied value.
+     * Throws an exception unless this call returned a traversable.
      *
-     * When called with no arguments, this method simply checks that the call
-     * received any value.
-     *
-     * @param mixed $value The value.
-     *
-     * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return TraversableVerifier         The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
+     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function received($value = null)
+    public function traversed()
     {
         $cardinality = $this->cardinality;
 
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $arguments = array();
-        } else {
-            $value = $this->matcherFactory->adapt($value);
-            $arguments = array($value);
-        }
-
-        if (
-            $result =
-                call_user_func_array(array($this, 'checkReceived'), $arguments)
-        ) {
+        if ($result = $this->checkTraversed()) {
             return $result;
-        }
-
-        if (0 === $argumentCount) {
-            $renderedType = 'generator to receive value';
-        } else {
-            $renderedType = sprintf(
-                'generator to receive value like %s',
-                $value->describe()
-            );
-        }
-
-        if ($this->call->traversableEvents()) {
-            $renderedProduced = sprintf(
-                ":\n%s",
-                $this->assertionRenderer->renderProduced($this->call)
-            );
-        } else {
-            $renderedProduced = ' nothing.';
         }
 
         return $this->assertionRecorder->createFailure(
             sprintf(
-                'Expected %s. Produced%s',
+                'Expected %s. %s',
                 $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedProduced
-            )
-        );
-    }
-
-    /**
-     * Checks if this call received an exception of the supplied type.
-     *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
-     *
-     * @return EventCollection|null The result.
-     */
-    public function checkReceivedException($type = null)
-    {
-        $cardinality = $this->resetCardinality();
-
-        $traversableEvents = $this->call->traversableEvents();
-        $matchingEvents = array();
-        $matchCount = 0;
-        $totalCount = 0;
-        $isTypeSupported = false;
-
-        if (!$type) {
-            $isTypeSupported = true;
-
-            foreach ($traversableEvents as $event) {
-                if ($event instanceof ReceivedExceptionEvent) {
-                    ++$totalCount;
-                    $matchingEvents[] = $event;
-                    ++$matchCount;
-                } elseif ($event instanceof ReceivedEvent) {
-                    ++$totalCount;
-                }
-            }
-        } elseif (is_string($type)) {
-            $isTypeSupported = true;
-
-            foreach ($traversableEvents as $event) {
-                if ($event instanceof ReceivedExceptionEvent) {
-                    ++$totalCount;
-
-                    if (is_a($event->exception(), $type)) {
-                        $matchingEvents[] = $event;
-                        ++$matchCount;
-                    }
-                } elseif ($event instanceof ReceivedEvent) {
-                    ++$totalCount;
-                }
-            }
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $isTypeSupported = true;
-
-                foreach ($traversableEvents as $event) {
-                    if ($event instanceof ReceivedExceptionEvent) {
-                        ++$totalCount;
-
-                        if ($event->exception() == $type) {
-                            $matchingEvents[] = $event;
-                            ++$matchCount;
-                        }
-                    } elseif ($event instanceof ReceivedEvent) {
-                        ++$totalCount;
-                    }
-                }
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $isTypeSupported = true;
-                $type = $this->matcherFactory->adapt($type);
-
-                foreach ($traversableEvents as $event) {
-                    if ($event instanceof ReceivedExceptionEvent) {
-                        ++$totalCount;
-
-                        if ($type->matches($event->exception())) {
-                            $matchingEvents[] = $event;
-                            ++$matchCount;
-                        }
-                    } elseif ($event instanceof ReceivedEvent) {
-                        ++$totalCount;
-                    }
-                }
-            }
-        }
-
-        if (!$isTypeSupported) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Unable to match exceptions against %s.',
-                    $this->assertionRenderer->renderValue($type)
-                )
-            );
-        }
-
-        if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    /**
-     * Throws an exception unless this call received an exception of the
-     * supplied type.
-     *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
-     *
-     * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public function receivedException($type = null)
-    {
-        $cardinality = $this->cardinality;
-
-        if ($result = $this->checkReceivedException($type)) {
-            return $result;
-        }
-
-        if (!$type) {
-            $renderedType = 'generator to receive exception';
-        } elseif (is_string($type)) {
-            $renderedType = sprintf('generator to receive %s exception', $type);
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $renderedType = sprintf(
-                    'generator to receive exception equal to %s',
-                    $this->assertionRenderer->renderException($type)
-                );
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $renderedType = sprintf(
-                    'generator to receive exception like %s',
-                    $this->matcherFactory->adapt($type)->describe()
-                );
-            }
-        }
-
-        if ($this->call->traversableEvents()) {
-            $renderedProduced = sprintf(
-                ":\n%s",
-                $this->assertionRenderer->renderProduced($this->call)
-            );
-        } else {
-            $renderedProduced = ' nothing.';
-        }
-
-        return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. Produced%s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedProduced
+                    ->renderCardinality($cardinality, 'traversable'),
+                $this->assertionRenderer->renderResponse($this->call)
             )
         );
     }
@@ -1426,6 +1054,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     private $call;
     private $matcherFactory;
     private $matcherVerifier;
+    private $generatorVerifierFactory;
+    private $traversableVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
     private $invocableInspector;

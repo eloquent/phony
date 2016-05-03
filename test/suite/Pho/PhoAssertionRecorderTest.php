@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Pho;
 
+use Eloquent\Phony\Event\EventSequence;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -19,6 +20,13 @@ class PhoAssertionRecorderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new PhoAssertionRecorder();
+    }
+
+    public function testCreateSuccessFromEventCollection()
+    {
+        $events = new EventSequence(array());
+
+        $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
     }
 
     /**

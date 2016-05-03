@@ -103,6 +103,16 @@ class CallEventFactory
     }
 
     /**
+     * Create a new 'used' event.
+     *
+     * @return UsedEvent The newly created event.
+     */
+    public function createUsed()
+    {
+        return new UsedEvent($this->sequencer->next(), $this->clock->time());
+    }
+
+    /**
      * Create a new 'produced' event.
      *
      * @param mixed $key   The produced key.

@@ -55,6 +55,23 @@ class PhpunitAssertionRecorder implements AssertionRecorder
     }
 
     /**
+     * Record that a successful assertion occurred.
+     *
+     * @param EventCollection $events The events.
+     *
+     * @return EventCollection The result.
+     */
+    public function createSuccessFromEventCollection(EventCollection $events)
+    {
+        PHPUnit_Framework_Assert::assertThat(
+            true,
+            PHPUnit_Framework_Assert::isTrue()
+        );
+
+        return $events;
+    }
+
+    /**
      * Create a new assertion failure exception.
      *
      * @param string $description The failure description.

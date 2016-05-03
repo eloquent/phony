@@ -23,8 +23,10 @@ use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Test\EmptyGeneratorFactory;
+use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -48,6 +50,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory =
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
+        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
+        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->assertionRenderer = new AssertionRenderer($this->invocableInspector, $this->exporter);
@@ -55,10 +59,16 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->call,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
         );
+
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
+        $this->traversableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
 
         $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
         $this->argumentCount = count($this->arguments);
@@ -74,6 +84,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callWithException,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -86,6 +98,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callWithNoArguments,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -97,6 +111,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callWithNoResponse,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -116,7 +132,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         $this->receivedExceptionA = new RuntimeException('Consequences will never be the same.');
         $this->receivedExceptionB = new RuntimeException('Because I backtraced it.');
-        $this->generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $this->generatedEvent = $this->callEventFactory->createReturned(GeneratorFactory::createEmpty());
         $this->generatorEventA = $this->callEventFactory->createProduced('m', 'n');
         $this->generatorEventB = $this->callEventFactory->createReceived('o');
         $this->generatorEventC = $this->callEventFactory->createProduced('p', 'q');
@@ -159,6 +175,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorCall,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -178,15 +196,40 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->generatorSubject->callback());
         $this->assertSame($this->arguments, $this->generatorSubject->arguments());
         $this->assertInstanceOf('Generator', $this->generatorSubject->returnValue());
+        $this->assertNull($this->generatorSubject->generatorReturnValue());
+        $this->assertSame(array(null, null), $this->generatorSubject->generatorResponse());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->generatorSubject->sequenceNumber());
         $this->assertSame($this->calledEvent->time(), $this->generatorSubject->time());
         $this->assertSame($this->generatedEvent->time(), $this->generatorSubject->responseTime());
         $this->assertSame($this->generatorEndEvent->time(), $this->generatorSubject->endTime());
     }
 
+    public function testProxyMethodsWithGeneratorEventsWithThrowEnd()
+    {
+        $this->generatorCall = $this->callFactory->create(
+            $this->calledEvent,
+            $this->generatedEvent,
+            $this->generatorEvents,
+            $this->threwEvent
+        );
+        $this->generatorSubject = new CallVerifier(
+            $this->generatorCall,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+
+        $this->assertSame($this->exception, $this->generatorSubject->generatorException());
+        $this->assertSame(array($this->exception, null), $this->generatorSubject->generatorResponse());
+    }
+
     public function testAddGeneratorEvent()
     {
-        $generatedEvent = $this->callEventFactory->createReturned(EmptyGeneratorFactory::create());
+        $generatedEvent = $this->callEventFactory->createReturned(GeneratorFactory::createEmpty());
         $generatorEventA = $this->callEventFactory->createProduced(null, null);
         $generatorEventB = $this->callEventFactory->createReceived(null);
         $generatorEvents = array($generatorEventA, $generatorEventB);
@@ -195,6 +238,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->call,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -211,703 +256,90 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subjectWithNoResponse->duration());
     }
 
-    public function testCheckProduced()
+    public function testReturnedFailureWithGenerator()
     {
-        $this->assertTrue((boolean) $this->generatorSubject->checkProduced());
-        $this->assertTrue((boolean) $this->generatorSubject->checkProduced('n'));
-        $this->assertTrue((boolean) $this->generatorSubject->checkProduced('m', 'n'));
-        $this->assertTrue((boolean) $this->generatorSubject->times(4)->checkProduced());
-        $this->assertTrue((boolean) $this->generatorSubject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->generatorSubject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->generatorSubject->checkProduced('m', 'o'));
-        $this->assertFalse((boolean) $this->subject->checkProduced());
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->generatorSubject->returned(null);
     }
 
-    public function testProduced()
+    public function testThrewFailureWithGenerator()
     {
-        $this->assertEquals(
-            new EventSequence(
-                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
-            ),
-            $this->generatorSubject->produced()
+        $this->generatorCall = $this->callFactory->create(
+            $this->calledEvent,
+            $this->generatedEvent,
+            $this->generatorEvents,
+            $this->threwEvent
         );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventA)),
-            $this->generatorSubject->produced('n')
+        $this->generatorSubject = new CallVerifier(
+            $this->generatorCall,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
         );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventA)),
-            $this->generatorSubject->produced('m', 'n')
-        );
-        $this->assertEquals(
-            new EventSequence(
-                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
-            ),
-            $this->generatorSubject->times(4)->produced()
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventA)),
-            $this->generatorSubject->once()->produced('n')
-        );
-        $this->assertEquals(new EventSequence(array()), $this->generatorSubject->never()->produced('m'));
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->generatorSubject->threw();
     }
 
-    public function testProducedFailureWithNoMatchers()
+    public function testCheckGenerated()
+    {
+        $this->assertTrue((boolean) $this->generatorSubject->checkGenerated());
+        $this->assertTrue((boolean) $this->generatorSubject->once()->checkGenerated());
+        $this->assertFalse((boolean) $this->subject->checkGenerated());
+        $this->assertTrue((boolean) $this->subject->never()->checkGenerated());
+        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkGenerated());
+        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkGenerated());
+    }
+
+    public function testGenerated()
+    {
+        $this->assertEquals(
+            $this->generatorVerifierFactory->create($this->generatorSubject, array($this->generatorCall)),
+            $this->generatorSubject->generated()
+        );
+        $this->assertEquals(
+            $this->generatorVerifierFactory->create($this->subject, array()),
+            $this->subject->never()->generated()
+        );
+    }
+
+    public function testGeneratedFailure()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to produce. Produced nothing.'
+            'Expected generator. Returned "abc".'
         );
-        $this->subject->produced();
+        $this->subject->generated();
     }
 
-    public function testProducedFailureWithNoMatchersNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->produced();
-    }
-
-    public function testProducedFailureWithValueOnly()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like "m". Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->produced('m');
-    }
-
-    public function testProducedFailureWithValueOnlyNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce like "n". Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->produced('n');
-    }
-
-    public function testProducedFailureWithValueOnlyAlways()
-    {
-        $expected = <<<'EOD'
-Expected every call to produce like "n". Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->always()->produced('n');
-    }
-
-    public function testProducedFailureWithValueOnlyWithNoGeneratorEvents()
+    public function testGeneratedFailureNever()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to produce like "n". Produced nothing.'
+            'Expected no generator. Returned Generator#0{}.'
         );
-        $this->subject->produced('n');
+        $this->generatorSubject->never()->generated();
     }
 
-    public function testProducedFailureWithKeyAndValue()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like "m": "o". Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->produced('m', 'o');
-    }
-
-    public function testProducedFailureWithKeyAndValueNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce like "m": "n". Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->produced('m', 'n');
-    }
-
-    public function testProducedFailureWithKeyAndValueWithNoGeneratorEvents()
+    public function testGeneratedFailureWithException()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call to produce like "m": "n". Produced nothing.'
+            'Expected generator. Threw RuntimeException("You done goofed.").'
         );
-        $this->subject->produced('m', 'n');
+        $this->subjectWithException->generated();
     }
 
-    public function testCheckProducedAll()
-    {
-        $this->assertTrue((boolean) $this->subject->checkProducedAll());
-        $this->assertTrue((boolean) $this->generatorSubject->checkProducedAll('n', 'q', 's', 'v'));
-        $this->assertTrue(
-            (boolean) $this->generatorSubject
-                ->checkProducedAll('n', array('p', 'q'), 's', array('u', 'v'))
-        );
-        $this->assertTrue(
-            (boolean) $this->generatorSubject
-                ->checkProducedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
-        );
-        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('x', 'q', 's', 'v'));
-        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('n', 'q', 's', array('x', 'v')));
-        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('q', 's', 'v'));
-        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('n', 's', 'v'));
-        $this->assertFalse((boolean) $this->generatorSubject->checkProducedAll('n', 'q', 's'));
-        $this->assertFalse((boolean) $this->subject->never()->checkProducedAll());
-        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll());
-        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll('q', 's', 'v'));
-        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll('n', 's', 'v'));
-        $this->assertTrue((boolean) $this->generatorSubject->never()->checkProducedAll('n', 'q', 's'));
-    }
-
-    public function testProducedAll()
-    {
-        $expected = new EventSequence(array($this->generatorEventG));
-
-        $this->assertEquals($expected, $this->generatorSubject->producedAll('n', 'q', 's', 'v'));
-        $this->assertEquals(
-            $expected,
-            $this->generatorSubject->producedAll('n', array('p', 'q'), 's', array('u', 'v'))
-        );
-        $this->assertEquals(
-            $expected,
-            $this->generatorSubject->producedAll(array('m', 'n'), array('p', 'q'), array('r', 's'), array('u', 'v'))
-        );
-        $this->assertEquals(new EventSequence(array()), $this->generatorSubject->never()->producedAll('q', 's', 'v'));
-        $this->assertEquals(new EventSequence(array()), $this->generatorSubject->never()->producedAll('n', 's', 'v'));
-        $this->assertEquals(new EventSequence(array()), $this->generatorSubject->never()->producedAll('n', 'q', 's'));
-    }
-
-    public function testProducedAllFailureNothingProduced()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like:
-    - "a"
-    - "b": "c"
-Produced nothing.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->producedAll('a', array('b', 'c'));
-    }
-
-    public function testProducedAllFailureMismatch()
-    {
-        $expected = <<<'EOD'
-Expected call to produce like:
-    - "a"
-    - "b": "c"
-Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->producedAll('a', array('b', 'c'));
-    }
-
-    public function testProducedAllFailureMismatchNever()
-    {
-        $expected = <<<'EOD'
-Expected no call to produce like:
-    - "n"
-    - "q"
-    - "s"
-    - "v"
-Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->producedAll('n', 'q', 's', 'v');
-    }
-
-    public function testProducedAllFailureExpectedNothing()
-    {
-        $expected = <<<'EOD'
-Expected call to produce nothing. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->producedAll();
-    }
-
-    public function testCheckReceived()
-    {
-        $this->assertTrue((boolean) $this->generatorSubject->checkReceived());
-        $this->assertTrue((boolean) $this->generatorSubject->checkReceived('o'));
-        $this->assertTrue((boolean) $this->generatorSubject->times(2)->checkReceived());
-        $this->assertTrue((boolean) $this->generatorSubject->once()->checkReceived('o'));
-        $this->assertTrue((boolean) $this->generatorSubject->never()->checkReceived('x'));
-        $this->assertFalse((boolean) $this->generatorSubject->always()->checkReceived());
-        $this->assertFalse((boolean) $this->generatorSubject->checkReceived('x'));
-        $this->assertFalse((boolean) $this->subject->checkReceived());
-    }
-
-    public function testReceived()
-    {
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventB, $this->generatorEventF)),
-            $this->generatorSubject->received()
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventB)),
-            $this->generatorSubject->received('o')
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventB, $this->generatorEventF)),
-            $this->generatorSubject->times(2)->received()
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventB)),
-            $this->generatorSubject->once()->received('o')
-        );
-        $this->assertEquals(new EventSequence(array()), $this->generatorSubject->never()->received('x'));
-    }
-
-    public function testReceivedFailureNoMatcher()
+    public function testGeneratedFailureNeverResponded()
     {
         $this->setExpectedException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected generator to receive value. Produced nothing.'
+            'Expected generator. Never responded.'
         );
-        $this->subject->received();
-    }
-
-    public function testReceivedFailureWithMatcher()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected generator to receive value like "x". Produced nothing.'
-        );
-        $this->subject->received('x');
-    }
-
-    public function testReceivedFailureWithNoMatchersNever()
-    {
-        $expected = <<<'EOD'
-Expected no generator to receive value. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->received();
-    }
-
-    public function testReceivedFailureWithMatcherNever()
-    {
-        $expected = <<<'EOD'
-Expected no generator to receive value like "o". Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->received('o');
-    }
-
-    public function testReceivedFailureWithNoMatcherAlways()
-    {
-        $expected = <<<'EOD'
-Expected every generator to receive value. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->always()->received();
-    }
-
-    public function testReceivedFailureWithMatcherAlways()
-    {
-        $expected = <<<'EOD'
-Expected every generator to receive value like "o". Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->always()->received('o');
-    }
-
-    public function testCheckReceivedException()
-    {
-        $this->assertTrue((boolean) $this->generatorSubject->checkReceivedException());
-        $this->assertTrue((boolean) $this->generatorSubject->checkReceivedException('Exception'));
-        $this->assertTrue((boolean) $this->generatorSubject->checkReceivedException('RuntimeException'));
-        $this->assertTrue((boolean) $this->generatorSubject->checkReceivedException($this->receivedExceptionA));
-        $this->assertTrue((boolean) $this->generatorSubject->checkReceivedException($this->receivedExceptionB));
-        $this->assertTrue(
-            (boolean) $this->generatorSubject
-                ->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
-        );
-        $this->assertFalse((boolean) $this->generatorSubject->checkReceivedException('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->generatorSubject->checkReceivedException(new Exception()));
-        $this->assertFalse((boolean) $this->generatorSubject->checkReceivedException(new RuntimeException()));
-        $this->assertFalse(
-            (boolean) $this->generatorSubject
-                ->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
-        );
-        $this->assertFalse(
-            (boolean) $this->generatorSubject->checkReceivedException($this->matcherFactory->equalTo(null))
-        );
-        $this->assertFalse((boolean) $this->generatorSubject->never()->checkReceivedException());
-        $this->assertFalse((boolean) $this->generatorSubject->never()->checkReceivedException('Exception'));
-        $this->assertFalse((boolean) $this->generatorSubject->never()->checkReceivedException('RuntimeException'));
-        $this->assertFalse(
-            (boolean) $this->generatorSubject->never()->checkReceivedException($this->receivedExceptionA)
-        );
-        $this->assertFalse(
-            (boolean) $this->generatorSubject->never()
-                ->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
-        );
-    }
-
-    public function testCheckReceivedExceptionFailureInvalidInput()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against 111.');
-        $this->generatorSubject->checkReceivedException(111);
-    }
-
-    public function testCheckReceivedExceptionFailureInvalidInputObject()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
-        $this->generatorSubject->checkReceivedException((object) array());
-    }
-
-    public function testReceivedException()
-    {
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventD, $this->generatorEventH)),
-            $this->generatorSubject->receivedException()
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventD, $this->generatorEventH)),
-            $this->generatorSubject->receivedException('Exception')
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventD, $this->generatorEventH)),
-            $this->generatorSubject->receivedException('RuntimeException')
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventD)),
-            $this->generatorSubject->receivedException($this->receivedExceptionA)
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventH)),
-            $this->generatorSubject->receivedException($this->receivedExceptionB)
-        );
-        $this->assertEquals(
-            new EventSequence(array($this->generatorEventD)),
-            $this->generatorSubject->receivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
-        );
-    }
-
-    public function testReceivedExceptionFailureExpectingAnyNoneReceived()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected generator to receive exception. Produced nothing.'
-        );
-        $this->subject->receivedException();
-    }
-
-    public function testReceivedExceptionFailureExpectingAnyNoResponse()
-    {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected generator to receive exception. Produced nothing.'
-        );
-        $this->subject->receivedException();
-    }
-
-    public function testReceivedExceptionFailureExpectingNeverAny()
-    {
-        $expected = <<<'EOD'
-Expected no generator to receive exception. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->receivedException();
-    }
-
-    public function testReceivedExceptionFailureExpectingAlwaysAny()
-    {
-        $expected = <<<'EOD'
-Expected every generator to receive exception. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->always()->receivedException();
-    }
-
-    public function testReceivedExceptionFailureTypeMismatch()
-    {
-        $expected = <<<'EOD'
-Expected generator to receive InvalidArgumentException exception. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->receivedException('InvalidArgumentException');
-    }
-
-    public function testReceivedExceptionFailureTypeNever()
-    {
-        $expected = <<<'EOD'
-Expected no generator to receive RuntimeException exception. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->receivedException('RuntimeException');
-    }
-
-    public function testReceivedExceptionFailureExpectingTypeNoneReceived()
-    {
-        $expected = <<<'EOD'
-Expected generator to receive InvalidArgumentException exception. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->receivedException('InvalidArgumentException');
-    }
-
-    public function testReceivedExceptionFailureExceptionMismatch()
-    {
-        $expected = <<<'EOD'
-Expected generator to receive exception equal to RuntimeException(). Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->receivedException(new RuntimeException());
-    }
-
-    public function testReceivedExceptionFailureExceptionNever()
-    {
-        $expected = <<<'EOD'
-Expected no generator to receive exception equal to RuntimeException("Consequences will never be the same."). Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->receivedException($this->receivedExceptionA);
-    }
-
-    public function testReceivedExceptionFailureExpectingExceptionNoneReceived()
-    {
-        $expected = <<<'EOD'
-Expected generator to receive exception equal to RuntimeException(). Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->receivedException(new RuntimeException());
-    }
-
-    public function testReceivedExceptionFailureMatcherMismatch()
-    {
-        $expected = <<<'EOD'
-Expected generator to receive exception like RuntimeException#0{}. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->receivedException($this->matcherFactory->equalTo(new RuntimeException()));
-    }
-
-    public function testReceivedExceptionFailureMatcherNever()
-    {
-        $expected = <<<'EOD'
-Expected no generator to receive exception like RuntimeException#0{message: "Consequences will never be the same."}. Produced:
-    - produced "m": "n"
-    - received "o"
-    - produced "p": "q"
-    - received exception RuntimeException("Consequences will never be the same.")
-    - produced "r": "s"
-    - received "t"
-    - produced "u": "v"
-    - received exception RuntimeException("Because I backtraced it.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->generatorSubject->never()->receivedException($this->matcherFactory->equalTo($this->receivedExceptionA));
-    }
-
-    public function testReceivedExceptionFailureInvalidInput()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against 111.');
-        $this->generatorSubject->receivedException(111);
-    }
-
-    public function testReceivedExceptionFailureInvalidInputObject()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
-        $this->generatorSubject->receivedException((object) array());
+        $this->subjectWithNoResponse->generated();
     }
 }

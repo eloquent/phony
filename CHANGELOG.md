@@ -2,9 +2,15 @@
 
 ## Next release
 
+- **[BC BREAK]** Removed `produced()`, `producedAll()`, `received()`,
+  `receivedException()` and associated check verification methods in both the
+  spy and call APIs. These methods are replaced by generator and traversable
+  verifiers ([#125]).
 - **[BC BREAK]** Usage of `setsArgument()`, `callsArgument()`,
   `callsArgumentWith()`, and `returnsArgument()` can now result in exceptions
   when a specified argument is undefined at call time ([#136]).
+- **[NEW]** Implemented generator and traversable verifiers ([#102], [#115],
+  [#125]).
 - **[NEW]** Mocks as default stub return values for arbitrary object return
   types ([#149], [#150]).
 - **[FIXED]** Fixed exception when stubbing functions with return values
@@ -13,6 +19,9 @@
 - **[FIXED]** Fixed mocking of `DateTimeInterface` ([#153]).
 - **[FIXED]** Fixed mocking of classes with final constructors ([#154]).
 
+[#102]: https://github.com/eloquent/phony/issues/102
+[#115]: https://github.com/eloquent/phony/issues/115
+[#125]: https://github.com/eloquent/phony/issues/125
 [#136]: https://github.com/eloquent/phony/issues/136
 [#147]: https://github.com/eloquent/phony/issues/147
 [#149]: https://github.com/eloquent/phony/issues/149

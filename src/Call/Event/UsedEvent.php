@@ -9,12 +9,11 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Test;
+namespace Eloquent\Phony\Call\Event;
 
-abstract class EmptyGeneratorFactory
+/**
+ * Represents the start of iteration of a returned value.
+ */
+class UsedEvent extends AbstractCallEvent implements TraversableEvent
 {
-    public static function create()
-    {
-        return call_user_func(function () { return; yield null; });
-    }
 }

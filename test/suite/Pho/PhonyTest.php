@@ -27,6 +27,8 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestEvent;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
 
@@ -38,6 +40,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = new CallVerifierFactory(
             MatcherFactory::instance(),
             MatcherVerifier::instance(),
+            GeneratorVerifierFactory::instance(),
+            TraversableVerifierFactory::instance(),
             $this->assertionRecorder,
             AssertionRenderer::instance(),
             InvocableInspector::instance()
@@ -47,6 +51,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             SpyFactory::instance(),
             MatcherFactory::instance(),
             MatcherVerifier::instance(),
+            GeneratorVerifierFactory::instance(),
+            TraversableVerifierFactory::instance(),
             $this->callVerifierFactory,
             $this->assertionRecorder,
             AssertionRenderer::instance(),

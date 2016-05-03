@@ -141,7 +141,6 @@ interface EventCollection extends IteratorAggregate, Countable
      * @param int $index The index.
      *
      * @return mixed                      The argument.
-     * @throws UndefinedCallException     If there are no calls.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
     public function argument($index = 0);

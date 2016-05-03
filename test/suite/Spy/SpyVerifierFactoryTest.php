@@ -21,6 +21,8 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -42,6 +44,8 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
+        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
+        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
@@ -50,6 +54,8 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->spyFactory,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -72,6 +78,8 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -90,6 +98,8 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -108,6 +118,8 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,

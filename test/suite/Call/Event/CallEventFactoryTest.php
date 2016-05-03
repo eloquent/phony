@@ -56,6 +56,14 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testCreateUsed()
+    {
+        $expected = new UsedEvent(0, 0.0);
+        $actual = $this->subject->createUsed();
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testCreateProduced()
     {
         $key = 'x';
@@ -79,6 +87,14 @@ class CallEventFactoryTest extends PHPUnit_Framework_TestCase
     {
         $expected = new ReceivedExceptionEvent(0, 0.0, $this->exception);
         $actual = $this->subject->createReceivedException($this->exception);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateConsumed()
+    {
+        $expected = new ConsumedEvent(0, 0.0);
+        $actual = $this->subject->createConsumed();
 
         $this->assertEquals($expected, $actual);
     }

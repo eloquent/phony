@@ -50,6 +50,8 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 
 /**
  * A service container that supplies all of the underlying services required by
@@ -156,9 +158,21 @@ class FacadeDriver
             $invocableInspector,
             $exporter
         );
+        $generatorVerifierFactory = new GeneratorVerifierFactory(
+            $matcherFactory,
+            $assertionRecorder,
+            $assertionRenderer
+        );
+        $traversableVerifierFactory = new TraversableVerifierFactory(
+            $matcherFactory,
+            $assertionRecorder,
+            $assertionRenderer
+        );
         $callVerifierFactory = new CallVerifierFactory(
             $matcherFactory,
             $matcherVerifier,
+            $generatorVerifierFactory,
+            $traversableVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
             $invocableInspector
@@ -168,6 +182,8 @@ class FacadeDriver
             $spyFactory,
             $matcherFactory,
             $matcherVerifier,
+            $generatorVerifierFactory,
+            $traversableVerifierFactory,
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
@@ -197,6 +213,8 @@ class FacadeDriver
             $spyFactory,
             $matcherFactory,
             $matcherVerifier,
+            $generatorVerifierFactory,
+            $traversableVerifierFactory,
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
@@ -210,6 +228,9 @@ class FacadeDriver
 
         $emptyValueFactory->setStubVerifierFactory($stubVerifierFactory);
         $emptyValueFactory->setMockBuilderFactory($mockBuilderFactory);
+        $generatorVerifierFactory->setCallVerifierFactory($callVerifierFactory);
+        $traversableVerifierFactory
+            ->setCallVerifierFactory($callVerifierFactory);
 
         $this->mockBuilderFactory = $mockBuilderFactory;
         $this->handleFactory = $handleFactory;

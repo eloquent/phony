@@ -49,6 +49,18 @@ class ExceptionAssertionRecorder implements AssertionRecorder
     }
 
     /**
+     * Record that a successful assertion occurred.
+     *
+     * @param EventCollection $events The events.
+     *
+     * @return EventCollection The result.
+     */
+    public function createSuccessFromEventCollection(EventCollection $events)
+    {
+        return $events;
+    }
+
+    /**
      * Create a new assertion failure exception.
      *
      * @param string $description The failure description.

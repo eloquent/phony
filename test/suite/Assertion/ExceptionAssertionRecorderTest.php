@@ -38,6 +38,13 @@ class ExceptionAssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->subject->createSuccess());
     }
 
+    public function testCreateSuccessFromEventCollection()
+    {
+        $events = new EventSequence(array());
+
+        $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
+    }
+
     public function testCreateFailure()
     {
         $description = 'description';

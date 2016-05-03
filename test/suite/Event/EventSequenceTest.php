@@ -185,7 +185,7 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new EventSequence(array($this->eventA));
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->argument();
     }
 
@@ -193,7 +193,7 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new EventSequence(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->argument();
     }
 

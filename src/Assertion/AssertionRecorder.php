@@ -30,6 +30,15 @@ interface AssertionRecorder
     public function createSuccess(array $events = array());
 
     /**
+     * Record that a successful assertion occurred.
+     *
+     * @param EventCollection $events The events.
+     *
+     * @return EventCollection The result.
+     */
+    public function createSuccessFromEventCollection(EventCollection $events);
+
+    /**
      * Create a new assertion failure exception.
      *
      * @param string $description The failure description.

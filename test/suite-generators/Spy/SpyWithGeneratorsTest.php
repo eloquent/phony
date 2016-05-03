@@ -71,21 +71,23 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
                 $this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')),
                 $this->callEventFactory->createReturned($generator),
                 array(
+                    $this->callEventFactory->createUsed(),
                     $this->callEventFactory->createProduced(0, 'A'),
                     $this->callEventFactory->createReceived(null),
                     $this->callEventFactory->createProduced(1, 'B'),
                     $this->callEventFactory->createReceived(null),
                 ),
-                $this->callEventFactory->createConsumed()
+                $this->callEventFactory->createReturned(null)
             ),
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('c')),
                 $this->callEventFactory->createReturned($generator),
                 array(
+                    $this->callEventFactory->createUsed(),
                     $this->callEventFactory->createProduced(0, 'C'),
                     $this->callEventFactory->createReceived(null),
                 ),
-                $this->callEventFactory->createConsumed()
+                $this->callEventFactory->createReturned(null)
             ),
         );
 

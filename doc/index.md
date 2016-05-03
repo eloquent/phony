@@ -88,11 +88,9 @@
         - [Verifying spy closure binding]
     - [Verifying spy output]
         - [Verifying spy return values]
+            - [Verifying generators returned by spies]
+            - [Verifying traversables returned by spies]
         - [Verifying spy exceptions]
-    - [Verifying spies with generators or traversables]
-        - [Verifying values produced by spies]
-        - [Verifying values received by spies]
-        - [Verifying exceptions received by spies]
     - [Verifying cardinality with spies]
         - [Verifying that a spy event happened an exact number of times]
         - [Verifying that a spy event happened a bounded number of times]
@@ -109,21 +107,28 @@
         - [Verifying call closure binding]
     - [Verifying call output]
         - [Verifying call return values]
+            - [Verifying generators returned by calls]
+            - [Verifying traversables returned by calls]
         - [Verifying call exceptions]
-    - [Verifying calls with generators or traversables]
-        - [Verifying values produced by calls]
-        - [Verifying values received by calls]
-        - [Verifying exceptions received by calls]
     - [Verifying cardinality with calls]
         - [Verifying that a call event happened an exact number of times]
         - [Verifying that a call event happened a bounded number of times]
         - [Verifying that all call events happen the same way]
 - [Verification]
     - [The verification result API]
+    - [The traversable verification result API]
+    - [The generator verification result API]
     - [The event API]
     - [The order verification API]
     - [Standard verification]
     - [Check verification]
+    - [Generator and traversable verification]
+        - [Verifying iteration]
+        - [Verifying produced values]
+        - [Verifying values received by generators]
+        - [Verifying exceptions received by generators]
+        - [Verifying generator return values]
+        - [Verifying generator exceptions]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -2210,7 +2215,7 @@ exception that matches the supplied matcher.*
 
 > *[verification][verification-api]|null* $stub->[**checkThrew**](#stub.checkThrew)($type = null)
 
-Checks if an exception of the supplied type was thrown.
+Checks if this stub threw an exception of the supplied type.
 
 *When called with no arguments, this method simply checks that the stub threw
 any exception.*
@@ -2227,162 +2232,6 @@ exception that matches the supplied matcher.*
 *This method supports [mock handle substitution].*
 
 *See [Verifying spy exceptions], [Check verification].*
-
-<a name="stub.produced" />
-
-----
-
-> *[verification][verification-api]* $stub->[**produced**](#stub.produced)($keyOrValue = null, $value = null)
-> throws [AssertionException]
-
-Checks if this stub produced the supplied values.
-
-*When called with no arguments, this method simply checks that the stub produced
-any value.*
-
-*With a single argument, it checks that a value matching the argument was
-produced.*
-
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies].*
-
-<a name="stub.checkProduced" />
-
-----
-
-> *[verification][verification-api]|null* $stub->[**checkProduced**](#stub.checkProduced)($keyOrValue = null, $value = null)
-
-Checks if this stub produced the supplied values.
-
-*When called with no arguments, this method simply checks that the stub produced
-any value.*
-
-*With a single argument, it checks that a value matching the argument was
-produced.*
-
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies], [Check verification].*
-
-<a name="stub.producedAll" />
-
-----
-
-> *[verification][verification-api]* $stub->[**producedAll**](#stub.producedAll)(...$pairs)
-> throws [AssertionException]
-
-Throws an exception unless this stub produced all of the supplied key-value
-pairs, in the supplied order, in a single call.
-
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`produced()`](#stub.produced).*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies].*
-
-<a name="stub.checkProducedAll" />
-
-----
-
-> *[verification][verification-api]|null* $stub->[**checkProducedAll**](#stub.checkProducedAll)(...$pairs)
-
-Checks if this stub produced all of the supplied key-value pairs, in the
-supplied order, in a single call.
-
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`checkProduced()`](#stub.checkProduced).*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies], [Check verification].*
-
-<a name="stub.received" />
-
-----
-
-> *[verification][verification-api]* $stub->[**received**](#stub.received)($value = null)
-> throws [AssertionException]
-
-Throws an exception unless this stub received the supplied value.
-
-*When called with no arguments, this method simply checks that the stub received
-any value.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying values received by spies].*
-
-<a name="stub.checkReceived" />
-
-----
-
-> *[verification][verification-api]|null* $stub->[**checkReceived**](#stub.checkReceived)($value = null)
-
-Checks if this stub received the supplied value.
-
-*When called with no arguments, this method simply checks that the stub received
-any value.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying values received by spies], [Check verification].*
-
-<a name="stub.receivedException" />
-
-----
-
-> *[verification][verification-api]* $stub->[**receivedException**](#stub.receivedException)($type = null)
-> throws [AssertionException]
-
-Throws an exception unless this call received an exception of the supplied type.
-
-*When called with no arguments, this method simply checks that the stub received
-any exception.*
-
-*When called with a string, this method checks that the stub received an
-exception that is an instance of `$type`.*
-
-*When called with an exception instance, this method checks that the stub
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the stub received an
-exception that matches the supplied matcher.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying exceptions received by spies].*
-
-<a name="stub.checkReceivedException" />
-
-----
-
-> *[verification][verification-api]|null* $stub->[**checkReceivedException**](#stub.checkReceivedException)($type = null)
-
-Checks if this stub received an exception of the supplied type.
-
-*When called with no arguments, this method simply checks that the stub received
-any exception.*
-
-*When called with a string, this method checks that the stub received an
-exception that is an instance of `$type`.*
-
-*When called with an exception instance, this method checks that the stub
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the stub received an
-exception that matches the supplied matcher.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying exceptions received by spies], [Check verification].*
 
 <a name="stub.never" />
 
@@ -4409,7 +4258,7 @@ exception that matches the supplied matcher.*
 
 > *[verification][verification-api]|null* $spy->[**checkThrew**](#spy.checkThrew)($type = null)
 
-Checks if an exception of the supplied type was thrown.
+Checks if this spy threw an exception of the supplied type.
 
 *When called with no arguments, this method simply checks that the spy threw any
 exception.*
@@ -4427,161 +4276,51 @@ exception that matches the supplied matcher.*
 
 *See [Verifying spy exceptions], [Check verification].*
 
-<a name="spy.produced" />
+<a name="spy.generated" />
 
 ----
 
-> *[verification][verification-api]* $spy->[**produced**](#spy.produced)($keyOrValue = null, $value = null)
+> *[generator-verification][generator-verification-api]* $spy->[**generated**](#spy.generated)()
 > throws [AssertionException]
 
-Checks if this spy produced the supplied values.
+Throws an exception unless this spy returned a generator.
 
-*When called with no arguments, this method simply checks that the spy produced
-any value.*
+*See [Verifying generators returned by spies],
+[Generator and traversable verification].*
 
-*With a single argument, it checks that a value matching the argument was
-produced.*
-
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies].*
-
-<a name="spy.checkProduced" />
+<a name="spy.checkGenerated" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkProduced**](#spy.checkProduced)($keyOrValue = null, $value = null)
+> *[generator-verification][generator-verification-api]|null* $spy->[**checkGenerated**](#spy.checkGenerated)()
 
-Checks if this spy produced the supplied values.
+Checks if this spy returned a generator.
 
-*When called with no arguments, this method simply checks that the spy produced
-any value.*
+*See [Verifying generators returned by spies],
+[Generator and traversable verification].*
 
-*With a single argument, it checks that a value matching the argument was
-produced.*
-
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies], [Check verification].*
-
-<a name="spy.producedAll" />
+<a name="spy.traversed" />
 
 ----
 
-> *[verification][verification-api]* $spy->[**producedAll**](#spy.producedAll)(...$pairs)
+> *[traversable-verification][traversable-verification-api]* $spy->[**traversed**](#spy.traversed)()
 > throws [AssertionException]
 
-Throws an exception unless this spy produced all of the supplied key-value
-pairs, in the supplied order, in a single call.
+Throws an exception unless this spy returned a traversable.
 
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`produced()`](#spy.produced).*
+*See [Verifying traversables returned by spies],
+[Generator and traversable verification].*
 
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies].*
-
-<a name="spy.checkProducedAll" />
+<a name="spy.checkTraversed" />
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkProducedAll**](#spy.checkProducedAll)(...$pairs)
+> *[traversable-verification][traversable-verification-api]|null* $spy->[**checkTraversed**](#spy.checkTraversed)()
 
-Checks if this spy produced all of the supplied key-value pairs, in the supplied
-order, in a single call.
+Checks if this spy returned a traversable.
 
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`checkProduced()`](#spy.checkProduced).*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by spies], [Check verification].*
-
-<a name="spy.received" />
-
-----
-
-> *[verification][verification-api]* $spy->[**received**](#spy.received)($value = null)
-> throws [AssertionException]
-
-Throws an exception unless this spy received the supplied value.
-
-*When called with no arguments, this method simply checks that the spy received
-any value.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying values received by spies].*
-
-<a name="spy.checkReceived" />
-
-----
-
-> *[verification][verification-api]|null* $spy->[**checkReceived**](#spy.checkReceived)($value = null)
-
-Checks if this spy received the supplied value.
-
-*When called with no arguments, this method simply checks that the spy received
-any value.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying values received by spies], [Check verification].*
-
-<a name="spy.receivedException" />
-
-----
-
-> *[verification][verification-api]* $spy->[**receivedException**](#spy.receivedException)($type = null)
-> throws [AssertionException]
-
-Throws an exception unless this call received an exception of the supplied type.
-
-*When called with no arguments, this method simply checks that the spy received
-any exception.*
-
-*When called with a string, this method checks that the spy received an
-exception that is an instance of `$type`.*
-
-*When called with an exception instance, this method checks that the spy
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the spy received an
-exception that matches the supplied matcher.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying exceptions received by spies].*
-
-<a name="spy.checkReceivedException" />
-
-----
-
-> *[verification][verification-api]|null* $spy->[**checkReceivedException**](#spy.checkReceivedException)($type = null)
-
-Checks if this spy received an exception of the supplied type.
-
-*When called with no arguments, this method simply checks that the spy received
-any exception.*
-
-*When called with a string, this method checks that the spy received an
-exception that is an instance of `$type`.*
-
-*When called with an exception instance, this method checks that the spy
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the spy received an
-exception that matches the supplied matcher.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying exceptions received by spies], [Check verification].*
+*See [Verifying traversables returned by spies],
+[Generator and traversable verification].*
 
 <a name="spy.never" />
 
@@ -4821,6 +4560,51 @@ $spy->returned();    // returned anything
 $spy->returned('a'); // returned 'a'
 ```
 
+##### Verifying generators returned by spies
+
+To verify that a spy returned a [generator], use
+[`generated()`](#spy.generated):
+
+```php
+$spy->generated();
+```
+
+The result returned by [`generated()`](#spy.generated) can be used for further
+verification of the generator's behavior:
+
+```php
+$generator = $spy->generated(); // returned a generator
+
+$generator->produced('a'); // generator yielded 'a'
+$generator->returned('b'); // generator returned 'b'
+```
+
+See [Generator and traversable verification] for a complete explanation of the
+available verifications.
+
+##### Verifying traversables returned by spies
+
+To verify that a spy returned a traversable value, such as an array or iterator,
+use [`traversed()`](#spy.traversed):
+
+```php
+$spy->traversed();
+```
+
+If [traversable spies] are enabled, the result returned by
+[`traversed()`](#spy.traversed) can be used for further verification of the
+traversable's behavior:
+
+```php
+$traversable = $spy->traversed(); // returned a traversable
+
+$traversable->produced('a');      // traversable produced 'a'
+$traversable->produced('b', 'c'); // traversable produced 'b' => 'c'
+```
+
+See [Generator and traversable verification] for a complete explanation of the
+available verifications.
+
 #### Verifying spy exceptions
 
 To verify that a spy threw an exception, use [`threw()`](#spy.threw):
@@ -4829,90 +4613,6 @@ To verify that a spy threw an exception, use [`threw()`](#spy.threw):
 $spy->threw();                                         // threw any exception
 $spy->threw('RuntimeException');                       // threw a runtime exception
 $spy->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
-```
-
-### Verifying spies with generators or traversables
-
-*Phony* records values and exceptions that are passed in and out of
-[generators]:
-
-- When a generator uses the [yield] keyword, this is recorded as a *produced
-  value*.
-- When calling code uses [Generator::send()], this is recorded as a *sent
-  value*.
-- When calling code uses [Generator::throw()], this is recorded as a *sent
-  exception*.
-- When a generator ends, either implicitly, or with an explicit `return`
-  statement, this is recorded as a *returned value* of `null` (as generators
-  cannot return values).
-- When a generator ends because of an exception, this is recorded as a *thrown
-  exception*.
-
-This behavior is enabled by default for generators, and can optionally be
-enabled for other traversables by calling
-[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) on a spy:
-
-```php
-$spy->setUseTraversableSpies(true);
-```
-
-For other traversables, such as arrays and iterators, the values are recorded as
-*produced values*.
-
-To turn off generator spies, use
-[`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) on a spy:
-
-```php
-$spy->setUseGeneratorSpies(false);
-```
-
-Both [`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) and
-[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) are fluent, meaning
-spy creation and setting of these options can be done in a single expression:
-
-```php
-$spy = spy()
-    ->setUseTraversableSpies(true)
-    ->setUseGeneratorSpies(false);
-```
-
-#### Verifying values produced by spies
-
-To verify that a value was produced by a spy, use [`produced()`](#spy.produced):
-
-```php
-$spy->produced();         // produced anything
-$spy->produced('a');      // produced 'a' with any key
-$spy->produced('a', 'b'); // produced 'b' with key 'a'
-```
-
-To verify that a set of values were produced by a spy in a specific order, in a
-single call, use [`producedAll()`](#spy.producedAll):
-
-```php
-$spy->producedAll();                // produced nothing (an empty traversable)
-$spy->producedAll('a', 'b');        // produced 'a', then 'b', with any keys
-$spy->producedAll('a', ['b', 'c']); // produced 'a' with any key, then 'c' with key 'b'
-```
-
-#### Verifying values received by spies
-
-To verify that a value was received by a spy, use [`received()`](#spy.received):
-
-```php
-$spy->received();    // received anything
-$spy->received('a'); // received 'a'
-```
-
-#### Verifying exceptions received by spies
-
-To verify that an exception was received by a spy, use
-[`receivedException()`](#spy.receivedException):
-
-```php
-$spy->receivedException();                                         // received any exception
-$spy->receivedException('RuntimeException');                       // received a runtime exception
-$spy->receivedException(new RuntimeException('You done goofed.')); // received a runtime exception with a specific message
 ```
 
 ### Verifying cardinality with spies
@@ -5120,6 +4820,19 @@ Get the return value.
 *An [UndefinedResponseException] will be thrown if the call has not yet
 responded, or threw an exception.*
 
+<a name="call.generatorReturnValue" />
+
+----
+
+> *mixed* $call->[**generatorReturnValue**](#call.generatorReturnValue)()
+> throws [UndefinedResponseException]
+
+Get the generator return value.
+
+*An [UndefinedResponseException] will be thrown if the call has not yet
+responded, did not respond by returning a generator, has not completed
+iteration, or if the generator ended by throwing an exception.*
+
 <a name="call.exception" />
 
 ----
@@ -5131,6 +4844,19 @@ Get the thrown exception.
 
 *An [UndefinedResponseException] will be thrown if the call has not yet
 responded, or did not throw an exception.*
+
+<a name="call.generatorException" />
+
+----
+
+> *[Throwable]* $call->[**generatorException**](#call.generatorException)()
+> throws [UndefinedResponseException]
+
+Get the exception thrown by the generator.
+
+*An [UndefinedResponseException] will be thrown if the call has not yet
+responded, did not respond by returning a generator, has not completed
+iteration, or if the generator ended by returning a value.*
 
 <a name="call.response" />
 
@@ -5147,6 +4873,23 @@ or `null` if an exception was thrown.*
 
 *An [UndefinedResponseException] will be thrown if the call has not yet
 responded.*
+
+<a name="call.generatorResponse" />
+
+----
+
+> *tuple\<[Throwable]|null,mixed>* $call->[**generatorResponse**](#call.generatorResponse)()
+> throws [UndefinedResponseException]
+
+Get the generator response.
+
+*This method returns a 2-tuple. The first element is the thrown exception, or
+`null` if no exception was thrown. The second element is the returned value,
+or `null` if an exception was thrown.*
+
+*An [UndefinedResponseException] will be thrown if the call has not yet
+responded, did not respond by returning a generator, or if the generator has not
+completed iteration.*
 
 <a name="call.hasResponded" />
 
@@ -5390,7 +5133,7 @@ exception that matches the supplied matcher.*
 
 > *[verification][verification-api]|null* $call->[**checkThrew**](#call.checkThrew)($type = null)
 
-Checks if an exception of the supplied type was thrown.
+Checks if this call threw an exception of the supplied type.
 
 *When called with no arguments, this method simply checks that the call threw
 any exception.*
@@ -5408,161 +5151,51 @@ exception that matches the supplied matcher.*
 
 *See [Verifying call exceptions], [Check verification].*
 
-<a name="call.produced" />
+<a name="call.generated" />
 
 ----
 
-> *[verification][verification-api]* $call->[**produced**](#call.produced)($keyOrValue = null, $value = null)
+> *[generator-verification][generator-verification-api]* $call->[**generated**](#call.generated)()
 > throws [AssertionException]
 
-Checks if this call produced the supplied values.
+Throws an exception unless this call returned a generator.
 
-*When called with no arguments, this method simply checks that the call produced
-any value.*
+*See [Verifying generators returned by calls],
+[Generator and traversable verification].*
 
-*With a single argument, it checks that a value matching the argument was
-produced.*
-
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by calls].*
-
-<a name="call.checkProduced" />
+<a name="call.checkGenerated" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkProduced**](#call.checkProduced)($keyOrValue = null, $value = null)
+> *[generator-verification][generator-verification-api]|null* $call->[**checkGenerated**](#call.checkGenerated)()
 
-Checks if this call produced the supplied values.
+Checks if this call returned a generator.
 
-*When called with no arguments, this method simply checks that the call produced
-any value.*
+*See [Verifying generators returned by calls],
+[Generator and traversable verification].*
 
-*With a single argument, it checks that a value matching the argument was
-produced.*
-
-*With two arguments, it checks that a key and value matching the respective
-arguments were produced together.*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by calls], [Check verification].*
-
-<a name="call.producedAll" />
+<a name="call.traversed" />
 
 ----
 
-> *[verification][verification-api]* $call->[**producedAll**](#call.producedAll)(...$pairs)
+> *[traversable-verification][traversable-verification-api]* $call->[**traversed**](#call.traversed)()
 > throws [AssertionException]
 
-Throws an exception unless this call produced all of the supplied key-value
-pairs, in the supplied order.
+Throws an exception unless this call returned a traversable.
 
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`produced()`](#call.produced).*
+*See [Verifying traversables returned by calls],
+[Generator and traversable verification].*
 
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by calls].*
-
-<a name="call.checkProducedAll" />
+<a name="call.checkTraversed" />
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkProducedAll**](#call.checkProducedAll)(...$pairs)
+> *[traversable-verification][traversable-verification-api]|null* $call->[**checkTraversed**](#call.checkTraversed)()
 
-Checks if this call produced all of the supplied key-value pairs, in the
-supplied order.
+Checks if this call returned a traversable.
 
-*Each value in `$pairs` is equivalent to a set of arguments passed to
-[`checkProduced()`](#call.checkProduced).*
-
-*This method supports [mock handle substitution] for both keys and values.*
-
-*See [Verifying values produced by calls], [Check verification].*
-
-<a name="call.received" />
-
-----
-
-> *[verification][verification-api]* $call->[**received**](#call.received)($value = null)
-> throws [AssertionException]
-
-Throws an exception unless this call received the supplied value.
-
-*When called with no arguments, this method simply checks that the call received
-any value.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying values received by calls].*
-
-<a name="call.checkReceived" />
-
-----
-
-> *[verification][verification-api]|null* $call->[**checkReceived**](#call.checkReceived)($value = null)
-
-Checks if this call received the supplied value.
-
-*When called with no arguments, this method simply checks that the call received
-any value.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying values received by calls], [Check verification].*
-
-<a name="call.receivedException" />
-
-----
-
-> *[verification][verification-api]* $call->[**receivedException**](#call.receivedException)($type = null)
-> throws [AssertionException]
-
-Throws an exception unless this call received an exception of the supplied type.
-
-*When called with no arguments, this method simply checks that the call received
-any exception.*
-
-*When called with a string, this method checks that the call received an
-exception that is an instance of `$type`.*
-
-*When called with an exception instance, this method checks that the call
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the call received an
-exception that matches the supplied matcher.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying exceptions received by calls].*
-
-<a name="call.checkReceivedException" />
-
-----
-
-> *[verification][verification-api]|null* $call->[**checkReceivedException**](#call.checkReceivedException)($type = null)
-
-Checks if this call received an exception of the supplied type.
-
-*When called with no arguments, this method simply checks that the call received
-any exception.*
-
-*When called with a string, this method checks that the call received an
-exception that is an instance of `$type`.*
-
-*When called with an exception instance, this method checks that the call
-received an exception that is equal to the supplied instance.*
-
-*When called with a [matcher], this method checks that the call received an
-exception that matches the supplied matcher.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verifying exceptions received by calls], [Check verification].*
+*See [Verifying traversables returned by calls],
+[Generator and traversable verification].*
 
 <a name="call.never" />
 
@@ -5801,6 +5434,51 @@ $call->returned();    // returned anything
 $call->returned('a'); // returned 'a'
 ```
 
+##### Verifying generators returned by calls
+
+To verify that a call returned a [generator], use
+[`generated()`](#call.generated):
+
+```php
+$call->generated();
+```
+
+The result returned by [`generated()`](#call.generated) can be used for further
+verification of the generator's behavior:
+
+```php
+$generator = $call->generated(); // returned a generator
+
+$generator->produced('a'); // generator yielded 'a'
+$generator->returned('b'); // generator returned 'b'
+```
+
+See [Generator and traversable verification] for a complete explanation of the
+available verifications.
+
+##### Verifying traversables returned by calls
+
+To verify that a call returned a traversable value, such as an array or
+iterator, use [`traversed()`](#call.traversed):
+
+```php
+$call->traversed();
+```
+
+If [traversable spies] are enabled, the result returned by
+[`traversed()`](#call.traversed) can be used for further verification of the
+traversable's behavior:
+
+```php
+$traversable = $call->traversed(); // returned a traversable
+
+$traversable->produced('a');      // traversable produced 'a'
+$traversable->produced('b', 'c'); // traversable produced 'b' => 'c'
+```
+
+See [Generator and traversable verification] for a complete explanation of the
+available verifications.
+
 #### Verifying call exceptions
 
 To verify that a call threw an exception, use [`threw()`](#call.threw):
@@ -5809,75 +5487,6 @@ To verify that a call threw an exception, use [`threw()`](#call.threw):
 $call->threw();                                         // threw any exception
 $call->threw('RuntimeException');                       // threw a runtime exception
 $call->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
-```
-
-### Verifying calls with generators or traversables
-
-*Phony* records values and exceptions that are passed in and out of
-[generators]:
-
-- When a generator uses the [yield] keyword, this is recorded as a *produced
-  value*.
-- When calling code uses [Generator::send()], this is recorded as a *sent
-  value*.
-- When calling code uses [Generator::throw()], this is recorded as a *sent
-  exception*.
-- When a generator ends, either implicitly, or with an explicit `return`
-  statement, this is recorded as a *returned value* of `null` (as generators
-  cannot return values).
-- When a generator ends because of an exception, this is recorded as a *thrown
-  exception*.
-
-This behavior is enabled by default for generators, and can optionally be
-enabled for other traversables by calling
-[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) on a spy:
-
-```php
-$spy->setUseTraversableSpies(true);
-```
-
-For other traversables, such as arrays and iterators, the values are recorded as
-*produced values*.
-
-#### Verifying values produced by calls
-
-To verify that a value was produced by a call, use
-[`produced()`](#call.produced):
-
-```php
-$call->produced();         // produced anything
-$call->produced('a');      // produced 'a' with any key
-$call->produced('a', 'b'); // produced 'b' with key 'a'
-```
-
-To verify that a set of values were produced by a call in a specific order, use
-[`producedAll()`](#call.producedAll):
-
-```php
-$call->producedAll();                // produced nothing (an empty traversable)
-$call->producedAll('a', 'b');        // produced 'a', then 'b', with any keys
-$call->producedAll('a', ['b', 'c']); // produced 'a' with any key, then 'c' with key 'b'
-```
-
-#### Verifying values received by calls
-
-To verify that a value was received by a call, use
-[`received()`](#call.received):
-
-```php
-$call->received();    // received anything
-$call->received('a'); // received 'a'
-```
-
-#### Verifying exceptions received by calls
-
-To verify that an exception was received by a call, use
-[`receivedException()`](#call.receivedException):
-
-```php
-$call->receivedException();                                         // received any exception
-$call->receivedException('RuntimeException');                       // received a runtime exception
-$call->receivedException(new RuntimeException('You done goofed.')); // received a runtime exception with a specific message
 ```
 
 ### Verifying cardinality with calls
@@ -5977,11 +5586,9 @@ For information on specific verification methods, see these sections:
         - [Verifying spy closure binding]
     - [Verifying spy output]
         - [Verifying spy return values]
+            - [Verifying generators returned by spies]
+            - [Verifying traversables returned by spies]
         - [Verifying spy exceptions]
-    - [Verifying spies with generators or traversables]
-        - [Verifying values produced by spies]
-        - [Verifying values received by spies]
-        - [Verifying exceptions received by spies]
     - [Verifying cardinality with spies]
         - [Verifying that a spy event happened an exact number of times]
         - [Verifying that a spy event happened a bounded number of times]
@@ -5992,21 +5599,28 @@ For information on specific verification methods, see these sections:
         - [Verifying call closure binding]
     - [Verifying call output]
         - [Verifying call return values]
+            - [Verifying generators returned by calls]
+            - [Verifying traversables returned by calls]
         - [Verifying call exceptions]
-    - [Verifying calls with generators or traversables]
-        - [Verifying values produced by calls]
-        - [Verifying values received by calls]
-        - [Verifying exceptions received by calls]
     - [Verifying cardinality with calls]
         - [Verifying that a call event happened an exact number of times]
         - [Verifying that a call event happened a bounded number of times]
         - [Verifying that all call events happen the same way]
 - [Verification]
     - [The verification result API]
+    - [The traversable verification result API]
+    - [The generator verification result API]
     - [The event API]
     - [The order verification API]
     - [Standard verification]
     - [Check verification]
+    - [Generator and traversable verification]
+        - [Verifying iteration]
+        - [Verifying produced values]
+        - [Verifying values received by generators]
+        - [Verifying exceptions received by generators]
+        - [Verifying generator return values]
+        - [Verifying generator exceptions]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -6024,6 +5638,18 @@ For information on specific verification methods, see these sections:
 > throws [UndefinedCallException]
 
 Get the arguments of the first call.
+
+<a name="verification.argument" />
+
+----
+
+> *mixed* $verification->[**argument**](#verification.argument)($index = 0)
+> throws [UndefinedArgumentException]
+
+Get the argument of the first call at `$index`.
+
+*Negative indices are offset from the end of the list. That is, `-1` indicates
+the last element, and `-2` indicates the second last element.*
 
 <a name="verification.hasCalls" />
 
@@ -6132,6 +5758,263 @@ Get the event at `$index`.
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
+
+### The traversable verification result API
+
+In addition to the [verification result] API, traversable verification results
+implement the following methods:
+
+<a name="verification.used" />
+
+----
+
+> *[verification][verification-api]* $verification->[**used**](#verification.used)()
+> throws [AssertionException]
+
+Throws an exception unless iteration of the traversable commenced.
+
+*See [Verifying iteration].*
+
+<a name="verification.checkUsed" />
+
+----
+
+> *[verification][verification-api]|null* $verification->[**checkUsed**](#verification.checkUsed)()
+
+Checks if iteration of the traversable commenced.
+
+*See [Verifying iteration], [Check verification].*
+
+<a name="verification.produced" />
+
+----
+
+> *[verification][verification-api]* $verification->[**produced**](#verification.produced)($keyOrValue = null, $value = null)
+> throws [AssertionException]
+
+Throws an exception unless the traversable produced the supplied values.
+
+*When called with no arguments, this method simply checks that the traversable
+produced any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*This method supports [mock handle substitution] for both keys and values.*
+
+*See [Verifying produced values].*
+
+<a name="verification.checkProduced" />
+
+----
+
+> *[verification][verification-api]|null* $verification->[**checkProduced**](#verification.checkProduced)($keyOrValue = null, $value = null)
+
+Checks if the traversable produced the supplied values.
+
+*When called with no arguments, this method simply checks that the traversable
+produced any value.*
+
+*With a single argument, it checks that a value matching the argument was
+produced.*
+
+*With two arguments, it checks that a key and value matching the respective
+arguments were produced together.*
+
+*This method supports [mock handle substitution] for both keys and values.*
+
+*See [Verifying produced values], [Check verification].*
+
+<a name="verification.consumed" />
+
+----
+
+> *[verification][verification-api]* $verification->[**consumed**](#verification.consumed)()
+> throws [AssertionException]
+
+Throws an exception unless iteration of the traversable completed.
+
+*See [Verifying iteration].*
+
+<a name="verification.checkConsumed" />
+
+----
+
+> *[verification][verification-api]|null* $verification->[**checkConsumed**](#verification.checkConsumed)()
+
+Checks if iteration of the traversable completed.
+
+*See [Verifying iteration], [Check verification].*
+
+### The generator verification result API
+
+In addition to the [verification result] and [traversable verification result]
+APIs, generator verification results implement the following methods:
+
+<a name="verification.received" />
+
+----
+
+> *[verification][verification-api]* $verification->[**received**](#verification.received)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless the generator received the supplied value.
+
+*When called with no arguments, this method simply checks that the generator
+received any value.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying values received by generators].*
+
+<a name="verification.checkReceived" />
+
+----
+
+> *[verification][verification-api]|null* $verification->[**checkReceived**](#verification.checkReceived)($value = null)
+
+Checks if the generator received the supplied value.
+
+*When called with no arguments, this method simply checks that the generator
+received any value.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying values received by generators], [Check verification].*
+
+<a name="verification.receivedException" />
+
+----
+
+> *[verification][verification-api]* $verification->[**receivedException**](#verification.receivedException)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless the generator received an exception of the supplied
+type.
+
+*When called with no arguments, this method simply checks that the generator
+received any exception.*
+
+*When called with a string, this method checks that the generator received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the generator
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the generator received an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying exceptions received by generators].*
+
+<a name="verification.checkReceivedException" />
+
+----
+
+> *[verification][verification-api]|null* $verification->[**checkReceivedException**](#verification.checkReceivedException)($type = null)
+
+Checks if the generator received an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the generator
+received any exception.*
+
+*When called with a string, this method checks that the generator received an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the generator
+received an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the generator received an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying exceptions received by generators], [Check verification].*
+
+<a name="verification.returned" />
+
+----
+
+> *[verification][verification-api]* $verification->[**returned**](#verification.returned)($value = null)
+> throws [AssertionException]
+
+Throws an exception unless the generator returned the supplied value.
+
+*When called with no arguments, this method simply checks that the generator
+returned any value.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying generator return values].*
+
+<a name="verification.checkReturned" />
+
+----
+
+> *[verification][verification-api]|null* $verification->[**checkReturned**](#verification.checkReturned)($value = null)
+
+Checks if the generator returned the supplied value.
+
+*When called with no arguments, this method simply checks that the generator
+returned any value.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying generator return values], [Check verification].*
+
+<a name="verification.threw" />
+
+----
+
+> *[verification][verification-api]* $verification->[**threw**](#verification.threw)($type = null)
+> throws [AssertionException]
+
+Throws an exception unless this generator threw an exception of the supplied
+type.
+
+*When called with no arguments, this method simply checks that the generator
+threw any exception.*
+
+*When called with a string, this method checks that the generator threw an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the generator
+threw an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the generator threw an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying generator exceptions].*
+
+<a name="verification.checkThrew" />
+
+----
+
+> *[verification][verification-api]|null* $verification->[**checkThrew**](#verification.checkThrew)($type = null)
+
+Checks if this generator threw an exception of the supplied type.
+
+*When called with no arguments, this method simply checks that the generator
+threw any exception.*
+
+*When called with a string, this method checks that the generator threw an
+exception that is an instance of `$type`.*
+
+*When called with an exception instance, this method checks that the generator
+threw an exception that is equal to the supplied instance.*
+
+*When called with a [matcher], this method checks that the generator threw an
+exception that matches the supplied matcher.*
+
+*This method supports [mock handle substitution].*
+
+*See [Verifying generator exceptions], [Check verification].*
 
 ### The event API
 
@@ -6318,6 +6201,133 @@ not yet have first-class support in *Phony*:
 
 ```php
 expect($spy->checkCalled())->to->be->ok;
+```
+
+### Generator and traversable verification
+
+When spying on a callable that returns a [generator], additional verification
+can be performed on events that happen after the generator is returned, such as
+the yielding of values. This is accomplished via the use of "generator spies".
+
+The use of generator spies is an optional behavior that can be disabled by
+calling [`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) on a spy:
+
+```php
+$spy->setUseGeneratorSpies(false);
+```
+
+"Traversable spies" also exist for other iterators and arrays, but are disabled
+by default because they typically change the return type of the spy. This
+feature can be enabled by calling
+[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) on a spy:
+
+```php
+$spy->setUseTraversableSpies(true);
+```
+
+Both [`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) and
+[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) are fluent, meaning
+spy creation and setting of these options can be done in a single expression:
+
+```php
+$spy = spy()
+    ->setUseTraversableSpies(true)
+    ->setUseGeneratorSpies(false);
+```
+
+#### Verifying iteration
+
+To verify that iteration of a generator or traversable commenced, use
+[`used()`](#verification.used) on any [generator verification result] or
+[traversable verification result]:
+
+```php
+$subject->generated()->used(); // iteration of the generator commenced
+$subject->traversed()->used(); // iteration of the traversable commenced
+```
+
+To verify that iteration of a generator or traversable completed, use
+[`consumed()`](#verification.consumed) on any [generator verification result] or
+[traversable verification result]:
+
+```php
+$subject->generated()->consumed(); // iteration of the generator completed
+$subject->traversed()->consumed(); // iteration of the traversable completed
+```
+
+#### Verifying produced values
+
+To verify that a value was yielded by a generator, use
+[`produced()`](#verification.produced) on any [generator verification result]:
+
+```php
+$generator = $subject->generated(); // returned a generator
+
+$generator->produced();         // produced anything
+$generator->produced('a');      // produced 'a' with any key
+$generator->produced('a', 'b'); // produced 'b' with key 'a'
+```
+
+To verify that a value was produced by a traversable, use
+[`produced()`](#verification.produced) on any [traversable verification result]:
+
+```php
+$traversable = $subject->traversed(); // returned a traversable
+
+$traversable->produced();         // produced anything
+$traversable->produced('a');      // produced 'a' with any key
+$traversable->produced('a', 'b'); // produced 'b' with key 'a'
+```
+
+#### Verifying values received by generators
+
+To verify that a value was received by a generator, use
+[`received()`](#verification.received) on any [generator verification result]:
+
+```php
+$generator = $subject->generated(); // returned a generator
+
+$generator->received();    // received anything
+$generator->received('a'); // received 'a'
+```
+
+#### Verifying exceptions received by generators
+
+To verify that an exception was received by a generator, use
+[`receivedException()`](#verification.receivedException) on any
+[generator verification result]:
+
+```php
+$generator = $subject->generated(); // returned a generator
+
+$generator->receivedException();                                         // received any exception
+$generator->receivedException('RuntimeException');                       // received a runtime exception
+$generator->receivedException(new RuntimeException('You done goofed.')); // received a runtime exception with a specific message
+```
+
+#### Verifying generator return values
+
+To verify a generator's return value, use [`returned()`](#verification.returned)
+on any [generator verification result]:
+
+```php
+$generator = $subject->generated(); // returned a generator
+
+$generator->returned();    // returned anything
+$generator->returned('a'); // returned 'a'
+```
+
+#### Verifying generator exceptions
+
+To verify that a generator threw an exception, use
+[`threw()`](#verification.threw) on any [generator verification result]:
+
+```php
+$generator = $subject->generated(); // returned a generator
+
+$generator->threw();                                         // threw any exception
+$generator->threw('RuntimeException');                       // threw a runtime exception
+$generator->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
 
 ### Order verification
@@ -7239,6 +7249,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [exporting recursive values]: #exporting-recursive-values
 [forwarding to the original callable]: #forwarding-to-the-original-callable
 [generating mock classes from a builder]: #generating-mock-classes-from-a-builder
+[generator and traversable verification]: #generator-and-traversable-verification
 [generator iterations that perform multiple actions]: #generator-iterations-that-perform-multiple-actions
 [hamcrest matchers]: #hamcrest-matchers
 [help]: #help
@@ -7325,12 +7336,14 @@ For the full copyright and license information, please view the [LICENSE file].
 [the exporter api]: #the-exporter-api
 [the exporter]: #the-exporter
 [the generator answer api]: #the-generator-answer-api
+[the generator verification result api]: #the-generator-verification-result-api
 [the matcher api]: #the-matcher-api
 [the mock api]: #the-mock-api
 [the mock builder api]: #the-mock-builder-api
 [the order verification api]: #the-order-verification-api
 [the spy api]: #the-spy-api
 [the stub api]: #the-stub-api
+[the traversable verification result api]: #the-traversable-verification-result-api
 [the verification result api]: #the-verification-result-api
 [the wildcard matcher api]: #the-wildcard-matcher-api
 [third-party wildcard matcher integrations]: #third-party-wildcard-matcher-integrations
@@ -7350,12 +7363,17 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying call input]: #verifying-call-input
 [verifying call output]: #verifying-call-output
 [verifying call return values]: #verifying-call-return-values
-[verifying calls with generators or traversables]: #verifying-calls-with-generators-or-traversables
 [verifying cardinality with calls]: #verifying-cardinality-with-calls
 [verifying cardinality with spies]: #verifying-cardinality-with-spies
 [verifying exceptions received by calls]: #verifying-exceptions-received-by-calls
+[verifying exceptions received by generators]: #verifying-exceptions-received-by-generators
 [verifying exceptions received by spies]: #verifying-exceptions-received-by-spies
-[verifying spies with generators or traversables]: #verifying-spies-with-generators-or-traversables
+[verifying generator exceptions]: #verifying-generator-exceptions
+[verifying generator return values]: #verifying-generator-return-values
+[verifying generators returned by calls]: #verifying-generators-returned-by-calls
+[verifying generators returned by spies]: #verifying-generators-returned-by-spies
+[verifying iteration]: #verifying-iteration
+[verifying produced values]: #verifying-produced-values
 [verifying spy closure binding]: #verifying-spy-closure-binding
 [verifying spy exceptions]: #verifying-spy-exceptions
 [verifying spy input]: #verifying-spy-input
@@ -7371,9 +7389,12 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying that all call events happen the same way]: #verifying-that-all-call-events-happen-the-same-way
 [verifying that all spy events happen the same way]: #verifying-that-all-spy-events-happen-the-same-way
 [verifying that there was no interaction with a mock]: #verifying-that-there-was-no-interaction-with-a-mock
+[verifying traversables returned by calls]: #verifying-traversables-returned-by-calls
+[verifying traversables returned by spies]: #verifying-traversables-returned-by-spies
 [verifying values produced by calls]: #verifying-values-produced-by-calls
 [verifying values produced by spies]: #verifying-values-produced-by-spies
 [verifying values received by calls]: #verifying-values-received-by-calls
+[verifying values received by generators]: #verifying-values-received-by-generators
 [verifying values received by spies]: #verifying-values-received-by-spies
 [when to use the "equal to" matcher]: #when-to-use-the-equal-to-matcher
 [yielding from a generator]: #yielding-from-a-generator
@@ -7389,7 +7410,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [default answer callback]: #the-default-answer-callback
 [full mock]: #mocking-basics
 [generator answer]: #the-generator-answer-api
-[generator spies]: #verifying-spies-with-generators-or-traversables
+[generator spies]: #generator-and-traversable-verification
+[generator verification result]: #the-generator-verification-result-api
 [matcher]: #matchers
 [mock builder]: #mock-builders
 [mock handle]: #mock-handles
@@ -7403,7 +7425,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [stubbing handle]: #stubbing-handles
 [testing framework]: #integration-with-test-frameworks
 [testing frameworks]: #integration-with-test-frameworks
-[traversable spies]: #verifying-spies-with-generators-or-traversables
+[traversable spies]: #generator-and-traversable-verification
+[traversable verification result]: #the-traversable-verification-result-api
 [verification handle]: #verification-handles
 [verification result]: #the-verification-result-api
 [verification results]: #the-verification-result-api
@@ -7414,11 +7437,13 @@ For the full copyright and license information, please view the [LICENSE file].
 [call-api]: #the-call-api
 [event-api]: #the-event-api
 [generator-answer-api]: #the-generator-answer-api
+[generator-verification-api]: #the-generator-verification-result-api
 [matcher-api]: #the-matcher-api
 [mock-api]: #the-mock-api
 [mock-builder-api]: #the-mock-builder-api
 [spy-api]: #the-spy-api
 [stub-api]: #the-stub-api
+[traversable-verification-api]: #the-traversable-verification-result-api
 [verification-api]: #the-verification-result-api
 [wildcard-api]: #the-wildcard-matcher-api
 

@@ -483,6 +483,23 @@ class CallData implements Call
     }
 
     /**
+     * Get the value returned from the generator.
+     *
+     * @return mixed                      The returned value.
+     * @throws UndefinedResponseException If this call has not yet returned a value via generator.
+     */
+    public function generatorReturnValue()
+    {
+        if ($this->endEvent instanceof ReturnedEvent) {
+            return $this->endEvent->value();
+        }
+
+        throw new UndefinedResponseException(
+            'The call has not yet returned a value via generator.'
+        );
+    }
+
+    /**
      * Get the thrown exception.
      *
      * @return Exception|Error            The thrown exception.
@@ -490,12 +507,29 @@ class CallData implements Call
      */
     public function exception()
     {
+        if ($this->responseEvent instanceof ThrewEvent) {
+            return $this->responseEvent->exception();
+        }
+
+        throw new UndefinedResponseException(
+            'The call has not yet thrown an exception.'
+        );
+    }
+
+    /**
+     * Get the exception thrown from the generator.
+     *
+     * @return Exception|Error            The thrown exception.
+     * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
+     */
+    public function generatorException()
+    {
         if ($this->endEvent instanceof ThrewEvent) {
             return $this->endEvent->exception();
         }
 
         throw new UndefinedResponseException(
-            'The call has not yet thrown an exception.'
+            'The call has not yet thrown an exception via generator.'
         );
     }
 
@@ -511,11 +545,32 @@ class CallData implements Call
             return array(null, $this->responseEvent->value());
         }
 
+        if ($this->responseEvent instanceof ThrewEvent) {
+            return array($this->responseEvent->exception(), null);
+        }
+
+        throw new UndefinedResponseException('The call has not yet responded.');
+    }
+
+    /**
+     * Get the response from the generator.
+     *
+     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException        If this call has not yet responded via generator.
+     */
+    public function generatorResponse()
+    {
+        if ($this->endEvent instanceof ReturnedEvent) {
+            return array(null, $this->endEvent->value());
+        }
+
         if ($this->endEvent instanceof ThrewEvent) {
             return array($this->endEvent->exception(), null);
         }
 
-        throw new UndefinedResponseException('The call has not yet responded.');
+        throw new UndefinedResponseException(
+            'The call has not yet responded via generator.'
+        );
     }
 
     /**
@@ -530,6 +585,8 @@ class CallData implements Call
         if ($this->responseEvent) {
             return $this->responseEvent->time();
         }
+
+        return null;
     }
 
     /**
@@ -550,6 +607,8 @@ class CallData implements Call
         if ($this->endEvent) {
             return $this->endEvent->time();
         }
+
+        return null;
     }
 
     private function normalizeIndex($size, $index, &$normalized = null)

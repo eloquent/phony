@@ -470,6 +470,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
                 $this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')),
                 $this->callEventFactory->createReturned(array('A', 'B')),
                 array(
+                    $this->callEventFactory->createUsed(),
                     $this->callEventFactory->createProduced(0, 'A'),
                     $this->callEventFactory->createProduced(1, 'B'),
                 ),
@@ -479,6 +480,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
                 $this->callEventFactory->createCalled($spy, Arguments::create('c')),
                 $this->callEventFactory->createReturned(array('C')),
                 array(
+                    $this->callEventFactory->createUsed(),
                     $this->callEventFactory->createProduced(0, 'C'),
                 ),
                 $this->callEventFactory->createConsumed()

@@ -17,6 +17,8 @@ use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 
 /**
  * Creates call verifiers.
@@ -34,6 +36,8 @@ class CallVerifierFactory
             self::$instance = new self(
                 MatcherFactory::instance(),
                 MatcherVerifier::instance(),
+                GeneratorVerifierFactory::instance(),
+                TraversableVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
                 InvocableInspector::instance()
@@ -46,21 +50,27 @@ class CallVerifierFactory
     /**
      * Construct a new call verifier factory.
      *
-     * @param MatcherFactory     $matcherFactory     The matcher factory to use.
-     * @param MatcherVerifier    $matcherVerifier    The macther verifier to use.
-     * @param AssertionRecorder  $assertionRecorder  The assertion recorder to use.
-     * @param AssertionRenderer  $assertionRenderer  The assertion renderer to use.
-     * @param InvocableInspector $invocableInspector The invocable inspector to use.
+     * @param MatcherFactory             $matcherFactory             The matcher factory to use.
+     * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
+     * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
+     * @param TraversableVerifierFactory $traversableVerifierFactory The traversable verifier factory to use.
+     * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
+     * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
+     * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
      */
     public function __construct(
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
+        GeneratorVerifierFactory $generatorVerifierFactory,
+        TraversableVerifierFactory $traversableVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
         InvocableInspector $invocableInspector
     ) {
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->generatorVerifierFactory = $generatorVerifierFactory;
+        $this->traversableVerifierFactory = $traversableVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->invocableInspector = $invocableInspector;
@@ -79,6 +89,8 @@ class CallVerifierFactory
             $call,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -101,6 +113,8 @@ class CallVerifierFactory
             $call,
                 $this->matcherFactory,
                 $this->matcherVerifier,
+                $this->generatorVerifierFactory,
+                $this->traversableVerifierFactory,
                 $this->assertionRecorder,
                 $this->assertionRenderer,
                 $this->invocableInspector
@@ -113,6 +127,8 @@ class CallVerifierFactory
     private static $instance;
     private $matcherFactory;
     private $matcherVerifier;
+    private $generatorVerifierFactory;
+    private $traversableVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
     private $invocableInspector;

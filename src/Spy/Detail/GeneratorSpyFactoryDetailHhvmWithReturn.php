@@ -33,11 +33,13 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
      *
      * @return Generator The newly created generator spy.
      */
-    public static function &createGeneratorSpy(
+    public static function createGeneratorSpy(
         Call $call,
         Generator $generator,
         CallEventFactory $callEventFactory
     ) {
+        $call->addTraversableEvent($callEventFactory->createUsed());
+
         $isFirst = true;
         $received = null;
         $receivedException = null;
@@ -59,9 +61,12 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
                 }
 
                 if (!$generator->valid()) {
-                    $call->setEndEvent($callEventFactory->createConsumed());
+                    $returnValue = $generator->getReturn();
+                    $call->setEndEvent(
+                        $callEventFactory->createReturned($returnValue)
+                    );
 
-                    return $generator->getReturn();
+                    return $returnValue;
                 }
             } catch (Throwable $thrown) {
             } catch (Exception $thrown) {

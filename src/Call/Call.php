@@ -81,6 +81,14 @@ interface Call extends Event, EventCollection
     public function returnValue();
 
     /**
+     * Get the value returned from the generator.
+     *
+     * @return mixed                      The returned value.
+     * @throws UndefinedResponseException If this call has not yet returned a value via generator.
+     */
+    public function generatorReturnValue();
+
+    /**
      * Get the thrown exception.
      *
      * @return Exception|Error            The thrown exception.
@@ -89,12 +97,28 @@ interface Call extends Event, EventCollection
     public function exception();
 
     /**
+     * Get the exception thrown from the generator.
+     *
+     * @return Exception|Error            The thrown exception.
+     * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
+     */
+    public function generatorException();
+
+    /**
      * Get the response.
      *
      * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException        If this call has not yet responded.
      */
     public function response();
+
+    /**
+     * Get the response from the generator.
+     *
+     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException        If this call has not yet responded via generator.
+     */
+    public function generatorResponse();
 
     /**
      * Get the time at which the call responded.

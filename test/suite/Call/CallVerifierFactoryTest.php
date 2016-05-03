@@ -17,6 +17,8 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -27,12 +29,16 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherFactory->addDefaultMatcherDrivers();
         $this->matcherVerifier = new MatcherVerifier();
+        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
+        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifierFactory(
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -49,6 +55,8 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callA,
             $this->matcherFactory,
             $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -67,6 +75,8 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
                 $this->callA,
                 $this->matcherFactory,
                 $this->matcherVerifier,
+                $this->generatorVerifierFactory,
+                $this->traversableVerifierFactory,
                 $this->assertionRecorder,
                 $this->assertionRenderer,
                 $this->invocableInspector
@@ -75,6 +85,8 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
                 $this->callB,
                 $this->matcherFactory,
                 $this->matcherVerifier,
+                $this->generatorVerifierFactory,
+                $this->traversableVerifierFactory,
                 $this->assertionRecorder,
                 $this->assertionRenderer,
                 $this->invocableInspector

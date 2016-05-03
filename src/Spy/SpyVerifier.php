@@ -18,9 +18,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifier;
 use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Call\Event\ProducedEvent;
-use Eloquent\Phony\Call\Event\ReceivedEvent;
-use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Cardinality\AbstractCardinalityVerifier;
 use Eloquent\Phony\Event\Event;
@@ -29,11 +26,17 @@ use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Verification\GeneratorVerifier;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifier;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use Error;
 use Exception;
+use Generator;
 use InvalidArgumentException;
 use Iterator;
 use Throwable;
+use Traversable;
 
 /**
  * Provides convenience methods for verifying interactions with a spy.
@@ -43,18 +46,22 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Construct a new spy verifier.
      *
-     * @param Spy                 $spy                 The spy.
-     * @param MatcherFactory      $matcherFactory      The matcher factory to use.
-     * @param MatcherVerifier     $matcherVerifier     The macther verifier to use.
-     * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
-     * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
-     * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
-     * @param InvocableInspector  $invocableInspector  The invocable inspector to use.
+     * @param Spy                        $spy                        The spy.
+     * @param MatcherFactory             $matcherFactory             The matcher factory to use.
+     * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
+     * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
+     * @param TraversableVerifierFactory $traversableVerifierFactory The traversable verifier factory to use.
+     * @param CallVerifierFactory        $callVerifierFactory        The call verifier factory to use.
+     * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
+     * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
+     * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
      */
     public function __construct(
         Spy $spy,
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
+        GeneratorVerifierFactory $generatorVerifierFactory,
+        TraversableVerifierFactory $traversableVerifierFactory,
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
@@ -65,6 +72,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $this->spy = $spy;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
+        $this->generatorVerifierFactory = $generatorVerifierFactory;
+        $this->traversableVerifierFactory = $traversableVerifierFactory;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
@@ -938,160 +947,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     }
 
     /**
-     * Checks if this spy produced the supplied values.
+     * Checks if this spy returned a generator.
      *
-     * When called with no arguments, this method simply checks that the spy
-     * produced any value.
-     *
-     * With a single argument, it checks that a value matching the argument was
-     * produced.
-     *
-     * With two arguments, it checks that a key and value matching the
-     * respective arguments were produced together.
-     *
-     * @param mixed $keyOrValue The key or value.
-     * @param mixed $value      The value.
-     *
-     * @return EventCollection|null The result.
+     * @return GeneratorVerifier|null The result.
      */
-    public function checkProduced($keyOrValue = null, $value = null)
-    {
-        $cardinality = $this->resetCardinality();
-
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = false;
-        } elseif (1 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = true;
-            $value = $this->matcherFactory->adapt($keyOrValue);
-        } else {
-            $checkKey = true;
-            $checkValue = true;
-            $key = $this->matcherFactory->adapt($keyOrValue);
-            $value = $this->matcherFactory->adapt($value);
-        }
-
-        $calls = $this->spy->allCalls();
-        $matchingEvents = array();
-        $totalCount = count($calls);
-        $matchCount = 0;
-
-        foreach ($calls as $call) {
-            foreach ($call->traversableEvents() as $event) {
-                if ($event instanceof ProducedEvent) {
-                    if ($checkKey && !$key->matches($event->key())) {
-                        continue;
-                    }
-
-                    if ($checkValue && !$value->matches($event->value())) {
-                        continue;
-                    }
-
-                    $matchingEvents[] = $event;
-                    ++$matchCount;
-                }
-            }
-        }
-
-        if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    /**
-     * Throws an exception unless this spy produced the supplied values.
-     *
-     * When called with no arguments, this method simply checks that the spy
-     * produced any value.
-     *
-     * With a single argument, it checks that a value matching the argument was
-     * produced.
-     *
-     * With two arguments, it checks that a key and value matching the
-     * respective arguments were produced together.
-     *
-     * @param mixed $keyOrValue The key or value.
-     * @param mixed $value      The value.
-     *
-     * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public function produced($keyOrValue = null, $value = null)
-    {
-        $cardinality = $this->cardinality;
-
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $arguments = array();
-        } elseif (1 === $argumentCount) {
-            $value = $this->matcherFactory->adapt($keyOrValue);
-            $arguments = array($value);
-        } else {
-            $key = $this->matcherFactory->adapt($keyOrValue);
-            $value = $this->matcherFactory->adapt($value);
-            $arguments = array($key, $value);
-        }
-
-        if (
-            $result =
-                call_user_func_array(array($this, 'checkProduced'), $arguments)
-        ) {
-            return $result;
-        }
-
-        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
-
-        if (0 === $argumentCount) {
-            $renderedType = sprintf('call on %s to produce', $renderedSubject);
-        } elseif (1 === $argumentCount) {
-            $renderedType = sprintf(
-                'call on %s to produce like %s',
-                $renderedSubject,
-                $value->describe()
-            );
-        } else {
-            $renderedType = sprintf(
-                'call on %s to produce like %s: %s',
-                $renderedSubject,
-                $key->describe(),
-                $value->describe()
-            );
-        }
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls, true)
-            );
-        }
-
-        return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
-        );
-    }
-
-    /**
-     * Checks if this spy produced all of the supplied key-value pairs, in the
-     * supplied order.
-     *
-     * @param mixed ...$pairs The key-value pairs.
-     *
-     * @return EventCollection|null The result.
-     */
-    public function checkProducedAll()
+    public function checkGenerated()
     {
         $cardinality = $this->resetCardinality();
 
@@ -1099,238 +959,45 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $matchingEvents = array();
         $totalCount = count($calls);
         $matchCount = 0;
-        $pairs = array();
-        $pairCount = func_num_args();
-
-        foreach (func_get_args() as $pair) {
-            if (is_array($pair)) {
-                $pairs[] = array(
-                    $this->matcherFactory->adapt($pair[0]),
-                    $this->matcherFactory->adapt($pair[1]),
-                );
-            } else {
-                $pairs[] = $this->matcherFactory->adapt($pair);
-            }
-        }
 
         foreach ($calls as $call) {
-            if (!$lastEvent = $call->responseEvent()) {
+            if (!$responseEvent = $call->responseEvent()) {
                 continue;
             }
 
-            $producedEvents = array();
+            list($exception, $returnValue) = $call->response();
 
-            foreach ($call->traversableEvents() as $event) {
-                if ($event instanceof ProducedEvent) {
-                    $producedEvents[] = $event;
-                    $lastEvent = $event;
-                }
-            }
-
-            if (count($producedEvents) === $pairCount) {
-                $isMatch = true;
-
-                foreach ($pairs as $index => $pair) {
-                    if (is_array($pair)) {
-                        if (
-                            !$pair[0]->matches($producedEvents[$index]->key())
-                        ) {
-                            $isMatch = false;
-
-                            break;
-                        }
-
-                        $value = $pair[1];
-                    } else {
-                        $value = $pair;
-                    }
-
-                    if (!$value->matches($producedEvents[$index]->value())) {
-                        $isMatch = false;
-
-                        break;
-                    }
-                }
-
-                if ($isMatch) {
-                    $matchingEvents[] = $lastEvent;
-                    ++$matchCount;
-                }
+            if ($returnValue instanceof Generator) {
+                $matchingEvents[] = $call;
+                ++$matchCount;
             }
         }
 
         if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
+            return $this->assertionRecorder->createSuccessFromEventCollection(
+                $this->generatorVerifierFactory->create($this, $matchingEvents)
+            );
         }
     }
 
     /**
-     * Throws an exception unless this spy produced all of the supplied
-     * key-value pairs, in the supplied order.
+     * Throws an exception unless this spy returned a generator.
      *
-     * @param mixed ...$pairs The key-value pairs.
-     *
-     * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return GeneratorVerifier The result.
+     * @throws Exception         If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function producedAll()
+    public function generated()
     {
         $cardinality = $this->cardinality;
 
-        $pairs = array();
-
-        foreach (func_get_args() as $pair) {
-            if (is_array($pair)) {
-                $pairs[] = array(
-                    $this->matcherFactory->adapt($pair[0]),
-                    $this->matcherFactory->adapt($pair[1]),
-                );
-            } else {
-                $pairs[] = $this->matcherFactory->adapt($pair);
-            }
-        }
-
-        if (
-            $result =
-                call_user_func_array(array($this, 'checkProducedAll'), $pairs)
-        ) {
+        if ($result = $this->checkGenerated()) {
             return $result;
         }
 
-        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
-
-        if (0 === func_num_args()) {
-            $renderedType =
-                sprintf('call on %s to produce nothing. ', $renderedSubject);
-        } else {
-            $renderedType =
-                sprintf('call on %s to produce like:', $renderedSubject);
-
-            foreach ($pairs as $pair) {
-                if (is_array($pair)) {
-                    $renderedType .= sprintf(
-                        "\n    - %s: %s",
-                        $pair[0]->describe(),
-                        $pair[1]->describe()
-                    );
-                } else {
-                    $renderedType .= sprintf("\n    - %s", $pair->describe());
-                }
-            }
-
-            $renderedType .= "\n";
-        }
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls, true)
-            );
-        }
-
-        return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s%s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+        $renderedType = sprintf(
+            'call on %s to generate',
+            $this->assertionRenderer->renderCallable($this->spy)
         );
-    }
-
-    /**
-     * Checks if this spy received the supplied value.
-     *
-     * When called with no arguments, this method simply checks that the spy
-     * received any value.
-     *
-     * @param mixed $value The value.
-     *
-     * @return EventCollection|null The result.
-     */
-    public function checkReceived($value = null)
-    {
-        $cardinality = $this->resetCardinality();
-
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $checkValue = false;
-        } else {
-            $checkValue = true;
-            $value = $this->matcherFactory->adapt($value);
-        }
-
-        $calls = $this->spy->allCalls();
-        $matchingEvents = array();
-        $totalCount = count($calls);
-        $matchCount = 0;
-
-        foreach ($calls as $call) {
-            foreach ($call->traversableEvents() as $event) {
-                if ($event instanceof ReceivedEvent) {
-                    if (!$checkValue || $value->matches($event->value())) {
-                        $matchingEvents[] = $event;
-                        ++$matchCount;
-                    }
-                }
-            }
-        }
-
-        if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
-        }
-    }
-
-    /**
-     * Throws an exception unless this spy received the supplied value.
-     *
-     * When called with no arguments, this method simply checks that the spy
-     * received any value.
-     *
-     * @param mixed $value The value.
-     *
-     * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public function received($value = null)
-    {
-        $cardinality = $this->cardinality;
-
-        $argumentCount = func_num_args();
-
-        if (0 === $argumentCount) {
-            $arguments = array();
-        } else {
-            $value = $this->matcherFactory->adapt($value);
-            $arguments = array($value);
-        }
-
-        if (
-            $result =
-                call_user_func_array(array($this, 'checkReceived'), $arguments)
-        ) {
-            return $result;
-        }
-
-        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
-
-        if (0 === $argumentCount) {
-            $renderedType = sprintf(
-                'generator returned by %s to receive value',
-                $renderedSubject
-            );
-        } else {
-            $renderedType = sprintf(
-                'generator returned by %s to receive value like %s',
-                $renderedSubject,
-                $value->describe()
-            );
-        }
 
         $calls = $this->spy->allCalls();
 
@@ -1339,7 +1006,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         } else {
             $renderedActual = sprintf(
                 "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls, true)
+                $this->assertionRenderer->renderResponses($calls)
             );
         }
 
@@ -1354,14 +1021,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     }
 
     /**
-     * Checks if this spy received an exception of the supplied type.
+     * Checks if this spy returned a traversable.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
-     *
-     * @return EventCollection|null     The result.
-     * @throws InvalidArgumentException If the type is invalid.
+     * @return TraversableVerifier|null The result.
      */
-    public function checkReceivedException($type = null)
+    public function checkTraversed()
     {
         $cardinality = $this->resetCardinality();
 
@@ -1369,123 +1033,46 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $matchingEvents = array();
         $totalCount = count($calls);
         $matchCount = 0;
-        $isTypeSupported = false;
 
-        if (!$type) {
-            $isTypeSupported = true;
-
-            foreach ($calls as $call) {
-                foreach ($call->traversableEvents() as $event) {
-                    if ($event instanceof ReceivedExceptionEvent) {
-                        $matchingEvents[] = $event;
-                        ++$matchCount;
-                    }
-                }
+        foreach ($calls as $call) {
+            if (!$responseEvent = $call->responseEvent()) {
+                continue;
             }
-        } elseif (is_string($type)) {
-            $isTypeSupported = true;
 
-            foreach ($calls as $call) {
-                foreach ($call->traversableEvents() as $event) {
-                    if ($event instanceof ReceivedExceptionEvent) {
-                        if (is_a($event->exception(), $type)) {
-                            $matchingEvents[] = $event;
-                            ++$matchCount;
-                        }
-                    }
-                }
+            list($exception, $returnValue) = $call->response();
+
+            if ($returnValue instanceof Traversable || is_array($returnValue)) {
+                $matchingEvents[] = $call;
+                ++$matchCount;
             }
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $isTypeSupported = true;
-
-                foreach ($calls as $call) {
-                    foreach ($call->traversableEvents() as $event) {
-                        if ($event instanceof ReceivedExceptionEvent) {
-                            if ($event->exception() == $type) {
-                                $matchingEvents[] = $event;
-                                ++$matchCount;
-                            }
-                        }
-                    }
-                }
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $isTypeSupported = true;
-                $type = $this->matcherFactory->adapt($type);
-
-                foreach ($calls as $call) {
-                    foreach ($call->traversableEvents() as $event) {
-                        if ($event instanceof ReceivedExceptionEvent) {
-                            if ($type->matches($event->exception())) {
-                                $matchingEvents[] = $event;
-                                ++$matchCount;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (!$isTypeSupported) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Unable to match exceptions against %s.',
-                    $this->assertionRenderer->renderValue($type)
-                )
-            );
         }
 
         if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccess($matchingEvents);
+            return $this->assertionRecorder->createSuccessFromEventCollection(
+                $this->traversableVerifierFactory
+                    ->create($this, $matchingEvents)
+            );
         }
     }
 
     /**
-     * Throws an exception unless this spy received an exception of the
-     * supplied type.
+     * Throws an exception unless this spy returned a traversable.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
-     *
-     * @return EventCollection          The result.
-     * @throws InvalidArgumentException If the type is invalid.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @return TraversableVerifier The result.
+     * @throws Exception           If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function receivedException($type = null)
+    public function traversed()
     {
         $cardinality = $this->cardinality;
 
-        if ($result = $this->checkReceivedException($type)) {
+        if ($result = $this->checkTraversed()) {
             return $result;
         }
 
-        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
-
-        if (!$type) {
-            $renderedType = sprintf(
-                'generator returned by %s to receive exception',
-                $renderedSubject
-            );
-        } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                'generator returned by %s to receive %s exception',
-                $renderedSubject,
-                $type
-            );
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $renderedType = sprintf(
-                    'generator returned by %s to receive exception equal to %s',
-                    $renderedSubject,
-                    $this->assertionRenderer->renderException($type)
-                );
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $renderedType = sprintf(
-                    'generator returned by %s to receive exception like %s',
-                    $renderedSubject,
-                    $this->matcherFactory->adapt($type)->describe()
-                );
-            }
-        }
+        $renderedType = sprintf(
+            'call on %s to be traversable',
+            $this->assertionRenderer->renderCallable($this->spy)
+        );
 
         $calls = $this->spy->allCalls();
 
@@ -1494,7 +1081,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         } else {
             $renderedActual = sprintf(
                 "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls, true)
+                $this->assertionRenderer->renderResponses($calls)
             );
         }
 
@@ -1511,6 +1098,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     private $spy;
     private $matcherFactory;
     private $matcherVerifier;
+    private $generatorVerifierFactory;
+    private $traversableVerifierFactory;
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;

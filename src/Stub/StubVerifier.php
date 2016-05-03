@@ -23,6 +23,8 @@ use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use Error;
 use Exception;
 
@@ -39,6 +41,8 @@ class StubVerifier extends SpyVerifier implements Stub
      * @param Spy                           $spy                           The spy.
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
      * @param MatcherVerifier               $matcherVerifier               The macther verifier to use.
+     * @param GeneratorVerifierFactory      $generatorVerifierFactory      The generator verifier factory to use.
+     * @param TraversableVerifierFactory    $traversableVerifierFactory    The traversable verifier factory to use.
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.
      * @param AssertionRecorder             $assertionRecorder             The assertion recorder to use.
      * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
@@ -51,6 +55,8 @@ class StubVerifier extends SpyVerifier implements Stub
         Spy $spy,
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
+        GeneratorVerifierFactory $generatorVerifierFactory,
+        TraversableVerifierFactory $traversableVerifierFactory,
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
@@ -62,6 +68,8 @@ class StubVerifier extends SpyVerifier implements Stub
             $spy,
             $matcherFactory,
             $matcherVerifier,
+            $generatorVerifierFactory,
+            $traversableVerifierFactory,
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,

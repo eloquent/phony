@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Test\EmptyGeneratorFactory;
+use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -31,12 +31,12 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
-            $this->callEventFactory->createReturned(EmptyGeneratorFactory::create())
+            $this->callEventFactory->createReturned(GeneratorFactory::createEmpty())
         );
         $this->callFactory->reset();
     }
 
-    public function testCreateWithConsumedEnd()
+    public function testCreateWithReturnedNullEnd()
     {
         $generator = call_user_func(
             function () {
@@ -55,6 +55,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = array(
+            $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced(0, 'a'),
             $this->callEventFactory->createReceived('A'),
             $this->callEventFactory->createProduced(1, 'b'),
@@ -65,7 +66,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createConsumed();
+        $endEvent = $this->callEventFactory->createReturned(null);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -99,6 +100,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = array(
+            $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced(0, 'a'),
             $this->callEventFactory->createReceived('A'),
             $this->callEventFactory->createProduced(1, 'b'),
@@ -151,6 +153,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = array(
+            $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced(0, 'a'),
             $this->callEventFactory->createReceived('A'),
             $this->callEventFactory->createProduced(1, 'b'),
@@ -161,7 +164,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createConsumed();
+        $endEvent = $this->callEventFactory->createReturned(null);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -181,8 +184,11 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         foreach ($spy as $value) {
         }
         $this->callFactory->reset();
-        $generatorEvents = array();
-        $endEvent = $this->callEventFactory->createConsumed();
+        $generatorEvents = array($this->callEventFactory->createUsed());
+        foreach ($generatorEvents as $generatorEvent) {
+            $generatorEvent->setCall($this->call);
+        }
+        $endEvent = $this->callEventFactory->createReturned(null);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
@@ -207,7 +213,10 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         } catch (RuntimeException $caughtException) {
         };
         $this->callFactory->reset();
-        $generatorEvents = array();
+        $generatorEvents = array($this->callEventFactory->createUsed());
+        foreach ($generatorEvents as $generatorEvent) {
+            $generatorEvent->setCall($this->call);
+        }
         $endEvent = $this->callEventFactory->createThrew($exception);
         $endEvent->setCall($this->call);
 

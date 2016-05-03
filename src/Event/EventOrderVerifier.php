@@ -44,6 +44,7 @@ class EventOrderVerifier
      *
      * @param AssertionRecorder $assertionRecorder The assertion recorder to use.
      * @param AssertionRenderer $assertionRenderer The assertion renderer to use.
+     * @param NullEvent         $nullEvent         The null event to use.
      */
     public function __construct(
         AssertionRecorder $assertionRecorder,

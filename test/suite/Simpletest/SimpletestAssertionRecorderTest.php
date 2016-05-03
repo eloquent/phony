@@ -58,6 +58,13 @@ class SimpletestAssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($beforeCount + 1, $afterCount);
     }
 
+    public function testCreateSuccessFromEventCollection()
+    {
+        $events = new EventSequence(array());
+
+        $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
+    }
+
     public function testCreateFailure()
     {
         $beforeCount = $this->simpletestReporter->getFailCount();
