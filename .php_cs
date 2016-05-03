@@ -6,7 +6,8 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
         array(
             'build',
             'coverage',
-            'test/fixture/mock-generator/return-type', // weird under PHP 7
+            'test/fixture/mock-generator/keyword-method',
+            'test/fixture/mock-generator/return-type',
             'vendor',
             'web',
         )

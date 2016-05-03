@@ -165,6 +165,27 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
+    public function hasArgument(
+        $a0
+    ) {
+        $argumentCount = \func_num_args();
+        $arguments = array();
+
+        if ($argumentCount > 0) {
+            $arguments[] = $a0;
+        }
+
+        for ($i = 1; $i < $argumentCount; ++$i) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Arguments($arguments)
+        );
+
+        return $result;
+    }
+
     public function declareQueue()
     {
         $argumentCount = \func_num_args();
@@ -455,6 +476,22 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function getConsumerTag()
+    {
+        $argumentCount = \func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; ++$i) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Arguments($arguments)
+        );
+
+        return $result;
+    }
+
+    public function declare()
     {
         $argumentCount = \func_num_args();
         $arguments = array();
