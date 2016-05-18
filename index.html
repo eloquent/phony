@@ -219,17 +219,15 @@
 <a href="#verifying-spy-output">Verifying spy output</a>
 
 <ul>
-<li><a href="#verifying-spy-return-values">Verifying spy return values</a></li>
-<li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
-</ul>
-</li>
 <li>
-<a href="#verifying-spies-with-generators-or-traversables">Verifying spies with generators or traversables</a>
+<a href="#verifying-spy-return-values">Verifying spy return values</a>
 
 <ul>
-<li><a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a></li>
-<li><a href="#verifying-values-received-by-spies">Verifying values received by spies</a></li>
-<li><a href="#verifying-exceptions-received-by-spies">Verifying exceptions received by spies</a></li>
+<li><a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a></li>
+<li><a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a></li>
+</ul>
+</li>
+<li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
 </ul>
 </li>
 <li>
@@ -265,17 +263,15 @@
 <a href="#verifying-call-output">Verifying call output</a>
 
 <ul>
-<li><a href="#verifying-call-return-values">Verifying call return values</a></li>
-<li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
-</ul>
-</li>
 <li>
-<a href="#verifying-calls-with-generators-or-traversables">Verifying calls with generators or traversables</a>
+<a href="#verifying-call-return-values">Verifying call return values</a>
 
 <ul>
-<li><a href="#verifying-values-produced-by-calls">Verifying values produced by calls</a></li>
-<li><a href="#verifying-values-received-by-calls">Verifying values received by calls</a></li>
-<li><a href="#verifying-exceptions-received-by-calls">Verifying exceptions received by calls</a></li>
+<li><a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a></li>
+<li><a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a></li>
+</ul>
+</li>
+<li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
 </ul>
 </li>
 <li>
@@ -294,10 +290,24 @@
 
 <ul>
 <li><a href="#the-verification-result-api">The verification result API</a></li>
+<li><a href="#the-traversable-verification-result-api">The traversable verification result API</a></li>
+<li><a href="#the-generator-verification-result-api">The generator verification result API</a></li>
 <li><a href="#the-event-api">The event API</a></li>
 <li><a href="#the-order-verification-api">The order verification API</a></li>
 <li><a href="#standard-verification">Standard verification</a></li>
 <li><a href="#check-verification">Check verification</a></li>
+<li>
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>
+
+<ul>
+<li><a href="#verifying-iteration">Verifying iteration</a></li>
+<li><a href="#verifying-produced-values">Verifying produced values</a></li>
+<li><a href="#verifying-values-received-by-generators">Verifying values received by generators</a></li>
+<li><a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a></li>
+<li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
+<li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
+</ul>
+</li>
 <li>
 <a href="#order-verification">Order verification</a>
 
@@ -2202,7 +2212,7 @@ behavior customization.</p>
 <p><em>bool</em> $stub-&gt;<a href="#stub.useGeneratorSpies"><strong>useGeneratorSpies</strong></a>()</p>
 </blockquote>
 
-<p>Returns <code>true</code> if this stub uses <a href="#verifying-spies-with-generators-or-traversables">generator spies</a>.</p>
+<p>Returns <code>true</code> if this stub uses <a href="#generator-and-traversable-verification">generator spies</a>.</p>
 
 <p><a name="stub.setUseGeneratorSpies"></a></p>
 
@@ -2212,7 +2222,7 @@ behavior customization.</p>
 <p><em>fluent</em> $stub-&gt;<a href="#stub.setUseGeneratorSpies"><strong>setUseGeneratorSpies</strong></a>($useGeneratorSpies)</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#verifying-spies-with-generators-or-traversables">generator spies</a>.</p>
+<p>Turn on or off the use of <a href="#generator-and-traversable-verification">generator spies</a>.</p>
 
 <p><a name="stub.useTraversableSpies"></a></p>
 
@@ -2222,7 +2232,7 @@ behavior customization.</p>
 <p><em>bool</em> $stub-&gt;<a href="#stub.useTraversableSpies"><strong>useTraversableSpies</strong></a>()</p>
 </blockquote>
 
-<p>Returns <code>true</code> if this stub uses <a href="#verifying-spies-with-generators-or-traversables">traversable spies</a>.</p>
+<p>Returns <code>true</code> if this stub uses <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
 
 <p><a name="stub.setUseTraversableSpies"></a></p>
 
@@ -2232,7 +2242,7 @@ behavior customization.</p>
 <p><em>fluent</em> $stub-&gt;<a href="#stub.setUseTraversableSpies"><strong>setUseTraversableSpies</strong></a>($useTraversableSpies)</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#verifying-spies-with-generators-or-traversables">traversable spies</a>.</p>
+<p>Turn on or off the use of <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
 
 <p><a name="stub.stopRecording"></a></p>
 
@@ -2569,7 +2579,7 @@ exception that matches the supplied matcher.</em></p>
 <p><em><a href="#the-verification-result-api">verification</a>|null</em> $stub-&gt;<a href="#stub.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
 </blockquote>
 
-<p>Checks if an exception of the supplied type was thrown.</p>
+<p>Checks if this stub threw an exception of the supplied type.</p>
 
 <p><em>When called with no arguments, this method simply checks that the stub threw
 any exception.</em></p>
@@ -2586,178 +2596,6 @@ exception that matches the supplied matcher.</em></p>
 <p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-spy-exceptions">Verifying spy exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="stub.produced"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $stub-&gt;<a href="#stub.produced"><strong>produced</strong></a>($keyOrValue = null, $value = null)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Checks if this stub produced the supplied values.</p>
-
-<p><em>When called with no arguments, this method simply checks that the stub produced
-any value.</em></p>
-
-<p><em>With a single argument, it checks that a value matching the argument was
-produced.</em></p>
-
-<p><em>With two arguments, it checks that a key and value matching the respective
-arguments were produced together.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>.</em></p>
-
-<p><a name="stub.checkProduced"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $stub-&gt;<a href="#stub.checkProduced"><strong>checkProduced</strong></a>($keyOrValue = null, $value = null)</p>
-</blockquote>
-
-<p>Checks if this stub produced the supplied values.</p>
-
-<p><em>When called with no arguments, this method simply checks that the stub produced
-any value.</em></p>
-
-<p><em>With a single argument, it checks that a value matching the argument was
-produced.</em></p>
-
-<p><em>With two arguments, it checks that a key and value matching the respective
-arguments were produced together.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="stub.producedAll"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $stub-&gt;<a href="#stub.producedAll"><strong>producedAll</strong></a>(...$pairs)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless this stub produced all of the supplied key-value
-pairs, in the supplied order, in a single call.</p>
-
-<p><em>Each value in <code>$pairs</code> is equivalent to a set of arguments passed to
-<a href="#stub.produced"><code>produced()</code></a>.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>.</em></p>
-
-<p><a name="stub.checkProducedAll"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $stub-&gt;<a href="#stub.checkProducedAll"><strong>checkProducedAll</strong></a>(...$pairs)</p>
-</blockquote>
-
-<p>Checks if this stub produced all of the supplied key-value pairs, in the
-supplied order, in a single call.</p>
-
-<p><em>Each value in <code>$pairs</code> is equivalent to a set of arguments passed to
-<a href="#stub.checkProduced"><code>checkProduced()</code></a>.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="stub.received"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $stub-&gt;<a href="#stub.received"><strong>received</strong></a>($value = null)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless this stub received the supplied value.</p>
-
-<p><em>When called with no arguments, this method simply checks that the stub received
-any value.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-values-received-by-spies">Verifying values received by spies</a>.</em></p>
-
-<p><a name="stub.checkReceived"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $stub-&gt;<a href="#stub.checkReceived"><strong>checkReceived</strong></a>($value = null)</p>
-</blockquote>
-
-<p>Checks if this stub received the supplied value.</p>
-
-<p><em>When called with no arguments, this method simply checks that the stub received
-any value.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-values-received-by-spies">Verifying values received by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="stub.receivedException"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $stub-&gt;<a href="#stub.receivedException"><strong>receivedException</strong></a>($type = null)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless this call received an exception of the supplied type.</p>
-
-<p><em>When called with no arguments, this method simply checks that the stub received
-any exception.</em></p>
-
-<p><em>When called with a string, this method checks that the stub received an
-exception that is an instance of <code>$type</code>.</em></p>
-
-<p><em>When called with an exception instance, this method checks that the stub
-received an exception that is equal to the supplied instance.</em></p>
-
-<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the stub received an
-exception that matches the supplied matcher.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-exceptions-received-by-spies">Verifying exceptions received by spies</a>.</em></p>
-
-<p><a name="stub.checkReceivedException"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $stub-&gt;<a href="#stub.checkReceivedException"><strong>checkReceivedException</strong></a>($type = null)</p>
-</blockquote>
-
-<p>Checks if this stub received an exception of the supplied type.</p>
-
-<p><em>When called with no arguments, this method simply checks that the stub received
-any exception.</em></p>
-
-<p><em>When called with a string, this method checks that the stub received an
-exception that is an instance of <code>$type</code>.</em></p>
-
-<p><em>When called with an exception instance, this method checks that the stub
-received an exception that is equal to the supplied instance.</em></p>
-
-<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the stub received an
-exception that matches the supplied matcher.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-exceptions-received-by-spies">Verifying exceptions received by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
 <p><a name="stub.never"></a></p>
 
@@ -4444,7 +4282,7 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p><em>bool</em> $spy-&gt;<a href="#spy.useGeneratorSpies"><strong>useGeneratorSpies</strong></a>()</p>
 </blockquote>
 
-<p>Returns <code>true</code> if this spy uses <a href="#verifying-spies-with-generators-or-traversables">generator spies</a>.</p>
+<p>Returns <code>true</code> if this spy uses <a href="#generator-and-traversable-verification">generator spies</a>.</p>
 
 <p><a name="spy.setUseGeneratorSpies"></a></p>
 
@@ -4454,7 +4292,7 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p><em>fluent</em> $spy-&gt;<a href="#spy.setUseGeneratorSpies"><strong>setUseGeneratorSpies</strong></a>($useGeneratorSpies)</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#verifying-spies-with-generators-or-traversables">generator spies</a>.</p>
+<p>Turn on or off the use of <a href="#generator-and-traversable-verification">generator spies</a>.</p>
 
 <p><a name="spy.useTraversableSpies"></a></p>
 
@@ -4464,7 +4302,7 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p><em>bool</em> $spy-&gt;<a href="#spy.useTraversableSpies"><strong>useTraversableSpies</strong></a>()</p>
 </blockquote>
 
-<p>Returns <code>true</code> if this spy uses <a href="#verifying-spies-with-generators-or-traversables">traversable spies</a>.</p>
+<p>Returns <code>true</code> if this spy uses <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
 
 <p><a name="spy.setUseTraversableSpies"></a></p>
 
@@ -4474,7 +4312,7 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p><em>fluent</em> $spy-&gt;<a href="#spy.setUseTraversableSpies"><strong>setUseTraversableSpies</strong></a>($useTraversableSpies)</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#verifying-spies-with-generators-or-traversables">traversable spies</a>.</p>
+<p>Turn on or off the use of <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
 
 <p><a name="spy.stopRecording"></a></p>
 
@@ -4811,7 +4649,7 @@ exception that matches the supplied matcher.</em></p>
 <p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
 </blockquote>
 
-<p>Checks if an exception of the supplied type was thrown.</p>
+<p>Checks if this spy threw an exception of the supplied type.</p>
 
 <p><em>When called with no arguments, this method simply checks that the spy threw any
 exception.</em></p>
@@ -4829,177 +4667,59 @@ exception that matches the supplied matcher.</em></p>
 
 <p><em>See <a href="#verifying-spy-exceptions">Verifying spy exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
-<p><a name="spy.produced"></a></p>
+<p><a name="spy.generated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.produced"><strong>produced</strong></a>($keyOrValue = null, $value = null)
+<p><em><a href="#the-generator-verification-result-api">generator-verification</a></em> $spy-&gt;<a href="#spy.generated"><strong>generated</strong></a>()
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Checks if this spy produced the supplied values.</p>
+<p>Throws an exception unless this spy returned a generator.</p>
 
-<p><em>When called with no arguments, this method simply checks that the spy produced
-any value.</em></p>
+<p><em>See <a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
-<p><em>With a single argument, it checks that a value matching the argument was
-produced.</em></p>
-
-<p><em>With two arguments, it checks that a key and value matching the respective
-arguments were produced together.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>.</em></p>
-
-<p><a name="spy.checkProduced"></a></p>
+<p><a name="spy.checkGenerated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkProduced"><strong>checkProduced</strong></a>($keyOrValue = null, $value = null)</p>
+<p><em><a href="#the-generator-verification-result-api">generator-verification</a>|null</em> $spy-&gt;<a href="#spy.checkGenerated"><strong>checkGenerated</strong></a>()</p>
 </blockquote>
 
-<p>Checks if this spy produced the supplied values.</p>
+<p>Checks if this spy returned a generator.</p>
 
-<p><em>When called with no arguments, this method simply checks that the spy produced
-any value.</em></p>
+<p><em>See <a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
-<p><em>With a single argument, it checks that a value matching the argument was
-produced.</em></p>
-
-<p><em>With two arguments, it checks that a key and value matching the respective
-arguments were produced together.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="spy.producedAll"></a></p>
+<p><a name="spy.traversed"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.producedAll"><strong>producedAll</strong></a>(...$pairs)
+<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a></em> $spy-&gt;<a href="#spy.traversed"><strong>traversed</strong></a>()
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Throws an exception unless this spy produced all of the supplied key-value
-pairs, in the supplied order, in a single call.</p>
+<p>Throws an exception unless this spy returned a traversable.</p>
 
-<p><em>Each value in <code>$pairs</code> is equivalent to a set of arguments passed to
-<a href="#spy.produced"><code>produced()</code></a>.</em></p>
+<p><em>See <a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>.</em></p>
-
-<p><a name="spy.checkProducedAll"></a></p>
+<p><a name="spy.checkTraversed"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkProducedAll"><strong>checkProducedAll</strong></a>(...$pairs)</p>
+<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a>|null</em> $spy-&gt;<a href="#spy.checkTraversed"><strong>checkTraversed</strong></a>()</p>
 </blockquote>
 
-<p>Checks if this spy produced all of the supplied key-value pairs, in the supplied
-order, in a single call.</p>
+<p>Checks if this spy returned a traversable.</p>
 
-<p><em>Each value in <code>$pairs</code> is equivalent to a set of arguments passed to
-<a href="#spy.checkProduced"><code>checkProduced()</code></a>.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="spy.received"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.received"><strong>received</strong></a>($value = null)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless this spy received the supplied value.</p>
-
-<p><em>When called with no arguments, this method simply checks that the spy received
-any value.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-values-received-by-spies">Verifying values received by spies</a>.</em></p>
-
-<p><a name="spy.checkReceived"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkReceived"><strong>checkReceived</strong></a>($value = null)</p>
-</blockquote>
-
-<p>Checks if this spy received the supplied value.</p>
-
-<p><em>When called with no arguments, this method simply checks that the spy received
-any value.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-values-received-by-spies">Verifying values received by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="spy.receivedException"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.receivedException"><strong>receivedException</strong></a>($type = null)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless this call received an exception of the supplied type.</p>
-
-<p><em>When called with no arguments, this method simply checks that the spy received
-any exception.</em></p>
-
-<p><em>When called with a string, this method checks that the spy received an
-exception that is an instance of <code>$type</code>.</em></p>
-
-<p><em>When called with an exception instance, this method checks that the spy
-received an exception that is equal to the supplied instance.</em></p>
-
-<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the spy received an
-exception that matches the supplied matcher.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-exceptions-received-by-spies">Verifying exceptions received by spies</a>.</em></p>
-
-<p><a name="spy.checkReceivedException"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkReceivedException"><strong>checkReceivedException</strong></a>($type = null)</p>
-</blockquote>
-
-<p>Checks if this spy received an exception of the supplied type.</p>
-
-<p><em>When called with no arguments, this method simply checks that the spy received
-any exception.</em></p>
-
-<p><em>When called with a string, this method checks that the spy received an
-exception that is an instance of <code>$type</code>.</em></p>
-
-<p><em>When called with an exception instance, this method checks that the spy
-received an exception that is equal to the supplied instance.</em></p>
-
-<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the spy received an
-exception that matches the supplied matcher.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-exceptions-received-by-spies">Verifying exceptions received by spies</a>, <a href="#check-verification">Check verification</a>.</em></p>
+<p><em>See <a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
 <p><a name="spy.never"></a></p>
 
@@ -5240,6 +4960,45 @@ verification in use.</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>returned();    <span class="pl-c">// returned anything</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// returned 'a'</span></span></pre></div>
 
+<h5>
+<a id="verifying-generators-returned-by-spies" class="anchor" href="#verifying-generators-returned-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generators returned by spies</h5>
+
+<p>To verify that a spy returned a <a href="http://php.net/language.generators.overview">generator</a>, use
+<a href="#spy.generated"><code>generated()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>generated();</span></pre></div>
+
+<p>The result returned by <a href="#spy.generated"><code>generated()</code></a> can be used for further
+verification of the generator's behavior:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// generator yielded 'a'</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// generator returned 'b'</span></span></pre></div>
+
+<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+available verifications.</p>
+
+<h5>
+<a id="verifying-traversables-returned-by-spies" class="anchor" href="#verifying-traversables-returned-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying traversables returned by spies</h5>
+
+<p>To verify that a spy returned a traversable value, such as an array or iterator,
+use <a href="#spy.traversed"><code>traversed()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>traversed();</span></pre></div>
+
+<p>If <a href="#generator-and-traversable-verification">traversable spies</a> are enabled, the result returned by
+<a href="#spy.traversed"><code>traversed()</code></a> can be used for further verification of the
+traversable's behavior:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$traversable</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>traversed(); <span class="pl-c">// returned a traversable</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// traversable produced 'a'</span></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>); <span class="pl-c">// traversable produced 'b' =&gt; 'c'</span></span></pre></div>
+
+<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+available verifications.</p>
+
 <h4>
 <a id="verifying-spy-exceptions" class="anchor" href="#verifying-spy-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy exceptions</h4>
 
@@ -5248,82 +5007,6 @@ verification in use.</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw();                                         <span class="pl-c">// threw any exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// threw a runtime exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// threw a runtime exception with a specific message</span></span></pre></div>
-
-<h3>
-<a id="verifying-spies-with-generators-or-traversables" class="anchor" href="#verifying-spies-with-generators-or-traversables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spies with generators or traversables</h3>
-
-<p><em>Phony</em> records values and exceptions that are passed in and out of
-<a href="http://php.net/language.generators.overview">generators</a>:</p>
-
-<ul>
-<li>When a generator uses the <a href="http://php.net/language.generators.syntax#control-structures.yield">yield</a> keyword, this is recorded as a <em>produced
-value</em>.</li>
-<li>When calling code uses <a href="http://php.net/generator.send">Generator::send()</a>, this is recorded as a <em>sent
-value</em>.</li>
-<li>When calling code uses <a href="http://php.net/generator.throw">Generator::throw()</a>, this is recorded as a <em>sent
-exception</em>.</li>
-<li>When a generator ends, either implicitly, or with an explicit <code>return</code>
-statement, this is recorded as a <em>returned value</em> of <code>null</code> (as generators
-cannot return values).</li>
-<li>When a generator ends because of an exception, this is recorded as a <em>thrown
-exception</em>.</li>
-</ul>
-
-<p>This behavior is enabled by default for generators, and can optionally be
-enabled for other traversables by calling
-<a href="#spy.setUseTraversableSpies"><code>setUseTraversableSpies()</code></a> on a spy:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseTraversableSpies(<span class="pl-c1">true</span>);</span></pre></div>
-
-<p>For other traversables, such as arrays and iterators, the values are recorded as
-<em>produced values</em>.</p>
-
-<p>To turn off generator spies, use
-<a href="#spy.setUseGeneratorSpies"><code>setUseGeneratorSpies()</code></a> on a spy:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseGeneratorSpies(<span class="pl-c1">false</span>);</span></pre></div>
-
-<p>Both <a href="#spy.setUseGeneratorSpies"><code>setUseGeneratorSpies()</code></a> and
-<a href="#spy.setUseTraversableSpies"><code>setUseTraversableSpies()</code></a> are fluent, meaning
-spy creation and setting of these options can be done in a single expression:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy()</span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>setUseTraversableSpies(<span class="pl-c1">true</span>)</span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>setUseGeneratorSpies(<span class="pl-c1">false</span>);</span></pre></div>
-
-<h4>
-<a id="verifying-values-produced-by-spies" class="anchor" href="#verifying-values-produced-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying values produced by spies</h4>
-
-<p>To verify that a value was produced by a spy, use <a href="#spy.produced"><code>produced()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>produced();         <span class="pl-c">// produced anything</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// produced 'a' with any key</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'b' with key 'a'</span></span></pre></div>
-
-<p>To verify that a set of values were produced by a spy in a specific order, in a
-single call, use <a href="#spy.producedAll"><code>producedAll()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>producedAll();                <span class="pl-c">// produced nothing (an empty traversable)</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>producedAll(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);        <span class="pl-c">// produced 'a', then 'b', with any keys</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>producedAll(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>]); <span class="pl-c">// produced 'a' with any key, then 'c' with key 'b'</span></span></pre></div>
-
-<h4>
-<a id="verifying-values-received-by-spies" class="anchor" href="#verifying-values-received-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying values received by spies</h4>
-
-<p>To verify that a value was received by a spy, use <a href="#spy.received"><code>received()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>received();    <span class="pl-c">// received anything</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>received(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// received 'a'</span></span></pre></div>
-
-<h4>
-<a id="verifying-exceptions-received-by-spies" class="anchor" href="#verifying-exceptions-received-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying exceptions received by spies</h4>
-
-<p>To verify that an exception was received by a spy, use
-<a href="#spy.receivedException"><code>receivedException()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>receivedException();                                         <span class="pl-c">// received any exception</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// received a runtime exception</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// received a runtime exception with a specific message</span></span></pre></div>
 
 <h3>
 <a id="verifying-cardinality-with-spies" class="anchor" href="#verifying-cardinality-with-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with spies</h3>
@@ -5526,6 +5209,21 @@ throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 <p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
 responded, or threw an exception.</em></p>
 
+<p><a name="call.generatorReturnValue"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>mixed</em> $call-&gt;<a href="#call.generatorReturnValue"><strong>generatorReturnValue</strong></a>()
+throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
+</blockquote>
+
+<p>Get the generator return value.</p>
+
+<p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
+responded, did not respond by returning a generator, has not completed
+iteration, or if the generator ended by throwing an exception.</em></p>
+
 <p><a name="call.exception"></a></p>
 
 <hr>
@@ -5539,6 +5237,21 @@ throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 
 <p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
 responded, or did not throw an exception.</em></p>
+
+<p><a name="call.generatorException"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="http://php.net/class.throwable">Throwable</a></em> $call-&gt;<a href="#call.generatorException"><strong>generatorException</strong></a>()
+throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
+</blockquote>
+
+<p>Get the exception thrown by the generator.</p>
+
+<p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
+responded, did not respond by returning a generator, has not completed
+iteration, or if the generator ended by returning a value.</em></p>
 
 <p><a name="call.response"></a></p>
 
@@ -5557,6 +5270,25 @@ or <code>null</code> if an exception was thrown.</em></p>
 
 <p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
 responded.</em></p>
+
+<p><a name="call.generatorResponse"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>tuple&lt;<a href="http://php.net/class.throwable">Throwable</a>|null,mixed&gt;</em> $call-&gt;<a href="#call.generatorResponse"><strong>generatorResponse</strong></a>()
+throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
+</blockquote>
+
+<p>Get the generator response.</p>
+
+<p><em>This method returns a 2-tuple. The first element is the thrown exception, or
+<code>null</code> if no exception was thrown. The second element is the returned value,
+or <code>null</code> if an exception was thrown.</em></p>
+
+<p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
+responded, did not respond by returning a generator, or if the generator has not
+completed iteration.</em></p>
 
 <p><a name="call.hasResponded"></a></p>
 
@@ -5604,11 +5336,11 @@ responded.</em></p>
 
 <p>Returns true if this call has completed.</p>
 
-<p><em>When <a href="#verifying-spies-with-generators-or-traversables">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#verifying-spies-with-generators-or-traversables">traversable spies</a> are in use, a call that returns a
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
 traversable will not be considered "complete" until the traversable has been
 completely consumed via iteration.</em></p>
 
@@ -5648,11 +5380,11 @@ completely consumed via iteration.</em></p>
 
 <p><em>If the call has not yet completed, <code>null</code> will be returned.</em></p>
 
-<p><em>When <a href="#verifying-spies-with-generators-or-traversables">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#verifying-spies-with-generators-or-traversables">traversable spies</a> are in use, a call that returns a
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
 traversable will not be considered "complete" until the traversable has been
 completely consumed via iteration.</em></p>
 
@@ -5682,11 +5414,11 @@ completely consumed via iteration.</em></p>
 
 <p><em>If the call has not yet completed, <code>null</code> will be returned.</em></p>
 
-<p><em>When <a href="#verifying-spies-with-generators-or-traversables">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#verifying-spies-with-generators-or-traversables">traversable spies</a> are in use, a call that returns a
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
 traversable will not be considered "complete" until the traversable has been
 completely consumed via iteration.</em></p>
 
@@ -5836,7 +5568,7 @@ exception that matches the supplied matcher.</em></p>
 <p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
 </blockquote>
 
-<p>Checks if an exception of the supplied type was thrown.</p>
+<p>Checks if this call threw an exception of the supplied type.</p>
 
 <p><em>When called with no arguments, this method simply checks that the call threw
 any exception.</em></p>
@@ -5854,177 +5586,59 @@ exception that matches the supplied matcher.</em></p>
 
 <p><em>See <a href="#verifying-call-exceptions">Verifying call exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
-<p><a name="call.produced"></a></p>
+<p><a name="call.generated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.produced"><strong>produced</strong></a>($keyOrValue = null, $value = null)
+<p><em><a href="#the-generator-verification-result-api">generator-verification</a></em> $call-&gt;<a href="#call.generated"><strong>generated</strong></a>()
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Checks if this call produced the supplied values.</p>
+<p>Throws an exception unless this call returned a generator.</p>
 
-<p><em>When called with no arguments, this method simply checks that the call produced
-any value.</em></p>
+<p><em>See <a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
-<p><em>With a single argument, it checks that a value matching the argument was
-produced.</em></p>
-
-<p><em>With two arguments, it checks that a key and value matching the respective
-arguments were produced together.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-calls">Verifying values produced by calls</a>.</em></p>
-
-<p><a name="call.checkProduced"></a></p>
+<p><a name="call.checkGenerated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkProduced"><strong>checkProduced</strong></a>($keyOrValue = null, $value = null)</p>
+<p><em><a href="#the-generator-verification-result-api">generator-verification</a>|null</em> $call-&gt;<a href="#call.checkGenerated"><strong>checkGenerated</strong></a>()</p>
 </blockquote>
 
-<p>Checks if this call produced the supplied values.</p>
+<p>Checks if this call returned a generator.</p>
 
-<p><em>When called with no arguments, this method simply checks that the call produced
-any value.</em></p>
+<p><em>See <a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
-<p><em>With a single argument, it checks that a value matching the argument was
-produced.</em></p>
-
-<p><em>With two arguments, it checks that a key and value matching the respective
-arguments were produced together.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-calls">Verifying values produced by calls</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="call.producedAll"></a></p>
+<p><a name="call.traversed"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.producedAll"><strong>producedAll</strong></a>(...$pairs)
+<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a></em> $call-&gt;<a href="#call.traversed"><strong>traversed</strong></a>()
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Throws an exception unless this call produced all of the supplied key-value
-pairs, in the supplied order.</p>
+<p>Throws an exception unless this call returned a traversable.</p>
 
-<p><em>Each value in <code>$pairs</code> is equivalent to a set of arguments passed to
-<a href="#call.produced"><code>produced()</code></a>.</em></p>
+<p><em>See <a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-calls">Verifying values produced by calls</a>.</em></p>
-
-<p><a name="call.checkProducedAll"></a></p>
+<p><a name="call.checkTraversed"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkProducedAll"><strong>checkProducedAll</strong></a>(...$pairs)</p>
+<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a>|null</em> $call-&gt;<a href="#call.checkTraversed"><strong>checkTraversed</strong></a>()</p>
 </blockquote>
 
-<p>Checks if this call produced all of the supplied key-value pairs, in the
-supplied order.</p>
+<p>Checks if this call returned a traversable.</p>
 
-<p><em>Each value in <code>$pairs</code> is equivalent to a set of arguments passed to
-<a href="#call.checkProduced"><code>checkProduced()</code></a>.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
-
-<p><em>See <a href="#verifying-values-produced-by-calls">Verifying values produced by calls</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="call.received"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.received"><strong>received</strong></a>($value = null)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless this call received the supplied value.</p>
-
-<p><em>When called with no arguments, this method simply checks that the call received
-any value.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-values-received-by-calls">Verifying values received by calls</a>.</em></p>
-
-<p><a name="call.checkReceived"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkReceived"><strong>checkReceived</strong></a>($value = null)</p>
-</blockquote>
-
-<p>Checks if this call received the supplied value.</p>
-
-<p><em>When called with no arguments, this method simply checks that the call received
-any value.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-values-received-by-calls">Verifying values received by calls</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="call.receivedException"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.receivedException"><strong>receivedException</strong></a>($type = null)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless this call received an exception of the supplied type.</p>
-
-<p><em>When called with no arguments, this method simply checks that the call received
-any exception.</em></p>
-
-<p><em>When called with a string, this method checks that the call received an
-exception that is an instance of <code>$type</code>.</em></p>
-
-<p><em>When called with an exception instance, this method checks that the call
-received an exception that is equal to the supplied instance.</em></p>
-
-<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the call received an
-exception that matches the supplied matcher.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-exceptions-received-by-calls">Verifying exceptions received by calls</a>.</em></p>
-
-<p><a name="call.checkReceivedException"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkReceivedException"><strong>checkReceivedException</strong></a>($type = null)</p>
-</blockquote>
-
-<p>Checks if this call received an exception of the supplied type.</p>
-
-<p><em>When called with no arguments, this method simply checks that the call received
-any exception.</em></p>
-
-<p><em>When called with a string, this method checks that the call received an
-exception that is an instance of <code>$type</code>.</em></p>
-
-<p><em>When called with an exception instance, this method checks that the call
-received an exception that is equal to the supplied instance.</em></p>
-
-<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the call received an
-exception that matches the supplied matcher.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-exceptions-received-by-calls">Verifying exceptions received by calls</a>, <a href="#check-verification">Check verification</a>.</em></p>
+<p><em>See <a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a>,
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
 
 <p><a name="call.never"></a></p>
 
@@ -6288,6 +5902,45 @@ passed to <a href="#call.calledWith"><code>calledWith()</code></a> can be litera
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>returned();    <span class="pl-c">// returned anything</span></span>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// returned 'a'</span></span></pre></div>
 
+<h5>
+<a id="verifying-generators-returned-by-calls" class="anchor" href="#verifying-generators-returned-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generators returned by calls</h5>
+
+<p>To verify that a call returned a <a href="http://php.net/language.generators.overview">generator</a>, use
+<a href="#call.generated"><code>generated()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>generated();</span></pre></div>
+
+<p>The result returned by <a href="#call.generated"><code>generated()</code></a> can be used for further
+verification of the generator's behavior:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// generator yielded 'a'</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// generator returned 'b'</span></span></pre></div>
+
+<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+available verifications.</p>
+
+<h5>
+<a id="verifying-traversables-returned-by-calls" class="anchor" href="#verifying-traversables-returned-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying traversables returned by calls</h5>
+
+<p>To verify that a call returned a traversable value, such as an array or
+iterator, use <a href="#call.traversed"><code>traversed()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>traversed();</span></pre></div>
+
+<p>If <a href="#generator-and-traversable-verification">traversable spies</a> are enabled, the result returned by
+<a href="#call.traversed"><code>traversed()</code></a> can be used for further verification of the
+traversable's behavior:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$traversable</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>traversed(); <span class="pl-c">// returned a traversable</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// traversable produced 'a'</span></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>); <span class="pl-c">// traversable produced 'b' =&gt; 'c'</span></span></pre></div>
+
+<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+available verifications.</p>
+
 <h4>
 <a id="verifying-call-exceptions" class="anchor" href="#verifying-call-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call exceptions</h4>
 
@@ -6296,71 +5949,6 @@ passed to <a href="#call.calledWith"><code>calledWith()</code></a> can be litera
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>threw();                                         <span class="pl-c">// threw any exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>threw(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// threw a runtime exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// threw a runtime exception with a specific message</span></span></pre></div>
-
-<h3>
-<a id="verifying-calls-with-generators-or-traversables" class="anchor" href="#verifying-calls-with-generators-or-traversables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying calls with generators or traversables</h3>
-
-<p><em>Phony</em> records values and exceptions that are passed in and out of
-<a href="http://php.net/language.generators.overview">generators</a>:</p>
-
-<ul>
-<li>When a generator uses the <a href="http://php.net/language.generators.syntax#control-structures.yield">yield</a> keyword, this is recorded as a <em>produced
-value</em>.</li>
-<li>When calling code uses <a href="http://php.net/generator.send">Generator::send()</a>, this is recorded as a <em>sent
-value</em>.</li>
-<li>When calling code uses <a href="http://php.net/generator.throw">Generator::throw()</a>, this is recorded as a <em>sent
-exception</em>.</li>
-<li>When a generator ends, either implicitly, or with an explicit <code>return</code>
-statement, this is recorded as a <em>returned value</em> of <code>null</code> (as generators
-cannot return values).</li>
-<li>When a generator ends because of an exception, this is recorded as a <em>thrown
-exception</em>.</li>
-</ul>
-
-<p>This behavior is enabled by default for generators, and can optionally be
-enabled for other traversables by calling
-<a href="#spy.setUseTraversableSpies"><code>setUseTraversableSpies()</code></a> on a spy:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseTraversableSpies(<span class="pl-c1">true</span>);</span></pre></div>
-
-<p>For other traversables, such as arrays and iterators, the values are recorded as
-<em>produced values</em>.</p>
-
-<h4>
-<a id="verifying-values-produced-by-calls" class="anchor" href="#verifying-values-produced-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying values produced by calls</h4>
-
-<p>To verify that a value was produced by a call, use
-<a href="#call.produced"><code>produced()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>produced();         <span class="pl-c">// produced anything</span></span>
-<span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// produced 'a' with any key</span></span>
-<span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'b' with key 'a'</span></span></pre></div>
-
-<p>To verify that a set of values were produced by a call in a specific order, use
-<a href="#call.producedAll"><code>producedAll()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>producedAll();                <span class="pl-c">// produced nothing (an empty traversable)</span></span>
-<span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>producedAll(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);        <span class="pl-c">// produced 'a', then 'b', with any keys</span></span>
-<span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>producedAll(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>]); <span class="pl-c">// produced 'a' with any key, then 'c' with key 'b'</span></span></pre></div>
-
-<h4>
-<a id="verifying-values-received-by-calls" class="anchor" href="#verifying-values-received-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying values received by calls</h4>
-
-<p>To verify that a value was received by a call, use
-<a href="#call.received"><code>received()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>received();    <span class="pl-c">// received anything</span></span>
-<span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>received(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// received 'a'</span></span></pre></div>
-
-<h4>
-<a id="verifying-exceptions-received-by-calls" class="anchor" href="#verifying-exceptions-received-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying exceptions received by calls</h4>
-
-<p>To verify that an exception was received by a call, use
-<a href="#call.receivedException"><code>receivedException()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>receivedException();                                         <span class="pl-c">// received any exception</span></span>
-<span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// received a runtime exception</span></span>
-<span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// received a runtime exception with a specific message</span></span></pre></div>
 
 <h3>
 <a id="verifying-cardinality-with-calls" class="anchor" href="#verifying-cardinality-with-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with calls</h3>
@@ -6470,17 +6058,15 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 <a href="#verifying-spy-output">Verifying spy output</a>
 
 <ul>
-<li><a href="#verifying-spy-return-values">Verifying spy return values</a></li>
-<li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
-</ul>
-</li>
 <li>
-<a href="#verifying-spies-with-generators-or-traversables">Verifying spies with generators or traversables</a>
+<a href="#verifying-spy-return-values">Verifying spy return values</a>
 
 <ul>
-<li><a href="#verifying-values-produced-by-spies">Verifying values produced by spies</a></li>
-<li><a href="#verifying-values-received-by-spies">Verifying values received by spies</a></li>
-<li><a href="#verifying-exceptions-received-by-spies">Verifying exceptions received by spies</a></li>
+<li><a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a></li>
+<li><a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a></li>
+</ul>
+</li>
+<li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
 </ul>
 </li>
 <li>
@@ -6510,17 +6096,15 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 <a href="#verifying-call-output">Verifying call output</a>
 
 <ul>
-<li><a href="#verifying-call-return-values">Verifying call return values</a></li>
-<li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
-</ul>
-</li>
 <li>
-<a href="#verifying-calls-with-generators-or-traversables">Verifying calls with generators or traversables</a>
+<a href="#verifying-call-return-values">Verifying call return values</a>
 
 <ul>
-<li><a href="#verifying-values-produced-by-calls">Verifying values produced by calls</a></li>
-<li><a href="#verifying-values-received-by-calls">Verifying values received by calls</a></li>
-<li><a href="#verifying-exceptions-received-by-calls">Verifying exceptions received by calls</a></li>
+<li><a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a></li>
+<li><a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a></li>
+</ul>
+</li>
+<li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
 </ul>
 </li>
 <li>
@@ -6539,10 +6123,24 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 
 <ul>
 <li><a href="#the-verification-result-api">The verification result API</a></li>
+<li><a href="#the-traversable-verification-result-api">The traversable verification result API</a></li>
+<li><a href="#the-generator-verification-result-api">The generator verification result API</a></li>
 <li><a href="#the-event-api">The event API</a></li>
 <li><a href="#the-order-verification-api">The order verification API</a></li>
 <li><a href="#standard-verification">Standard verification</a></li>
 <li><a href="#check-verification">Check verification</a></li>
+<li>
+<a href="#generator-and-traversable-verification">Generator and traversable verification</a>
+
+<ul>
+<li><a href="#verifying-iteration">Verifying iteration</a></li>
+<li><a href="#verifying-produced-values">Verifying produced values</a></li>
+<li><a href="#verifying-values-received-by-generators">Verifying values received by generators</a></li>
+<li><a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a></li>
+<li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
+<li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
+</ul>
+</li>
 <li>
 <a href="#order-verification">Order verification</a>
 
@@ -6576,6 +6174,20 @@ throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
 </blockquote>
 
 <p>Get the arguments of the first call.</p>
+
+<p><a name="verification.argument"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>mixed</em> $verification-&gt;<a href="#verification.argument"><strong>argument</strong></a>($index = 0)
+throws <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
+</blockquote>
+
+<p>Get the argument of the first call at <code>$index</code>.</p>
+
+<p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
+the last element, and <code>-2</code> indicates the second last element.</em></p>
 
 <p><a name="verification.hasCalls"></a></p>
 
@@ -6708,6 +6320,293 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
+
+<h3>
+<a id="the-traversable-verification-result-api" class="anchor" href="#the-traversable-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The traversable verification result API</h3>
+
+<p>In addition to the <a href="#the-verification-result-api">verification result</a> API, traversable verification results
+implement the following methods:</p>
+
+<p><a name="verification.used"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.used"><strong>used</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless iteration of the traversable commenced.</p>
+
+<p><em>See <a href="#verifying-iteration">Verifying iteration</a>.</em></p>
+
+<p><a name="verification.checkUsed"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkUsed"><strong>checkUsed</strong></a>()</p>
+</blockquote>
+
+<p>Checks if iteration of the traversable commenced.</p>
+
+<p><em>See <a href="#verifying-iteration">Verifying iteration</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="verification.produced"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.produced"><strong>produced</strong></a>($keyOrValue = null, $value = null)
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless the traversable produced the supplied values.</p>
+
+<p><em>When called with no arguments, this method simply checks that the traversable
+produced any value.</em></p>
+
+<p><em>With a single argument, it checks that a value matching the argument was
+produced.</em></p>
+
+<p><em>With two arguments, it checks that a key and value matching the respective
+arguments were produced together.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
+
+<p><em>See <a href="#verifying-produced-values">Verifying produced values</a>.</em></p>
+
+<p><a name="verification.checkProduced"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkProduced"><strong>checkProduced</strong></a>($keyOrValue = null, $value = null)</p>
+</blockquote>
+
+<p>Checks if the traversable produced the supplied values.</p>
+
+<p><em>When called with no arguments, this method simply checks that the traversable
+produced any value.</em></p>
+
+<p><em>With a single argument, it checks that a value matching the argument was
+produced.</em></p>
+
+<p><em>With two arguments, it checks that a key and value matching the respective
+arguments were produced together.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
+
+<p><em>See <a href="#verifying-produced-values">Verifying produced values</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="verification.consumed"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.consumed"><strong>consumed</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless iteration of the traversable completed.</p>
+
+<p><em>See <a href="#verifying-iteration">Verifying iteration</a>.</em></p>
+
+<p><a name="verification.checkConsumed"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkConsumed"><strong>checkConsumed</strong></a>()</p>
+</blockquote>
+
+<p>Checks if iteration of the traversable completed.</p>
+
+<p><em>See <a href="#verifying-iteration">Verifying iteration</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<h3>
+<a id="the-generator-verification-result-api" class="anchor" href="#the-generator-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The generator verification result API</h3>
+
+<p>In addition to the <a href="#the-verification-result-api">verification result</a> and <a href="#the-traversable-verification-result-api">traversable verification result</a>
+APIs, generator verification results implement the following methods:</p>
+
+<p><a name="verification.received"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.received"><strong>received</strong></a>($value = null)
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless the generator received the supplied value.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+received any value.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-values-received-by-generators">Verifying values received by generators</a>.</em></p>
+
+<p><a name="verification.checkReceived"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkReceived"><strong>checkReceived</strong></a>($value = null)</p>
+</blockquote>
+
+<p>Checks if the generator received the supplied value.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+received any value.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-values-received-by-generators">Verifying values received by generators</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="verification.receivedException"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.receivedException"><strong>receivedException</strong></a>($type = null)
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless the generator received an exception of the supplied
+type.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+received any exception.</em></p>
+
+<p><em>When called with a string, this method checks that the generator received an
+exception that is an instance of <code>$type</code>.</em></p>
+
+<p><em>When called with an exception instance, this method checks that the generator
+received an exception that is equal to the supplied instance.</em></p>
+
+<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator received an
+exception that matches the supplied matcher.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a>.</em></p>
+
+<p><a name="verification.checkReceivedException"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkReceivedException"><strong>checkReceivedException</strong></a>($type = null)</p>
+</blockquote>
+
+<p>Checks if the generator received an exception of the supplied type.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+received any exception.</em></p>
+
+<p><em>When called with a string, this method checks that the generator received an
+exception that is an instance of <code>$type</code>.</em></p>
+
+<p><em>When called with an exception instance, this method checks that the generator
+received an exception that is equal to the supplied instance.</em></p>
+
+<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator received an
+exception that matches the supplied matcher.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="verification.returned"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.returned"><strong>returned</strong></a>($value = null)
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless the generator returned the supplied value.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+returned any value.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-generator-return-values">Verifying generator return values</a>.</em></p>
+
+<p><a name="verification.checkReturned"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkReturned"><strong>checkReturned</strong></a>($value = null)</p>
+</blockquote>
+
+<p>Checks if the generator returned the supplied value.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+returned any value.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-generator-return-values">Verifying generator return values</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="verification.threw"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.threw"><strong>threw</strong></a>($type = null)
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless this generator threw an exception of the supplied
+type.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+threw any exception.</em></p>
+
+<p><em>When called with a string, this method checks that the generator threw an
+exception that is an instance of <code>$type</code>.</em></p>
+
+<p><em>When called with an exception instance, this method checks that the generator
+threw an exception that is equal to the supplied instance.</em></p>
+
+<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator threw an
+exception that matches the supplied matcher.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-generator-exceptions">Verifying generator exceptions</a>.</em></p>
+
+<p><a name="verification.checkThrew"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
+</blockquote>
+
+<p>Checks if this generator threw an exception of the supplied type.</p>
+
+<p><em>When called with no arguments, this method simply checks that the generator
+threw any exception.</em></p>
+
+<p><em>When called with a string, this method checks that the generator threw an
+exception that is an instance of <code>$type</code>.</em></p>
+
+<p><em>When called with an exception instance, this method checks that the generator
+threw an exception that is equal to the supplied instance.</em></p>
+
+<p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator threw an
+exception that matches the supplied matcher.</em></p>
+
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+
+<p><em>See <a href="#verifying-generator-exceptions">Verifying generator exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
 <h3>
 <a id="the-event-api" class="anchor" href="#the-event-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The event API</h3>
@@ -6917,6 +6816,118 @@ integration with the <a href="#integration-with-test-frameworks">testing framewo
 not yet have first-class support in <em>Phony</em>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1">expect(<span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>checkCalled())<span class="pl-k">-&gt;</span><span class="pl-smi">to</span><span class="pl-k">-&gt;</span><span class="pl-smi">be</span><span class="pl-k">-&gt;</span><span class="pl-smi">ok</span>;</span></pre></div>
+
+<h3>
+<a id="generator-and-traversable-verification" class="anchor" href="#generator-and-traversable-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generator and traversable verification</h3>
+
+<p>When spying on a callable that returns a <a href="http://php.net/language.generators.overview">generator</a>, additional verification
+can be performed on events that happen after the generator is returned, such as
+the yielding of values. This is accomplished via the use of "generator spies".</p>
+
+<p>The use of generator spies is an optional behavior that can be disabled by
+calling <a href="#spy.setUseGeneratorSpies"><code>setUseGeneratorSpies()</code></a> on a spy:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseGeneratorSpies(<span class="pl-c1">false</span>);</span></pre></div>
+
+<p>"Traversable spies" also exist for other iterators and arrays, but are disabled
+by default because they typically change the return type of the spy. This
+feature can be enabled by calling
+<a href="#spy.setUseTraversableSpies"><code>setUseTraversableSpies()</code></a> on a spy:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseTraversableSpies(<span class="pl-c1">true</span>);</span></pre></div>
+
+<p>Both <a href="#spy.setUseGeneratorSpies"><code>setUseGeneratorSpies()</code></a> and
+<a href="#spy.setUseTraversableSpies"><code>setUseTraversableSpies()</code></a> are fluent, meaning
+spy creation and setting of these options can be done in a single expression:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy()</span>
+<span class="pl-s1">    <span class="pl-k">-&gt;</span>setUseTraversableSpies(<span class="pl-c1">true</span>)</span>
+<span class="pl-s1">    <span class="pl-k">-&gt;</span>setUseGeneratorSpies(<span class="pl-c1">false</span>);</span></pre></div>
+
+<h4>
+<a id="verifying-iteration" class="anchor" href="#verifying-iteration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying iteration</h4>
+
+<p>To verify that iteration of a generator or traversable commenced, use
+<a href="#verification.used"><code>used()</code></a> on any <a href="#the-generator-verification-result-api">generator verification result</a> or
+<a href="#the-traversable-verification-result-api">traversable verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated()<span class="pl-k">-&gt;</span>used(); <span class="pl-c">// iteration of the generator commenced</span></span>
+<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>traversed()<span class="pl-k">-&gt;</span>used(); <span class="pl-c">// iteration of the traversable commenced</span></span></pre></div>
+
+<p>To verify that iteration of a generator or traversable completed, use
+<a href="#verification.consumed"><code>consumed()</code></a> on any <a href="#the-generator-verification-result-api">generator verification result</a> or
+<a href="#the-traversable-verification-result-api">traversable verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated()<span class="pl-k">-&gt;</span>consumed(); <span class="pl-c">// iteration of the generator completed</span></span>
+<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>traversed()<span class="pl-k">-&gt;</span>consumed(); <span class="pl-c">// iteration of the traversable completed</span></span></pre></div>
+
+<h4>
+<a id="verifying-produced-values" class="anchor" href="#verifying-produced-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying produced values</h4>
+
+<p>To verify that a value was yielded by a generator, use
+<a href="#verification.produced"><code>produced()</code></a> on any <a href="#the-generator-verification-result-api">generator verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced();         <span class="pl-c">// produced anything</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// produced 'a' with any key</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'b' with key 'a'</span></span></pre></div>
+
+<p>To verify that a value was produced by a traversable, use
+<a href="#verification.produced"><code>produced()</code></a> on any <a href="#the-traversable-verification-result-api">traversable verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$traversable</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>traversed(); <span class="pl-c">// returned a traversable</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced();         <span class="pl-c">// produced anything</span></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// produced 'a' with any key</span></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'b' with key 'a'</span></span></pre></div>
+
+<h4>
+<a id="verifying-values-received-by-generators" class="anchor" href="#verifying-values-received-by-generators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying values received by generators</h4>
+
+<p>To verify that a value was received by a generator, use
+<a href="#verification.received"><code>received()</code></a> on any <a href="#the-generator-verification-result-api">generator verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>received();    <span class="pl-c">// received anything</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>received(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// received 'a'</span></span></pre></div>
+
+<h4>
+<a id="verifying-exceptions-received-by-generators" class="anchor" href="#verifying-exceptions-received-by-generators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying exceptions received by generators</h4>
+
+<p>To verify that an exception was received by a generator, use
+<a href="#verification.receivedException"><code>receivedException()</code></a> on any
+<a href="#the-generator-verification-result-api">generator verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>receivedException();                                         <span class="pl-c">// received any exception</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// received a runtime exception</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// received a runtime exception with a specific message</span></span></pre></div>
+
+<h4>
+<a id="verifying-generator-return-values" class="anchor" href="#verifying-generator-return-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generator return values</h4>
+
+<p>To verify a generator's return value, use <a href="#verification.returned"><code>returned()</code></a>
+on any <a href="#the-generator-verification-result-api">generator verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned();    <span class="pl-c">// returned anything</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// returned 'a'</span></span></pre></div>
+
+<h4>
+<a id="verifying-generator-exceptions" class="anchor" href="#verifying-generator-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generator exceptions</h4>
+
+<p>To verify that a generator threw an exception, use
+<a href="#verification.threw"><code>threw()</code></a> on any <a href="#the-generator-verification-result-api">generator verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>threw();                                         <span class="pl-c">// threw any exception</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>threw(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// threw a runtime exception</span></span>
+<span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// threw a runtime exception with a specific message</span></span></pre></div>
 
 <h3>
 <a id="order-verification" class="anchor" href="#order-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Order verification</h3>
