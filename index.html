@@ -2268,28 +2268,6 @@ behavior customization.</p>
 
 <p><em>See <a href="#pausing-spy-recording">Pausing spy recording</a>.</em></p>
 
-<p><a name="stub.arguments"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-arguments-api">arguments</a></em> $stub-&gt;<a href="#stub.arguments"><strong>arguments</strong></a>()
-throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
-</blockquote>
-
-<p>Get the arguments of the first call.</p>
-
-<p><a name="stub.argument"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>mixed</em> $stub-&gt;<a href="#stub.argument"><strong>argument</strong></a>($index = 0)
-throws <a href="#undefinedcallexception">UndefinedCallException</a>, <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
-</blockquote>
-
-<p>Get the argument of the first call at <code>$index</code>.</p>
-
 <p><a name="stub.hasCalls"></a></p>
 
 <hr>
@@ -4338,28 +4316,6 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 
 <p><em>See <a href="#pausing-spy-recording">Pausing spy recording</a>.</em></p>
 
-<p><a name="spy.arguments"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-arguments-api">arguments</a></em> $spy-&gt;<a href="#spy.arguments"><strong>arguments</strong></a>()
-throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
-</blockquote>
-
-<p>Get the arguments of the first call.</p>
-
-<p><a name="spy.argument"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>mixed</em> $spy-&gt;<a href="#spy.argument"><strong>argument</strong></a>($index = 0)
-throws <a href="#undefinedcallexception">UndefinedCallException</a>, <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
-</blockquote>
-
-<p>Get the argument of the first call at <code>$index</code>.</p>
-
 <p><a name="spy.hasCalls"></a></p>
 
 <hr>
@@ -4921,22 +4877,18 @@ passed to <a href="#spy.calledWith"><code>calledWith()</code></a> can be literal
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>); <span class="pl-c">// called with 'a' followed by 0-n arguments</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~<span class="pl-pds">'</span></span>); <span class="pl-c">// called with 'a' followed by exactly 1 argument</span></span></pre></div>
 
-<p>Arguments can be retrieved by calling <a href="#spy.arguments"><code>arguments()</code></a> or
-<a href="#spy.argument"><code>argument()</code></a> on a spy:</p>
+<p>Arguments can be retrieved by calling <a href="#call.arguments"><code>arguments()</code></a> or
+<a href="#call.argument"><code>argument()</code></a> on an <a href="#individual-calls">individual call</a> recorded via the spy:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>arguments(); <span class="pl-c">// all arguments as an array</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>argument();  <span class="pl-c">// first argument</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c">// second argument</span></span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>arguments(); <span class="pl-c">// all arguments as an array</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument();  <span class="pl-c">// first argument</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c">// second argument</span></span></pre></div>
 
-<p>Note that this will return the arguments for the first call made on the spy.</p>
+<p>The same methods can be used on any <a href="#the-verification-result-api">verification result</a>:</p>
 
-<p>Arguments can also be retrieved by calling
-<a href="#verification.arguments"><code>arguments()</code></a> or
-<a href="#verification.argument"><code>argument()</code></a> on any <a href="#the-verification-result-api">verification result</a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>arguments(); <span class="pl-c">// all arguments as an array</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>argument();  <span class="pl-c">// first argument</span></span>
-<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c">// second argument</span></span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>arguments(); <span class="pl-c">// all arguments as an array</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument();  <span class="pl-c">// first argument</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c">// second argument</span></span></pre></div>
 
 <p>Note that this will return the arguments for the first call that matches the
 verification in use.</p>
@@ -6163,31 +6115,6 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 
 <h3>
 <a id="the-verification-result-api" class="anchor" href="#the-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The verification result API</h3>
-
-<p><a name="verification.arguments"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-arguments-api">arguments</a></em> $verification-&gt;<a href="#verification.arguments"><strong>arguments</strong></a>()
-throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
-</blockquote>
-
-<p>Get the arguments of the first call.</p>
-
-<p><a name="verification.argument"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>mixed</em> $verification-&gt;<a href="#verification.argument"><strong>argument</strong></a>($index = 0)
-throws <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
-</blockquote>
-
-<p>Get the argument of the first call at <code>$index</code>.</p>
-
-<p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
-the last element, and <code>-2</code> indicates the second last element.</em></p>
 
 <p><a name="verification.hasCalls"></a></p>
 
