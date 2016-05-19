@@ -12,9 +12,7 @@
 namespace Eloquent\Phony\Event;
 
 use Countable;
-use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use IteratorAggregate;
@@ -123,25 +121,4 @@ interface EventCollection extends IteratorAggregate, Countable
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
     public function callAt($index = 0);
-
-    /**
-     * Get the arguments.
-     *
-     * @return Arguments|null         The arguments.
-     * @throws UndefinedCallException If there are no calls.
-     */
-    public function arguments();
-
-    /**
-     * Get an argument by index.
-     *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @param int $index The index.
-     *
-     * @return mixed                      The argument.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
-     */
-    public function argument($index = 0);
 }

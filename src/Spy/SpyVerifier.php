@@ -383,33 +383,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     }
 
     /**
-     * Get the arguments.
-     *
-     * @return Arguments|null         The arguments.
-     * @throws UndefinedCallException If there are no calls.
-     */
-    public function arguments()
-    {
-        return $this->spy->arguments();
-    }
-
-    /**
-     * Get an argument by index.
-     *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @param int $index The index.
-     *
-     * @return mixed                      The argument.
-     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
-     */
-    public function argument($index = 0)
-    {
-        return $this->spy->argument($index);
-    }
-
-    /**
      * Invoke this object.
      *
      * This method supports reference parameters.

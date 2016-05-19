@@ -336,49 +336,6 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->callAt(0);
     }
 
-    public function testArguments()
-    {
-        $arguments = Arguments::create('a', 1);
-        $this->setUpWith(array($this->callFactory->create($this->eventFactory->createCalled(null, $arguments))));
-
-        $this->assertSame($arguments, $this->subject->arguments());
-    }
-
-    public function testArgumentsFailureUndefined()
-    {
-        $this->setUpWith(array());
-
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
-        $this->subject->arguments();
-    }
-
-    public function testArgument()
-    {
-        $arguments = Arguments::create('a', 1);
-        $this->setUpWith(array($this->callFactory->create($this->eventFactory->createCalled(null, $arguments))));
-
-        $this->assertSame('a', $this->subject->argument());
-        $this->assertSame('a', $this->subject->argument(0));
-        $this->assertSame('a', $this->subject->argument(-2));
-    }
-
-    public function testArgumentFailureUndefined()
-    {
-        $arguments = Arguments::create();
-        $this->setUpWith(array($this->callFactory->create($this->eventFactory->createCalled(null, $arguments))));
-
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument();
-    }
-
-    public function testArgumentFailureUndefinedNoCalls()
-    {
-        $this->setUpWith(array());
-
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument();
-    }
-
     public function testCheckUsed()
     {
         $this->setUpWith(array());

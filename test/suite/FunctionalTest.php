@@ -32,8 +32,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
 
-        $this->assertSame(array('a', 'b'), $handle->testClassAMethodA->calledWith('a', '*')->arguments()->all());
-        $this->assertSame('b', $handle->testClassAMethodA->calledWith('a', '*')->argument(1));
+        $this->assertSame(
+            array('a', 'b'),
+            $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->arguments()->all()
+        );
+        $this->assertSame('b', $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->argument(1));
     }
 
     public function testMockingFunctions()
@@ -44,8 +47,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
-        $this->assertSame(array('a', 'b'), $handle->testClassAMethodA->calledWith('a', '*')->arguments()->all());
-        $this->assertSame('b', $handle->testClassAMethodA->calledWith('a', '*')->argument(1));
+        $this->assertSame(
+            array('a', 'b'),
+            $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->arguments()->all()
+        );
+        $this->assertSame('b', $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->argument(1));
     }
 
     public function testMockCalls()

@@ -1952,24 +1952,6 @@ Start recording calls.
 
 *See [Pausing spy recording].*
 
-<a name="stub.arguments" />
-
-----
-
-> *[arguments][arguments-api]* $stub->[**arguments**](#stub.arguments)()
-> throws [UndefinedCallException]
-
-Get the arguments of the first call.
-
-<a name="stub.argument" />
-
-----
-
-> *mixed* $stub->[**argument**](#stub.argument)($index = 0)
-> throws [UndefinedCallException], [UndefinedArgumentException]
-
-Get the argument of the first call at `$index`.
-
 <a name="stub.hasCalls" />
 
 ----
@@ -3995,24 +3977,6 @@ Start recording calls.
 
 *See [Pausing spy recording].*
 
-<a name="spy.arguments" />
-
-----
-
-> *[arguments][arguments-api]* $spy->[**arguments**](#spy.arguments)()
-> throws [UndefinedCallException]
-
-Get the arguments of the first call.
-
-<a name="spy.argument" />
-
-----
-
-> *mixed* $spy->[**argument**](#spy.argument)($index = 0)
-> throws [UndefinedCallException], [UndefinedArgumentException]
-
-Get the argument of the first call at `$index`.
-
 <a name="spy.hasCalls" />
 
 ----
@@ -4516,25 +4480,21 @@ $spy->calledWith('a', '*'); // called with 'a' followed by 0-n arguments
 $spy->calledWith('a', '~'); // called with 'a' followed by exactly 1 argument
 ```
 
-Arguments can be retrieved by calling [`arguments()`](#spy.arguments) or
-[`argument()`](#spy.argument) on a spy:
+Arguments can be retrieved by calling [`arguments()`](#call.arguments) or
+[`argument()`](#call.argument) on an [individual call] recorded via the spy:
 
 ```php
-$spy->arguments(); // all arguments as an array
-$spy->argument();  // first argument
-$spy->argument(1); // second argument
+$spy->firstCall()->arguments(); // all arguments as an array
+$spy->firstCall()->argument();  // first argument
+$spy->firstCall()->argument(1); // second argument
 ```
 
-Note that this will return the arguments for the first call made on the spy.
-
-Arguments can also be retrieved by calling
-[`arguments()`](#verification.arguments) or
-[`argument()`](#verification.argument) on any [verification result]:
+The same methods can be used on any [verification result]:
 
 ```php
-$spy->called()->arguments(); // all arguments as an array
-$spy->called()->argument();  // first argument
-$spy->called()->argument(1); // second argument
+$spy->called()->firstCall()->arguments(); // all arguments as an array
+$spy->called()->firstCall()->argument();  // first argument
+$spy->called()->firstCall()->argument(1); // second argument
 ```
 
 Note that this will return the arguments for the first call that matches the
@@ -5629,27 +5589,6 @@ For information on specific verification methods, see these sections:
     - [Verifying that there was no interaction with a mock]
 
 ### The verification result API
-
-<a name="verification.arguments" />
-
-----
-
-> *[arguments][arguments-api]* $verification->[**arguments**](#verification.arguments)()
-> throws [UndefinedCallException]
-
-Get the arguments of the first call.
-
-<a name="verification.argument" />
-
-----
-
-> *mixed* $verification->[**argument**](#verification.argument)($index = 0)
-> throws [UndefinedArgumentException]
-
-Get the argument of the first call at `$index`.
-
-*Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element.*
 
 <a name="verification.hasCalls" />
 
@@ -7412,6 +7351,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [generator answer]: #the-generator-answer-api
 [generator spies]: #generator-and-traversable-verification
 [generator verification result]: #the-generator-verification-result-api
+[individual call]: #individual-calls
 [matcher]: #matchers
 [mock builder]: #mock-builders
 [mock handle]: #mock-handles

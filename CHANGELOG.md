@@ -9,6 +9,9 @@
 - **[BC BREAK]** Usage of `setsArgument()`, `callsArgument()`,
   `callsArgumentWith()`, and `returnsArgument()` can now result in exceptions
   when a specified argument is undefined at call time ([#136]).
+- **[BC BREAK]** Removed `arguments()` and `argument()` from all event
+  collections, in favor of using `firstCall()` et al. followed by the
+  corresponding method on the call API ([#146]).
 - **[NEW]** Implemented generator and traversable verifiers ([#102], [#115],
   [#125]).
 - **[NEW]** Mocks as default stub return values for arbitrary object return
@@ -23,6 +26,7 @@
 [#115]: https://github.com/eloquent/phony/issues/115
 [#125]: https://github.com/eloquent/phony/issues/125
 [#136]: https://github.com/eloquent/phony/issues/136
+[#146]: https://github.com/eloquent/phony/issues/146
 [#147]: https://github.com/eloquent/phony/issues/147
 [#149]: https://github.com/eloquent/phony/issues/149
 [#150]: https://github.com/eloquent/phony/issues/150

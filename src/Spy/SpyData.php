@@ -16,7 +16,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\Event\ThrewEvent;
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
@@ -324,41 +323,6 @@ class SpyData extends AbstractWrappedInvocable implements Spy
         }
 
         return $this->calls[$normalized];
-    }
-
-    /**
-     * Get the arguments.
-     *
-     * @return Arguments|null         The arguments.
-     * @throws UndefinedCallException If there are no calls.
-     */
-    public function arguments()
-    {
-        foreach ($this->calls as $call) {
-            return $call->arguments();
-        }
-
-        throw new UndefinedCallException(0);
-    }
-
-    /**
-     * Get an argument by index.
-     *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
-     *
-     * @param int $index The index.
-     *
-     * @return mixed                      The argument.
-     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
-     */
-    public function argument($index = 0)
-    {
-        foreach ($this->calls as $call) {
-            return $call->arguments()->get($index);
-        }
-
-        throw new UndefinedArgumentException($index);
     }
 
     /**

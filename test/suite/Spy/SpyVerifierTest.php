@@ -358,36 +358,6 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->callAt(0);
     }
 
-    public function testArguments()
-    {
-        $arguments = Arguments::create('a', 1);
-        $this->subject->addCall($this->callFactory->create($this->callEventFactory->createCalled(null, $arguments)));
-
-        $this->assertSame($arguments, $this->subject->arguments());
-    }
-
-    public function testArgumentsFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
-        $this->subject->arguments();
-    }
-
-    public function testArgument()
-    {
-        $arguments = Arguments::create('a', 1);
-        $this->subject->addCall($this->callFactory->create($this->callEventFactory->createCalled(null, $arguments)));
-
-        $this->assertSame('a', $this->subject->argument());
-        $this->assertSame('a', $this->subject->argument(0));
-        $this->assertSame('a', $this->subject->argument(-2));
-    }
-
-    public function testArgumentFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument();
-    }
-
     public function testInvokeMethods()
     {
         $verifier = $this->subject;

@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Event\TraversableEvent;
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
@@ -71,6 +72,26 @@ interface Call extends Event, EventCollection
      * @return callable The callback.
      */
     public function callback();
+
+    /**
+     * Get the arguments.
+     *
+     * @return Arguments|null The arguments.
+     */
+    public function arguments();
+
+    /**
+     * Get an argument by index.
+     *
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param int $index The index.
+     *
+     * @return mixed                      The argument.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
+     */
+    public function argument($index = 0);
 
     /**
      * Get the returned value.

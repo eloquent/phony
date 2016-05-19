@@ -135,68 +135,6 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
         $this->subject->callAt(111);
     }
 
-    public function testArguments()
-    {
-        $this->assertEquals(new Arguments(array('a', 'b')), $this->subject->arguments());
-
-        $this->subject = new EventSequence(array($this->eventA, $this->eventD));
-
-        $this->assertEquals(new Arguments(array('e', 'f')), $this->subject->arguments());
-
-        $this->subject = new EventSequence(array($this->eventA));
-    }
-
-    public function testArgumentsFailureNoCalls()
-    {
-        $this->subject = new EventSequence(array($this->eventA));
-
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
-        $this->subject->arguments();
-    }
-
-    public function testArgumentsFailureEmpty()
-    {
-        $this->subject = new EventSequence(array());
-
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
-        $this->subject->arguments();
-    }
-
-    public function testArgument()
-    {
-        $this->assertSame('a', $this->subject->argument());
-        $this->assertSame('a', $this->subject->argument(0));
-        $this->assertSame('b', $this->subject->argument(1));
-
-        $this->subject = new EventSequence(array($this->eventA, $this->eventD));
-
-        $this->assertSame('e', $this->subject->argument());
-        $this->assertSame('e', $this->subject->argument(0));
-        $this->assertSame('f', $this->subject->argument(1));
-    }
-
-    public function testArgumentFailureUndefined()
-    {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument(111);
-    }
-
-    public function testArgumentFailureNoCalls()
-    {
-        $this->subject = new EventSequence(array($this->eventA));
-
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument();
-    }
-
-    public function testArgumentFailureNoEvents()
-    {
-        $this->subject = new EventSequence(array());
-
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
-        $this->subject->argument();
-    }
-
     public function testIteration()
     {
         $this->assertSame($this->events, iterator_to_array($this->subject));
