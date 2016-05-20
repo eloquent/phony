@@ -23,14 +23,13 @@ integration:
 web: $(shell find doc assets/web)
 	scripts/build-web
 
-publish: web
-	@vendor/bin/woodhouse publish eloquent/phony --auth-token $(GITHUB_TOKEN) \
-        web/index.html:index.html \
-        web/css:css \
-        web/img:img \
-        web/js:js
+serve: web
+	php -S localhost:8000 -t web
 
-.PHONY: test coverage lint install examples benchmarks integration publish
+publish: web
+	@scripts/publish-web
+
+.PHONY: test coverage lint install examples benchmarks integration serve publish
 
 vendor/autoload.php: composer.lock
 	composer install

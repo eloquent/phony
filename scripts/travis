@@ -26,31 +26,9 @@ if [[ -z "$ELOQUENT_PUBLISH_VERSION" ]]; then
     exit 1
 fi
 
-if [[ -z "$ELOQUENT_BUILD_WEB" ]]; then
-    if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
-        make coverage
-        make examples
-    else
-        make test
-    fi
+if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
+    make coverage
+    make examples
 else
-    if [[ "${TRAVIS_PULL_REQUEST}" != "false" ]]; then
-        echo 'Skipping documentation build for pull request.'
-
-        exit 0
-    fi
-
-    if [[ "$TRAVIS_BRANCH" != "master" ]]; then
-        echo 'Skipping documentation build for non-master branch.'
-
-        exit 0
-    fi
-
-    if [[ "$TRAVIS_PHP_VERSION" != "$ELOQUENT_PUBLISH_VERSION" ]]; then
-        echo 'Skipping documentation build for non-publish version.'
-
-        exit 0
-    fi
-
-    make publish
+    make test
 fi

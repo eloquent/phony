@@ -13,9 +13,6 @@ matrix:
     fast_finish: true
     allow_failures:
         - php: nightly
-    include:
-        - php: '7.0'
-          env: ELOQUENT_BUILD_WEB=1
 
 before_install:
     - phpenv config-rm xdebug.ini || true
@@ -23,6 +20,12 @@ before_install:
 install: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --ignore-platform-reqs
 script: scripts/travis
 after_script: scripts/travis-after
+deploy:
+    provider: script
+    script: make publish
+    on:
+        php: '7.0'
+        condition: '"master" == "$TRAVIS_BRANCH" || -n "$TRAVIS_TAG"'
 
 env:
     global:

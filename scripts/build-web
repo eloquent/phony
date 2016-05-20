@@ -13,7 +13,6 @@ passthru('rm -rf web');
 passthru('mkdir -p web');
 
 passthru('mkdir -p build');
-passthru('rm -rf build/web.json');
 
 $hash = sha1_file('doc/index.md');
 $content = null;
@@ -72,6 +71,7 @@ file_put_contents(
 );
 
 passthru('cp -a assets/web/css web/');
+passthru('cp -a assets/web/data web/');
 passthru('cp -a assets/web/img web/');
 passthru('cp -a assets/web/js web/');
 

@@ -1,0 +1,134 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Asplode\Asplode;
+use Icecave\SemVer\Comparator;
+use Icecave\SemVer\Version;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+Asplode::install();
+
+$isTravis = (bool) getenv('TRAVIS');
+$tag = getenv('TRAVIS_TAG');
+$branch = getenv('TRAVIS_BRANCH');
+
+if ($tag) {
+    $currentVersion = $tag;
+} else {
+    $currentVersion = $branch;
+}
+
+if (!$tag && !$branch) {
+    throw new RuntimeException('No tag or branch information.');
+}
+
+echo 'Publishing Phony website... ';
+
+if ($token = getenv('GITHUB_TOKEN')) {
+    $header = "Authorization: token $token\r\n";
+} else {
+    $header = '';
+}
+
+$json = file_get_contents(
+    'https://api.github.com/repos/eloquent/phony/contents?ref=gh-pages',
+    false,
+    stream_context_create(
+        array(
+            'http' => array(
+                'user_agent' => 'PHP',
+                'header' => $header,
+                'method' => 'GET',
+            ),
+        )
+    )
+);
+
+$data = json_decode($json);
+
+if (JSON_ERROR_NONE !== json_last_error()) {
+    throw new RuntimeException('Failed to decode tag data.');
+}
+
+$versions = [];
+
+if (Version::tryParse($currentVersion, $version)) {
+    $versions[] = $version;
+}
+
+foreach ($data as $file) {
+    if ('dir' === $file->type && Version::tryParse($file->name, $version)) {
+        $versions[] = $version;
+    }
+}
+
+if ($versions) {
+    $comparator = new Comparator();
+
+    usort(
+        $versions,
+        function ($left, $right) use ($comparator) {
+            return $comparator->compare($right, $left);
+        }
+    );
+
+    $latestVersion = $versions[0]->string();
+} else {
+    $latestVersion = 'master';
+}
+
+$arguments = [
+    'vendor/bin/woodhouse',
+    'publish',
+    'eloquent/phony',
+];
+
+if ($token) {
+    $arguments[] = '--auth-token';
+    $arguments[] = $token;
+}
+
+$arguments[] = '--link';
+$arguments[] = sprintf('%s:latest', $latestVersion);
+$arguments[] = sprintf('web/index.html:%s/index.html', $currentVersion);
+$arguments[] = 'web/data:data';
+$arguments[] = 'web/css:css';
+$arguments[] = 'web/img:img';
+$arguments[] = 'web/js:js';
+
+$command = implode(' ', array_map('escapeshellarg', $arguments));
+
+if ($isTravis) {
+    $versionStrings = ['latest'];
+
+    foreach ($versions as $version) {
+        $versionStrings[] = $version->string();
+    }
+
+    $versionStrings[] = 'master';
+
+    file_put_contents(
+        __DIR__ . '/../web/data/versions.json',
+        json_encode($versionStrings, JSON_PRETTY_PRINT) . "\n"
+    );
+
+    file_put_contents(
+        __DIR__ . '/../web/index.html',
+        strtr(
+            file_get_contents(__DIR__ . '/../web/index.html'),
+            [
+                'data-version="master"' => sprintf(
+                    'data-version="%s"',
+                    htmlspecialchars($currentVersion)
+                ),
+            ]
+        )
+    );
+
+    passthru($command);
+
+    echo "done.\n";
+} else {
+    echo "travis not detected, would have run:\n" . $command . "\n";
+}
