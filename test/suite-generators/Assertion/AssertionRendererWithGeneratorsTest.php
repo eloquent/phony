@@ -78,6 +78,22 @@ class AssertionRendererWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $property->setValue(InlineExporter::instance(), true);
     }
 
+    public function testRenderResponseWithGeneratorsExpandedTraversables()
+    {
+        $expected = <<<'EOD'
+Generated:
+    - produced "m": "n"
+    - received "o"
+    - produced "p": "q"
+    - received exception RuntimeException("Consequences will never be the same.")
+    - produced "r": "s"
+    - received "t"
+    - returned "u"
+EOD;
+
+        $this->assertSame($expected, $this->subject->renderResponse($this->generatorCall, true));
+    }
+
     public function testRenderResponsesWithGenerators()
     {
         $expected = <<<'EOD'

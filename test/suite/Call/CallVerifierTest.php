@@ -164,6 +164,22 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->invocableInspector
         );
 
+        $this->traversableCallWithNoEnd = $this->callFactory->create(
+            $this->calledEvent,
+            $this->returnedTraversableEvent,
+            $this->iteratorEvents
+        );
+        $this->traversableSubjectWithNoEnd = new CallVerifier(
+            $this->traversableCallWithNoEnd,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+
         $this->featureDetector = new FeatureDetector();
     }
 
@@ -464,6 +480,93 @@ EOD;
             'Called on object like #0{}. Object was #0{}.'
         );
         $this->subject->never()->calledOn($this->matcherFactory->equalTo($this->thisValue));
+    }
+
+    public function testCheckResponded()
+    {
+        $this->assertTrue((boolean) $this->subject->checkResponded());
+        $this->assertTrue((boolean) $this->subjectWithException->checkResponded());
+        $this->assertFalse((boolean) $this->subject->never()->checkResponded());
+        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkResponded());
+        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkResponded());
+    }
+
+    public function testResponded()
+    {
+        $this->assertEquals($this->returnedAssertionResult, $this->subject->responded());
+        $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->responded());
+        $this->assertEquals($this->emptyAssertionResult, $this->subjectWithNoResponse->never()->responded());
+    }
+
+    public function testRespondedFailure()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected response. Never responded.'
+        );
+        $this->subjectWithNoResponse->responded();
+    }
+
+    public function testRespondedFailureNever()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected no response. Returned "abc".'
+        );
+        $this->subject->never()->responded();
+    }
+
+    public function testCheckCompleted()
+    {
+        $this->assertTrue((boolean) $this->subject->checkCompleted());
+        $this->assertTrue((boolean) $this->subjectWithException->checkCompleted());
+        $this->assertTrue((boolean) $this->traversableSubject->checkCompleted());
+        $this->assertFalse((boolean) $this->subject->never()->checkCompleted());
+        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkCompleted());
+        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkCompleted());
+        $this->assertFalse((boolean) $this->traversableSubjectWithNoEnd->checkCompleted());
+        $this->assertTrue((boolean) $this->traversableSubjectWithNoEnd->never()->checkCompleted());
+    }
+
+    public function testCompleted()
+    {
+        $this->assertEquals($this->returnedAssertionResult, $this->subject->completed());
+        $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->completed());
+        $this->assertEquals(
+            new EventSequence(array($this->traversableEndEvent)),
+            $this->traversableSubject->completed()
+        );
+        $this->assertEquals($this->emptyAssertionResult, $this->subjectWithNoResponse->never()->completed());
+    }
+
+    public function testCompletedFailure()
+    {
+        $expected = <<<'EOD'
+Expected call to complete. Returned #0[:4] producing:
+    - produced "m": "n"
+    - produced "p": "q"
+    - produced "r": "s"
+    - produced "u": "v"
+    - did not finish iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->traversableSubjectWithNoEnd->completed();
+    }
+
+    public function testCompletedFailureNever()
+    {
+        $expected = <<<'EOD'
+Expected no call to complete. Returned #0[:4] producing:
+    - produced "m": "n"
+    - produced "p": "q"
+    - produced "r": "s"
+    - produced "u": "v"
+    - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->traversableSubject->never()->completed();
     }
 
     public function testCheckReturned()

@@ -444,15 +444,33 @@ class AssertionRenderer
     /**
      * Render the supplied call's response.
      *
-     * @param Call $call The call.
+     * @param Call $call               The call.
+     * @param bool $expandTraversables True if traversable events should be rendered.
      *
      * @return string The rendered response.
      */
-    public function renderResponse(Call $call)
+    public function renderResponse(Call $call, $expandTraversables = false)
     {
         $responseEvent = $call->responseEvent();
 
         if ($responseEvent instanceof ReturnedEvent) {
+            if ($expandTraversables && $call->isTraversable()) {
+                if ($call->isGenerator()) {
+                    return sprintf(
+                        "Generated:\n%s",
+                        $this->renderTraversableEvents($call)
+                    );
+                }
+
+                $returnValue = $responseEvent->value();
+
+                return sprintf(
+                    "Returned %s producing:\n%s",
+                    $this->exporter->export($returnValue, 0),
+                    $this->renderTraversableEvents($call)
+                );
+            }
+
             return sprintf(
                 'Returned %s.',
                 $this->renderValue($responseEvent->value())

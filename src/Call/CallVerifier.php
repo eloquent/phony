@@ -709,6 +709,94 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
+     * Checks if this call responded.
+     *
+     * @return EventCollection|null        The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
+     */
+    public function checkResponded()
+    {
+        $cardinality = $this->resetCardinality()->assertSingular();
+        $responseEvent = $this->call->responseEvent();
+
+        list($matchCount, $matchingEvents) =
+            $this->matchIf($responseEvent, $responseEvent);
+
+        if ($cardinality->matches($matchCount, 1)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this call responded.
+     *
+     * @return EventCollection             The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
+     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function responded()
+    {
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkResponded()) {
+            return $result;
+        }
+
+        return $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, 'response'),
+                $this->assertionRenderer->renderResponse($this->call)
+            )
+        );
+    }
+
+    /**
+     * Checks if this call completed.
+     *
+     * @return EventCollection|null        The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
+     */
+    public function checkCompleted()
+    {
+        $cardinality = $this->resetCardinality()->assertSingular();
+        $endEvent = $this->call->endEvent();
+
+        list($matchCount, $matchingEvents) =
+            $this->matchIf($endEvent, $endEvent);
+
+        if ($cardinality->matches($matchCount, 1)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this call completed.
+     *
+     * @return EventCollection             The result.
+     * @throws InvalidCardinalityException If the cardinality is invalid.
+     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function completed()
+    {
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkCompleted()) {
+            return $result;
+        }
+
+        return $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, 'call to complete'),
+                $this->assertionRenderer->renderResponse($this->call, true)
+            )
+        );
+    }
+
+    /**
      * Checks if this call returned the supplied value.
      *
      * When called with no arguments, this method simply checks that the call

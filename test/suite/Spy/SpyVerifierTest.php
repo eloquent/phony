@@ -146,12 +146,17 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iteratorEventE,
             $this->iteratorEventG,
         );
-        $this->traversableEndEvent = $this->callEventFactory->createReturned(null);
+        $this->traversableEndEvent = $this->callEventFactory->createConsumed();
         $this->iteratorCall = $this->callFactory->create(
             $this->iteratorCalledEvent,
             $this->returnedTraversableEvent,
             $this->iteratorEvents,
             $this->traversableEndEvent
+        );
+        $this->iteratorCallWithNoEnd = $this->callFactory->create(
+            $this->iteratorCalledEvent,
+            $this->returnedTraversableEvent,
+            $this->iteratorEvents
         );
 
         $this->callFactory->reset();
@@ -1319,6 +1324,257 @@ EOD;
         $this->subject->always()->calledOn($this->matcherFactory->equalTo($this->thisValueA));
     }
 
+    public function testCheckResponded()
+    {
+        $this->assertFalse((boolean) $this->subject->checkResponded());
+        $this->assertTrue((boolean) $this->subject->never()->checkResponded());
+
+        $this->subject->addCall($this->callE);
+
+        $this->assertFalse((boolean) $this->subject->checkResponded());
+        $this->assertTrue((boolean) $this->subject->never()->checkResponded());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertTrue((boolean) $this->subject->checkResponded());
+        $this->assertFalse((boolean) $this->subject->never()->checkResponded());
+
+        $this->subject->setCalls(array($this->iteratorCall));
+
+        $this->assertTrue((boolean) $this->subject->checkResponded());
+    }
+
+    public function testResponded()
+    {
+        $this->assertEquals(new EventSequence(array()), $this->subject->never()->responded());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals(
+            new EventSequence(
+                array(
+                    $this->callA->responseEvent(),
+                    $this->callB->responseEvent(),
+                    $this->callC->responseEvent(),
+                    $this->callD->responseEvent(),
+                )
+            ),
+            $this->subject->responded()
+        );
+
+        $this->subject->setCalls(array($this->iteratorCall));
+
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorCall->responseEvent())),
+            $this->subject->responded()
+        );
+    }
+
+    public function testRespondedFailure()
+    {
+        $this->subject->setCalls(array($this->callE, $this->callE));
+
+        $expected = <<<'EOD'
+Expected call on implode[label] to respond. Responded:
+    - <none>
+    - <none>
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->responded();
+    }
+
+    public function testRespondedFailureWithNoCalls()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected call on implode[label] to respond. Never called.'
+        );
+        $this->subject->responded();
+    }
+
+    public function testCheckAlwaysResponded()
+    {
+        $this->assertFalse((boolean) $this->subject->always()->checkResponded());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertFalse((boolean) $this->subject->always()->checkResponded());
+
+        $this->subject->setCalls(array($this->callA, $this->callB));
+
+        $this->assertTrue((boolean) $this->subject->always()->checkResponded());
+    }
+
+    public function testAlwaysResponded()
+    {
+        $this->subject->setCalls(array($this->callA, $this->callB));
+        $expected = new EventSequence(array($this->callA->responseEvent(), $this->callB->responseEvent()));
+
+        $this->assertEquals($expected, $this->subject->always()->responded());
+    }
+
+    public function testAlwaysRespondedFailure()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $expected = <<<'EOD'
+Expected every call on implode[label] to respond. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - <none>
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->always()->responded();
+    }
+
+    public function testAlwaysRespondedFailureWithNoCalls()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected every call on implode[label] to respond. Never called.'
+        );
+        $this->subject->always()->responded();
+    }
+
+    public function testCheckCompleted()
+    {
+        $this->assertFalse((boolean) $this->subject->checkCompleted());
+        $this->assertTrue((boolean) $this->subject->never()->checkCompleted());
+
+        $this->subject->addCall($this->callE);
+
+        $this->assertFalse((boolean) $this->subject->checkCompleted());
+        $this->assertTrue((boolean) $this->subject->never()->checkCompleted());
+
+        $this->subject->addCall($this->iteratorCallWithNoEnd);
+
+        $this->assertFalse((boolean) $this->subject->checkCompleted());
+        $this->assertTrue((boolean) $this->subject->never()->checkCompleted());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertTrue((boolean) $this->subject->checkCompleted());
+        $this->assertFalse((boolean) $this->subject->never()->checkCompleted());
+
+        $this->subject->setCalls(array($this->iteratorCall));
+
+        $this->assertTrue((boolean) $this->subject->checkCompleted());
+    }
+
+    public function testCompleted()
+    {
+        $this->assertEquals(new EventSequence(array()), $this->subject->never()->completed());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertEquals(
+            new EventSequence(
+                array(
+                    $this->callA->endEvent(),
+                    $this->callB->endEvent(),
+                    $this->callC->endEvent(),
+                    $this->callD->endEvent(),
+                )
+            ),
+            $this->subject->completed()
+        );
+
+        $this->subject->setCalls(array($this->iteratorCall));
+
+        $this->assertEquals(new EventSequence(array($this->iteratorCall->endEvent())), $this->subject->completed());
+    }
+
+    public function testCompletedFailure()
+    {
+        $this->subject->setCalls(array($this->iteratorCallWithNoEnd, $this->iteratorCallWithNoEnd));
+
+        $expected = <<<'EOD'
+Expected call on implode[label] to complete. Responded:
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - did not finish iterating
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - did not finish iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->completed();
+    }
+
+    public function testCompletedFailureWithNoCalls()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected call on implode[label] to complete. Never called.'
+        );
+        $this->subject->completed();
+    }
+
+    public function testCheckAlwaysCompleted()
+    {
+        $this->assertFalse((boolean) $this->subject->always()->checkCompleted());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertFalse((boolean) $this->subject->always()->checkCompleted());
+
+        $this->subject->setCalls(array($this->callA, $this->iteratorCall));
+
+        $this->assertTrue((boolean) $this->subject->always()->checkCompleted());
+    }
+
+    public function testAlwaysCompleted()
+    {
+        $this->subject->setCalls(array($this->callA, $this->iteratorCall));
+        $expected = new EventSequence(array($this->callA->endEvent(), $this->iteratorCall->endEvent()));
+
+        $this->assertEquals($expected, $this->subject->always()->completed());
+    }
+
+    public function testAlwaysCompletedFailure()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->subject->addCall($this->iteratorCall);
+
+        $expected = <<<'EOD'
+Expected every call on implode[label] to complete. Responded:
+    - returned "x"
+    - returned "y"
+    - threw RuntimeException("You done goofed.")
+    - threw RuntimeException("Consequences will never be the same.")
+    - <none>
+    - returned #0[:4] producing:
+        - produced "m": "n"
+        - produced "p": "q"
+        - produced "r": "s"
+        - produced "u": "v"
+        - finished iterating
+EOD;
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->subject->always()->completed();
+    }
+
+    public function testAlwaysCompletedFailureWithNoCalls()
+    {
+        $this->setExpectedException(
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
+            'Expected every call on implode[label] to complete. Never called.'
+        );
+        $this->subject->always()->completed();
+    }
+
     public function testCheckReturned()
     {
         $this->assertFalse((boolean) $this->subject->checkReturned());
@@ -2036,23 +2292,6 @@ EOD;
     }
 
     public function testAlwaysTraversedFailure()
-    {
-        $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected every call on implode[label] to be traversable. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->always()->traversed();
-    }
-
-    public function testAlwaysTraversedFailureWithNoMatcher()
     {
         $this->subject->setCalls($this->calls);
 

@@ -91,6 +91,7 @@
             - [Verifying generators returned by spies]
             - [Verifying traversables returned by spies]
         - [Verifying spy exceptions]
+    - [Verifying spy progress]
     - [Verifying cardinality with spies]
         - [Verifying that a spy event happened an exact number of times]
         - [Verifying that a spy event happened a bounded number of times]
@@ -110,6 +111,7 @@
             - [Verifying generators returned by calls]
             - [Verifying traversables returned by calls]
         - [Verifying call exceptions]
+    - [Verifying call progress]
     - [Verifying cardinality with calls]
         - [Verifying that a call event happened an exact number of times]
         - [Verifying that a call event happened a bounded number of times]
@@ -2211,6 +2213,68 @@ exception that matches the supplied matcher.*
 
 *See [Verifying spy exceptions], [Check verification].*
 
+<a name="stub.responded" />
+
+----
+
+> *[verification][verification-api]* $stub->[**responded**](#stub.responded)()
+> throws [AssertionException]
+
+Throws an exception unless this stub responded.
+
+*A stub that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress].*
+
+<a name="stub.checkResponded" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkResponded**](#stub.checkResponded)()
+
+Checks if this stub responded.
+
+*A stub that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress], [Check verification].*
+
+<a name="stub.completed" />
+
+----
+
+> *[verification][verification-api]* $stub->[**completed**](#stub.completed)()
+> throws [AssertionException]
+
+Throws an exception unless this stub completed.
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+*See [Verifying spy progress].*
+
+<a name="stub.checkCompleted" />
+
+----
+
+> *[verification][verification-api]|null* $stub->[**checkCompleted**](#stub.checkCompleted)()
+
+Checks if this stub completed.
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+*See [Verifying spy progress], [Check verification].*
+
 <a name="stub.never" />
 
 ----
@@ -4236,6 +4300,68 @@ exception that matches the supplied matcher.*
 
 *See [Verifying spy exceptions], [Check verification].*
 
+<a name="spy.responded" />
+
+----
+
+> *[verification][verification-api]* $spy->[**responded**](#spy.responded)()
+> throws [AssertionException]
+
+Throws an exception unless this spy responded.
+
+*A spy that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress].*
+
+<a name="spy.checkResponded" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkResponded**](#spy.checkResponded)()
+
+Checks if this spy responded.
+
+*A spy that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress], [Check verification].*
+
+<a name="spy.completed" />
+
+----
+
+> *[verification][verification-api]* $spy->[**completed**](#spy.completed)()
+> throws [AssertionException]
+
+Throws an exception unless this spy completed.
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+*See [Verifying spy progress].*
+
+<a name="spy.checkCompleted" />
+
+----
+
+> *[verification][verification-api]|null* $spy->[**checkCompleted**](#spy.checkCompleted)()
+
+Checks if this spy completed.
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+*See [Verifying spy progress], [Check verification].*
+
 <a name="spy.generated" />
 
 ----
@@ -4569,6 +4695,29 @@ To verify that a spy threw an exception, use [`threw()`](#spy.threw):
 $spy->threw();                                         // threw any exception
 $spy->threw('RuntimeException');                       // threw a runtime exception
 $spy->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
+```
+
+### Verifying spy progress
+
+To verify that a spy call has completed, use [`completed()`](#spy.completed):
+
+```php
+$spy->completed();
+```
+
+When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.
+
+Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.
+
+To ignore traversable events, and simply verify that a spy has returned a value
+*or* thrown an exception, use [`responded()`](#spy.responded):
+
+```php
+$spy->responded();
 ```
 
 ### Verifying cardinality with spies
@@ -5107,6 +5256,68 @@ exception that matches the supplied matcher.*
 
 *See [Verifying call exceptions], [Check verification].*
 
+<a name="call.responded" />
+
+----
+
+> *[verification][verification-api]* $call->[**responded**](#call.responded)()
+> throws [AssertionException]
+
+Throws an exception unless this call responded.
+
+*A call that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying call progress].*
+
+<a name="call.checkResponded" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkResponded**](#call.checkResponded)()
+
+Checks if this call responded.
+
+*A call that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying call progress], [Check verification].*
+
+<a name="call.completed" />
+
+----
+
+> *[verification][verification-api]* $call->[**completed**](#call.completed)()
+> throws [AssertionException]
+
+Throws an exception unless this call completed.
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+*See [Verifying call progress].*
+
+<a name="call.checkCompleted" />
+
+----
+
+> *[verification][verification-api]|null* $call->[**checkCompleted**](#call.checkCompleted)()
+
+Checks if this call completed.
+
+*When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.*
+
+*Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.*
+
+*See [Verifying call progress], [Check verification].*
+
 <a name="call.generated" />
 
 ----
@@ -5445,6 +5656,29 @@ $call->threw('RuntimeException');                       // threw a runtime excep
 $call->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
 
+### Verifying call progress
+
+To verify that a call has completed, use [`completed()`](#call.completed):
+
+```php
+$call->completed();
+```
+
+When [generator spies] are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.
+
+Similarly, when [traversable spies] are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.
+
+To ignore traversable events, and simply verify that a call has returned a value
+*or* thrown an exception, use [`responded()`](#call.responded):
+
+```php
+$call->responded();
+```
+
 ### Verifying cardinality with calls
 
 Cardinality modifiers change the amount of times a call, or other event, must
@@ -5545,6 +5779,7 @@ For information on specific verification methods, see these sections:
             - [Verifying generators returned by spies]
             - [Verifying traversables returned by spies]
         - [Verifying spy exceptions]
+    - [Verifying spy progress]
     - [Verifying cardinality with spies]
         - [Verifying that a spy event happened an exact number of times]
         - [Verifying that a spy event happened a bounded number of times]
@@ -5558,6 +5793,7 @@ For information on specific verification methods, see these sections:
             - [Verifying generators returned by calls]
             - [Verifying traversables returned by calls]
         - [Verifying call exceptions]
+    - [Verifying call progress]
     - [Verifying cardinality with calls]
         - [Verifying that a call event happened an exact number of times]
         - [Verifying that a call event happened a bounded number of times]
@@ -7297,6 +7533,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying call exceptions]: #verifying-call-exceptions
 [verifying call input]: #verifying-call-input
 [verifying call output]: #verifying-call-output
+[verifying call progress]: #verifying-call-progress
 [verifying call return values]: #verifying-call-return-values
 [verifying cardinality with calls]: #verifying-cardinality-with-calls
 [verifying cardinality with spies]: #verifying-cardinality-with-spies
@@ -7313,6 +7550,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying spy exceptions]: #verifying-spy-exceptions
 [verifying spy input]: #verifying-spy-input
 [verifying spy output]: #verifying-spy-output
+[verifying spy progress]: #verifying-spy-progress
 [verifying spy return values]: #verifying-spy-return-values
 [verifying that a call event happened a bounded number of times]: #verifying-that-a-call-event-happened-a-bounded-number-of-times
 [verifying that a call event happened an exact number of times]: #verifying-that-a-call-event-happened-an-exact-number-of-times

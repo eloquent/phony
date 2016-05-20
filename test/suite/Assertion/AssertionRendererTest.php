@@ -328,6 +328,27 @@ EOD;
         $this->assertSame($expected, $this->subject->renderResponse($call));
     }
 
+    public function testRenderResponseWithExapandedTraversables()
+    {
+        $traversableCall = $this->callFactory->create(
+            $this->callEventFactory->createCalled(),
+            $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd')),
+            array(
+                $this->callEventFactory->createProduced('a', 'b'),
+                $this->callEventFactory->createProduced('c', 'd'),
+            ),
+            $this->callEventFactory->createConsumed()
+        );
+        $expected = <<<'EOD'
+Returned #0[:2] producing:
+    - produced "a": "b"
+    - produced "c": "d"
+    - finished iterating
+EOD;
+
+        $this->assertSame($expected, $this->subject->renderResponse($traversableCall, true));
+    }
+
     public function testRenderException()
     {
         $this->assertSame('Exception()', $this->subject->renderException(new Exception()));

@@ -14,6 +14,7 @@
   corresponding method on the call API ([#146]).
 - **[NEW]** Implemented generator and traversable verifiers ([#102], [#115],
   [#125]).
+- **[NEW]** Implemented `responded()` and `completed()` verifications ([#125]).
 - **[NEW]** Mocks as default stub return values for arbitrary object return
   types ([#149], [#150]).
 - **[FIXED]** Fixed exception when stubbing functions with return values

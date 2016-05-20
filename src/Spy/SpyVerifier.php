@@ -647,6 +647,138 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     }
 
     /**
+     * Checks if this spy responded.
+     *
+     * @return EventCollection|null The result.
+     */
+    public function checkResponded()
+    {
+        $cardinality = $this->resetCardinality();
+
+        $calls = $this->spy->allCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if ($responseEvent = $call->responseEvent()) {
+                $matchingEvents[] = $responseEvent;
+                ++$matchCount;
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this spy responded.
+     *
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function responded()
+    {
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkResponded()) {
+            return $result;
+        }
+
+        $renderedType = sprintf(
+            'call on %s to respond',
+            $this->assertionRenderer->renderCallable($this->spy)
+        );
+
+        $calls = $this->spy->allCalls();
+
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls)
+            );
+        }
+
+        return $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
+        );
+    }
+
+    /**
+     * Checks if this spy completed.
+     *
+     * @return EventCollection|null The result.
+     */
+    public function checkCompleted()
+    {
+        $cardinality = $this->resetCardinality();
+
+        $calls = $this->spy->allCalls();
+        $matchingEvents = array();
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if ($endEvent = $call->endEvent()) {
+                $matchingEvents[] = $endEvent;
+                ++$matchCount;
+            }
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
+            return $this->assertionRecorder->createSuccess($matchingEvents);
+        }
+    }
+
+    /**
+     * Throws an exception unless this spy completed.
+     *
+     * @return EventCollection The result.
+     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     */
+    public function completed()
+    {
+        $cardinality = $this->cardinality;
+
+        if ($result = $this->checkCompleted()) {
+            return $result;
+        }
+
+        $renderedType = sprintf(
+            'call on %s to complete',
+            $this->assertionRenderer->renderCallable($this->spy)
+        );
+
+        $calls = $this->spy->allCalls();
+
+        if (0 === count($calls)) {
+            $renderedActual = 'Never called.';
+        } else {
+            $renderedActual = sprintf(
+                "Responded:\n%s",
+                $this->assertionRenderer->renderResponses($calls, true)
+            );
+        }
+
+        return $this->assertionRecorder->createFailure(
+            sprintf(
+                'Expected %s. %s',
+                $this->assertionRenderer
+                    ->renderCardinality($cardinality, $renderedType),
+                $renderedActual
+            )
+        );
+    }
+
+    /**
      * Checks if this spy returned the supplied value.
      *
      * @param mixed $value The value.
