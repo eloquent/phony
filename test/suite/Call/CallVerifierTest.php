@@ -16,7 +16,6 @@ use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
-use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -24,6 +23,7 @@ use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use Error;
@@ -407,7 +407,7 @@ EOD;
 
     public function testCalledWithFailureInvalidCardinality()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
         $this->subject->times(2)->calledWith('a');
     }
 

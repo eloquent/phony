@@ -17,7 +17,6 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ProducedEvent;
 use Eloquent\Phony\Call\Event\UsedEvent;
-use Eloquent\Phony\Cardinality\AbstractCardinalityVerifierEventCollection;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Exception;

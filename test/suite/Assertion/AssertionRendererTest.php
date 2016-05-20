@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Assertion;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
-use Eloquent\Phony\Cardinality\Cardinality;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Event\NullEvent;
 use Eloquent\Phony\Exporter\InlineExporter;
@@ -28,6 +27,7 @@ use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestEvent;
+use Eloquent\Phony\Verification\Cardinality;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;

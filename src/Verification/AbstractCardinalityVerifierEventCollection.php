@@ -9,16 +9,16 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Cardinality;
+namespace Eloquent\Phony\Verification;
 
 use ArrayIterator;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
-use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
+use Eloquent\Phony\Verification\Exception\InvalidCardinalityException;
 
 /**
  * An abstract base class for implementing cardinality verifiers and an event

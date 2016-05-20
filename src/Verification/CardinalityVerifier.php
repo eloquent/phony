@@ -9,9 +9,9 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Cardinality;
+namespace Eloquent\Phony\Verification;
 
-use Eloquent\Phony\Cardinality\Exception\InvalidCardinalityException;
+use Eloquent\Phony\Verification\Exception\InvalidCardinalityException;
 
 /**
  * The interface implemented by cardinality verifiers.

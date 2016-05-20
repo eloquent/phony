@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Cardinality\Exception;
+namespace Eloquent\Phony\Verification\Exception;
 
 /**
  * The interface used to identify invalid cardinality exceptions.

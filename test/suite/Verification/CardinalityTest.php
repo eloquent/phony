@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Cardinality;
+namespace Eloquent\Phony\Verification;
 
 use PHPUnit_Framework_TestCase;
 
@@ -43,25 +43,25 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorFailureNegativeMin()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
         new Cardinality(-1);
     }
 
     public function testConstructorFailureNegativeMax()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
         new Cardinality(null, -1);
     }
 
     public function testConstructorFailureInvalidMinMax()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
         new Cardinality($this->maximum, $this->minimum);
     }
 
     public function testConstructorFailureInvalidIsAlways()
     {
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
         new Cardinality(null, 0, true);
     }
 
@@ -83,7 +83,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Cardinality(null, 0);
 
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidCardinalityStateException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
         $this->subject->setIsAlways(true);
     }
 
@@ -136,7 +136,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Cardinality(2);
 
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
         $this->subject->assertSingular();
     }
 
@@ -144,7 +144,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Cardinality(null, 2);
 
-        $this->setExpectedException('Eloquent\Phony\Cardinality\Exception\InvalidSingularCardinalityException');
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
         $this->subject->assertSingular();
     }
 }
