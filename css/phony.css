@@ -91,6 +91,7 @@
     border: none;
     outline: none;
     -webkit-appearance: none;
+    -moz-appearance: none;
 }
 #version > select > option {
     direction: ltr;
