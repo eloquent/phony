@@ -21,34 +21,15 @@ var run = function () {
             var versionList = document.getElementById('versions');
             var isLatest = window.location.pathname.match(/\/latest\/$/);
 
-            var addVersionHandler = function (element, version) {
-                element.addEventListener(
-                    'click',
-                    function (event) {
-                        event.preventDefault();
-
-                        var newPathname = window.location.pathname.replace(
-                            /\/[^/]+\/?$/,
-                            '/' + version + '/'
-                        );
-
-                        if (newPathname !== window.location.pathname) {
-                            window.location.pathname = newPathname;
-                        }
-                    }
-                );
-            };
-
             var latestItem = document.createElement('li');
             var latest = document.createElement('a');
             latest.textContent = 'latest (' + versions[0] + ')';
-            latest.setAttribute('href', '../latest');
+            latest.setAttribute('href', '../latest/' + window.location.hash);
 
             if (isLatest) {
                 latest.setAttribute('class', 'current');
             }
 
-            addVersionHandler(latest, 'latest');
             latestItem.appendChild(latest);
             versionList.appendChild(latestItem);
 
@@ -58,14 +39,14 @@ var run = function () {
                 version.textContent = versions[i];
                 version.setAttribute(
                     'href',
-                    '../' + encodeURIComponent(versions[i])
+                    '../' + encodeURIComponent(versions[i]) +
+                        '/' + window.location.hash
                 );
 
                 if (!isLatest && versions[i] === currentVersion) {
                     version.setAttribute('class', 'current');
                 }
 
-                addVersionHandler(version, versions[i]);
                 versionItem.appendChild(version);
                 versionList.appendChild(versionItem);
             }
@@ -148,6 +129,15 @@ var run = function () {
     };
 
     var dispatch = function (event) {
+        var versionLinks = document.querySelectorAll('#versions a');
+
+        for (var i = 0; i < versionLinks.length; ++i) {
+            versionLinks[i].setAttribute(
+                'href',
+                versionLinks[i].pathname + window.location.hash
+            );
+        }
+
         if (window.location.hash) {
             hash = decodeURIComponent(window.location.hash.substring(1));
 
