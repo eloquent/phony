@@ -59,7 +59,7 @@ if (Version::tryParse($currentVersion, $version)) {
 
 foreach ($data as $file) {
     if ('dir' === $file->type && Version::tryParse($file->name, $version)) {
-        if ($version->isStable()) {
+        if (!$version->preReleaseVersion()()) {
             $versions[] = $version;
         }
     }
