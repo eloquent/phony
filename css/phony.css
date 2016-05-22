@@ -73,28 +73,34 @@
     font-weight: bold;
 }
 
-#version {
+#versions {
     float: right;
+    text-align: right;
+    border: 1px solid #eee;
+}
+#toc > ul#versions {
+    padding: .5em 1em;
+}
+#versions a {
+    display: none;
     color: #ccc;
 }
-#version i {
-    margin-right: .5em;
+#versions a.current {
+    display: inline;
 }
-#version > select {
-    direction: rtl;
-    padding-left: 1.5em;
-    margin-left: -1.5em;
-    font-family: inherit;
-    font-size: inherit;
-    color: #ccc;
-    background: none;
-    border: none;
-    outline: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+#versions a.current:before {
+    content: "v: ";
 }
-#version > select > option {
-    direction: ltr;
+
+#versions:hover a {
+    display: inline;
+    color: #4078c0;
+}
+#versions:hover a.current {
+    font-weight: bold;
+}
+#versions:hover a.current:before {
+    content: "";
 }
 
 .markdown-body {

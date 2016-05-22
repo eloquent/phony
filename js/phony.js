@@ -18,55 +18,57 @@ var run = function () {
 
             var versions = JSON.parse(request.responseText);
             var currentVersion = document.body.getAttribute('data-version');
-            var versionSelect = document.createElement('select');
-
+            var versionList = document.getElementById('versions');
             var isLatest = window.location.pathname.match(/\/latest\/$/);
 
-            var latest = document.createElement('option');
+            var addVersionHandler = function (element, version) {
+                element.addEventListener(
+                    'click',
+                    function (event) {
+                        event.preventDefault();
+
+                        var newPathname = window.location.pathname.replace(
+                            /\/[^/]+\/?$/,
+                            '/' + version + '/'
+                        );
+
+                        if (newPathname !== window.location.pathname) {
+                            window.location.pathname = newPathname;
+                        }
+                    }
+                );
+            };
+
+            var latestItem = document.createElement('li');
+            var latest = document.createElement('a');
             latest.textContent = 'latest (' + versions[0] + ')';
-            latest.setAttribute('value', 'latest');
+            latest.setAttribute('href', '../latest');
 
             if (isLatest) {
-                latest.setAttribute('selected', 'selected');
+                latest.setAttribute('class', 'current');
             }
 
-            versionSelect.appendChild(latest);
-
-            if (versions.indexOf(currentVersion) < 0) {
-                versions.push(currentVersion);
-            }
+            addVersionHandler(latest, 'latest');
+            latestItem.appendChild(latest);
+            versionList.appendChild(latestItem);
 
             for (var i = 0; i < versions.length; ++i) {
-                var version = document.createElement('option');
+                var versionItem = document.createElement('li');
+                var version = document.createElement('a');
                 version.textContent = versions[i];
-                version.setAttribute('value', versions[i]);
+                version.setAttribute(
+                    'href',
+                    '../' + encodeURIComponent(versions[i])
+                );
 
                 if (!isLatest && versions[i] === currentVersion) {
-                    version.setAttribute('selected', 'selected');
+                    version.setAttribute('class', 'current');
                 }
 
-                versionSelect.appendChild(version);
+                addVersionHandler(version, versions[i]);
+                versionItem.appendChild(version);
+                versionList.appendChild(versionItem);
             }
-
-            versionSelect.addEventListener(
-                'change',
-                function () {
-                    selectedVersion =
-                        versionSelect.options[versionSelect.selectedIndex]
-                            .value;
-
-                    var newPathname = window.location.pathname.replace(
-                        /\/[^/]+\/?$/,
-                        '/' + selectedVersion + '/'
-                    );
-
-                    if (newPathname !== window.location.pathname) {
-                        window.location.pathname = newPathname;
-                    }
-                }
-            );
-
-            document.getElementById('version').appendChild(versionSelect);
         };
 
         request.open('GET', '../data/versions.json', true);
