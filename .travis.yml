@@ -26,6 +26,7 @@ deploy:
     skip_cleanup: true
     on:
         php: '7.0'
+        all_branches: true
         condition: '"master" == "$TRAVIS_BRANCH" || -n "$TRAVIS_TAG"'
 
 env:
