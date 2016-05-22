@@ -74,15 +74,19 @@
 }
 
 #versions {
-    float: right;
+    position: absolute;
+    right: 0;
     text-align: right;
+    background: white;
     border: 1px solid #eee;
+    outline: .5em solid white;
 }
 #toc > ul#versions {
     padding: .5em 1em;
 }
 #versions a {
     display: none;
+    pointer-events: none;
     color: #ccc;
 }
 #versions a.current {
@@ -94,6 +98,7 @@
 
 #versions:hover a {
     display: inline;
+    pointer-events: auto;
     color: #4078c0;
 }
 #versions:hover a.current {
