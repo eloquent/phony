@@ -21,13 +21,18 @@ install: composer install --prefer-dist --no-progress --no-interaction --optimiz
 script: scripts/travis
 after_script: scripts/travis-after
 deploy:
-    provider: script
-    script: make publish
-    skip_cleanup: true
-    on:
-        php: '7.0'
-        all_branches: true
-        condition: '"master" == "$TRAVIS_BRANCH" || -n "$TRAVIS_TAG"'
+    - provider: script
+      script: make publish
+      skip_cleanup: true
+      on:
+          php: '7.0'
+          branch: master
+    - provider: script
+      script: make publish
+      skip_cleanup: true
+      on:
+          php: '7.0'
+          tags: true
 
 env:
     global:

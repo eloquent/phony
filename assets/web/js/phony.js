@@ -20,6 +20,18 @@ var run = function () {
             var currentVersion = document.body.getAttribute('data-version');
             var versionSelect = document.createElement('select');
 
+            var isLatest = window.location.pathname.match(/\/latest\/$/);
+
+            var latest = document.createElement('option');
+            latest.textContent = 'latest (' + versions[0] + ')';
+            latest.setAttribute('value', 'latest');
+
+            if (isLatest) {
+                latest.setAttribute('selected', 'selected');
+            }
+
+            versionSelect.appendChild(latest);
+
             if (versions.indexOf(currentVersion) < 0) {
                 versions.push(currentVersion);
             }
@@ -29,7 +41,7 @@ var run = function () {
                 version.textContent = versions[i];
                 version.setAttribute('value', versions[i]);
 
-                if (versions[i] === currentVersion) {
+                if (!isLatest && versions[i] === currentVersion) {
                     version.setAttribute('selected', 'selected');
                 }
 
@@ -43,10 +55,14 @@ var run = function () {
                         versionSelect.options[versionSelect.selectedIndex]
                             .value;
 
-                    window.location.pathname = window.location.pathname.replace(
+                    var newPathname = window.location.pathname.replace(
                         /\/[^/]+\/?$/,
                         '/' + selectedVersion + '/'
                     );
+
+                    if (newPathname !== window.location.pathname) {
+                        window.location.pathname = newPathname;
+                    }
                 }
             );
 

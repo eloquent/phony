@@ -100,7 +100,7 @@ $arguments[] = 'web/js:js';
 $command = implode(' ', array_map('escapeshellarg', $arguments));
 
 if ($isTravis) {
-    $versionStrings = ['latest'];
+    $versionStrings = [];
 
     foreach ($versions as $version) {
         $versionStrings[] = $version->string();
