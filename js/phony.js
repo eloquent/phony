@@ -20,6 +20,10 @@ var run = function () {
             var currentVersion = document.body.getAttribute('data-version');
             var versionSelect = document.createElement('select');
 
+            if (versions.indexOf(currentVersion) < 0) {
+                versions.push(currentVersion);
+            }
+
             for (var i = 0; i < versions.length; ++i) {
                 var version = document.createElement('option');
                 version.textContent = versions[i];
