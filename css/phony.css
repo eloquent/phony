@@ -73,6 +73,29 @@
     font-weight: bold;
 }
 
+#version {
+    float: right;
+    color: #ccc;
+}
+#version i {
+    margin-right: .5em;
+}
+#version > select {
+    direction: rtl;
+    padding-left: 1.5em;
+    margin-left: -1.5em;
+    font-family: inherit;
+    font-size: inherit;
+    color: #ccc;
+    background: none;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+}
+#version > select > option {
+    direction: ltr;
+}
+
 .markdown-body {
     font-family: Lato, "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }

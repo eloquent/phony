@@ -1,4 +1,60 @@
 var run = function () {
+    var fetchVersions = function () {
+        var request = new XMLHttpRequest();
+
+        request.onerror = function (e) {
+            console.error('Unable to load version data: ' + e.message);
+        };
+
+        request.onload = function () {
+            if (request.status < 200 || request.status > 499) {
+                console.error(
+                    'Unable to load version data: ' +
+                    request.statusText + ' (' + request.status + ')'
+                );
+
+                return;
+            }
+
+            var versions = JSON.parse(request.responseText);
+            var currentVersion = document.body.getAttribute('data-version');
+            var versionSelect = document.createElement('select');
+
+            for (var i = 0; i < versions.length; ++i) {
+                var version = document.createElement('option');
+                version.textContent = versions[i];
+                version.setAttribute('value', versions[i]);
+
+                if (versions[i] === currentVersion) {
+                    version.setAttribute('selected', 'selected');
+                }
+
+                versionSelect.appendChild(version);
+            }
+
+            versionSelect.addEventListener(
+                'change',
+                function () {
+                    selectedVersion =
+                        versionSelect.options[versionSelect.selectedIndex]
+                            .value;
+
+                    window.location.pathname = window.location.pathname.replace(
+                        /\/[^/]+\/?$/,
+                        '/' + selectedVersion + '/'
+                    );
+                }
+            );
+
+            document.getElementById('version').appendChild(versionSelect);
+        };
+
+        request.open('GET', '../data/versions.json', true);
+        request.send();
+    };
+
+    fetchVersions();
+
     var contentElement = document.getElementById('content');
     var tocElement = document.getElementById('toc');
     var tocListElement = contentElement.querySelector('ul');
