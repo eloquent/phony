@@ -23,6 +23,7 @@ after_script: scripts/travis-after
 deploy:
     provider: script
     script: make publish
+    skip_cleanup: true
     on:
         php: '7.0'
         condition: '"master" == "$TRAVIS_BRANCH" || -n "$TRAVIS_TAG"'
