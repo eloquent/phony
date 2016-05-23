@@ -231,6 +231,7 @@
 <li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
 </ul>
 </li>
+<li><a href="#verifying-spy-progress">Verifying spy progress</a></li>
 <li>
 <a href="#verifying-cardinality-with-spies">Verifying cardinality with spies</a>
 
@@ -275,6 +276,7 @@
 <li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
 </ul>
 </li>
+<li><a href="#verifying-call-progress">Verifying call progress</a></li>
 <li>
 <a href="#verifying-cardinality-with-calls">Verifying cardinality with calls</a>
 
@@ -2572,6 +2574,76 @@ exception that matches the supplied matcher.</em></p>
 
 <p><em>See <a href="#verifying-spy-exceptions">Verifying spy exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
+<p><a name="stub.responded"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $stub-&gt;<a href="#stub.responded"><strong>responded</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless this stub responded.</p>
+
+<p><em>A stub that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>.</em></p>
+
+<p><a name="stub.checkResponded"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $stub-&gt;<a href="#stub.checkResponded"><strong>checkResponded</strong></a>()</p>
+</blockquote>
+
+<p>Checks if this stub responded.</p>
+
+<p><em>A stub that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="stub.completed"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $stub-&gt;<a href="#stub.completed"><strong>completed</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless this stub completed.</p>
+
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</em></p>
+
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>.</em></p>
+
+<p><a name="stub.checkCompleted"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $stub-&gt;<a href="#stub.checkCompleted"><strong>checkCompleted</strong></a>()</p>
+</blockquote>
+
+<p>Checks if this stub completed.</p>
+
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</em></p>
+
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
 <p><a name="stub.never"></a></p>
 
 <hr>
@@ -4620,6 +4692,76 @@ exception that matches the supplied matcher.</em></p>
 
 <p><em>See <a href="#verifying-spy-exceptions">Verifying spy exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
+<p><a name="spy.responded"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.responded"><strong>responded</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless this spy responded.</p>
+
+<p><em>A spy that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>.</em></p>
+
+<p><a name="spy.checkResponded"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkResponded"><strong>checkResponded</strong></a>()</p>
+</blockquote>
+
+<p>Checks if this spy responded.</p>
+
+<p><em>A spy that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="spy.completed"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.completed"><strong>completed</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless this spy completed.</p>
+
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</em></p>
+
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>.</em></p>
+
+<p><a name="spy.checkCompleted"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkCompleted"><strong>checkCompleted</strong></a>()</p>
+</blockquote>
+
+<p>Checks if this spy completed.</p>
+
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</em></p>
+
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
 <p><a name="spy.generated"></a></p>
 
 <hr>
@@ -4956,6 +5098,26 @@ available verifications.</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw();                                         <span class="pl-c">// threw any exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// threw a runtime exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// threw a runtime exception with a specific message</span></span></pre></div>
+
+<h3>
+<a id="verifying-spy-progress" class="anchor" href="#verifying-spy-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy progress</h3>
+
+<p>To verify that a spy call has completed, use <a href="#spy.completed"><code>completed()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>completed();</span></pre></div>
+
+<p>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</p>
+
+<p>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</p>
+
+<p>To ignore traversable events, and simply verify that a spy has returned a value
+<em>or</em> thrown an exception, use <a href="#spy.responded"><code>responded()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>responded();</span></pre></div>
 
 <h3>
 <a id="verifying-cardinality-with-spies" class="anchor" href="#verifying-cardinality-with-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with spies</h3>
@@ -5535,6 +5697,76 @@ exception that matches the supplied matcher.</em></p>
 
 <p><em>See <a href="#verifying-call-exceptions">Verifying call exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
+<p><a name="call.responded"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.responded"><strong>responded</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless this call responded.</p>
+
+<p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
+
+<p><a name="call.checkResponded"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkResponded"><strong>checkResponded</strong></a>()</p>
+</blockquote>
+
+<p>Checks if this call responded.</p>
+
+<p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-call-progress">Verifying call progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
+<p><a name="call.completed"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.completed"><strong>completed</strong></a>()
+throws <a href="#assertionexception">AssertionException</a></p>
+</blockquote>
+
+<p>Throws an exception unless this call completed.</p>
+
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</em></p>
+
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</em></p>
+
+<p><em>See <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
+
+<p><a name="call.checkCompleted"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkCompleted"><strong>checkCompleted</strong></a>()</p>
+</blockquote>
+
+<p>Checks if this call completed.</p>
+
+<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</em></p>
+
+<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</em></p>
+
+<p><em>See <a href="#verifying-call-progress">Verifying call progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
+
 <p><a name="call.generated"></a></p>
 
 <hr>
@@ -5900,6 +6132,26 @@ available verifications.</p>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// threw a runtime exception with a specific message</span></span></pre></div>
 
 <h3>
+<a id="verifying-call-progress" class="anchor" href="#verifying-call-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call progress</h3>
+
+<p>To verify that a call has completed, use <a href="#call.completed"><code>completed()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>completed();</span></pre></div>
+
+<p>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+considered "complete" until the generator has been completely consumed via
+iteration.</p>
+
+<p>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
+traversable will not be considered "complete" until the traversable has been
+completely consumed via iteration.</p>
+
+<p>To ignore traversable events, and simply verify that a call has returned a value
+<em>or</em> thrown an exception, use <a href="#call.responded"><code>responded()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>responded();</span></pre></div>
+
+<h3>
 <a id="verifying-cardinality-with-calls" class="anchor" href="#verifying-cardinality-with-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with calls</h3>
 
 <p>Cardinality modifiers change the amount of times a call, or other event, must
@@ -6018,6 +6270,7 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 <li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
 </ul>
 </li>
+<li><a href="#verifying-spy-progress">Verifying spy progress</a></li>
 <li>
 <a href="#verifying-cardinality-with-spies">Verifying cardinality with spies</a>
 
@@ -6056,6 +6309,7 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 <li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
 </ul>
 </li>
+<li><a href="#verifying-call-progress">Verifying call progress</a></li>
 <li>
 <a href="#verifying-cardinality-with-calls">Verifying cardinality with calls</a>
 
