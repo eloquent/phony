@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.10.0 (2016-05-25)
 
 - **[BC BREAK]** Removed `produced()`, `producedAll()`, `received()`,
   `receivedException()` and associated check verification methods in both the
