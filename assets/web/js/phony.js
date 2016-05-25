@@ -50,13 +50,13 @@ var run = function () {
                 versionItem.appendChild(version);
                 versionList.appendChild(versionItem);
             }
+
+            gumshoe.setDistances();
         };
 
         request.open('GET', '../data/versions.json', true);
         request.send();
     };
-
-    fetchVersions();
 
     var contentElement = document.getElementById('content');
     var tocElement = document.getElementById('toc');
@@ -106,6 +106,7 @@ var run = function () {
 
     var redrawToc = function () {
         tocElement.style.marginLeft = (870 - document.body.scrollLeft) + 'px';
+
         gumshoe.setDistances();
     };
 
@@ -208,6 +209,7 @@ var run = function () {
             callback: activateTocHeading
         }
     );
+    fetchVersions();
     dispatch();
     redrawToc();
 };
