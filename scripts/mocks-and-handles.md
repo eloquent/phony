@@ -256,7 +256,12 @@ you're one of those people, I apologize.
 
 Basically, it boils down to the fact that in addition to regular old classes,
 you can import *namespaces themselves* with use statements, and that's what I
-just did there. We're getting a bit off topic though, so let's move on.
+just did there. In fact, to prove that it works, I'll just run the tests again
+quickly:
+
+> (run in terminal)
+
+See? Alles gut, ja?
 
 So that's basically your best option for importing Phony if you need to work
 with PHP versions older than 5.6. However, if you *can* take advantage of the
@@ -310,6 +315,11 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-And we're done. Simple as that. This last option is definitely my favorite when
-technical constraints allow for it, and I recommend you use it when you can
-also.
+And we're done. Simple as that. Let's run the tests once more for good measure:
+
+> (run in terminal)
+
+And everything's still working, as you can see.
+
+This last option is definitely my favorite when technical constraints allow for
+it, and I recommend you use it when you can also.
