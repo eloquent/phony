@@ -163,7 +163,7 @@ of a modern approach, and to use a namespaced function instead. All of the
 static methods on a given `Phony` class are also available as functions in the
 same namespace.
 
-To take advantage of that, I'm going to remove the last part of this use
+To take advantage of that, I'm going to remove the last part of this `use`
 statement:
 
 > (typing)
@@ -184,7 +184,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-And now I can refer to the `mock()` function by using the last part of the `use`
+And now I can refer to the `mock()` function by using the *new* last part of the
 statement, followed by a namespace separator, and finally the function name:
 
 > (typing)
