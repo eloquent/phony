@@ -68,32 +68,19 @@ final class AssertionException extends Exception
     {
         $prefix = 'Eloquent\Phony\\';
 
-        $index = null;
-        $broke = false;
+        for ($i = count($trace) - 1; $i >= 0; --$i) {
+            $entry = $trace[$i];
 
-        foreach ($trace as $index => $call) {
-            if (isset($call['class'])) {
-                if (0 !== strpos($call['class'], $prefix)) {
-                    $broke = true;
-
-                    break;
+            if (isset($entry['class'])) {
+                if (0 === strpos($entry['class'], $prefix)) {
+                    return $entry;
                 }
-            } elseif (0 !== strpos($call['function'], $prefix)) {
-                $broke = true;
-
-                break;
+            } elseif (0 === strpos($entry['function'], $prefix)) {
+                return $entry;
             }
         }
 
-        if (null === $index) {
-            return;
-        }
-
-        if (!$broke) {
-            ++$index;
-        }
-
-        return $trace[$index - 1];
+        return null;
     }
 
     /**

@@ -104,6 +104,17 @@ class AssertionExceptionTest extends PHPUnit_Framework_TestCase
                 ),
             ),
 
+            'Direct construction from outside namespace' => array(
+                array(
+                    array(
+                        'file' => '/path/to/file/a',
+                        'line' => 111,
+                        'function' => 'functionA',
+                    ),
+                ),
+                null,
+            ),
+
             'Empty Trace' => array(
                 array(),
                 null,

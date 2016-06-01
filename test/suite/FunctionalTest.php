@@ -1124,4 +1124,11 @@ EOD;
         $this->assertInstanceOf('Generator', $generator);
         $this->assertSame(array(), $actual);
     }
+
+    public function testAssertionExceptionConstruction()
+    {
+        $actual = new AssertionException('You done goofed.');
+
+        $this->assertNotNull($actual);
+    }
 }
