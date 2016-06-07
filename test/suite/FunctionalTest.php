@@ -665,6 +665,11 @@ EOD;
         $this->assertTrue(true);
     }
 
+    public function testTraversableInterfaceMockingWithPDOStatement()
+    {
+        $this->assertInstanceOf('PDOStatement', x\mock('PDOStatement')->mock());
+    }
+
     public function testTraitConstructorCalling()
     {
         if (!$this->featureDetector->isSupported('trait')) {

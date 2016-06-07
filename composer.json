@@ -15,6 +15,7 @@
         "php": ">=5.3"
     },
     "require-dev": {
+        "ext-pdo": "*",
         "athletic/athletic": "^0.1",
         "counterpart/counterpart": "^1",
         "danielstjules/pho": "^1",

@@ -647,6 +647,10 @@ class MockBuilder
 
                 if ($interface === $name) {
                     unset($this->types[$name]);
+                } elseif ($type->isInternal()) {
+                    $isConcrete = true;
+
+                    break;
                 }
             }
         }

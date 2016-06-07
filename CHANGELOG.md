@@ -1,5 +1,14 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Fixed magic self parameters in ad-hoc mock definitions ([#158]).
+- **[FIXED]** Fixed mocking of internal classes that implement `Traversable`
+  and other unimplementable interfaces directly ([#159]).
+
+[#158]: https://github.com/eloquent/phony/issues/158
+[#159]: https://github.com/eloquent/phony/issues/159
+
 ## 0.10.0 (2016-05-25)
 
 - **[BC BREAK]** Removed `produced()`, `producedAll()`, `received()`,
