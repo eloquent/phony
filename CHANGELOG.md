@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.10.1 (2016-06-07)
 
 - **[FIXED]** Fixed magic self parameters in ad-hoc mock definitions ([#158]).
 - **[FIXED]** Fixed mocking of internal classes that implement `Traversable`
