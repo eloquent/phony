@@ -1058,6 +1058,29 @@ EOD;
         $this->assertSame('bar', $bar->test());
     }
 
+    public function testAdHocMocksWithMagicSelf()
+    {
+        $mock = x\partialMock(array('test' => function ($phonySelf) { return $phonySelf; }))->mock();
+
+        $this->assertSame($mock, $mock->test());
+    }
+
+    public function testAdHocMocksWithMagicSelfOutput()
+    {
+        $builder = x\mockBuilder(array('test' => function ($phonySelf) { return $phonySelf; }))
+            ->named('PhonyTestAdHocMocksWithMagicSelfOutput');
+        $mock = $builder->get();
+        $handle = x\on($mock)->setLabel('label');
+        $expected = <<<'EOD'
+Expected call on PhonyTestAdHocMocksWithMagicSelfOutput[label]->test with arguments like:
+    "a"
+Never called.
+EOD;
+
+        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
+        $handle->test->calledWith('a');
+    }
+
     public function testBasicGeneratorStubbing()
     {
         if (!$this->featureDetector->isSupported('generator')) {

@@ -19,6 +19,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
@@ -462,8 +463,14 @@ class StubData extends AbstractWrappedInvocable implements Stub
         $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
-            $parameters = $this->invocableInspector
-                ->callbackReflector($this->callback)->getParameters();
+            if ($this->callback instanceof WrappedCustomMethod) {
+                $parameters = $this->invocableInspector
+                    ->callbackReflector($this->callback->customCallback())
+                    ->getParameters();
+            } else {
+                $parameters = $this->invocableInspector
+                    ->callbackReflector($this->callback)->getParameters();
+            }
 
             $prefixSelf = $parameters &&
                 'phonySelf' === $parameters[0]->getName();
