@@ -1159,4 +1159,60 @@ EOD;
 
         $this->assertNotNull($actual);
     }
+
+    public function testCalledOnWithSpies()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $closure = function () {};
+        $object = (object) array();
+        $closure = $closure->bindTo($object);
+        $spy = x\spy($closure);
+        $spy();
+
+        $spy->calledOn($object);
+    }
+
+    public function testCalledOnWithStubs()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $closure = function () {};
+        $object = (object) array();
+        $closure = $closure->bindTo($object);
+        $stub = x\stub($closure);
+        $stub();
+
+        $stub->calledOn($object);
+    }
+
+    public function testCalledOnWithMocks()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $handle = x\mock('Eloquent\Phony\Test\TestClassA');
+        $mock = $handle->mock();
+        $mock->testClassAMethodA();
+
+        $handle->testClassAMethodA->calledOn($mock);
+    }
+
+    public function testCalledOnWithCustomMethods()
+    {
+        if (!$this->featureDetector->isSupported('closure.bind')) {
+            $this->markTestSkipped('Requires closure binding.');
+        }
+
+        $handle = x\mock(array('a' => function () {}));
+        $mock = $handle->mock();
+        $mock->a();
+
+        $handle->a->calledOn($mock);
+    }
 }

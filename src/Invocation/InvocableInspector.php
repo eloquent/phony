@@ -94,6 +94,10 @@ class InvocableInspector
      */
     public function callbackThisValue($callback)
     {
+        while ($callback instanceof WrappedInvocable) {
+            $callback = $callback->callback();
+        }
+
         if (is_array($callback) && is_object($callback[0])) {
             return $callback[0];
         }
