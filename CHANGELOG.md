@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Fixed `calledOn()` behavior ([#160]).
+
+[#160]: https://github.com/eloquent/phony/issues/160
+
 ## 0.10.1 (2016-06-07)
 
 - **[FIXED]** Fixed magic self parameters in ad-hoc mock definitions ([#158]).
