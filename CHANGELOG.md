@@ -2,9 +2,12 @@
 
 ## Next release
 
+- **[IMPROVED]** Improved the output of `calledWith()` verification failures
+  ([#161]).
 - **[FIXED]** Fixed `calledOn()` behavior ([#160]).
 
 [#160]: https://github.com/eloquent/phony/issues/160
+[#161]: https://github.com/eloquent/phony/issues/161
 
 ## 0.10.1 (2016-06-07)
 
