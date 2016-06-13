@@ -575,9 +575,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('a', 'b');
         $expected = <<<'EOD'
 Expected call on {spy}[example] with arguments like:
-    "c", "d"
-Calls:
-    - "a", "b"
+    - "c"
+    - "d"
+Call #0:
+    - "a"
+    - "b"
 EOD;
 
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
@@ -591,9 +593,11 @@ EOD;
         $handle->mock()->testClassAMethodA('a', 'b');
         $expected = <<<'EOD'
 Expected call on TestClassA[example]->testClassAMethodA with arguments like:
-    "c", "d"
-Calls:
-    - "a", "b"
+    - "c"
+    - "d"
+Call #0:
+    - "a"
+    - "b"
 EOD;
 
         $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
@@ -1078,7 +1082,7 @@ EOD;
         $handle = x\on($mock)->setLabel('label');
         $expected = <<<'EOD'
 Expected call on PhonyTestAdHocMocksWithMagicSelfOutput[label]->test with arguments like:
-    "a"
+    - "a"
 Never called.
 EOD;
 

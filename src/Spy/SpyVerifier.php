@@ -535,21 +535,19 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         if (0 === $callCount) {
             $renderedActual = 'Never called.';
         } else {
-            $renderedActual = sprintf(
-                "Calls:\n%s",
-                $this->assertionRenderer->renderCallsArguments($calls)
-            );
+            $renderedActual =
+                $this->assertionRenderer->renderCallsArguments($calls);
         }
 
         return $this->assertionRecorder->createFailure(
             sprintf(
-                "Expected %s with arguments like:\n    %s\n%s",
+                "Expected %s with arguments like:\n%s\n%s",
                 $this->assertionRenderer->renderCardinality(
                     $cardinality,
                     'call on ' .
                         $this->assertionRenderer->renderCallable($this->spy)
                 ),
-                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderMatchersList($matchers),
                 $renderedActual
             )
         );
