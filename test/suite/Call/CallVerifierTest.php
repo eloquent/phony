@@ -389,9 +389,12 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $expected = <<<'EOD'
 Expected call with arguments like:
-    "b", "c"
+    - "b"
+    - "c"
 Arguments:
-    "a", "b", "c"
+    - "a"
+    - "b"
+    - "c"
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->calledWith('b', 'c');
@@ -401,9 +404,12 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected no call with arguments like:
-    "a", <any>*
+    - "a"
+    - <any>*
 Arguments:
-    "a", "b", "c"
+    - "a"
+    - "b"
+    - "c"
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->never()->calledWith('a', $this->matcherFactory->wildcard());
@@ -413,7 +419,8 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call with arguments like:
-    "b", "c"
+    - "b"
+    - "c"
 Arguments:
     <none>
 EOD;

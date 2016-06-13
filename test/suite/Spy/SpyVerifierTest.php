@@ -802,12 +802,22 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on implode[label] with arguments like:
-    "b", "c"
-Calls:
-    - "a", "b", "c"
-    - <none>
-    - "a", "b", "c"
-    - <none>
+    - "b"
+    - "c"
+Call #0:
+    - "a"
+    - "b"
+    - "c"
+Call #1:
+    <none>
+Call #2:
+    - "a"
+    - "b"
+    - "c"
+Call #3:
+    <none>
+Call #4:
+    <none>
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -818,7 +828,8 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call on implode[label] with arguments like:
-    "b", "c"
+    - "b"
+    - "c"
 Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -857,12 +868,23 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on implode[label], exactly 1 time with arguments like:
-    "a", "b", "c"
-Calls:
-    - "a", "b", "c"
-    - <none>
-    - "a", "b", "c"
-    - <none>
+    - "a"
+    - "b"
+    - "c"
+Call #0:
+    - "a"
+    - "b"
+    - "c"
+Call #1:
+    <none>
+Call #2:
+    - "a"
+    - "b"
+    - "c"
+Call #3:
+    <none>
+Call #4:
+    <none>
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -873,7 +895,9 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call on implode[label], exactly 1 time with arguments like:
-    "a", "b", "c"
+    - "a"
+    - "b"
+    - "c"
 Never called.
 EOD;
 
@@ -933,12 +957,23 @@ EOD;
         $this->subject->setCalls($this->calls);
         $expected = <<<'EOD'
 Expected call on implode[label], exactly 5 times with arguments like:
-    "a", "b", "c"
-Calls:
-    - "a", "b", "c"
-    - <none>
-    - "a", "b", "c"
-    - <none>
+    - "a"
+    - "b"
+    - "c"
+Call #0:
+    - "a"
+    - "b"
+    - "c"
+Call #1:
+    <none>
+Call #2:
+    - "a"
+    - "b"
+    - "c"
+Call #3:
+    <none>
+Call #4:
+    <none>
 EOD;
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -949,7 +984,9 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected call on implode[label], exactly 5 times with arguments like:
-    "a", "b", "c"
+    - "a"
+    - "b"
+    - "c"
 Never called.
 EOD;
 
@@ -1050,13 +1087,25 @@ EOD;
 
         $expected = <<<'EOD'
 Expected every call on implode[label] with arguments like:
-    "a", "b", "c"
-Calls:
-    - "a", "b", "c"
-    - <none>
-    - "a", "b", "c"
-    - <none>
+    - "a"
+    - "b"
+    - "c"
+Call #0:
+    - "a"
+    - "b"
+    - "c"
+Call #1:
+    <none>
+Call #2:
+    - "a"
+    - "b"
+    - "c"
+Call #3:
+    <none>
+Call #4:
+    <none>
 EOD;
+
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->always()->calledWith('a', 'b', 'c');
     }
@@ -1065,7 +1114,9 @@ EOD;
     {
         $expected = <<<'EOD'
 Expected every call on implode[label] with arguments like:
-    "a", "b", "c"
+    - "a"
+    - "b"
+    - "c"
 Never called.
 EOD;
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
@@ -1140,13 +1191,25 @@ EOD;
 
         $expected = <<<'EOD'
 Expected no call on implode[label] with arguments like:
-    "a", "b", "c"
-Calls:
-    - "a", "b", "c"
-    - <none>
-    - "a", "b", "c"
-    - <none>
+    - "a"
+    - "b"
+    - "c"
+Call #0:
+    - "a"
+    - "b"
+    - "c"
+Call #1:
+    <none>
+Call #2:
+    - "a"
+    - "b"
+    - "c"
+Call #3:
+    <none>
+Call #4:
+    <none>
 EOD;
+
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->never()->calledWith('a', 'b', 'c');
     }

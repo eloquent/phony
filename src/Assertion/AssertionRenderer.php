@@ -233,6 +233,30 @@ class AssertionRenderer
     }
 
     /**
+     * Render a sequence of matchers as a list.
+     *
+     * @param array<Matcher> $matchers The matchers.
+     *
+     * @return string The rendered matchers.
+     */
+    public function renderMatchersList(array $matchers)
+    {
+        if (count($matchers) < 1) {
+            return '<none>';
+        }
+
+        $rendered = array();
+        foreach ($matchers as $matcher) {
+            $rendered[] = sprintf(
+                '    - %s',
+                $matcher->describe($this->exporter)
+            );
+        }
+
+        return implode("\n", $rendered);
+    }
+
+    /**
      * Render a cardinality.
      *
      * @param Cardinality $cardinality The cardinality.
@@ -349,9 +373,13 @@ class AssertionRenderer
     public function renderCallsArguments(array $calls)
     {
         $rendered = array();
-        foreach ($calls as $call) {
+        foreach ($calls as $index => $call) {
             $rendered[] =
-                sprintf('    - %s', $this->renderArguments($call->arguments()));
+                sprintf(
+                    "Call #%d:\n%s",
+                    $index,
+                    $this->renderArguments($call->arguments())
+                );
         }
 
         return implode("\n", $rendered);
@@ -551,16 +579,16 @@ class AssertionRenderer
     public function renderArguments(Arguments $arguments)
     {
         if (count($arguments) < 1) {
-            return '<none>';
+            return '    <none>';
         }
 
         $rendered = array();
 
         foreach ($arguments as $argument) {
-            $rendered[] = $this->renderValue($argument);
+            $rendered[] = sprintf('    - %s', $this->renderValue($argument));
         }
 
-        return implode(', ', $rendered);
+        return implode("\n", $rendered);
     }
 
     /**

@@ -610,10 +610,10 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
 
         return $this->assertionRecorder->createFailure(
             sprintf(
-                "Expected %s with arguments like:\n    %s\nArguments:\n    %s",
+                "Expected %s with arguments like:\n%s\nArguments:\n%s",
                 $this->assertionRenderer
                     ->renderCardinality($cardinality, 'call'),
-                $this->assertionRenderer->renderMatchers($matchers),
+                $this->assertionRenderer->renderMatchersList($matchers),
                 $this->assertionRenderer
                     ->renderArguments($this->call->arguments())
             )

@@ -172,8 +172,11 @@ EOD;
     public function testRenderCallsArguments()
     {
         $expected = <<<'EOD'
-    - "a", "b"
-    - <none>
+Call #0:
+    - "a"
+    - "b"
+Call #1:
+    <none>
 EOD;
 
         $this->assertSame('', $this->subject->renderCallsArguments(array()));

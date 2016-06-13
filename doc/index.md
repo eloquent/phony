@@ -1241,9 +1241,11 @@ When a verification fails for a labeled mock, the output is similar to the
 following:
 
     Expected call on ClassA[label]->methodA with arguments like:
-        "x", "y"
-    Calls:
-        - "x", "z"
+        - "x"
+        - "y"
+    Call #0:
+        - "x"
+        - "z"
 
 ### Mock handles
 
@@ -4815,9 +4817,11 @@ When a verification fails for a labeled spy, the output is similar to the
 following:
 
     Expected call on {spy}[label] with arguments like:
-        "x", "y"
-    Calls:
-        - "x", "z"
+        - "x"
+        - "y"
+    Call #0:
+        - "x"
+        - "z"
 
 ### Invoking spies
 
