@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Stub;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -25,17 +24,11 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use PHPUnit_Framework_TestCase;
-use ReflectionClass;
 
 class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
-        $property = $exporterReflector->getProperty('incrementIds');
-        $property->setAccessible(true);
-        $property->setValue(InlineExporter::instance(), false);
-
         $this->callback = 'implode';
         $this->self = (object) array();
         $this->label = 'label';
@@ -158,14 +151,6 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $c = 'c';
             $d = 'd';
         };
-    }
-
-    protected function tearDown()
-    {
-        $exporterReflector = new ReflectionClass('Eloquent\Phony\Exporter\InlineExporter');
-        $property = $exporterReflector->getProperty('incrementIds');
-        $property->setAccessible(true);
-        $property->setValue(InlineExporter::instance(), true);
     }
 
     public function testGenerates()

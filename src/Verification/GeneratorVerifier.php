@@ -11,9 +11,15 @@
 
 namespace Eloquent\Phony\Verification;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Spy\Spy;
 use Error;
 use Exception;
 use InvalidArgumentException;
@@ -24,6 +30,36 @@ use Throwable;
  */
 class GeneratorVerifier extends TraversableVerifier
 {
+    /**
+     * Construct a new generator verifier.
+     *
+     * @param Spy|Call            $subject             The subject.
+     * @param array<Call>         $calls               The traversable calls.
+     * @param MatcherFactory      $matcherFactory      The matcher factory to use.
+     * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
+     * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
+     * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
+     */
+    public function __construct(
+        $subject,
+        array $calls,
+        MatcherFactory $matcherFactory,
+        CallVerifierFactory $callVerifierFactory,
+        AssertionRecorder $assertionRecorder,
+        AssertionRenderer $assertionRenderer
+    ) {
+        parent::__construct(
+            $subject,
+            $calls,
+            $matcherFactory,
+            $callVerifierFactory,
+            $assertionRecorder,
+            $assertionRenderer
+        );
+
+        $this->isGenerator = true;
+    }
+
     /**
      * Checks if the subject received the supplied value.
      *
@@ -47,27 +83,41 @@ class GeneratorVerifier extends TraversableVerifier
             $value = $this->matcherFactory->adapt($value);
         }
 
+        $isCall = $this->subject instanceof Call;
         $matchingEvents = array();
         $matchCount = 0;
+        $eventCount = 0;
 
         foreach ($this->calls as $call) {
-            $callMatched = false;
+            $isMatchingCall = false;
 
             foreach ($call->traversableEvents() as $event) {
                 if ($event instanceof ReceivedEvent) {
+                    ++$eventCount;
+
                     if (!$checkValue || $value->matches($event->value())) {
                         $matchingEvents[] = $event;
-                        $callMatched = true;
+                        $isMatchingCall = true;
+
+                        if ($isCall) {
+                            ++$matchCount;
+                        }
                     }
                 }
             }
 
-            if ($callMatched) {
+            if (!$isCall && $isMatchingCall) {
                 ++$matchCount;
             }
         }
 
-        if ($cardinality->matches($matchCount, $this->callCount)) {
+        if ($isCall) {
+            $totalCount = $eventCount;
+        } else {
+            $totalCount = $this->callCount;
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
     }
@@ -103,38 +153,9 @@ class GeneratorVerifier extends TraversableVerifier
             return $result;
         }
 
-        $renderedSubject =
-            $this->assertionRenderer->renderCallable($this->subject);
-
-        if (0 === $argumentCount) {
-            $renderedType = sprintf(
-                'generator returned by %s to receive value',
-                $renderedSubject
-            );
-        } else {
-            $renderedType = sprintf(
-                'generator returned by %s to receive value like %s',
-                $renderedSubject,
-                $value->describe()
-            );
-        }
-
-        if ($this->callCount) {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($this->calls, true)
-            );
-        } else {
-            $renderedActual = 'Never called.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer
+                ->renderGeneratorReceived($this->subject, $cardinality, $value)
         );
     }
 
@@ -150,60 +171,90 @@ class GeneratorVerifier extends TraversableVerifier
     {
         $cardinality = $this->resetCardinality();
 
+        $isCall = $this->subject instanceof Call;
         $matchingEvents = array();
         $matchCount = 0;
+        $eventCount = 0;
         $isTypeSupported = false;
 
         if (!$type) {
             $isTypeSupported = true;
 
             foreach ($this->calls as $call) {
+                $isMatchingCall = false;
+
                 foreach ($call->traversableEvents() as $event) {
                     if ($event instanceof ReceivedExceptionEvent) {
+                        ++$eventCount;
+
                         $matchingEvents[] = $event;
-                        ++$matchCount;
+                        $isMatchingCall = true;
+
+                        if ($isCall) {
+                            ++$matchCount;
+                        }
                     }
+                }
+
+                if (!$isCall && $isMatchingCall) {
+                    ++$matchCount;
                 }
             }
         } elseif (is_string($type)) {
             $isTypeSupported = true;
 
             foreach ($this->calls as $call) {
+                $isMatchingCall = false;
+
                 foreach ($call->traversableEvents() as $event) {
                     if ($event instanceof ReceivedExceptionEvent) {
+                        ++$eventCount;
+
                         if (is_a($event->exception(), $type)) {
                             $matchingEvents[] = $event;
-                            ++$matchCount;
+                            $isMatchingCall = true;
+
+                            if ($isCall) {
+                                ++$matchCount;
+                            }
                         }
                     }
+                }
+
+                if (!$isCall && $isMatchingCall) {
+                    ++$matchCount;
                 }
             }
         } elseif (is_object($type)) {
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
-
-                foreach ($this->calls as $call) {
-                    foreach ($call->traversableEvents() as $event) {
-                        if ($event instanceof ReceivedExceptionEvent) {
-                            if ($event->exception() == $type) {
-                                $matchingEvents[] = $event;
-                                ++$matchCount;
-                            }
-                        }
-                    }
-                }
+                $type = $this->matcherFactory->equalTo($type);
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->adapt($type);
+            }
 
+            if ($isTypeSupported) {
                 foreach ($this->calls as $call) {
+                    $isMatchingCall = false;
+
                     foreach ($call->traversableEvents() as $event) {
                         if ($event instanceof ReceivedExceptionEvent) {
+                            ++$eventCount;
+
                             if ($type->matches($event->exception())) {
                                 $matchingEvents[] = $event;
-                                ++$matchCount;
+                                $isMatchingCall = true;
+
+                                if ($isCall) {
+                                    ++$matchCount;
+                                }
                             }
                         }
+                    }
+
+                    if (!$isCall && $isMatchingCall) {
+                        ++$matchCount;
                     }
                 }
             }
@@ -218,7 +269,13 @@ class GeneratorVerifier extends TraversableVerifier
             );
         }
 
-        if ($cardinality->matches($matchCount, $this->callCount)) {
+        if ($isCall) {
+            $totalCount = $eventCount;
+        } else {
+            $totalCount = $this->callCount;
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
     }
@@ -237,55 +294,21 @@ class GeneratorVerifier extends TraversableVerifier
     {
         $cardinality = $this->cardinality;
 
+        if ($type instanceof Throwable || $type instanceof Exception) {
+            $type = $this->matcherFactory->equalTo($type);
+        } elseif ($this->matcherFactory->isMatcher($type)) {
+            $type = $this->matcherFactory->adapt($type);
+        }
+
         if ($result = $this->checkReceivedException($type)) {
             return $result;
         }
 
-        $renderedSubject =
-            $this->assertionRenderer->renderCallable($this->subject);
-
-        if (!$type) {
-            $renderedType = sprintf(
-                'generator returned by %s to receive exception',
-                $renderedSubject
-            );
-        } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                'generator returned by %s to receive %s exception',
-                $renderedSubject,
-                $type
-            );
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $renderedType = sprintf(
-                    'generator returned by %s to receive exception equal to %s',
-                    $renderedSubject,
-                    $this->assertionRenderer->renderException($type)
-                );
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $renderedType = sprintf(
-                    'generator returned by %s to receive exception like %s',
-                    $renderedSubject,
-                    $this->matcherFactory->adapt($type)->describe()
-                );
-            }
-        }
-
-        if ($this->callCount) {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($this->calls, true)
-            );
-        } else {
-            $renderedActual = 'Never called.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
+            $this->assertionRenderer->renderGeneratorReceivedException(
+                $this->subject,
+                $cardinality,
+                $type
             )
         );
     }
@@ -300,6 +323,10 @@ class GeneratorVerifier extends TraversableVerifier
     public function checkReturned($value = null)
     {
         $cardinality = $this->resetCardinality();
+
+        if ($this->subject instanceof Call) {
+            $cardinality->assertSingular();
+        }
 
         $matchingEvents = array();
         $matchCount = 0;
@@ -351,7 +378,6 @@ class GeneratorVerifier extends TraversableVerifier
     public function returned($value = null)
     {
         $cardinality = $this->cardinality;
-
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
@@ -368,36 +394,9 @@ class GeneratorVerifier extends TraversableVerifier
             return $result;
         }
 
-        $renderedSubject =
-            $this->assertionRenderer->renderCallable($this->subject);
-
-        if (0 === $argumentCount) {
-            $renderedType =
-                sprintf('call on %s to return via generator', $renderedSubject);
-        } else {
-            $renderedType = sprintf(
-                'call on %s to return like %s via generator',
-                $renderedSubject,
-                $value->describe()
-            );
-        }
-
-        if ($this->callCount) {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($this->calls, true)
-            );
-        } else {
-            $renderedActual = 'Never called.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer
+                ->renderGeneratorReturned($this->subject, $cardinality, $value)
         );
     }
 
@@ -412,6 +411,10 @@ class GeneratorVerifier extends TraversableVerifier
     public function checkThrew($type = null)
     {
         $cardinality = $this->resetCardinality();
+
+        if ($this->subject instanceof Call) {
+            $cardinality->assertSingular();
+        }
 
         $matchingEvents = array();
         $matchCount = 0;
@@ -450,26 +453,13 @@ class GeneratorVerifier extends TraversableVerifier
         } elseif (is_object($type)) {
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
-
-                foreach ($this->calls as $call) {
-                    if (
-                        !$call->isGenerator() ||
-                        !$endEvent = $call->endEvent()
-                    ) {
-                        continue;
-                    }
-
-                    list($exception, $returnValue) = $call->generatorResponse();
-
-                    if ($exception == $type) {
-                        $matchingEvents[] = $endEvent;
-                        ++$matchCount;
-                    }
-                }
+                $type = $this->matcherFactory->equalTo($type);
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->adapt($type);
+            }
 
+            if ($isTypeSupported) {
                 foreach ($this->calls as $call) {
                     if (
                         !$call->isGenerator() ||
@@ -516,54 +506,19 @@ class GeneratorVerifier extends TraversableVerifier
     {
         $cardinality = $this->cardinality;
 
+        if ($type instanceof Throwable || $type instanceof Exception) {
+            $type = $this->matcherFactory->equalTo($type);
+        } elseif ($this->matcherFactory->isMatcher($type)) {
+            $type = $this->matcherFactory->adapt($type);
+        }
+
         if ($result = $this->checkThrew($type)) {
             return $result;
         }
 
-        $renderedSubject =
-            $this->assertionRenderer->renderCallable($this->subject);
-
-        if (!$type) {
-            $renderedType =
-                sprintf('call on %s to throw via generator', $renderedSubject);
-        } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                'call on %s to throw %s exception via generator',
-                $renderedSubject,
-                $type
-            );
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $renderedType = sprintf(
-                    'call on %s to throw exception equal to %s via generator',
-                    $renderedSubject,
-                    $this->assertionRenderer->renderException($type)
-                );
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $renderedType = sprintf(
-                    'call on %s to throw exception like %s via generator',
-                    $renderedSubject,
-                    $this->matcherFactory->adapt($type)->describe()
-                );
-            }
-        }
-
-        if ($this->callCount) {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($this->calls, true)
-            );
-        } else {
-            $renderedActual = 'Never called.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer
+                ->renderGeneratorThrew($this->subject, $cardinality, $type)
         );
     }
 }

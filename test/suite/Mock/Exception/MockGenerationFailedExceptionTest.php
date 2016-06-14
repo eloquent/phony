@@ -51,6 +51,7 @@ ERROR
 // this line is context
 // this line is NOT context
 EOD;
+        $source = str_replace("\n", PHP_EOL, $source);
         $error = array('message' => 'errorMessage', 'line' => 5);
         $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
@@ -64,6 +65,7 @@ Relevant lines:
     7  // this line is context
     8  // this line is context
 EOD;
+        $expected = str_replace("\n", PHP_EOL, $expected);
 
         $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
@@ -86,6 +88,7 @@ ERROR
 // this line is context
 // this line is NOT context
 EOD;
+        $source = str_replace("\n", PHP_EOL, $source);
         $error = null;
         $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
@@ -101,6 +104,7 @@ Relevant lines:
     8  // this line is context
     9  // this line is NOT context
 EOD;
+        $expected = str_replace("\n", PHP_EOL, $expected);
 
         $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
@@ -120,6 +124,7 @@ ERROR
 // this line is context
 // this line is NOT context
 EOD;
+        $source = str_replace("\n", PHP_EOL, $source);
         $error = array('message' => 'errorMessage', 'line' => 2);
         $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
@@ -131,6 +136,7 @@ Relevant lines:
     4  // this line is context
     5  // this line is context
 EOD;
+        $expected = str_replace("\n", PHP_EOL, $expected);
 
         $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());
@@ -150,6 +156,7 @@ EOD;
 ERROR
 // this line is context
 EOD;
+        $source = str_replace("\n", PHP_EOL, $source);
         $error = array('message' => 'errorMessage', 'line' => 5);
         $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
@@ -161,6 +168,7 @@ Relevant lines:
     5: ERROR
     6  // this line is context
 EOD;
+        $expected = str_replace("\n", PHP_EOL, $expected);
 
         $this->assertSame($this->definition, $exception->definition());
         $this->assertSame($source, $exception->source());

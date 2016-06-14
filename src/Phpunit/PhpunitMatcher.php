@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Phpunit;
 
+use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Matcher\WrappedMatcher;
 
 /**
@@ -33,9 +34,11 @@ class PhpunitMatcher extends WrappedMatcher
     /**
      * Describe this matcher.
      *
+     * @param Exporter|null $exporter The exporter to use.
+     *
      * @return string The description.
      */
-    public function describe()
+    public function describe(Exporter $exporter = null)
     {
         return '<' . $this->matcher->toString() . '>';
     }

@@ -1,0 +1,18 @@
+%RESET%Expected %BOLD%{spy}[label]%RESET% call with arguments:
+    %GREEN%✓%RESET% "aardvark" %GREEN%%FAINT%(3 matches)%RESET%
+    %GREEN%✓%RESET% "bonobo" %GREEN%%FAINT%(2 matches)%RESET%
+    %GREEN%✓%RESET% "chameleon" %GREEN%%FAINT%(1 match)%RESET%
+    %RED%✗%RESET% "dugong" %RED%%FAINT%(0 matches)%RESET%
+Matched 0 of 3:
+%RED%✗%RESET% Call #0:
+    %GREEN%✓%RESET% "aardvark"
+    %RED%✗%RESET% <3 missing>
+%RED%✗%RESET% Call #1:
+    %GREEN%✓%RESET% "aardvark"
+    %GREEN%✓%RESET% "bonobo"
+    %RED%✗%RESET% <2 missing>
+%RED%✗%RESET% Call #2:
+    %GREEN%✓%RESET% "aardvark"
+    %GREEN%✓%RESET% "bonobo"
+    %GREEN%✓%RESET% "chameleon"
+    %RED%✗%RESET% <1 missing>

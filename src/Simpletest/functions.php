@@ -345,3 +345,18 @@ function setExportDepth($depth)
 {
     return SimpletestFacadeDriver::instance()->exporter->setDepth($depth);
 }
+
+/**
+ * Turn on or off the use of ANSI colored output.
+ *
+ * Pass `null` to detect automatically.
+ *
+ * @param bool|null $useColor True to use color.
+ */
+function setUseColor($useColor)
+{
+    $facade = SimpletestFacadeDriver::instance();
+
+    $facade->assertionRenderer->setUseColor($useColor);
+    $facade->differenceEngine->setUseColor($useColor);
+}

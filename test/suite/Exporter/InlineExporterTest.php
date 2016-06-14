@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Exporter;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
 use PHPUnit_Framework_TestCase;
@@ -26,7 +27,8 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->depth = -1;
-        $this->subject = new InlineExporter($this->depth, true);
+        $this->objectSequencer = new Sequencer();
+        $this->subject = new InlineExporter($this->depth, $this->objectSequencer);
 
         $this->featureDetector = FeatureDetector::instance();
     }
@@ -127,14 +129,6 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
         $this->assertSame('#0{}', $this->subject->export($objectA));
         $this->assertSame('#1{}', $this->subject->export($objectB));
         $this->assertSame('#0{}', $this->subject->export($objectA));
-    }
-
-    public function testExportWithoutIncrementingIds()
-    {
-        $this->subject = new InlineExporter($this->depth, false);
-        $value = array(array(), (object) array(), (object) array());
-
-        $this->assertSame('#0[#0[], #0{}, #0{}]', $this->subject->export($value));
     }
 
     public function testExportInaccessibleProperties()

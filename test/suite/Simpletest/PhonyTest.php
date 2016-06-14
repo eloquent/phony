@@ -457,6 +457,16 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(111, setExportDepth(1));
     }
 
+    public function testSetUseColor()
+    {
+        $this->assertNull(Phony::setUseColor(false));
+    }
+
+    public function testSetUseColorFunction()
+    {
+        $this->assertNull(setUseColor(false));
+    }
+
     private function assertSpyAssertionRecorder($expected, $spy)
     {
         $reflector = new ReflectionObject($spy);

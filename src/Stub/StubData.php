@@ -109,12 +109,13 @@ class StubData extends AbstractWrappedInvocable implements Stub
         if (!$this->answers && null !== $this->criteria) {
             printf(
                 'WARNING: Stub criteria %s were never used. ' .
-                    "Check for incomplete stub rules.\n",
+                    'Check for incomplete stub rules.%s',
                 var_export(
                     AssertionRenderer::instance()
                         ->renderMatchers($this->criteria),
                     true
-                )
+                ),
+                PHP_EOL
             );
         }
     }

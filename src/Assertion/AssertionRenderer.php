@@ -22,23 +22,31 @@ use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Event\UsedEvent;
-use Eloquent\Phony\Event\EventCollection;
-use Eloquent\Phony\Event\NullEvent;
+use Eloquent\Phony\Difference\DifferenceEngine;
+use Eloquent\Phony\Difference\DifferenceSequenceMatcher;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\WrappedInvocable;
+use Eloquent\Phony\Matcher\AnyMatcher;
+use Eloquent\Phony\Matcher\EqualToMatcher;
+use Eloquent\Phony\Matcher\Matchable;
 use Eloquent\Phony\Matcher\Matcher;
+use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Verification\Cardinality;
 use Error;
 use Exception;
+use Generator;
 use ReflectionException;
 use ReflectionMethod;
+use Traversable;
 
 /**
  * Renders various data for use in assertion messages.
@@ -55,7 +63,10 @@ class AssertionRenderer
         if (!self::$instance) {
             self::$instance = new self(
                 InvocableInspector::instance(),
-                InlineExporter::instance()
+                MatcherVerifier::instance(),
+                InlineExporter::instance(),
+                DifferenceEngine::instance(),
+                FeatureDetector::instance()
             );
         }
 
@@ -66,14 +77,3781 @@ class AssertionRenderer
      * Construct a new call renderer.
      *
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
+     * @param MatcherVerifier    $matcherVerifier    The matcher verifier to use.
      * @param Exporter           $exporter           The exporter to use.
+     * @param DifferenceEngine   $differenceEngine   The difference engine to use.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
         InvocableInspector $invocableInspector,
-        Exporter $exporter
+        MatcherVerifier $matcherVerifier,
+        Exporter $exporter,
+        DifferenceEngine $differenceEngine,
+        FeatureDetector $featureDetector
     ) {
         $this->invocableInspector = $invocableInspector;
+        $this->matcherVerifier = $matcherVerifier;
         $this->exporter = $exporter;
+        $this->differenceEngine = $differenceEngine;
+        $this->featureDetector = $featureDetector;
+
+        $this->setUseColor(null);
+    }
+
+    /**
+     * Turn on or off the use of ANSI colored output.
+     *
+     * Pass `null` to detect automatically.
+     *
+     * @param bool $useColor True to use color.
+     */
+    public function setUseColor($useColor)
+    {
+        if (null === $useColor) {
+            $useColor = $this->featureDetector->isSupported('stdout.ansi');
+        }
+
+        if ($useColor) {
+            $this->reset = "\033[0m";
+            $this->bold = "\033[1m";
+            $this->faint = "\033[2m";
+            $this->passStart = "\033[32m";
+            $this->failStart = "\033[31m";
+            $this->pass = $this->passStart . self::PASS . $this->reset;
+            $this->fail = $this->failStart . self::FAIL . $this->reset;
+
+            $this->addStart = "\033[33m\033[2m{+\033[0m\033[33m";
+            $this->addEnd = "\033[2m+}\033[0m";
+            $this->removeStart = "\033[36m\033[2m[-\033[0m\033[36m";
+            $this->removeEnd = "\033[2m-]\033[0m";
+        } else {
+            $this->reset = '';
+            $this->bold = '';
+            $this->faint = '';
+            $this->passStart = '';
+            $this->failStart = '';
+            $this->pass = self::PASS;
+            $this->fail = self::FAIL;
+
+            $this->addStart = '{+';
+            $this->addEnd = '+}';
+            $this->removeStart = '[-';
+            $this->removeEnd = '-]';
+        }
+    }
+
+    /**
+     * Render a failed called() verification.
+     *
+     * @param Spy         $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderCalled(Spy $subject, Cardinality $cardinality)
+    {
+        $renderedSubject =
+            $this->bold . $this->renderCallable($subject) . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isNever) {
+            $expected = 'Expected no ' . $renderedSubject . ' call.';
+        } else {
+            $expected =
+                'Expected ' . $renderedSubject . ' call with any arguments.';
+        }
+
+        $calls = $subject->allCalls();
+        $totalCount = count($calls);
+        $matchCount = $totalCount;
+
+        if ($totalCount) {
+            if ($isNever) {
+                $renderedResult = $this->fail;
+            } else {
+                $renderedResult = $this->pass;
+            }
+
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        '    ' . $renderedResult .
+                        ' ' . $this->exporter->export($argument);
+                }
+
+                if ($renderedArguments) {
+                    $renderedArgumentList =
+                        ':' . PHP_EOL . implode(PHP_EOL, $renderedArguments);
+                } else {
+                    $renderedArgumentList = ' (no arguments)';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult .
+                    ' Call #' .
+                    $call->index() .
+                    $renderedArgumentList;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        $cardinality = $this->renderCardinality(
+            $minimum,
+            $maximum,
+            $matchCount,
+            $totalCount,
+            $totalCount,
+            true
+        );
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed calledWith() verification.
+     *
+     * @param Spy|Call         $subject     The subject.
+     * @param Cardinality      $cardinality The cardinality.
+     * @param array<Matchable> $matchers    The matchers.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderCalledWith(
+        $subject,
+        Cardinality $cardinality,
+        array $matchers
+    ) {
+        $matcherCount = count($matchers);
+
+        if (
+            1 === $matcherCount &&
+            $matchers[0] instanceof WildcardMatcher &&
+            $matchers[0]->matcher() instanceof AnyMatcher &&
+            0 === $matchers[0]->minimumArguments() &&
+            null === $matchers[0]->maximumArguments()
+        ) {
+            return $this->renderCalled($subject, $cardinality);
+        }
+
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedSubject =
+                $this->bold .
+                $this->renderCallable($subject->callback()) .
+                $this->reset;
+        } else {
+            $calls = $subject->allCalls();
+            $renderedSubject =
+                $this->bold .
+                $this->renderCallable($subject) .
+                $this->reset;
+        }
+
+        if ($matcherCount > 0) {
+            $matcherMatchCounts = array_fill(0, $matcherCount, 0);
+        } else {
+            $matcherMatchCounts = array();
+        }
+
+        $callResults = array();
+        $totalCount = 0;
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            ++$totalCount;
+
+            $callResult = $this->matcherVerifier
+                ->explain($matchers, $call->arguments()->all());
+
+            if ($callResult->isMatch) {
+                ++$matchCount;
+            }
+
+            foreach ($callResult->matcherMatches as $index => $isMatch) {
+                if ($isMatch) {
+                    ++$matcherMatchCounts[$index];
+                }
+            }
+
+            $callResults[] = $callResult;
+        }
+
+        $renderedMatchers = array();
+        $requiredArgumentCount = 0;
+
+        foreach ($matchers as $index => $matcher) {
+            if ($matcher instanceof WildcardMatcher) {
+                $requiredArgumentCount += $matcher->minimumArguments();
+            } else {
+                ++$requiredArgumentCount;
+            }
+
+            if (
+                $cardinality->matches($matcherMatchCounts[$index], $totalCount)
+            ) {
+                $resultText = self::PASS;
+                $resultStart = $this->passStart;
+            } else {
+                $resultText = self::FAIL;
+                $resultStart = $this->failStart;
+            }
+
+            if ($isCall) {
+                $matcherMatchCount = '';
+            } else {
+                $matchOrMatches =
+                    1 === $matcherMatchCounts[$index] ? 'match' : 'matches';
+                $matcherMatchCount =
+                    ' ' . $resultStart .
+                    $this->faint .
+                    '(' . $matcherMatchCounts[$index] .
+                    ' ' . $matchOrMatches .
+                    ')' . $this->reset;
+            }
+
+            $renderedMatchers[] =
+                '    ' . $resultStart .
+                $resultText .
+                $this->reset .
+                ' ' . $matcher->describe($this->exporter) .
+                $matcherMatchCount;
+        }
+
+        if ($renderedMatchers) {
+            $renderedCriteria =
+                'arguments:' . PHP_EOL . implode(PHP_EOL, $renderedMatchers);
+        } else {
+            $renderedCriteria = 'no arguments.';
+        }
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to have ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to have ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected no ' . $renderedSubject .
+                    ' call with ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' calls to have ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call with ' . $renderedCriteria;
+            }
+        }
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $callIndex => $call) {
+                $callResult = $callResults[$callIndex];
+                $arguments = $call->arguments();
+                $renderedArguments = array();
+
+                if (count($arguments)) {
+                    foreach (
+                        $callResult->argumentMatches as
+                            $argumentIndex => $isMatch
+                    ) {
+                        if ($isMatch xor $isNever) {
+                            $renderedResult = $this->pass;
+                        } else {
+                            $renderedResult = $this->fail;
+                        }
+
+                        $exists = $arguments->has($argumentIndex);
+
+                        if ($exists) {
+                            $argument = $arguments->get($argumentIndex);
+                            $value = $this->exporter->export($argument);
+
+                            if (
+                                !$isMatch &&
+                                isset($matchers[$argumentIndex]) &&
+                                $matchers[$argumentIndex] instanceof
+                                    EqualToMatcher
+                            ) {
+                                $value = $this->differenceEngine->difference(
+                                    $matchers[$argumentIndex]
+                                        ->describe($this->exporter),
+                                    $value
+                                );
+                            }
+                        } else {
+                            $value =
+                                '<' .
+                                ($requiredArgumentCount - $argumentIndex) .
+                                ' missing>';
+                        }
+
+                        $renderedArguments[] =
+                            '    ' . $renderedResult . ' ' . $value;
+
+                        if (!$exists) {
+                            break;
+                        }
+                    }
+                }
+
+                if ($callResult->isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                if ($renderedArguments) {
+                    $renderedArgumentList =
+                        ':' . PHP_EOL . implode(PHP_EOL, $renderedArguments);
+                } else {
+                    $renderedArgumentList = ' (no arguments)';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult .
+                    ' Call #' .
+                    $call->index() .
+                    $renderedArgumentList;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed calledOn() verification.
+     *
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param object      $value       The value.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderCalledOn($subject, Cardinality $cardinality, $value)
+    {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+        $isMatcher = $value instanceof Matcher;
+
+        if ($isMatcher) {
+            $renderedValue = $value->describe($this->exporter);
+        } else {
+            $renderedValue = $this->exporter->export($value);
+        }
+
+        $renderedCriteria =
+            'object:' . PHP_EOL . '    ' . $this->fail . ' ' . $renderedValue;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not bound to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' bound to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected no ' . $renderedSubject .
+                    ' call bound to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' calls to be bound to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call bound to ' . $renderedCriteria;
+            }
+        }
+
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                $thisValue = $this->invocableInspector
+                    ->callbackThisValue($call->callback());
+
+                if ($isMatcher) {
+                    $isMatch = $value->matches($thisValue);
+                } else {
+                    $isMatch = $thisValue === $value;
+                }
+
+                if ($isMatch) {
+                    ++$matchCount;
+                }
+
+                if ($isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument, 0);
+                }
+
+                $renderedThisValue = $this->exporter->export($thisValue);
+
+                if (
+                    !$isMatch &&
+                    (!$isMatcher || $value instanceof EqualToMatcher)
+                ) {
+                    $renderedThisValue = $this->differenceEngine
+                        ->difference($renderedValue, $renderedThisValue);
+                }
+
+                $renderedCalls[] =
+                    $renderedResult .
+                    ' Call #' .  $call->index() .
+                    ' - ' . $renderedCallee .
+                    '(' . implode(', ', $renderedArguments) . '):' .
+                    PHP_EOL . '    ' . $renderedResult .
+                    ' ' . $renderedThisValue;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed responded() verification.
+     *
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderResponded($subject, Cardinality $cardinality)
+    {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() . ' not to respond.';
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() . ' to respond.';
+            }
+        } else {
+            if ($isNever) {
+                $expected = 'Expected ' . $renderedSubject . ' not to respond.';
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject . ' calls to respond.';
+            } else {
+                $expected = 'Expected ' . $renderedSubject . ' to respond.';
+            }
+        }
+
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                $responseEvent = $call->responseEvent();
+
+                if ($responseEvent) {
+                    ++$matchCount;
+                }
+
+                if ($responseEvent xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument, 0);
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $returnValue = $responseEvent->value();
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                } elseif ($responseEvent instanceof ThrewEvent) {
+                    $exception = $responseEvent->exception();
+                    $renderedResponse =
+                        'Threw ' . $this->exporter->export($exception);
+                } else {
+                    $renderedResponse = 'Never responded';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult .
+                    ' Call #' . $call->index() .
+                    ' - ' . $renderedCallee .
+                    '(' . implode(', ', $renderedArguments) . '):' .
+                    PHP_EOL . '    ' . $renderedResult .
+                    ' ' . $renderedResponse;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed completed() verification.
+     *
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderCompleted($subject, Cardinality $cardinality)
+    {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() . ' not to complete.';
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() . ' to complete.';
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject . ' not to complete.';
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject . ' calls to complete.';
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject . ' to complete.';
+            }
+        }
+
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                $endEvent = $call->endEvent();
+
+                if ($endEvent) {
+                    ++$matchCount;
+                }
+
+                if ($endEvent xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument, 0);
+                }
+
+                $responseEvent = $call->responseEvent();
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $returnValue = $responseEvent->value();
+
+                    if (
+                        is_array($returnValue) ||
+                        $returnValue instanceof Traversable
+                    ) {
+                        $traversableEvents = $call->traversableEvents();
+                        $renderedTraversableEvents = array();
+
+                        foreach ($traversableEvents as $event) {
+                            if ($event instanceof UsedEvent) {
+                                $renderedTraversableEvents[] =
+                                    '        - Started iterating';
+                            } elseif ($event instanceof ProducedEvent) {
+                                $traversableKey = $event->key();
+                                $traversableValue = $event->value();
+
+                                $renderedTraversableEvents[] =
+                                    '        - Produced ' .
+                                    $this->exporter->export($traversableKey) .
+                                    ' => ' .
+                                    $this->exporter->export($traversableValue);
+                            } elseif ($event instanceof ReceivedEvent) {
+                                $traversableValue = $event->value();
+
+                                $renderedTraversableEvents[] =
+                                    '        - Received ' .
+                                    $this->exporter->export($traversableValue);
+                            } elseif (
+                                $event instanceof ReceivedExceptionEvent
+                            ) {
+                                $traversableException = $event->exception();
+
+                                $renderedTraversableEvents[] =
+                                    '        - Received exception ' .
+                                    $this->exporter
+                                        ->export($traversableException);
+                            }
+                        }
+
+                        if (!$traversableEvents) {
+                            $renderedTraversableEvents[] =
+                                '        ' . $renderedResult .
+                                ' Never started iterating';
+                        } elseif ($endEvent instanceof ConsumedEvent) {
+                            $renderedTraversableEvents[] =
+                                '        ' . $renderedResult .
+                                ' Finished iterating';
+                        } elseif ($endEvent instanceof ReturnedEvent) {
+                            $eventValue = $endEvent->value();
+
+                            $renderedTraversableEvents[] =
+                                '        ' . $renderedResult . ' Returned ' .
+                                $this->exporter->export($eventValue);
+                        } elseif ($endEvent instanceof ThrewEvent) {
+                            $eventException = $endEvent->exception();
+
+                            $renderedTraversableEvents[] =
+                                '        ' . $renderedResult . ' Threw ' .
+                                $this->exporter->export($eventException);
+                        } else {
+                            $renderedTraversableEvents[] =
+                                '        ' . $renderedResult .
+                                ' Never finished iterating';
+                        }
+
+                        if ($returnValue instanceof Generator) {
+                            $renderedResponse =
+                                'Returned Generator, then:' . PHP_EOL .
+                                implode(PHP_EOL, $renderedTraversableEvents);
+                        } else {
+                            $renderedResponse =
+                                'Returned ' .
+                                $this->exporter->export($returnValue, 0) .
+                                ', then:' . PHP_EOL .
+                                implode(PHP_EOL, $renderedTraversableEvents);
+                        }
+                    } else {
+                        $renderedResponse =
+                            'Returned ' . $this->exporter->export($returnValue);
+                    }
+                } elseif ($responseEvent instanceof ThrewEvent) {
+                    $exception = $responseEvent->exception();
+                    $renderedResponse =
+                        'Threw ' . $this->exporter->export($exception);
+                } else {
+                    $renderedResponse = 'Never responded';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult .
+                    ' Call #' . $call->index() .
+                    ' - ' . $renderedCallee .
+                    '(' . implode(', ', $renderedArguments) . '):' .
+                    PHP_EOL . '    ' . $renderedResult .
+                    ' ' . $renderedResponse;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed responded() verification.
+     *
+     * @param Spy|Call     $subject     The subject.
+     * @param Cardinality  $cardinality The cardinality.
+     * @param Matcher|null $value       The value.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderReturned(
+        $subject,
+        Cardinality $cardinality,
+        Matcher $value = null
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        if ($value) {
+            $renderedValue = $value->describe($this->exporter);
+        } else {
+            $renderedValue = '<any>';
+        }
+
+        $renderedCriteria =
+            'behave like:' .  PHP_EOL .
+            '    ' . $this->fail . ' Returned ' . $renderedValue;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' to ' . $renderedCriteria;
+            }
+        }
+
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                if ($responseEvent = $call->responseEvent()) {
+                    list($exception, $returnValue) = $call->response();
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    if ($value) {
+                        $isMatch = $value->matches($returnValue);
+                    } else {
+                        $isMatch = true;
+                    }
+                } else {
+                    $isMatch = false;
+                }
+
+                if ($isMatch) {
+                    ++$matchCount;
+                }
+
+                if ($isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument, 0);
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $renderedReturnValue =
+                        $this->exporter->export($returnValue);
+
+                    if (!$isMatch && $value instanceof EqualToMatcher) {
+                        $renderedReturnValue = $this->differenceEngine
+                            ->difference($renderedValue, $renderedReturnValue);
+                    }
+
+                    $renderedResponse = 'Returned ' . $renderedReturnValue;
+                } elseif ($responseEvent instanceof ThrewEvent) {
+                    $renderedResponse =
+                        'Threw ' . $this->exporter->export($exception);
+                } else {
+                    $renderedResponse = 'Never responded';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult . ' Call #' . $call->index() .
+                    ' - ' . $renderedCallee .
+                    '(' . implode(', ', $renderedArguments) . '):' .
+                    PHP_EOL . '    ' . $renderedResult .
+                    ' ' . $renderedResponse;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed threw() verification.
+     *
+     * @param Spy|Call            $subject     The subject.
+     * @param Cardinality         $cardinality The cardinality.
+     * @param Matcher|string|null $type        The type of exception.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderThrew($subject, Cardinality $cardinality, $type)
+    {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        if ($type instanceof Matcher) {
+            $renderedType = $type->describe($this->exporter);
+        } elseif (is_string($type)) {
+            $renderedType = $type;
+        } else {
+            $renderedType = '<any>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL .
+            '    ' . $this->fail . ' Threw ' . $renderedType;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' to ' . $renderedCriteria;
+            }
+        }
+
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                if ($responseEvent = $call->responseEvent()) {
+                    list($exception, $returnValue) = $call->response();
+                }
+
+                if ($responseEvent instanceof ThrewEvent) {
+                    if ($type instanceof Matcher) {
+                        $isMatch = $type->matches($exception);
+                    } elseif (is_string($type)) {
+                        $isMatch = is_a($exception, $type);
+                    } else {
+                        $isMatch = true;
+                    }
+                } else {
+                    $isMatch = false;
+                }
+
+                if ($isMatch) {
+                    ++$matchCount;
+                }
+
+                if ($isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument, 0);
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                } elseif ($responseEvent instanceof ThrewEvent) {
+                    $renderedException = $this->exporter->export($exception);
+
+                    if (!$isMatch && $type instanceof EqualToMatcher) {
+                        $renderedException = $this->differenceEngine
+                            ->difference($renderedType, $renderedException);
+                    }
+
+                    $renderedResponse = 'Threw ' . $renderedException;
+                } else {
+                    $renderedResponse = 'Never responded';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult . ' Call #' . $call->index() .
+                    ' - ' . $renderedCallee .
+                    '(' . implode(', ', $renderedArguments) . '):' .
+                    PHP_EOL . '    ' . $renderedResult .
+                    ' ' . $renderedResponse;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed generated() verification.
+     *
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderGenerated($subject, Cardinality $cardinality)
+    {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+        $renderedCriteria =
+            'behave like:' .  PHP_EOL .
+            '    ' . $this->fail . ' Returned Generator';
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' to ' . $renderedCriteria;
+            }
+        }
+
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                if ($responseEvent = $call->responseEvent()) {
+                    list($exception, $returnValue) = $call->response();
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $isMatch = $returnValue instanceof Generator;
+                } else {
+                    $isMatch = false;
+                }
+
+                if ($isMatch) {
+                    ++$matchCount;
+                }
+
+                if ($isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument, 0);
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                } elseif ($responseEvent instanceof ThrewEvent) {
+                    $renderedResponse =
+                        'Threw ' . $this->exporter->export($exception);
+                } else {
+                    $renderedResponse = 'Never responded';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult . ' Call #' . $call->index() .
+                    ' - ' . $renderedCallee .
+                    '(' . implode(', ', $renderedArguments) . '):' .
+                    PHP_EOL . '    ' . $renderedResult .
+                    ' ' . $renderedResponse;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed traversed() verification.
+     *
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderTraversed($subject, Cardinality $cardinality)
+    {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+        $renderedCriteria =
+            'behave like:' .  PHP_EOL .
+            '    ' . $this->fail . ' Returned <traversable>';
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' to ' . $renderedCriteria;
+            }
+        }
+
+        $totalCount = count($calls);
+        $matchCount = 0;
+
+        if ($totalCount) {
+            $renderedCalls = array();
+
+            foreach ($calls as $call) {
+                if ($responseEvent = $call->responseEvent()) {
+                    list($exception, $returnValue) = $call->response();
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $isMatch = $returnValue instanceof Traversable ||
+                        is_array($returnValue);
+                } else {
+                    $isMatch = false;
+                }
+
+                if ($isMatch) {
+                    ++$matchCount;
+                }
+
+                if ($isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument, 0);
+                }
+
+                if ($responseEvent instanceof ReturnedEvent) {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                } elseif ($responseEvent instanceof ThrewEvent) {
+                    $renderedResponse =
+                        'Threw ' . $this->exporter->export($exception);
+                } else {
+                    $renderedResponse = 'Never responded';
+                }
+
+                $renderedCalls[] =
+                    $renderedResult . ' Call #' . $call->index() .
+                    ' - ' . $renderedCallee .
+                    '(' . implode(', ', $renderedArguments) . '):' .
+                    PHP_EOL . '    ' . $renderedResult .
+                    ' ' . $renderedResponse;
+            }
+
+            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        } else {
+            $actual = '';
+        }
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed traversable used() verification.
+     *
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param bool        $isGenerator True if this verification is for a generator.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderTraversableUsed(
+        $subject,
+        Cardinality $cardinality,
+        $isGenerator
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            $totalCount = 1;
+
+            if ($isNever) {
+                $traversableResult = $this->fail;
+            } else {
+                $traversableResult = $this->pass;
+            }
+
+            $renderedTraversableCount = '';
+        } else {
+            $totalCount = 0;
+            $traversableCount = 0;
+
+            foreach ($calls as $call) {
+                ++$totalCount;
+
+                if ($isGenerator) {
+                    $isTraversable = $call->isGenerator();
+                } else {
+                    $isTraversable = $call->isTraversable();
+                }
+
+                if ($isTraversable) {
+                    ++$traversableCount;
+                }
+            }
+
+            if ($cardinality->matches($traversableCount, $traversableCount)) {
+                $traversableResultStart = $this->passStart;
+                $traversableResultText = self::PASS;
+            } else {
+                $traversableResultStart = $this->failStart;
+                $traversableResultText = self::FAIL;
+            }
+
+            $traversableResult =
+                $traversableResultStart .
+                $traversableResultText .
+                $this->reset;
+            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
+            $renderedTraversableCount =
+                ' ' . $traversableResultStart . $this->faint .
+                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+                $this->reset;
+        }
+
+        if ($isGenerator) {
+            $renderedTraversableType = 'Generator';
+        } else {
+            $renderedTraversableType = '<traversable>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL .
+            '    ' . $traversableResult .
+            ' Returned ' . $renderedTraversableType .
+            ', then:' . $renderedTraversableCount . PHP_EOL .
+            '        ' . $this->fail . ' Started iterating';
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isGenerator) {
+                $renderedTraversableType = 'generator calls';
+            } else {
+                $renderedTraversableType = 'traversable calls';
+            }
+
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' to ' . $renderedCriteria;
+            }
+        }
+
+        $renderedCalls = array();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if ($isGenerator) {
+                $callIsRelevant = $call->isGenerator();
+            } else {
+                $callIsRelevant = $call->isTraversable();
+            }
+
+            if ($callIsRelevant) {
+                $callStart = '';
+                $callEnd = '';
+            } else {
+                $callStart = $this->faint;
+                $callEnd = $this->reset;
+            }
+
+            $isMatch = false;
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument, 0);
+            }
+
+            $responseEvent = $call->responseEvent();
+
+            if ($responseEvent instanceof ReturnedEvent) {
+                $returnValue = $responseEvent->value();
+
+                if (
+                    is_array($returnValue) ||
+                    $returnValue instanceof Traversable
+                ) {
+                    $traversableEvents = $call->traversableEvents();
+                    $renderedTraversableEvents = array();
+
+                    foreach ($traversableEvents as $event) {
+                        if ($event instanceof UsedEvent) {
+                            if ($callIsRelevant) {
+                                $isMatch = true;
+
+                                if ($isNever) {
+                                    $eventResult = $this->fail;
+                                } else {
+                                    $eventResult = $this->pass;
+                                }
+                            } else {
+                                $eventResult = '-';
+                            }
+
+                            $renderedTraversableEvents[] =
+                                '        ' . $eventResult .
+                                ' Started iterating';
+                        } elseif ($event instanceof ProducedEvent) {
+                            $traversableKey = $event->key();
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Produced ' .
+                                $this->exporter->export($traversableKey) .
+                                ' => ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif ($event instanceof ReceivedEvent) {
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif (
+                            $event instanceof ReceivedExceptionEvent
+                        ) {
+                            $traversableException = $event->exception();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received exception ' .
+                                $this->exporter->export($traversableException);
+                        }
+                    }
+
+                    $endEvent = $call->endEvent();
+
+                    if (!$traversableEvents) {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never started iterating';
+                    } elseif ($endEvent instanceof ConsumedEvent) {
+                        $renderedTraversableEvents[] =
+                            '        - Finished iterating';
+                    } elseif ($endEvent instanceof ReturnedEvent) {
+                        $eventValue = $endEvent->value();
+
+                        $renderedTraversableEvents[] =
+                            '        - Returned ' .
+                            $this->exporter->export($eventValue);
+                    } elseif ($endEvent instanceof ThrewEvent) {
+                        $eventException = $endEvent->exception();
+
+                        $renderedTraversableEvents[] =
+                            '        - Threw ' .
+                            $this->exporter->export($eventException);
+                    } else {
+                        $renderedTraversableEvents[] =
+                            '        - Never finished iterating';
+                    }
+
+                    if ($returnValue instanceof Generator) {
+                        $renderedResponse =
+                            'Returned Generator, then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    } else {
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    }
+                } else {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                }
+            } elseif ($responseEvent instanceof ThrewEvent) {
+                $exception = $responseEvent->exception();
+                $renderedResponse =
+                    'Threw ' . $this->exporter->export($exception);
+            } else {
+                $renderedResponse = 'Never responded';
+            }
+
+            if ($isMatch) {
+                ++$matchCount;
+            }
+
+            if ($callIsRelevant) {
+                if ($isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+            } else {
+                $renderedResult = '-';
+            }
+
+            $renderedCalls[] =
+                $callStart . $renderedResult . ' Call #' . $call->index() .
+                ' - ' . $renderedCallee .
+                '(' . implode(', ', $renderedArguments) . '):' .
+                $callEnd . PHP_EOL .
+                $callStart . '    ' . $renderedResult . ' ' .
+                $renderedResponse . $callEnd;
+        }
+
+        $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $traversableCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed traversable produced() verification.
+     *
+     * @param Spy|Call     $subject     The subject.
+     * @param Cardinality  $cardinality The cardinality.
+     * @param bool         $isGenerator True if this verification is for a generator.
+     * @param Matcher|null $key         The key.
+     * @param Matcher|null $value       The value.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderTraversableProduced(
+        $subject,
+        Cardinality $cardinality,
+        $isGenerator,
+        Matcher $key = null,
+        Matcher $value = null
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            $totalCount = 0;
+            $callCount = 1;
+            $traversableCount = 1;
+
+            foreach ($subject->traversableEvents() as $event) {
+                if ($event instanceof ProducedEvent) {
+                    ++$totalCount;
+                }
+            }
+
+            $renderedTraversableCount = '';
+        } else {
+            $callCount = 0;
+            $traversableCount = 0;
+
+            foreach ($calls as $call) {
+                ++$callCount;
+
+                if ($isGenerator) {
+                    $isTraversable = $call->isGenerator();
+                } else {
+                    $isTraversable = $call->isTraversable();
+                }
+
+                if ($isTraversable) {
+                    ++$traversableCount;
+                }
+            }
+
+            $totalCount = $traversableCount;
+
+            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
+            $renderedTraversableCount =
+                ' ' . $this->faint .
+                '(' . $traversableCount .
+                ' ' . $matchOrMatches .
+                ')' . $this->reset;
+        }
+
+        if ($traversableCount xor $isNever) {
+            $traversableResult = $this->pass;
+        } else {
+            $traversableResult = $this->fail;
+        }
+
+        if ($isGenerator) {
+            $renderedTraversableType = 'Generator';
+        } else {
+            $renderedTraversableType = '<traversable>';
+        }
+
+        if ($key) {
+            $renderedKey = $key->describe($this->exporter);
+            $renderedValue = $value->describe($this->exporter);
+        } elseif ($value) {
+            $renderedKey = '<any>';
+            $renderedValue = $value->describe($this->exporter);
+        } else {
+            $renderedKey = '<any>';
+            $renderedValue = '<any>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL .
+            '    ' . $traversableResult .
+            ' Returned ' . $renderedTraversableType .
+            ', then:' . $renderedTraversableCount . PHP_EOL .
+            '        ' . $this->fail .
+            ' Produced ' . $renderedKey .
+            ' => ' . $renderedValue;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isGenerator) {
+                $renderedTraversableType = 'generator calls';
+            } else {
+                $renderedTraversableType = 'traversable calls';
+            }
+
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' to ' . $renderedCriteria;
+            }
+        }
+
+        $renderedCalls = array();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if ($isGenerator) {
+                $callIsRelevant = $call->isGenerator();
+            } else {
+                $callIsRelevant = $call->isTraversable();
+            }
+
+            if ($callIsRelevant) {
+                $callStart = '';
+                $callEnd = '';
+            } else {
+                $callStart = $this->faint;
+                $callEnd = $this->reset;
+            }
+
+            $isMatchingCall = false;
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument, 0);
+            }
+
+            $responseEvent = $call->responseEvent();
+
+            if ($responseEvent instanceof ReturnedEvent) {
+                $returnValue = $responseEvent->value();
+
+                if (
+                    is_array($returnValue) ||
+                    $returnValue instanceof Traversable
+                ) {
+                    $traversableEvents = $call->traversableEvents();
+                    $renderedTraversableEvents = array();
+
+                    foreach ($traversableEvents as $event) {
+                        if ($event instanceof UsedEvent) {
+                            $renderedTraversableEvents[] =
+                                '        - Started iterating';
+                        } elseif ($event instanceof ProducedEvent) {
+                            $traversableKey = $event->key();
+                            $renderedTraversableKey =
+                                $this->exporter->export($traversableKey);
+
+                            $traversableValue = $event->value();
+                            $renderedTraversableValue =
+                                $this->exporter->export($traversableValue);
+
+                            if ($callIsRelevant) {
+                                $isKeyMatch =
+                                    !$key || $key->matches($traversableKey);
+                                $isValueMatch =
+                                    !$value ||
+                                    $value->matches($traversableValue);
+                                $eventIsMatch = $isKeyMatch && $isValueMatch;
+
+                                if ($eventIsMatch) {
+                                    $isMatchingCall = true;
+
+                                    if ($isCall) {
+                                        ++$matchCount;
+                                    }
+                                }
+
+                                if (
+                                    !$isKeyMatch &&
+                                    $key instanceof EqualToMatcher
+                                ) {
+                                    $renderedTraversableKey =
+                                        $this->differenceEngine->difference(
+                                            $renderedKey,
+                                            $renderedTraversableKey
+                                        );
+                                }
+
+                                if (
+                                    !$isValueMatch &&
+                                    $value instanceof EqualToMatcher
+                                ) {
+                                    $renderedTraversableValue =
+                                        $this->differenceEngine->difference(
+                                            $renderedValue,
+                                            $renderedTraversableValue
+                                        );
+                                }
+
+                                if ($eventIsMatch xor $isNever) {
+                                    $eventResult = $this->pass;
+                                } else {
+                                    $eventResult = $this->fail;
+                                }
+                            } else {
+                                $eventResult = '-';
+                            }
+
+                            $renderedTraversableEvents[] =
+                                '        ' . $eventResult .
+                                ' Produced ' . $renderedTraversableKey .
+                                ' => ' . $renderedTraversableValue;
+                        } elseif ($event instanceof ReceivedEvent) {
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif ($event instanceof ReceivedExceptionEvent) {
+                            $traversableException = $event->exception();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received exception ' .
+                                $this->exporter->export($traversableException);
+                        }
+                    }
+
+                    $endEvent = $call->endEvent();
+
+                    if (!$traversableEvents) {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never started iterating';
+                    } elseif ($endEvent instanceof ConsumedEvent) {
+                        $renderedTraversableEvents[] =
+                            '        - Finished iterating';
+                    } elseif ($endEvent instanceof ReturnedEvent) {
+                        $eventValue = $endEvent->value();
+
+                        $renderedTraversableEvents[] =
+                            '        - Returned ' .
+                            $this->exporter->export($eventValue);
+                    } elseif ($endEvent instanceof ThrewEvent) {
+                        $eventException = $endEvent->exception();
+
+                        $renderedTraversableEvents[] =
+                            '        - Threw ' .
+                            $this->exporter->export($eventException);
+                    } else {
+                        $renderedTraversableEvents[] =
+                            '        - Never finished iterating';
+                    }
+
+                    if ($returnValue instanceof Generator) {
+                        $renderedResponse =
+                            'Returned Generator, then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    } else {
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    }
+                } else {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                }
+            } elseif ($responseEvent instanceof ThrewEvent) {
+                $exception = $responseEvent->exception();
+                $renderedResponse =
+                    'Threw ' . $this->exporter->export($exception);
+            } else {
+                $renderedResponse = 'Never responded';
+            }
+
+            if (!$isCall && $isMatchingCall) {
+                ++$matchCount;
+            }
+
+            if ($callIsRelevant) {
+                if ($isMatchingCall xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+            } else {
+                $renderedResult = '-';
+            }
+
+            $renderedCalls[] =
+                $callStart . $renderedResult . ' Call #' . $call->index() .
+                ' - ' . $renderedCallee .
+                '(' . implode(', ', $renderedArguments) . '):' .
+                $callEnd . PHP_EOL .
+                $callStart . '    ' . $renderedResult . ' ' .
+                $renderedResponse . $callEnd;
+        }
+
+        $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        $cardinality = $this->renderCardinality(
+            $minimum,
+            $maximum,
+            $matchCount,
+            $totalCount,
+            $callCount,
+            false
+        );
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed traversable consumed() verification.
+     *
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param bool        $isGenerator True if this verification is for a generator.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderTraversableConsumed(
+        $subject,
+        Cardinality $cardinality,
+        $isGenerator
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            $totalCount = 1;
+            $traversableCount = 1;
+
+            if ($isNever) {
+                $traversableResult = $this->fail;
+            } else {
+                $traversableResult = $this->pass;
+            }
+
+            $renderedTraversableCount = '';
+        } else {
+            $totalCount = 0;
+            $traversableCount = 0;
+
+            foreach ($calls as $call) {
+                ++$totalCount;
+
+                if ($isGenerator) {
+                    $isTraversable = $call->isGenerator();
+                } else {
+                    $isTraversable = $call->isTraversable();
+                }
+
+                if ($isTraversable) {
+                    ++$traversableCount;
+                }
+            }
+
+            if ($cardinality->matches($traversableCount, $traversableCount)) {
+                $traversableResultStart = $this->passStart;
+                $traversableResultText = self::PASS;
+            } else {
+                $traversableResultStart = $this->failStart;
+                $traversableResultText = self::FAIL;
+            }
+
+            $traversableResult =
+                $traversableResultStart .
+                $traversableResultText .
+                $this->reset;
+            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
+            $renderedTraversableCount =
+                ' ' . $traversableResultStart . $this->faint .
+                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+                $this->reset;
+        }
+
+        if ($isGenerator) {
+            $renderedTraversableType = 'Generator';
+        } else {
+            $renderedTraversableType = '<traversable>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL .
+            '    ' . $traversableResult .
+            ' Returned ' . $renderedTraversableType .
+            ', then:' . $renderedTraversableCount . PHP_EOL .
+            '        ' . $this->fail . ' Finished iterating';
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isGenerator) {
+                $renderedTraversableType = 'generator calls';
+            } else {
+                $renderedTraversableType = 'traversable calls';
+            }
+
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' ' . $renderedTraversableType .
+                    ' to ' . $renderedCriteria;
+            }
+        }
+
+        $renderedCalls = array();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            if ($isGenerator) {
+                $callIsRelevant = $call->isGenerator();
+            } else {
+                $callIsRelevant = $call->isTraversable();
+            }
+
+            if ($callIsRelevant) {
+                $callStart = '';
+                $callEnd = '';
+            } else {
+                $callStart = $this->faint;
+                $callEnd = $this->reset;
+            }
+
+            $isMatch = false;
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument, 0);
+            }
+
+            $responseEvent = $call->responseEvent();
+
+            if ($responseEvent instanceof ReturnedEvent) {
+                $returnValue = $responseEvent->value();
+
+                if (
+                    is_array($returnValue) ||
+                    $returnValue instanceof Traversable
+                ) {
+                    $traversableEvents = $call->traversableEvents();
+                    $renderedTraversableEvents = array();
+
+                    foreach ($traversableEvents as $event) {
+                        if ($event instanceof UsedEvent) {
+                            $renderedTraversableEvents[] =
+                                '        - Started iterating';
+                        } elseif ($event instanceof ProducedEvent) {
+                            $traversableKey = $event->key();
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Produced ' .
+                                $this->exporter->export($traversableKey) .
+                                ' => ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif ($event instanceof ReceivedEvent) {
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif (
+                            $event instanceof ReceivedExceptionEvent
+                        ) {
+                            $traversableException = $event->exception();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received exception ' .
+                                $this->exporter->export($traversableException);
+                        }
+                    }
+
+                    $endEvent = $call->endEvent();
+
+                    if (!$traversableEvents) {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never started iterating';
+                    } elseif ($endEvent instanceof ConsumedEvent) {
+                        if ($callIsRelevant) {
+                            $isMatch = true;
+
+                            if ($isNever) {
+                                $eventResult = $this->fail;
+                            } else {
+                                $eventResult = $this->pass;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult . ' Finished iterating';
+                    } elseif ($endEvent instanceof ReturnedEvent) {
+                        $isMatch = true;
+                        $traversableValue = $endEvent->value();
+
+                        if ($isNever) {
+                            $eventResult = $this->fail;
+                        } else {
+                            $eventResult = $this->pass;
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .  ' Returned ' .
+                            $this->exporter->export($traversableValue);
+                    } elseif ($endEvent instanceof ThrewEvent) {
+                        $isMatch = true;
+
+                        if ($isNever) {
+                            $eventResult = $this->fail;
+                        } else {
+                            $eventResult = $this->pass;
+                        }
+
+                        $eventException = $endEvent->exception();
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult . ' Threw ' .
+                            $this->exporter->export($eventException);
+                    } else {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never finished iterating';
+                    }
+
+                    if ($returnValue instanceof Generator) {
+                        $renderedResponse =
+                            'Returned Generator, then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    } else {
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    }
+                } else {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                }
+            } elseif ($responseEvent instanceof ThrewEvent) {
+                $exception = $responseEvent->exception();
+                $renderedResponse =
+                    'Threw ' . $this->exporter->export($exception);
+            } else {
+                $renderedResponse = 'Never responded';
+            }
+
+            if ($isMatch) {
+                ++$matchCount;
+            }
+
+            if ($callIsRelevant) {
+                if ($isMatch xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+            } else {
+                $renderedResult = '-';
+            }
+
+            $renderedCalls[] =
+                $callStart . $renderedResult . ' Call #' . $call->index() .
+                ' - ' . $renderedCallee .
+                '(' . implode(', ', $renderedArguments) . '):' .
+                $callEnd . PHP_EOL .
+                $callStart . '    ' . $renderedResult . ' ' .
+                $renderedResponse . $callEnd;
+        }
+
+        $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $traversableCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed generator received() verification.
+     *
+     * @param Spy|Call     $subject     The subject.
+     * @param Cardinality  $cardinality The cardinality.
+     * @param Matcher|null $value       The value.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderGeneratorReceived(
+        $subject,
+        Cardinality $cardinality,
+        Matcher $value = null
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            $totalCount = 0;
+            $callCount = 1;
+            $traversableCount = 1;
+
+            foreach ($subject->traversableEvents() as $event) {
+                if ($event instanceof ReceivedEvent) {
+                    ++$totalCount;
+                }
+            }
+
+            $renderedTraversableCount = '';
+        } else {
+            $callCount = 0;
+            $traversableCount = 0;
+
+            foreach ($calls as $call) {
+                ++$callCount;
+
+                if ($call->isGenerator()) {
+                    ++$traversableCount;
+                }
+            }
+
+            $totalCount = $traversableCount;
+
+            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
+            $renderedTraversableCount =
+                ' ' . $this->faint .
+                '(' . $traversableCount .
+                ' ' . $matchOrMatches .
+                ')' . $this->reset;
+        }
+
+        if ($traversableCount xor $isNever) {
+            $traversableResult = $this->pass;
+        } else {
+            $traversableResult = $this->fail;
+        }
+
+        if ($value) {
+            $renderedValue = $value->describe($this->exporter);
+        } else {
+            $renderedValue = '<any>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL . '    ' . $traversableResult .
+            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            '        ' . $this->fail . ' Received ' . $renderedValue;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            }
+        }
+
+        $renderedCalls = array();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            $callIsRelevant = $call->isGenerator();
+
+            if ($callIsRelevant) {
+                $callStart = '';
+                $callEnd = '';
+            } else {
+                $callStart = $this->faint;
+                $callEnd = $this->reset;
+            }
+
+            $isMatchingCall = false;
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument, 0);
+            }
+
+            $responseEvent = $call->responseEvent();
+
+            if ($responseEvent instanceof ReturnedEvent) {
+                $returnValue = $responseEvent->value();
+
+                if (
+                    is_array($returnValue) ||
+                    $returnValue instanceof Traversable
+                ) {
+                    $traversableEvents = $call->traversableEvents();
+                    $renderedTraversableEvents = array();
+
+                    foreach ($traversableEvents as $event) {
+                        if ($event instanceof UsedEvent) {
+                            $renderedTraversableEvents[] =
+                                '        - Started iterating';
+                        } elseif ($event instanceof ProducedEvent) {
+                            $traversableKey = $event->key();
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Produced ' .
+                                $this->exporter->export($traversableKey) .
+                                ' => ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif ($event instanceof ReceivedEvent) {
+                            $traversableValue = $event->value();
+                            $renderedTraversableValue =
+                                $this->exporter->export($traversableValue);
+
+                            $eventIsMatch =
+                                !$value ||
+                                $value->matches($traversableValue);
+
+                            if ($eventIsMatch) {
+                                $isMatchingCall = true;
+
+                                if ($isCall) {
+                                    ++$matchCount;
+                                }
+                            } elseif (
+                                $value instanceof EqualToMatcher
+                            ) {
+                                $renderedTraversableValue =
+                                    $this->differenceEngine->difference(
+                                        $renderedValue,
+                                        $renderedTraversableValue
+                                    );
+                            }
+
+                            if ($eventIsMatch xor $isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+
+                            $renderedTraversableEvents[] =
+                                '        ' . $eventResult . ' Received ' .
+                                $renderedTraversableValue;
+                        } elseif (
+                            $event instanceof ReceivedExceptionEvent
+                        ) {
+                            $traversableException = $event->exception();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received exception ' .
+                                $this->exporter->export($traversableException);
+                        }
+                    }
+
+                    $endEvent = $call->endEvent();
+
+                    if (!$traversableEvents) {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never started iterating';
+                    } elseif ($endEvent instanceof ConsumedEvent) {
+                        $renderedTraversableEvents[] =
+                            '        - Finished iterating';
+                    } elseif ($endEvent instanceof ReturnedEvent) {
+                        $eventValue = $endEvent->value();
+
+                        $renderedTraversableEvents[] =
+                            '        - Returned ' .
+                            $this->exporter->export($eventValue);
+                    } elseif ($endEvent instanceof ThrewEvent) {
+                        $eventException = $endEvent->exception();
+
+                        $renderedTraversableEvents[] =
+                            '        - Threw ' .
+                            $this->exporter->export($eventException);
+                    } else {
+                        $renderedTraversableEvents[] =
+                            '        - Never finished iterating';
+                    }
+
+                    if ($returnValue instanceof Generator) {
+                        $renderedResponse =
+                            'Returned Generator, then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    } else {
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    }
+                } else {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                }
+            } elseif ($responseEvent instanceof ThrewEvent) {
+                $exception = $responseEvent->exception();
+                $renderedResponse =
+                    'Threw ' . $this->exporter->export($exception);
+            } else {
+                $renderedResponse = 'Never responded';
+            }
+
+            if (!$isCall && $isMatchingCall) {
+                ++$matchCount;
+            }
+
+            if ($callIsRelevant) {
+                if ($isMatchingCall xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+            } else {
+                $renderedResult = '-';
+            }
+
+            $renderedCalls[] =
+                $callStart . $renderedResult . ' Call #' . $call->index() .
+                ' - ' . $renderedCallee .
+                '(' . implode(', ', $renderedArguments) . '):' .
+                $callEnd . PHP_EOL .
+                $callStart . '    ' . $renderedResult . ' ' .
+                $renderedResponse . $callEnd;
+        }
+
+        $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        $cardinality = $this->renderCardinality(
+            $minimum,
+            $maximum,
+            $matchCount,
+            $totalCount,
+            $callCount,
+            false
+        );
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed generator receivedException() verification.
+     *
+     * @param Spy|Call                    $subject     The subject.
+     * @param Cardinality                 $cardinality The cardinality.
+     * @param Exception|Error|string|null $type        The type of exception.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderGeneratorReceivedException(
+        $subject,
+        Cardinality $cardinality,
+        $type
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            $totalCount = 0;
+            $callCount = 1;
+            $traversableCount = 1;
+
+            foreach ($subject->traversableEvents() as $event) {
+                if ($event instanceof ReceivedExceptionEvent) {
+                    ++$totalCount;
+                }
+            }
+
+            $renderedTraversableCount = '';
+        } else {
+            $callCount = 0;
+            $traversableCount = 0;
+
+            foreach ($calls as $call) {
+                ++$callCount;
+
+                if ($call->isGenerator()) {
+                    ++$traversableCount;
+                }
+            }
+
+            $totalCount = $traversableCount;
+
+            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
+            $renderedTraversableCount =
+                ' ' . $this->faint .
+                '(' . $traversableCount .
+                ' ' . $matchOrMatches .
+                ')' . $this->reset;
+        }
+
+        if ($traversableCount xor $isNever) {
+            $traversableResult = $this->pass;
+        } else {
+            $traversableResult = $this->fail;
+        }
+
+        if ($type instanceof Matcher) {
+            $renderedType = $type->describe($this->exporter);
+        } elseif (is_string($type)) {
+            $renderedType = $type;
+        } else {
+            $renderedType = '<any>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL . '    ' . $traversableResult .
+            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            '        ' . $this->fail . ' Received exception ' . $renderedType;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            }
+        }
+
+        $renderedCalls = array();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            $callIsRelevant = $call->isGenerator();
+
+            if ($callIsRelevant) {
+                $callStart = '';
+                $callEnd = '';
+            } else {
+                $callStart = $this->faint;
+                $callEnd = $this->reset;
+            }
+
+            $isMatchingCall = false;
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument, 0);
+            }
+
+            $responseEvent = $call->responseEvent();
+
+            if ($responseEvent instanceof ReturnedEvent) {
+                $returnValue = $responseEvent->value();
+
+                if (
+                    is_array($returnValue) ||
+                    $returnValue instanceof Traversable
+                ) {
+                    $traversableEvents = $call->traversableEvents();
+                    $renderedTraversableEvents = array();
+
+                    foreach ($traversableEvents as $event) {
+                        if ($event instanceof UsedEvent) {
+                            $renderedTraversableEvents[] =
+                                '        - Started iterating';
+                        } elseif ($event instanceof ProducedEvent) {
+                            $traversableKey = $event->key();
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Produced ' .
+                                $this->exporter->export($traversableKey) .
+                                ' => ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif ($event instanceof ReceivedEvent) {
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif (
+                            $event instanceof ReceivedExceptionEvent
+                        ) {
+                            $traversableException = $event->exception();
+                            $renderedTraversableException =
+                                $this->exporter->export($traversableException);
+
+                            if ($type instanceof Matcher) {
+                                $eventIsMatch =
+                                    $type->matches($traversableException);
+                            } elseif (is_string($type)) {
+                                $eventIsMatch =
+                                    is_a($traversableException, $type);
+                            } else {
+                                $eventIsMatch = true;
+                            }
+
+                            if ($eventIsMatch) {
+                                $isMatchingCall = true;
+
+                                if ($isCall) {
+                                    ++$matchCount;
+                                }
+                            } elseif ($type instanceof EqualToMatcher) {
+                                $renderedTraversableException =
+                                    $this->differenceEngine->difference(
+                                        $renderedType,
+                                        $renderedTraversableException
+                                    );
+                            }
+
+                            if ($eventIsMatch xor $isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+
+                            $renderedTraversableEvents[] =
+                                '        ' . $eventResult .
+                                ' Received exception ' .
+                                $renderedTraversableException;
+                        }
+                    }
+
+                    $endEvent = $call->endEvent();
+
+                    if (!$traversableEvents) {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never started iterating';
+                    } elseif ($endEvent instanceof ConsumedEvent) {
+                        $renderedTraversableEvents[] =
+                            '        - Finished iterating';
+                    } elseif ($endEvent instanceof ReturnedEvent) {
+                        $eventValue = $endEvent->value();
+
+                        $renderedTraversableEvents[] =
+                            '        - Returned ' .
+                            $this->exporter->export($eventValue);
+                    } elseif ($endEvent instanceof ThrewEvent) {
+                        $eventException = $endEvent->exception();
+
+                        $renderedTraversableEvents[] =
+                            '        - Threw ' .
+                            $this->exporter->export($eventException);
+                    } else {
+                        $renderedTraversableEvents[] =
+                            '        - Never finished iterating';
+                    }
+
+                    if ($returnValue instanceof Generator) {
+                        $renderedResponse =
+                            'Returned Generator, then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    } else {
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    }
+                } else {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                }
+            } elseif ($responseEvent instanceof ThrewEvent) {
+                $exception = $responseEvent->exception();
+                $renderedResponse =
+                    'Threw ' . $this->exporter->export($exception);
+            } else {
+                $renderedResponse = 'Never responded';
+            }
+
+            if (!$isCall && $isMatchingCall) {
+                ++$matchCount;
+            }
+
+            if ($callIsRelevant) {
+                if ($isMatchingCall xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+            } else {
+                $renderedResult = '-';
+            }
+
+            $renderedCalls[] =
+                $callStart . $renderedResult . ' Call #' . $call->index() .
+                ' - ' . $renderedCallee .
+                '(' . implode(', ', $renderedArguments) . '):' .
+                $callEnd . PHP_EOL .
+                $callStart . '    ' . $renderedResult . ' ' .
+                $renderedResponse . $callEnd;
+        }
+
+        $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+        $cardinality = $this->renderCardinality(
+            $minimum,
+            $maximum,
+            $matchCount,
+            $totalCount,
+            $callCount,
+            false
+        );
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed generator returned() verification.
+     *
+     * @param Spy|Call     $subject     The subject.
+     * @param Cardinality  $cardinality The cardinality.
+     * @param Matcher|null $value       The value.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderGeneratorReturned(
+        $subject,
+        Cardinality $cardinality,
+        Matcher $value = null
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            $totalCount = 1;
+            $traversableCount = 1;
+            $renderedTraversableCount = '';
+        } else {
+            $traversableCount = 0;
+
+            foreach ($calls as $call) {
+                if ($call->isGenerator()) {
+                    ++$traversableCount;
+                }
+            }
+
+            $totalCount = $traversableCount;
+
+            if ($cardinality->matches($traversableCount, $traversableCount)) {
+                $traversableResultStart = $this->passStart;
+                $traversableResultText = self::PASS;
+            } else {
+                $traversableResultStart = $this->failStart;
+                $traversableResultText = self::FAIL;
+            }
+
+            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
+            $renderedTraversableCount =
+                ' ' . $traversableResultStart . $this->faint .
+                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+                $this->reset;
+        }
+
+        if ($traversableCount xor $isNever) {
+            $traversableResult = $this->pass;
+        } else {
+            $traversableResult = $this->fail;
+        }
+
+        if ($value) {
+            $renderedValue = $value->describe($this->exporter);
+        } else {
+            $renderedValue = '<any>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL . '    ' . $traversableResult .
+            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            '        ' . $this->fail . ' Returned ' . $renderedValue;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            }
+        }
+
+        $renderedCalls = array();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            $callIsRelevant = $call->isGenerator();
+
+            if ($callIsRelevant) {
+                $callStart = '';
+                $callEnd = '';
+            } else {
+                $callStart = $this->faint;
+                $callEnd = $this->reset;
+            }
+
+            $isMatchingCall = false;
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument, 0);
+            }
+
+            $responseEvent = $call->responseEvent();
+
+            if ($responseEvent instanceof ReturnedEvent) {
+                $returnValue = $responseEvent->value();
+
+                if (
+                    is_array($returnValue) ||
+                    $returnValue instanceof Traversable
+                ) {
+                    $traversableEvents = $call->traversableEvents();
+                    $renderedTraversableEvents = array();
+
+                    foreach ($traversableEvents as $event) {
+                        if ($event instanceof UsedEvent) {
+                            $renderedTraversableEvents[] =
+                                '        - Started iterating';
+                        } elseif ($event instanceof ProducedEvent) {
+                            $traversableKey = $event->key();
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Produced ' .
+                                $this->exporter->export($traversableKey) .
+                                ' => ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif ($event instanceof ReceivedEvent) {
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif (
+                            $event instanceof ReceivedExceptionEvent
+                        ) {
+                            $traversableException = $event->exception();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received exception ' .
+                                $this->exporter->export($traversableException);
+                        }
+                    }
+
+                    $endEvent = $call->endEvent();
+
+                    if (!$traversableEvents) {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never started iterating';
+                    } elseif ($endEvent instanceof ConsumedEvent) {
+                        $renderedTraversableEvents[] =
+                            '        - Finished iterating';
+                    } elseif ($endEvent instanceof ReturnedEvent) {
+                        $traversableValue = $endEvent->value();
+                        $renderedTraversableValue =
+                            $this->exporter->export($traversableValue);
+
+                        $eventIsMatch =
+                            !$value || $value->matches($traversableValue);
+
+                        if ($eventIsMatch) {
+                            ++$matchCount;
+                            $isMatchingCall = true;
+                        } elseif ($value instanceof EqualToMatcher) {
+                            $renderedTraversableValue =
+                                $this->differenceEngine->difference(
+                                    $renderedValue,
+                                    $renderedTraversableValue
+                                );
+                        }
+
+                        if ($eventIsMatch xor $isNever) {
+                            $eventResult = $this->pass;
+                        } else {
+                            $eventResult = $this->fail;
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult . ' Returned ' .
+                            $renderedTraversableValue;
+                    } elseif ($endEvent instanceof ThrewEvent) {
+                        if ($isNever) {
+                            $eventResult = $this->pass;
+                        } else {
+                            $eventResult = $this->fail;
+                        }
+
+                        $eventException = $endEvent->exception();
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult . ' Threw ' .
+                            $this->exporter->export($eventException);
+                    } else {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never finished iterating';
+                    }
+
+                    if ($returnValue instanceof Generator) {
+                        $renderedResponse =
+                            'Returned Generator, then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    } else {
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    }
+                } else {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                }
+            } elseif ($responseEvent instanceof ThrewEvent) {
+                $exception = $responseEvent->exception();
+                $renderedResponse =
+                    'Threw ' . $this->exporter->export($exception);
+            } else {
+                $renderedResponse = 'Never responded';
+            }
+
+            if ($callIsRelevant) {
+                if ($isMatchingCall xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+            } else {
+                $renderedResult = '-';
+            }
+
+            $renderedCalls[] =
+                $callStart . $renderedResult . ' Call #' . $call->index() .
+                ' - ' . $renderedCallee .
+                '(' . implode(', ', $renderedArguments) . '):' .
+                $callEnd . PHP_EOL .
+                $callStart . '    ' . $renderedResult . ' ' .
+                $renderedResponse . $callEnd;
+        }
+
+        $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed generator threw() verification.
+     *
+     * @param Spy|Call                    $subject     The subject.
+     * @param Cardinality                 $cardinality The cardinality.
+     * @param Exception|Error|string|null $type        The type of exception.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderGeneratorThrew(
+        $subject,
+        Cardinality $cardinality,
+        $type
+    ) {
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedCallee = $this->renderCallable($subject->callback());
+        } else {
+            $calls = $subject->allCalls();
+            $renderedCallee = $this->renderCallable($subject);
+        }
+
+        $renderedSubject = $this->bold . $renderedCallee . $this->reset;
+
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = null !== $maximum && $maximum < 1;
+
+        if ($isCall) {
+            $totalCount = 1;
+            $traversableCount = 1;
+            $renderedTraversableCount = '';
+        } else {
+            $traversableCount = 0;
+
+            foreach ($calls as $call) {
+                if ($call->isGenerator()) {
+                    ++$traversableCount;
+                }
+            }
+
+            $totalCount = $traversableCount;
+
+            if ($cardinality->matches($traversableCount, $traversableCount)) {
+                $traversableResultStart = $this->passStart;
+                $traversableResultText = self::PASS;
+            } else {
+                $traversableResultStart = $this->failStart;
+                $traversableResultText = self::FAIL;
+            }
+
+            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
+            $renderedTraversableCount =
+                ' ' . $traversableResultStart . $this->faint .
+                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+                $this->reset;
+        }
+
+        if ($traversableCount xor $isNever) {
+            $traversableResult = $this->pass;
+        } else {
+            $traversableResult = $this->fail;
+        }
+
+        if ($type instanceof Matcher) {
+            $renderedType = $type->describe($this->exporter);
+        } elseif (is_string($type)) {
+            $renderedType = $type;
+        } else {
+            $renderedType = '<any>';
+        }
+
+        $renderedCriteria =
+            'behave like:' . PHP_EOL . '    ' . $traversableResult .
+            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            '        ' . $this->fail . ' Threw ' . $renderedType;
+
+        if ($isCall) {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' not to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' call #' . $subject->index() .
+                    ' to ' . $renderedCriteria;
+            }
+        } else {
+            if ($isNever) {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls not to ' . $renderedCriteria;
+            } elseif ($cardinality->isAlways()) {
+                $expected =
+                    'Expected all ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            } else {
+                $expected =
+                    'Expected ' . $renderedSubject .
+                    ' generator calls to ' . $renderedCriteria;
+            }
+        }
+
+        $renderedCalls = array();
+        $matchCount = 0;
+
+        foreach ($calls as $call) {
+            $callIsRelevant = $call->isGenerator();
+
+            if ($callIsRelevant) {
+                $callStart = '';
+                $callEnd = '';
+            } else {
+                $callStart = $this->faint;
+                $callEnd = $this->reset;
+            }
+
+            $isMatchingCall = false;
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument, 0);
+            }
+
+            $responseEvent = $call->responseEvent();
+
+            if ($responseEvent instanceof ReturnedEvent) {
+                $returnValue = $responseEvent->value();
+
+                if (
+                    is_array($returnValue) ||
+                    $returnValue instanceof Traversable
+                ) {
+                    $traversableEvents = $call->traversableEvents();
+                    $renderedTraversableEvents = array();
+
+                    foreach ($traversableEvents as $event) {
+                        if ($event instanceof UsedEvent) {
+                            $renderedTraversableEvents[] =
+                                '        - Started iterating';
+                        } elseif ($event instanceof ProducedEvent) {
+                            $traversableKey = $event->key();
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Produced ' .
+                                $this->exporter->export($traversableKey) .
+                                ' => ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif ($event instanceof ReceivedEvent) {
+                            $traversableValue = $event->value();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received ' .
+                                $this->exporter->export($traversableValue);
+                        } elseif (
+                            $event instanceof ReceivedExceptionEvent
+                        ) {
+                            $traversableException = $event->exception();
+
+                            $renderedTraversableEvents[] =
+                                '        - Received exception ' .
+                                $this->exporter->export($traversableException);
+                        }
+                    }
+
+                    $endEvent = $call->endEvent();
+
+                    if (!$traversableEvents) {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never started iterating';
+                    } elseif ($endEvent instanceof ConsumedEvent) {
+                        $renderedTraversableEvents[] =
+                            '        - Finished iterating';
+                    } elseif ($endEvent instanceof ReturnedEvent) {
+                        $traversableValue = $endEvent->value();
+
+                        if ($isNever) {
+                            $eventResult = $this->pass;
+                        } else {
+                            $eventResult = $this->fail;
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .  ' Returned ' .
+                            $this->exporter->export($traversableValue);
+                    } elseif ($endEvent instanceof ThrewEvent) {
+                        $traversableException = $endEvent->exception();
+                        $renderedTraversableException =
+                            $this->exporter->export($traversableException);
+
+                        if ($type instanceof Matcher) {
+                            $eventIsMatch =
+                                $type->matches($traversableException);
+                        } elseif (is_string($type)) {
+                            $eventIsMatch = is_a($traversableException, $type);
+                        } else {
+                            $eventIsMatch = true;
+                        }
+
+                        if ($eventIsMatch) {
+                            ++$matchCount;
+                            $isMatchingCall = true;
+                        } elseif ($type instanceof EqualToMatcher) {
+                            $renderedTraversableException =
+                                $this->differenceEngine->difference(
+                                    $renderedType,
+                                    $renderedTraversableException
+                                );
+                        }
+
+                        if ($eventIsMatch xor $isNever) {
+                            $eventResult = $this->pass;
+                        } else {
+                            $eventResult = $this->fail;
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Threw ' . $renderedTraversableException;
+                    } else {
+                        if ($callIsRelevant) {
+                            if ($isNever) {
+                                $eventResult = $this->pass;
+                            } else {
+                                $eventResult = $this->fail;
+                            }
+                        } else {
+                            $eventResult = '-';
+                        }
+
+                        $renderedTraversableEvents[] =
+                            '        ' . $eventResult .
+                            ' Never finished iterating';
+                    }
+
+                    if ($returnValue instanceof Generator) {
+                        $renderedResponse =
+                            'Returned Generator, then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    } else {
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' .
+                            $callEnd . PHP_EOL . $callStart .
+                            implode(
+                                $callEnd . PHP_EOL . $callStart,
+                                $renderedTraversableEvents
+                            );
+                    }
+                } else {
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue);
+                }
+            } elseif ($responseEvent instanceof ThrewEvent) {
+                $exception = $responseEvent->exception();
+                $renderedResponse =
+                    'Threw ' . $this->exporter->export($exception);
+            } else {
+                $renderedResponse = 'Never responded';
+            }
+
+            if ($callIsRelevant) {
+                if ($isMatchingCall xor $isNever) {
+                    $renderedResult = $this->pass;
+                } else {
+                    $renderedResult = $this->fail;
+                }
+            } else {
+                $renderedResult = '-';
+            }
+
+            $renderedCalls[] =
+                $callStart . $renderedResult . ' Call #' . $call->index() .
+                ' - ' . $renderedCallee .
+                '(' . implode(', ', $renderedArguments) . '):' .
+                $callEnd . PHP_EOL .
+                $callStart . '    ' . $renderedResult . ' ' .
+                $renderedResponse . $callEnd;
+        }
+
+        $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
+
+        if ($isCall) {
+            $cardinality = '';
+        } else {
+            $cardinality = $this->renderCardinality(
+                $minimum,
+                $maximum,
+                $matchCount,
+                $totalCount,
+                $totalCount,
+                false
+            );
+        }
+
+        return $this->reset . $expected . $cardinality . $actual;
+    }
+
+    /**
+     * Render a failed noInteraction() verification.
+     *
+     * @param Handle      $handle The handle.
+     * @param array<Call> $calls  The calls.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderNoInteraction(Handle $handle, array $calls)
+    {
+        $class = $handle->clazz();
+
+        if ($parentClass = $class->getParentClass()) {
+            $class = $parentClass;
+        }
+
+        $atoms = explode('\\', $class->getName());
+        $renderedHandle = array_pop($atoms);
+
+        if ($handle instanceof InstanceHandle) {
+            $label = $handle->label();
+
+            if (null !== $label) {
+                $renderedHandle .= '[' . $label . ']';
+            }
+        } else {
+            $renderedHandle .= '[static]';
+        }
+
+        usort($calls, 'Eloquent\Phony\Call\CallData::compareSequential');
+        $renderedCalls = array();
+
+        foreach ($calls as $index => $call) {
+            $renderedArguments = array();
+
+            foreach ($call->arguments()->all() as $argument) {
+                $renderedArguments[] = $this->exporter->export($argument);
+            }
+
+            $renderedCalls[] =
+                '    ' . $this->fail .
+                ' ' . $this->renderCallable($call->callback()) .
+                '(' . implode(', ', $renderedArguments) . ')';
+        }
+
+        return $this->reset . 'Expected no interaction with ' .
+            $this->bold . $renderedHandle . $this->reset .
+            '. Calls:' . PHP_EOL . implode(PHP_EOL, $renderedCalls);
+    }
+
+    /**
+     * Render a failed inOrder() verification.
+     *
+     * @param array<Event> $expected The expected events.
+     * @param array<Event> $actual   The actual events.
+     *
+     * @return string The rendered failure message.
+     */
+    public function renderInOrder(array $expected, array $actual)
+    {
+        if (!$expected) {
+            return $this->reset . 'Expected events.' . PHP_EOL .
+                $this->failStart . 'No events recorded.' . $this->reset;
+        }
+
+        $from = $this->renderEvents($expected);
+        $to = $this->renderEvents($actual);
+
+        $matcher = new DifferenceSequenceMatcher($from, $to, null, array());
+        $diff = array();
+
+        foreach ($matcher->getOpcodes() as $opcode) {
+            list($tag, $i1, $i2, $j1, $j2) = $opcode;
+
+            if ($tag === 'equal') {
+                foreach (array_slice($from, $i1, $i2 - $i1) as $event) {
+                    $diff[] = '    ' . $this->pass . '   ' . $event;
+                }
+            } else {
+                if ($tag === 'replace' || $tag === 'delete') {
+                    foreach (array_slice($from, $i1, $i2 - $i1) as $event) {
+                        $diff[] =
+                            '    ' . $this->fail . ' ' .
+                            $this->removeStart . $event . $this->removeEnd;
+                    }
+                }
+
+                if ($tag === 'replace' || $tag === 'insert') {
+                    foreach (array_slice($to, $j1, $j2 - $j1) as $event) {
+                        $diff[] =
+                            '    - ' . $this->addStart . $event . $this->addEnd;
+                    }
+                }
+            }
+        }
+
+        $renderedExpected = array();
+
+        foreach ($from as $event) {
+            $renderedExpected[] = '    - ' . $event;
+        }
+
+        $renderedActual = array();
+
+        foreach ($to as $event) {
+            $renderedActual[] = '    - ' . $event;
+        }
+
+        return $this->reset . 'Expected events in order:' . PHP_EOL .
+            implode(PHP_EOL, $renderedExpected) . PHP_EOL .
+            'Actual order:' . PHP_EOL .
+            implode(PHP_EOL, $renderedActual) . PHP_EOL .
+            'Difference:' . PHP_EOL .
+            implode(PHP_EOL, $diff);
     }
 
     /**
@@ -89,44 +3867,28 @@ class AssertionRenderer
     }
 
     /**
-     * Render a mock.
+     * Render a sequence of matchers.
      *
-     * @param Handle $handle The handle.
+     * @param array<Matchable> $matchers The matchers.
      *
-     * @return string The rendered mock.
+     * @return string The rendered matchers.
      */
-    public function renderMock(Handle $handle)
+    public function renderMatchers(array $matchers)
     {
-        $class = $handle->clazz();
-
-        if ($parentClass = $class->getParentClass()) {
-            $class = $parentClass;
+        if (count($matchers) < 1) {
+            return '<none>';
         }
 
-        $atoms = explode('\\', $class->getName());
-        $rendered = array_pop($atoms);
+        $rendered = array();
 
-        if ($handle instanceof InstanceHandle) {
-            $label = $handle->label();
-
-            if (null !== $label) {
-                $rendered .= '[' . $label . ']';
-            }
-        } else {
-            $rendered .= '[static]';
+        foreach ($matchers as $matcher) {
+            $rendered[] = $matcher->describe($this->exporter);
         }
 
-        return $rendered;
+        return implode(', ', $rendered);
     }
 
-    /**
-     * Render a callable.
-     *
-     * @param callable $callback The callable.
-     *
-     * @return string The rendered callable.
-     */
-    public function renderCallable($callback)
+    private function renderCallable($callback)
     {
         $wrappedCallback = null;
 
@@ -157,11 +3919,7 @@ class AssertionRenderer
             if ($reflector instanceof ReflectionMethod) {
                 $class = $reflector->getDeclaringClass();
 
-                if (
-                    $class->implementsInterface(
-                        'Eloquent\Phony\Mock\Mock'
-                    )
-                ) {
+                if ($class->implementsInterface('Eloquent\Phony\Mock\Mock')) {
                     if ($parentClass = $class->getParentClass()) {
                         $class = $parentClass;
                     } else {
@@ -205,503 +3963,149 @@ class AssertionRenderer
         }
 
         if (null !== $label) {
-            $rendered .= sprintf('[%s]', $label);
+            $rendered .= '[' . $label . ']';
         }
 
         return $rendered;
     }
 
-    /**
-     * Render a sequence of matchers.
-     *
-     * @param array<Matcher> $matchers The matchers.
-     *
-     * @return string The rendered matchers.
-     */
-    public function renderMatchers(array $matchers)
-    {
-        if (count($matchers) < 1) {
-            return '<none>';
-        }
-
-        $rendered = array();
-        foreach ($matchers as $matcher) {
-            $rendered[] = $matcher->describe($this->exporter);
-        }
-
-        return implode(', ', $rendered);
-    }
-
-    /**
-     * Render a sequence of matchers as a list.
-     *
-     * @param array<Matcher> $matchers The matchers.
-     *
-     * @return string The rendered matchers.
-     */
-    public function renderMatchersList(array $matchers)
-    {
-        if (count($matchers) < 1) {
-            return '<none>';
-        }
-
-        $rendered = array();
-        foreach ($matchers as $matcher) {
-            $rendered[] = sprintf(
-                '    - %s',
-                $matcher->describe($this->exporter)
-            );
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render a cardinality.
-     *
-     * @param Cardinality $cardinality The cardinality.
-     * @param string      $subject     The subject.
-     *
-     * @return string The rendered cardinality.
-     */
-    public function renderCardinality(
-        Cardinality $cardinality,
-        $subject
-    ) {
-        if ($cardinality->isNever()) {
-            return sprintf('no %s', $subject);
-        }
-
-        $isAlways = $cardinality->isAlways();
-
-        if ($isAlways) {
-            $rendered = sprintf('every %s', $subject);
-        } else {
-            $rendered = $subject;
-        }
-
-        $minimum = $cardinality->minimum();
-        $maximum = $cardinality->maximum();
-
-        if (!$minimum) {
-            if (null === $maximum) {
-                return $rendered . ', any number of times';
-            }
-
-            if (1 === $maximum) {
-                return $rendered . ', up to 1 time';
-            }
-
-            return $rendered . sprintf(', up to %d times', $maximum);
-        }
-
-        if (null === $maximum) {
-            if (1 === $minimum) {
-                return $rendered;
-            }
-
-            return $rendered . sprintf(', %d times', $minimum);
-        }
-
-        if ($minimum === $maximum) {
-            if (1 === $minimum) {
-                return $rendered . ', exactly 1 time';
-            }
-
-            return $rendered . sprintf(', exactly %d times', $minimum);
-        }
-
-        return $rendered .
-            sprintf(', between %d and %d times', $minimum, $maximum);
-    }
-
-    /**
-     * Render a sequence of calls.
-     *
-     * @param array<Call> $calls The calls.
-     *
-     * @return string The rendered calls.
-     */
-    public function renderCalls(array $calls)
-    {
-        usort(
-            $calls,
-            function ($left, $right) {
-                return $left->sequenceNumber() > $right->sequenceNumber();
-            }
-        );
-
-        $rendered = array();
-
-        foreach ($calls as $call) {
-            $rendered[] = sprintf('    - %s', $this->renderCall($call));
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render the $this values of a sequence of calls.
-     *
-     * @param array<Call> $calls The calls.
-     *
-     * @return string The rendered call $this values.
-     */
-    public function renderThisValues(array $calls)
-    {
-        $rendered = array();
-        foreach ($calls as $call) {
-            $rendered[] = sprintf(
-                '    - %s',
-                $this->renderValue(
-                    $this->invocableInspector
-                        ->callbackThisValue($call->callback())
-                )
-            );
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render the arguments of a sequence of calls.
-     *
-     * @param array<Call> $calls The calls.
-     *
-     * @return string The rendered call arguments.
-     */
-    public function renderCallsArguments(array $calls)
-    {
-        $rendered = array();
-        foreach ($calls as $index => $call) {
-            $rendered[] =
-                sprintf(
-                    "Call #%d:\n%s",
-                    $index,
-                    $this->renderArguments($call->arguments())
-                );
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render the responses of a sequence of calls.
-     *
-     * @param array<Call> $calls              The calls.
-     * @param bool        $expandTraversables True if traversable events should be rendered.
-     *
-     * @return string The rendered call responses.
-     */
-    public function renderResponses(array $calls, $expandTraversables = false)
+    private function renderEvents($events)
     {
         $rendered = array();
 
-        foreach ($calls as $call) {
-            if (!$call->hasResponded()) {
-                $rendered[] = '    - <none>';
-
-                continue;
-            }
-
-            list($exception, $returnValue) = $call->response();
-
-            if ($exception) {
-                $rendered[] = sprintf(
-                    '    - threw %s',
-                    $this->renderException($exception)
-                );
-            } elseif ($expandTraversables && $call->isTraversable()) {
-                if ($call->isGenerator()) {
-                    $rendered[] = sprintf(
-                        "    - generated:\n%s",
-                        $this->indent($this->renderTraversableEvents($call))
-                    );
-                } else {
-                    $rendered[] = sprintf(
-                        "    - returned %s producing:\n%s",
-                        $this->exporter->export($returnValue, 0),
-                        $this->indent($this->renderTraversableEvents($call))
-                    );
-                }
-            } else {
-                $rendered[] = sprintf(
-                    '    - returned %s',
-                    $this->renderValue($returnValue)
-                );
-            }
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render the supplied call.
-     *
-     * @param Call $call The call.
-     *
-     * @return string The rendered call.
-     */
-    public function renderCall(Call $call)
-    {
-        return $this->renderCalledEvent($call->calledEvent());
-    }
-
-    /**
-     * Render the supplied 'called' event.
-     *
-     * @param CalledEvent $event The 'called' event.
-     *
-     * @return string The rendered event.
-     */
-    public function renderCalledEvent(CalledEvent $event)
-    {
-        $renderedArguments = array();
-
-        foreach ($event->arguments() as $argument) {
-            $renderedArguments[] = $this->renderValue($argument);
-        }
-
-        return sprintf(
-            '%s(%s)',
-            $this->renderCallable($event->callback()),
-            implode(', ', $renderedArguments)
-        );
-    }
-
-    /**
-     * Render the supplied call's response.
-     *
-     * @param Call $call               The call.
-     * @param bool $expandTraversables True if traversable events should be rendered.
-     *
-     * @return string The rendered response.
-     */
-    public function renderResponse(Call $call, $expandTraversables = false)
-    {
-        $responseEvent = $call->responseEvent();
-
-        if ($responseEvent instanceof ReturnedEvent) {
-            if ($expandTraversables && $call->isTraversable()) {
-                if ($call->isGenerator()) {
-                    return sprintf(
-                        "Generated:\n%s",
-                        $this->renderTraversableEvents($call)
-                    );
-                }
-
-                $returnValue = $responseEvent->value();
-
-                return sprintf(
-                    "Returned %s producing:\n%s",
-                    $this->exporter->export($returnValue, 0),
-                    $this->renderTraversableEvents($call)
-                );
-            }
-
-            return sprintf(
-                'Returned %s.',
-                $this->renderValue($responseEvent->value())
-            );
-        }
-
-        if ($responseEvent instanceof ThrewEvent) {
-            return sprintf(
-                'Threw %s.',
-                $this->renderException($responseEvent->exception())
-            );
-        }
-
-        return 'Never responded.';
-    }
-
-    /**
-     * Render the traversable events of a call.
-     *
-     * @param Call $call The call.
-     *
-     * @return string The rendered traversable events.
-     */
-    public function renderTraversableEvents(Call $call)
-    {
-        $rendered = array();
-
-        foreach ($call->traversableEvents() as $event) {
-            if ($event instanceof UsedEvent) {
-                $rendered[] = '    - started iterating';
-            } elseif ($event instanceof ProducedEvent) {
-                $rendered[] = sprintf(
-                    '    - produced %s: %s',
-                    $this->renderValue($event->key()),
-                    $this->renderValue($event->value())
-                );
-            } elseif ($event instanceof ReceivedEvent) {
-                $rendered[] = sprintf(
-                    '    - received %s',
-                    $this->renderValue($event->value())
-                );
-            } elseif ($event instanceof ReceivedExceptionEvent) {
-                $rendered[] = sprintf(
-                    '    - received exception %s',
-                    $this->renderException($event->exception())
-                );
-            }
-        }
-
-        $event = $call->endEvent();
-
-        if ($event instanceof ConsumedEvent) {
-            $rendered[] = '    - finished iterating';
-        } elseif ($event instanceof ReturnedEvent) {
-            $rendered[] = sprintf(
-                '    - returned %s',
-                $this->renderValue($event->value())
-            );
-        } elseif ($event instanceof ThrewEvent) {
-            $rendered[] = sprintf(
-                '    - threw %s',
-                $this->renderException($event->exception())
-            );
-        } else {
-            $rendered[] = '    - did not finish iterating';
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render a sequence of arguments.
-     *
-     * @param Arguments $arguments The arguments.
-     *
-     * @return string The rendered arguments.
-     */
-    public function renderArguments(Arguments $arguments)
-    {
-        if (count($arguments) < 1) {
-            return '    <none>';
-        }
-
-        $rendered = array();
-
-        foreach ($arguments as $argument) {
-            $rendered[] = sprintf('    - %s', $this->renderValue($argument));
-        }
-
-        return implode("\n", $rendered);
-    }
-
-    /**
-     * Render an exception.
-     *
-     * @param Exception|Error $exception The exception.
-     *
-     * @return string The rendered exception.
-     */
-    public function renderException($exception)
-    {
-        if ('' === $exception->getMessage()) {
-            $renderedMessage = '';
-        } else {
-            $message = $exception->getMessage();
-            $renderedMessage = $this->exporter->export($message, 0);
-        }
-
-        $atoms = explode('\\', get_class($exception));
-        $class = array_pop($atoms);
-
-        return sprintf('%s(%s)', $class, $renderedMessage);
-    }
-
-    /**
-     * Render an arbitrary sequence of events.
-     *
-     * @param EventCollection $events The events.
-     *
-     * @return string The rendered events.
-     */
-    public function renderEvents(EventCollection $events)
-    {
-        $rendered = array();
-
-        foreach ($events->allEvents() as $event) {
+        foreach ($events as $event) {
             if ($event instanceof CallEvent) {
-                if ($call = $event->call()) {
-                    $call = $this->renderCall($call);
-                } else {
-                    $call = 'unknown call';
+                $call = $event->call();
+                $renderedArguments = array();
+
+                foreach ($call->arguments()->all() as $argument) {
+                    $renderedArguments[] =
+                        $this->exporter->export($argument);
                 }
+
+                $call =
+                    $this->renderCallable($call->callback()) .
+                    '(' . implode(', ', $renderedArguments) . ')';
             }
 
             if ($event instanceof Call) {
+                $renderedArguments = array();
+
+                foreach ($event->arguments()->all() as $argument) {
+                    $renderedArguments[] = $this->exporter->export($argument);
+                }
+
                 $rendered[] =
-                    sprintf('    - called %s', $this->renderCall($event));
+                    'Called ' . $this->renderCallable($event->callback()) .
+                    '(' . implode(', ', $renderedArguments) . ')';
             } elseif ($event instanceof CalledEvent) {
-                $rendered[] = sprintf(
-                    '    - called %s',
-                    $this->renderCalledEvent($event)
-                );
+                $rendered[] = 'Called ' . $call;
             } elseif ($event instanceof ReturnedEvent) {
-                $rendered[] = sprintf(
-                    '    - returned %s from %s',
-                    $this->renderValue($event->value()),
-                    $call
-                );
+                $eventValue = $event->value();
+
+                $rendered[] =
+                    'Returned ' . $this->exporter->export($eventValue) .
+                    ' from ' . $call;
             } elseif ($event instanceof ThrewEvent) {
-                $rendered[] = sprintf(
-                    '    - threw %s in %s',
-                    $this->renderException($event->exception()),
-                    $call
-                );
+                $eventException = $event->exception();
+
+                $rendered[] =
+                    'Threw ' . $this->exporter->export($eventException) .
+                    ' from ' . $call;
+            } elseif ($event instanceof UsedEvent) {
+                $rendered[] = $call . ' started iterating';
             } elseif ($event instanceof ProducedEvent) {
-                $rendered[] = sprintf(
-                    '    - produced %s: %s from %s',
-                    $this->renderValue($event->key()),
-                    $this->renderValue($event->value()),
-                    $call
-                );
+                $eventKey = $event->key();
+                $eventValue = $event->value();
+
+                $rendered[] =
+                    'Produced ' . $this->exporter->export($eventKey) .
+                    ' => ' . $this->exporter->export($eventValue) .
+                    ' from ' . $call;
             } elseif ($event instanceof ReceivedEvent) {
-                $rendered[] = sprintf(
-                    '    - received %s in %s',
-                    $this->renderValue($event->value()),
-                    $call
-                );
+                $eventValue = $event->value();
+
+                $rendered[] =
+                    'Received ' . $this->exporter->export($eventValue) .
+                    ' in ' . $call;
             } elseif ($event instanceof ReceivedExceptionEvent) {
-                $rendered[] = sprintf(
-                    '    - received exception %s in %s',
-                    $this->renderException($event->exception()),
-                    $call
-                );
+                $eventException = $event->exception();
+
+                $rendered[] =
+                    'Received exception ' .
+                    $this->exporter->export($eventException) . ' in ' . $call;
             } elseif ($event instanceof ConsumedEvent) {
-                $rendered[] = sprintf('    - %s finished iterating', $call);
-            } elseif ($event instanceof NullEvent) {
-                $rendered[] = '    - <none>';
+                $rendered[] = $call . ' finished iterating';
             } else {
-                $rendered[] = sprintf(
-                    '    - %s event',
-                    $this->renderValue(get_class($event))
-                );
+                $eventClass = get_class($event);
+
+                $rendered[] = $this->exporter->export($eventClass) . ' event';
             }
         }
 
-        return implode("\n", $rendered);
+        return $rendered;
     }
 
-    /**
-     * Indent the supplied string.
-     *
-     * @param string $string The string to indent.
-     *
-     * @return string The indented string.
-     */
-    protected function indent($string)
-    {
-        $lines = preg_split('/\R/', $string);
+    private function renderCardinality(
+        $minimum,
+        $maximum,
+        $matchCount,
+        $totalCount,
+        $callCount,
+        $isFailureCause
+    ) {
+        if (!$minimum) {
+            if (0 === $maximum) {
+                $expected = '';
+            } else {
+                $expected = 'Up to ' . $maximum . ' allowed. ';
+            }
+        } elseif (null === $maximum) {
+            if (1 === $minimum) {
+                $expected = '';
+            } else {
+                $expected = 'At least ' . $minimum . ' required. ';
+            }
+        } elseif ($minimum === $maximum) {
+            $expected = 'Exactly ' . $minimum . ' required. ';
+        } else {
+            $expected =
+                'Between ' . $minimum . ' and ' . $maximum . ' allowed. ';
+        }
 
-        return '    ' . implode("\n    ", $lines);
+        if ($callCount) {
+            $actual = 'Matched ' . $matchCount . ' of ' . $totalCount . ':';
+        } else {
+            $isFailureCause = true;
+            $actual = 'Never called.';
+        }
+
+        if ($isFailureCause || $expected) {
+            return
+                PHP_EOL . $this->failStart . $expected . $actual . $this->reset;
+        }
+
+        return PHP_EOL . $expected . $actual;
     }
+
+    const PASS = "\xe2\x9C\x93";
+    const FAIL = "\xe2\x9C\x97";
 
     private static $instance;
     private $invocableInspector;
+    private $matcherVerifier;
     private $exporter;
+    private $differenceEngine;
+    private $featureDetector;
+    private $reset;
+    private $bold;
+    private $faint;
+    private $passStart;
+    private $failStart;
+    private $pass;
+    private $fail;
+    private $addStart;
+    private $addEnd;
+    private $removeStart;
+    private $removeEnd;
 }

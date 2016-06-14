@@ -1,0 +1,8 @@
+%RESET%Expected %BOLD%{spy}[label]%RESET% call with any arguments.
+%RED%Exactly 3 required. Matched 2 of 2:%RESET%
+%GREEN%✓%RESET% Call #0:
+    %GREEN%✓%RESET% "aardvark"
+    %GREEN%✓%RESET% #0["bonobo", "capybara", "dugong"]
+%GREEN%✓%RESET% Call #1:
+    %GREEN%✓%RESET% "armadillo"
+    %GREEN%✓%RESET% #0["bonobo", "chameleon", "dormouse"]

@@ -18,8 +18,8 @@ use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Clock\SystemClock;
+use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventOrderVerifier;
-use Eloquent\Phony\Event\NullEvent;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Integration\CounterpartMatcherDriver;
@@ -80,20 +80,24 @@ class FacadeDriver
      */
     protected function __construct(AssertionRecorder $assertionRecorder)
     {
+        $this->sequences = array();
+
         $anyMatcher = new AnyMatcher();
-        $exporter = new InlineExporter(1, true);
+        $objectIdSequence = Sequencer::sequence('exporter-object-id');
+        $exporter = new InlineExporter(1, $objectIdSequence);
         $featureDetector = new FeatureDetector();
         $invocableInspector = new InvocableInspector();
         $invoker = new Invoker();
         $matcherVerifier = new MatcherVerifier();
-        $nullEvent = new NullEvent();
 
         $functionSignatureInspector = new FunctionSignatureInspector(
             $invocableInspector,
             $featureDetector
         );
+        $mockClassLabelSequence = Sequencer::sequence('mock-class-label');
+        $this->sequences[] = $mockClassLabelSequence;
         $mockGenerator = new MockGenerator(
-            Sequencer::sequence('mock-class-label'),
+            $mockClassLabelSequence,
             $functionSignatureInspector,
             $featureDetector
         );
@@ -122,8 +126,10 @@ class FacadeDriver
             $invoker,
             $featureDetector
         );
+        $stubLabelSequence = Sequencer::sequence('stub-label');
+        $this->sequences[] = $stubLabelSequence;
         $stubFactory = new StubFactory(
-            Sequencer::sequence('stub-label'),
+            $stubLabelSequence,
             $matcherFactory,
             $matcherVerifier,
             $invoker,
@@ -132,8 +138,10 @@ class FacadeDriver
             $generatorAnswerBuilderFactory
         );
         $clock = new SystemClock('microtime');
+        $eventSequence = Sequencer::sequence('event-sequence-number');
+        $this->sequences[] = $eventSequence;
         $eventFactory = new CallEventFactory(
-            Sequencer::sequence('event-sequence-number'),
+            $eventSequence,
             $clock
         );
         $callFactory = new CallFactory(
@@ -147,16 +155,24 @@ class FacadeDriver
         $traversableSpyFactory = new TraversableSpyFactory(
             $eventFactory
         );
+        $spyLabelSequence = Sequencer::sequence('spy-label');
+        $this->sequences[] = $spyLabelSequence;
         $spyFactory = new SpyFactory(
-            Sequencer::sequence('spy-label'),
+            $spyLabelSequence,
             $callFactory,
             $invoker,
             $generatorSpyFactory,
             $traversableSpyFactory
         );
+        $differenceEngine = new DifferenceEngine(
+            $featureDetector
+        );
         $assertionRenderer = new AssertionRenderer(
             $invocableInspector,
-            $exporter
+            $matcherVerifier,
+            $exporter,
+            $differenceEngine,
+            $featureDetector
         );
         $generatorVerifierFactory = new GeneratorVerifierFactory(
             $matcherFactory,
@@ -198,8 +214,10 @@ class FacadeDriver
             $assertionRecorder,
             $invoker
         );
+        $mockLabelSequence = Sequencer::sequence('mock-label');
+        $this->sequences[] = $mockLabelSequence;
         $mockFactory = new MockFactory(
-            Sequencer::sequence('mock-label'),
+            $mockLabelSequence,
             $mockGenerator,
             $handleFactory
         );
@@ -222,8 +240,7 @@ class FacadeDriver
         );
         $eventOrderVerifier = new EventOrderVerifier(
             $assertionRecorder,
-            $assertionRenderer,
-            $nullEvent
+            $assertionRenderer
         );
 
         $emptyValueFactory->setStubVerifierFactory($stubVerifierFactory);
@@ -239,6 +256,8 @@ class FacadeDriver
         $this->eventOrderVerifier = $eventOrderVerifier;
         $this->matcherFactory = $matcherFactory;
         $this->exporter = $exporter;
+        $this->assertionRenderer = $assertionRenderer;
+        $this->differenceEngine = $differenceEngine;
     }
 
     public $mockBuilderFactory;
@@ -248,5 +267,8 @@ class FacadeDriver
     public $eventOrderVerifier;
     public $matcherFactory;
     public $exporter;
+    public $assertionRenderer;
+    public $differenceEngine;
+    protected $sequences;
     private static $instance;
 }

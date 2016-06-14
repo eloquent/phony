@@ -28,6 +28,7 @@
         "peridot-php/leo": "^1",
         "peridot-php/peridot": "^1",
         "phake/phake": "^2",
+        "phpdocumentor/reflection-docblock": "^2",
         "phpspec/prophecy": "^1",
         "phpunit/php-code-coverage": "^2",
         "phpunit/phpunit": "^4",
@@ -49,6 +50,7 @@
             "Eloquent\\Phony\\": ["test/src", "test/benchmarks"]
         },
         "files": [
+            "test/src/ClassA.php",
             "test/src/TestClass.php"
         ]
     }

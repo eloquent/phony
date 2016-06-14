@@ -1,0 +1,7 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 not to behave like:
+    %RED%✗%RESET% Returned Generator, then:
+        %RED%✗%RESET% Threw RuntimeException#0{message: "BONOBO"}
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}

@@ -16,6 +16,7 @@ use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
+use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -23,8 +24,11 @@ use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\TraversableVerifierFactory;
 use Exception;
@@ -38,15 +42,16 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callEventFactory->sequencer()->set(111);
-        $this->thisValue = (object) array();
-        $this->callback = array($this->thisValue, 'implode');
+        $this->thisValue = new TestClassA();
+        $this->callback = array($this->thisValue, 'testClassAMethodA');
         $this->arguments = new Arguments(array('a', 'b', 'c'));
         $this->returnValue = 'abc';
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
 
-        $this->exporter = new InlineExporter(1, false);
+        $this->objectSequencer = new Sequencer();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer);
         $this->matcherFactory =
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
@@ -54,7 +59,17 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invocableInspector = new InvocableInspector();
-        $this->assertionRenderer = new AssertionRenderer($this->invocableInspector, $this->exporter);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
+        $this->differenceEngine->setUseColor(false);
+        $this->assertionRenderer = new AssertionRenderer(
+            $this->invocableInspector,
+            $this->matcherVerifier,
+            $this->exporter,
+            $this->differenceEngine,
+            $this->featureDetector
+        );
+        $this->assertionRenderer->setUseColor(false);
         $this->subject = new CallVerifier(
             $this->call,
             $this->matcherFactory,
@@ -298,48 +313,36 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testGenerated()
     {
         $this->assertEquals(
-            $this->generatorVerifierFactory->create($this->generatorSubject, array($this->generatorCall)),
+            $this->generatorVerifierFactory->create($this->generatorCall, array($this->generatorCall)),
             $this->generatorSubject->generated()
         );
         $this->assertEquals(
-            $this->generatorVerifierFactory->create($this->subject, array()),
+            $this->generatorVerifierFactory->create($this->call, array()),
             $this->subject->never()->generated()
         );
     }
 
     public function testGeneratedFailure()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected generator. Returned "abc".'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->generated();
     }
 
     public function testGeneratedFailureNever()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected no generator. Returned Generator#0{}.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->generatorSubject->never()->generated();
     }
 
     public function testGeneratedFailureWithException()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected generator. Threw RuntimeException("You done goofed.").'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subjectWithException->generated();
     }
 
     public function testGeneratedFailureNeverResponded()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected generator. Never responded.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subjectWithNoResponse->generated();
     }
 }

@@ -1,0 +1,3 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% call bound to object:
+    %RED%✗%RESET% #0{name: "apricot"}
+%RED%Never called.%RESET%

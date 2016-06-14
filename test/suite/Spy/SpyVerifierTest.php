@@ -14,8 +14,8 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -25,6 +25,7 @@ use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
@@ -54,7 +55,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->traversableSpyFactory
         );
 
-        $this->exporter = new InlineExporter(1, false);
+        $this->objectSequencer = new Sequencer();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer);
         $this->matcherFactory =
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
@@ -63,7 +65,17 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invocableInspector = new InvocableInspector();
-        $this->assertionRenderer = new AssertionRenderer($this->invocableInspector, $this->exporter);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
+        $this->differenceEngine->setUseColor(false);
+        $this->assertionRenderer = new AssertionRenderer(
+            $this->invocableInspector,
+            $this->matcherVerifier,
+            $this->exporter,
+            $this->differenceEngine,
+            $this->featureDetector
+        );
+        $this->assertionRenderer->setUseColor(false);
         $this->subject = new SpyVerifier(
             $this->spy,
             $this->matcherFactory,
@@ -657,25 +669,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCalledOnceFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call, exactly 1 time. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->once()->called();
     }
 
     public function testCalledOnceFailureWithMultipleCalls()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call, exactly 1 time. Calls:
-    - TestClassA->testClassAMethodA("a", "b", "c")
-    - TestClassA->testClassAMethodA()
-    - TestClassA->testClassAMethodA("a", "b", "c")
-    - implode()
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->once()->called();
     }
 
@@ -701,15 +702,7 @@ EOD;
     public function testCalledTimesFailure()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call, exactly 2 times. Calls:
-    - TestClassA->testClassAMethodA("a", "b", "c")
-    - TestClassA->testClassAMethodA()
-    - TestClassA->testClassAMethodA("a", "b", "c")
-    - implode()
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->times(2)->called();
     }
 
@@ -800,40 +793,34 @@ EOD;
     public function testCalledWithFailure()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call on implode[label] with arguments like:
-    - "b"
-    - "c"
-Call #0:
-    - "a"
-    - "b"
-    - "c"
-Call #1:
-    <none>
-Call #2:
-    - "a"
-    - "b"
-    - "c"
-Call #3:
-    <none>
-Call #4:
-    <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->calledWith('b', 'c');
+    }
+
+    public function testCalledWithFailureWithNoMatchers()
+    {
+        $this->subject->setCalls(array($this->callA));
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->calledWith();
+    }
+
+    public function testCalledWithFailureMissingArguments()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->calledWith('a', 'b', 'c', 'd', 'e');
     }
 
     public function testCalledWithFailureWithNoCalls()
     {
-        $expected = <<<'EOD'
-Expected call on implode[label] with arguments like:
-    - "b"
-    - "c"
-Never called.
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->calledWith('b', 'c');
+    }
+
+    public function testCalledWithFailureWithNoCallsAndNoMatchers()
+    {
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->calledWith();
     }
 
     public function testCheckCalledOnceWith()
@@ -866,42 +853,13 @@ EOD;
     public function testCalledOnceWithFailure()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call on implode[label], exactly 1 time with arguments like:
-    - "a"
-    - "b"
-    - "c"
-Call #0:
-    - "a"
-    - "b"
-    - "c"
-Call #1:
-    <none>
-Call #2:
-    - "a"
-    - "b"
-    - "c"
-Call #3:
-    <none>
-Call #4:
-    <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->once()->calledWith('a', 'b', 'c');
     }
 
     public function testCalledOnceWithFailureWithNoCalls()
     {
-        $expected = <<<'EOD'
-Expected call on implode[label], exactly 1 time with arguments like:
-    - "a"
-    - "b"
-    - "c"
-Never called.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->once()->calledWith('a', 'b', 'c');
     }
 
@@ -955,42 +913,20 @@ EOD;
     public function testCalledTimesWithFailure()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call on implode[label], exactly 5 times with arguments like:
-    - "a"
-    - "b"
-    - "c"
-Call #0:
-    - "a"
-    - "b"
-    - "c"
-Call #1:
-    <none>
-Call #2:
-    - "a"
-    - "b"
-    - "c"
-Call #3:
-    <none>
-Call #4:
-    <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->times(5)->calledWith('a', 'b', 'c');
+    }
+
+    public function testCalledTimesWithFailureWithNoMatchers()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->times(2)->calledWith();
     }
 
     public function testCalledTimesWithFailureWithNoCalls()
     {
-        $expected = <<<'EOD'
-Expected call on implode[label], exactly 5 times with arguments like:
-    - "a"
-    - "b"
-    - "c"
-Never called.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->times(5)->calledWith('a', 'b', 'c');
     }
 
@@ -1085,41 +1021,21 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected every call on implode[label] with arguments like:
-    - "a"
-    - "b"
-    - "c"
-Call #0:
-    - "a"
-    - "b"
-    - "c"
-Call #1:
-    <none>
-Call #2:
-    - "a"
-    - "b"
-    - "c"
-Call #3:
-    <none>
-Call #4:
-    <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->calledWith('a', 'b', 'c');
+    }
+
+    public function testAlwaysCalledWithFailureWithNoMatchers()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->always()->calledWith();
     }
 
     public function testAlwaysCalledWithFailureWithNoCalls()
     {
-        $expected = <<<'EOD'
-Expected every call on implode[label] with arguments like:
-    - "a"
-    - "b"
-    - "c"
-Never called.
-EOD;
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->calledWith('a', 'b', 'c');
     }
 
@@ -1189,29 +1105,24 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected no call on implode[label] with arguments like:
-    - "a"
-    - "b"
-    - "c"
-Call #0:
-    - "a"
-    - "b"
-    - "c"
-Call #1:
-    <none>
-Call #2:
-    - "a"
-    - "b"
-    - "c"
-Call #3:
-    <none>
-Call #4:
-    <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->never()->calledWith('a', 'b', 'c');
+    }
+
+    public function testNeverCalledWithFailureWithNoMatchers()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->never()->calledWith();
+    }
+
+    public function testNeverCalledWithFailureWithWildcard()
+    {
+        $this->subject->setCalls($this->calls);
+
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->subject->never()->calledWith('*');
     }
 
     public function testCheckCalledOn()
@@ -1250,48 +1161,26 @@ EOD;
     public function testCalledOnFailure()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call on supplied object. Called on:
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - null
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->calledOn((object) array());
     }
 
     public function testCalledOnFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on supplied object. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->calledOn((object) array());
     }
 
     public function testCalledOnFailureWithMatcher()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected call on object like #0{property: "value"}. Called on:
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - null
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->calledOn($this->matcherFactory->equalTo((object) array('property' => 'value')));
     }
 
     public function testCalledOnFailureWithMatcherWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on object like #0{property: "value"}. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->calledOn($this->matcherFactory->equalTo((object) array('property' => 'value')));
     }
 
@@ -1341,49 +1230,26 @@ EOD;
     public function testAlwaysCalledOnFailure()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected every call on supplied object. Called on:
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - null
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->calledOn($this->thisValueA);
     }
 
     public function testAlwaysCalledOnFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on supplied object. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->calledOn($this->thisValueA);
     }
 
     public function testAlwaysCalledOnFailureWithMatcher()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected every call on object like Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}. Called on:
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}
-    - null
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->calledOn($this->matcherFactory->equalTo($this->thisValueA));
     }
 
     public function testAlwaysCalledOnFailureWithMatcherWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on object like Eloquent\Phony\Test\TestClassA#0{constructorArguments: #0[]}. ' .
-                'Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->calledOn($this->matcherFactory->equalTo($this->thisValueA));
     }
 
@@ -1436,23 +1302,13 @@ EOD;
     public function testRespondedFailure()
     {
         $this->subject->setCalls(array($this->callE, $this->callE));
-
-        $expected = <<<'EOD'
-Expected call on implode[label] to respond. Responded:
-    - <none>
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->responded();
     }
 
     public function testRespondedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to respond. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->responded();
     }
 
@@ -1480,26 +1336,13 @@ EOD;
     public function testAlwaysRespondedFailure()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected every call on implode[label] to respond. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->responded();
     }
 
     public function testAlwaysRespondedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to respond. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->responded();
     }
 
@@ -1554,33 +1397,13 @@ EOD;
     public function testCompletedFailure()
     {
         $this->subject->setCalls(array($this->iteratorCallWithNoEnd, $this->iteratorCallWithNoEnd));
-
-        $expected = <<<'EOD'
-Expected call on implode[label] to complete. Responded:
-    - returned #0[:4] producing:
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - did not finish iterating
-    - returned #0[:4] producing:
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - did not finish iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->completed();
     }
 
     public function testCompletedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to complete. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->completed();
     }
 
@@ -1610,31 +1433,13 @@ EOD;
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->iteratorCall);
 
-        $expected = <<<'EOD'
-Expected every call on implode[label] to complete. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-    - returned #0[:4] producing:
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->completed();
     }
 
     public function testAlwaysCompletedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to complete. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->completed();
     }
 
@@ -1684,40 +1489,20 @@ EOD;
     public function testReturnedFailure()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected call on implode[label] to return like "z". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->returned('z');
     }
 
     public function testReturnedFailureWithoutMatcher()
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
-
-        $expected = <<<'EOD'
-Expected call on implode[label] to return. Responded:
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->returned();
     }
 
     public function testReturnedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to return like "x". Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->returned($this->returnValueA);
     }
 
@@ -1771,43 +1556,20 @@ EOD;
     public function testAlwaysReturnedFailure()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected every call on implode[label] to return like "x". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->returned($this->returnValueA);
     }
 
     public function testAlwaysReturnedFailureWithNoMatcher()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected every call on implode[label] to return. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->returned();
     }
 
     public function testAlwaysReturnedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to return like "x". Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->returned($this->returnValueA);
     }
 
@@ -1923,146 +1685,85 @@ EOD;
     public function testThrewFailureExpectingAny()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected call on implode[label] to throw. Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw();
     }
 
     public function testThrewFailureExpectingAnyWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to throw. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw();
     }
 
     public function testThrewFailureExpectingType()
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testThrewFailureExpectingTypeWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException ' .
-                'exception. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testThrewFailureExpectingTypeWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testThrewFailureExpectingException()
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected call on implode[label] to throw exception equal to RuntimeException(). Responded:
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw(new RuntimeException());
     }
 
     public function testThrewFailureExpectingExceptionWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to throw exception equal to RuntimeException(). Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw(new RuntimeException());
     }
 
     public function testThrewFailureExpectingExceptionWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected call on implode[label] to throw exception equal to RuntimeException(). Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw(new RuntimeException());
     }
 
     public function testThrewFailureExpectingMatcher()
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected call on implode[label] to throw exception like RuntimeException#0{}. Responded:
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureExpectingMatcherWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to throw exception like RuntimeException#0{}. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureExpectingMatcherWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected call on implode[label] to throw exception like RuntimeException#0{}. Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureInvalidInput()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Unable to match exceptions against 111.'
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against 111.');
         $this->subject->threw(111);
     }
 
     public function testThrewFailureInvalidInputObject()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Unable to match exceptions against #0{}.'
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
         $this->subject->threw((object) array());
     }
 
@@ -2134,144 +1835,80 @@ EOD;
     public function testAlwaysThrewFailureExpectingAny()
     {
         $this->subject->setCalls($this->calls);
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw();
     }
 
     public function testAlwaysThrewFailureExpectingAnyButNothingThrown()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw. Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw();
     }
 
     public function testAlwaysThrewFailureExpectingAnyWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to throw. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw();
     }
 
     public function testAlwaysThrewFailureExpectingType()
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testAlwaysThrewFailureExpectingTypeWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to throw ' .
-                'Eloquent\Phony\Call\Exception\UndefinedCallException exception. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testAlwaysThrewFailureExpectingTypeWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw Eloquent\Phony\Call\Exception\UndefinedCallException exception. Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
     }
 
     public function testAlwaysThrewFailureExpectingException()
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw exception equal to RuntimeException(). Responded:
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw(new RuntimeException());
     }
 
     public function testAlwaysThrewFailureExpectingExceptionWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to throw exception equal to RuntimeException(). Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw(new RuntimeException());
     }
 
     public function testAlwaysThrewFailureExpectingExceptionWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw exception equal to RuntimeException(). Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw(new RuntimeException());
     }
 
     public function testAlwaysThrewFailureExpectingMatcher()
     {
         $this->subject->setCalls(array($this->callC, $this->callD));
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw exception like RuntimeException#0{}. Responded:
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testAlwaysThrewFailureExpectingMatcherWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to throw exception like RuntimeException#0{}. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testAlwaysThrewFailureExpectingMatcherWithNoExceptions()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = <<<'EOD'
-Expected every call on implode[label] to throw exception like RuntimeException#0{}. Responded:
-    - returned "x"
-    - returned "y"
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
@@ -2294,14 +1931,14 @@ EOD;
     public function testTraversed()
     {
         $this->assertEquals(
-            $this->traversableVerifierFactory->create($this->subject, array()),
+            $this->traversableVerifierFactory->create($this->spy, array()),
             $this->subject->never()->traversed()
         );
 
         $this->subject->addCall($this->iteratorCall);
 
         $this->assertEquals(
-            $this->traversableVerifierFactory->create($this->subject, array($this->iteratorCall)),
+            $this->traversableVerifierFactory->create($this->spy, array($this->iteratorCall)),
             $this->subject->traversed()
         );
     }
@@ -2309,26 +1946,13 @@ EOD;
     public function testTraversedFailure()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected call on implode[label] to be traversable. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->traversed();
     }
 
     public function testTraversedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to be traversable. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->traversed();
     }
 
@@ -2349,7 +1973,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->iteratorCall, $this->iteratorCall));
         $expected =
-            $this->traversableVerifierFactory->create($this->subject, array($this->iteratorCall, $this->iteratorCall));
+            $this->traversableVerifierFactory->create($this->spy, array($this->iteratorCall, $this->iteratorCall));
 
         $this->assertEquals($expected, $this->subject->always()->traversed());
     }
@@ -2358,25 +1982,13 @@ EOD;
     {
         $this->subject->setCalls($this->calls);
 
-        $expected = <<<'EOD'
-Expected every call on implode[label] to be traversable. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->traversed();
     }
 
     public function testAlwaysTraversedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to be traversable. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->traversed();
     }
 

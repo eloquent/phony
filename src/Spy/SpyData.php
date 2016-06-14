@@ -64,6 +64,16 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     }
 
     /**
+     * Get the next call index.
+     *
+     * @return int The index.
+     */
+    public function nextIndex()
+    {
+        return count($this->calls);
+    }
+
+    /**
      * Turn on or off the use of generator spies.
      *
      * @param bool $useGeneratorSpies True to use generator spies.

@@ -1,0 +1,4 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% call #1 not bound to object:
+    %RED%✗%RESET% #0{name: "apricot"}
+%RED%✗%RESET% Call #1 - {closure}[label]("bonobo", #0[:3]):
+    %RED%✗%RESET% #0{name: "apricot"}

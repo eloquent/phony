@@ -12,11 +12,13 @@
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
+use Exception;
 use ParseError;
 use ParseException;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use Throwable;
 
 /**
  * Detects support for language features in the current runtime environment.
@@ -357,6 +359,26 @@ class FeatureDetector
                     !version_compare(PHP_VERSION, '7.x', '<');
             },
 
+            'stdout.ansi' => function ($detector) {
+                // @codeCoverageIgnoreStart
+                if (DIRECTORY_SEPARATOR === '\\') {
+                    return
+                        0 >= version_compare(
+                        '10.0.10586',
+                        PHP_WINDOWS_VERSION_MAJOR .
+                            '.' . PHP_WINDOWS_VERSION_MINOR .
+                            '.' . PHP_WINDOWS_VERSION_BUILD
+                        ) ||
+                        false !== getenv('ANSICON') ||
+                        'ON' === getenv('ConEmuANSI') ||
+                        'xterm' === getenv('TERM') ||
+                        false !== getenv('BABUN_HOME');
+                }
+                // @codeCoverageIgnoreEnd
+
+                return function_exists('posix_isatty') && posix_isatty(STDOUT);
+            },
+
             'trait' => function ($detector) {
                 return $detector
                     ->checkInternalMethod('ReflectionClass', 'isTrait');
@@ -413,6 +435,7 @@ class FeatureDetector
     public function checkStatement($source, $useClosure = true)
     {
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
+        $error = null;
 
         if ($useClosure) {
             try {
@@ -422,6 +445,8 @@ class FeatureDetector
                 // @codeCoverageIgnoreStart
             } catch (ParseException $e) {
                 $result = false;
+            } catch (Throwable $error) {
+            } catch (Exception $error) {
             }
             // @codeCoverageIgnoreEnd
         } else {
@@ -432,11 +457,17 @@ class FeatureDetector
                 $result = false;
             } catch (ParseException $e) {
                 $result = false;
+            } catch (Throwable $error) {
+            } catch (Exception $error) {
             }
             // @codeCoverageIgnoreEnd
         }
 
         error_reporting($reporting);
+
+        if ($error) {
+            throw $error;
+        }
 
         return true === $result;
     }

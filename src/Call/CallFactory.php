@@ -70,6 +70,7 @@ class CallFactory
         $originalArguments = $arguments->copy();
 
         $call = new CallData(
+            $spy->nextIndex(),
             $this->eventFactory->createCalled($spy, $originalArguments)
         );
         $spy->addCall($call);

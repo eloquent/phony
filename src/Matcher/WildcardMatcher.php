@@ -11,10 +11,12 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\Exporter;
+
 /**
  * A matcher that tests any number of arguments against another matcher.
  */
-class WildcardMatcher
+class WildcardMatcher implements Matchable
 {
     /**
      * Get the static instance of this matcher.
@@ -80,11 +82,13 @@ class WildcardMatcher
     /**
      * Describe this matcher.
      *
+     * @param Exporter|null $exporter The exporter to use.
+     *
      * @return string The description.
      */
-    public function describe()
+    public function describe(Exporter $exporter = null)
     {
-        $matcherDescription = $this->matcher->describe();
+        $matcherDescription = $this->matcher->describe($exporter);
 
         if (0 === $this->minimumArguments) {
             if (null === $this->maximumArguments) {

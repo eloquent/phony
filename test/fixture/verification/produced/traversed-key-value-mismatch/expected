@@ -1,0 +1,14 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% traversable calls to behave like:
+    %GREEN%✓%RESET% Returned <traversable>, then: %FAINT%(2 matches)%RESET%
+        %RED%✗%RESET% Produced "CHAMELEON" => "MECHA-CHAMELEON"
+Matched 0 of 2:
+%RED%✗%RESET% Call #0 - {stub}[label]("aardvark"):
+    %RED%✗%RESET% Returned #0[:1], then:
+        - Started iterating
+        %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%AARDVARK%FAINT%+}%RESET%" => "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%AARDVARK%FAINT%+}%RESET%"
+        - Finished iterating
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned #0[:1], then:
+        - Started iterating
+        %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%" => "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"
+        - Finished iterating

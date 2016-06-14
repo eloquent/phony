@@ -108,6 +108,24 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
                 $this->checkVersionIncluded(PHP_VERSION, $exclude);
         }
 
+        if ('stdout.ansi' === $feature) {
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $expected =
+                    0 >= version_compare(
+                    '10.0.10586',
+                    PHP_WINDOWS_VERSION_MAJOR .
+                        '.' . PHP_WINDOWS_VERSION_MINOR .
+                        '.' . PHP_WINDOWS_VERSION_BUILD
+                    ) ||
+                    false !== getenv('ANSICON') ||
+                    'ON' === getenv('ConEmuANSI') ||
+                    'xterm' === getenv('TERM') ||
+                    false !== getenv('BABUN_HOME');
+            } else {
+                $expected = function_exists('posix_isatty') && posix_isatty(STDOUT);
+            }
+        }
+
         $this->assertSame($expected, $this->subject->isSupported($feature));
     }
 
@@ -132,6 +150,12 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->checkStatement(''));
         $this->assertTrue($this->subject->checkStatement('return'));
         $this->assertFalse($this->subject->checkStatement('{'));
+    }
+
+    public function testCheckStatementFailure()
+    {
+        $this->setExpectedException('RuntimeException');
+        $this->subject->checkStatement('throw new RuntimeException()', false);
     }
 
     public function testCheckInternalClass()

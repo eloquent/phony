@@ -1,0 +1,7 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% to behave like:
+    %RED%✗%RESET% Threw InvalidArgumentException
+Matched 0 of 2:
+%RED%✗%RESET% Call #0 - {closure}[label]("aardvark"):
+    %RED%✗%RESET% Threw RuntimeException#0{message: "AARDVARK"}
+%RED%✗%RESET% Call #1 - {closure}[label]("bonobo"):
+    %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}

@@ -20,12 +20,13 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->index = 111;
         $this->callFactory = new TestCallFactory();
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
         $this->arguments = new Arguments(array('a', 'b'));
         $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->arguments);
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->events = array($this->calledEvent);
 

@@ -11,7 +11,9 @@
 
 namespace Eloquent\Phony\Exporter;
 
+use Closure;
 use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Exception;
 use SplObjectStorage;
 use Throwable;
@@ -29,7 +31,8 @@ class InlineExporter implements Exporter
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self(1, true);
+            self::$instance =
+                new self(1, Sequencer::sequence('exporter-object-id'));
         }
 
         return self::$instance;
@@ -38,15 +41,14 @@ class InlineExporter implements Exporter
     /**
      * Construct a new inline exporter.
      *
-     * @param int  $depth        The depth.
-     * @param bool $incrementIds True if IDs should increment. Used for testing purposes.
+     * @param int       $depth           The depth.
+     * @param Sequencer $objectSequencer The object sequencer to use.
      */
-    public function __construct($depth, $incrementIds)
+    public function __construct($depth, Sequencer $objectSequencer)
     {
-        $this->incrementIds = $incrementIds;
+        $this->objectSequencer = $objectSequencer;
         $this->depth = $depth;
         $this->objectIds = array();
-        $this->objectId = 0;
         $this->jsonFlags = 0;
 
         if (defined('JSON_UNESCAPED_SLASHES')) {
@@ -146,16 +148,10 @@ class InlineExporter implements Exporter
                         $displayId = $id;
                     } else {
                         $id = $value[self::ARRAY_ID_KEY] = '#' . $arrayId++;
-
-                        if ($this->incrementIds) {
-                            $displayId = $id;
-                        } else {
-                            $displayId = '#0';
-                        }
                     }
 
                     $seenArrays[$id] = &$value;
-                    $result->type = $displayId;
+                    $result->type = $id;
 
                     if (isset($arrayResults[$id])) {
                         $result->type .= '[]';
@@ -212,10 +208,9 @@ class InlineExporter implements Exporter
 
                     if (isset($this->objectIds[$hash])) {
                         $id = $this->objectIds[$hash];
-                    } elseif ($this->incrementIds) {
-                        $id = $this->objectIds[$hash] = '#' . $this->objectId++;
                     } else {
-                        $id = '#0';
+                        $id = $this->objectIds[$hash] =
+                            '#' . $this->objectSequencer->next();
                     }
 
                     if ($seenObjects->contains($value)) {
@@ -224,7 +219,12 @@ class InlineExporter implements Exporter
                         break;
                     }
 
-                    $result->type = get_class($value);
+                    if ($value instanceof Closure) {
+                        $result->type = 'Closure';
+                    } else {
+                        $result->type = get_class($value);
+                    }
+
                     $isException = $value instanceof Throwable ||
                         $value instanceof Exception;
                     $phpValues = (array) $value;
@@ -412,11 +412,21 @@ class InlineExporter implements Exporter
         return $final->final;
     }
 
+    /**
+     * Reset the internal state of the exporter.
+     *
+     * Used for testing purposes only.
+     */
+    public function reset()
+    {
+        $this->objectIds = array();
+        $this->objectSequencer->reset();
+    }
+
     const ARRAY_ID_KEY = "\0__phony__\0";
 
     private static $instance;
     private $depth;
-    private $incrementIds;
+    private $objectSequencer;
     private $objectIds;
-    private $objectId;
 }

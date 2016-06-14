@@ -14,6 +14,12 @@ namespace Eloquent\Phony\Event;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Difference\DifferenceEngine;
+use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -23,9 +29,21 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
-        $this->nullEvent = new NullEvent();
-        $this->subject = new EventOrderVerifier($this->assertionRecorder, $this->assertionRenderer, $this->nullEvent);
+        $this->invocableInspector = InvocableInspector::instance();
+        $this->matcherVerifier = MatcherVerifier::instance();
+        $this->objectSequencer = new Sequencer();
+        $this->inlineExporter = new InlineExporter(1, $this->objectSequencer);
+        $this->differenceEngine = DifferenceEngine::instance();
+        $this->featureDetector = FeatureDetector::instance();
+        $this->assertionRenderer = new AssertionRenderer(
+            $this->invocableInspector,
+            $this->matcherVerifier,
+            $this->inlineExporter,
+            $this->differenceEngine,
+            $this->featureDetector
+        );
+        $this->assertionRenderer->setUseColor(false);
+        $this->subject = new EventOrderVerifier($this->assertionRecorder, $this->assertionRenderer);
 
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
@@ -80,35 +98,23 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
                 new EventSequence(array($this->callA, $this->callB))
             )
         );
-        $this->assertFalse(
-            (boolean) $this->subject->checkInOrder(
-                new EventSequence(array()),
-                new EventSequence(array($this->callA))
-            )
-        );
-        $this->assertFalse(
-            (boolean) $this->subject->checkInOrder(
-                new EventSequence(array($this->callA)),
-                new EventSequence(array())
-            )
-        );
+    }
+
+    public function testCheckInOrderFailureEmptyResult()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with empty results.');
+        $this->subject->checkInOrder(new EventSequence(array()));
     }
 
     public function testCheckInOrderFailureInvalidArgument()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Cannot verify event order with supplied value of type integer.'
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with supplied value 111.');
         $this->subject->checkInOrder(111);
     }
 
     public function testCheckInOrderFailureInvalidArgumentObject()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            "Cannot verify event order with supplied value of type 'stdClass'."
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
         $this->subject->checkInOrder((object) array());
     }
 
@@ -149,58 +155,25 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testInOrderFailure()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("a")
-    - called implode("c")
-    - called implode("b")
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrder($this->callA, $this->callC, $this->callB);
     }
 
     public function testInOrderFailureEmpty()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected events. No events recorded.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrder();
     }
 
     public function testInOrderFailureOnlySuppliedEvents()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("b")
-    - called implode("a")
-Order:
-    - called implode("a")
-    - called implode("b")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrder($this->callB, $this->callA);
     }
 
     public function testInOrderFailureEventMergingExampleA()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("b")
-    - called implode("a")
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrder(
             new EventSequence(array($this->callB, $this->callC)),
             new EventSequence(array($this->callA))
@@ -209,17 +182,7 @@ EOD;
 
     public function testInOrderFailureEventMergingExampleB()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("c")
-    - called implode("b")
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrder(
             new EventSequence(array($this->callC)),
             new EventSequence(array($this->callA, $this->callB))
@@ -228,19 +191,8 @@ EOD;
 
     public function testInOrderFailureEventMergingExampleC()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("c")
-    - called implode("a")
-    - called implode("c")
-    - <none>
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with empty results.');
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->inOrder(
             new EventSequence(array($this->callC)),
             new EventSequence(array($this->callB, $this->callA)),
@@ -249,33 +201,21 @@ EOD;
         );
     }
 
-    public function testInOrderFailureWithEmptyMatch()
+    public function testInOrderFailureEmptyResult()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - <none>
-No events recorded.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with empty results.');
         $this->subject->inOrder(new EventSequence(array()));
     }
 
     public function testInOrderFailureInvalidArgument()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Cannot verify event order with supplied value of type integer.'
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with supplied value 111.');
         $this->subject->inOrder(111);
     }
 
     public function testInOrderFailureInvalidArgumentObject()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            "Cannot verify event order with supplied value of type 'stdClass'."
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
         $this->subject->inOrder((object) array());
     }
 
@@ -332,39 +272,23 @@ EOD;
                 )
             )
         );
-        $this->assertFalse(
-            (boolean) $this->subject->checkInOrderSequence(
-                array(
-                    new EventSequence(array()),
-                    new EventSequence(array($this->callA)),
-                )
-            )
-        );
-        $this->assertFalse(
-            (boolean) $this->subject->checkInOrderSequence(
-                array(
-                    new EventSequence(array($this->callA)),
-                    new EventSequence(array()),
-                )
-            )
-        );
+    }
+
+    public function testCheckInOrderSequenceFailureEmptyResult()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with empty results.');
+        $this->subject->checkInOrderSequence(array(new EventSequence(array())));
     }
 
     public function testCheckInOrderSequenceFailureInvalidArgument()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Cannot verify event order with supplied value of type integer.'
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with supplied value 111.');
         $this->subject->checkInOrderSequence(array(111));
     }
 
     public function testCheckInOrderSequenceFailureInvalidArgumentObject()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            "Cannot verify event order with supplied value of type 'stdClass'."
-        );
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
         $this->subject->checkInOrderSequence(array((object) array()));
     }
 
@@ -414,58 +338,25 @@ EOD;
 
     public function testInOrderSequenceFailure()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("a")
-    - called implode("c")
-    - called implode("b")
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrderSequence(array($this->callA, $this->callC, $this->callB));
     }
 
     public function testInOrderSequenceFailureEmpty()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected events. No events recorded.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrderSequence(array());
     }
 
     public function testInOrderSequenceFailureOnlySuppliedEvents()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("b")
-    - called implode("a")
-Order:
-    - called implode("a")
-    - called implode("b")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrderSequence(array($this->callB, $this->callA));
     }
 
     public function testInOrderSequenceFailureEventMergingExampleA()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("b")
-    - called implode("a")
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrderSequence(
             array(
                 new EventSequence(array($this->callB, $this->callC)),
@@ -476,17 +367,7 @@ EOD;
 
     public function testInOrderSequenceFailureEventMergingExampleB()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("c")
-    - called implode("b")
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrderSequence(
             array(
                 new EventSequence(array($this->callC)),
@@ -497,19 +378,8 @@ EOD;
 
     public function testInOrderSequenceFailureEventMergingExampleC()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - called implode("c")
-    - called implode("a")
-    - called implode("c")
-    - <none>
-Order:
-    - called implode("a")
-    - called implode("b")
-    - called implode("c")
-EOD;
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with empty results.');
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
         $this->subject->inOrderSequence(
             array(
                 new EventSequence(array($this->callC)),
@@ -520,15 +390,9 @@ EOD;
         );
     }
 
-    public function testInOrderSequenceFailureWithEmptyMatch()
+    public function testInOrderSequenceFailureEmptyResult()
     {
-        $expected = <<<'EOD'
-Expected events in order:
-    - <none>
-No events recorded.
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('InvalidArgumentException', 'Cannot verify event order with empty results.');
         $this->subject->inOrderSequence(array(new EventSequence(array())));
     }
 
@@ -536,7 +400,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            'Cannot verify event order with supplied value of type integer.'
+            'Cannot verify event order with supplied value 111.'
         );
         $this->subject->inOrderSequence(array(111));
     }
@@ -545,7 +409,7 @@ EOD;
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            "Cannot verify event order with supplied value of type 'stdClass'."
+            'Cannot verify event order with supplied value #0{}.'
         );
         $this->subject->inOrderSequence(array((object) array()));
     }

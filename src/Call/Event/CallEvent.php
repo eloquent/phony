@@ -23,6 +23,8 @@ interface CallEvent extends Event
      * Set the call.
      *
      * @param Call $call The call.
+     *
+     * @return $this This event.
      */
     public function setCall(Call $call);
 

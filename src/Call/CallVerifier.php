@@ -81,6 +81,19 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
+     * Get the call index.
+     *
+     * This number tracks the order of this call with respect to other calls
+     * made against the same spy.
+     *
+     * @return int The index.
+     */
+    public function index()
+    {
+        return $this->call->index();
+    }
+
+    /**
      * Get the sequence number.
      *
      * The sequence number is a unique number assigned to every event that Phony
@@ -598,7 +611,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     public function calledWith()
     {
         $cardinality = $this->cardinality;
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         if (
@@ -609,14 +621,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         }
 
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected %s with arguments like:\n%s\nArguments:\n%s",
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'call'),
-                $this->assertionRenderer->renderMatchersList($matchers),
-                $this->assertionRenderer
-                    ->renderArguments($this->call->arguments())
-            )
+            $this->assertionRenderer
+                ->renderCalledWith($this->call, $cardinality, $matchers)
         );
     }
 
@@ -671,41 +677,17 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         $cardinality = $this->cardinality;
 
         if ($this->matcherFactory->isMatcher($value)) {
-            $isMatcher = true;
             $value = $this->matcherFactory->adapt($value);
-        } else {
-            $isMatcher = false;
         }
 
         if ($result = $this->checkCalledOn($value)) {
             return $result;
         }
 
-        $renderedThisValue = $this->assertionRenderer->renderValue(
-            $this->invocableInspector
-                ->callbackThisValue($this->call->callback())
+        return $this->assertionRecorder->createFailure(
+            $this->assertionRenderer
+                ->renderCalledOn($this->call, $cardinality, $value)
         );
-
-        if ($isMatcher) {
-            if ($cardinality->isNever()) {
-                $message = 'Called on object like %s. Object was %s.';
-            } else {
-                $message = 'Not called on object like %s. Object was %s.';
-            }
-
-            return $this->assertionRecorder->createFailure(
-                sprintf($message, $value->describe(), $renderedThisValue)
-            );
-        }
-
-        if ($cardinality->isNever()) {
-            $message = 'Called on supplied object. Object was %s.';
-        } else {
-            $message = 'Not called on supplied object. Object was %s.';
-        }
-
-        return $this->assertionRecorder
-            ->createFailure(sprintf($message, $renderedThisValue));
     }
 
     /**
@@ -743,12 +725,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         }
 
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'response'),
-                $this->assertionRenderer->renderResponse($this->call)
-            )
+            $this->assertionRenderer->renderResponded($this->call, $cardinality)
         );
     }
 
@@ -787,12 +764,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         }
 
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'call to complete'),
-                $this->assertionRenderer->renderResponse($this->call, true)
-            )
+            $this->assertionRenderer->renderCompleted($this->call, $cardinality)
         );
     }
 
@@ -858,7 +830,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     public function returned($value = null)
     {
         $cardinality = $this->cardinality;
-
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
@@ -875,19 +846,9 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
             return $result;
         }
 
-        if (0 === $argumentCount) {
-            $renderedType = 'return';
-        } else {
-            $renderedType = sprintf('return like %s', $value->describe());
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $this->assertionRenderer->renderResponse($this->call)
-            )
+            $this->assertionRenderer
+                ->renderReturned($this->call, $cardinality, $value)
         );
     }
 
@@ -933,28 +894,19 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         } elseif (is_object($type)) {
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
-
-                list($matchCount, $matchingEvents) =
-                    $this->matchIf($responseEvent, $exception == $type);
-
-                if (
-                    $cardinality->matches($matchCount, 1)
-                ) {
-                    return $this->assertionRecorder
-                        ->createSuccess($matchingEvents);
-                }
+                $type = $this->matcherFactory->equalTo($type);
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $isTypeSupported = true;
-
                 $type = $this->matcherFactory->adapt($type);
+            }
+
+            if ($isTypeSupported) {
                 list($matchCount, $matchingEvents) = $this->matchIf(
                     $responseEvent,
                     $exception && $type->matches($exception)
                 );
 
-                if (
-                    $cardinality->matches($matchCount, 1)
-                ) {
+                if ($cardinality->matches($matchCount, 1)) {
                     return $this->assertionRecorder
                         ->createSuccess($matchingEvents);
                 }
@@ -986,35 +938,19 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     {
         $cardinality = $this->cardinality;
 
+        if ($type instanceof Throwable || $type instanceof Exception) {
+            $type = $this->matcherFactory->equalTo($type);
+        } elseif ($this->matcherFactory->isMatcher($type)) {
+            $type = $this->matcherFactory->adapt($type);
+        }
+
         if ($result = $this->checkThrew($type)) {
             return $result;
         }
 
-        if (!$type) {
-            $renderedType = 'exception';
-        } elseif (is_string($type)) {
-            $renderedType = sprintf('%s exception', $type);
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $renderedType = sprintf(
-                    'exception equal to %s',
-                    $this->assertionRenderer->renderException($type)
-                );
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $renderedType = sprintf(
-                    'exception like %s',
-                    $this->matcherFactory->adapt($type)->describe()
-                );
-            }
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $this->assertionRenderer->renderResponse($this->call)
-            )
+            $this->assertionRenderer
+                ->renderThrew($this->call, $cardinality, $type)
         );
     }
 
@@ -1041,7 +977,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
 
         if ($cardinality->matches($matchCount, 1)) {
             return $this->assertionRecorder->createSuccessFromEventCollection(
-                $this->generatorVerifierFactory->create($this, $matchingEvents)
+                $this->generatorVerifierFactory
+                    ->create($this->call, $matchingEvents)
             );
         }
     }
@@ -1062,12 +999,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         }
 
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'generator'),
-                $this->assertionRenderer->renderResponse($this->call)
-            )
+            $this->assertionRenderer->renderGenerated($this->call, $cardinality)
         );
     }
 
@@ -1096,7 +1028,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         if ($cardinality->matches($matchCount, 1)) {
             return $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->traversableVerifierFactory
-                    ->create($this, $matchingEvents)
+                    ->create($this->call, $matchingEvents)
             );
         }
     }
@@ -1117,12 +1049,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         }
 
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, 'traversable'),
-                $this->assertionRenderer->renderResponse($this->call)
-            )
+            $this->assertionRenderer->renderTraversed($this->call, $cardinality)
         );
     }
 

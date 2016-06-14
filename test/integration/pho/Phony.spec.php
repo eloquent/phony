@@ -22,12 +22,15 @@ describe('Phony', function () {
     });
 
     it('should record passing mock assertions', function () {
-        $this->mock->testClassAMethodA('a', 'b');
+        $this->mock->testClassAMethodA('aardvark', 'bonobo');
 
-        $this->handle->testClassAMethodA->calledWith('a', 'b');
+        $this->handle->testClassAMethodA->calledWith('aardvark', 'bonobo');
     });
 
     it('should record failing mock assertions', function () {
-        $this->handle->testClassAMethodA->calledWith('a', 'b');
+        $this->mock->testClassAMethodA('aardvark', array('bonobo', 'capybara', 'dugong'));
+        $this->mock->testClassAMethodA('armadillo', array('bonobo', 'chameleon', 'dormouse'));
+
+        $this->handle->testClassAMethodA->calledWith('aardvark', array('bonobo', 'chameleon', 'dugong'));
     });
 });

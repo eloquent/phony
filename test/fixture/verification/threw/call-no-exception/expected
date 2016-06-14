@@ -1,0 +1,4 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% call #1 to behave like:
+    %RED%✗%RESET% Threw <any>
+%RED%✗%RESET% Call #1 - {closure}[label]("bonobo"):
+    %RED%✗%RESET% Returned "BONOBO"

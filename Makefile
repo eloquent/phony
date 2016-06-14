@@ -14,25 +14,32 @@ lint: install
 
 install: vendor/autoload.php
 
-examples:
+examples: install
 	doc/example/run-all
 
-benchmarks:
+benchmarks: install
 	vendor/bin/athletic -p test/benchmarks
 
-integration:
+integration: install
 	test/integration/run-all
 
-web: $(shell find doc assets/web)
+output-examples: install
+	scripts/output-examples
+
+doc-img: install
+	scripts/build-doc-img
+
+web: install $(shell find doc assets/web test/fixture/verification)
+	make doc-img
 	scripts/build-web
 
 serve: web
-	php -S localhost:8000 -t web
+	php -S 0.0.0.0:8000 -t web
 
 publish: web
 	@scripts/publish-web
 
-.PHONY: test coverage open-coverage lint install examples benchmarks integration serve publish
+.PHONY: test coverage open-coverage lint install examples benchmarks integration output-examples doc-img serve publish
 
 vendor/autoload.php: composer.lock
 	composer install

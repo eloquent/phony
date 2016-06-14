@@ -1,0 +1,13 @@
+%RESET%Expected %BOLD%{spy}[label]%RESET% call with arguments:
+    %RED%✗%RESET% "aardvark" %RED%%FAINT%(2 matches)%RESET%
+    %RED%✗%RESET% #0["bonobo", "capybara", "dugong"] %RED%%FAINT%(2 matches)%RESET%
+%RED%Between 3 and 4 allowed. Matched 2 of 3:%RESET%
+%GREEN%✓%RESET% Call #0:
+    %GREEN%✓%RESET% "aardvark"
+    %GREEN%✓%RESET% #0["bonobo", "capybara", "dugong"]
+%RED%✗%RESET% Call #1:
+    %RED%✗%RESET% "%CYAN%%FAINT%[-%RESET%%CYAN%aardvark%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%armadillo%FAINT%+}%RESET%"
+    %RED%✗%RESET% #0["bonobo", "%CYAN%%FAINT%[-%RESET%%CYAN%capybara%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%chameleon%FAINT%+}%RESET%", "%CYAN%%FAINT%[-%RESET%%CYAN%dugong%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%dormouse%FAINT%+}%RESET%"]
+%GREEN%✓%RESET% Call #2:
+    %GREEN%✓%RESET% "aardvark"
+    %GREEN%✓%RESET% #0["bonobo", "capybara", "dugong"]

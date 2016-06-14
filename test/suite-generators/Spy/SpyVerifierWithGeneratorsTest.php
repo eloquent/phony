@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
@@ -22,6 +23,8 @@ use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
@@ -49,7 +52,8 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->traversableSpyFactory
         );
 
-        $this->exporter = new InlineExporter(1, false);
+        $this->objectSequencer = new Sequencer();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer);
         $this->matcherFactory =
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
@@ -58,7 +62,17 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invocableInspector = new InvocableInspector();
-        $this->assertionRenderer = new AssertionRenderer($this->invocableInspector, $this->exporter);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
+        $this->differenceEngine->setUseColor(false);
+        $this->assertionRenderer = new AssertionRenderer(
+            $this->invocableInspector,
+            $this->matcherVerifier,
+            $this->exporter,
+            $this->differenceEngine,
+            $this->featureDetector
+        );
+        $this->assertionRenderer->setUseColor(false);
         $this->subject = new SpyVerifier(
             $this->spy,
             $this->matcherFactory,
@@ -198,14 +212,14 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testGenerated()
     {
         $this->assertEquals(
-            $this->generatorVerifierFactory->create($this->subject, array()),
+            $this->generatorVerifierFactory->create($this->spy, array()),
             $this->subject->never()->generated()
         );
 
         $this->subject->addCall($this->generatorCall);
 
         $this->assertEquals(
-            $this->generatorVerifierFactory->create($this->subject, array($this->generatorCall)),
+            $this->generatorVerifierFactory->create($this->spy, array($this->generatorCall)),
             $this->subject->generated()
         );
     }
@@ -213,26 +227,13 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testGeneratedFailure()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected call on implode[label] to generate. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->generated();
     }
 
     public function testGeneratedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to generate. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->generated();
     }
 
@@ -253,7 +254,7 @@ EOD;
     {
         $this->subject->setCalls(array($this->generatorCall, $this->generatorCall));
         $expected =
-            $this->generatorVerifierFactory->create($this->subject, array($this->generatorCall, $this->generatorCall));
+            $this->generatorVerifierFactory->create($this->spy, array($this->generatorCall, $this->generatorCall));
 
         $this->assertEquals($expected, $this->subject->always()->generated());
     }
@@ -261,43 +262,20 @@ EOD;
     public function testAlwaysGeneratedFailure()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected every call on implode[label] to generate. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->generated();
     }
 
     public function testAlwaysGeneratedFailureWithNoMatcher()
     {
         $this->subject->setCalls($this->calls);
-
-        $expected = <<<'EOD'
-Expected every call on implode[label] to generate. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->generated();
     }
 
     public function testAlwaysGeneratedFailureWithNoCalls()
     {
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected every call on implode[label] to generate. Never called.'
-        );
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->generated();
     }
 }

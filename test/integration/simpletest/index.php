@@ -28,13 +28,16 @@ class PhonyTest extends UnitTestCase
 
     public function testShouldRecordPassingMockAssertions()
     {
-        $this->mock->testClassAMethodA('a', 'b');
+        $this->mock->testClassAMethodA('aardvark', 'bonobo');
 
-        $this->handle->testClassAMethodA->calledWith(new EqualExpectation('a'), 'b');
+        $this->handle->testClassAMethodA->calledWith(new EqualExpectation('aardvark'), 'bonobo');
     }
 
     public function testShouldRecordFailingMockAssertions()
     {
-        $this->handle->testClassAMethodA->calledWith('a', 'b');
+        $this->mock->testClassAMethodA('aardvark', array('bonobo', 'capybara', 'dugong'));
+        $this->mock->testClassAMethodA('armadillo', array('bonobo', 'chameleon', 'dormouse'));
+
+        $this->handle->testClassAMethodA->calledWith('aardvark', array('bonobo', 'chameleon', 'dugong'));
     }
 }

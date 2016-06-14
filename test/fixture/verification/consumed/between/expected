@@ -1,0 +1,14 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% traversable calls to behave like:
+    %RED%✗%RESET% Returned <traversable>, then: %RED%%FAINT%(2 matches)%RESET%
+        %RED%✗%RESET% Finished iterating
+%RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
+%GREEN%✓%RESET% Call #0 - {stub}[label]("aardvark"):
+    %GREEN%✓%RESET% Returned #0[:1], then:
+        - Started iterating
+        - Produced 0 => "AARDVARK"
+        %GREEN%✓%RESET% Finished iterating
+%GREEN%✓%RESET% Call #1 - {stub}[label]("bonobo"):
+    %GREEN%✓%RESET% Returned #0[:1], then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %GREEN%✓%RESET% Finished iterating

@@ -245,10 +245,7 @@ class MockDefinition
         return $definition->signature() === $this->signature;
     }
 
-    /**
-     * Inspect the supplied types and build caches of useful information.
-     */
-    protected function inspectTypes()
+    private function inspectTypes()
     {
         if (null !== $this->typeNames) {
             return;
@@ -271,10 +268,7 @@ class MockDefinition
         }
     }
 
-    /**
-     * Build the method definitions.
-     */
-    protected function buildMethods()
+    private function buildMethods()
     {
         if (null !== $this->methods) {
             return;

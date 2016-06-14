@@ -1,0 +1,29 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% not to complete.
+Matched 4 of 6:
+%RED%✗%RESET% Call #0 - {stub}[label]():
+    %RED%✗%RESET% Returned "aardvark"
+%RED%✗%RESET% Call #1 - {stub}[label]("earwig"):
+    %RED%✗%RESET% Threw RuntimeException#0{message: "EARWIG"}
+%RED%✗%RESET% Call #2 - {stub}[label]():
+    %RED%✗%RESET% Returned #0[:3], then:
+        - Started iterating
+        - Produced 0 => "aardvark"
+        - Produced 1 => "bonobo"
+        - Produced 2 => "chameleon"
+        %RED%✗%RESET% Finished iterating
+%GREEN%✓%RESET% Call #3 - {stub}[label]():
+    %GREEN%✓%RESET% Returned #0[:3], then:
+        - Started iterating
+        - Produced 0 => "aardvark"
+        - Produced 1 => "bonobo"
+        %GREEN%✓%RESET% Never finished iterating
+%GREEN%✓%RESET% Call #4 - {stub}[label]():
+    %GREEN%✓%RESET% Returned #0[:3], then:
+        %GREEN%✓%RESET% Never started iterating
+%RED%✗%RESET% Call #5 - {stub}[label]():
+    %RED%✗%RESET% Returned #0[:3], then:
+        - Started iterating
+        - Produced 0 => "aardvark"
+        - Produced 1 => "bonobo"
+        - Produced 2 => "chameleon"
+        %RED%✗%RESET% Finished iterating

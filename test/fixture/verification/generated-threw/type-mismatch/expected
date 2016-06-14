@@ -1,0 +1,16 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls to behave like:
+    %GREEN%✓%RESET% Returned Generator, then: %GREEN%%FAINT%(3 matches)%RESET%
+        %RED%✗%RESET% Threw InvalidArgumentException
+Matched 0 of 3:
+%RED%✗%RESET% Call #0 - {stub}[label]("aardvark"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        %RED%✗%RESET% Threw RuntimeException#0{message: "AARDVARK"}
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}
+%RED%✗%RESET% Call #2 - {stub}[label]("chameleon"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        %RED%✗%RESET% Returned "CHAMELEON"

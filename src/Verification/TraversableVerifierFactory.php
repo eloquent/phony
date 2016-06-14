@@ -72,7 +72,7 @@ class TraversableVerifierFactory
     /**
      * Create a new traversable verifier.
      *
-     * @param callable    $subject The subject.
+     * @param Spy|Call    $subject The subject.
      * @param array<Call> $calls   The calls.
      *
      * @return TraversableVerifier The newly created traversable verifier.

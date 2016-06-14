@@ -454,25 +454,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             return $result;
         }
 
-        $calls = $this->spy->allCalls();
-        $renderedCardinality = $this->assertionRenderer
-            ->renderCardinality($cardinality, 'call');
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Calls:\n%s",
-                $this->assertionRenderer->renderCalls($calls)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $renderedCardinality,
-                $renderedActual
-            )
+            $this->assertionRenderer->renderCalled($this->spy, $cardinality)
         );
     }
 
@@ -519,7 +502,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     public function calledWith()
     {
         $cardinality = $this->cardinality;
-
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
 
         if (
@@ -529,27 +511,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             return $result;
         }
 
-        $calls = $this->spy->allCalls();
-        $callCount = count($calls);
-
-        if (0 === $callCount) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual =
-                $this->assertionRenderer->renderCallsArguments($calls);
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected %s with arguments like:\n%s\n%s",
-                $this->assertionRenderer->renderCardinality(
-                    $cardinality,
-                    'call on ' .
-                        $this->assertionRenderer->renderCallable($this->spy)
-                ),
-                $this->assertionRenderer->renderMatchersList($matchers),
-                $renderedActual
-            )
+            $this->assertionRenderer
+                ->renderCalledWith($this->spy, $cardinality, $matchers)
         );
     }
 
@@ -611,36 +575,17 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     {
         $cardinality = $this->cardinality;
 
+        if ($this->matcherFactory->isMatcher($value)) {
+            $value = $this->matcherFactory->adapt($value);
+        }
+
         if ($result = $this->checkCalledOn($value)) {
             return $result;
         }
 
-        if ($this->matcherFactory->isMatcher($value)) {
-            $value = $this->matcherFactory->adapt($value);
-            $renderedType =
-                sprintf('call on object like %s', $value->describe());
-        } else {
-            $renderedType = 'call on supplied object';
-        }
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Called on:\n%s",
-                $this->assertionRenderer->renderThisValues($calls)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer
+                ->renderCalledOn($this->spy, $cardinality, $value)
         );
     }
 
@@ -684,29 +629,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             return $result;
         }
 
-        $renderedType = sprintf(
-            'call on %s to respond',
-            $this->assertionRenderer->renderCallable($this->spy)
-        );
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer->renderResponded($this->spy, $cardinality)
         );
     }
 
@@ -750,29 +674,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             return $result;
         }
 
-        $renderedType = sprintf(
-            'call on %s to complete',
-            $this->assertionRenderer->renderCallable($this->spy)
-        );
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls, true)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer->renderCompleted($this->spy, $cardinality)
         );
     }
 
@@ -838,7 +741,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     public function returned($value = null)
     {
         $cardinality = $this->cardinality;
-
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
@@ -855,36 +757,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             return $result;
         }
 
-        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
-
-        if (0 === $argumentCount) {
-            $renderedType = sprintf('call on %s to return', $renderedSubject);
-        } else {
-            $renderedType = sprintf(
-                'call on %s to return like %s',
-                $renderedSubject,
-                $value->describe()
-            );
-        }
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer
+                ->renderReturned($this->spy, $cardinality, $value)
         );
     }
 
@@ -939,23 +814,13 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         } elseif (is_object($type)) {
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
-
-                foreach ($calls as $call) {
-                    if (!$responseEvent = $call->responseEvent()) {
-                        continue;
-                    }
-
-                    list($exception, $returnValue) = $call->response();
-
-                    if ($exception == $type) {
-                        $matchingEvents[] = $responseEvent;
-                        ++$matchCount;
-                    }
-                }
+                $type = $this->matcherFactory->equalTo($type);
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->adapt($type);
+            }
 
+            if ($isTypeSupported) {
                 foreach ($calls as $call) {
                     if (!$responseEvent = $call->responseEvent()) {
                         continue;
@@ -998,54 +863,19 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     {
         $cardinality = $this->cardinality;
 
+        if ($type instanceof Throwable || $type instanceof Exception) {
+            $type = $this->matcherFactory->equalTo($type);
+        } elseif ($this->matcherFactory->isMatcher($type)) {
+            $type = $this->matcherFactory->adapt($type);
+        }
+
         if ($result = $this->checkThrew($type)) {
             return $result;
         }
 
-        $renderedSubject = $this->assertionRenderer->renderCallable($this->spy);
-
-        if (!$type) {
-            $renderedType = sprintf('call on %s to throw', $renderedSubject);
-        } elseif (is_string($type)) {
-            $renderedType = sprintf(
-                'call on %s to throw %s exception',
-                $renderedSubject,
-                $type
-            );
-        } elseif (is_object($type)) {
-            if ($type instanceof Throwable || $type instanceof Exception) {
-                $renderedType = sprintf(
-                    'call on %s to throw exception equal to %s',
-                    $renderedSubject,
-                    $this->assertionRenderer->renderException($type)
-                );
-            } elseif ($this->matcherFactory->isMatcher($type)) {
-                $renderedType = sprintf(
-                    'call on %s to throw exception like %s',
-                    $renderedSubject,
-                    $this->matcherFactory->adapt($type)->describe()
-                );
-            }
-        }
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer
+                ->renderThrew($this->spy, $cardinality, $type)
         );
     }
 
@@ -1078,7 +908,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
 
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccessFromEventCollection(
-                $this->generatorVerifierFactory->create($this, $matchingEvents)
+                $this->generatorVerifierFactory
+                    ->create($this->spy, $matchingEvents)
             );
         }
     }
@@ -1097,29 +928,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             return $result;
         }
 
-        $renderedType = sprintf(
-            'call on %s to generate',
-            $this->assertionRenderer->renderCallable($this->spy)
-        );
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer->renderGenerated($this->spy, $cardinality)
         );
     }
 
@@ -1153,7 +963,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->traversableVerifierFactory
-                    ->create($this, $matchingEvents)
+                    ->create($this->spy, $matchingEvents)
             );
         }
     }
@@ -1172,29 +982,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             return $result;
         }
 
-        $renderedType = sprintf(
-            'call on %s to be traversable',
-            $this->assertionRenderer->renderCallable($this->spy)
-        );
-
-        $calls = $this->spy->allCalls();
-
-        if (0 === count($calls)) {
-            $renderedActual = 'Never called.';
-        } else {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($calls)
-            );
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
-            )
+            $this->assertionRenderer->renderTraversed($this->spy, $cardinality)
         );
     }
 

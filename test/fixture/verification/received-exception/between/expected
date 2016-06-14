@@ -1,0 +1,21 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls to behave like:
+    %GREEN%✓%RESET% Returned Generator, then: %FAINT%(2 matches)%RESET%
+        %RED%✗%RESET% Received exception RuntimeException#0{message: "MECHA-BONOBO"}
+%RED%Between 2 and 3 allowed. Matched 1 of 2:%RESET%
+%FAINT%- Call #0 - {stub}[label]("aardvark"):%RESET%
+%FAINT%    - Returned #0[:1], then:%RESET%
+%FAINT%        - Started iterating%RESET%
+%FAINT%        - Produced 0 => "AARDVARK"%RESET%
+%FAINT%        - Finished iterating%RESET%
+%GREEN%✓%RESET% Call #1 - {stub}[label]("bonobo"):
+    %GREEN%✓%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %GREEN%✓%RESET% Received exception RuntimeException#1{message: "MECHA-BONOBO"}
+        - Threw RuntimeException#1{message: "MECHA-BONOBO"}
+%RED%✗%RESET% Call #2 - {stub}[label]("chameleon"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "CHAMELEON"
+        - Received null
+        - Returned null

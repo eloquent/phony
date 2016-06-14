@@ -12,12 +12,14 @@ error_reporting(-1);
 // should record passing mock assertions
 $handle = x\mock('Eloquent\Phony\Test\TestClassA');
 $mock = $handle->mock();
-$mock->testClassAMethodA('a', 'b');
+$mock->testClassAMethodA('aardvark', 'bonobo');
 
-$handle->testClassAMethodA->calledWith('a', 'b');
+$handle->testClassAMethodA->calledWith('aardvark', 'bonobo');
 
 // should record failing mock assertions
 $handle = x\mock('Eloquent\Phony\Test\TestClassA');
 $mock = $handle->mock();
+$mock->testClassAMethodA('aardvark', array('bonobo', 'capybara', 'dugong'));
+$mock->testClassAMethodA('armadillo', array('bonobo', 'chameleon', 'dormouse'));
 
-$handle->testClassAMethodA->calledWith('a', 'b');
+$handle->testClassAMethodA->calledWith('aardvark', array('bonobo', 'chameleon', 'dugong'));

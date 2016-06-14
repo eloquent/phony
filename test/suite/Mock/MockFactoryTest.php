@@ -12,6 +12,8 @@
 namespace Eloquent\Phony\Mock;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Exception\ClassExistsException;
+use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -67,18 +69,32 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $builderA = $this->builderFactory->create();
         $builderB = $this->builderFactory->create();
         $builderB->named($builderA->className());
+        $reporting = error_reporting();
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\ClassExistsException');
-        $this->subject->createMockClass($builderB->definition());
+        try {
+            $this->subject->createMockClass($builderB->definition());
+        } catch (ClassExistsException $e) {
+            $this->assertSame($reporting, error_reporting());
+
+            throw $e;
+        }
     }
 
     public function testCreateMockClassFailureSyntax()
     {
         $this->subject = new MockFactory($this->labelSequencer, new TestMockGenerator('{'), $this->handleFactory);
         $builder = $this->builderFactory->create();
+        $reporting = error_reporting();
 
         $this->setExpectedException('Eloquent\Phony\Mock\Exception\MockGenerationFailedException');
-        $this->subject->createMockClass($builder->definition());
+        try {
+            $this->subject->createMockClass($builder->definition());
+        } catch (MockGenerationFailedException $e) {
+            $this->assertSame($reporting, error_reporting());
+
+            throw $e;
+        }
     }
 
     public function testCreateFullMock()

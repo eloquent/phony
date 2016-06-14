@@ -74,5 +74,6 @@ passthru('cp -a assets/web/css web/');
 passthru('cp -a assets/web/data web/');
 passthru('cp -a assets/web/img web/');
 passthru('cp -a assets/web/js web/');
+passthru('cp -a doc/img web/');
 
 echo "done.\n";

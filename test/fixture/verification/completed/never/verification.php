@@ -1,0 +1,26 @@
+<?php
+
+use Eloquent\Phony\Test\Phony;
+
+// setup
+$stub = Phony::stub()
+    ->setLabel('label')
+    ->setUseTraversableSpies(true)
+    ->returns('aardvark', array('aardvark', 'bonobo', 'chameleon'))
+    ->with('earwig')->throws(new RuntimeException('EARWIG'));
+$stub();
+try {
+    $stub('earwig');
+} catch (RuntimeException $e) {
+}
+iterator_to_array($stub());
+foreach ($stub() as $value) {
+    if ('bonobo' === $value) {
+        break;
+    }
+}
+$stub();
+iterator_to_array($stub());
+
+// verification
+$stub->never()->completed();

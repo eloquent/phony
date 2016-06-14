@@ -266,11 +266,7 @@ abstract class AbstractHandle implements Handle
         }
 
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected no interaction with %s. Calls:\n%s",
-                $this->assertionRenderer->renderMock($this),
-                $this->assertionRenderer->renderCalls($calls)
-            )
+            $this->assertionRenderer->renderNoInteraction($this, $calls)
         );
     }
 

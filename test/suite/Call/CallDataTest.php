@@ -20,12 +20,13 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->index = 111;
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
         $this->arguments = new Arguments(array('a', 'b'));
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->events = array($this->calledEvent);
 
@@ -35,6 +36,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
+        $this->assertSame($this->index, $this->subject->index());
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertTrue($this->subject->hasCalls());
@@ -67,7 +69,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
     public function testReturnValueFailureThrew()
     {
         $exception = new RuntimeException('You done goofed.');
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($this->callEventFactory->createThrew($exception));
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
@@ -76,7 +78,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testReturnValueFailureNoResponse()
     {
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->returnValue();
@@ -92,7 +94,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testExceptionFailureNoResponse()
     {
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->exception();
@@ -109,7 +111,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
     {
         $exception = new RuntimeException('You done goofed.');
         $threwEvent = $this->callEventFactory->createThrew($exception);
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($threwEvent);
         $this->subject->setEndEvent($threwEvent);
 
@@ -118,7 +120,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testResponseFailureNoResponse()
     {
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->response();
@@ -138,7 +140,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testLastEventWithOnlyCalled()
     {
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->assertSame($this->calledEvent, $this->subject->lastEvent());
     }
@@ -152,7 +154,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
         $this->traversableEventB = $this->callEventFactory->createProduced('c', 'd');
         $this->consumedEvent = $this->callEventFactory->createConsumed();
         $this->traversableEvents = array($this->traversableEventA, $this->traversableEventB);
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($this->returnedEvent);
         $this->subject->addTraversableEvent($this->traversableEventA);
         $this->subject->addTraversableEvent($this->traversableEventB);
@@ -169,7 +171,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
         $this->traversableEventA = $this->callEventFactory->createProduced('a', 'b');
         $this->traversableEventB = $this->callEventFactory->createProduced('c', 'd');
         $this->traversableEvents = array($this->traversableEventA, $this->traversableEventB);
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($this->returnedEvent);
         $this->subject->addTraversableEvent($this->traversableEventA);
         $this->subject->addTraversableEvent($this->traversableEventB);
@@ -182,7 +184,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
         $exception = new RuntimeException('You done goofed.');
         $this->returnValue = new ArrayIterator();
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($this->returnedEvent);
 
         $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
@@ -238,7 +240,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
         $traversableEventA = $this->callEventFactory->createProduced('a', 'b');
         $traversableEventB = $this->callEventFactory->createProduced('c', 'd');
         $traversableEvents = array($traversableEventA, $traversableEventB);
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($returnedEvent);
         $this->subject->addTraversableEvent($traversableEventA);
         $this->subject->addTraversableEvent($traversableEventB);
@@ -258,7 +260,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
     {
         $returnedEvent = $this->callEventFactory->createReturned(array());
         $endEvent = $this->callEventFactory->createConsumed();
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($returnedEvent);
         $this->subject->setEndEvent($endEvent);
 
@@ -285,7 +287,7 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testSetEndEventWithReturnedEvent()
     {
-        $this->subject = new CallData($this->calledEvent);
+        $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setEndEvent($this->returnedEvent);
 
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
@@ -300,5 +302,17 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
         $this->subject->setEndEvent($this->returnedEvent);
+    }
+
+    public function testCompareSequential()
+    {
+        $calledEventA = $this->callEventFactory->createCalled($this->callback, $this->arguments);
+        $calledEventB = $this->callEventFactory->createCalled($this->callback, $this->arguments);
+        $callA = new CallData(111, $calledEventA);
+        $callB = new CallData(222, $calledEventB);
+
+        $this->assertSame(-1, CallData::compareSequential($callA, $callB));
+        $this->assertSame(1, CallData::compareSequential($callB, $callA));
+        $this->assertSame(0, CallData::compareSequential($callA, $callA));
     }
 }

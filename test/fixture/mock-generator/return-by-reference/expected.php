@@ -96,8 +96,10 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return self::$_staticHandle
-            ->spy('__callStatic')->invoke($name, $arguments->all());
+        return \call_user_func_array(
+            'parent::__callStatic',
+            array($name, $arguments->all())
+        );
     }
 
     private function _callParent(

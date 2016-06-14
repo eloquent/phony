@@ -1,0 +1,10 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
+    %GREEN%✓%RESET% Returned Generator, then:
+        %RED%✗%RESET% Received exception RuntimeException#0{message: "MECHA-CHAMELEON"}
+Matched 0 of 1:
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %RED%✗%RESET% Received exception RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%0%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%1%FAINT%+}%RESET%{message: "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"}
+        - Threw RuntimeException#1{message: "MECHA-BONOBO"}

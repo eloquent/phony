@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Matcher\Matcher;
+use Eloquent\Phony\Matcher\Matchable;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Exception\UndefinedAnswerException;
 
@@ -23,8 +23,8 @@ class StubRule
     /**
      * Construct a new stub rule.
      *
-     * @param array<Matcher> $criteria The criteria.
-     * @param array<Answer>  $answers  The answers.
+     * @param array<Matchable> $criteria The criteria.
+     * @param array<Answer>    $answers  The answers.
      */
     public function __construct(array $criteria, array $answers)
     {
@@ -38,7 +38,7 @@ class StubRule
     /**
      * Get the criteria.
      *
-     * @return array<Matcher> The criteria.
+     * @return array<Matchable> The criteria.
      */
     public function criteria()
     {

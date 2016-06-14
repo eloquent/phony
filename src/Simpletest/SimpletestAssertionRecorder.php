@@ -97,7 +97,7 @@ class SimpletestAssertionRecorder implements AssertionRecorder
         $call = AssertionException::tracePhonyCall(debug_backtrace($flags));
 
         if ($call && isset($call['file']) && isset($call['line'])) {
-            $description .= "\nat [$call[file] line $call[line]]";
+            $description .= PHP_EOL . "at [$call[file] line $call[line]]";
         }
 
         $this->simpletestContext->getReporter()

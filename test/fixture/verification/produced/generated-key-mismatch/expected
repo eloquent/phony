@@ -1,0 +1,15 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls to behave like:
+    %GREEN%✓%RESET% Returned Generator, then: %FAINT%(1 match)%RESET%
+        %RED%✗%RESET% Produced "CHAMELEON" => "MECHA-BONOBO"
+Matched 0 of 1:
+%FAINT%- Call #0 - {stub}[label]("aardvark"):%RESET%
+%FAINT%    - Returned #0[:1], then:%RESET%
+%FAINT%        - Started iterating%RESET%
+%FAINT%        - Produced "AARDVARK" => "MECHA-AARDVARK"%RESET%
+%FAINT%        - Finished iterating%RESET%
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%" => "MECHA-BONOBO"
+        - Received null
+        - Returned null

@@ -1,0 +1,32 @@
+%RESET%Expected events in order:
+    - Called {stub}[label]("a", "b")
+    - Returned "a" from {stub}[label]("a", "b")
+    - Threw Exception#0{message: "C"} from {stub}[label]("c", "d")
+    - Called {stub}[label](#0["e", "f"])
+    - {stub}[label](#0["e", "f"]) started iterating
+    - Produced 0 => "e" from {stub}[label](#0["e", "f"])
+    - {stub}[label](#0["e", "f"]) finished iterating
+    - Called {spy}[first]()
+Actual order:
+    - Called {spy}[first]()
+    - Called {stub}[label]("a", "b")
+    - Returned "a" from {stub}[label]("a", "b")
+    - Threw Exception#0{message: "C"} from {stub}[label]("c", "d")
+    - Called {stub}[label](#0["e", "f"])
+    - Returned #0["e", "f"] from {stub}[label](#0["e", "f"])
+    - {stub}[label](#0["e", "f"]) started iterating
+    - Produced 0 => "e" from {stub}[label](#0["e", "f"])
+    - Produced 1 => "f" from {stub}[label](#0["e", "f"])
+    - {stub}[label](#0["e", "f"]) finished iterating
+Difference:
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Called {spy}[first]()%FAINT%+}%RESET%
+    %GREEN%✓%RESET%   Called {stub}[label]("a", "b")
+    %GREEN%✓%RESET%   Returned "a" from {stub}[label]("a", "b")
+    %GREEN%✓%RESET%   Threw Exception#0{message: "C"} from {stub}[label]("c", "d")
+    %GREEN%✓%RESET%   Called {stub}[label](#0["e", "f"])
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Returned #0["e", "f"] from {stub}[label](#0["e", "f"])%FAINT%+}%RESET%
+    %GREEN%✓%RESET%   {stub}[label](#0["e", "f"]) started iterating
+    %GREEN%✓%RESET%   Produced 0 => "e" from {stub}[label](#0["e", "f"])
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Produced 1 => "f" from {stub}[label](#0["e", "f"])%FAINT%+}%RESET%
+    %GREEN%✓%RESET%   {stub}[label](#0["e", "f"]) finished iterating
+    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Called {spy}[first]()%FAINT%-]%RESET%

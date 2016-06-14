@@ -316,10 +316,16 @@ class EqualToMatcher implements Matcher
     /**
      * Describe this matcher.
      *
+     * @param Exporter|null $exporter The exporter to use.
+     *
      * @return string The description.
      */
-    public function describe()
+    public function describe(Exporter $exporter = null)
     {
+        if ($exporter) {
+            return $exporter->export($this->value);
+        }
+
         return $this->exporter->export($this->value);
     }
 

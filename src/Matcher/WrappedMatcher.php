@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\Exporter;
+
 /**
  * Wraps a typical third party matcher.
  */
@@ -51,9 +53,11 @@ class WrappedMatcher implements Matcher
     /**
      * Describe this matcher.
      *
+     * @param Exporter|null $exporter The exporter to use.
+     *
      * @return string The description.
      */
-    public function describe()
+    public function describe(Exporter $exporter = null)
     {
         return '<' . strval($this->matcher) . '>';
     }

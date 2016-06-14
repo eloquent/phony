@@ -38,7 +38,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         $arguments = Arguments::create(array('a', 'b'));
         $returnValue = 'ab';
         $spy = $this->spyFactory->create();
-        $expected = new CallData($this->eventFactory->createCalled($spy, $arguments));
+        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createReturned($returnValue));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);
@@ -55,7 +55,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         };
         $arguments = Arguments::create(array('a', 'b'));
         $spy = $this->spyFactory->create();
-        $expected = new CallData($this->eventFactory->createCalled($spy, $arguments));
+        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);
@@ -76,7 +76,7 @@ class CallFactoryTest extends PHPUnit_Framework_TestCase
         };
         $arguments = Arguments::create(array('a', 'b'));
         $spy = $this->spyFactory->create();
-        $expected = new CallData($this->eventFactory->createCalled($spy, $arguments));
+        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
         $actual = $this->subject->record($callback, $arguments, $spy);

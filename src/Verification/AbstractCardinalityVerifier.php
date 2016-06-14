@@ -33,7 +33,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function never()
     {
-        return $this->times(0);
+        $this->cardinality = new Cardinality(0, 0);
+
+        return $this;
     }
 
     /**
@@ -43,7 +45,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function once()
     {
-        return $this->times(1);
+        $this->cardinality = new Cardinality(1, 1);
+
+        return $this;
     }
 
     /**
@@ -53,7 +57,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function twice()
     {
-        return $this->times(2);
+        $this->cardinality = new Cardinality(2, 2);
+
+        return $this;
     }
 
     /**
@@ -63,7 +69,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function thrice()
     {
-        return $this->times(3);
+        $this->cardinality = new Cardinality(3, 3);
+
+        return $this;
     }
 
     /**
@@ -75,7 +83,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function times($times)
     {
-        return $this->between($times, $times);
+        $this->cardinality = new Cardinality($times, $times);
+
+        return $this;
     }
 
     /**
@@ -88,7 +98,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function atLeast($minimum)
     {
-        return $this->between($minimum, null);
+        $this->cardinality = new Cardinality($minimum, null);
+
+        return $this;
     }
 
     /**
@@ -101,7 +113,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function atMost($maximum)
     {
-        return $this->between(null, $maximum);
+        $this->cardinality = new Cardinality(0, $maximum);
+
+        return $this;
     }
 
     /**

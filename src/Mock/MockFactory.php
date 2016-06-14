@@ -18,10 +18,12 @@ use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Exception;
 use ParseError;
 use ParseException;
 use ReflectionClass;
 use ReflectionException;
+use Throwable;
 
 /**
  * Creates mock instances.
@@ -97,13 +99,13 @@ class MockFactory
         }
 
         $source = $this->generator->generate($definition, $className);
-
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
+        $error = null;
 
         try {
             eval($source);
         } catch (ParseError $e) {
-            throw new MockGenerationFailedException(
+            $error = new MockGenerationFailedException(
                 $definition,
                 $source,
                 error_get_last(),
@@ -111,16 +113,22 @@ class MockFactory
             );
             // @codeCoverageIgnoreStart
         } catch (ParseException $e) {
-            throw new MockGenerationFailedException(
+            $error = new MockGenerationFailedException(
                 $definition,
                 $source,
                 error_get_last(),
                 $e
             );
+        } catch (Throwable $error) {
+        } catch (Exception $error) {
         }
         // @codeCoverageIgnoreEnd
 
         error_reporting($reporting);
+
+        if ($error) {
+            throw $error;
+        }
 
         if (!class_exists($className, false)) {
             // @codeCoverageIgnoreStart

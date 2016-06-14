@@ -98,7 +98,6 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
                 continue;
             }
 
-            $testName = $testName;
             $data[$testName] = array($testName);
         }
 
@@ -126,9 +125,10 @@ class MockGeneratorTest extends PHPUnit_Framework_TestCase
         $factory = MockBuilderFactory::instance();
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
+        $expected = str_replace("\n", PHP_EOL, $expected);
         $actual = $builder->source($this->subject);
 
-        $this->assertSame($expected, "<?php\n\n" . $actual);
+        $this->assertSame($expected, '<?php' . PHP_EOL . PHP_EOL . $actual);
 
         eval($actual);
 

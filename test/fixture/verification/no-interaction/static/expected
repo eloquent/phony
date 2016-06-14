@@ -1,0 +1,3 @@
+%RESET%Expected no interaction with %BOLD%ClassA[static]%RESET%. Calls:
+    %RED%✗%RESET% ClassA::staticMethodA("b", "c")
+    %RED%✗%RESET% ClassA::staticMethodB("c", "d")

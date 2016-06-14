@@ -1,0 +1,24 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% to complete.
+%RED%Exactly 99 required. Matched 2 of 4:%RESET%
+%RED%✗%RESET% Call #0 - {stub}[label](#0[:2]):
+    %RED%✗%RESET% Returned Generator, then:
+        %RED%✗%RESET% Never started iterating
+%GREEN%✓%RESET% Call #1 - {stub}[label](#0[:2]):
+    %GREEN%✓%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "aardvark"
+        - Received "AARDVARK"
+        - Produced 1 => "bonobo"
+        - Received "BONOBO"
+        %GREEN%✓%RESET% Returned 2
+%GREEN%✓%RESET% Call #2 - {stub}[label](#0[:1]):
+    %GREEN%✓%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "aardvark"
+        - Received exception RuntimeException#0{message: "AARDVARK"}
+        %GREEN%✓%RESET% Threw RuntimeException#0{message: "AARDVARK"}
+%RED%✗%RESET% Call #3 - {stub}[label](#0[:2]):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "aardvark"
+        %RED%✗%RESET% Never finished iterating

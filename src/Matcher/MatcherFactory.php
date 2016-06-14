@@ -144,10 +144,7 @@ class MatcherFactory
      */
     public function adapt($value)
     {
-        if (
-            $value instanceof Matcher ||
-            $value instanceof WildcardMatcher
-        ) {
+        if ($value instanceof Matchable) {
             return $value;
         }
 
@@ -181,7 +178,7 @@ class MatcherFactory
      *
      * @param array $values The values to create matchers for.
      *
-     * @return array<Matcher> The newly created matchers.
+     * @return array<Matchable> The newly created matchers.
      */
     public function adaptAll(array $values)
     {

@@ -1,0 +1,3 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% to behave like:
+    %RED%✗%RESET% Returned Generator
+%RED%Never called.%RESET%

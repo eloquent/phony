@@ -1,0 +1,7 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
+    %GREEN%✓%RESET% Returned Generator, then:
+        %RED%✗%RESET% Received <any>
+Matched 0 of 0:
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        %RED%✗%RESET% Never started iterating

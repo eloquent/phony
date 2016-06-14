@@ -27,9 +27,9 @@ use Exception;
 class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
 {
     /**
-     * Construct a new event order verifier.
+     * Construct a new traversable verifier.
      *
-     * @param callable            $subject             The subject.
+     * @param Spy|Call            $subject             The subject.
      * @param array<Call>         $calls               The traversable calls.
      * @param MatcherFactory      $matcherFactory      The matcher factory to use.
      * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
@@ -48,6 +48,7 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
         $this->matcherFactory = $matcherFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->isGenerator = false;
 
         parent::__construct($calls, $callVerifierFactory);
     }
@@ -61,21 +62,19 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
     {
         $cardinality = $this->resetCardinality();
 
+        if ($this->subject instanceof Call) {
+            $cardinality->assertSingular();
+        }
+
         $matchingEvents = array();
         $matchCount = 0;
 
         foreach ($this->calls as $call) {
-            $callMatched = false;
-
             foreach ($call->traversableEvents() as $event) {
                 if ($event instanceof UsedEvent) {
                     $matchingEvents[] = $event;
-                    $callMatched = true;
+                    ++$matchCount;
                 }
-            }
-
-            if ($callMatched) {
-                ++$matchCount;
             }
         }
 
@@ -98,26 +97,11 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
             return $result;
         }
 
-        if ($this->callCount) {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($this->calls, true)
-            );
-        } else {
-            $renderedActual = 'Never called.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer->renderCardinality(
-                    $cardinality,
-                    sprintf(
-                        'call on %s to be used',
-                        $this->assertionRenderer->renderCallable($this->subject)
-                    )
-                ),
-                $renderedActual
+            $this->assertionRenderer->renderTraversableUsed(
+                $this->subject,
+                $cardinality,
+                $this->isGenerator
             )
         );
     }
@@ -159,14 +143,18 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
             $value = $this->matcherFactory->adapt($value);
         }
 
+        $isCall = $this->subject instanceof Call;
         $matchingEvents = array();
         $matchCount = 0;
+        $eventCount = 0;
 
         foreach ($this->calls as $call) {
-            $callMatched = false;
+            $isMatchingCall = false;
 
             foreach ($call->traversableEvents() as $event) {
                 if ($event instanceof ProducedEvent) {
+                    ++$eventCount;
+
                     if ($checkKey && !$key->matches($event->key())) {
                         continue;
                     }
@@ -176,16 +164,26 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
                     }
 
                     $matchingEvents[] = $event;
-                    $callMatched = true;
+                    $isMatchingCall = true;
+
+                    if ($isCall) {
+                        ++$matchCount;
+                    }
                 }
             }
 
-            if ($callMatched) {
+            if (!$isCall && $isMatchingCall) {
                 ++$matchCount;
             }
         }
 
-        if ($cardinality->matches($matchCount, $this->callCount)) {
+        if ($isCall) {
+            $totalCount = $eventCount;
+        } else {
+            $totalCount = $this->callCount;
+        }
+
+        if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
     }
@@ -211,12 +209,13 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
     public function produced($keyOrValue = null, $value = null)
     {
         $cardinality = $this->cardinality;
-
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
+            $key = null;
             $arguments = array();
         } elseif (1 === $argumentCount) {
+            $key = null;
             $value = $this->matcherFactory->adapt($keyOrValue);
             $arguments = array($value);
         } else {
@@ -232,41 +231,13 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
             return $result;
         }
 
-        $renderedSubject =
-            $this->assertionRenderer->renderCallable($this->subject);
-
-        if (0 === $argumentCount) {
-            $renderedType = sprintf('call on %s to produce', $renderedSubject);
-        } elseif (1 === $argumentCount) {
-            $renderedType = sprintf(
-                'call on %s to produce like %s',
-                $renderedSubject,
-                $value->describe()
-            );
-        } else {
-            $renderedType = sprintf(
-                'call on %s to produce like %s: %s',
-                $renderedSubject,
-                $key->describe(),
-                $value->describe()
-            );
-        }
-
-        if ($this->callCount) {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($this->calls, true)
-            );
-        } else {
-            $renderedActual = 'Never called.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer
-                    ->renderCardinality($cardinality, $renderedType),
-                $renderedActual
+            $this->assertionRenderer->renderTraversableProduced(
+                $this->subject,
+                $cardinality,
+                $this->isGenerator,
+                $key,
+                $value
             )
         );
     }
@@ -279,6 +250,10 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
     public function checkConsumed()
     {
         $cardinality = $this->resetCardinality();
+
+        if ($this->subject instanceof Call) {
+            $cardinality->assertSingular();
+        }
 
         $matchingEvents = array();
         $matchCount = 0;
@@ -314,26 +289,11 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
             return $result;
         }
 
-        if ($this->callCount) {
-            $renderedActual = sprintf(
-                "Responded:\n%s",
-                $this->assertionRenderer->renderResponses($this->calls, true)
-            );
-        } else {
-            $renderedActual = 'Never called.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                'Expected %s. %s',
-                $this->assertionRenderer->renderCardinality(
-                    $cardinality,
-                    sprintf(
-                        'call on %s to be consumed',
-                        $this->assertionRenderer->renderCallable($this->subject)
-                    )
-                ),
-                $renderedActual
+            $this->assertionRenderer->renderTraversableConsumed(
+                $this->subject,
+                $cardinality,
+                $this->isGenerator
             )
         );
     }
@@ -342,4 +302,5 @@ class TraversableVerifier extends AbstractCardinalityVerifierEventCollection
     protected $matcherFactory;
     protected $assertionRecorder;
     protected $assertionRenderer;
+    protected $isGenerator;
 }

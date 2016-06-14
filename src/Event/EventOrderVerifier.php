@@ -31,8 +31,7 @@ class EventOrderVerifier
         if (!self::$instance) {
             self::$instance = new self(
                 ExceptionAssertionRecorder::instance(),
-                AssertionRenderer::instance(),
-                NullEvent::instance()
+                AssertionRenderer::instance()
             );
         }
 
@@ -44,16 +43,13 @@ class EventOrderVerifier
      *
      * @param AssertionRecorder $assertionRecorder The assertion recorder to use.
      * @param AssertionRenderer $assertionRenderer The assertion renderer to use.
-     * @param NullEvent         $nullEvent         The null event to use.
      */
     public function __construct(
         AssertionRecorder $assertionRecorder,
-        AssertionRenderer $assertionRenderer,
-        NullEvent $nullEvent
+        AssertionRenderer $assertionRenderer
     ) {
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
-        $this->nullEvent = $nullEvent;
     }
 
     /**
@@ -114,9 +110,9 @@ class EventOrderVerifier
                 }
             } elseif ($event instanceof EventCollection) {
                 if (!$event->hasEvents()) {
-                    $isMatch = false;
-
-                    break;
+                    throw new InvalidArgumentException(
+                        'Cannot verify event order with empty results.'
+                    );
                 }
 
                 foreach ($event->allEvents() as $subEvent) {
@@ -133,17 +129,10 @@ class EventOrderVerifier
                     }
                 }
             } else {
-                if (is_object($event)) {
-                    $type = var_export(get_class($event), true);
-                } else {
-                    $type = gettype($event);
-                }
-
                 throw new InvalidArgumentException(
                     sprintf(
-                        'Cannot verify event order with supplied value of ' .
-                            'type %s.',
-                        $type
+                        'Cannot verify event order with supplied value %s.',
+                        $this->assertionRenderer->renderValue($event)
                     )
                 );
             }
@@ -174,28 +163,10 @@ class EventOrderVerifier
             return $result;
         }
 
-        if (!count($events)) {
-            return $this->assertionRecorder
-                ->createFailure('Expected events. No events recorded.');
-        }
-
-        $mergedEvents = $this->mergeEvents($events);
-
-        if ($mergedEvents->hasEvents()) {
-            $renderedActual = sprintf(
-                "Order:\n%s",
-                $this->assertionRenderer->renderEvents($mergedEvents)
-            );
-        } else {
-            $renderedActual = 'No events recorded.';
-        }
-
         return $this->assertionRecorder->createFailure(
-            sprintf(
-                "Expected events in order:\n%s\n%s",
-                $this->assertionRenderer
-                    ->renderEvents($this->expectedEvents($events)),
-                $renderedActual
+            $this->assertionRenderer->renderInOrder(
+                $this->expectedEvents($events),
+                $this->mergeEvents($events)
             )
         );
     }
@@ -242,7 +213,7 @@ class EventOrderVerifier
         }
 
         return $this->assertionRecorder
-            ->createSuccess($this->mergeEvents($events)->allEvents());
+            ->createSuccess($this->mergeEvents($events));
     }
 
     /**
@@ -265,15 +236,7 @@ class EventOrderVerifier
             ->createFailure('Expected events. No events recorded.');
     }
 
-    /**
-     * Attempts to normalize the supplied event order expectation into a
-     * meaningful sequence of singular events.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection The normalized events.
-     */
-    protected function expectedEvents($events)
+    private function expectedEvents($events)
     {
         $expected = array();
         $earliestEvent = null;
@@ -282,6 +245,12 @@ class EventOrderVerifier
             if ($event instanceof Event) {
                 $expected[] = $earliestEvent = $event;
             } else {
+                if (!$event->hasEvents()) {
+                    throw new InvalidArgumentException(
+                        'Cannot verify event order with empty results.'
+                    );
+                }
+
                 $subEvent = null;
 
                 foreach ($event->allEvents() as $subEvent) {
@@ -296,26 +265,14 @@ class EventOrderVerifier
                     }
                 }
 
-                if (!$subEvent) {
-                    $subEvent = $this->nullEvent;
-                }
-
                 $expected[] = $earliestEvent = $subEvent;
             }
         }
 
-        return new EventSequence($expected);
+        return $expected;
     }
 
-    /**
-     * Merge the supplied event sequence into a single event collection, in
-     * chronological order.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @param EventCollection $events The ordered events.
-     */
-    protected function mergeEvents($events)
+    private function mergeEvents($events)
     {
         $merged = array();
 
@@ -331,11 +288,10 @@ class EventOrderVerifier
 
         ksort($merged);
 
-        return new EventSequence(array_values($merged));
+        return array_values($merged);
     }
 
     private static $instance;
     private $assertionRecorder;
     private $assertionRenderer;
-    private $nullEvent;
 }

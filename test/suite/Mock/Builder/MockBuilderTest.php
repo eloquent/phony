@@ -845,6 +845,7 @@ implements \Eloquent\Phony\Mock\Mock
 }
 
 EOD;
+        $expected = str_replace("\n", PHP_EOL, $expected);
 
         $this->assertSame($expected, $this->subject->source());
         $this->assertTrue($this->subject->isFinalized());

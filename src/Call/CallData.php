@@ -35,18 +35,58 @@ use Traversable;
 class CallData implements Call
 {
     /**
+     * A comparator for ordering calls by sequence number.
+     *
+     * @param Call $a The first call.
+     * @param Call $b The second call.
+     *
+     * @return int The comparison value.
+     */
+    public static function compareSequential(Call $a, Call $b)
+    {
+        $a = $a->sequenceNumber();
+        $b = $b->sequenceNumber();
+
+        if ($a < $b) {
+            return -1;
+        }
+
+        if ($a > $b) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    /**
      * Construct a new call data instance.
      *
+     * @param int         $index       The index of this call.
      * @param CalledEvent $calledEvent The 'called' event.
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
-    public function __construct(CalledEvent $calledEvent)
+    public function __construct($index, CalledEvent $calledEvent)
     {
+        $this->index = $index;
+
         $calledEvent->setCall($this);
         $this->calledEvent = $calledEvent;
 
         $this->traversableEvents = array();
+    }
+
+    /**
+     * Get the call index.
+     *
+     * This number tracks the order of this call with respect to other calls
+     * made against the same spy.
+     *
+     * @return int The index.
+     */
+    public function index()
+    {
+        return $this->index;
     }
 
     /**
@@ -634,6 +674,7 @@ class CallData implements Call
         return true;
     }
 
+    private $index;
     private $calledEvent;
     private $responseEvent;
     private $traversableEvents;

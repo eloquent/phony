@@ -1,0 +1,4 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% call #1 to behave like:
+    %RED%✗%RESET% Returned "CHAMELEON"
+%RED%✗%RESET% Call #1 - {closure}[label]("bonobo"):
+    %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"

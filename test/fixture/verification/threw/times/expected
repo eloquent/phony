@@ -1,0 +1,7 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% to behave like:
+    %RED%✗%RESET% Threw <any>
+%RED%Exactly 3 required. Matched 2 of 2:%RESET%
+%GREEN%✓%RESET% Call #0 - {closure}[label]("aardvark"):
+    %GREEN%✓%RESET% Threw RuntimeException#0{message: "AARDVARK"}
+%GREEN%✓%RESET% Call #1 - {closure}[label]("bonobo"):
+    %GREEN%✓%RESET% Threw RuntimeException#1{message: "BONOBO"}

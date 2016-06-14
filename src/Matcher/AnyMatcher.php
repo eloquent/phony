@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\Exporter;
+
 /**
  * A matcher that always returns true.
  */
@@ -45,9 +47,11 @@ class AnyMatcher implements Matcher
     /**
      * Describe this matcher.
      *
+     * @param Exporter|null $exporter The exporter to use.
+     *
      * @return string The description.
      */
-    public function describe()
+    public function describe(Exporter $exporter = null)
     {
         return '<any>';
     }

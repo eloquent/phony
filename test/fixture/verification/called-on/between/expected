@@ -1,0 +1,7 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% call bound to object:
+    %RED%✗%RESET% #0{name: "apricot"}
+%RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
+%GREEN%✓%RESET% Call #0 - {closure}[label]("aardvark", #0[:3]):
+    %GREEN%✓%RESET% #0{name: "apricot"}
+%GREEN%✓%RESET% Call #1 - {closure}[label]("bonobo", #0[:3]):
+    %GREEN%✓%RESET% #0{name: "apricot"}

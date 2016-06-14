@@ -13,11 +13,16 @@ namespace Eloquent\Phony\Mock\Handle\Verification;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
+use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
+use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassH;
@@ -38,7 +43,21 @@ class InstanceVerificationHandleTest extends PHPUnit_Framework_TestCase
         $this->isFull = true;
         $this->stubFactory = StubFactory::instance();
         $this->stubVerifierFactory = StubVerifierFactory::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
+        $this->objectSequencer = new Sequencer();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer);
+        $this->matcherVerifier = new MatcherVerifier();
+        $this->invocableInspector = new InvocableInspector();
+        $this->featureDetector = FeatureDetector::instance();
+        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
+        $this->differenceEngine->setUseColor(false);
+        $this->assertionRenderer = new AssertionRenderer(
+            $this->invocableInspector,
+            $this->matcherVerifier,
+            $this->exporter,
+            $this->differenceEngine,
+            $this->featureDetector
+        );
+        $this->assertionRenderer->setUseColor(false);
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invoker = new Invoker();
 
@@ -217,14 +236,8 @@ class InstanceVerificationHandleTest extends PHPUnit_Framework_TestCase
         $this->mock->testClassAMethodA('a', 'b');
         $this->mock->testClassAMethodB('c', 'd');
         $this->mock->testClassAMethodA('e', 'f');
-        $expected = <<<'EOD'
-Expected no interaction with TestClassA[label]. Calls:
-    - TestClassA[label]->testClassAMethodA("a", "b")
-    - TestClassA[label]->testClassAMethodB("c", "d")
-    - TestClassA[label]->testClassAMethodA("e", "f")
-EOD;
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->noInteraction();
     }
 

@@ -1,0 +1,4 @@
+%RESET%Expected %BOLD%{closure}[label]%RESET% call #1 not to behave like:
+    %RED%✗%RESET% Threw RuntimeException#0{message: "BONOBO"}
+%RED%✗%RESET% Call #1 - {closure}[label]("bonobo"):
+    %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}

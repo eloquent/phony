@@ -15,11 +15,16 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
@@ -34,7 +39,8 @@ class TraversableVerifierTest extends PHPUnit_Framework_TestCase
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = WildcardMatcher::instance();
-        $this->exporter = new InlineExporter(1, false);
+        $this->objectSequencer = new Sequencer();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer);
         $this->matcherFactory = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
 
         $this->traversableCalledEvent = $this->eventFactory->createCalled();
@@ -125,9 +131,22 @@ class TraversableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->spyFactory = SpyFactory::instance();
         $this->spy = $this->spyFactory->create('implode')->setLabel('label');
+        $this->spy->setCalls($calls);
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
+        $this->matcherVerifier = new MatcherVerifier();
+        $this->invocableInspector = new InvocableInspector();
+        $this->featureDetector = FeatureDetector::instance();
+        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
+        $this->differenceEngine->setUseColor(false);
+        $this->assertionRenderer = new AssertionRenderer(
+            $this->invocableInspector,
+            $this->matcherVerifier,
+            $this->exporter,
+            $this->differenceEngine,
+            $this->featureDetector
+        );
+        $this->assertionRenderer->setUseColor(false);
         $this->subject = new TraversableVerifier(
             $this->spy,
             $calls,
@@ -357,27 +376,10 @@ class TraversableVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new EventSequence(array($this->iteratorUsedEvent)), $this->subject->always()->used());
     }
 
-    public function testUsedFailureNoCalls()
-    {
-        $this->setUpWith(array());
-
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to be used. Never called.'
-        );
-        $this->subject->used();
-    }
-
     public function testUsedFailureNonTraversables()
     {
         $this->setUpWith($this->nonTraversableCalls);
-        $expected = <<<'EOD'
-Expected call on implode[label] to be used. Responded:
-    - <none>
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->used();
     }
 
@@ -388,51 +390,21 @@ EOD;
             $this->returnedTraversableEvent
         );
         $this->setUpWith(array($this->iteratorCall));
-        $expected = <<<'EOD'
-Expected call on implode[label] to be used. Responded:
-    - returned #0[:4] producing:
-        - did not finish iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->used();
     }
 
     public function testUsedFailureAlways()
     {
         $this->setUpWith($this->calls);
-        $expected = <<<'EOD'
-Expected every call on implode[label] to be used. Responded:
-    - returned null
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->used();
     }
 
     public function testUsedFailureNever()
     {
         $this->setUpWith($this->calls);
-        $expected = <<<'EOD'
-Expected no call on implode[label] to be used. Responded:
-    - returned null
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->never()->used();
     }
 
@@ -511,176 +483,52 @@ EOD;
         );
     }
 
-    public function testProducedFailureNoCallsNoMatchers()
+    public function testProducedFailureNoTraversablesNoMatchers()
     {
-        $this->setUpWith(array());
-
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to produce. Never called.'
-        );
+        $this->setUpWith($this->typicalCalls);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced();
     }
 
-    public function testProducedFailureNoCallsValueOnly()
+    public function testProducedFailureNoTraversablesValueOnly()
     {
-        $this->setUpWith(array());
-
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to produce like "x". Never called.'
-        );
+        $this->setUpWith($this->typicalCalls);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x');
     }
 
-    public function testProducedFailureNoCallsKeyAndValue()
-    {
-        $this->setUpWith(array());
-
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to produce like "x": "y". Never called.'
-        );
-        $this->subject->produced('x', 'y');
-    }
-
-    public function testProducedFailureNoGeneratorsNoMatchers()
+    public function testProducedFailureNoTraversablesKeyAndValue()
     {
         $this->setUpWith($this->typicalCalls);
-        $expected = <<<'EOD'
-Expected call on implode[label] to produce. Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->produced();
-    }
-
-    public function testProducedFailureNoGeneratorsValueOnly()
-    {
-        $this->setUpWith($this->typicalCalls);
-        $expected = <<<'EOD'
-Expected call on implode[label] to produce like "x". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
-        $this->subject->produced('x');
-    }
-
-    public function testProducedFailureNoGeneratorsKeyAndValue()
-    {
-        $this->setUpWith($this->typicalCalls);
-        $expected = <<<'EOD'
-Expected call on implode[label] to produce like "x": "y". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x', 'y');
     }
 
     public function testProducedFailureValueMismatch()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $expected = <<<'EOD'
-Expected call on implode[label] to produce like "x". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x');
     }
 
     public function testProducedFailureKeyValueMismatch()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $expected = <<<'EOD'
-Expected call on implode[label] to produce like "x": "y". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x', 'y');
     }
 
     public function testProducedFailureAlways()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $expected = <<<'EOD'
-Expected every call on implode[label] to produce like "n". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->produced('n');
     }
 
     public function testProducedFailureNever()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $expected = <<<'EOD'
-Expected no call on implode[label] to produce like "n". Responded:
-    - returned "x"
-    - returned "y"
-    - threw RuntimeException("You done goofed.")
-    - threw RuntimeException("Consequences will never be the same.")
-    - <none>
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->never()->produced('n');
     }
 
@@ -734,27 +582,10 @@ EOD;
         $this->assertEquals(new EventSequence(array($this->traversableEndEvent)), $this->subject->always()->consumed());
     }
 
-    public function testConsumedFailureNoCalls()
-    {
-        $this->setUpWith(array());
-
-        $this->setExpectedException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected call on implode[label] to be consumed. Never called.'
-        );
-        $this->subject->consumed();
-    }
-
     public function testConsumedFailureNonTraversables()
     {
         $this->setUpWith($this->nonTraversableCalls);
-        $expected = <<<'EOD'
-Expected call on implode[label] to be consumed. Responded:
-    - <none>
-    - <none>
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->consumed();
     }
 
@@ -766,56 +597,21 @@ EOD;
             $this->iteratorEvents
         );
         $this->setUpWith(array($this->iteratorCall));
-        $expected = <<<'EOD'
-Expected call on implode[label] to be consumed. Responded:
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - did not finish iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->consumed();
     }
 
     public function testConsumedFailureAlways()
     {
         $this->setUpWith($this->calls);
-        $expected = <<<'EOD'
-Expected every call on implode[label] to be consumed. Responded:
-    - returned null
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->consumed();
     }
 
     public function testConsumedFailureNever()
     {
         $this->setUpWith($this->calls);
-        $expected = <<<'EOD'
-Expected no call on implode[label] to be consumed. Responded:
-    - returned null
-    - returned #0[:4] producing:
-        - started iterating
-        - produced "m": "n"
-        - produced "p": "q"
-        - produced "r": "s"
-        - produced "u": "v"
-        - finished iterating
-EOD;
-
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $expected);
+        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->never()->consumed();
     }
 

@@ -122,8 +122,13 @@
     - [The generator verification result API]
     - [The event API]
     - [The order verification API]
+    - [The verification output API]
     - [Standard verification]
     - [Check verification]
+    - [Understanding verification output]
+        - [Expected behavior output]
+        - [Cardinality output]
+        - [Actual behavior output]
     - [Generator and traversable verification]
         - [Verifying iteration]
         - [Verifying produced values]
@@ -131,12 +136,14 @@
         - [Verifying exceptions received by generators]
         - [Verifying generator return values]
         - [Verifying generator exceptions]
+        - [Verifying cardinality with generators and traversables]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
             - [Intermediate events in order verification]
             - [Similar events in order verification]
     - [Verifying that there was no interaction with a mock]
+    - [Using colored verification output]
 - [Matchers]
     - [The matcher API]
     - [The wildcard matcher API]
@@ -1240,12 +1247,7 @@ $mock = mock('ClassA')->setLabel('a')->mock();
 When a verification fails for a labeled mock, the output is similar to the
 following:
 
-    Expected call on ClassA[label]->methodA with arguments like:
-        - "x"
-        - "y"
-    Call #0:
-        - "x"
-        - "z"
+![Example verification output when using a mock label][mock-label-image]
 
 ### Mock handles
 
@@ -2285,7 +2287,7 @@ completely consumed via iteration.*
 
 Requires that the next verification never matches.
 
-*See [Verifying that a call event happened an exact number of times].*
+*See [Verifying that a spy event happened an exact number of times].*
 
 <a name="stub.once" />
 
@@ -2295,7 +2297,7 @@ Requires that the next verification never matches.
 
 Requires that the next verification matches only once.
 
-*See [Verifying that a call event happened an exact number of times].*
+*See [Verifying that a spy event happened an exact number of times].*
 
 <a name="stub.twice" />
 
@@ -2305,7 +2307,7 @@ Requires that the next verification matches only once.
 
 Requires that the next verification matches exactly two times.
 
-*See [Verifying that a call event happened an exact number of times].*
+*See [Verifying that a spy event happened an exact number of times].*
 
 <a name="stub.thrice" />
 
@@ -2315,7 +2317,7 @@ Requires that the next verification matches exactly two times.
 
 Requires that the next verification matches exactly three times.
 
-*See [Verifying that a call event happened an exact number of times].*
+*See [Verifying that a spy event happened an exact number of times].*
 
 <a name="stub.times" />
 
@@ -2325,7 +2327,7 @@ Requires that the next verification matches exactly three times.
 
 Requires that the next verification matches exactly `$times` times.
 
-*See [Verifying that a call event happened an exact number of times].*
+*See [Verifying that a spy event happened an exact number of times].*
 
 <a name="stub.atLeast" />
 
@@ -4591,6 +4593,10 @@ To verify that a spy was called, use [`called()`](#spy.called):
 $spy->called();
 ```
 
+Example output from [`called()`](#spy.called):
+
+![Example output from $spy->called()][spy-called-image]
+
 #### Verifying that a spy was called with specific arguments
 
 To verify input arguments, use [`calledWith()`](#spy.calledWith). Arguments
@@ -4624,6 +4630,10 @@ $spy->called()->firstCall()->argument(1); // second argument
 Note that this will return the arguments for the first call that matches the
 verification in use.
 
+Example output from [`calledWith()`](#spy.calledWith):
+
+![Example output from $spy->calledWith()][spy-called-with-image]
+
 #### Verifying spy closure binding
 
 Where [closure binding] is supported, the bound object can be verified using
@@ -4632,6 +4642,10 @@ Where [closure binding] is supported, the bound object can be verified using
 ```php
 $spy->calledOn($object);
 ```
+
+Example output from [`calledOn()`](#spy.calledOn):
+
+![Example output from $spy->calledOn()][spy-called-on-image]
 
 ### Verifying spy output
 
@@ -4643,6 +4657,10 @@ To verify a spy's return value, use [`returned()`](#spy.returned):
 $spy->returned();    // returned anything
 $spy->returned('a'); // returned 'a'
 ```
+
+Example output from [`returned()`](#spy.returned):
+
+![Example output from $spy->returned()][spy-returned-image]
 
 ##### Verifying generators returned by spies
 
@@ -4665,6 +4683,10 @@ $generator->returned('b'); // generator returned 'b'
 
 See [Generator and traversable verification] for a complete explanation of the
 available verifications.
+
+Example output from [`generated()`](#spy.generated):
+
+![Example output from $spy->generated()][spy-generated-image]
 
 ##### Verifying traversables returned by spies
 
@@ -4689,6 +4711,10 @@ $traversable->produced('b', 'c'); // traversable produced 'b' => 'c'
 See [Generator and traversable verification] for a complete explanation of the
 available verifications.
 
+Example output from [`traversed()`](#spy.traversed):
+
+![Example output from $spy->traversed()][spy-traversed-image]
+
 #### Verifying spy exceptions
 
 To verify that a spy threw an exception, use [`threw()`](#spy.threw):
@@ -4698,6 +4724,10 @@ $spy->threw();                                         // threw any exception
 $spy->threw('RuntimeException');                       // threw a runtime exception
 $spy->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
+
+Example output from [`threw()`](#spy.threw):
+
+![Example output from $spy->threw()][spy-threw-image]
 
 ### Verifying spy progress
 
@@ -4722,13 +4752,29 @@ To ignore traversable events, and simply verify that a spy has returned a value
 $spy->responded();
 ```
 
+Example output from [`completed()`](#spy.completed):
+
+![Example output from $spy->completed()][spy-completed-image]
+
+Example output from [`responded()`](#spy.responded):
+
+![Example output from $spy->responded()][spy-responded-image]
+
 ### Verifying cardinality with spies
 
-Cardinality modifiers change the amount of times a call, or other event, must
-meet the requirements of a subsequent verification.
+When used with a spy, cardinality modifiers change the amount of **calls** that
+must meet the requirements of a subsequent verification.
+
+This differs slightly from their usage with calls, where cardinality modifiers
+change the amount of **events** within the call that must meet the requirements
+of a subsequent verification.
+
+Note that cardinality also applies differently when using generator and
+traversable verification. See
+[Verifying cardinality with generators and traversables].
 
 Cardinality must be specified **before** verification, and can be applied to
-any verification call:
+any verification:
 
 ```php
 $spy->once()->called();        // called exactly 1 time
@@ -4816,12 +4862,7 @@ $spy = spy()->setLabel('a');
 When a verification fails for a labeled spy, the output is similar to the
 following:
 
-    Expected call on {spy}[label] with arguments like:
-        - "x"
-        - "y"
-    Call #0:
-        - "x"
-        - "z"
+![Example verification output when using a spy label][spy-label-image]
 
 ### Invoking spies
 
@@ -5113,6 +5154,17 @@ iteration.*
 *Similarly, when [traversable spies] are in use, a call that returns a
 traversable will not be considered "complete" until the traversable has been
 completely consumed via iteration.*
+
+<a name="call.index" />
+
+----
+
+> *int* $call->[**index**](#call.index)()
+
+Get the call index.
+
+*This number tracks the order of this call with respect to other calls made
+against the same spy.*
 
 <a name="call.sequenceNumber" />
 
@@ -5585,6 +5637,10 @@ $call->argument();  // first argument
 $call->argument(1); // second argument
 ```
 
+Example output from [`calledWith()`](#call.calledWith):
+
+![Example output from $call->calledWith()][call-called-with-image]
+
 #### Verifying call closure binding
 
 Where [closure binding] is supported, the bound object can be verified using
@@ -5593,6 +5649,10 @@ Where [closure binding] is supported, the bound object can be verified using
 ```php
 $call->calledOn($object);
 ```
+
+Example output from [`calledOn()`](#call.calledOn):
+
+![Example output from $call->calledOn()][call-called-on-image]
 
 ### Verifying call output
 
@@ -5604,6 +5664,10 @@ To verify a call's return value, use [`returned()`](#call.returned):
 $call->returned();    // returned anything
 $call->returned('a'); // returned 'a'
 ```
+
+Example output from [`returned()`](#call.returned):
+
+![Example output from $call->returned()][call-returned-image]
 
 ##### Verifying generators returned by calls
 
@@ -5626,6 +5690,10 @@ $generator->returned('b'); // generator returned 'b'
 
 See [Generator and traversable verification] for a complete explanation of the
 available verifications.
+
+Example output from [`generated()`](#call.generated):
+
+![Example output from $call->generated()][call-generated-image]
 
 ##### Verifying traversables returned by calls
 
@@ -5650,6 +5718,10 @@ $traversable->produced('b', 'c'); // traversable produced 'b' => 'c'
 See [Generator and traversable verification] for a complete explanation of the
 available verifications.
 
+Example output from [`traversed()`](#call.traversed):
+
+![Example output from $call->traversed()][call-traversed-image]
+
 #### Verifying call exceptions
 
 To verify that a call threw an exception, use [`threw()`](#call.threw):
@@ -5659,6 +5731,10 @@ $call->threw();                                         // threw any exception
 $call->threw('RuntimeException');                       // threw a runtime exception
 $call->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
+
+Example output from [`threw()`](#call.threw):
+
+![Example output from $call->threw()][call-threw-image]
 
 ### Verifying call progress
 
@@ -5683,13 +5759,26 @@ To ignore traversable events, and simply verify that a call has returned a value
 $call->responded();
 ```
 
+Example output from [`completed()`](#call.completed):
+
+![Example output from $call->completed()][call-completed-image]
+
+Example output from [`responded()`](#call.responded):
+
+![Example output from $call->responded()][call-responded-image]
+
 ### Verifying cardinality with calls
 
-Cardinality modifiers change the amount of times a call, or other event, must
-meet the requirements of a subsequent verification.
+When used with a call, cardinality modifiers change the amount of times that
+**events** within that call must meet the requirements of a subsequent
+verification.
+
+This differs slightly from their usage with spies, where cardinality modifiers
+change the amount of **calls** that must meet the requirements of a subsequent
+verification.
 
 Cardinality must be specified **before** verification, and can be applied to
-any verification call:
+any verification:
 
 ```php
 $call->never()->calledWith('a'); // not called with 'a'
@@ -5808,8 +5897,13 @@ For information on specific verification methods, see these sections:
     - [The generator verification result API]
     - [The event API]
     - [The order verification API]
+    - [The verification output API]
     - [Standard verification]
     - [Check verification]
+    - [Understanding verification output]
+        - [Expected behavior output]
+        - [Cardinality output]
+        - [Actual behavior output]
     - [Generator and traversable verification]
         - [Verifying iteration]
         - [Verifying produced values]
@@ -5817,12 +5911,14 @@ For information on specific verification methods, see these sections:
         - [Verifying exceptions received by generators]
         - [Verifying generator return values]
         - [Verifying generator exceptions]
+        - [Verifying cardinality with generators and traversables]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
             - [Intermediate events in order verification]
             - [Similar events in order verification]
     - [Verifying that there was no interaction with a mock]
+    - [Using colored verification output]
 
 ### The verification result API
 
@@ -6023,6 +6119,117 @@ Throws an exception unless iteration of the traversable completed.
 Checks if iteration of the traversable completed.
 
 *See [Verifying iteration], [Check verification].*
+
+<a name="verification.never" />
+
+----
+
+> *fluent* $verification->[**never**](#verification.never)()
+
+Requires that the next verification never matches.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened an exact number of times],
+[Verifying that a call event happened an exact number of times].*
+
+<a name="verification.once" />
+
+----
+
+> *fluent* $verification->[**once**](#verification.once)()
+
+Requires that the next verification matches only once.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened an exact number of times],
+[Verifying that a call event happened an exact number of times].*
+
+<a name="verification.twice" />
+
+----
+
+> *fluent* $verification->[**twice**](#verification.twice)()
+
+Requires that the next verification matches exactly two times.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened an exact number of times],
+[Verifying that a call event happened an exact number of times].*
+
+<a name="verification.thrice" />
+
+----
+
+> *fluent* $verification->[**thrice**](#verification.thrice)()
+
+Requires that the next verification matches exactly three times.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened an exact number of times],
+[Verifying that a call event happened an exact number of times].*
+
+<a name="verification.times" />
+
+----
+
+> *fluent* $verification->[**times**](#verification.times)($times)
+
+Requires that the next verification matches exactly `$times` times.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened an exact number of times],
+[Verifying that a call event happened an exact number of times].*
+
+<a name="verification.atLeast" />
+
+----
+
+> *fluent* $verification->[**atLeast**](#verification.atLeast)($minimum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened a bounded number of times],
+[Verifying that a call event happened a bounded number of times].*
+
+<a name="verification.atMost" />
+
+----
+
+> *fluent* $verification->[**atMost**](#verification.atMost)($maximum)
+
+Requires that the next verification matches a number of times less than or equal
+to `$maximum`.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened a bounded number of times],
+[Verifying that a call event happened a bounded number of times].*
+
+<a name="verification.between" />
+
+----
+
+> *fluent* $verification->[**between**](#verification.between)($minimum, $maximum)
+
+Requires that the next verification matches a number of times greater than or
+equal to `$minimum`, and less than or equal to `$maximum`.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that a spy event happened a bounded number of times],
+[Verifying that a call event happened a bounded number of times].*
+
+<a name="verification.always" />
+
+----
+
+> *fluent* $verification->[**always**](#verification.always)()
+
+Requires that the next verification matches for all possible items.
+
+*See [Verifying cardinality with generators and traversables],
+[Verifying that all spy events happen the same way],
+[Verifying that all call events happen the same way].*
 
 ### The generator verification result API
 
@@ -6341,6 +6548,22 @@ event.
 
 *See [Dynamic order verification].*
 
+### The verification output API
+
+<a name="facade.setUseColor" />
+
+----
+
+> *void* [**setUseColor**](#facade.setUseColor)($useColor) *(with [use function])*<br />
+> *void* x\\[**setUseColor**](#facade.setUseColor)($useColor) *(without [use function])*<br />
+> *void* Phony::[**setUseColor**](#facade.setUseColor)($useColor) *(static)*
+
+Turn on or off the use of [ANSI colored output].
+
+*Pass `null` to detect automatically.*
+
+*See [Using colored verification output].*
+
 ### Standard verification
 
 "Standard" verification involves "recording" failures with the
@@ -6377,6 +6600,52 @@ not yet have first-class support in *Phony*:
 ```php
 expect($spy->checkCalled())->to->be->ok;
 ```
+
+### Understanding verification output
+
+Typical verification output looks something like the following example. Hovering
+over a section of the example will provide an explanation of that part of the
+output:
+
+![Example verification output][verification-image]
+
+#### Expected behavior output
+
+The first part of the output explains what was expected. In the above example:
+
+- `Expected ClassA[label]->methodA call` -
+  Expected a call to `methodA` on a mock of `ClassA`, with a label of `label`.
+- `with arguments:` - The arguments should match the conditions detailed below.
+- `✓ "aardvark" (1 match)` - The first argument should be the string
+  `"aardvark"`, and 1 call had a matching first argument.
+- `✗ #0["bonobo", "chameleon", "dugong"] (0 matches)` - The second argument
+  should be an array with 3 string elements, but no calls had a matching second
+  argument.
+
+#### Cardinality output
+
+The second part of the output explains the "cardinality" of both the expectation
+(if relevant), and the actual events. In the above example:
+
+- `Matched 0 of 2:` - There were 2 calls, and neither of them matched.
+
+#### Actual behavior output
+
+The third part of the output explains what actually happened. In the above
+example:
+
+- `✗ Call #0:` - The first call did not match.
+- `✓ "aardvark"` - The first argument of the first call matched.
+- `✗ #0["bonobo", "[-chameleon-]{+capybara+}", "dugong"]` - The second argument
+  of the first call did not match. The second array element was expected to be
+  `"chameleon"`, but it was actually `"capybara"`.
+- `✗ Call #1:` - The second call did not match.
+- `✗ "[-aardvark-]{+armadillo+}"` - The first argument of the second call did
+  not match. The argument was expected to be `"aardvark"`, but it was actually
+  `"armadillo"`.
+- `✗ #0["bonobo", "chameleon", "[-dugong-]{+dormouse+}"]` - The second argument
+  of the second call did not match. The third array element was expected to be
+  `"dugong"`, but it was actually `"dormouse"`.
 
 ### Generator and traversable verification
 
@@ -6430,6 +6699,14 @@ $subject->generated()->consumed(); // iteration of the generator completed
 $subject->traversed()->consumed(); // iteration of the traversable completed
 ```
 
+Example output from [`used()`](#verification.used):
+
+![Example output from $traversable->used()][verification-used-image]
+
+Example output from [`consumed()`](#verification.consumed):
+
+![Example output from $traversable->consumed()][verification-consumed-image]
+
 #### Verifying produced values
 
 To verify that a value was yielded by a generator, use
@@ -6454,6 +6731,10 @@ $traversable->produced('a');      // produced 'a' with any key
 $traversable->produced('a', 'b'); // produced 'b' with key 'a'
 ```
 
+Example output from [`produced()`](#verification.produced):
+
+![Example output from $traversable->produced()][verification-produced-image]
+
 #### Verifying values received by generators
 
 To verify that a value was received by a generator, use
@@ -6465,6 +6746,10 @@ $generator = $subject->generated(); // returned a generator
 $generator->received();    // received anything
 $generator->received('a'); // received 'a'
 ```
+
+Example output from [`received()`](#verification.received):
+
+![Example output from $generator->received()][verification-received-image]
 
 #### Verifying exceptions received by generators
 
@@ -6480,6 +6765,10 @@ $generator->receivedException('RuntimeException');                       // rece
 $generator->receivedException(new RuntimeException('You done goofed.')); // received a runtime exception with a specific message
 ```
 
+Example output from [`receivedException()`](#verification.receivedException):
+
+![Example output from $generator->receivedException()][verification-received-exception-image]
+
 #### Verifying generator return values
 
 To verify a generator's return value, use [`returned()`](#verification.returned)
@@ -6491,6 +6780,10 @@ $generator = $subject->generated(); // returned a generator
 $generator->returned();    // returned anything
 $generator->returned('a'); // returned 'a'
 ```
+
+Example output from [`returned()`](#verification.returned):
+
+![Example output from $generator->returned()][verification-returned-image]
 
 #### Verifying generator exceptions
 
@@ -6504,6 +6797,31 @@ $generator->threw();                                         // threw any except
 $generator->threw('RuntimeException');                       // threw a runtime exception
 $generator->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
+
+Example output from [`threw()`](#verification.threw):
+
+![Example output from $generator->threw()][verification-threw-image]
+
+#### Verifying cardinality with generators and traversables
+
+When used **before** `generated()` or `traversed()`, cardinality modifiers
+change the amount of calls that must return a [generator] or traversable:
+
+```php
+$subject->twice()->generated(); // returned a generator exactly 2 times
+$subject->twice()->traversed(); // returned a traversable exactly 2 times
+```
+
+When used **after** `generated()` or `traversed()`, cardinality modifiers
+relate to the subset of calls that already satisfied the initial verification:
+
+```php
+$subject->generated()->twice()->produced('a'); // produced 'a' from exactly 2 generator calls
+$subject->traversed()->twice()->produced('a'); // produced 'a' from exactly 2 traversable calls
+```
+
+See [Verifying cardinality with spies] and [Verifying cardinality with calls]
+for a full list or cardinality modifiers.
 
 ### Order verification
 
@@ -6582,6 +6900,10 @@ any [verification] implemented by *Phony*. Both [`inOrder()`](#facade.inOrder)
 and [`anyOrder()`](#facade.anyOrder) will accept any number of
 [verification results] to verify.
 
+Example output from [`inOrder()`](#facade.inOrder):
+
+![Example output from inOrder()][facade-in-order-image]
+
 #### Dynamic order verification
 
 In addition to [`inOrder()`](#facade.inOrder) and
@@ -6636,6 +6958,10 @@ inOrder(
     anyOrderSequence($returnedEvents),
 );
 ```
+
+Example output from [`inOrderSequence()`](#facade.inOrderSequence):
+
+![Example output from inOrderSequence()][facade-in-order-sequence-image]
 
 #### Order verification caveats
 
@@ -6726,6 +7052,25 @@ $handle->noInteraction(); // fails
 ```
 
 This verification will fail if any of the mock's methods have been called.
+
+Example output from [`noInteraction()`](#handle.noInteraction):
+
+![Example output from $handle->noInteraction()][handle-no-interaction-image]
+
+### Using colored verification output
+
+To control the use of [ANSI colored output], use
+[`setUseColor()`](#facade.setUseColor):
+
+```php
+setUseColor($useColor);        // with `use function`
+x\setUseColor($useColor);      // without `use function`
+Phony::setUseColor($useColor); // static
+```
+
+Passing `true` turns color on, passing `false` turns color off, and passing
+`null` will cause *Phony* to automatically detect whether color should be used
+(this is the default behaviour).
 
 ## Matchers
 
@@ -7102,6 +7447,7 @@ versions:
 ```php
 $spy->calledWith('*');           // this is supported
 $spy->calledWith('a', 'b', '*'); // this is supported
+$spy->calledWith('*', 'b', 'c'); // this is not supported
 $spy->calledWith('a', '*', 'c'); // this is not supported
 ```
 
@@ -7395,6 +7741,7 @@ For the full copyright and license information, please view the [LICENSE file].
 
 <!-- Heading references -->
 
+[actual behavior output]: #actual-behavior-output
 [ad hoc definition magic "self" values]: #ad-hoc-definition-magic-self-values
 [ad hoc definition values]: #ad-hoc-definition-values
 [ad hoc mocks]: #ad-hoc-mocks
@@ -7406,6 +7753,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [call verification]: #call-verification
 [calling a constructor manually]: #calling-a-constructor-manually
 [calls]: #calls
+[cardinality output]: #cardinality-output
 [check verification]: #check-verification
 [comparing exceptions]: #comparing-exceptions
 [comparing mocks]: #comparing-mocks
@@ -7416,6 +7764,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [default values for return types]: #default-values-for-return-types
 [dynamic order verification]: #dynamic-order-verification
 [example test suites]: #example-test-suites
+[expected behavior output]: #expected-behavior-output
 [export depth]: #export-depth
 [export identifiers and references]: #export-identifiers-and-references
 [exporter special cases]: #exporter-special-cases
@@ -7519,6 +7868,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [the spy api]: #the-spy-api
 [the stub api]: #the-stub-api
 [the traversable verification result api]: #the-traversable-verification-result-api
+[the verification output api]: #the-verification-output-api
 [the verification result api]: #the-verification-result-api
 [the wildcard matcher api]: #the-wildcard-matcher-api
 [third-party wildcard matcher integrations]: #third-party-wildcard-matcher-integrations
@@ -7529,8 +7879,10 @@ For the full copyright and license information, please view the [LICENSE file].
 [undefinedcallexception]: #undefinedcallexception
 [undefinedeventexception]: #undefinedeventexception
 [undefinedresponseexception]: #undefinedresponseexception
+[understanding verification output]: #understanding-verification-output
 [usage]: #usage
 [using a callable as an answer]: #using-a-callable-as-an-answer
+[using colored verification output]: #using-colored-verification-output
 [verification handles]: #verification-handles
 [verification]: #verification
 [verifying call closure binding]: #verifying-call-closure-binding
@@ -7540,6 +7892,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying call progress]: #verifying-call-progress
 [verifying call return values]: #verifying-call-return-values
 [verifying cardinality with calls]: #verifying-cardinality-with-calls
+[verifying cardinality with generators and traversables]: #verifying-cardinality-with-generators-and-traversables
 [verifying cardinality with spies]: #verifying-cardinality-with-spies
 [verifying exceptions received by calls]: #verifying-exceptions-received-by-calls
 [verifying exceptions received by generators]: #verifying-exceptions-received-by-generators
@@ -7625,10 +7978,44 @@ For the full copyright and license information, please view the [LICENSE file].
 [verification-api]: #the-verification-result-api
 [wildcard-api]: #the-wildcard-matcher-api
 
+<!-- Image references -->
+
+[call-called-on-image]: img/verification/called-on/call-binding-mismatch.svg
+[call-called-with-image]: img/verification/called-with/call-argument-mismatch.svg
+[call-completed-image]: img/verification/completed/call-none-completed.svg
+[call-generated-image]: img/verification/generated/call-no-generator.svg
+[call-responded-image]: img/verification/responded/call-no-responses.svg
+[call-returned-image]: img/verification/returned/call-value-mismatch.svg
+[call-threw-image]: img/verification/threw/call-value-mismatch.svg
+[call-traversed-image]: img/verification/traversed/call-no-traversable.svg
+[facade-in-order-image]: img/verification/in-order/unexpected-order.svg
+[facade-in-order-sequence-image]: img/verification/in-order/unexpected-order-sequence.svg
+[handle-no-interaction-image]: img/verification/no-interaction/parent-class.svg
+[mock-label-image]: img/verification/called-with/mock-label.svg
+[spy-called-image]: img/verification/called/no-calls.svg
+[spy-called-on-image]: img/verification/called-on/binding-mismatch.svg
+[spy-called-with-image]: img/verification/called-with/argument-mismatch.svg
+[spy-completed-image]: img/verification/completed/none-completed.svg
+[spy-generated-image]: img/verification/generated/no-generator.svg
+[spy-label-image]: img/verification/called-with/spy-label.svg
+[spy-responded-image]: img/verification/responded/no-responses.svg
+[spy-returned-image]: img/verification/returned/value-mismatch.svg
+[spy-threw-image]: img/verification/threw/value-mismatch.svg
+[spy-traversed-image]: img/verification/traversed/no-traversable.svg
+[verification-consumed-image]: img/verification/consumed/traversed-unconsumed.svg
+[verification-image]: img/verification.svg
+[verification-produced-image]: img/verification/produced/traversed-key-value-mismatch.svg
+[verification-received-exception-image]: img/verification/received-exception/value-mismatch.svg
+[verification-received-image]: img/verification/received/value-mismatch.svg
+[verification-returned-image]: img/verification/generated-returned/value-mismatch.svg
+[verification-threw-image]: img/verification/generated-threw/value-mismatch.svg
+[verification-used-image]: img/verification/used/traversed-unused.svg
+
 <!-- External references -->
 
 [@ezzatron]: https://github.com/ezzatron
 [`__invoke()`]: http://php.net/language.oop5.magic#object.invoke
+[ansi colored output]: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 [closure binding]: http://php.net/closure.bind
 [composer]: http://getcomposer.org/
 [counterpart]: http://docs.counterpartphp.org/

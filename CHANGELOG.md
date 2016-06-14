@@ -2,12 +2,21 @@
 
 ## Next release
 
-- **[IMPROVED]** Improved the output of `calledWith()` verification failures
-  ([#161]).
+- **[IMPROVED]** Complete overhaul of verification output, with improvements to
+  the output of all verifications ([#161], [#170]).
+- **[IMPROVED]** Improved exporting of closures under HHVM ([#166]).
 - **[FIXED]** Fixed `calledOn()` behavior ([#160]).
+- **[FIXED]** Fixed verification output under Windows ([#167]).
+- **[FIXED]** Error reporting is now correctly restored in all cases ([#168]).
+- **[FIXED]** Fixed the recording of static magic method calls ([#169]).
 
 [#160]: https://github.com/eloquent/phony/issues/160
 [#161]: https://github.com/eloquent/phony/issues/161
+[#166]: https://github.com/eloquent/phony/issues/166
+[#167]: https://github.com/eloquent/phony/issues/167
+[#168]: https://github.com/eloquent/phony/issues/168
+[#169]: https://github.com/eloquent/phony/issues/169
+[#170]: https://github.com/eloquent/phony/issues/170
 
 ## 0.10.1 (2016-06-07)
 

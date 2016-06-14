@@ -40,12 +40,13 @@ final class MockGenerationFailedException extends Exception implements
         $this->source = $source;
         $this->error = $error;
 
-        $lines = explode("\n", $source);
+        $lines = explode(PHP_EOL, $source);
 
         if (null === $error) {
             $message = sprintf(
-                "Mock class %s generation failed.\nRelevant lines:%%s",
-                $definition->className()
+                'Mock class %s generation failed.%sRelevant lines:%%s',
+                $definition->className(),
+                PHP_EOL
             );
             $errorLineNumber = null;
         } else {
@@ -62,11 +63,12 @@ final class MockGenerationFailedException extends Exception implements
 
             $message = sprintf(
                 'Mock class %s generation failed: ' .
-                    "%s in generated code on line %d.\n" .
+                    '%s in generated code on line %d.%s' .
                     'Relevant lines:%%s',
                 $definition->className(),
                 $error['message'],
-                $errorLineNumber
+                $errorLineNumber,
+                PHP_EOL
             );
         }
 
@@ -86,7 +88,8 @@ final class MockGenerationFailedException extends Exception implements
             }
 
             $renderedLines .= sprintf(
-                "\n%s%s %s",
+                '%s%s%s %s',
+                PHP_EOL,
                 str_pad($lineNumber + 1, $padSize, ' ', STR_PAD_LEFT),
                 $highlight ? ':' : ' ',
                 $line

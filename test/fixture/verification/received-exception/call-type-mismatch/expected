@@ -1,0 +1,10 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
+    %GREEN%✓%RESET% Returned Generator, then:
+        %RED%✗%RESET% Received exception InvalidArgumentException
+Matched 0 of 1:
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %RED%✗%RESET% Received exception RuntimeException#0{message: "MECHA-BONOBO"}
+        - Threw RuntimeException#0{message: "MECHA-BONOBO"}

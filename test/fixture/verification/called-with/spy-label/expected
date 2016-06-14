@@ -1,0 +1,7 @@
+%RESET%Expected %BOLD%{spy}[label]%RESET% call with arguments:
+    %RED%✗%RESET% "aardvark" %RED%%FAINT%(0 matches)%RESET%
+    %RED%✗%RESET% #0["bonobo", "chameleon", "dugong"] %RED%%FAINT%(0 matches)%RESET%
+Matched 0 of 1:
+%RED%✗%RESET% Call #0:
+    %RED%✗%RESET% "%CYAN%%FAINT%[-%RESET%%CYAN%aardvark%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%armadillo%FAINT%+}%RESET%"
+    %RED%✗%RESET% #0["bonobo", "%CYAN%%FAINT%[-%RESET%%CYAN%chameleon%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%capybara%FAINT%+}%RESET%", "dugong"]

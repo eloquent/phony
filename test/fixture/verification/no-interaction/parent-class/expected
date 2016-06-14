@@ -1,0 +1,3 @@
+%RESET%Expected no interaction with %BOLD%ClassA[label]%RESET%. Calls:
+    %RED%✗%RESET% ClassA[label]->methodA("b", "c")
+    %RED%✗%RESET% ClassA[label]->methodB("c", "d")

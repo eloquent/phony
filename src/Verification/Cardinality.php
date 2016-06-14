@@ -30,7 +30,7 @@ class Cardinality
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function __construct(
-        $minimum = 0,
+        $minimum = 1,
         $maximum = null,
         $isAlways = false
     ) {
@@ -39,6 +39,10 @@ class Cardinality
         }
 
         if (null !== $maximum && $minimum > $maximum) {
+            throw new InvalidCardinalityStateException();
+        }
+
+        if (null === $maximum && !$minimum) {
             throw new InvalidCardinalityStateException();
         }
 
@@ -139,7 +143,7 @@ class Cardinality
      */
     public function assertSingular()
     {
-        if ($this->minimum > 1 || $this->maximum > 1) {
+        if ($this->minimum > 1 || $this->maximum > 1 || $this->isAlways) {
             throw new InvalidSingularCardinalityException($this);
         }
 

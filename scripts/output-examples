@@ -1,0 +1,65 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Asplode\Asplode;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
+use Eloquent\Phony\Test\Phony;
+
+$rootPath = dirname(__DIR__);
+require $rootPath . '/vendor/autoload.php';
+
+Asplode::install();
+Phony::setUseColor(true);
+
+$fixturePath = $rootPath . '/test/fixture/verification';
+$verifications = array();
+
+foreach (scandir($fixturePath) as $verification) {
+    if ('.' === $verification[0]) {
+        continue;
+    }
+
+    $verificationPath = $fixturePath . '/' . $verification;
+
+    foreach (scandir($verificationPath) as $testName) {
+        if ('.' === $testName[0]) {
+            continue;
+        }
+
+        $testPath = $verificationPath . '/' . $testName;
+
+        if (is_dir($testPath)) {
+            $verifications[] = $verification . '/' . $testName;
+        }
+    }
+}
+
+$divider = str_repeat('=', 80) . PHP_EOL;
+$subDivider = str_repeat('-', 80) . PHP_EOL;
+
+echo PHP_EOL;
+
+foreach ($verifications as $verification) {
+    echo $divider;
+    echo $verification . PHP_EOL;
+    echo $divider . PHP_EOL;
+
+    $verificationPath =
+        $fixturePath . '/' . $verification . '/verification.php';
+
+    $source = file_get_contents($verificationPath);
+    $source = preg_replace('/^<\?php\n\n/', '', $source);
+    echo $source . PHP_EOL . $subDivider . PHP_EOL;
+
+    Phony::reset();
+
+    try {
+        require $verificationPath;
+
+        throw new RuntimeException('Verification did not throw an exception.');
+    } catch (AssertionException $e) {
+        echo $e->getMessage() . PHP_EOL;
+    }
+
+    echo PHP_EOL;
+}

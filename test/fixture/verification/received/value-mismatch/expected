@@ -1,0 +1,21 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls to behave like:
+    %GREEN%✓%RESET% Returned Generator, then: %FAINT%(1 match)%RESET%
+        %RED%✗%RESET% Received "MECHA-CHAMELEON"
+Matched 0 of 1:
+%FAINT%- Call #0 - {stub}[label]("aardvark"):%RESET%
+%FAINT%    - Returned #0[:1], then:%RESET%
+%FAINT%        - Started iterating%RESET%
+%FAINT%        - Produced 0 => "AARDVARK"%RESET%
+%FAINT%        - Finished iterating%RESET%
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %RED%✗%RESET% Received "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"
+        - Produced 1 => "BADGER"
+        %RED%✗%RESET% Received "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BADGER%FAINT%+}%RESET%"
+        - Returned null
+%FAINT%- Call #2 - {stub}[label]("chameleon"):%RESET%
+%FAINT%    - Returned "CHAMELEON"%RESET%
+%FAINT%- Call #3 - {stub}[label]("dugong"):%RESET%
+%FAINT%    - Threw RuntimeException#0{message: "DUGONG"}%RESET%

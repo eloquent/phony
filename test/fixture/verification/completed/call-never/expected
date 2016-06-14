@@ -1,0 +1,8 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 not to complete.
+%RED%✗%RESET% Call #1 - {stub}[label]():
+    %RED%✗%RESET% Returned #0[:3], then:
+        - Started iterating
+        - Produced 0 => "aardvark"
+        - Produced 1 => "bonobo"
+        - Produced 2 => "chameleon"
+        %RED%✗%RESET% Finished iterating

@@ -1,0 +1,3 @@
+%RESET%Expected no interaction with %BOLD%PhonyNoInteraction[label]%RESET%. Calls:
+    %RED%✗%RESET% PhonyNoInteraction[label]->methodA("b", "c")
+    %RED%✗%RESET% PhonyNoInteraction[label]->methodB("c", "d")

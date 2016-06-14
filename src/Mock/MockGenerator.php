@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock;
 
-use Eloquent\Phony\Mock\Builder\Method\MethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
@@ -118,7 +117,7 @@ class MockGenerator
             $className = $this->generateClassName($definition);
         }
 
-        return $this->generateHeader($definition, $className) .
+        $source = $this->generateHeader($definition, $className) .
             $this->generateConstants($definition) .
             $this->generateMethods(
                 $definition->methods()->publicStaticMethods()
@@ -134,20 +133,18 @@ class MockGenerator
             $this->generateCallParentMethods($definition) .
             $this->generateProperties($definition) .
             "\n}\n";
+
+        // @codeCoverageIgnoreStart
+        if (PHP_EOL !== "\n") {
+            $source = str_replace("\n", PHP_EOL, $source);
+        }
+        // @codeCoverageIgnoreEnd
+
+        return $source;
     }
 
-    /**
-     * Generate the class header.
-     *
-     * @param MockDefinition $definition The definition.
-     * @param string         $className  The class name.
-     *
-     * @return string The source code.
-     */
-    protected function generateHeader(
-        MockDefinition $definition,
-        $className
-    ) {
+    private function generateHeader($definition, $className)
+    {
         if ($typeNames = $definition->typeNames()) {
             $usedTypes = "\n *";
 
@@ -162,8 +159,8 @@ class MockGenerator
 
         if (count($classNameParts) > 1) {
             $className = array_pop($classNameParts);
-            $namespace = 'namespace ' . implode('\\', $classNameParts) .
-                ";\n\n";
+            $namespace =
+                'namespace ' . implode('\\', $classNameParts) . ";\n\n";
         } else {
             $namespace = '';
         }
@@ -205,11 +202,7 @@ class MockGenerator
                     '::' .
                     $methodName .
                     "\n            as private _callTrait_" .
-                    str_replace(
-                        '\\',
-                        "\xc2\xa6",
-                        $typeName
-                    ) .
+                    str_replace('\\', "\xc2\xa6", $typeName) .
                     "\xc2\xbb" .
                     $methodName .
                     ';';
@@ -221,14 +214,7 @@ class MockGenerator
         return $source;
     }
 
-    /**
-     * Generate the class constants.
-     *
-     * @param MockDefinition $definition The definition.
-     *
-     * @return string The source code.
-     */
-    protected function generateConstants(MockDefinition $definition)
+    private function generateConstants($definition)
     {
         $constants = $definition->customConstants();
         $source = '';
@@ -248,16 +234,8 @@ class MockGenerator
         return $source;
     }
 
-    /**
-     * Generate the __callStatic() method.
-     *
-     * @param MockDefinition $definition The definition.
-     *
-     * @return string The source code.
-     */
-    protected function generateMagicCallStatic(
-        MockDefinition $definition
-    ) {
+    private function generateMagicCallStatic($definition)
+    {
         $methods = $definition->methods();
         $callStaticName = $methods->methodName('__callstatic');
         $methods = $methods->publicStaticMethods();
@@ -318,14 +296,7 @@ EOD;
         return $source;
     }
 
-    /**
-     * Generate the constructors.
-     *
-     * @param MockDefinition $definition The definition.
-     *
-     * @return string The source code.
-     */
-    protected function generateConstructors(MockDefinition $definition)
+    private function generateConstructors($definition)
     {
         $constructor = null;
 
@@ -350,14 +321,7 @@ EOD;
 EOD;
     }
 
-    /**
-     * Generate the supplied methods.
-     *
-     * @param array<string,MethodDefinition> $methods The methods.
-     *
-     * @return string The source code.
-     */
-    protected function generateMethods(array $methods)
+    private function generateMethods($methods)
     {
         $source = '';
 
@@ -417,7 +381,8 @@ EOD;
                         $variadicIndex = ++$index;
                         $variadicReference = $parameter[1];
                     } else {
-                        $argumentPacking .= "\n        if (\$argumentCount > " .
+                        $argumentPacking .=
+                            "\n        if (\$argumentCount > " .
                             ++$index .
                             ") {\n            \$arguments[] = " .
                             $parameter[1] .
@@ -439,7 +404,8 @@ EOD;
             }
 
             if ($variadicIndex > -1) {
-                $body = "        \$argumentCount = \\func_num_args();\n" .
+                $body =
+                    "        \$argumentCount = \\func_num_args();\n" .
                     '        $arguments = array();' .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
@@ -448,11 +414,13 @@ EOD;
                     "            \$arguments[] = $variadicReference\$a" .
                     "${variadicIndex}[\$i - $variadicIndex];\n" .
                     "        }\n\n        \$result = ${handle}->spy" .
-                    "(__FUNCTION__)->invokeWith(\n            " .
-                    "new \Eloquent\Phony\Call\Arguments" .
-                    "(\$arguments)\n        );\n\n        return \$result;";
+                    "(__FUNCTION__)->invokeWith(\n" .
+                    '            new \Eloquent\Phony\Call\Arguments' .
+                    "(\$arguments)\n        );\n\n" .
+                    '        return $result;';
             } else {
-                $body = "        \$argumentCount = \\func_num_args();\n" .
+                $body =
+                    "        \$argumentCount = \\func_num_args();\n" .
                     '        $arguments = array();' .
                     $argumentPacking .
                     "\n\n        for (\$i = " .
@@ -460,9 +428,10 @@ EOD;
                     "; \$i < \$argumentCount; ++\$i) {\n" .
                     "            \$arguments[] = \\func_get_arg(\$i);\n" .
                     "        }\n\n        \$result = ${handle}->spy" .
-                    "(__FUNCTION__)->invokeWith(\n            " .
-                    "new \Eloquent\Phony\Call\Arguments" .
-                    "(\$arguments)\n        );\n\n        return \$result;";
+                    "(__FUNCTION__)->invokeWith(\n" .
+                    '            new \Eloquent\Phony\Call\Arguments' .
+                    "(\$arguments)\n        );\n\n" .
+                    '        return $result;';
             }
 
             $returnsReference = $methodReflector->returnsReference() ? '&' : '';
@@ -521,14 +490,7 @@ EOD;
         return $source;
     }
 
-    /**
-     * Generate the __call() method.
-     *
-     * @param MockDefinition $definition The definition.
-     *
-     * @return string The source code.
-     */
-    protected function generateMagicCall(MockDefinition $definition)
+    private function generateMagicCall($definition)
     {
         $methods = $definition->methods();
         $callName = $methods->methodName('__call');
@@ -588,16 +550,8 @@ EOD;
         return $source;
     }
 
-    /**
-     * Generate the call parent methods.
-     *
-     * @param MockDefinition $definition The definition.
-     *
-     * @return string The source code.
-     */
-    protected function generateCallParentMethods(
-        MockDefinition $definition
-    ) {
+    private function generateCallParentMethods($definition)
+    {
         $methods = $definition->methods();
         $traitNames = $definition->traitNames();
         $hasTraits = (bool) $traitNames;
@@ -646,15 +600,38 @@ EOD;
 EOD;
         }
 
-        if (null !== $methods->methodName('__callstatic')) {
-            $source .= <<<'EOD'
+        if (null !== ($name = $methods->methodName('__callstatic'))) {
+            $methodName = "'parent::__callStatic'";
+
+            if ($hasTraits) {
+                $methodsByName = $methods->staticMethods();
+
+                if (
+                    isset($methodsByName[$name]) &&
+                    $methodsByName[$name] instanceof TraitMethodDefinition
+                ) {
+                    $traitName = $methodsByName[$name]
+                        ->method()->getDeclaringClass()->getName();
+                    $methodName = var_export(
+                        'self::_callTrait_' .
+                            \str_replace('\\', "\xc2\xa6", $traitName) .
+                            "\xc2\xbb" .
+                            $name,
+                        true
+                    );
+                }
+            }
+
+            $source .= <<<EOD
 
     private static function _callMagicStatic(
-        $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        \$name,
+        \Eloquent\Phony\Call\Arguments \$arguments
     ) {
-        return self::$_staticHandle
-            ->spy('__callStatic')->invoke($name, $arguments->all());
+        return \call_user_func_array(
+            $methodName,
+            array(\$name, \$arguments->all())
+        );
     }
 
 EOD;
@@ -779,12 +756,14 @@ EOD;
             $methodName = "'parent::__call'";
 
             if ($hasTraits) {
-                $methods = $methods->methods();
-                $method = $methods[$name];
+                $methodsByName = $methods->methods();
 
-                if ($method instanceof TraitMethodDefinition) {
-                    $traitName =
-                        $method->method()->getDeclaringClass()->getName();
+                if (
+                    isset($methodsByName[$name]) &&
+                    $methodsByName[$name] instanceof TraitMethodDefinition
+                ) {
+                    $traitName = $methodsByName[$name]
+                        ->method()->getDeclaringClass()->getName();
                     $methodName = var_export(
                         '_callTrait_' .
                             \str_replace('\\', "\xc2\xa6", $traitName) .
@@ -813,14 +792,7 @@ EOD;
         return $source;
     }
 
-    /**
-     * Generate the properties.
-     *
-     * @param MockDefinition $definition The definition.
-     *
-     * @return string The source code.
-     */
-    protected function generateProperties(MockDefinition $definition)
+    private function generateProperties($definition)
     {
         $staticProperties = $definition->customStaticProperties();
         $properties = $definition->customProperties();
@@ -828,7 +800,7 @@ EOD;
 
         foreach ($staticProperties as $name => $value) {
             $source .=
-                "\n    public static \$" .
+                "\n    public static $" .
                 $name .
                 ' = ' .
                 (null === $value ? 'null' : $this->renderValue($value)) .
@@ -837,7 +809,7 @@ EOD;
 
         foreach ($properties as $name => $value) {
             $source .=
-                "\n    public \$" .
+                "\n    public $" .
                 $name .
                 ' = ' .
                 (null === $value ? 'null' : $this->renderValue($value)) .
@@ -875,21 +847,15 @@ EOD;
             $source .= 'array()';
         }
 
-        $source .= ";\n    private static \$_customMethods = array();" .
-            "\n    private static \$_staticHandle;" .
-            "\n    private \$_handle;";
+        $source .= ";\n" .
+            "    private static \$_customMethods = array();\n" .
+            "    private static \$_staticHandle;\n" .
+            '    private $_handle;';
 
         return $source;
     }
 
-    /**
-     * Render the supplied value.
-     *
-     * @param mixed $value The value.
-     *
-     * @return string The rendered value.
-     */
-    protected function renderValue($value)
+    private function renderValue($value)
     {
         return str_replace('array (', 'array(', var_export($value, true));
     }

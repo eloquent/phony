@@ -342,4 +342,17 @@ abstract class AbstractFacade
     {
         return static::driver()->exporter->setDepth($depth);
     }
+
+    /**
+     * Turn on or off the use of ANSI colored output.
+     *
+     * Pass `null` to detect automatically.
+     *
+     * @param bool|null $useColor True to use color.
+     */
+    public static function setUseColor($useColor)
+    {
+        static::driver()->assertionRenderer->setUseColor($useColor);
+        static::driver()->differenceEngine->setUseColor($useColor);
+    }
 }

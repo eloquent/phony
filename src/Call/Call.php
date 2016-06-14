@@ -29,6 +29,16 @@ use InvalidArgumentException;
 interface Call extends Event, EventCollection
 {
     /**
+     * Get the call index.
+     *
+     * This number tracks the order of this call with respect to other calls
+     * made against the same spy.
+     *
+     * @return int The index.
+     */
+    public function index();
+
+    /**
      * Returns true if this call has responded.
      *
      * A call that has responded has returned a value, or thrown an exception.

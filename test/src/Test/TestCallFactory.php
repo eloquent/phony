@@ -39,6 +39,7 @@ class TestCallFactory extends CallFactory
     public function reset()
     {
         $this->eventFactory->reset();
+        $this->index = 0;
     }
 
     public function create(
@@ -52,7 +53,7 @@ class TestCallFactory extends CallFactory
                 ->createCalled(function () {}, new Arguments(array()));
         }
 
-        $call = new CallData($calledEvent);
+        $call = new CallData($this->index++, $calledEvent);
 
         if ($responseEvent) {
             $call->setResponseEvent($responseEvent);
@@ -72,4 +73,5 @@ class TestCallFactory extends CallFactory
     }
 
     private $eventFactory;
+    private $index = 0;
 }

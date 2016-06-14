@@ -1,0 +1,12 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 not to behave like:
+    %RED%✗%RESET% Returned Generator, then:
+        %RED%✗%RESET% Received <any>
+Matched 2 of 2:
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %RED%✗%RESET% Received "MECHA-BONOBO"
+        - Produced 1 => "BADGER"
+        %RED%✗%RESET% Received "MECHA-BADGER"
+        - Returned null

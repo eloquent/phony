@@ -21,6 +21,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->featureDetector = FeatureDetector::instance();
+
+        x\setUseColor(false);
     }
 
     public function testMockingStatic()
@@ -568,42 +570,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $handle->mock()->constructorArguments);
     }
 
-    public function testSpyAssertionFailureOutput()
-    {
-        $spy = x\spy();
-        $spy->setLabel('example');
-        $spy('a', 'b');
-        $expected = <<<'EOD'
-Expected call on {spy}[example] with arguments like:
-    - "c"
-    - "d"
-Call #0:
-    - "a"
-    - "b"
-EOD;
-
-        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
-        $spy->calledWith('c', 'd');
-    }
-
-    public function testMockAssertionFailureOutput()
-    {
-        $handle = x\partialMock('Eloquent\Phony\Test\TestClassA', null, null, 'PhonyMockAssertionFailure');
-        $handle->setLabel('example');
-        $handle->mock()->testClassAMethodA('a', 'b');
-        $expected = <<<'EOD'
-Expected call on TestClassA[example]->testClassAMethodA with arguments like:
-    - "c"
-    - "d"
-Call #0:
-    - "a"
-    - "b"
-EOD;
-
-        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
-        $handle->testClassAMethodA->calledWith('c', 'd');
-    }
-
     public function testMatcherAdaptationForBooleanValues()
     {
         $handle = x\mock('Eloquent\Phony\Test\TestClassA');
@@ -820,7 +786,7 @@ EOD;
 
         $this->assertNotNull($error);
         $this->assertContains(
-            'Expected call on TestClassA[label]->testClassAMethodA with arguments like',
+            'Expected TestClassA[label]->testClassAMethodA call with arguments',
             $error->getMessage()
         );
     }
@@ -841,7 +807,7 @@ EOD;
 
         $this->assertNotNull($error);
         $this->assertContains(
-            'Expected call on TestClassB[label]->magicMethod with arguments like',
+            'Expected TestClassB[label]->magicMethod call with arguments',
             $error->getMessage()
         );
     }
@@ -861,7 +827,7 @@ EOD;
 
         $this->assertNotNull($error);
         $this->assertContains(
-            'Expected call on IteratorAggregate[label]->getIterator with arguments like',
+            'Expected IteratorAggregate[label]->getIterator call with arguments',
             $error->getMessage()
         );
     }
@@ -881,7 +847,7 @@ EOD;
 
         $this->assertNotNull($error);
         $this->assertContains(
-            'Expected call on PhonyMockAssertionRenderingWithCustomMethod[label]->customMethod with arguments like',
+            'Expected PhonyMockAssertionRenderingWithCustomMethod[label]->customMethod call with arguments',
             $error->getMessage()
         );
     }
@@ -915,13 +881,6 @@ EOD;
 
         $this->assertNull($handle->mock()->testClassAMethodA($spy));
         $spy->called();
-    }
-
-    public function testAlwaysWithNoEvents()
-    {
-        $spy = x\spy();
-
-        $this->assertTrue((boolean) $spy->atLeast(0)->always()->checkCalledWith('a'));
     }
 
     public function testIncompleteCalls()
@@ -1007,7 +966,7 @@ EOD;
         }
 
         $this->expectOutputString(
-            "WARNING: Stub criteria '<none>' were never used. Check for incomplete stub rules.\n"
+            "WARNING: Stub criteria '<none>' were never used. Check for incomplete stub rules." . PHP_EOL
         );
 
         call_user_func(
@@ -1080,13 +1039,11 @@ EOD;
             ->named('PhonyTestAdHocMocksWithMagicSelfOutput');
         $mock = $builder->get();
         $handle = x\on($mock)->setLabel('label');
-        $expected = <<<'EOD'
-Expected call on PhonyTestAdHocMocksWithMagicSelfOutput[label]->test with arguments like:
-    - "a"
-Never called.
-EOD;
 
-        $this->setExpectedException('PHPUnit_Framework_AssertionFailedError', $expected);
+        $this->setExpectedException(
+            'PHPUnit_Framework_AssertionFailedError',
+            'PhonyTestAdHocMocksWithMagicSelfOutput[label]->test'
+        );
         $handle->test->calledWith('a');
     }
 

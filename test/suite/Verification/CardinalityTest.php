@@ -35,7 +35,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Cardinality();
 
-        $this->assertSame(0, $this->subject->minimum());
+        $this->assertSame(1, $this->subject->minimum());
         $this->assertNull($this->subject->maximum());
         $this->assertFalse($this->subject->isNever());
         $this->assertFalse($this->subject->isAlways());
@@ -50,7 +50,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     public function testConstructorFailureNegativeMax()
     {
         $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
-        new Cardinality(null, -1);
+        new Cardinality(0, -1);
     }
 
     public function testConstructorFailureInvalidMinMax()
@@ -62,12 +62,18 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
     public function testConstructorFailureInvalidIsAlways()
     {
         $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
-        new Cardinality(null, 0, true);
+        new Cardinality(0, 0, true);
+    }
+
+    public function testConstructorFailureInvalidIsAny()
+    {
+        $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
+        new Cardinality(0, null);
     }
 
     public function testIsNever()
     {
-        $this->subject = new Cardinality(null, 0);
+        $this->subject = new Cardinality(0, 0);
 
         $this->assertTrue($this->subject->isNever());
     }
@@ -81,7 +87,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
 
     public function testSetIsAlwaysFailure()
     {
-        $this->subject = new Cardinality(null, 0);
+        $this->subject = new Cardinality(0, 0);
 
         $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
         $this->subject->setIsAlways(true);
@@ -142,7 +148,7 @@ class CardinalityTest extends PHPUnit_Framework_TestCase
 
     public function testAssertSingularFailureMaximum()
     {
-        $this->subject = new Cardinality(null, 2);
+        $this->subject = new Cardinality(0, 2);
 
         $this->setExpectedException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
         $this->subject->assertSingular();

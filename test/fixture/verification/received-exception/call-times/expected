@@ -1,0 +1,10 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
+    %GREEN%✓%RESET% Returned Generator, then:
+        %RED%✗%RESET% Received exception RuntimeException#0{message: "MECHA-BONOBO"}
+%RED%Exactly 2 required. Matched 1 of 1:%RESET%
+%GREEN%✓%RESET% Call #1 - {stub}[label]("bonobo"):
+    %GREEN%✓%RESET% Returned Generator, then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %GREEN%✓%RESET% Received exception RuntimeException#1{message: "MECHA-BONOBO"}
+        - Threw RuntimeException#1{message: "MECHA-BONOBO"}
