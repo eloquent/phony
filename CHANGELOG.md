@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.10.2 (2016-07-06)
 
 - **[IMPROVED]** Complete overhaul of verification output, with improvements to
   the output of all verifications ([#161], [#170]).
