@@ -198,6 +198,31 @@ var run = function () {
         }
     };
 
+    var upgradeSvg = function () {
+        var images = document.querySelectorAll('img[src$=".svg"]');
+
+        for (var i = 0; i < images.length; ++i) {
+            var image = images[i];
+            var link = image.parentNode;
+            var container = link.parentNode;
+
+            container.appendChild(image);
+            container.removeChild(link);
+        }
+
+        SVGInjector(
+            images,
+            {},
+            function () {
+                hash = window.location.hash;
+                window.location.hash = '#';
+                window.location.hash = hash;
+
+                gumshoe.setDistances();
+            }
+        );
+    };
+
     window.addEventListener('hashchange', dispatch);
     document.addEventListener('scroll', _.throttle(redrawToc, 10));
     tocHideElement.addEventListener('click', hideToc);
@@ -211,7 +236,12 @@ var run = function () {
     );
     fetchVersions();
     dispatch();
+    upgradeSvg();
     redrawToc();
 };
 
-document.addEventListener('DOMContentLoaded', run);
+if (document.readyState != 'loading'){
+    run();
+} else {
+    document.addEventListener('DOMContentLoaded', run);
+}

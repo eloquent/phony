@@ -138,3 +138,7 @@
     height: 1px;
     background-color: white;
 }
+
+.markdown-body img {
+    width: 100%;
+}
