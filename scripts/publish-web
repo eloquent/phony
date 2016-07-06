@@ -94,9 +94,9 @@ if ($token) {
 $arguments[] = '--link';
 $arguments[] = sprintf('%s:latest', $latestVersion);
 $arguments[] = sprintf('web/index.html:%s/index.html', $currentVersion);
+$arguments[] = sprintf('web/img:%s/img', $currentVersion);
 $arguments[] = 'web/data:data';
 $arguments[] = 'web/css:css';
-$arguments[] = 'web/img:img';
 $arguments[] = 'web/js:js';
 
 $command = implode(' ', array_map('escapeshellarg', $arguments));
