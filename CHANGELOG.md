@@ -1,5 +1,12 @@
 # Phony changelog
 
+## Next release
+
+- **[IMPROVED]** Traversable spies now implement `ArrayAccess` and `Countable`
+  ([#165]).
+
+[#165]: https://github.com/eloquent/phony/issues/165
+
 ## 0.10.2 (2016-07-06)
 
 - **[IMPROVED]** Complete overhaul of verification output, with improvements to

@@ -11,11 +11,9 @@
 
 namespace Eloquent\Phony\Spy;
 
-use ArrayIterator;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use InvalidArgumentException;
-use IteratorAggregate;
 use Traversable;
 
 /**
@@ -58,27 +56,27 @@ class TraversableSpyFactory
      */
     public function create(Call $call, $traversable)
     {
-        if (!$traversable instanceof Traversable && !is_array($traversable)) {
-            if (is_object($traversable)) {
-                $type = var_export(get_class($traversable), true);
-            } else {
-                $type = gettype($traversable);
-            }
-
-            throw new InvalidArgumentException(
-                sprintf('Unsupported traversable of type %s.', $type)
+        if ($traversable instanceof Traversable) {
+            return new TraversableSpy(
+                $call,
+                $traversable,
+                $this->callEventFactory
             );
         }
 
         if (is_array($traversable)) {
-            $iterator = new ArrayIterator($traversable);
-        } elseif ($traversable instanceof IteratorAggregate) {
-            $iterator = $traversable->getIterator();
-        } else {
-            $iterator = $traversable;
+            return new ArraySpy($call, $traversable, $this->callEventFactory);
         }
 
-        return new IteratorSpy($call, $iterator, $this->callEventFactory);
+        if (is_object($traversable)) {
+            $type = var_export(get_class($traversable), true);
+        } else {
+            $type = gettype($traversable);
+        }
+
+        throw new InvalidArgumentException(
+            sprintf('Unsupported traversable of type %s.', $type)
+        );
     }
 
     private static $instance;

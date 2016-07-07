@@ -11,52 +11,34 @@
 
 namespace Eloquent\Phony\Spy;
 
+use ArrayAccess;
+use Countable;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Iterator;
 
 /**
- * Spies on an iterator.
+ * Spies on an array.
  */
-class IteratorSpy implements Iterator
+class ArraySpy implements ArrayAccess, Countable, Iterator
 {
     /**
-     * Construct a new iterator spy.
+     * Construct a new array spy.
      *
-     * @param Call             $call             The call from which the iterator originated.
-     * @param Iterator         $iterator         The iterator.
+     * @param Call             $call             The call from which the array originated.
+     * @param array            $array            The array.
      * @param CallEventFactory $callEventFactory The call event factory to use.
      */
     public function __construct(
         Call $call,
-        Iterator $iterator,
+        array $array,
         CallEventFactory $callEventFactory
     ) {
         $this->call = $call;
-        $this->iterator = $iterator;
+        $this->array = $array;
         $this->callEventFactory = $callEventFactory;
         $this->isUsed = false;
         $this->isConsumed = false;
-    }
-
-    /**
-     * Get the call.
-     *
-     * @return Call The call.
-     */
-    public function call()
-    {
-        return $this->call;
-    }
-
-    /**
-     * Get the iterator.
-     *
-     * @return Iterator The iterator.
-     */
-    public function iterator()
-    {
-        return $this->iterator;
     }
 
     /**
@@ -66,7 +48,7 @@ class IteratorSpy implements Iterator
      */
     public function key()
     {
-        return $this->key;
+        return key($this->array);
     }
 
     /**
@@ -76,7 +58,7 @@ class IteratorSpy implements Iterator
      */
     public function current()
     {
-        return $this->value;
+        return current($this->array);
     }
 
     /**
@@ -84,7 +66,7 @@ class IteratorSpy implements Iterator
      */
     public function next()
     {
-        $this->iterator->next();
+        next($this->array);
     }
 
     /**
@@ -92,7 +74,7 @@ class IteratorSpy implements Iterator
      */
     public function rewind()
     {
-        $this->iterator->rewind();
+        reset($this->array);
     }
 
     /**
@@ -108,13 +90,8 @@ class IteratorSpy implements Iterator
             $this->isUsed = true;
         }
 
-        if ($isValid = $this->iterator->valid()) {
-            $this->key = $this->iterator->key();
-            $this->value = $this->iterator->current();
-        } else {
-            $this->key = null;
-            $this->value = null;
-        }
+        $key = key($this->array);
+        $isValid = null !== $key;
 
         if ($this->isConsumed) {
             return $isValid;
@@ -123,7 +100,7 @@ class IteratorSpy implements Iterator
         if ($isValid) {
             $this->call->addTraversableEvent(
                 $this->callEventFactory
-                    ->createProduced($this->key, $this->value)
+                    ->createProduced($key, current($this->array))
             );
         } else {
             $this->call->setEndEvent($this->callEventFactory->createConsumed());
@@ -133,11 +110,64 @@ class IteratorSpy implements Iterator
         return $isValid;
     }
 
+    /**
+     * Check if a key exists.
+     *
+     * @param mixed $key The key.
+     *
+     * @return bool True if the key exists.
+     */
+    public function offsetExists($key)
+    {
+        return isset($this->array[$key]);
+    }
+
+    /**
+     * Get a value.
+     *
+     * @param mixed $key The key.
+     *
+     * @return mixed The value.
+     */
+    public function offsetGet($key)
+    {
+        return $this->array[$key];
+    }
+
+    /**
+     * Set a value.
+     *
+     * @param mixed $key   The key.
+     * @param mixed $value The value.
+     */
+    public function offsetSet($key, $value)
+    {
+        $this->array[$key] = $value;
+    }
+
+    /**
+     * Un-set a value.
+     *
+     * @param mixed $key The key.
+     */
+    public function offsetUnset($key)
+    {
+        unset($this->array[$key]);
+    }
+
+    /**
+     * Get the count.
+     *
+     * @return int The count.
+     */
+    public function count()
+    {
+        return count($this->array);
+    }
+
     private $call;
-    private $iterator;
+    private $array;
     private $callEventFactory;
-    private $key;
-    private $value;
     private $isUsed;
     private $isConsumed;
 }

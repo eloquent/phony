@@ -386,16 +386,46 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testTraversableSpying()
     {
+        $value = array('a' => 'b', 'c' => 'd');
+
         $stub = x\stub();
         $stub->setUseTraversableSpies(true);
-        $stub->returns(array('a' => 'b', 'c' => 'd'));
-        iterator_to_array($stub());
+        $stub->returns($value);
+        $result = $stub();
+
+        $this->assertSame($value, iterator_to_array($result));
+        $this->assertSame($value, iterator_to_array($result));
 
         $stub->traversed()->produced();
         $stub->traversed()->produced('b');
         $stub->traversed()->produced('d');
         $stub->traversed()->produced('a', 'b');
         $stub->traversed()->produced('c', 'd');
+
+        $this->assertSame('b', $result['a']);
+        $this->assertSame(2, count($result));
+    }
+
+    public function testTraversableSpyingWithArrayLikeObject()
+    {
+        $value = array('a' => 'b', 'c' => 'd');
+
+        $stub = x\stub();
+        $stub->setUseTraversableSpies(true);
+        $stub->returns(new ArrayObject($value));
+        $result = $stub();
+
+        $this->assertSame($value, iterator_to_array($result));
+        $this->assertSame($value, iterator_to_array($result));
+
+        $stub->traversed()->produced();
+        $stub->traversed()->produced('b');
+        $stub->traversed()->produced('d');
+        $stub->traversed()->produced('a', 'b');
+        $stub->traversed()->produced('c', 'd');
+
+        $this->assertSame('b', $result['a']);
+        $this->assertSame(2, count($result));
     }
 
     public function testDefaultStubAnswerCanBeOverridden()

@@ -137,6 +137,9 @@
         - [Verifying generator return values]
         - [Verifying generator exceptions]
         - [Verifying cardinality with generators and traversables]
+        - [Traversable verification caveats]
+            - [Repeated iteration of traversable spies]
+            - [Spying on traversables that implement array-like interfaces]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -3926,7 +3929,7 @@ Value: b
 ## Spies
 
 *Spies* record interactions with callable entities, such as functions, methods,
-closures, and objects with an [`__invoke()`] method. They can be used to verify
+closures, and objects with an [__invoke()] method. They can be used to verify
 both the *input*, and *output* of function calls.
 
 Most of the methods in the spy API are mirrored in [the call API].
@@ -5912,6 +5915,9 @@ For information on specific verification methods, see these sections:
         - [Verifying generator return values]
         - [Verifying generator exceptions]
         - [Verifying cardinality with generators and traversables]
+        - [Traversable verification caveats]
+            - [Repeated iteration of traversable spies]
+            - [Spying on traversables that implement array-like interfaces]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -6822,6 +6828,29 @@ $subject->traversed()->twice()->produced('a'); // produced 'a' from exactly 2 tr
 
 See [Verifying cardinality with spies] and [Verifying cardinality with calls]
 for a full list or cardinality modifiers.
+
+#### Traversable verification caveats
+
+##### Repeated iteration of traversable spies
+
+Events are only recorded the first time a traversable spy is iterated over. If
+the underlying value is an array, or is iterated with an iterator that supports
+[rewind()], subsequent iterations will behave as expected, but no events will
+be recorded.
+
+This has no relevance for [generator spies], as generators cannot be rewound.
+
+##### Spying on traversables that implement array-like interfaces
+
+It's quite common for traversable objects to also implement [ArrayAccess] and
+[Countable]. Traversable spies *always* implement these interfaces, which may be
+incompatible with code that checks for these interfaces at run time.
+
+If the underlying traversable object implements [ArrayAccess] and/or
+[Countable], *Phony* will pass relevant calls through to the underlying
+implementation. If these interfaces are *not* implemented, then the behavior of
+calls to [ArrayAccess] and/or [Countable] is undefined, but will most likely
+result in an error.
 
 ### Order verification
 
@@ -7821,6 +7850,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [prophecy argument tokens]: #prophecy-argument-tokens
 [prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
 [proxy mocks]: #proxy-mocks
+[repeated iteration of traversable spies]: #repeated-iteration-of-traversable-spies
 [retrieving calls from a spy]: #retrieving-calls-from-a-spy
 [returning arguments from a generator]: #returning-arguments-from-a-generator
 [returning arguments]: #returning-arguments
@@ -7838,6 +7868,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [special cases for the "equal to" matcher]: #special-cases-for-the-equal-to-matcher
 [spies]: #spies
 [spying on an existing callable]: #spying-on-an-existing-callable
+[spying on traversables that implement array-like interfaces]: #spying-on-traversables-that-implement-array-like-interfaces
 [standalone usage]: #standalone-usage
 [standard verification]: #standard-verification
 [static mocks]: #static-mocks
@@ -7875,6 +7906,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [throwing exceptions from a generator]: #throwing-exceptions-from-a-generator
 [throwing exceptions]: #throwing-exceptions
 [thrown exceptions]: #thrown-exceptions
+[traversable verification caveats]: #traversable-verification-caveats
 [undefinedargumentexception]: #undefinedargumentexception
 [undefinedcallexception]: #undefinedcallexception
 [undefinedeventexception]: #undefinedeventexception
@@ -8014,10 +8046,12 @@ For the full copyright and license information, please view the [LICENSE file].
 <!-- External references -->
 
 [@ezzatron]: https://github.com/ezzatron
-[`__invoke()`]: http://php.net/language.oop5.magic#object.invoke
+[__invoke()]: http://php.net/language.oop5.magic#object.invoke
 [ansi colored output]: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+[arrayaccess]: http://php.net/arrayaccess
 [closure binding]: http://php.net/closure.bind
 [composer]: http://getcomposer.org/
+[countable]: http://php.net/countable
 [counterpart]: http://docs.counterpartphp.org/
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [error]: http://php.net/class.error
@@ -8045,6 +8079,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [prophecy]: https://github.com/phpspec/prophecy
 [reflectionclass]: http://php.net/reflectionclass
 [return type]: http://php.net/functions.returning-values#functions.returning-values.type-declaration
+[rewind()]: http://php.net/iterator.rewind
 [simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
 [simpletest]: https://github.com/simpletest/simpletest
 [throwable]: http://php.net/class.throwable
