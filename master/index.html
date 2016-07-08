@@ -320,6 +320,14 @@
 <li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
 <li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
 <li><a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a></li>
+<li>
+<a href="#traversable-verification-caveats">Traversable verification caveats</a>
+
+<ul>
+<li><a href="#repeated-iteration-of-traversable-spies">Repeated iteration of traversable spies</a></li>
+<li><a href="#spying-on-traversables-that-implement-array-like-interfaces">Spying on traversables that implement array-like interfaces</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li>
@@ -4255,7 +4263,7 @@ Value: b
 <a id="spies" class="anchor" href="#spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spies</h2>
 
 <p><em>Spies</em> record interactions with callable entities, such as functions, methods,
-closures, and objects with an <a href="http://php.net/language.oop5.magic#object.invoke"><code>__invoke()</code></a> method. They can be used to verify
+closures, and objects with an <a href="http://php.net/language.oop5.magic#object.invoke">__invoke()</a> method. They can be used to verify
 both the <em>input</em>, and <em>output</em> of function calls.</p>
 
 <p>Most of the methods in the spy API are mirrored in <a href="#the-call-api">the call API</a>.</p>
@@ -6451,6 +6459,14 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 <li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
 <li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
 <li><a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a></li>
+<li>
+<a href="#traversable-verification-caveats">Traversable verification caveats</a>
+
+<ul>
+<li><a href="#repeated-iteration-of-traversable-spies">Repeated iteration of traversable spies</a></li>
+<li><a href="#spying-on-traversables-that-implement-array-like-interfaces">Spying on traversables that implement array-like interfaces</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li>
@@ -7477,6 +7493,32 @@ relate to the subset of calls that already satisfied the initial verification:</
 
 <p>See <a href="#verifying-cardinality-with-spies">Verifying cardinality with spies</a> and <a href="#verifying-cardinality-with-calls">Verifying cardinality with calls</a>
 for a full list or cardinality modifiers.</p>
+
+<h4>
+<a id="traversable-verification-caveats" class="anchor" href="#traversable-verification-caveats" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Traversable verification caveats</h4>
+
+<h5>
+<a id="repeated-iteration-of-traversable-spies" class="anchor" href="#repeated-iteration-of-traversable-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Repeated iteration of traversable spies</h5>
+
+<p>Events are only recorded the first time a traversable spy is iterated over. If
+the underlying value is an array, or is iterated with an iterator that supports
+<a href="http://php.net/iterator.rewind">rewind()</a>, subsequent iterations will behave as expected, but no events will
+be recorded.</p>
+
+<p>This has no relevance for <a href="#generator-and-traversable-verification">generator spies</a>, as generators cannot be rewound.</p>
+
+<h5>
+<a id="spying-on-traversables-that-implement-array-like-interfaces" class="anchor" href="#spying-on-traversables-that-implement-array-like-interfaces" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spying on traversables that implement array-like interfaces</h5>
+
+<p>It's quite common for traversable objects to also implement <a href="http://php.net/arrayaccess">ArrayAccess</a> and
+<a href="http://php.net/countable">Countable</a>. Traversable spies <em>always</em> implement these interfaces, which may be
+incompatible with code that checks for these interfaces at run time.</p>
+
+<p>If the underlying traversable object implements <a href="http://php.net/arrayaccess">ArrayAccess</a> and/or
+<a href="http://php.net/countable">Countable</a>, <em>Phony</em> will pass relevant calls through to the underlying
+implementation. If these interfaces are <em>not</em> implemented, then the behavior of
+calls to <a href="http://php.net/arrayaccess">ArrayAccess</a> and/or <a href="http://php.net/countable">Countable</a> is undefined, but will most likely
+result in an error.</p>
 
 <h3>
 <a id="order-verification" class="anchor" href="#order-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Order verification</h3>
