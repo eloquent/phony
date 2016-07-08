@@ -48,6 +48,8 @@ use Eloquent\Phony\Spy\SpyVerifierFactory;
 use Eloquent\Phony\Spy\TraversableSpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
+use Eloquent\Phony\Stub\FunctionHookGenerator;
+use Eloquent\Phony\Stub\FunctionHookManager;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -126,6 +128,13 @@ class FacadeDriver
             $invoker,
             $featureDetector
         );
+        $functionHookGenerator = new FunctionHookGenerator(
+            $featureDetector
+        );
+        $functionHookManager = new FunctionHookManager(
+            $functionSignatureInspector,
+            $functionHookGenerator
+        );
         $stubLabelSequence = Sequencer::sequence('stub-label');
         $this->sequences[] = $stubLabelSequence;
         $stubFactory = new StubFactory(
@@ -135,7 +144,8 @@ class FacadeDriver
             $invoker,
             $invocableInspector,
             $emptyValueFactory,
-            $generatorAnswerBuilderFactory
+            $generatorAnswerBuilderFactory,
+            $functionHookManager
         );
         $clock = new SystemClock('microtime');
         $eventSequence = Sequencer::sequence('event-sequence-number');
@@ -258,6 +268,7 @@ class FacadeDriver
         $this->exporter = $exporter;
         $this->assertionRenderer = $assertionRenderer;
         $this->differenceEngine = $differenceEngine;
+        $this->functionHookManager = $functionHookManager;
     }
 
     public $mockBuilderFactory;
@@ -269,6 +280,7 @@ class FacadeDriver
     public $exporter;
     public $assertionRenderer;
     public $differenceEngine;
+    public $functionHookManager;
     protected $sequences;
     private static $instance;
 }

@@ -128,6 +128,20 @@ class StubVerifier extends SpyVerifier implements Stub
     }
 
     /**
+     * Declare this stub as a function.
+     *
+     * @param string $function The function name.
+     *
+     * @return $this This stub.
+     */
+    public function declareAs($function)
+    {
+        $this->stub->declareAs($function);
+
+        return $this;
+    }
+
+    /**
      * Set the callback to use when creating a default answer.
      *
      * @param callable $defaultAnswerCallback The default answer callback.

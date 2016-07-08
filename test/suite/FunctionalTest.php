@@ -13,6 +13,7 @@ use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
 
@@ -382,6 +383,29 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy = x\stub(eval('return function () : int { return 123; };'));
 
         $this->assertSame(123, $spy());
+    }
+
+    public function testStubGlobal()
+    {
+        $stubA = x\stubGlobal('vsprintf', 'Eloquent\Phony\Test');
+
+        $this->assertNull(Test\vsprintf('%s, %s', array('a', 'b')));
+
+        $stubA->returns('x');
+
+        $this->assertSame('x', Test\vsprintf('%s, %s', array('a', 'b')));
+
+        $stubA->forwards();
+
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
+
+        $stubB = x\stubGlobal('vsprintf', 'Eloquent\Phony\Test');
+
+        $this->assertNull(Test\vsprintf('%s, %s', array('a', 'b')));
+
+        $stubB->returns('x');
+
+        $this->assertSame('x', Test\vsprintf('%s, %s', array('a', 'b')));
     }
 
     public function testTraversableSpying()

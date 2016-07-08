@@ -9,33 +9,35 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Exception;
+namespace Eloquent\Phony\Stub\Exception;
 
-use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Error;
 use Exception;
 
 /**
  * Mock generation failed.
  */
-final class MockGenerationFailedException extends Exception implements
-    MockException
+final class FunctionHookGenerationFailedException extends Exception implements
+    FunctionHookException
 {
     /**
      * Construct a mock generation failed exception.
      *
-     * @param MockDefinition           $definition The definition.
-     * @param string                   $source     The generated source code.
-     * @param array<string,mixed>|null $error      The error details.
-     * @param Exception|Error|null     $cause      The cause, if available.
+     * @param string                   $functionName The function name.
+     * @param callable                 $callback     The callback.
+     * @param string                   $source       The generated source code.
+     * @param array<string,mixed>|null $error        The error details.
+     * @param Exception|Error|null     $cause        The cause, if available.
      */
     public function __construct(
-        MockDefinition $definition,
+        $functionName,
+        $callback,
         $source,
         array $error = null,
         $cause = null
     ) {
-        $this->definition = $definition;
+        $this->functionName = $functionName;
+        $this->callback = $callback;
         $this->source = $source;
         $this->error = $error;
 
@@ -43,8 +45,8 @@ final class MockGenerationFailedException extends Exception implements
 
         if (null === $error) {
             $message = sprintf(
-                'Mock class %s generation failed.%sRelevant lines:%%s',
-                $definition->className(),
+                'Function hook %s generation failed.%sRelevant lines:%%s',
+                $functionName,
                 PHP_EOL
             );
             $errorLineNumber = null;
@@ -61,10 +63,10 @@ final class MockGenerationFailedException extends Exception implements
             $lines = array_slice($lines, $startLine, $contextLineCount, true);
 
             $message = sprintf(
-                'Mock class %s generation failed: ' .
+                'Function hook %s generation failed: ' .
                     '%s in generated code on line %d.%s' .
                     'Relevant lines:%%s',
-                $definition->className(),
+                $functionName,
                 $error['message'],
                 $errorLineNumber,
                 PHP_EOL
@@ -99,13 +101,23 @@ final class MockGenerationFailedException extends Exception implements
     }
 
     /**
-     * Get the definition.
+     * Get the function name.
      *
-     * @return MockDefinition The definition.
+     * @return string The function name.
      */
-    public function definition()
+    public function functionName()
     {
-        return $this->definition;
+        return $this->functionName;
+    }
+
+    /**
+     * Get the callback.
+     *
+     * @return callable The callback.
+     */
+    public function callback()
+    {
+        return $this->callback;
     }
 
     /**
@@ -128,7 +140,8 @@ final class MockGenerationFailedException extends Exception implements
         return $this->error;
     }
 
-    private $definition;
+    private $functionName;
+    private $callback;
     private $source;
     private $error;
 }

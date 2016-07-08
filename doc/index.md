@@ -42,6 +42,8 @@
     - [The stub API]
     - [The generator answer API]
     - [Stubbing an existing callable]
+        - [Stubbing global functions]
+            - [Alternatives for stubbing global functions]
     - [Anonymous stubs]
     - [Stub "self" values]
         - [Magic "self" values]
@@ -75,6 +77,7 @@
             - [Setting passed-by-reference arguments in a generator]
             - [Invoking arguments in a generator]
             - [Invoking callables in a generator]
+    - [Declaring stubs as functions]
 - [Spies]
     - [The spy API]
     - [Spying on an existing callable]
@@ -1633,6 +1636,19 @@ Create a new [stub].
 
 *See [Stubbing an existing callable], [Anonymous stubs].*
 
+<a name="facade.stubGlobal" />
+
+----
+
+> *[stub][stub-api]* [**stubGlobal**](#facade.stubGlobal)($function, $namespace) *(with [use function])*<br />
+> *[stub][stub-api]* x\\[**stubGlobal**](#facade.stubGlobal)($function, $namespace) *(without [use function])*<br />
+> *[stub][stub-api]* Phony::[**stubGlobal**](#facade.stubGlobal)($function, $namespace) *(static)*
+
+Create a stub of a function in the global namespace, and declare it as a
+function in another namespace.
+
+*See [Stubbing global functions], [Declaring stubs as functions].*
+
 <a name="stub.invoke" />
 <a name="stub.__invoke" />
 
@@ -1710,6 +1726,16 @@ Get the [default answer callback].
 Set the [default answer callback] of this stub.
 
 *This method accepts a callback that takes the stub as the first argument.*
+
+<a name="stub.declareAs" />
+
+----
+
+> *fluent* $stub->[**declareAs**](#stub.declareAs)($function)
+
+Declare this stub as a function.
+
+*See [Declaring stubs as functions].*
 
 <a name="stub.with" />
 
@@ -2570,6 +2596,91 @@ $stub = stub('max')->returns(9);
 echo $stub(1, 2, 3); // outputs '9'
 echo $stub(2, 3, 1); // outputs '9'
 ```
+
+#### Stubbing global functions
+
+When an "unqualified" function (one with no preceding backslash) is used from
+within a namespace, PHP will attempt to find the function in the calling
+namespace first, before looking for the function in the *global* namespace. This
+behavior is known as [global function fallback].
+
+This behavior can be exploited to allow a stub to replace a global function
+during testing. To do so, two conditions must be met:
+
+- The function must be called without any qualifying namespace or backslash.
+- The function must be called from within a namespace; function calls from the
+  global namespace cannot be stubbed.
+
+To stub a function in the global namespace, use
+[`stubGlobal()`](#facade.stubGlobal):
+
+```php
+$stub = stubGlobal($function, $namespace);        // with `use function`
+$stub = x\stubGlobal($function, $namespace);      // without `use function`
+$stub = Phony::stubGlobal($function, $namespace); // static
+```
+
+Where `$function` is the name of the function in the global namespace, and
+`$namespace` is the namespace under which a new, identically named function
+will be defined.
+
+To demonstrate, the following code will work well with
+[`stubGlobal()`](#facade.stubGlobal):
+
+```php
+namespace Foo\Bar;
+
+printf('Keep it %s.', 'real');
+```
+
+Under normal conditions, this code would output:
+
+    Keep it real.
+
+But if the `printf()` function is stubbed before executing this code, its
+behavior can be changed:
+
+```php
+namespace Foo\Bar;
+use function Eloquent\Phony\stubGlobal;
+
+$stub = stubGlobal('printf', __NAMESPACE__)->returns("You're a total phony!");
+
+printf('Keep it %s.', 'real');
+```
+
+This code will now output:
+
+    You're a total phony!
+
+Note that unlike stubs created via [`stub()`](#facade.stub), stubs created via
+[`stubGlobal()`](#facade.stubGlobal) will not call through to the original
+function by default. It is still possible to achieve this by using
+[`forwards()`](#stub.forwards), however.
+
+##### Alternatives for stubbing global functions
+
+If the system under test is not suitable for stubbing via
+[global function fallback], an alternative is to accept a callback via
+dependency injection that can take a stub during testing:
+
+```php
+use function Eloquent\Phony\stub;
+
+function functionA($sprintf = 'sprintf')
+{
+    echo $sprintf('Keep it %s.', 'real');
+}
+
+$stub = stub('sprintf')->returns("You're a total phony!");
+
+functionA();      // outputs 'Keep it real.'
+functionA($stub); // outputs "You're a total phony!"
+```
+
+Another alternative is to use a library like [Isolator], that allows the
+injection of an explicit dependency that represents the functions in the global
+namespace. This dependency can then be mocked during testing.
 
 ### Anonymous stubs
 
@@ -3924,6 +4035,80 @@ Called 1 time(s)
 Value: a
 Called 2 time(s)
 Value: b
+```
+
+### Declaring stubs as functions
+
+To declare a stub as a function, use [`declareAs()`](#stub.declareAs):
+
+```php
+$stub = stub()->declareAs('functionA')->returns('x');
+
+echo functionA(); // outputs 'x'
+```
+
+Namespaced functions can also be created by prefixing the namespace:
+
+```php
+$stub = stub()->declareAs('Foo\Bar\functionA')->returns('x');
+
+echo Foo\Bar\functionA(); // outputs 'x'
+```
+
+Stubs can be declared as any number of functions, at any time. Changing the
+stub's behavior will also change the behavior of the declared functions:
+
+```php
+$stub = stub()->returns('x');
+$stub->declareAs('functionA')->declareAs('functionB');
+
+echo functionA(); // outputs 'x'
+echo functionB(); // outputs 'x'
+
+$stub->returns('y');
+
+echo functionA(); // outputs 'y'
+echo functionB(); // outputs 'y'
+```
+
+Stubs can be declared as a function that was previously declared by another
+stub, but only if the function signatures are identical:
+
+```php
+$stubA = stub(
+    function ($a, $b) {
+        return $a + $b;
+    }
+);
+$stubA->declareAs('functionA');
+
+echo functionA(1, 2); // outputs '3'
+
+$stubB = stub(
+    // same signature
+    function ($a, $b) {
+        return $a * $b;
+    }
+);
+$stubB->declareAs('functionA'); // works fine
+
+echo functionA(1, 2); // outputs '2'
+
+$stubC = stub(
+    // different signature
+    function ($a) {
+        return $a;
+    }
+);
+$stubC->declareAs('functionA'); // throws an exception
+```
+
+If a function already exists, and it was not declared by a stub, an exception
+will be thrown:
+
+```php
+$stub = stub();
+$stub->declareAs('printf'); // throws an exception
 ```
 
 ## Spies
@@ -7774,6 +7959,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [ad hoc definition magic "self" values]: #ad-hoc-definition-magic-self-values
 [ad hoc definition values]: #ad-hoc-definition-values
 [ad hoc mocks]: #ad-hoc-mocks
+[alternatives for stubbing global functions]: #alternatives-for-stubbing-global-functions
 [anonymous spies]: #anonymous-spies
 [anonymous stubs]: #anonymous-stubs
 [answers that perform multiple actions]: #answers-that-perform-multiple-actions
@@ -7790,6 +7976,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [counterpart matchers]: #counterpart-matchers
 [creating mocks from a builder]: #creating-mocks-from-a-builder
 [customizing the mock class]: #customizing-the-mock-class
+[declaring stubs as functions]: #declaring-stubs-as-functions
 [default values for return types]: #default-values-for-return-types
 [dynamic order verification]: #dynamic-order-verification
 [example test suites]: #example-test-suites
@@ -7876,6 +8063,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [stub rules and answers]: #stub-rules-and-answers
 [stubbing an existing callable]: #stubbing-an-existing-callable
 [stubbing generators]: #stubbing-generators
+[stubbing global functions]: #stubbing-global-functions
 [stubbing handles]: #stubbing-handles
 [stubs]: #stubs
 [terminology]: #terminology
@@ -8063,7 +8251,9 @@ For the full copyright and license information, please view the [LICENSE file].
 [generator]: http://php.net/language.generators.overview
 [generators]: http://php.net/language.generators.overview
 [github issue]: https://github.com/eloquent/phony/issues
+[global function fallback]: http://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
+[isolator]: https://github.com/IcecaveStudios/isolator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
 [mockery matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
 [mockery]: http://docs.mockery.io/

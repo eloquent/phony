@@ -41,6 +41,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $this->invocableInspector = new InvocableInspector();
         $this->emptyValueFactory = new EmptyValueFactory();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
+        $this->functionHookManager = FunctionHookManager::instance();
         $this->subject = new StubData(
             $this->callback,
             $this->self,
@@ -51,7 +52,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
 
         $this->emptyValueFactory->setStubVerifierFactory(StubVerifierFactory::instance());
@@ -187,6 +189,87 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $this->subject->setLabel($this->label);
 
         $this->assertSame($this->label, $this->subject->label());
+    }
+
+    public function testDeclareAs()
+    {
+        $name = 'Eloquent\Phony\Test\\phony_' . md5(mt_rand());
+
+        $defaultAnswerCallback = function ($stub) {
+            $stub->forwards();
+        };
+        $callbackA = function ($a, $b) {
+            return "$a, $b";
+        };
+        $stubA = new StubData(
+            $callbackA,
+            $this->self,
+            $this->label,
+            $defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->emptyValueFactory,
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
+        );
+        $callbackB = function ($a, $b) {
+            return "$a + $b";
+        };
+        $stubB = new StubData(
+            $callbackB,
+            $this->self,
+            $this->label,
+            $defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->emptyValueFactory,
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
+        );
+
+        $this->assertSame($stubA, $stubA->declareAs($name));
+        $this->assertSame('a, b', $name('a', 'b'));
+        $this->assertSame($stubB, $stubB->declareAs($name));
+        $this->assertSame('a + b', $name('a', 'b'));
+    }
+
+    public function testDeclareAsWithReferenceParameters()
+    {
+        $name = 'Eloquent\Phony\Test\\phony_' . md5(mt_rand());
+
+        $defaultAnswerCallback = function ($stub) {
+            $stub->forwards();
+        };
+        $callbackA = function (&$a, &$b) {
+            $a = 'a';
+            $b = 'b';
+        };
+        $stubA = new StubData(
+            $callbackA,
+            $this->self,
+            $this->label,
+            $defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->emptyValueFactory,
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
+        );
+
+        $this->assertSame($stubA, $stubA->declareAs($name));
+
+        $a = null;
+        $b = null;
+        $name($a, $b);
+
+        $this->assertSame('a', $a);
+        $this->assertSame('b', $b);
     }
 
     public function testWith()
@@ -398,7 +481,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
 
         $actual = null;
@@ -718,7 +802,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
         $actual = null;
         $subject->doesWith(
@@ -758,7 +843,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
 
         $this->assertSame($this->subject, $this->subject->forwards(array(1, 2), true, true, true));
@@ -846,7 +932,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
         $subject->forwards();
 
@@ -865,7 +952,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
         $a = null;
         $b = null;
@@ -920,7 +1008,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
         $this->subject->returns();
 
@@ -1161,7 +1250,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
 
         $this->assertSame('default answer', $stub());

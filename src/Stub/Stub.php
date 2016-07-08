@@ -57,6 +57,15 @@ interface Stub extends WrappedInvocable
     public function defaultAnswerCallback();
 
     /**
+     * Declare this stub as a function.
+     *
+     * @param string $function The function name.
+     *
+     * @return $this This stub.
+     */
+    public function declareAs($function);
+
+    /**
      * Modify the current criteria to match the supplied arguments.
      *
      * @param mixed ...$argument The arguments.

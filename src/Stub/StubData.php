@@ -67,6 +67,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
      * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param FunctionHookManager           $functionHookManager           The function hook manager to use.
      */
     public function __construct(
         $callback,
@@ -78,7 +79,8 @@ class StubData extends AbstractWrappedInvocable implements Stub
         Invoker $invoker,
         InvocableInspector $invocableInspector,
         EmptyValueFactory $emptyValueFactory,
-        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
+        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
+        FunctionHookManager $functionHookManager
     ) {
         parent::__construct($callback, $label);
 
@@ -93,6 +95,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         $this->invocableInspector = $invocableInspector;
         $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
+        $this->functionHookManager = $functionHookManager;
 
         $this->secondaryRequests = array();
         $this->answers = array();
@@ -128,6 +131,20 @@ class StubData extends AbstractWrappedInvocable implements Stub
     public function defaultAnswerCallback()
     {
         return $this->defaultAnswerCallback;
+    }
+
+    /**
+     * Declare this stub as a function.
+     *
+     * @param string $function The function name.
+     *
+     * @return $this This stub.
+     */
+    public function declareAs($function)
+    {
+        $this->functionHookManager->defineFunction($function, $this);
+
+        return $this;
     }
 
     /**
@@ -789,6 +806,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     private $invocableInspector;
     private $emptyValueFactory;
     private $generatorAnswerBuilderFactory;
+    private $functionHookManager;
     private $criteria;
     private $secondaryRequests;
     private $answers;

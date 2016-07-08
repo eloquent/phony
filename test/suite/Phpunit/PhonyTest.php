@@ -334,6 +334,28 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertStubAssertionRecorder($this->assertionRecorder, $actual);
     }
 
+    public function testStubGlobal()
+    {
+        $actual = Phony::stubGlobal('sprintf', 'Eloquent\Phony\Phpunit\Facade');
+        $actual->with('%s, %s', 'a', 'b')->forwards();
+
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(\Eloquent\Phony\Phpunit\Facade\sprintf('x', 'y'));
+        $this->assertSame($actual->stub(), $actual->spy()->callback());
+    }
+
+    public function testStubGlobalFunction()
+    {
+        $actual = stubGlobal('vsprintf', 'Eloquent\Phony\Phpunit\Facade');
+        $actual->with('%s, %s', array('a', 'b'))->forwards();
+
+        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\vsprintf('%s, %s', array('a', 'b')));
+        $this->assertNull(\Eloquent\Phony\Phpunit\Facade\vsprintf('x', 'y'));
+        $this->assertSame($actual->stub(), $actual->spy()->callback());
+    }
+
     public function testEventOrderMethods()
     {
         $this->assertTrue((boolean) Phony::checkInOrder($this->eventA, $this->eventB));

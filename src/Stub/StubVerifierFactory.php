@@ -24,6 +24,7 @@ use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use InvalidArgumentException;
 
 /**
  * Creates stub verifiers.
@@ -144,6 +145,59 @@ class StubVerifierFactory
     public function createFromCallback($callback = null)
     {
         $stub = $this->stubFactory->create($callback);
+
+        return new StubVerifier(
+            $stub,
+            $this->spyFactory->create($stub),
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector,
+            $this->invoker,
+            $this->generatorAnswerBuilderFactory
+        );
+    }
+
+    /**
+     * Create a new stub verifier for a global function and declare it in the
+     * specified namespace.
+     *
+     * Stubs returned by this function use the `returnsEmptyAnswerCallback`
+     * default answer callback, instead of the `forwardsAnswerCallback`.
+     *
+     * @param string $functionName The function name.
+     * @param string $namespace    The namespace.
+     *
+     * @return StubVerifier             The newly created stub verifier.
+     * @throws InvalidArgumentException If an invalid function name or namespace is specified.
+     */
+    public function createGlobal($functionName, $namespace)
+    {
+        if (false !== strpos($functionName, '\\')) {
+            throw new InvalidArgumentException(
+                'Only functions in the global namespace are supported.'
+            );
+        }
+
+        $namespace = trim($namespace, '\\');
+
+        if (!$namespace) {
+            throw new InvalidArgumentException(
+                'The supplied namespace must not be empty.'
+            );
+        }
+
+        $stub = $this->stubFactory
+            ->create(
+                $functionName,
+                null,
+                'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback'
+            )
+            ->declareAs($namespace . '\\' . $functionName);
 
         return new StubVerifier(
             $stub,

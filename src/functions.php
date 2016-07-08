@@ -173,6 +173,21 @@ function stub($callback = null)
 }
 
 /**
+ * Create a stub of a function in the global namespace, and declare it as a
+ * function in another namespace.
+ *
+ * @param callable $function  The name of the function in the global namespace.
+ * @param string   $namespace The namespace in which to create the new function.
+ *
+ * @return StubVerifier The new stub.
+ */
+function stubGlobal($function, $namespace)
+{
+    return FacadeDriver::instance()->stubVerifierFactory
+        ->createGlobal($function, $namespace);
+}
+
+/**
  * Checks if the supplied events happened in chronological order.
  *
  * @param Event|EventCollection ...$events The events.

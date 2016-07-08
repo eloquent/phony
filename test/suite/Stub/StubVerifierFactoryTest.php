@@ -51,7 +51,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             Invoker::instance(),
             InvocableInspector::instance(),
             new EmptyValueFactory(),
-            GeneratorAnswerBuilderFactory::instance()
+            GeneratorAnswerBuilderFactory::instance(),
+            FunctionHookManager::instance()
         );
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
@@ -149,6 +150,48 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
         $this->assertTrue($actual->useGeneratorSpies());
         $this->assertFalse($actual->useTraversableSpies());
+    }
+
+    public function testCreateGlobal()
+    {
+        $actual = $this->subject->createGlobal('sprintf', 'Eloquent\Phony\Test\StubVerifierFactory');
+        $actual->with('a', 'b')->returns('c');
+        $actual->with('%s, %s, %s', 'a', 'b', 'c')->forwards();
+
+        $this->assertSame('c', \Eloquent\Phony\Test\StubVerifierFactory\sprintf('a', 'b'));
+        $this->assertSame('a, b, c', \Eloquent\Phony\Test\StubVerifierFactory\sprintf('%s, %s, %s', 'a', 'b', 'c'));
+        $this->assertNull(\Eloquent\Phony\Test\StubVerifierFactory\sprintf('x', 'y'));
+    }
+
+    public function testCreateGlobalWithReferenceParameters()
+    {
+        $actual = $this->subject->createGlobal('exec', 'Eloquent\Phony\Test\StubVerifierFactory');
+        $actual->setsArgument(1, array('a', 'b'));
+
+        \Eloquent\Phony\Test\StubVerifierFactory\exec('echo x', $output);
+
+        $this->assertSame(array('a', 'b'), $output);
+    }
+
+    public function testCreateGlobalFailureWithNonGlobal()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Only functions in the global namespace are supported.'
+        );
+        $this->subject->createGlobal('Namespaced\\function', '\Eloquent\Phony\Test\StubVerifierFactory');
+    }
+
+    public function testCreateGlobalFailureEmptyNamespace()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->subject->createGlobal('implode', '');
+    }
+
+    public function testCreateGlobalFailureGlobalNamespace()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->subject->createGlobal('implode', '\\');
     }
 
     public function testInstance()

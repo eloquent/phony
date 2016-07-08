@@ -1,0 +1,84 @@
+<?php
+
+/*
+ * This file is part of the Phony package.
+ *
+ * Copyright © 2016 Erin Millard
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
+
+namespace Eloquent\Phony\Stub;
+
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use PHPUnit_Framework_TestCase;
+use ReflectionClass;
+
+class FunctionHookGeneratorTest extends PHPUnit_Framework_TestCase
+{
+    protected function setUp()
+    {
+        $this->featureDetector = new FeatureDetector(null, array('error.exception.engine' => true));
+        $this->subject = new FunctionHookGenerator($this->featureDetector);
+
+        $this->signatureInspector = FunctionSignatureInspector::instance();
+    }
+
+    public function generateData()
+    {
+        $fixturePath = __DIR__ . '/../../fixture/hook-generator';
+        $data = array();
+
+        foreach (scandir($fixturePath) as $testName) {
+            if ('.' === $testName[0]) {
+                continue;
+            }
+
+            $data[$testName] = array($testName);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @dataProvider generateData
+     */
+    public function testGenerate($testName)
+    {
+        $fixturePath = __DIR__ . '/../../fixture/hook-generator';
+
+        $detector = FeatureDetector::instance();
+        $supportedPath = $fixturePath . '/' . $testName . '/supported.php';
+
+        if (is_file($supportedPath)) {
+            $isSupported = require $supportedPath;
+
+            if (!$isSupported) {
+                $this->markTestSkipped($message);
+            }
+        }
+
+        require $fixturePath . '/' . $testName . '/callback.php';
+        $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
+        $expected = str_replace("\n", PHP_EOL, $expected);
+        $signature = $this->signatureInspector->callbackSignature($callback);
+        $actual = $this->subject->generateHook($functionName, $signature);
+
+        $this->assertSame($expected, '<?php' . PHP_EOL . PHP_EOL . $actual);
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
+    }
+}

@@ -38,7 +38,8 @@ class StubFactory
                 Invoker::instance(),
                 InvocableInspector::instance(),
                 EmptyValueFactory::instance(),
-                GeneratorAnswerBuilderFactory::instance()
+                GeneratorAnswerBuilderFactory::instance(),
+                FunctionHookManager::instance()
             );
         }
 
@@ -55,6 +56,7 @@ class StubFactory
      * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
      * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param FunctionHookManager           $functionHookManager           The function hook manager to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
@@ -63,7 +65,8 @@ class StubFactory
         Invoker $invoker,
         InvocableInspector $invocableInspector,
         EmptyValueFactory $emptyValueFactory,
-        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
+        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
+        FunctionHookManager $functionHookManager
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
@@ -72,6 +75,7 @@ class StubFactory
         $this->invocableInspector = $invocableInspector;
         $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
+        $this->functionHookManager = $functionHookManager;
     }
 
     /**
@@ -99,7 +103,8 @@ class StubFactory
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
     }
 
@@ -111,4 +116,5 @@ class StubFactory
     private $invocableInspector;
     private $emptyValueFactory;
     private $generatorAnswerBuilderFactory;
+    private $functionHookManager;
 }

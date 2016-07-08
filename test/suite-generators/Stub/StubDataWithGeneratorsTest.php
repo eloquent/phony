@@ -35,6 +35,7 @@ class StubDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->invocableInspector = new InvocableInspector();
         $this->emptyValueFactory = new EmptyValueFactory();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
+        $this->functionHookManager = FunctionHookManager::instance();
         $this->subject = new StubData(
             $this->callback,
             $this->self,
@@ -45,7 +46,8 @@ class StubDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
 
         $this->callsA = array();
