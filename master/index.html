@@ -116,7 +116,19 @@
 <ul>
 <li><a href="#the-stub-api">The stub API</a></li>
 <li><a href="#the-generator-answer-api">The generator answer API</a></li>
-<li><a href="#stubbing-an-existing-callable">Stubbing an existing callable</a></li>
+<li>
+<a href="#stubbing-an-existing-callable">Stubbing an existing callable</a>
+
+<ul>
+<li>
+<a href="#stubbing-global-functions">Stubbing global functions</a>
+
+<ul>
+<li><a href="#alternatives-for-stubbing-global-functions">Alternatives for stubbing global functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#anonymous-stubs">Anonymous stubs</a></li>
 <li>
 <a href="#stub-self-values">Stub "self" values</a>
@@ -190,6 +202,7 @@
 </li>
 </ul>
 </li>
+<li><a href="#declaring-stubs-as-functions">Declaring stubs as functions</a></li>
 </ul>
 </li>
 <li>
@@ -1903,6 +1916,21 @@ set of rules when called. In <em>Phony</em>, every stub also implements <a href=
 
 <p><em>See <a href="#stubbing-an-existing-callable">Stubbing an existing callable</a>, <a href="#anonymous-stubs">Anonymous stubs</a>.</em></p>
 
+<p><a name="facade.stubGlobal"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-stub-api">stub</a></em> <a href="#facade.stubGlobal"><strong>stubGlobal</strong></a>($function, $namespace) <em>(with <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em><a href="#the-stub-api">stub</a></em> x\<a href="#facade.stubGlobal"><strong>stubGlobal</strong></a>($function, $namespace) <em>(without <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em><a href="#the-stub-api">stub</a></em> Phony::<a href="#facade.stubGlobal"><strong>stubGlobal</strong></a>($function, $namespace) <em>(static)</em></p>
+</blockquote>
+
+<p>Create a stub of a function in the global namespace, and declare it as a
+function in another namespace.</p>
+
+<p><em>See <a href="#stubbing-global-functions">Stubbing global functions</a>, <a href="#declaring-stubs-as-functions">Declaring stubs as functions</a>.</em></p>
+
 <p><a name="stub.invoke"></a>
 <a name="stub.__invoke"></a></p>
 
@@ -1996,6 +2024,18 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p>Set the <a href="#the-default-answer-callback">default answer callback</a> of this stub.</p>
 
 <p><em>This method accepts a callback that takes the stub as the first argument.</em></p>
+
+<p><a name="stub.declareAs"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>fluent</em> $stub-&gt;<a href="#stub.declareAs"><strong>declareAs</strong></a>($function)</p>
+</blockquote>
+
+<p>Declare this stub as a function.</p>
+
+<p><em>See <a href="#declaring-stubs-as-functions">Declaring stubs as functions</a>.</em></p>
 
 <p><a name="stub.with"></a></p>
 
@@ -2982,6 +3022,89 @@ whilst falling back to the default behavior during regular operation:</p>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>); <span class="pl-c">// outputs '9'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>); <span class="pl-c">// outputs '9'</span></span></pre></div>
+
+<h4>
+<a id="stubbing-global-functions" class="anchor" href="#stubbing-global-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stubbing global functions</h4>
+
+<p>When an "unqualified" function (one with no preceding backslash) is used from
+within a namespace, PHP will attempt to find the function in the calling
+namespace first, before looking for the function in the <em>global</em> namespace. This
+behavior is known as <a href="http://php.net/language.namespaces.fallback">global function fallback</a>.</p>
+
+<p>This behavior can be exploited to allow a stub to replace a global function
+during testing. To do so, two conditions must be met:</p>
+
+<ul>
+<li>The function must be called without any qualifying namespace or backslash.</li>
+<li>The function must be called from within a namespace; function calls from the
+global namespace cannot be stubbed.</li>
+</ul>
+
+<p>To stub a function in the global namespace, use
+<a href="#facade.stubGlobal"><code>stubGlobal()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stubGlobal(<span class="pl-smi">$function</span>, <span class="pl-smi">$namespace</span>);        <span class="pl-c">// with `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>stubGlobal(<span class="pl-smi">$function</span>, <span class="pl-smi">$namespace</span>);      <span class="pl-c">// without `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>stubGlobal(<span class="pl-smi">$function</span>, <span class="pl-smi">$namespace</span>); <span class="pl-c">// static</span></span></pre></div>
+
+<p>Where <code>$function</code> is the name of the function in the global namespace, and
+<code>$namespace</code> is the namespace under which a new, identically named function
+will be defined.</p>
+
+<p>To demonstrate, the following code will work well with
+<a href="#facade.stubGlobal"><code>stubGlobal()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Foo\Bar</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">'</span>Keep it %s.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>real<span class="pl-pds">'</span></span>);</span></pre></div>
+
+<p>Under normal conditions, this code would output:</p>
+
+<pre><code>Keep it real.
+</code></pre>
+
+<p>But if the <code>printf()</code> function is stubbed before executing this code, its
+behavior can be changed:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Foo\Bar</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\stubGlobal</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stubGlobal(<span class="pl-s"><span class="pl-pds">'</span>printf<span class="pl-pds">'</span></span>, <span class="pl-c1">__NAMESPACE__</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">"</span>You're a total phony!<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">'</span>Keep it %s.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>real<span class="pl-pds">'</span></span>);</span></pre></div>
+
+<p>This code will now output:</p>
+
+<pre><code>You're a total phony!
+</code></pre>
+
+<p>Note that unlike stubs created via <a href="#facade.stub"><code>stub()</code></a>, stubs created via
+<a href="#facade.stubGlobal"><code>stubGlobal()</code></a> will not call through to the original
+function by default. It is still possible to achieve this by using
+<a href="#stub.forwards"><code>forwards()</code></a>, however.</p>
+
+<h5>
+<a id="alternatives-for-stubbing-global-functions" class="anchor" href="#alternatives-for-stubbing-global-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alternatives for stubbing global functions</h5>
+
+<p>If the system under test is not suitable for stubbing via
+<a href="http://php.net/language.namespaces.fallback">global function fallback</a>, an alternative is to accept a callback via
+dependency injection that can take a stub during testing:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\stub</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">function</span> <span class="pl-en">functionA</span>(<span class="pl-smi">$sprintf</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>sprintf<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> $<span class="pl-smi">sprintf</span>(<span class="pl-s"><span class="pl-pds">'</span>Keep it %s.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>real<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub(<span class="pl-s"><span class="pl-pds">'</span>sprintf<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">"</span>You're a total phony!<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">functionA();      <span class="pl-c">// outputs 'Keep it real.'</span></span>
+<span class="pl-s1">functionA(<span class="pl-smi">$stub</span>); <span class="pl-c">// outputs "You're a total phony!"</span></span></pre></div>
+
+<p>Another alternative is to use a library like <a href="https://github.com/IcecaveStudios/isolator">Isolator</a>, that allows the
+injection of an explicit dependency that represents the functions in the global
+namespace. This dependency can then be mocked during testing.</p>
 
 <h3>
 <a id="anonymous-stubs" class="anchor" href="#anonymous-stubs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Anonymous stubs</h3>
@@ -4258,6 +4381,71 @@ Value: a
 Called 2 time(s)
 Value: b
 </code></pre>
+
+<h3>
+<a id="declaring-stubs-as-functions" class="anchor" href="#declaring-stubs-as-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Declaring stubs as functions</h3>
+
+<p>To declare a stub as a function, use <a href="#stub.declareAs"><code>declareAs()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> functionA(); <span class="pl-c">// outputs 'x'</span></span></pre></div>
+
+<p>Namespaced functions can also be created by prefixing the namespace:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>Foo\Bar\functionA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-c1">Foo\Bar\</span>functionA(); <span class="pl-c">// outputs 'x'</span></span></pre></div>
+
+<p>Stubs can be declared as any number of functions, at any time. Changing the
+stub's behavior will also change the behavior of the declared functions:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionB<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> functionA(); <span class="pl-c">// outputs 'x'</span></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> functionB(); <span class="pl-c">// outputs 'x'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>y<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> functionA(); <span class="pl-c">// outputs 'y'</span></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> functionB(); <span class="pl-c">// outputs 'y'</span></span></pre></div>
+
+<p>Stubs can be declared as a function that was previously declared by another
+stub, but only if the function signatures are identical:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubA</span> <span class="pl-k">=</span> stub(</span>
+<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$a</span> <span class="pl-k">+</span> <span class="pl-smi">$b</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span>
+<span class="pl-s1"><span class="pl-smi">$stubA</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> functionA(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>); <span class="pl-c">// outputs '3'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stubB</span> <span class="pl-k">=</span> stub(</span>
+<span class="pl-s1">    <span class="pl-c">// same signature</span></span>
+<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$a</span> <span class="pl-k">*</span> <span class="pl-smi">$b</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span>
+<span class="pl-s1"><span class="pl-smi">$stubB</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>); <span class="pl-c">// works fine</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> functionA(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>); <span class="pl-c">// outputs '2'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stubC</span> <span class="pl-k">=</span> stub(</span>
+<span class="pl-s1">    <span class="pl-c">// different signature</span></span>
+<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$a</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$a</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span>
+<span class="pl-s1"><span class="pl-smi">$stubC</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>); <span class="pl-c">// throws an exception</span></span></pre></div>
+
+<p>If a function already exists, and it was not declared by a stub, an exception
+will be thrown:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub();</span>
+<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>printf<span class="pl-pds">'</span></span>); <span class="pl-c">// throws an exception</span></span></pre></div>
 
 <h2>
 <a id="spies" class="anchor" href="#spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spies</h2>
