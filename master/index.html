@@ -124,6 +124,7 @@
 <a href="#stubbing-global-functions">Stubbing global functions</a>
 
 <ul>
+<li><a href="#restoring-global-functions-after-stubbing">Restoring global functions after stubbing</a></li>
 <li><a href="#alternatives-for-stubbing-global-functions">Alternatives for stubbing global functions</a></li>
 </ul>
 </li>
@@ -202,7 +203,6 @@
 </li>
 </ul>
 </li>
-<li><a href="#declaring-stubs-as-functions">Declaring stubs as functions</a></li>
 </ul>
 </li>
 <li>
@@ -210,7 +210,20 @@
 
 <ul>
 <li><a href="#the-spy-api">The spy API</a></li>
-<li><a href="#spying-on-an-existing-callable">Spying on an existing callable</a></li>
+<li>
+<a href="#spying-on-an-existing-callable">Spying on an existing callable</a>
+
+<ul>
+<li>
+<a href="#spying-on-global-functions">Spying on global functions</a>
+
+<ul>
+<li><a href="#restoring-global-functions-after-spying">Restoring global functions after spying</a></li>
+<li><a href="#alternatives-for-spying-on-global-functions">Alternatives for spying on global functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#anonymous-spies">Anonymous spies</a></li>
 <li>
 <a href="#call-verification">Call verification</a>
@@ -1932,7 +1945,24 @@ function in another namespace.</p>
 <p><em>Stubs created via this function do not forward to the original function by
 default. This differs from stubs created by other methods.</em></p>
 
-<p><em>See <a href="#stubbing-global-functions">Stubbing global functions</a>, <a href="#declaring-stubs-as-functions">Declaring stubs as functions</a>.</em></p>
+<p><em>See <a href="#stubbing-global-functions">Stubbing global functions</a>.</em></p>
+
+<p><a name="facade.restoreGlobalFunctions"></a>
+<a name="facade.restoreGlobalFunctions.stub"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>void</em> <a href="#facade.restoreGlobalFunctions.stub"><strong>restoreGlobalFunctions</strong></a>() <em>(with <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em>void</em> x\<a href="#facade.restoreGlobalFunctions.stub"><strong>restoreGlobalFunctions</strong></a>() <em>(without <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em>void</em> Phony::<a href="#facade.restoreGlobalFunctions.stub"><strong>restoreGlobalFunctions</strong></a>() <em>(static)</em></p>
+</blockquote>
+
+<p>Restores the behavior of any functions in the global namespace that have been
+altered via <a href="#facade.spyGlobal"><code>spyGlobal()</code></a> or
+<a href="#facade.stubGlobal"><code>stubGlobal()</code></a>.</p>
+
+<p><em>See <a href="#stubbing-global-functions">Stubbing global functions</a>, <a href="#spying-on-global-functions">Spying on global functions</a>.</em></p>
 
 <p><a name="stub.invoke"></a>
 <a name="stub.__invoke"></a></p>
@@ -2027,18 +2057,6 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p>Set the <a href="#the-default-answer-callback">default answer callback</a> of this stub.</p>
 
 <p><em>This method accepts a callback that takes the stub as the first argument.</em></p>
-
-<p><a name="stub.declareAs"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>fluent</em> $stub-&gt;<a href="#stub.declareAs"><strong>declareAs</strong></a>($function)</p>
-</blockquote>
-
-<p>Declare this stub as a function.</p>
-
-<p><em>See <a href="#declaring-stubs-as-functions">Declaring stubs as functions</a>.</em></p>
 
 <p><a name="stub.with"></a></p>
 
@@ -3084,6 +3102,23 @@ behavior can be changed:</p>
 <a href="#facade.stubGlobal"><code>stubGlobal()</code></a> will not call through to the original
 function by default. It is still possible to achieve this by using
 <a href="#stub.forwards"><code>forwards()</code></a>, however.</p>
+
+<h5>
+<a id="restoring-global-functions-after-stubbing" class="anchor" href="#restoring-global-functions-after-stubbing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Restoring global functions after stubbing</h5>
+
+<p>Leaving global functions stubbed after a test can affect the results of other
+tests in the same namespace that make use of the same global function. To avoid
+this problem, it is necessary to restore the behavior of stubbed global
+functions after the test concludes.</p>
+
+<p>To restore all stubbed and/or spied global functions, use
+<a href="#facade.restoreGlobalFunctions.stub"><code>restoreGlobalFunctions()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">restoreGlobalFunctions();        <span class="pl-c">// with `use function`</span></span>
+<span class="pl-s1"><span class="pl-c1">x\</span>restoreGlobalFunctions();      <span class="pl-c">// without `use function`</span></span>
+<span class="pl-s1"><span class="pl-c1">Phony</span><span class="pl-k">::</span>restoreGlobalFunctions(); <span class="pl-c">// static</span></span></pre></div>
+
+<p>This method is suitable for use in the "tear down" phase of a test.</p>
 
 <h5>
 <a id="alternatives-for-stubbing-global-functions" class="anchor" href="#alternatives-for-stubbing-global-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alternatives for stubbing global functions</h5>
@@ -4384,71 +4419,6 @@ Called 2 time(s)
 Value: b
 </code></pre>
 
-<h3>
-<a id="declaring-stubs-as-functions" class="anchor" href="#declaring-stubs-as-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Declaring stubs as functions</h3>
-
-<p>To declare a stub as a function, use <a href="#stub.declareAs"><code>declareAs()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> functionA(); <span class="pl-c">// outputs 'x'</span></span></pre></div>
-
-<p>Namespaced functions can also be created by prefixing the namespace:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>Foo\Bar\functionA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-c1">Foo\Bar\</span>functionA(); <span class="pl-c">// outputs 'x'</span></span></pre></div>
-
-<p>Stubs can be declared as any number of functions, at any time. Changing the
-stub's behavior will also change the behavior of the declared functions:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionB<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> functionA(); <span class="pl-c">// outputs 'x'</span></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> functionB(); <span class="pl-c">// outputs 'x'</span></span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>y<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> functionA(); <span class="pl-c">// outputs 'y'</span></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> functionB(); <span class="pl-c">// outputs 'y'</span></span></pre></div>
-
-<p>Stubs can be declared as a function that was previously declared by another
-stub, but only if the function signatures are identical:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubA</span> <span class="pl-k">=</span> stub(</span>
-<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>) {</span>
-<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$a</span> <span class="pl-k">+</span> <span class="pl-smi">$b</span>;</span>
-<span class="pl-s1">    }</span>
-<span class="pl-s1">);</span>
-<span class="pl-s1"><span class="pl-smi">$stubA</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> functionA(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>); <span class="pl-c">// outputs '3'</span></span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$stubB</span> <span class="pl-k">=</span> stub(</span>
-<span class="pl-s1">    <span class="pl-c">// same signature</span></span>
-<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>) {</span>
-<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$a</span> <span class="pl-k">*</span> <span class="pl-smi">$b</span>;</span>
-<span class="pl-s1">    }</span>
-<span class="pl-s1">);</span>
-<span class="pl-s1"><span class="pl-smi">$stubB</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>); <span class="pl-c">// works fine</span></span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> functionA(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>); <span class="pl-c">// outputs '2'</span></span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$stubC</span> <span class="pl-k">=</span> stub(</span>
-<span class="pl-s1">    <span class="pl-c">// different signature</span></span>
-<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$a</span>) {</span>
-<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$a</span>;</span>
-<span class="pl-s1">    }</span>
-<span class="pl-s1">);</span>
-<span class="pl-s1"><span class="pl-smi">$stubC</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>functionA<span class="pl-pds">'</span></span>); <span class="pl-c">// throws an exception</span></span></pre></div>
-
-<p>If a function already exists, and it was not declared by a stub, an exception
-will be thrown:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub();</span>
-<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>declareAs(<span class="pl-s"><span class="pl-pds">'</span>printf<span class="pl-pds">'</span></span>); <span class="pl-c">// throws an exception</span></span></pre></div>
-
 <h2>
 <a id="spies" class="anchor" href="#spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spies</h2>
 
@@ -4474,6 +4444,38 @@ both the <em>input</em>, and <em>output</em> of function calls.</p>
 <p>Create a new <a href="#spies">spy</a>.</p>
 
 <p><em>See <a href="#spying-on-an-existing-callable">Spying on an existing callable</a>, <a href="#anonymous-spies">Anonymous spies</a>.</em></p>
+
+<p><a name="facade.spyGlobal"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em><a href="#the-stub-api">stub</a></em> <a href="#facade.spyGlobal"><strong>spyGlobal</strong></a>($function, $namespace) <em>(with <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em><a href="#the-stub-api">stub</a></em> x\<a href="#facade.spyGlobal"><strong>spyGlobal</strong></a>($function, $namespace) <em>(without <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em><a href="#the-stub-api">stub</a></em> Phony::<a href="#facade.spyGlobal"><strong>spyGlobal</strong></a>($function, $namespace) <em>(static)</em></p>
+</blockquote>
+
+<p>Create a spy of a function in the global namespace, and declare it as a function
+in another namespace.</p>
+
+<p><em>See <a href="#spying-on-global-functions">Spying on global functions</a>.</em></p>
+
+<p><a name="facade.restoreGlobalFunctions"></a>
+<a name="facade.restoreGlobalFunctions.spy"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>void</em> <a href="#facade.restoreGlobalFunctions.spy"><strong>restoreGlobalFunctions</strong></a>() <em>(with <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em>void</em> x\<a href="#facade.restoreGlobalFunctions.spy"><strong>restoreGlobalFunctions</strong></a>() <em>(without <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
+<em>void</em> Phony::<a href="#facade.restoreGlobalFunctions.spy"><strong>restoreGlobalFunctions</strong></a>() <em>(static)</em></p>
+</blockquote>
+
+<p>Restores the behavior of any functions in the global namespace that have been
+altered via <a href="#facade.spyGlobal"><code>spyGlobal()</code></a> or
+<a href="#facade.stubGlobal"><code>stubGlobal()</code></a>.</p>
+
+<p><em>See <a href="#spying-on-global-functions">Spying on global functions</a>, <a href="#stubbing-global-functions">Stubbing global functions</a>.</em></p>
 
 <p><a name="spy.invoke"></a>
 <a name="spy.__invoke"></a></p>
@@ -5148,6 +5150,88 @@ equal to <code>$minimum</code>, and less than or equal to <code>$maximum</code>.
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy(<span class="pl-s"><span class="pl-pds">'</span>max<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">spy</span>(<span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>); <span class="pl-c">// outputs '3'</span></span></pre></div>
+
+<h4>
+<a id="spying-on-global-functions" class="anchor" href="#spying-on-global-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spying on global functions</h4>
+
+<p>When an "unqualified" function (one with no preceding backslash) is used from
+within a namespace, PHP will attempt to find the function in the calling
+namespace first, before looking for the function in the <em>global</em> namespace. This
+behavior is known as <a href="http://php.net/language.namespaces.fallback">global function fallback</a>.</p>
+
+<p>This behavior can be exploited to allow a spy to record interactions with a
+global function during testing. To do so, two conditions must be met:</p>
+
+<ul>
+<li>The function must be called without any qualifying namespace or backslash.</li>
+<li>The function must be called from within a namespace; function calls from the
+global namespace cannot be spied on.</li>
+</ul>
+
+<p>To spy on a function in the global namespace, use
+<a href="#facade.spyGlobal"><code>spyGlobal()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spyGlobal(<span class="pl-smi">$function</span>, <span class="pl-smi">$namespace</span>);        <span class="pl-c">// with `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>spyGlobal(<span class="pl-smi">$function</span>, <span class="pl-smi">$namespace</span>);      <span class="pl-c">// without `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>spyGlobal(<span class="pl-smi">$function</span>, <span class="pl-smi">$namespace</span>); <span class="pl-c">// static</span></span></pre></div>
+
+<p>Where <code>$function</code> is the name of the function in the global namespace, and
+<code>$namespace</code> is the namespace from which the function will be called.</p>
+
+<p>To demonstrate, the following code shows that if the <code>sprintf()</code> function is
+spied on before it is called, its input and output can be verified:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Foo\Bar</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\spyGlobal</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spyGlobal(<span class="pl-s"><span class="pl-pds">'</span>sprintf<span class="pl-pds">'</span></span>, <span class="pl-c1">__NAMESPACE__</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-c1">sprintf</span>(<span class="pl-s"><span class="pl-pds">'</span>Keep it %s.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>real<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>Keep it %s.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>real<span class="pl-pds">'</span></span>); <span class="pl-c">// verification passes</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>Keep it real.<span class="pl-pds">'</span></span>);         <span class="pl-c">// verification passes</span></span></pre></div>
+
+<h5>
+<a id="restoring-global-functions-after-spying" class="anchor" href="#restoring-global-functions-after-spying" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Restoring global functions after spying</h5>
+
+<p>Leaving global functions spied after a test can result in additional memory use,
+as all further interactions with the function will be recorded by <em>Phony</em>. To
+avoid this problem, it is necessary to restore the behavior of spied global
+functions after the test concludes.</p>
+
+<p>To restore all spied and/or stubbed global functions, use
+<a href="#facade.restoreGlobalFunctions.spy"><code>restoreGlobalFunctions()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">restoreGlobalFunctions();        <span class="pl-c">// with `use function`</span></span>
+<span class="pl-s1"><span class="pl-c1">x\</span>restoreGlobalFunctions();      <span class="pl-c">// without `use function`</span></span>
+<span class="pl-s1"><span class="pl-c1">Phony</span><span class="pl-k">::</span>restoreGlobalFunctions(); <span class="pl-c">// static</span></span></pre></div>
+
+<p>This method is suitable for use in the "tear down" phase of a test.</p>
+
+<h5>
+<a id="alternatives-for-spying-on-global-functions" class="anchor" href="#alternatives-for-spying-on-global-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alternatives for spying on global functions</h5>
+
+<p>If the system under test is not suitable for spying via
+<a href="http://php.net/language.namespaces.fallback">global function fallback</a>, an alternative is to accept a callback via
+dependency injection that can take a spy during testing:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\spy</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">function</span> <span class="pl-en">functionA</span>(<span class="pl-smi">$sprintf</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>sprintf<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> $<span class="pl-smi">sprintf</span>(<span class="pl-s"><span class="pl-pds">'</span>Keep it %s.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>real<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy(<span class="pl-s"><span class="pl-pds">'</span>sprintf<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">functionA(<span class="pl-smi">$spy</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>Keep it %s.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>real<span class="pl-pds">'</span></span>); <span class="pl-c">// verification passes</span></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>Keep it real.<span class="pl-pds">'</span></span>);         <span class="pl-c">// verification passes</span></span></pre></div>
+
+<p>Another alternative is to use a library like <a href="https://github.com/IcecaveStudios/isolator">Isolator</a>, that allows the
+injection of an explicit dependency that represents the functions in the global
+namespace. This dependency can then be mocked during testing.</p>
 
 <h3>
 <a id="anonymous-spies" class="anchor" href="#anonymous-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Anonymous spies</h3>
