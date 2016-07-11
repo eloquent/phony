@@ -1647,6 +1647,9 @@ Create a new [stub].
 Create a stub of a function in the global namespace, and declare it as a
 function in another namespace.
 
+*Stubs created via this function do not forward to the original function by
+default. This differs from stubs created by other methods.*
+
 *See [Stubbing global functions], [Declaring stubs as functions].*
 
 <a name="stub.invoke" />
@@ -2621,8 +2624,7 @@ $stub = Phony::stubGlobal($function, $namespace); // static
 ```
 
 Where `$function` is the name of the function in the global namespace, and
-`$namespace` is the namespace under which a new, identically named function
-will be defined.
+`$namespace` is the namespace from which the function will be called.
 
 To demonstrate, the following code will work well with
 [`stubGlobal()`](#facade.stubGlobal):
