@@ -3,11 +3,13 @@
 ## Next release
 
 - **[NEW]** Implemented `stubGlobal()` ([#163]).
+- **[NEW]** Implemented `spyGlobal()` ([#175]).
 - **[IMPROVED]** Traversable spies now implement `ArrayAccess` and `Countable`
   ([#165]).
 
 [#163]: https://github.com/eloquent/phony/issues/163
 [#165]: https://github.com/eloquent/phony/issues/165
+[#175]: https://github.com/eloquent/phony/issues/175
 
 ## 0.10.2 (2016-07-06)
 
