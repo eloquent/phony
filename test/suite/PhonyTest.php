@@ -268,6 +268,24 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertSame($callback, $actual->callback());
     }
 
+    public function testSpyGlobal()
+    {
+        $actual = Phony::spyGlobal('sprintf', 'Eloquent\Phony\Facade');
+
+        $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
+        $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', 'a', 'b'));
+    }
+
+    public function testSpyGlobalFunction()
+    {
+        $actual = spyGlobal('vsprintf', 'Eloquent\Phony\Facade');
+
+        $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
+        $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', array('a', 'b')));
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', array('a', 'b')));
+    }
+
     public function testStub()
     {
         $callback = function () { return 'a'; };
@@ -296,7 +314,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
         $this->assertNull(\Eloquent\Phony\Facade\sprintf('x', 'y'));
-        $this->assertSame($actual->stub(), $actual->spy()->callback());
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', 'a', 'b'));
     }
 
     public function testStubGlobalFunction()
@@ -307,7 +325,35 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', array('a', 'b')));
         $this->assertNull(\Eloquent\Phony\Facade\vsprintf('x', 'y'));
-        $this->assertSame($actual->stub(), $actual->spy()->callback());
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', array('a', 'b')));
+    }
+
+    public function testRestoreGlobalFunctions()
+    {
+        Phony::stubGlobal('sprintf', 'Eloquent\Phony\Facade');
+        Phony::stubGlobal('vsprintf', 'Eloquent\Phony\Facade');
+
+        $this->assertNull(\Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(\Eloquent\Phony\Facade\vsprintf('%s, %s', array('a', 'b')));
+
+        Phony::restoreGlobalFunctions();
+
+        $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', array('a', 'b')));
+    }
+
+    public function testRestoreGlobalFunctionsFunction()
+    {
+        stubGlobal('sprintf', 'Eloquent\Phony\Facade');
+        stubGlobal('vsprintf', 'Eloquent\Phony\Facade');
+
+        $this->assertNull(\Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(\Eloquent\Phony\Facade\vsprintf('%s, %s', array('a', 'b')));
+
+        restoreGlobalFunctions();
+
+        $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', array('a', 'b')));
     }
 
     public function testEventOrderMethods()

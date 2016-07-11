@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Stub\Exception;
+namespace Eloquent\Phony\Hook\Exception;
 
 /**
  * The interface used to identify function hook exceptions.

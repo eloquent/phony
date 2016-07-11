@@ -9,18 +9,18 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Stub\Exception;
+namespace Eloquent\Phony\Hook\Exception;
 
 use Exception;
 
 /**
- * The function is already defined.
+ * The function hook has a different signature to the supplied callback.
  */
-final class FunctionExistsException extends Exception implements
+final class FunctionSignatureMismatchException extends Exception implements
     FunctionHookException
 {
     /**
-     * Construct a function exists exception.
+     * Construct a function signature mismatch exception.
      *
      * @param string $functionName The function name.
      */
@@ -30,7 +30,8 @@ final class FunctionExistsException extends Exception implements
 
         parent::__construct(
             sprintf(
-                'Function %s is already defined.',
+                'Function %s has a different signature to the supplied ' .
+                    'callback.',
                 var_export($functionName, true)
             )
         );

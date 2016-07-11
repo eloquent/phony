@@ -9,13 +9,13 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Stub;
+namespace Eloquent\Phony\Hook;
 
+use Eloquent\Phony\Hook\Exception\FunctionExistsException;
+use Eloquent\Phony\Hook\Exception\FunctionHookException;
+use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
+use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use Eloquent\Phony\Stub\Exception\FunctionExistsException;
-use Eloquent\Phony\Stub\Exception\FunctionHookException;
-use Eloquent\Phony\Stub\Exception\FunctionHookGenerationFailedException;
-use Eloquent\Phony\Stub\Exception\FunctionSignatureMismatchException;
 use Exception;
 use ParseError;
 use ParseException;
@@ -60,30 +60,34 @@ class FunctionHookManager
     /**
      * Define the behavior of a function hook.
      *
-     * @param string   $name     The function name.
-     * @param callback $callback The callback.
+     * @param string   $name      The function name.
+     * @param string   $namespace The namespace.
+     * @param callable $callback  The callback.
      *
      * @return callback|null         The replaced callback, or null if no callback was set.
      * @throws FunctionHookException If the function hook generation fails.
      */
-    public function defineFunction($name, $callback)
+    public function defineFunction($name, $namespace, $callback)
     {
         $signature = $this->signatureInspector->callbackSignature($callback);
+        $fullName = $namespace . '\\' . $name;
+        $key = strtolower($fullName);
 
-        if (isset(self::$hooks[$name])) {
-            if ($signature !== self::$hooks[$name]['signature']) {
-                throw new FunctionSignatureMismatchException($name);
+        if (isset(self::$hooks[$key])) {
+            if ($signature !== self::$hooks[$key]['signature']) {
+                throw new FunctionSignatureMismatchException($fullName);
             }
 
-            $replaced = self::$hooks[$name]['callback'];
+            $replaced = self::$hooks[$key]['callback'];
         } else {
             $replaced = null;
 
-            if (function_exists($name)) {
-                throw new FunctionExistsException($name);
+            if (function_exists($fullName)) {
+                throw new FunctionExistsException($fullName);
             }
 
-            $source = $this->hookGenerator->generateHook($name, $signature);
+            $source = $this->hookGenerator
+                ->generateHook($name, $namespace, $signature);
             $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
             $error = null;
 
@@ -91,7 +95,7 @@ class FunctionHookManager
                 eval($source);
             } catch (ParseError $e) {
                 $error = new FunctionHookGenerationFailedException(
-                    $name,
+                    $fullName,
                     $callback,
                     $source,
                     error_get_last(),
@@ -100,7 +104,7 @@ class FunctionHookManager
                 // @codeCoverageIgnoreStart
             } catch (ParseException $e) {
                 $error = new FunctionHookGenerationFailedException(
-                    $name,
+                    $fullName,
                     $callback,
                     $source,
                     error_get_last(),
@@ -117,10 +121,10 @@ class FunctionHookManager
                 throw $error;
             }
 
-            if (!function_exists($name)) {
+            if (!function_exists($fullName)) {
                 // @codeCoverageIgnoreStart
                 throw new FunctionHookGenerationFailedException(
-                    $name,
+                    $fullName,
                     $callback,
                     $source,
                     error_get_last()
@@ -129,29 +133,21 @@ class FunctionHookManager
             }
         }
 
-        self::$hooks[$name] =
+        self::$hooks[$key] =
             array('callback' => $callback, 'signature' => $signature);
 
         return $replaced;
     }
 
     /**
-     * Remove any existing behavior from a function hook.
-     *
-     * @param string $name The function name.
-     *
-     * @return callback|null The removed callback, or null if no callback was set.
+     * Effectively removes any function hooks for functions in the global
+     * namespace.
      */
-    public function undefineFunction($name)
+    public function restoreGlobalFunctions()
     {
-        if (isset(self::$hooks[$name])) {
-            $removed = self::$hooks[$name]['callback'];
-            self::$hooks[$name]['callback'] = null;
-        } else {
-            $removed = null;
+        foreach (self::$hooks as $key => $data) {
+            self::$hooks[$key]['callback'] = null;
         }
-
-        return $removed;
     }
 
     public static $hooks = array();

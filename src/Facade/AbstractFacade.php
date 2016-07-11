@@ -164,6 +164,21 @@ abstract class AbstractFacade
     }
 
     /**
+     * Create a spy of a function in the global namespace, and declare it as a
+     * function in another namespace.
+     *
+     * @param callable $function  The name of the function in the global namespace.
+     * @param string   $namespace The namespace in which to create the new function.
+     *
+     * @return SpyVerifier The new spy.
+     */
+    public static function spyGlobal($function, $namespace)
+    {
+        return static::driver()->spyVerifierFactory
+            ->createGlobal($function, $namespace);
+    }
+
+    /**
      * Create a new stub.
      *
      * @param callable|null $callback The callback, or null to create an anonymous stub.
@@ -180,6 +195,9 @@ abstract class AbstractFacade
      * Create a stub of a function in the global namespace, and declare it as a
      * function in another namespace.
      *
+     * Stubs created via this function do not forward to the original function
+     * by default. This differs from stubs created by other methods.
+     *
      * @param callable $function  The name of the function in the global namespace.
      * @param string   $namespace The namespace in which to create the new function.
      *
@@ -189,6 +207,15 @@ abstract class AbstractFacade
     {
         return static::driver()->stubVerifierFactory
             ->createGlobal($function, $namespace);
+    }
+
+    /**
+     * Restores the behavior of any functions in the global namespace that have
+     * been altered via spyGlobal() or stubGlobal().
+     */
+    public static function restoreGlobalFunctions()
+    {
+        return static::driver()->functionHookManager->restoreGlobalFunctions();
     }
 
     /**

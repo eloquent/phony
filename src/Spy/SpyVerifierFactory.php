@@ -15,11 +15,13 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use InvalidArgumentException;
 
 /**
  * Creates spy verifiers.
@@ -43,7 +45,8 @@ class SpyVerifierFactory
                 CallVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
-                InvocableInspector::instance()
+                InvocableInspector::instance(),
+                FunctionHookManager::instance()
             );
         }
 
@@ -62,6 +65,7 @@ class SpyVerifierFactory
      * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
      * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
      * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
+     * @param FunctionHookManager        $functionHookManager        The function hook manager to use.
      */
     public function __construct(
         SpyFactory $spyFactory,
@@ -72,7 +76,8 @@ class SpyVerifierFactory
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
-        InvocableInspector $invocableInspector
+        InvocableInspector $invocableInspector,
+        FunctionHookManager $functionHookManager
     ) {
         $this->spyFactory = $spyFactory;
         $this->matcherFactory = $matcherFactory;
@@ -83,6 +88,7 @@ class SpyVerifierFactory
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->invocableInspector = $invocableInspector;
+        $this->functionHookManager = $functionHookManager;
     }
 
     /**
@@ -133,6 +139,48 @@ class SpyVerifierFactory
         );
     }
 
+    /**
+     * Create a new spy verifier for a global function and declare it in the
+     * specified namespace.
+     *
+     * @param string $function  The function name.
+     * @param string $namespace The namespace.
+     *
+     * @return SpyVerifier              The newly created spy verifier.
+     * @throws InvalidArgumentException If an invalid function name or namespace is specified.
+     */
+    public function createGlobal($function, $namespace)
+    {
+        if (false !== strpos($function, '\\')) {
+            throw new InvalidArgumentException(
+                'Only functions in the global namespace are supported.'
+            );
+        }
+
+        $namespace = trim($namespace, '\\');
+
+        if (!$namespace) {
+            throw new InvalidArgumentException(
+                'The supplied namespace must not be empty.'
+            );
+        }
+
+        $spy = $this->spyFactory->create($function);
+        $this->functionHookManager->defineFunction($function, $namespace, $spy);
+
+        return new SpyVerifier(
+            $spy,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->traversableVerifierFactory,
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector
+        );
+    }
+
     private static $instance;
     private $spyFactory;
     private $matcherFactory;
@@ -143,4 +191,5 @@ class SpyVerifierFactory
     private $assertionRecorder;
     private $assertionRenderer;
     private $invocableInspector;
+    private $functionHookManager;
 }

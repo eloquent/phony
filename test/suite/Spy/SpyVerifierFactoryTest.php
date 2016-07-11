@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -44,6 +45,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = new InvocableInspector();
+        $this->functionHookManager = FunctionHookManager::instance();
         $this->subject = new SpyVerifierFactory(
             $this->spyFactory,
             $this->matcherFactory,
@@ -53,7 +55,8 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector
+            $this->invocableInspector,
+            $this->functionHookManager
         );
     }
 
@@ -115,6 +118,44 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals($spy, $actual->spy());
+    }
+
+    public function testCreateGlobal()
+    {
+        $actual = $this->subject->createGlobal('sprintf', 'Eloquent\Phony\Test\SpyVerifierFactory');
+
+        $this->assertSame('a, b, c', \Eloquent\Phony\Test\SpyVerifierFactory\sprintf('%s, %s, %s', 'a', 'b', 'c'));
+        $this->assertTrue((bool) $actual->checkCalledWith('%s, %s, %s', 'a', 'b', 'c'));
+    }
+
+    public function testCreateGlobalWithReferenceParameters()
+    {
+        $actual = $this->subject->createGlobal('preg_match', 'Eloquent\Phony\Test\SpyVerifierFactory');
+
+        \Eloquent\Phony\Test\SpyVerifierFactory\preg_match('/./', 'a', $matches);
+
+        $this->assertSame(array(0 => 'a'), $matches);
+    }
+
+    public function testCreateGlobalFailureWithNonGlobal()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Only functions in the global namespace are supported.'
+        );
+        $this->subject->createGlobal('Namespaced\\function', '\Eloquent\Phony\Test\SpyVerifierFactory');
+    }
+
+    public function testCreateGlobalFailureEmptyNamespace()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->subject->createGlobal('implode', '');
+    }
+
+    public function testCreateGlobalFailureGlobalNamespace()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->subject->createGlobal('implode', '\\');
     }
 
     public function testInstance()

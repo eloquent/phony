@@ -2,7 +2,7 @@
 
 ## Next release
 
-- **[NEW]** Implemented `stubGlobal()` and `declareAs()` ([#163]).
+- **[NEW]** Implemented `stubGlobal()` ([#163]).
 - **[IMPROVED]** Traversable spies now implement `ArrayAccess` and `Countable`
   ([#165]).
 

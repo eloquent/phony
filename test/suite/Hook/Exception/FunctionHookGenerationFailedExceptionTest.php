@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Stub\Exception;
+namespace Eloquent\Phony\Hook\Exception;
 
 use Exception;
 use PHPUnit_Framework_TestCase;

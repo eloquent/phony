@@ -307,6 +307,19 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame(123, $spy());
     }
 
+    public function testSpyGlobal()
+    {
+        $stubA = x\spyGlobal('vsprintf', 'Eloquent\Phony\Test');
+
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
+        $stubA->calledWith('%s, %s', array('a', 'b'));
+
+        $stubB = x\spyGlobal('vsprintf', 'Eloquent\Phony\Test');
+
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
+        $stubB->calledWith('%s, %s', array('a', 'b'));
+    }
+
     public function testStubStatic()
     {
         $stub = Phony::stub()
@@ -398,14 +411,20 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stubA->forwards();
 
         $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
+        $stubA->times(3)->calledWith('%s, %s', array('a', 'b'));
 
         $stubB = x\stubGlobal('vsprintf', 'Eloquent\Phony\Test');
 
         $this->assertNull(Test\vsprintf('%s, %s', array('a', 'b')));
+        $stubB->calledWith('%s, %s', array('a', 'b'));
 
         $stubB->returns('x');
 
         $this->assertSame('x', Test\vsprintf('%s, %s', array('a', 'b')));
+
+        x\restoreGlobalFunctions();
+
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
     }
 
     public function testTraversableSpying()

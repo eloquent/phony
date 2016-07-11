@@ -162,6 +162,21 @@ function spy($callback = null)
 }
 
 /**
+ * Create a spy of a function in the global namespace, and declare it as a
+ * function in another namespace.
+ *
+ * @param callable $function  The name of the function in the global namespace.
+ * @param string   $namespace The namespace in which to create the new function.
+ *
+ * @return SpyVerifier The new spy.
+ */
+function spyGlobal($function, $namespace)
+{
+    return PhpunitFacadeDriver::instance()->spyVerifierFactory
+        ->createGlobal($function, $namespace);
+}
+
+/**
  * Create a new stub.
  *
  * @param callable|null $callback The callback, or null to create an anonymous stub.
@@ -178,6 +193,9 @@ function stub($callback = null)
  * Create a stub of a function in the global namespace, and declare it as a
  * function in another namespace.
  *
+ * Stubs created via this function do not forward to the original function by
+ * default. This differs from stubs created by other methods.
+ *
  * @param callable $function  The name of the function in the global namespace.
  * @param string   $namespace The namespace in which to create the new function.
  *
@@ -187,6 +205,16 @@ function stubGlobal($function, $namespace)
 {
     return PhpunitFacadeDriver::instance()->stubVerifierFactory
         ->createGlobal($function, $namespace);
+}
+
+/**
+ * Restores the behavior of any functions in the global namespace that have been
+ * altered via spyGlobal() or stubGlobal().
+ */
+function restoreGlobalFunctions()
+{
+    return PhpunitFacadeDriver::instance()->functionHookManager
+        ->restoreGlobalFunctions();
 }
 
 /**

@@ -198,56 +198,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->label, $this->subject->label());
     }
 
-    public function testDeclareAs()
-    {
-        $name = 'Eloquent\Phony\Test\\phony_' . md5(mt_rand());
-
-        $defaultAnswerCallback = function ($stub) {
-            $stub->forwards();
-        };
-        $callbackA = function ($a, $b) {
-            return "$a, $b";
-        };
-        $stubA = $this->stubFactory->create($callbackA, $this->self)->setLabel($this->label);
-        $stubVerifierA = new StubVerifier(
-            $stubA,
-            $this->spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector,
-            $this->invoker,
-            $this->generatorAnswerBuilderFactory
-        );
-        $callbackB = function ($a, $b) {
-            return "$a + $b";
-        };
-        $stubB = $this->stubFactory->create($callbackB, $this->self)->setLabel($this->label);
-        $stubVerifierB = new StubVerifier(
-            $stubB,
-            $this->spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector,
-            $this->invoker,
-            $this->generatorAnswerBuilderFactory
-        );
-
-        $this->assertSame($stubVerifierA, $stubVerifierA->declareAs($name));
-        $this->assertSame('a, b', $name('a', 'b'));
-        $this->assertSame($stubVerifierB, $stubVerifierB->declareAs($name));
-        $this->assertSame('a + b', $name('a', 'b'));
-    }
-
     public function testWith()
     {
         $this->assertSame(

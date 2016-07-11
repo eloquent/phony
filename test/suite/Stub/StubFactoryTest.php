@@ -31,7 +31,6 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->invocableInspector = new InvocableInspector();
         $this->emptyValueFactory = new EmptyValueFactory();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
-        $this->functionHookManager = FunctionHookManager::instance();
         $this->subject = new StubFactory(
             $this->labelSequencer,
             $this->matcherFactory,
@@ -39,8 +38,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->functionHookManager
+            $this->generatorAnswerBuilderFactory
         );
     }
 
@@ -59,8 +57,7 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->functionHookManager
+            $this->generatorAnswerBuilderFactory
         );
         $actual = $this->subject->create($callback, $self, $defaultAnswerCallback);
 

@@ -9,9 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Stub;
-
-use Eloquent\Phony\Reflection\FeatureDetector;
+namespace Eloquent\Phony\Hook;
 
 /**
  * Generates the source code for function hooks.
@@ -26,44 +24,24 @@ class FunctionHookGenerator
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self(FeatureDetector::instance());
+            self::$instance = new self();
         }
 
         return self::$instance;
     }
 
     /**
-     * Construct a new function hook manager.
-     *
-     * @param FeatureDetector $featureDetector The feature detector to use.
-     */
-    public function __construct(FeatureDetector $featureDetector)
-    {
-        $this->isEngineErrorExceptionSupported =
-            $featureDetector->isSupported('error.exception.engine');
-    }
-
-    /**
      * Generate the source code for a function hook.
      *
      * @param string                      $name      The function name.
+     * @param string                      $namespace The namespace.
      * @param array<string,array<string>> $signature The function signature.
      *
      * @return string The source code.
      */
-    public function generateHook($name, array $signature)
+    public function generateHook($name, $namespace, array $signature)
     {
-        $atoms = explode('\\', $name);
-        $shortName = array_pop($atoms);
-
-        if ($atoms) {
-            $namespace = implode('\\', $atoms);
-            $source = "namespace $namespace;\n\n";
-        } else {
-            $source = '';
-        }
-
-        $source .= "function $shortName";
+        $source = "namespace $namespace;\n\nfunction $name";
 
         if ($signature) {
             $index = -1;
@@ -89,29 +67,6 @@ class FunctionHookGenerator
         } else {
             $source .= "()\n{\n";
         }
-
-        $ret = 'ret' . 'urn';
-        $thr = 'thr' . 'ow';
-
-        $renderedName = var_export($name, true);
-        $source .=
-            "    \$name = $renderedName;\n\n    if (" .
-            "\n        !isset(\n            " .
-            '\Eloquent\Phony\Stub\FunctionHookManager::$hooks[$name]' .
-            "['callback']\n        )\n    ) {\n";
-
-        if ($this->isEngineErrorExceptionSupported) {
-            $source .= '        ' .
-                "$thr new \Error('Call to undefined function $name()');";
-            // @codeCoverageIgnoreStart
-        } else {
-            $source .= '        trigger_error(' .
-                "'Call to undefined function $name()', E_USER_ERROR);\n\n" .
-                "    $ret;";
-        }
-        // @codeCoverageIgnoreEnd
-
-        $source .= "\n    }\n\n";
 
         $parameterCount = count($signature);
         $variadicIndex = -1;
@@ -161,9 +116,19 @@ class FunctionHookGenerator
                 '    }';
         }
 
+        $ret = 'ret' . 'urn';
+        $thr = 'thr' . 'ow';
+
+        $renderedName = var_export(strtolower($namespace . '\\' . $name), true);
+        $renderedShortName = var_export($name, true);
         $source .=
-            "\n\n    \$callback =\n        " .
-            '\Eloquent\Phony\Stub\FunctionHookManager::$hooks' .
+            "\n\n    \$name = $renderedName;\n\n    if (" .
+            "\n        !isset(\n            " .
+            '\Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]' .
+            "['callback']\n        )\n    ) {\n        " .
+            "$ret \call_user_func_array($renderedShortName, \$arguments);" .
+            "\n    }\n\n    \$callback =\n        " .
+            '\Eloquent\Phony\Hook\FunctionHookManager::$hooks' .
             "[\$name]['callback'];\n\n" .
             '    if ($callback instanceof ' .
             "\Eloquent\Phony\Invocation\Invocable) {\n" .
@@ -181,5 +146,4 @@ class FunctionHookGenerator
     }
 
     private static $instance;
-    private $isEngineErrorExceptionSupported;
 }

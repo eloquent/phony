@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Stub;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -51,8 +52,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             Invoker::instance(),
             InvocableInspector::instance(),
             new EmptyValueFactory(),
-            GeneratorAnswerBuilderFactory::instance(),
-            FunctionHookManager::instance()
+            GeneratorAnswerBuilderFactory::instance()
         );
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
@@ -62,6 +62,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->invocableInspector = InvocableInspector::instance();
         $this->invoker = new Invoker();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
+        $this->functionHookManager = FunctionHookManager::instance();
         $this->subject = new StubVerifierFactory(
             $this->stubFactory,
             $this->spyFactory,
@@ -74,7 +75,8 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer,
             $this->invocableInspector,
             $this->invoker,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->functionHookManager
         );
     }
 
@@ -165,12 +167,12 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateGlobalWithReferenceParameters()
     {
-        $actual = $this->subject->createGlobal('exec', 'Eloquent\Phony\Test\StubVerifierFactory');
-        $actual->setsArgument(1, array('a', 'b'));
+        $actual = $this->subject->createGlobal('preg_match', 'Eloquent\Phony\Test\SpyVerifierFactory');
+        $actual->setsArgument(2, array('a', 'b'));
 
-        \Eloquent\Phony\Test\StubVerifierFactory\exec('echo x', $output);
+        \Eloquent\Phony\Test\SpyVerifierFactory\preg_match('/./', 'a', $matches);
 
-        $this->assertSame(array('a', 'b'), $output);
+        $this->assertSame(array('a', 'b'), $matches);
     }
 
     public function testCreateGlobalFailureWithNonGlobal()

@@ -43,6 +43,7 @@
     - [The generator answer API]
     - [Stubbing an existing callable]
         - [Stubbing global functions]
+            - [Restoring global functions after stubbing]
             - [Alternatives for stubbing global functions]
     - [Anonymous stubs]
     - [Stub "self" values]
@@ -77,10 +78,12 @@
             - [Setting passed-by-reference arguments in a generator]
             - [Invoking arguments in a generator]
             - [Invoking callables in a generator]
-    - [Declaring stubs as functions]
 - [Spies]
     - [The spy API]
     - [Spying on an existing callable]
+        - [Spying on global functions]
+            - [Restoring global functions after spying]
+            - [Alternatives for spying on global functions]
     - [Anonymous spies]
     - [Call verification]
         - [Call count]
@@ -1650,7 +1653,22 @@ function in another namespace.
 *Stubs created via this function do not forward to the original function by
 default. This differs from stubs created by other methods.*
 
-*See [Stubbing global functions], [Declaring stubs as functions].*
+*See [Stubbing global functions].*
+
+<a name="facade.restoreGlobalFunctions" />
+<a name="facade.restoreGlobalFunctions.stub" />
+
+----
+
+> *void* [**restoreGlobalFunctions**](#facade.restoreGlobalFunctions.stub)() *(with [use function])*<br />
+> *void* x\\[**restoreGlobalFunctions**](#facade.restoreGlobalFunctions.stub)() *(without [use function])*<br />
+> *void* Phony::[**restoreGlobalFunctions**](#facade.restoreGlobalFunctions.stub)() *(static)*
+
+Restores the behavior of any functions in the global namespace that have been
+altered via [`spyGlobal()`](#facade.spyGlobal) or
+[`stubGlobal()`](#facade.stubGlobal).
+
+*See [Stubbing global functions], [Spying on global functions].*
 
 <a name="stub.invoke" />
 <a name="stub.__invoke" />
@@ -1729,16 +1747,6 @@ Get the [default answer callback].
 Set the [default answer callback] of this stub.
 
 *This method accepts a callback that takes the stub as the first argument.*
-
-<a name="stub.declareAs" />
-
-----
-
-> *fluent* $stub->[**declareAs**](#stub.declareAs)($function)
-
-Declare this stub as a function.
-
-*See [Declaring stubs as functions].*
 
 <a name="stub.with" />
 
@@ -2659,6 +2667,24 @@ Note that unlike stubs created via [`stub()`](#facade.stub), stubs created via
 [`stubGlobal()`](#facade.stubGlobal) will not call through to the original
 function by default. It is still possible to achieve this by using
 [`forwards()`](#stub.forwards), however.
+
+##### Restoring global functions after stubbing
+
+Leaving global functions stubbed after a test can affect the results of other
+tests in the same namespace that make use of the same global function. To avoid
+this problem, it is necessary to restore the behavior of stubbed global
+functions after the test concludes.
+
+To restore all stubbed and/or spied global functions, use
+[`restoreGlobalFunctions()`](#facade.restoreGlobalFunctions.stub):
+
+```php
+restoreGlobalFunctions();        // with `use function`
+x\restoreGlobalFunctions();      // without `use function`
+Phony::restoreGlobalFunctions(); // static
+```
+
+This method is suitable for use in the "tear down" phase of a test.
 
 ##### Alternatives for stubbing global functions
 
@@ -4039,80 +4065,6 @@ Called 2 time(s)
 Value: b
 ```
 
-### Declaring stubs as functions
-
-To declare a stub as a function, use [`declareAs()`](#stub.declareAs):
-
-```php
-$stub = stub()->declareAs('functionA')->returns('x');
-
-echo functionA(); // outputs 'x'
-```
-
-Namespaced functions can also be created by prefixing the namespace:
-
-```php
-$stub = stub()->declareAs('Foo\Bar\functionA')->returns('x');
-
-echo Foo\Bar\functionA(); // outputs 'x'
-```
-
-Stubs can be declared as any number of functions, at any time. Changing the
-stub's behavior will also change the behavior of the declared functions:
-
-```php
-$stub = stub()->returns('x');
-$stub->declareAs('functionA')->declareAs('functionB');
-
-echo functionA(); // outputs 'x'
-echo functionB(); // outputs 'x'
-
-$stub->returns('y');
-
-echo functionA(); // outputs 'y'
-echo functionB(); // outputs 'y'
-```
-
-Stubs can be declared as a function that was previously declared by another
-stub, but only if the function signatures are identical:
-
-```php
-$stubA = stub(
-    function ($a, $b) {
-        return $a + $b;
-    }
-);
-$stubA->declareAs('functionA');
-
-echo functionA(1, 2); // outputs '3'
-
-$stubB = stub(
-    // same signature
-    function ($a, $b) {
-        return $a * $b;
-    }
-);
-$stubB->declareAs('functionA'); // works fine
-
-echo functionA(1, 2); // outputs '2'
-
-$stubC = stub(
-    // different signature
-    function ($a) {
-        return $a;
-    }
-);
-$stubC->declareAs('functionA'); // throws an exception
-```
-
-If a function already exists, and it was not declared by a stub, an exception
-will be thrown:
-
-```php
-$stub = stub();
-$stub->declareAs('printf'); // throws an exception
-```
-
 ## Spies
 
 *Spies* record interactions with callable entities, such as functions, methods,
@@ -4134,6 +4086,34 @@ Most of the methods in the spy API are mirrored in [the call API].
 Create a new [spy].
 
 *See [Spying on an existing callable], [Anonymous spies].*
+
+<a name="facade.spyGlobal" />
+
+----
+
+> *[stub][stub-api]* [**spyGlobal**](#facade.spyGlobal)($function, $namespace) *(with [use function])*<br />
+> *[stub][stub-api]* x\\[**spyGlobal**](#facade.spyGlobal)($function, $namespace) *(without [use function])*<br />
+> *[stub][stub-api]* Phony::[**spyGlobal**](#facade.spyGlobal)($function, $namespace) *(static)*
+
+Create a spy of a function in the global namespace, and declare it as a function
+in another namespace.
+
+*See [Spying on global functions].*
+
+<a name="facade.restoreGlobalFunctions" />
+<a name="facade.restoreGlobalFunctions.spy" />
+
+----
+
+> *void* [**restoreGlobalFunctions**](#facade.restoreGlobalFunctions.spy)() *(with [use function])*<br />
+> *void* x\\[**restoreGlobalFunctions**](#facade.restoreGlobalFunctions.spy)() *(without [use function])*<br />
+> *void* Phony::[**restoreGlobalFunctions**](#facade.restoreGlobalFunctions.spy)() *(static)*
+
+Restores the behavior of any functions in the global namespace that have been
+altered via [`spyGlobal()`](#facade.spyGlobal) or
+[`stubGlobal()`](#facade.stubGlobal).
+
+*See [Spying on global functions], [Stubbing global functions].*
 
 <a name="spy.invoke" />
 <a name="spy.__invoke" />
@@ -4713,6 +4693,91 @@ $spy = spy('max');
 
 echo $spy(2, 3, 1); // outputs '3'
 ```
+
+#### Spying on global functions
+
+When an "unqualified" function (one with no preceding backslash) is used from
+within a namespace, PHP will attempt to find the function in the calling
+namespace first, before looking for the function in the *global* namespace. This
+behavior is known as [global function fallback].
+
+This behavior can be exploited to allow a spy to record interactions with a
+global function during testing. To do so, two conditions must be met:
+
+- The function must be called without any qualifying namespace or backslash.
+- The function must be called from within a namespace; function calls from the
+  global namespace cannot be spied on.
+
+To spy on a function in the global namespace, use
+[`spyGlobal()`](#facade.spyGlobal):
+
+```php
+$spy = spyGlobal($function, $namespace);        // with `use function`
+$spy = x\spyGlobal($function, $namespace);      // without `use function`
+$spy = Phony::spyGlobal($function, $namespace); // static
+```
+
+Where `$function` is the name of the function in the global namespace, and
+`$namespace` is the namespace from which the function will be called.
+
+To demonstrate, the following code shows that if the `sprintf()` function is
+spied on before it is called, its input and output can be verified:
+
+```php
+namespace Foo\Bar;
+use function Eloquent\Phony\spyGlobal;
+
+$spy = spyGlobal('sprintf', __NAMESPACE__);
+
+$message = sprintf('Keep it %s.', 'real');
+
+$spy->calledWith('Keep it %s.', 'real'); // verification passes
+$spy->returned('Keep it real.');         // verification passes
+```
+
+##### Restoring global functions after spying
+
+Leaving global functions spied after a test can result in additional memory use,
+as all further interactions with the function will be recorded by *Phony*. To
+avoid this problem, it is necessary to restore the behavior of spied global
+functions after the test concludes.
+
+To restore all spied and/or stubbed global functions, use
+[`restoreGlobalFunctions()`](#facade.restoreGlobalFunctions.spy):
+
+```php
+restoreGlobalFunctions();        // with `use function`
+x\restoreGlobalFunctions();      // without `use function`
+Phony::restoreGlobalFunctions(); // static
+```
+
+This method is suitable for use in the "tear down" phase of a test.
+
+##### Alternatives for spying on global functions
+
+If the system under test is not suitable for spying via
+[global function fallback], an alternative is to accept a callback via
+dependency injection that can take a spy during testing:
+
+```php
+use function Eloquent\Phony\spy;
+
+function functionA($sprintf = 'sprintf')
+{
+    $message = $sprintf('Keep it %s.', 'real');
+}
+
+$spy = spy('sprintf');
+
+functionA($spy);
+
+$spy->calledWith('Keep it %s.', 'real'); // verification passes
+$spy->returned('Keep it real.');         // verification passes
+```
+
+Another alternative is to use a library like [Isolator], that allows the
+injection of an explicit dependency that represents the functions in the global
+namespace. This dependency can then be mocked during testing.
 
 ### Anonymous spies
 
@@ -7961,6 +8026,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [ad hoc definition magic "self" values]: #ad-hoc-definition-magic-self-values
 [ad hoc definition values]: #ad-hoc-definition-values
 [ad hoc mocks]: #ad-hoc-mocks
+[alternatives for spying on global functions]: #alternatives-for-spying-on-global-functions
 [alternatives for stubbing global functions]: #alternatives-for-stubbing-global-functions
 [anonymous spies]: #anonymous-spies
 [anonymous stubs]: #anonymous-stubs
@@ -7978,7 +8044,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [counterpart matchers]: #counterpart-matchers
 [creating mocks from a builder]: #creating-mocks-from-a-builder
 [customizing the mock class]: #customizing-the-mock-class
-[declaring stubs as functions]: #declaring-stubs-as-functions
 [default values for return types]: #default-values-for-return-types
 [dynamic order verification]: #dynamic-order-verification
 [example test suites]: #example-test-suites
@@ -8040,6 +8105,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
 [proxy mocks]: #proxy-mocks
 [repeated iteration of traversable spies]: #repeated-iteration-of-traversable-spies
+[restoring global functions after spying]: #restoring-global-functions-after-spying
+[restoring global functions after stubbing]: #restoring-global-functions-after-stubbing
 [retrieving calls from a spy]: #retrieving-calls-from-a-spy
 [returning arguments from a generator]: #returning-arguments-from-a-generator
 [returning arguments]: #returning-arguments
@@ -8057,6 +8124,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [special cases for the "equal to" matcher]: #special-cases-for-the-equal-to-matcher
 [spies]: #spies
 [spying on an existing callable]: #spying-on-an-existing-callable
+[spying on global functions]: #spying-on-global-functions
 [spying on traversables that implement array-like interfaces]: #spying-on-traversables-that-implement-array-like-interfaces
 [standalone usage]: #standalone-usage
 [standard verification]: #standard-verification

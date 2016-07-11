@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\EventSequence;
+use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
@@ -58,7 +59,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             AssertionRenderer::instance(),
             InvocableInspector::instance(),
             Invoker::instance(),
-            GeneratorAnswerBuilderFactory::instance()
+            GeneratorAnswerBuilderFactory::instance(),
+            FunctionHookManager::instance()
         );
         $this->handleFactory = new HandleFactory(
             StubFactory::instance(),
@@ -312,6 +314,24 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertSpyAssertionRecorder($this->assertionRecorder, $actual);
     }
 
+    public function testSpyGlobal()
+    {
+        $actual = Phony::spyGlobal('sprintf', 'Eloquent\Phony\Phpunit\Facade');
+
+        $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', 'a', 'b'));
+    }
+
+    public function testSpyGlobalFunction()
+    {
+        $actual = spyGlobal('vsprintf', 'Eloquent\Phony\Phpunit\Facade');
+
+        $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\vsprintf('%s, %s', array('a', 'b')));
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', array('a', 'b')));
+    }
+
     public function testStub()
     {
         $callback = function () { return 'a'; };
@@ -342,7 +362,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\sprintf('%s, %s', 'a', 'b'));
         $this->assertNull(\Eloquent\Phony\Phpunit\Facade\sprintf('x', 'y'));
-        $this->assertSame($actual->stub(), $actual->spy()->callback());
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', 'a', 'b'));
     }
 
     public function testStubGlobalFunction()
@@ -353,7 +373,35 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\vsprintf('%s, %s', array('a', 'b')));
         $this->assertNull(\Eloquent\Phony\Phpunit\Facade\vsprintf('x', 'y'));
-        $this->assertSame($actual->stub(), $actual->spy()->callback());
+        $this->assertTrue((bool) $actual->calledWith('%s, %s', array('a', 'b')));
+    }
+
+    public function testRestoreGlobalFunctions()
+    {
+        Phony::stubGlobal('sprintf', 'Eloquent\Phony\Phpunit\Facade');
+        Phony::stubGlobal('vsprintf', 'Eloquent\Phony\Phpunit\Facade');
+
+        $this->assertNull(\Eloquent\Phony\Phpunit\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(\Eloquent\Phony\Phpunit\Facade\vsprintf('%s, %s', array('a', 'b')));
+
+        Phony::restoreGlobalFunctions();
+
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\vsprintf('%s, %s', array('a', 'b')));
+    }
+
+    public function testRestoreGlobalFunctionsFunction()
+    {
+        stubGlobal('sprintf', 'Eloquent\Phony\Phpunit\Facade');
+        stubGlobal('vsprintf', 'Eloquent\Phony\Phpunit\Facade');
+
+        $this->assertNull(\Eloquent\Phony\Phpunit\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(\Eloquent\Phony\Phpunit\Facade\vsprintf('%s, %s', array('a', 'b')));
+
+        restoreGlobalFunctions();
+
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertSame('a, b', \Eloquent\Phony\Phpunit\Facade\vsprintf('%s, %s', array('a', 'b')));
     }
 
     public function testEventOrderMethods()

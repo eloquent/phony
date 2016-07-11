@@ -22,6 +22,8 @@ use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventOrderVerifier;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Hook\FunctionHookGenerator;
+use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Integration\CounterpartMatcherDriver;
 use Eloquent\Phony\Integration\HamcrestMatcherDriver;
 use Eloquent\Phony\Integration\MockeryMatcherDriver;
@@ -48,8 +50,6 @@ use Eloquent\Phony\Spy\SpyVerifierFactory;
 use Eloquent\Phony\Spy\TraversableSpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
-use Eloquent\Phony\Stub\FunctionHookGenerator;
-use Eloquent\Phony\Stub\FunctionHookManager;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -128,13 +128,6 @@ class FacadeDriver
             $invoker,
             $featureDetector
         );
-        $functionHookGenerator = new FunctionHookGenerator(
-            $featureDetector
-        );
-        $functionHookManager = new FunctionHookManager(
-            $functionSignatureInspector,
-            $functionHookGenerator
-        );
         $stubLabelSequence = Sequencer::sequence('stub-label');
         $this->sequences[] = $stubLabelSequence;
         $stubFactory = new StubFactory(
@@ -144,8 +137,7 @@ class FacadeDriver
             $invoker,
             $invocableInspector,
             $emptyValueFactory,
-            $generatorAnswerBuilderFactory,
-            $functionHookManager
+            $generatorAnswerBuilderFactory
         );
         $clock = new SystemClock('microtime');
         $eventSequence = Sequencer::sequence('event-sequence-number');
@@ -203,6 +195,13 @@ class FacadeDriver
             $assertionRenderer,
             $invocableInspector
         );
+        $functionHookGenerator = new FunctionHookGenerator(
+            $featureDetector
+        );
+        $functionHookManager = new FunctionHookManager(
+            $functionSignatureInspector,
+            $functionHookGenerator
+        );
         $stubVerifierFactory = new StubVerifierFactory(
             $stubFactory,
             $spyFactory,
@@ -215,7 +214,8 @@ class FacadeDriver
             $assertionRenderer,
             $invocableInspector,
             $invoker,
-            $generatorAnswerBuilderFactory
+            $generatorAnswerBuilderFactory,
+            $functionHookManager
         );
         $handleFactory = new HandleFactory(
             $stubFactory,
@@ -246,7 +246,8 @@ class FacadeDriver
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
-            $invocableInspector
+            $invocableInspector,
+            $functionHookManager
         );
         $eventOrderVerifier = new EventOrderVerifier(
             $assertionRecorder,
@@ -263,24 +264,24 @@ class FacadeDriver
         $this->handleFactory = $handleFactory;
         $this->spyVerifierFactory = $spyVerifierFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->functionHookManager = $functionHookManager;
         $this->eventOrderVerifier = $eventOrderVerifier;
         $this->matcherFactory = $matcherFactory;
         $this->exporter = $exporter;
         $this->assertionRenderer = $assertionRenderer;
         $this->differenceEngine = $differenceEngine;
-        $this->functionHookManager = $functionHookManager;
     }
 
     public $mockBuilderFactory;
     public $handleFactory;
     public $spyVerifierFactory;
     public $stubVerifierFactory;
+    public $functionHookManager;
     public $eventOrderVerifier;
     public $matcherFactory;
     public $exporter;
     public $assertionRenderer;
     public $differenceEngine;
-    public $functionHookManager;
     protected $sequences;
     private static $instance;
 }

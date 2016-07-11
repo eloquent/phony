@@ -11,19 +11,16 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Stub\FunctionHookGenerator;
+use Eloquent\Phony\Hook\FunctionHookGenerator;
 
 class TestFunctionHookGenerator extends FunctionHookGenerator
 {
     public function __construct($source)
     {
         $this->source = $source;
-
-        parent::__construct(FeatureDetector::instance());
     }
 
-    public function generateHook($name, array $signature)
+    public function generateHook($name, $namespace, array $signature)
     {
         return $this->source;
     }

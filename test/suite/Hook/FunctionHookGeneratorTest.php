@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Stub;
+namespace Eloquent\Phony\Hook;
 
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
@@ -20,8 +20,7 @@ class FunctionHookGeneratorTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->featureDetector = new FeatureDetector(null, array('error.exception.engine' => true));
-        $this->subject = new FunctionHookGenerator($this->featureDetector);
+        $this->subject = new FunctionHookGenerator();
 
         $this->signatureInspector = FunctionSignatureInspector::instance();
     }
@@ -64,7 +63,7 @@ class FunctionHookGeneratorTest extends PHPUnit_Framework_TestCase
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
         $expected = str_replace("\n", PHP_EOL, $expected);
         $signature = $this->signatureInspector->callbackSignature($callback);
-        $actual = $this->subject->generateHook($functionName, $signature);
+        $actual = $this->subject->generateHook($functionName, $namespace, $signature);
 
         $this->assertSame($expected, '<?php' . PHP_EOL . PHP_EOL . $actual);
     }

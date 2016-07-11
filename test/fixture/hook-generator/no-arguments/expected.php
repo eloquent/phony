@@ -1,17 +1,9 @@
 <?php
 
+namespace Foo\Bar;
+
 function functionName()
 {
-    $name = 'functionName';
-
-    if (
-        !isset(
-            \Eloquent\Phony\Stub\FunctionHookManager::$hooks[$name]['callback']
-        )
-    ) {
-        throw new \Error('Call to undefined function functionName()');
-    }
-
     $argumentCount = \func_num_args();
     $arguments = array();
 
@@ -19,8 +11,18 @@ function functionName()
         $arguments[] = \func_get_arg($i);
     }
 
+    $name = 'foo\\bar\\functionname';
+
+    if (
+        !isset(
+            \Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]['callback']
+        )
+    ) {
+        return \call_user_func_array('functionName', $arguments);
+    }
+
     $callback =
-        \Eloquent\Phony\Stub\FunctionHookManager::$hooks[$name]['callback'];
+        \Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]['callback'];
 
     if ($callback instanceof \Eloquent\Phony\Invocation\Invocable) {
         return $callback->invokeWith($arguments);

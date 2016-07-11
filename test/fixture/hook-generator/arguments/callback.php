@@ -1,6 +1,7 @@
 <?php
 
 $functionName = 'functionName';
+$namespace = 'Foo\Bar';
 $callback = function (
     $first,
     &$second,

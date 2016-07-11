@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -51,7 +52,8 @@ class StubVerifierFactory
                 AssertionRenderer::instance(),
                 InvocableInspector::instance(),
                 Invoker::instance(),
-                GeneratorAnswerBuilderFactory::instance()
+                GeneratorAnswerBuilderFactory::instance(),
+                FunctionHookManager::instance()
             );
         }
 
@@ -73,6 +75,7 @@ class StubVerifierFactory
      * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
      * @param Invoker                       $invoker                       The invoker to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param FunctionHookManager           $functionHookManager           The function hook manager to use.
      */
     public function __construct(
         StubFactory $stubFactory,
@@ -86,7 +89,8 @@ class StubVerifierFactory
         AssertionRenderer $assertionRenderer,
         InvocableInspector $invocableInspector,
         Invoker $invoker,
-        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
+        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
+        FunctionHookManager $functionHookManager
     ) {
         $this->stubFactory = $stubFactory;
         $this->spyFactory = $spyFactory;
@@ -100,6 +104,7 @@ class StubVerifierFactory
         $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
+        $this->functionHookManager = $functionHookManager;
     }
 
     /**
@@ -169,15 +174,15 @@ class StubVerifierFactory
      * Stubs returned by this function use the `returnsEmptyAnswerCallback`
      * default answer callback, instead of the `forwardsAnswerCallback`.
      *
-     * @param string $functionName The function name.
-     * @param string $namespace    The namespace.
+     * @param string $function  The function name.
+     * @param string $namespace The namespace.
      *
      * @return StubVerifier             The newly created stub verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
      */
-    public function createGlobal($functionName, $namespace)
+    public function createGlobal($function, $namespace)
     {
-        if (false !== strpos($functionName, '\\')) {
+        if (false !== strpos($function, '\\')) {
             throw new InvalidArgumentException(
                 'Only functions in the global namespace are supported.'
             );
@@ -191,17 +196,17 @@ class StubVerifierFactory
             );
         }
 
-        $stub = $this->stubFactory
-            ->create(
-                $functionName,
-                null,
-                'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback'
-            )
-            ->declareAs($namespace . '\\' . $functionName);
+        $stub = $this->stubFactory->create(
+            $function,
+            null,
+            'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback'
+        );
+        $spy = $this->spyFactory->create($stub);
+        $this->functionHookManager->defineFunction($function, $namespace, $spy);
 
         return new StubVerifier(
             $stub,
-            $this->spyFactory->create($stub),
+            $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
@@ -228,4 +233,5 @@ class StubVerifierFactory
     private $invocableInspector;
     private $invoker;
     private $generatorAnswerBuilderFactory;
+    private $functionHookManager;
 }
