@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.10.2 (2016-07-12)
 
 - **[NEW]** Implemented `stubGlobal()` ([#163]).
 - **[NEW]** Implemented `spyGlobal()` ([#175]).
