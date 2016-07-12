@@ -37,20 +37,20 @@ interface Spy extends WrappedInvocable, EventCollection
     public function useGeneratorSpies();
 
     /**
-     * Turn on or off the use of traversable spies.
+     * Turn on or off the use of iterable spies.
      *
-     * @param bool $useTraversableSpies True to use traversable spies.
+     * @param bool $useIterableSpies True to use iterable spies.
      *
      * @return $this This spy.
      */
-    public function setUseTraversableSpies($useTraversableSpies);
+    public function setUseIterableSpies($useIterableSpies);
 
     /**
-     * Returns true if this spy uses traversable spies.
+     * Returns true if this spy uses iterable spies.
      *
-     * @return bool True if this spy uses traversable spies.
+     * @return bool True if this spy uses iterable spies.
      */
-    public function useTraversableSpies();
+    public function useIterableSpies();
 
     /**
      * Stop recording calls.

@@ -23,11 +23,11 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyFactory;
-use Eloquent\Phony\Spy\TraversableSpyFactory;
+use Eloquent\Phony\Spy\IterableSpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
@@ -41,7 +41,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             Invoker::instance(),
             GeneratorSpyFactory::instance(),
-            TraversableSpyFactory::instance()
+            IterableSpyFactory::instance()
         );
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
@@ -55,7 +55,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             GeneratorAnswerBuilderFactory::instance()
         );
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
+        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
@@ -69,7 +69,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -90,7 +90,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -115,7 +115,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -139,7 +139,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -151,7 +151,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertTrue($actual->useGeneratorSpies());
-        $this->assertFalse($actual->useTraversableSpies());
+        $this->assertFalse($actual->useIterableSpies());
     }
 
     public function testCreateGlobal()

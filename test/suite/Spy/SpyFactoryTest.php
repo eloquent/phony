@@ -25,13 +25,13 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
         $this->callFactory = CallFactory::instance();
         $this->invoker = new Invoker();
         $this->generatorSpyFactory = GeneratorSpyFactory::instance();
-        $this->traversableSpyFactory = TraversableSpyFactory::instance();
+        $this->iterableSpyFactory = IterableSpyFactory::instance();
         $this->subject = new SpyFactory(
             $this->labelSequencer,
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
     }
 
@@ -44,7 +44,7 @@ class SpyFactoryTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $actual = $this->subject->create($callback);
 

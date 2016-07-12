@@ -1,5 +1,5 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% traversable calls not to behave like:
-    %RED%✗%RESET% Returned <traversable>, then: %RED%%FAINT%(2 matches)%RESET%
+%RESET%Expected %BOLD%{stub}[label]%RESET% iterable calls not to behave like:
+    %RED%✗%RESET% Returned <iterable>, then: %RED%%FAINT%(2 matches)%RESET%
         %RED%✗%RESET% Started iterating
 Matched 1 of 2:
 %RED%✗%RESET% Call #0 - {stub}[label]("aardvark"):

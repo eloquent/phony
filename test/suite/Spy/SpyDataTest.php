@@ -29,14 +29,14 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
         $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, FeatureDetector::instance());
-        $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
+        $this->iterableSpyFactory = new IterableSpyFactory($this->callEventFactory);
         $this->subject = new SpyData(
             $this->callback,
             $this->label,
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
 
         $this->callA = $this->callFactory->create();
@@ -52,7 +52,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->callback, $this->subject->callback());
         $this->assertSame($this->label, $this->subject->label());
         $this->assertTrue($this->subject->useGeneratorSpies());
-        $this->assertFalse($this->subject->useTraversableSpies());
+        $this->assertFalse($this->subject->useIterableSpies());
         $this->assertSame(array(), $this->subject->allCalls());
     }
 
@@ -72,10 +72,10 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->useGeneratorSpies());
     }
 
-    public function testSetUseTraversableSpies()
+    public function testSetUseIterableSpies()
     {
-        $this->assertSame($this->subject, $this->subject->setUseTraversableSpies(true));
-        $this->assertTrue($this->subject->useTraversableSpies());
+        $this->assertSame($this->subject, $this->subject->setUseIterableSpies(true));
+        $this->assertTrue($this->subject->useIterableSpies());
     }
 
     public function testSetCalls()
@@ -282,7 +282,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $spy->invokeWith(array('a'));
         $spy->invoke('b', 'c');
@@ -325,7 +325,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $caughtExceptions = array();
         try {
@@ -379,7 +379,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $spy->invokeWith();
         $this->callFactory->reset();
@@ -406,7 +406,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $value = null;
         $arguments = array(&$value);
@@ -415,7 +415,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
         $this->assertSame('x', $value);
     }
 
-    public function testInvokeWithWithTraversableSpy()
+    public function testInvokeWithWithIterableSpy()
     {
         $this->callback = function () {
             return array_map('strtoupper', func_get_args());
@@ -427,9 +427,9 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
-        $spy->setUseTraversableSpies(true);
+        $spy->setUseIterableSpies(true);
         foreach ($spy->invoke('a', 'b') as $value) {
         }
         foreach ($spy->invoke('c') as $value) {
@@ -471,7 +471,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $spy->stopRecording()->invokeWith();
         $this->callFactory->reset();
@@ -490,7 +490,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $spy->stopRecording()->invoke('a');
         $spy->startRecording()->invoke('b');

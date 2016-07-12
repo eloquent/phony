@@ -1,5 +1,5 @@
 %RESET%Expected %BOLD%{stub}[label]%RESET% call #1 not to behave like:
-    %RED%✗%RESET% Returned <traversable>, then:
+    %RED%✗%RESET% Returned <iterable>, then:
         %RED%✗%RESET% Produced <any> => <any>
 Matched 1 of 1:
 %RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):

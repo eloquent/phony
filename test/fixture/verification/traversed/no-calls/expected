@@ -1,3 +1,0 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% to behave like:
-    %RED%✗%RESET% Returned <traversable>
-%RED%Never called.%RESET%

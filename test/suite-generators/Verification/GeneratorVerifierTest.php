@@ -400,7 +400,7 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new EventSequence(array($this->generatorUsedEvent)), $this->subject->always()->used());
     }
 
-    public function testUsedFailureNonTraversables()
+    public function testUsedFailureNonIterables()
     {
         $this->setUpWith($this->nonGeneratorCalls);
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
@@ -892,7 +892,7 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->always()->consumed());
     }
 
-    public function testConsumedFailureNonTraversables()
+    public function testConsumedFailureNonIterables()
     {
         $this->setUpWith($this->nonGeneratorCalls);
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');

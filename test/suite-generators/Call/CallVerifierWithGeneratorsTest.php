@@ -30,7 +30,7 @@ use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
@@ -56,7 +56,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
+        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
@@ -75,7 +75,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -83,7 +83,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
-        $this->traversableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
+        $this->iterableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
 
         $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
         $this->argumentCount = count($this->arguments);
@@ -100,7 +100,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -114,7 +114,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -127,7 +127,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -191,7 +191,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -202,7 +202,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->calledEvent, $this->generatorSubject->calledEvent());
         $this->assertSame($this->generatedEvent, $this->generatorSubject->responseEvent());
-        $this->assertSame($this->generatorEvents, $this->generatorSubject->traversableEvents());
+        $this->assertSame($this->generatorEvents, $this->generatorSubject->iterableEvents());
         $this->assertSame($this->generatorEndEvent, $this->generatorSubject->endEvent());
         $this->assertSame($this->generatorCallEvents, $this->generatorSubject->allEvents());
         $this->assertTrue($this->generatorSubject->hasResponded());
@@ -232,7 +232,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -254,15 +254,15 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
         );
-        $this->subject->addTraversableEvent($generatorEventA);
-        $this->subject->addTraversableEvent($generatorEventB);
+        $this->subject->addIterableEvent($generatorEventA);
+        $this->subject->addIterableEvent($generatorEventB);
 
-        $this->assertSame($generatorEvents, $this->subject->traversableEvents());
+        $this->assertSame($generatorEvents, $this->subject->iterableEvents());
     }
 
     public function testDurationMethodsWithGeneratorEvents()
@@ -290,7 +290,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector

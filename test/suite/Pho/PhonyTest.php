@@ -29,7 +29,7 @@ use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestEvent;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
 
@@ -42,7 +42,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             MatcherFactory::instance(),
             MatcherVerifier::instance(),
             GeneratorVerifierFactory::instance(),
-            TraversableVerifierFactory::instance(),
+            IterableVerifierFactory::instance(),
             $this->assertionRecorder,
             AssertionRenderer::instance(),
             InvocableInspector::instance()
@@ -53,7 +53,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             MatcherFactory::instance(),
             MatcherVerifier::instance(),
             GeneratorVerifierFactory::instance(),
-            TraversableVerifierFactory::instance(),
+            IterableVerifierFactory::instance(),
             $this->callVerifierFactory,
             $this->assertionRecorder,
             AssertionRenderer::instance(),

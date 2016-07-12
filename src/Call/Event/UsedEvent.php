@@ -14,6 +14,6 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * Represents the start of iteration of a returned value.
  */
-class UsedEvent extends AbstractCallEvent implements TraversableEvent
+class UsedEvent extends AbstractCallEvent implements IterableEvent
 {
 }

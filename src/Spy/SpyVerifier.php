@@ -28,8 +28,8 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifier;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifier;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Error;
 use Exception;
 use Generator;
@@ -50,7 +50,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @param MatcherFactory             $matcherFactory             The matcher factory to use.
      * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
      * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param TraversableVerifierFactory $traversableVerifierFactory The traversable verifier factory to use.
+     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
      * @param CallVerifierFactory        $callVerifierFactory        The call verifier factory to use.
      * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
      * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
@@ -61,7 +61,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
         GeneratorVerifierFactory $generatorVerifierFactory,
-        TraversableVerifierFactory $traversableVerifierFactory,
+        IterableVerifierFactory $iterableVerifierFactory,
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
@@ -73,7 +73,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->generatorVerifierFactory = $generatorVerifierFactory;
-        $this->traversableVerifierFactory = $traversableVerifierFactory;
+        $this->iterableVerifierFactory = $iterableVerifierFactory;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
@@ -135,27 +135,27 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     }
 
     /**
-     * Turn on or off the use of traversable spies.
+     * Turn on or off the use of iterable spies.
      *
-     * @param bool $useTraversableSpies True to use traversable spies.
+     * @param bool $useIterableSpies True to use iterable spies.
      *
      * @return $this This spy.
      */
-    public function setUseTraversableSpies($useTraversableSpies)
+    public function setUseIterableSpies($useIterableSpies)
     {
-        $this->spy->setUseTraversableSpies($useTraversableSpies);
+        $this->spy->setUseIterableSpies($useIterableSpies);
 
         return $this;
     }
 
     /**
-     * Returns true if this spy uses traversable spies.
+     * Returns true if this spy uses iterable spies.
      *
-     * @return bool True if this spy uses traversable spies.
+     * @return bool True if this spy uses iterable spies.
      */
-    public function useTraversableSpies()
+    public function useIterableSpies()
     {
-        return $this->spy->useTraversableSpies();
+        return $this->spy->useIterableSpies();
     }
 
     /**
@@ -934,11 +934,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     }
 
     /**
-     * Checks if this spy returned a traversable.
+     * Checks if this spy returned an iterable.
      *
-     * @return TraversableVerifier|null The result.
+     * @return IterableVerifier|null The result.
      */
-    public function checkTraversed()
+    public function checkIterated()
     {
         $cardinality = $this->resetCardinality();
 
@@ -962,28 +962,28 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
 
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccessFromEventCollection(
-                $this->traversableVerifierFactory
+                $this->iterableVerifierFactory
                     ->create($this->spy, $matchingEvents)
             );
         }
     }
 
     /**
-     * Throws an exception unless this spy returned a traversable.
+     * Throws an exception unless this spy returned an iterable.
      *
-     * @return TraversableVerifier The result.
+     * @return IterableVerifier The result.
      * @throws Exception           If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function traversed()
+    public function iterated()
     {
         $cardinality = $this->cardinality;
 
-        if ($result = $this->checkTraversed()) {
+        if ($result = $this->checkIterated()) {
             return $result;
         }
 
         return $this->assertionRecorder->createFailure(
-            $this->assertionRenderer->renderTraversed($this->spy, $cardinality)
+            $this->assertionRenderer->renderIterated($this->spy, $cardinality)
         );
     }
 
@@ -991,7 +991,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     private $matcherFactory;
     private $matcherVerifier;
     private $generatorVerifierFactory;
-    private $traversableVerifierFactory;
+    private $iterableVerifierFactory;
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;

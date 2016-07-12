@@ -14,12 +14,12 @@ $stub = Phony::stub(
 
         return array();
     }
-)->setUseTraversableSpies(true)->setLabel('label');
+)->setUseIterableSpies(true)->setLabel('label');
 $stub(function () {});
 
 // verification
 $stub(
     function () use ($stub) {
-        $stub->traversed()->consumed();
+        $stub->iterated()->consumed();
     }
 );

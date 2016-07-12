@@ -47,13 +47,13 @@ use Eloquent\Phony\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Spy\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Spy\SpyVerifierFactory;
-use Eloquent\Phony\Spy\TraversableSpyFactory;
+use Eloquent\Phony\Spy\IterableSpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 
 /**
  * A service container that supplies all of the underlying services required by
@@ -154,7 +154,7 @@ class FacadeDriver
             $eventFactory,
             $featureDetector
         );
-        $traversableSpyFactory = new TraversableSpyFactory(
+        $iterableSpyFactory = new IterableSpyFactory(
             $eventFactory
         );
         $spyLabelSequence = Sequencer::sequence('spy-label');
@@ -164,7 +164,7 @@ class FacadeDriver
             $callFactory,
             $invoker,
             $generatorSpyFactory,
-            $traversableSpyFactory
+            $iterableSpyFactory
         );
         $differenceEngine = new DifferenceEngine(
             $featureDetector
@@ -181,7 +181,7 @@ class FacadeDriver
             $assertionRecorder,
             $assertionRenderer
         );
-        $traversableVerifierFactory = new TraversableVerifierFactory(
+        $iterableVerifierFactory = new IterableVerifierFactory(
             $matcherFactory,
             $assertionRecorder,
             $assertionRenderer
@@ -190,7 +190,7 @@ class FacadeDriver
             $matcherFactory,
             $matcherVerifier,
             $generatorVerifierFactory,
-            $traversableVerifierFactory,
+            $iterableVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
             $invocableInspector
@@ -208,7 +208,7 @@ class FacadeDriver
             $matcherFactory,
             $matcherVerifier,
             $generatorVerifierFactory,
-            $traversableVerifierFactory,
+            $iterableVerifierFactory,
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
@@ -242,7 +242,7 @@ class FacadeDriver
             $matcherFactory,
             $matcherVerifier,
             $generatorVerifierFactory,
-            $traversableVerifierFactory,
+            $iterableVerifierFactory,
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
@@ -257,7 +257,7 @@ class FacadeDriver
         $emptyValueFactory->setStubVerifierFactory($stubVerifierFactory);
         $emptyValueFactory->setMockBuilderFactory($mockBuilderFactory);
         $generatorVerifierFactory->setCallVerifierFactory($callVerifierFactory);
-        $traversableVerifierFactory
+        $iterableVerifierFactory
             ->setCallVerifierFactory($callVerifierFactory);
 
         $this->mockBuilderFactory = $mockBuilderFactory;

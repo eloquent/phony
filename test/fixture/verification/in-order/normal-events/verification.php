@@ -8,7 +8,7 @@ $first();
 
 $stub = Phony::stub()
     ->setLabel('label')
-    ->setUseTraversableSpies(true)
+    ->setUseIterableSpies(true)
     ->returnsArgument();
 $stub->with('c', 'd')->throws('C');
 $stub('a', 'b');
@@ -23,9 +23,9 @@ Phony::inOrder(
     $stub->firstCall()->calledEvent(),
     $stub->returned(),
     $stub->threw(),
-    $stub->traversed(),
-    $stub->traversed()->used(),
-    $stub->traversed()->produced(),
-    $stub->traversed()->consumed(),
+    $stub->iterated(),
+    $stub->iterated()->used(),
+    $stub->iterated()->produced(),
+    $stub->iterated()->consumed(),
     $first->called()
 );

@@ -28,14 +28,14 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, FeatureDetector::instance());
-        $this->traversableSpyFactory = new TraversableSpyFactory($this->callEventFactory);
+        $this->iterableSpyFactory = new IterableSpyFactory($this->callEventFactory);
         $this->subject = new SpyData(
             $this->callback,
             $this->label,
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
 
         $this->callA = $this->callFactory->create();
@@ -59,7 +59,7 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         foreach ($spy->invoke('a', 'b') as $value) {
         }

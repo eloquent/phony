@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * Represents a value received by a generator.
  */
-class ReceivedEvent extends AbstractCallEvent implements TraversableEvent
+class ReceivedEvent extends AbstractCallEvent implements IterableEvent
 {
     /**
      * Construct a 'received' event.

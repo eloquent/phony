@@ -1,9 +1,0 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
-    %GREEN%✓%RESET% Returned <traversable>, then:
-        %RED%✗%RESET% Produced <any> => "CHAMELEON"
-Matched 0 of 1:
-%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
-    %RED%✗%RESET% Returned #0[:1], then:
-        - Started iterating
-        %RED%✗%RESET% Produced 0 => "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"
-        - Finished iterating

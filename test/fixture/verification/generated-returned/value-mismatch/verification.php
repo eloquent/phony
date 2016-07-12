@@ -3,7 +3,7 @@
 use Eloquent\Phony\Test\Phony;
 
 // setup
-$stub = Phony::stub()->setLabel('label')->setUseTraversableSpies(true);
+$stub = Phony::stub()->setLabel('label')->setUseIterableSpies(true);
 $stub->with('aardvark')->generates()->returns('AARDVARK');
 $stub->with('bonobo')->generates()->returns('BONOBO');
 $stub->with('chameleon')->generates()->throws(new RuntimeException('CHAMELEON'));

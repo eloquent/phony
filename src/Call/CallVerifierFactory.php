@@ -18,7 +18,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 
 /**
  * Creates call verifiers.
@@ -37,7 +37,7 @@ class CallVerifierFactory
                 MatcherFactory::instance(),
                 MatcherVerifier::instance(),
                 GeneratorVerifierFactory::instance(),
-                TraversableVerifierFactory::instance(),
+                IterableVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
                 InvocableInspector::instance()
@@ -53,7 +53,7 @@ class CallVerifierFactory
      * @param MatcherFactory             $matcherFactory             The matcher factory to use.
      * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
      * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param TraversableVerifierFactory $traversableVerifierFactory The traversable verifier factory to use.
+     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
      * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
      * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
      * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
@@ -62,7 +62,7 @@ class CallVerifierFactory
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
         GeneratorVerifierFactory $generatorVerifierFactory,
-        TraversableVerifierFactory $traversableVerifierFactory,
+        IterableVerifierFactory $iterableVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
         InvocableInspector $invocableInspector
@@ -70,7 +70,7 @@ class CallVerifierFactory
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->generatorVerifierFactory = $generatorVerifierFactory;
-        $this->traversableVerifierFactory = $traversableVerifierFactory;
+        $this->iterableVerifierFactory = $iterableVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->invocableInspector = $invocableInspector;
@@ -90,7 +90,7 @@ class CallVerifierFactory
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -114,7 +114,7 @@ class CallVerifierFactory
                 $this->matcherFactory,
                 $this->matcherVerifier,
                 $this->generatorVerifierFactory,
-                $this->traversableVerifierFactory,
+                $this->iterableVerifierFactory,
                 $this->assertionRecorder,
                 $this->assertionRenderer,
                 $this->invocableInspector
@@ -128,7 +128,7 @@ class CallVerifierFactory
     private $matcherFactory;
     private $matcherVerifier;
     private $generatorVerifierFactory;
-    private $traversableVerifierFactory;
+    private $iterableVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
     private $invocableInspector;

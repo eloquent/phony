@@ -38,7 +38,7 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
         Generator $generator,
         CallEventFactory $callEventFactory
     ) {
-        $call->addTraversableEvent($callEventFactory->createUsed());
+        $call->addIterableEvent($callEventFactory->createUsed());
 
         $isFirst = true;
         $received = null;
@@ -85,18 +85,18 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
             $received = null;
             $receivedException = null;
 
-            $call->addTraversableEvent(
+            $call->addIterableEvent(
                 $callEventFactory->createProduced($key, $value)
             );
 
             try {
                 $received = yield $key => $value;
 
-                $call->addTraversableEvent(
+                $call->addIterableEvent(
                     $callEventFactory->createReceived($received)
                 );
             } catch (Exception $receivedException) {
-                $call->addTraversableEvent(
+                $call->addIterableEvent(
                     $callEventFactory
                         ->createReceivedException($receivedException)
                 );

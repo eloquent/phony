@@ -86,7 +86,7 @@ class ArraySpy implements ArrayAccess, Countable, Iterator
     {
         if (!$this->isUsed) {
             $this->call
-                ->addTraversableEvent($this->callEventFactory->createUsed());
+                ->addIterableEvent($this->callEventFactory->createUsed());
             $this->isUsed = true;
         }
 
@@ -98,7 +98,7 @@ class ArraySpy implements ArrayAccess, Countable, Iterator
         }
 
         if ($isValid) {
-            $this->call->addTraversableEvent(
+            $this->call->addIterableEvent(
                 $this->callEventFactory
                     ->createProduced($key, current($this->array))
             );

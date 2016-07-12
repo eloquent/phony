@@ -25,7 +25,7 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Exception;
 use PHPUnit_Framework_TestCase;
 
@@ -43,7 +43,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
+        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
@@ -56,7 +56,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -697,7 +697,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -790,7 +790,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -812,7 +812,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,

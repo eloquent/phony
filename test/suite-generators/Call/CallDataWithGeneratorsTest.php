@@ -45,7 +45,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($this->generatedEvent);
         $this->subject->setEndEvent($this->returnedEvent);
 
-        $this->assertTrue($this->subject->isTraversable());
+        $this->assertTrue($this->subject->isIterable());
         $this->assertTrue($this->subject->isGenerator());
         $this->assertSame($this->returnValue, $this->subject->generatorReturnValue());
         $this->assertSame(array(null, $this->returnValue), $this->subject->generatorResponse());
@@ -56,7 +56,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($this->generatedEvent);
         $this->subject->setEndEvent($this->threwEvent);
 
-        $this->assertTrue($this->subject->isTraversable());
+        $this->assertTrue($this->subject->isIterable());
         $this->assertTrue($this->subject->isGenerator());
         $this->assertSame(array($this->exception, null), $this->subject->generatorResponse());
     }
@@ -66,7 +66,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($this->eventFactory->createReturned(array()));
         $this->subject->setEndEvent($this->eventFactory->createConsumed());
 
-        $this->assertTrue($this->subject->isTraversable());
+        $this->assertTrue($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
@@ -77,7 +77,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setResponseEvent($this->generatedEvent);
 
-        $this->assertTrue($this->subject->isTraversable());
+        $this->assertTrue($this->subject->isIterable());
         $this->assertTrue($this->subject->isGenerator());
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
@@ -86,7 +86,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testGeneratorResponseFailureWithoutResponseEvent()
     {
-        $this->assertFalse($this->subject->isTraversable());
+        $this->assertFalse($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');

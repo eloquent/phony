@@ -1,5 +1,5 @@
 %RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
-    %GREEN%✓%RESET% Returned <traversable>, then:
+    %GREEN%✓%RESET% Returned <iterable>, then:
         %RED%✗%RESET% Produced <any> => <any>
 %RED%Exactly 3 required. Matched 2 of 2:%RESET%
 %GREEN%✓%RESET% Call #1 - {stub}[label]("bonobo"):

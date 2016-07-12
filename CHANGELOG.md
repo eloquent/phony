@@ -1,5 +1,13 @@
 # Phony changelog
 
+## Next release
+
+- **[BC BREAK]** Replaced the term "traversable" with "iterable". Any function
+  or method with "traversable" in the name has also been renamed accordingly
+  ([#164]).
+
+[#164]: https://github.com/eloquent/phony/issues/164
+
 ## 0.11.0 (2016-07-12)
 
 - **[NEW]** Implemented `stubGlobal()` ([#163]).

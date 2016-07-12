@@ -29,7 +29,7 @@ use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
 
@@ -41,7 +41,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->invoker = Invoker::instance();
         $this->generatorSpyFactory = GeneratorSpyFactory::instance();
-        $this->traversableSpyFactory = TraversableSpyFactory::instance();
+        $this->iterableSpyFactory = IterableSpyFactory::instance();
         $this->label = 'label';
         $this->spy = new SpyData(
             $this->callback,
@@ -49,7 +49,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
 
         $this->objectSequencer = new Sequencer();
@@ -58,7 +58,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
+        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invocableInspector = new InvocableInspector();
@@ -78,7 +78,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -86,7 +86,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         );
 
         $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
-        $this->traversableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
+        $this->iterableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
 
         $this->callEventFactory = $this->callFactory->eventFactory();
 

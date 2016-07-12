@@ -20,7 +20,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
 
 /**
@@ -41,7 +41,7 @@ class SpyVerifierFactory
                 MatcherFactory::instance(),
                 MatcherVerifier::instance(),
                 GeneratorVerifierFactory::instance(),
-                TraversableVerifierFactory::instance(),
+                IterableVerifierFactory::instance(),
                 CallVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
@@ -60,7 +60,7 @@ class SpyVerifierFactory
      * @param MatcherFactory             $matcherFactory             The matcher factory to use.
      * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
      * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param TraversableVerifierFactory $traversableVerifierFactory The traversable verifier factory to use.
+     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
      * @param CallVerifierFactory        $callVerifierFactory        The call verifier factory to use.
      * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
      * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
@@ -72,7 +72,7 @@ class SpyVerifierFactory
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
         GeneratorVerifierFactory $generatorVerifierFactory,
-        TraversableVerifierFactory $traversableVerifierFactory,
+        IterableVerifierFactory $iterableVerifierFactory,
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
@@ -83,7 +83,7 @@ class SpyVerifierFactory
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->generatorVerifierFactory = $generatorVerifierFactory;
-        $this->traversableVerifierFactory = $traversableVerifierFactory;
+        $this->iterableVerifierFactory = $iterableVerifierFactory;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
@@ -109,7 +109,7 @@ class SpyVerifierFactory
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -131,7 +131,7 @@ class SpyVerifierFactory
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -173,7 +173,7 @@ class SpyVerifierFactory
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -186,7 +186,7 @@ class SpyVerifierFactory
     private $matcherFactory;
     private $matcherVerifier;
     private $generatorVerifierFactory;
-    private $traversableVerifierFactory;
+    private $iterableVerifierFactory;
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;

@@ -33,7 +33,7 @@ class SpyFactory
                 CallFactory::instance(),
                 Invoker::instance(),
                 GeneratorSpyFactory::instance(),
-                TraversableSpyFactory::instance()
+                IterableSpyFactory::instance()
             );
         }
 
@@ -47,20 +47,20 @@ class SpyFactory
      * @param CallFactory           $callFactory           The call factory to use.
      * @param Invoker               $invoker               The invoker to use.
      * @param GeneratorSpyFactory   $generatorSpyFactory   The generator spy factory to use.
-     * @param TraversableSpyFactory $traversableSpyFactory The traversable spy factory to use.
+     * @param IterableSpyFactory $iterableSpyFactory The iterable spy factory to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
         CallFactory $callFactory,
         Invoker $invoker,
         GeneratorSpyFactory $generatorSpyFactory,
-        TraversableSpyFactory $traversableSpyFactory
+        IterableSpyFactory $iterableSpyFactory
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->callFactory = $callFactory;
         $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
-        $this->traversableSpyFactory = $traversableSpyFactory;
+        $this->iterableSpyFactory = $iterableSpyFactory;
     }
 
     /**
@@ -78,7 +78,7 @@ class SpyFactory
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
     }
 
@@ -87,5 +87,5 @@ class SpyFactory
     private $callFactory;
     private $invoker;
     private $generatorSpyFactory;
-    private $traversableSpyFactory;
+    private $iterableSpyFactory;
 }

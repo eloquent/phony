@@ -30,7 +30,7 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Error;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -44,7 +44,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->invoker = Invoker::instance();
         $this->generatorSpyFactory = GeneratorSpyFactory::instance();
-        $this->traversableSpyFactory = TraversableSpyFactory::instance();
+        $this->iterableSpyFactory = IterableSpyFactory::instance();
         $this->label = 'label';
         $this->spy = new SpyData(
             $this->callback,
@@ -52,7 +52,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
 
         $this->objectSequencer = new Sequencer();
@@ -61,7 +61,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
+        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invocableInspector = new InvocableInspector();
@@ -81,7 +81,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -89,7 +89,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
-        $this->traversableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
+        $this->iterableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
 
         $this->callEventFactory = $this->callFactory->eventFactory();
 
@@ -146,7 +146,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->iteratorCalledEvent = $this->callEventFactory->createCalled();
-        $this->returnedTraversableEvent =
+        $this->returnedIterableEvent =
             $this->callEventFactory->createReturned(array('m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v'));
         $this->iteratorEventA = $this->callEventFactory->createProduced('m', 'n');
         $this->iteratorEventC = $this->callEventFactory->createProduced('p', 'q');
@@ -158,16 +158,16 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iteratorEventE,
             $this->iteratorEventG,
         );
-        $this->traversableEndEvent = $this->callEventFactory->createConsumed();
+        $this->iterableEndEvent = $this->callEventFactory->createConsumed();
         $this->iteratorCall = $this->callFactory->create(
             $this->iteratorCalledEvent,
-            $this->returnedTraversableEvent,
+            $this->returnedIterableEvent,
             $this->iteratorEvents,
-            $this->traversableEndEvent
+            $this->iterableEndEvent
         );
         $this->iteratorCallWithNoEnd = $this->callFactory->create(
             $this->iteratorCalledEvent,
-            $this->returnedTraversableEvent,
+            $this->returnedIterableEvent,
             $this->iteratorEvents
         );
 
@@ -205,10 +205,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->useGeneratorSpies());
     }
 
-    public function testSetUseTraversableSpies()
+    public function testSetUseIterableSpies()
     {
-        $this->assertSame($this->subject, $this->subject->setUseTraversableSpies(true));
-        $this->assertTrue($this->subject->useTraversableSpies());
+        $this->assertSame($this->subject, $this->subject->setUseIterableSpies(true));
+        $this->assertTrue($this->subject->useIterableSpies());
     }
 
     public function testSetCalls()
@@ -415,14 +415,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -469,14 +469,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -534,14 +534,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -565,14 +565,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -595,14 +595,14 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->traversableSpyFactory
+            $this->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -1912,84 +1912,85 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
-    public function testCheckTraversed()
+    public function testCheckIterated()
     {
-        $this->assertFalse((boolean) $this->subject->checkTraversed());
-        $this->assertTrue((boolean) $this->subject->never()->checkTraversed());
+        $this->assertFalse((boolean) $this->subject->checkIterated());
+        $this->assertTrue((boolean) $this->subject->never()->checkIterated());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->checkTraversed());
-        $this->assertTrue((boolean) $this->subject->never()->checkTraversed());
+        $this->assertFalse((boolean) $this->subject->checkIterated());
+        $this->assertTrue((boolean) $this->subject->never()->checkIterated());
 
         $this->subject->addCall($this->iteratorCall);
 
-        $this->assertTrue((boolean) $this->subject->checkTraversed());
-        $this->assertTrue((boolean) $this->subject->once()->checkTraversed());
+        $this->assertTrue((boolean) $this->subject->checkIterated());
+        $this->assertTrue((boolean) $this->subject->once()->checkIterated());
     }
 
-    public function testTraversed()
+    public function testIterated()
     {
         $this->assertEquals(
-            $this->traversableVerifierFactory->create($this->spy, array()),
-            $this->subject->never()->traversed()
+            $this->iterableVerifierFactory->create($this->spy, array()),
+            $this->subject->never()->iterated()
         );
 
         $this->subject->addCall($this->iteratorCall);
 
         $this->assertEquals(
-            $this->traversableVerifierFactory->create($this->spy, array($this->iteratorCall)),
-            $this->subject->traversed()
+            $this->iterableVerifierFactory->create($this->spy, array($this->iteratorCall)),
+            $this->subject->iterated()
         );
     }
 
-    public function testTraversedFailure()
+    public function testIteratedFailure()
     {
         $this->subject->setCalls($this->calls);
+
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->traversed();
+        $this->subject->iterated();
     }
 
-    public function testTraversedFailureWithNoCalls()
+    public function testIteratedFailureWithNoCalls()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->traversed();
+        $this->subject->iterated();
     }
 
-    public function testCheckAlwaysTraversed()
+    public function testCheckAlwaysIterated()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkTraversed());
+        $this->assertFalse((boolean) $this->subject->always()->checkIterated());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkTraversed());
+        $this->assertFalse((boolean) $this->subject->always()->checkIterated());
 
         $this->subject->setCalls(array($this->iteratorCall, $this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkTraversed());
+        $this->assertTrue((boolean) $this->subject->always()->checkIterated());
     }
 
-    public function testAlwaysTraversed()
+    public function testAlwaysIterated()
     {
         $this->subject->setCalls(array($this->iteratorCall, $this->iteratorCall));
         $expected =
-            $this->traversableVerifierFactory->create($this->spy, array($this->iteratorCall, $this->iteratorCall));
+            $this->iterableVerifierFactory->create($this->spy, array($this->iteratorCall, $this->iteratorCall));
 
-        $this->assertEquals($expected, $this->subject->always()->traversed());
+        $this->assertEquals($expected, $this->subject->always()->iterated());
     }
 
-    public function testAlwaysTraversedFailure()
+    public function testAlwaysIteratedFailure()
     {
         $this->subject->setCalls($this->calls);
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->always()->traversed();
+        $this->subject->always()->iterated();
     }
 
-    public function testAlwaysTraversedFailureWithNoCalls()
+    public function testAlwaysIteratedFailureWithNoCalls()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->always()->traversed();
+        $this->subject->always()->iterated();
     }
 
     public function testCardinalityMethods()

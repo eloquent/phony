@@ -427,45 +427,45 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
     }
 
-    public function testTraversableSpying()
+    public function testIterableSpying()
     {
         $value = array('a' => 'b', 'c' => 'd');
 
         $stub = x\stub();
-        $stub->setUseTraversableSpies(true);
+        $stub->setUseIterableSpies(true);
         $stub->returns($value);
         $result = $stub();
 
         $this->assertSame($value, iterator_to_array($result));
         $this->assertSame($value, iterator_to_array($result));
 
-        $stub->traversed()->produced();
-        $stub->traversed()->produced('b');
-        $stub->traversed()->produced('d');
-        $stub->traversed()->produced('a', 'b');
-        $stub->traversed()->produced('c', 'd');
+        $stub->iterated()->produced();
+        $stub->iterated()->produced('b');
+        $stub->iterated()->produced('d');
+        $stub->iterated()->produced('a', 'b');
+        $stub->iterated()->produced('c', 'd');
 
         $this->assertSame('b', $result['a']);
         $this->assertSame(2, count($result));
     }
 
-    public function testTraversableSpyingWithArrayLikeObject()
+    public function testIterableSpyingWithArrayLikeObject()
     {
         $value = array('a' => 'b', 'c' => 'd');
 
         $stub = x\stub();
-        $stub->setUseTraversableSpies(true);
+        $stub->setUseIterableSpies(true);
         $stub->returns(new ArrayObject($value));
         $result = $stub();
 
         $this->assertSame($value, iterator_to_array($result));
         $this->assertSame($value, iterator_to_array($result));
 
-        $stub->traversed()->produced();
-        $stub->traversed()->produced('b');
-        $stub->traversed()->produced('d');
-        $stub->traversed()->produced('a', 'b');
-        $stub->traversed()->produced('c', 'd');
+        $stub->iterated()->produced();
+        $stub->iterated()->produced('b');
+        $stub->iterated()->produced('d');
+        $stub->iterated()->produced('a', 'b');
+        $stub->iterated()->produced('c', 'd');
 
         $this->assertSame('b', $result['a']);
         $this->assertSame(2, count($result));
@@ -701,14 +701,14 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame($handle->testClassAMethodA, $handle->testclassamethoda);
     }
 
-    public function testTraversableInterfaceMocking()
+    public function testIterableInterfaceMocking()
     {
         x\partialMock('Eloquent\Phony\Test\TestInterfaceC');
 
         $this->assertTrue(true);
     }
 
-    public function testTraversableInterfaceMockingWithPDOStatement()
+    public function testIterableInterfaceMockingWithPDOStatement()
     {
         $this->assertInstanceOf('PDOStatement', x\mock('PDOStatement')->mock());
     }
@@ -975,7 +975,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub = x\stub();
         $stub->returns(array(), array());
         $stub();
-        $stub->setUseTraversableSpies(true);
+        $stub->setUseIterableSpies(true);
         $stub();
         $callA = $stub->callAt(0);
         $callB = $stub->callAt(1);

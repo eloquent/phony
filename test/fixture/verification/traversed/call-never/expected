@@ -1,4 +1,0 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 not to behave like:
-    %RED%✗%RESET% Returned <traversable>
-%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
-    %RED%✗%RESET% Returned #0["BONOBO"]

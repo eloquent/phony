@@ -24,7 +24,7 @@ use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
 
 /**
@@ -46,7 +46,7 @@ class StubVerifierFactory
                 MatcherFactory::instance(),
                 MatcherVerifier::instance(),
                 GeneratorVerifierFactory::instance(),
-                TraversableVerifierFactory::instance(),
+                IterableVerifierFactory::instance(),
                 CallVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
@@ -68,7 +68,7 @@ class StubVerifierFactory
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
      * @param MatcherVerifier               $matcherVerifier               The macther verifier to use.
      * @param GeneratorVerifierFactory      $generatorVerifierFactory      The generator verifier factory to use.
-     * @param TraversableVerifierFactory    $traversableVerifierFactory    The traversable verifier factory to use.
+     * @param IterableVerifierFactory    $iterableVerifierFactory    The iterable verifier factory to use.
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.
      * @param AssertionRecorder             $assertionRecorder             The assertion recorder to use.
      * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
@@ -83,7 +83,7 @@ class StubVerifierFactory
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
         GeneratorVerifierFactory $generatorVerifierFactory,
-        TraversableVerifierFactory $traversableVerifierFactory,
+        IterableVerifierFactory $iterableVerifierFactory,
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
@@ -97,7 +97,7 @@ class StubVerifierFactory
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->generatorVerifierFactory = $generatorVerifierFactory;
-        $this->traversableVerifierFactory = $traversableVerifierFactory;
+        $this->iterableVerifierFactory = $iterableVerifierFactory;
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
@@ -130,7 +130,7 @@ class StubVerifierFactory
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -157,7 +157,7 @@ class StubVerifierFactory
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -210,7 +210,7 @@ class StubVerifierFactory
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
@@ -226,7 +226,7 @@ class StubVerifierFactory
     private $matcherFactory;
     private $matcherVerifier;
     private $generatorVerifierFactory;
-    private $traversableVerifierFactory;
+    private $iterableVerifierFactory;
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;

@@ -20,7 +20,6 @@ use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailPhp;
 use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailPhpWithReturn;
 use Generator;
 use InvalidArgumentException;
-use Traversable;
 
 /**
  * Creates generator spies.
@@ -63,49 +62,36 @@ class GeneratorSpyFactory
     }
 
     /**
-     * Create a new traversable spy.
+     * Create a new generator spy.
      *
-     * @param Call              $call        The call from which the traversable originated.
-     * @param Traversable|array $traversable The traversable.
+     * @param Call      $call      The call from which the generator originated.
+     * @param Generator $generator The generator.
      *
-     * @return Traversable              The newly created traversable spy.
-     * @throws InvalidArgumentException If the supplied traversable is invalid.
+     * @return Generator The newly created generator spy.
      */
-    public function create(Call $call, $traversable)
+    public function create(Call $call, Generator $generator)
     {
-        if (!$traversable instanceof Generator) {
-            if (is_object($traversable)) {
-                $type = var_export(get_class($traversable), true);
-            } else {
-                $type = gettype($traversable);
-            }
-
-            throw new InvalidArgumentException(
-                sprintf('Unsupported traversable of type %s.', $type)
-            );
-        }
-
         if ($this->isHhvm) {
             // @codeCoverageIgnoreStart
             if ($this->isGeneratorReturnSupported) {
                 return
                     GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
                         $call,
-                        $traversable,
+                        $generator,
                         $this->callEventFactory
                     );
             }
 
             return GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
                 $call,
-                $traversable,
+                $generator,
                 $this->callEventFactory
             );
             // @codeCoverageIgnoreEnd
         } elseif ($this->isGeneratorReturnSupported) {
             return GeneratorSpyFactoryDetailPhpWithReturn::createGeneratorSpy(
                 $call,
-                $traversable,
+                $generator,
                 $this->callEventFactory
             );
         }
@@ -113,7 +99,7 @@ class GeneratorSpyFactory
         // @codeCoverageIgnoreStart
         return GeneratorSpyFactoryDetailPhp::createGeneratorSpy(
             $call,
-            $traversable,
+            $generator,
             $this->callEventFactory
         );
         // @codeCoverageIgnoreEnd

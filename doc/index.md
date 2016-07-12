@@ -95,7 +95,7 @@
     - [Verifying spy output]
         - [Verifying spy return values]
             - [Verifying generators returned by spies]
-            - [Verifying traversables returned by spies]
+            - [Verifying iterables returned by spies]
         - [Verifying spy exceptions]
     - [Verifying spy progress]
     - [Verifying cardinality with spies]
@@ -115,7 +115,7 @@
     - [Verifying call output]
         - [Verifying call return values]
             - [Verifying generators returned by calls]
-            - [Verifying traversables returned by calls]
+            - [Verifying iterables returned by calls]
         - [Verifying call exceptions]
     - [Verifying call progress]
     - [Verifying cardinality with calls]
@@ -124,7 +124,7 @@
         - [Verifying that all call events happen the same way]
 - [Verification]
     - [The verification result API]
-    - [The traversable verification result API]
+    - [The iterable verification result API]
     - [The generator verification result API]
     - [The event API]
     - [The order verification API]
@@ -135,17 +135,17 @@
         - [Expected behavior output]
         - [Cardinality output]
         - [Actual behavior output]
-    - [Generator and traversable verification]
+    - [Generator and iterable verification]
         - [Verifying iteration]
         - [Verifying produced values]
         - [Verifying values received by generators]
         - [Verifying exceptions received by generators]
         - [Verifying generator return values]
         - [Verifying generator exceptions]
-        - [Verifying cardinality with generators and traversables]
-        - [Traversable verification caveats]
-            - [Repeated iteration of traversable spies]
-            - [Spying on traversables that implement array-like interfaces]
+        - [Verifying cardinality with generators and iterables]
+        - [Iterable verification caveats]
+            - [Repeated iteration of iterable spies]
+            - [Spying on iterables that implement array-like interfaces]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -1958,21 +1958,21 @@ Returns `true` if this stub uses [generator spies].
 
 Turn on or off the use of [generator spies].
 
-<a name="stub.useTraversableSpies" />
+<a name="stub.useIterableSpies" />
 
 ----
 
-> *bool* $stub->[**useTraversableSpies**](#stub.useTraversableSpies)()
+> *bool* $stub->[**useIterableSpies**](#stub.useIterableSpies)()
 
-Returns `true` if this stub uses [traversable spies].
+Returns `true` if this stub uses [iterable spies].
 
-<a name="stub.setUseTraversableSpies" />
+<a name="stub.setUseIterableSpies" />
 
 ----
 
-> *fluent* $stub->[**setUseTraversableSpies**](#stub.setUseTraversableSpies)($useTraversableSpies)
+> *fluent* $stub->[**setUseIterableSpies**](#stub.setUseIterableSpies)($useIterableSpies)
 
-Turn on or off the use of [traversable spies].
+Turn on or off the use of [iterable spies].
 
 <a name="stub.stopRecording" />
 
@@ -2295,9 +2295,9 @@ Throws an exception unless this stub completed.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 *See [Verifying spy progress].*
 
@@ -2313,9 +2313,9 @@ Checks if this stub completed.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 *See [Verifying spy progress], [Check verification].*
 
@@ -3521,7 +3521,7 @@ echo $resultC instanceof Generator ? 'true' : 'false'; // outputs 'true'
 #### Yielding from a generator
 
 Keys and values to be yielded can be passed directly to
-[`generates()`](#stub.generates) as any traversable value:
+[`generates()`](#stub.generates) as any iterable value:
 
 ```php
 $stub = stub()
@@ -4175,21 +4175,21 @@ Returns `true` if this spy uses [generator spies].
 
 Turn on or off the use of [generator spies].
 
-<a name="spy.useTraversableSpies" />
+<a name="spy.useIterableSpies" />
 
 ----
 
-> *bool* $spy->[**useTraversableSpies**](#spy.useTraversableSpies)()
+> *bool* $spy->[**useIterableSpies**](#spy.useIterableSpies)()
 
-Returns `true` if this spy uses [traversable spies].
+Returns `true` if this spy uses [iterable spies].
 
-<a name="spy.setUseTraversableSpies" />
+<a name="spy.setUseIterableSpies" />
 
 ----
 
-> *fluent* $spy->[**setUseTraversableSpies**](#spy.setUseTraversableSpies)($useTraversableSpies)
+> *fluent* $spy->[**setUseIterableSpies**](#spy.setUseIterableSpies)($useIterableSpies)
 
-Turn on or off the use of [traversable spies].
+Turn on or off the use of [iterable spies].
 
 <a name="spy.stopRecording" />
 
@@ -4512,9 +4512,9 @@ Throws an exception unless this spy completed.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 *See [Verifying spy progress].*
 
@@ -4530,9 +4530,9 @@ Checks if this spy completed.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 *See [Verifying spy progress], [Check verification].*
 
@@ -4546,7 +4546,7 @@ completely consumed via iteration.*
 Throws an exception unless this spy returned a generator.
 
 *See [Verifying generators returned by spies],
-[Generator and traversable verification].*
+[Generator and iterable verification].*
 
 <a name="spy.checkGenerated" />
 
@@ -4557,30 +4557,30 @@ Throws an exception unless this spy returned a generator.
 Checks if this spy returned a generator.
 
 *See [Verifying generators returned by spies],
-[Generator and traversable verification].*
+[Generator and iterable verification].*
 
-<a name="spy.traversed" />
+<a name="spy.iterated" />
 
 ----
 
-> *[traversable-verification][traversable-verification-api]* $spy->[**traversed**](#spy.traversed)()
+> *[iterable-verification][iterable-verification-api]* $spy->[**iterated**](#spy.iterated)()
 > throws [AssertionException]
 
-Throws an exception unless this spy returned a traversable.
+Throws an exception unless this spy returned an iterable.
 
-*See [Verifying traversables returned by spies],
-[Generator and traversable verification].*
+*See [Verifying iterables returned by spies],
+[Generator and iterable verification].*
 
-<a name="spy.checkTraversed" />
+<a name="spy.checkIterated" />
 
 ----
 
-> *[traversable-verification][traversable-verification-api]|null* $spy->[**checkTraversed**](#spy.checkTraversed)()
+> *[iterable-verification][iterable-verification-api]|null* $spy->[**checkIterated**](#spy.checkIterated)()
 
-Checks if this spy returned a traversable.
+Checks if this spy returned an iterable.
 
-*See [Verifying traversables returned by spies],
-[Generator and traversable verification].*
+*See [Verifying iterables returned by spies],
+[Generator and iterable verification].*
 
 <a name="spy.never" />
 
@@ -4936,39 +4936,39 @@ $generator->produced('a'); // generator yielded 'a'
 $generator->returned('b'); // generator returned 'b'
 ```
 
-See [Generator and traversable verification] for a complete explanation of the
+See [Generator and iterable verification] for a complete explanation of the
 available verifications.
 
 Example output from [`generated()`](#spy.generated):
 
 ![Example output from $spy->generated()][spy-generated-image]
 
-##### Verifying traversables returned by spies
+##### Verifying iterables returned by spies
 
-To verify that a spy returned a traversable value, such as an array or iterator,
-use [`traversed()`](#spy.traversed):
-
-```php
-$spy->traversed();
-```
-
-If [traversable spies] are enabled, the result returned by
-[`traversed()`](#spy.traversed) can be used for further verification of the
-traversable's behavior:
+To verify that a spy returned an iterable value, such as an array or iterator,
+use [`iterated()`](#spy.iterated):
 
 ```php
-$traversable = $spy->traversed(); // returned a traversable
-
-$traversable->produced('a');      // traversable produced 'a'
-$traversable->produced('b', 'c'); // traversable produced 'b' => 'c'
+$spy->iterated();
 ```
 
-See [Generator and traversable verification] for a complete explanation of the
+If [iterable spies] are enabled, the result returned by
+[`iterated()`](#spy.iterated) can be used for further verification of the
+iterable's behavior:
+
+```php
+$iterable = $spy->iterated(); // returned an iterable
+
+$iterable->produced('a');      // iterable produced 'a'
+$iterable->produced('b', 'c'); // iterable produced 'b' => 'c'
+```
+
+See [Generator and iterable verification] for a complete explanation of the
 available verifications.
 
-Example output from [`traversed()`](#spy.traversed):
+Example output from [`iterated()`](#spy.iterated):
 
-![Example output from $spy->traversed()][spy-traversed-image]
+![Example output from $spy->iterated()][spy-iterated-image]
 
 #### Verifying spy exceptions
 
@@ -4996,11 +4996,11 @@ When [generator spies] are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.
 
-Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.
+Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.
 
-To ignore traversable events, and simply verify that a spy has returned a value
+To ignore iterable events, and simply verify that a spy has returned a value
 *or* thrown an exception, use [`responded()`](#spy.responded):
 
 ```php
@@ -5024,9 +5024,8 @@ This differs slightly from their usage with calls, where cardinality modifiers
 change the amount of **events** within the call that must meet the requirements
 of a subsequent verification.
 
-Note that cardinality also applies differently when using generator and
-traversable verification. See
-[Verifying cardinality with generators and traversables].
+Note that cardinality also applies differently when using generator and iterable
+verification. See [Verifying cardinality with generators and iterables].
 
 Cardinality must be specified **before** verification, and can be applied to
 any verification:
@@ -5306,13 +5305,13 @@ Returns true if this call has responded.
 
 *A call that has "responded" has returned a value, or thrown an exception.*
 
-<a name="call.isTraversable" />
+<a name="call.isIterable" />
 
 ----
 
-> *bool* $call->[**isTraversable**](#call.isTraversable)()
+> *bool* $call->[**isIterable**](#call.isIterable)()
 
-Returns true if this call has responded with a traversable.
+Returns true if this call has responded with an iterable.
 
 *A call that has "responded" has returned a value, or thrown an exception.*
 
@@ -5338,9 +5337,9 @@ Returns true if this call has completed.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 <a name="call.time" />
 
@@ -5376,9 +5375,9 @@ Get the time at which the call completed, in seconds since the Unix epoch.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 <a name="call.responseDuration" />
 
@@ -5406,9 +5405,9 @@ Get the call response duration, in seconds.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 <a name="call.index" />
 
@@ -5605,9 +5604,9 @@ Throws an exception unless this call completed.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 *See [Verifying call progress].*
 
@@ -5623,9 +5622,9 @@ Checks if this call completed.
 considered "complete" until the generator has been completely consumed via
 iteration.*
 
-*Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.*
+*Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.*
 
 *See [Verifying call progress], [Check verification].*
 
@@ -5639,7 +5638,7 @@ completely consumed via iteration.*
 Throws an exception unless this call returned a generator.
 
 *See [Verifying generators returned by calls],
-[Generator and traversable verification].*
+[Generator and iterable verification].*
 
 <a name="call.checkGenerated" />
 
@@ -5650,30 +5649,30 @@ Throws an exception unless this call returned a generator.
 Checks if this call returned a generator.
 
 *See [Verifying generators returned by calls],
-[Generator and traversable verification].*
+[Generator and iterable verification].*
 
-<a name="call.traversed" />
+<a name="call.iterated" />
 
 ----
 
-> *[traversable-verification][traversable-verification-api]* $call->[**traversed**](#call.traversed)()
+> *[iterable-verification][iterable-verification-api]* $call->[**iterated**](#call.iterated)()
 > throws [AssertionException]
 
-Throws an exception unless this call returned a traversable.
+Throws an exception unless this call returned an iterable.
 
-*See [Verifying traversables returned by calls],
-[Generator and traversable verification].*
+*See [Verifying iterables returned by calls],
+[Generator and iterable verification].*
 
-<a name="call.checkTraversed" />
+<a name="call.checkIterated" />
 
 ----
 
-> *[traversable-verification][traversable-verification-api]|null* $call->[**checkTraversed**](#call.checkTraversed)()
+> *[iterable-verification][iterable-verification-api]|null* $call->[**checkIterated**](#call.checkIterated)()
 
-Checks if this call returned a traversable.
+Checks if this call returned an iterable.
 
-*See [Verifying traversables returned by calls],
-[Generator and traversable verification].*
+*See [Verifying iterables returned by calls],
+[Generator and iterable verification].*
 
 <a name="call.never" />
 
@@ -5943,39 +5942,39 @@ $generator->produced('a'); // generator yielded 'a'
 $generator->returned('b'); // generator returned 'b'
 ```
 
-See [Generator and traversable verification] for a complete explanation of the
+See [Generator and iterable verification] for a complete explanation of the
 available verifications.
 
 Example output from [`generated()`](#call.generated):
 
 ![Example output from $call->generated()][call-generated-image]
 
-##### Verifying traversables returned by calls
+##### Verifying iterables returned by calls
 
-To verify that a call returned a traversable value, such as an array or
-iterator, use [`traversed()`](#call.traversed):
-
-```php
-$call->traversed();
-```
-
-If [traversable spies] are enabled, the result returned by
-[`traversed()`](#call.traversed) can be used for further verification of the
-traversable's behavior:
+To verify that a call returned an iterable value, such as an array or iterator,
+use [`iterated()`](#call.iterated):
 
 ```php
-$traversable = $call->traversed(); // returned a traversable
-
-$traversable->produced('a');      // traversable produced 'a'
-$traversable->produced('b', 'c'); // traversable produced 'b' => 'c'
+$call->iterated();
 ```
 
-See [Generator and traversable verification] for a complete explanation of the
+If [iterable spies] are enabled, the result returned by
+[`iterated()`](#call.iterated) can be used for further verification of the
+iterable's behavior:
+
+```php
+$iterable = $call->iterated(); // returned an iterable
+
+$iterable->produced('a');      // iterable produced 'a'
+$iterable->produced('b', 'c'); // iterable produced 'b' => 'c'
+```
+
+See [Generator and iterable verification] for a complete explanation of the
 available verifications.
 
-Example output from [`traversed()`](#call.traversed):
+Example output from [`iterated()`](#call.iterated):
 
-![Example output from $call->traversed()][call-traversed-image]
+![Example output from $call->iterated()][call-iterated-image]
 
 #### Verifying call exceptions
 
@@ -6003,11 +6002,11 @@ When [generator spies] are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.
 
-Similarly, when [traversable spies] are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.
+Similarly, when [iterable spies] are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.
 
-To ignore traversable events, and simply verify that a call has returned a value
+To ignore iterable events, and simply verify that a call has returned a value
 *or* thrown an exception, use [`responded()`](#call.responded):
 
 ```php
@@ -6125,7 +6124,7 @@ For information on specific verification methods, see these sections:
     - [Verifying spy output]
         - [Verifying spy return values]
             - [Verifying generators returned by spies]
-            - [Verifying traversables returned by spies]
+            - [Verifying iterables returned by spies]
         - [Verifying spy exceptions]
     - [Verifying spy progress]
     - [Verifying cardinality with spies]
@@ -6139,7 +6138,7 @@ For information on specific verification methods, see these sections:
     - [Verifying call output]
         - [Verifying call return values]
             - [Verifying generators returned by calls]
-            - [Verifying traversables returned by calls]
+            - [Verifying iterables returned by calls]
         - [Verifying call exceptions]
     - [Verifying call progress]
     - [Verifying cardinality with calls]
@@ -6148,7 +6147,7 @@ For information on specific verification methods, see these sections:
         - [Verifying that all call events happen the same way]
 - [Verification]
     - [The verification result API]
-    - [The traversable verification result API]
+    - [The iterable verification result API]
     - [The generator verification result API]
     - [The event API]
     - [The order verification API]
@@ -6159,17 +6158,17 @@ For information on specific verification methods, see these sections:
         - [Expected behavior output]
         - [Cardinality output]
         - [Actual behavior output]
-    - [Generator and traversable verification]
+    - [Generator and iterable verification]
         - [Verifying iteration]
         - [Verifying produced values]
         - [Verifying values received by generators]
         - [Verifying exceptions received by generators]
         - [Verifying generator return values]
         - [Verifying generator exceptions]
-        - [Verifying cardinality with generators and traversables]
-        - [Traversable verification caveats]
-            - [Repeated iteration of traversable spies]
-            - [Spying on traversables that implement array-like interfaces]
+        - [Verifying cardinality with generators and iterables]
+        - [Iterable verification caveats]
+            - [Repeated iteration of iterable spies]
+            - [Spying on iterables that implement array-like interfaces]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -6288,9 +6287,9 @@ Get the event at `$index`.
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
 
-### The traversable verification result API
+### The iterable verification result API
 
-In addition to the [verification result] API, traversable verification results
+In addition to the [verification result] API, iterable verification results
 implement the following methods:
 
 <a name="verification.used" />
@@ -6300,7 +6299,7 @@ implement the following methods:
 > *[verification][verification-api]* $verification->[**used**](#verification.used)()
 > throws [AssertionException]
 
-Throws an exception unless iteration of the traversable commenced.
+Throws an exception unless iteration of the iterable commenced.
 
 *See [Verifying iteration].*
 
@@ -6310,7 +6309,7 @@ Throws an exception unless iteration of the traversable commenced.
 
 > *[verification][verification-api]|null* $verification->[**checkUsed**](#verification.checkUsed)()
 
-Checks if iteration of the traversable commenced.
+Checks if iteration of the iterable commenced.
 
 *See [Verifying iteration], [Check verification].*
 
@@ -6321,9 +6320,9 @@ Checks if iteration of the traversable commenced.
 > *[verification][verification-api]* $verification->[**produced**](#verification.produced)($keyOrValue = null, $value = null)
 > throws [AssertionException]
 
-Throws an exception unless the traversable produced the supplied values.
+Throws an exception unless the iterable produced the supplied values.
 
-*When called with no arguments, this method simply checks that the traversable
+*When called with no arguments, this method simply checks that the iterable
 produced any value.*
 
 *With a single argument, it checks that a value matching the argument was
@@ -6342,9 +6341,9 @@ arguments were produced together.*
 
 > *[verification][verification-api]|null* $verification->[**checkProduced**](#verification.checkProduced)($keyOrValue = null, $value = null)
 
-Checks if the traversable produced the supplied values.
+Checks if the iterable produced the supplied values.
 
-*When called with no arguments, this method simply checks that the traversable
+*When called with no arguments, this method simply checks that the iterable
 produced any value.*
 
 *With a single argument, it checks that a value matching the argument was
@@ -6364,7 +6363,7 @@ arguments were produced together.*
 > *[verification][verification-api]* $verification->[**consumed**](#verification.consumed)()
 > throws [AssertionException]
 
-Throws an exception unless iteration of the traversable completed.
+Throws an exception unless iteration of the iterable completed.
 
 *See [Verifying iteration].*
 
@@ -6374,7 +6373,7 @@ Throws an exception unless iteration of the traversable completed.
 
 > *[verification][verification-api]|null* $verification->[**checkConsumed**](#verification.checkConsumed)()
 
-Checks if iteration of the traversable completed.
+Checks if iteration of the iterable completed.
 
 *See [Verifying iteration], [Check verification].*
 
@@ -6386,7 +6385,7 @@ Checks if iteration of the traversable completed.
 
 Requires that the next verification never matches.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened an exact number of times],
 [Verifying that a call event happened an exact number of times].*
 
@@ -6398,7 +6397,7 @@ Requires that the next verification never matches.
 
 Requires that the next verification matches only once.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened an exact number of times],
 [Verifying that a call event happened an exact number of times].*
 
@@ -6410,7 +6409,7 @@ Requires that the next verification matches only once.
 
 Requires that the next verification matches exactly two times.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened an exact number of times],
 [Verifying that a call event happened an exact number of times].*
 
@@ -6422,7 +6421,7 @@ Requires that the next verification matches exactly two times.
 
 Requires that the next verification matches exactly three times.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened an exact number of times],
 [Verifying that a call event happened an exact number of times].*
 
@@ -6434,7 +6433,7 @@ Requires that the next verification matches exactly three times.
 
 Requires that the next verification matches exactly `$times` times.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened an exact number of times],
 [Verifying that a call event happened an exact number of times].*
 
@@ -6447,7 +6446,7 @@ Requires that the next verification matches exactly `$times` times.
 Requires that the next verification matches a number of times greater than or
 equal to `$minimum`.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened a bounded number of times],
 [Verifying that a call event happened a bounded number of times].*
 
@@ -6460,7 +6459,7 @@ equal to `$minimum`.
 Requires that the next verification matches a number of times less than or equal
 to `$maximum`.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened a bounded number of times],
 [Verifying that a call event happened a bounded number of times].*
 
@@ -6473,7 +6472,7 @@ to `$maximum`.
 Requires that the next verification matches a number of times greater than or
 equal to `$minimum`, and less than or equal to `$maximum`.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that a spy event happened a bounded number of times],
 [Verifying that a call event happened a bounded number of times].*
 
@@ -6485,13 +6484,13 @@ equal to `$minimum`, and less than or equal to `$maximum`.
 
 Requires that the next verification matches for all possible items.
 
-*See [Verifying cardinality with generators and traversables],
+*See [Verifying cardinality with generators and iterables],
 [Verifying that all spy events happen the same way],
 [Verifying that all call events happen the same way].*
 
 ### The generator verification result API
 
-In addition to the [verification result] and [traversable verification result]
+In addition to the [verification result] and [iterable verification result]
 APIs, generator verification results implement the following methods:
 
 <a name="verification.received" />
@@ -6905,7 +6904,7 @@ example:
   of the second call did not match. The third array element was expected to be
   `"dugong"`, but it was actually `"dormouse"`.
 
-### Generator and traversable verification
+### Generator and iterable verification
 
 When spying on a callable that returns a [generator], additional verification
 can be performed on events that happen after the generator is returned, such as
@@ -6918,52 +6917,52 @@ calling [`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) on a spy:
 $spy->setUseGeneratorSpies(false);
 ```
 
-"Traversable spies" also exist for other iterators and arrays, but are disabled
+"Iterable spies" also exist for other iterators and arrays, but are disabled
 by default because they typically change the return type of the spy. This
 feature can be enabled by calling
-[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) on a spy:
+[`setUseIterableSpies()`](#spy.setUseIterableSpies) on a spy:
 
 ```php
-$spy->setUseTraversableSpies(true);
+$spy->setUseIterableSpies(true);
 ```
 
 Both [`setUseGeneratorSpies()`](#spy.setUseGeneratorSpies) and
-[`setUseTraversableSpies()`](#spy.setUseTraversableSpies) are fluent, meaning
+[`setUseIterableSpies()`](#spy.setUseIterableSpies) are fluent, meaning
 spy creation and setting of these options can be done in a single expression:
 
 ```php
 $spy = spy()
-    ->setUseTraversableSpies(true)
+    ->setUseIterableSpies(true)
     ->setUseGeneratorSpies(false);
 ```
 
 #### Verifying iteration
 
-To verify that iteration of a generator or traversable commenced, use
+To verify that iteration of a generator or iterable commenced, use
 [`used()`](#verification.used) on any [generator verification result] or
-[traversable verification result]:
+[iterable verification result]:
 
 ```php
 $subject->generated()->used(); // iteration of the generator commenced
-$subject->traversed()->used(); // iteration of the traversable commenced
+$subject->iterated()->used();  // iteration of the iterable commenced
 ```
 
-To verify that iteration of a generator or traversable completed, use
+To verify that iteration of a generator or iterable completed, use
 [`consumed()`](#verification.consumed) on any [generator verification result] or
-[traversable verification result]:
+[iterable verification result]:
 
 ```php
 $subject->generated()->consumed(); // iteration of the generator completed
-$subject->traversed()->consumed(); // iteration of the traversable completed
+$subject->iterated()->consumed();  // iteration of the iterable completed
 ```
 
 Example output from [`used()`](#verification.used):
 
-![Example output from $traversable->used()][verification-used-image]
+![Example output from $iterable->used()][verification-used-image]
 
 Example output from [`consumed()`](#verification.consumed):
 
-![Example output from $traversable->consumed()][verification-consumed-image]
+![Example output from $iterable->consumed()][verification-consumed-image]
 
 #### Verifying produced values
 
@@ -6978,20 +6977,20 @@ $generator->produced('a');      // produced 'a' with any key
 $generator->produced('a', 'b'); // produced 'b' with key 'a'
 ```
 
-To verify that a value was produced by a traversable, use
-[`produced()`](#verification.produced) on any [traversable verification result]:
+To verify that a value was produced by an iterable, use
+[`produced()`](#verification.produced) on any [iterable verification result]:
 
 ```php
-$traversable = $subject->traversed(); // returned a traversable
+$iterable = $subject->iterated(); // returned an iterable
 
-$traversable->produced();         // produced anything
-$traversable->produced('a');      // produced 'a' with any key
-$traversable->produced('a', 'b'); // produced 'b' with key 'a'
+$iterable->produced();         // produced anything
+$iterable->produced('a');      // produced 'a' with any key
+$iterable->produced('a', 'b'); // produced 'b' with key 'a'
 ```
 
 Example output from [`produced()`](#verification.produced):
 
-![Example output from $traversable->produced()][verification-produced-image]
+![Example output from $iterable->produced()][verification-produced-image]
 
 #### Verifying values received by generators
 
@@ -7060,49 +7059,49 @@ Example output from [`threw()`](#verification.threw):
 
 ![Example output from $generator->threw()][verification-threw-image]
 
-#### Verifying cardinality with generators and traversables
+#### Verifying cardinality with generators and iterables
 
-When used **before** `generated()` or `traversed()`, cardinality modifiers
-change the amount of calls that must return a [generator] or traversable:
+When used **before** `generated()` or `iterated()`, cardinality modifiers change
+the amount of calls that must return a [generator] or iterable:
 
 ```php
 $subject->twice()->generated(); // returned a generator exactly 2 times
-$subject->twice()->traversed(); // returned a traversable exactly 2 times
+$subject->twice()->iterated();  // returned an iterable exactly 2 times
 ```
 
-When used **after** `generated()` or `traversed()`, cardinality modifiers
-relate to the subset of calls that already satisfied the initial verification:
+When used **after** `generated()` or `iterated()`, cardinality modifiers relate
+to the subset of calls that already satisfied the initial verification:
 
 ```php
 $subject->generated()->twice()->produced('a'); // produced 'a' from exactly 2 generator calls
-$subject->traversed()->twice()->produced('a'); // produced 'a' from exactly 2 traversable calls
+$subject->iterated()->twice()->produced('a');  // produced 'a' from exactly 2 iterable calls
 ```
 
 See [Verifying cardinality with spies] and [Verifying cardinality with calls]
 for a full list or cardinality modifiers.
 
-#### Traversable verification caveats
+#### Iterable verification caveats
 
-##### Repeated iteration of traversable spies
+##### Repeated iteration of iterable spies
 
-Events are only recorded the first time a traversable spy is iterated over. If
-the underlying value is an array, or is iterated with an iterator that supports
+Events are only recorded the first time an iterable spy is iterated over. If the
+underlying value is an array, or is iterated with an iterator that supports
 [rewind()], subsequent iterations will behave as expected, but no events will
 be recorded.
 
 This has no relevance for [generator spies], as generators cannot be rewound.
 
-##### Spying on traversables that implement array-like interfaces
+##### Spying on iterables that implement array-like interfaces
 
-It's quite common for traversable objects to also implement [ArrayAccess] and
-[Countable]. Traversable spies *always* implement these interfaces, which may be
+It's quite common for iterable objects to also implement [ArrayAccess] and
+[Countable]. Iterable spies *always* implement these interfaces, which may be
 incompatible with code that checks for these interfaces at run time.
 
-If the underlying traversable object implements [ArrayAccess] and/or
-[Countable], *Phony* will pass relevant calls through to the underlying
-implementation. If these interfaces are *not* implemented, then the behavior of
-calls to [ArrayAccess] and/or [Countable] is undefined, but will most likely
-result in an error.
+If the underlying iterable object implements [ArrayAccess] and/or [Countable],
+*Phony* will pass relevant calls through to the underlying implementation. If
+these interfaces are *not* implemented, then the behavior of calls to
+[ArrayAccess] and/or [Countable] is undefined, but will most likely result in an
+error.
 
 ### Order verification
 
@@ -7191,8 +7190,8 @@ In addition to [`inOrder()`](#facade.inOrder) and
 [`anyOrder()`](#facade.anyOrder), there are also
 [`inOrderSequence()`](#facade.inOrderSequence) and
 [`anyOrderSequence()`](#facade.anyOrderSequence) variants that accept any array
-or traversable containing [verification results]. These variants can be used
-when the number of events to verify is dynamic:
+or iterable containing [verification results]. These variants can be used when
+the number of events to verify is dynamic:
 
 ```php
 $calledEvents = [];
@@ -8056,7 +8055,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [exporting recursive values]: #exporting-recursive-values
 [forwarding to the original callable]: #forwarding-to-the-original-callable
 [generating mock classes from a builder]: #generating-mock-classes-from-a-builder
-[generator and traversable verification]: #generator-and-traversable-verification
+[generator and iterable verification]: #generator-and-iterable-verification
 [generator iterations that perform multiple actions]: #generator-iterations-that-perform-multiple-actions
 [hamcrest matchers]: #hamcrest-matchers
 [help]: #help
@@ -8073,6 +8072,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [invoking callables in a generator]: #invoking-callables-in-a-generator
 [invoking callables]: #invoking-callables
 [invoking spies]: #invoking-spies
+[iterable verification caveats]: #iterable-verification-caveats
 [labeling mocks]: #labeling-mocks
 [labeling spies]: #labeling-spies
 [license]: #license
@@ -8104,7 +8104,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [prophecy argument tokens]: #prophecy-argument-tokens
 [prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
 [proxy mocks]: #proxy-mocks
-[repeated iteration of traversable spies]: #repeated-iteration-of-traversable-spies
+[repeated iteration of iterable spies]: #repeated-iteration-of-iterable-spies
 [restoring global functions after spying]: #restoring-global-functions-after-spying
 [restoring global functions after stubbing]: #restoring-global-functions-after-stubbing
 [retrieving calls from a spy]: #retrieving-calls-from-a-spy
@@ -8125,7 +8125,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [spies]: #spies
 [spying on an existing callable]: #spying-on-an-existing-callable
 [spying on global functions]: #spying-on-global-functions
-[spying on traversables that implement array-like interfaces]: #spying-on-traversables-that-implement-array-like-interfaces
+[spying on iterables that implement array-like interfaces]: #spying-on-iterables-that-implement-array-like-interfaces
 [standalone usage]: #standalone-usage
 [standard verification]: #standard-verification
 [static mocks]: #static-mocks
@@ -8150,13 +8150,13 @@ For the full copyright and license information, please view the [LICENSE file].
 [the exporter]: #the-exporter
 [the generator answer api]: #the-generator-answer-api
 [the generator verification result api]: #the-generator-verification-result-api
+[the iterable verification result api]: #the-iterable-verification-result-api
 [the matcher api]: #the-matcher-api
 [the mock api]: #the-mock-api
 [the mock builder api]: #the-mock-builder-api
 [the order verification api]: #the-order-verification-api
 [the spy api]: #the-spy-api
 [the stub api]: #the-stub-api
-[the traversable verification result api]: #the-traversable-verification-result-api
 [the verification output api]: #the-verification-output-api
 [the verification result api]: #the-verification-result-api
 [the wildcard matcher api]: #the-wildcard-matcher-api
@@ -8164,7 +8164,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [throwing exceptions from a generator]: #throwing-exceptions-from-a-generator
 [throwing exceptions]: #throwing-exceptions
 [thrown exceptions]: #thrown-exceptions
-[traversable verification caveats]: #traversable-verification-caveats
 [undefinedargumentexception]: #undefinedargumentexception
 [undefinedcallexception]: #undefinedcallexception
 [undefinedeventexception]: #undefinedeventexception
@@ -8182,7 +8181,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying call progress]: #verifying-call-progress
 [verifying call return values]: #verifying-call-return-values
 [verifying cardinality with calls]: #verifying-cardinality-with-calls
-[verifying cardinality with generators and traversables]: #verifying-cardinality-with-generators-and-traversables
+[verifying cardinality with generators and iterables]: #verifying-cardinality-with-generators-and-iterables
 [verifying cardinality with spies]: #verifying-cardinality-with-spies
 [verifying exceptions received by calls]: #verifying-exceptions-received-by-calls
 [verifying exceptions received by generators]: #verifying-exceptions-received-by-generators
@@ -8191,6 +8190,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying generator return values]: #verifying-generator-return-values
 [verifying generators returned by calls]: #verifying-generators-returned-by-calls
 [verifying generators returned by spies]: #verifying-generators-returned-by-spies
+[verifying iterables returned by calls]: #verifying-iterables-returned-by-calls
+[verifying iterables returned by spies]: #verifying-iterables-returned-by-spies
 [verifying iteration]: #verifying-iteration
 [verifying produced values]: #verifying-produced-values
 [verifying spy closure binding]: #verifying-spy-closure-binding
@@ -8209,8 +8210,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying that all call events happen the same way]: #verifying-that-all-call-events-happen-the-same-way
 [verifying that all spy events happen the same way]: #verifying-that-all-spy-events-happen-the-same-way
 [verifying that there was no interaction with a mock]: #verifying-that-there-was-no-interaction-with-a-mock
-[verifying traversables returned by calls]: #verifying-traversables-returned-by-calls
-[verifying traversables returned by spies]: #verifying-traversables-returned-by-spies
 [verifying values produced by calls]: #verifying-values-produced-by-calls
 [verifying values produced by spies]: #verifying-values-produced-by-spies
 [verifying values received by calls]: #verifying-values-received-by-calls
@@ -8230,9 +8229,11 @@ For the full copyright and license information, please view the [LICENSE file].
 [default answer callback]: #the-default-answer-callback
 [full mock]: #mocking-basics
 [generator answer]: #the-generator-answer-api
-[generator spies]: #generator-and-traversable-verification
+[generator spies]: #generator-and-iterable-verification
 [generator verification result]: #the-generator-verification-result-api
 [individual call]: #individual-calls
+[iterable spies]: #generator-and-iterable-verification
+[iterable verification result]: #the-iterable-verification-result-api
 [matcher]: #matchers
 [mock builder]: #mock-builders
 [mock handle]: #mock-handles
@@ -8246,8 +8247,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [stubbing handle]: #stubbing-handles
 [testing framework]: #integration-with-test-frameworks
 [testing frameworks]: #integration-with-test-frameworks
-[traversable spies]: #generator-and-traversable-verification
-[traversable verification result]: #the-traversable-verification-result-api
 [verification handle]: #verification-handles
 [verification result]: #the-verification-result-api
 [verification results]: #the-verification-result-api
@@ -8259,12 +8258,12 @@ For the full copyright and license information, please view the [LICENSE file].
 [event-api]: #the-event-api
 [generator-answer-api]: #the-generator-answer-api
 [generator-verification-api]: #the-generator-verification-result-api
+[iterable-verification-api]: #the-iterable-verification-result-api
 [matcher-api]: #the-matcher-api
 [mock-api]: #the-mock-api
 [mock-builder-api]: #the-mock-builder-api
 [spy-api]: #the-spy-api
 [stub-api]: #the-stub-api
-[traversable-verification-api]: #the-traversable-verification-result-api
 [verification-api]: #the-verification-result-api
 [wildcard-api]: #the-wildcard-matcher-api
 
@@ -8274,10 +8273,10 @@ For the full copyright and license information, please view the [LICENSE file].
 [call-called-with-image]: img/verification/called-with/call-argument-mismatch.svg
 [call-completed-image]: img/verification/completed/call-none-completed.svg
 [call-generated-image]: img/verification/generated/call-no-generator.svg
+[call-iterated-image]: img/verification/iterated/call-no-iterable.svg
 [call-responded-image]: img/verification/responded/call-no-responses.svg
 [call-returned-image]: img/verification/returned/call-value-mismatch.svg
 [call-threw-image]: img/verification/threw/call-value-mismatch.svg
-[call-traversed-image]: img/verification/traversed/call-no-traversable.svg
 [facade-in-order-image]: img/verification/in-order/unexpected-order.svg
 [facade-in-order-sequence-image]: img/verification/in-order/unexpected-order-sequence.svg
 [handle-no-interaction-image]: img/verification/no-interaction/parent-class.svg
@@ -8287,19 +8286,19 @@ For the full copyright and license information, please view the [LICENSE file].
 [spy-called-with-image]: img/verification/called-with/argument-mismatch.svg
 [spy-completed-image]: img/verification/completed/none-completed.svg
 [spy-generated-image]: img/verification/generated/no-generator.svg
+[spy-iterated-image]: img/verification/iterated/no-iterable.svg
 [spy-label-image]: img/verification/called-with/spy-label.svg
 [spy-responded-image]: img/verification/responded/no-responses.svg
 [spy-returned-image]: img/verification/returned/value-mismatch.svg
 [spy-threw-image]: img/verification/threw/value-mismatch.svg
-[spy-traversed-image]: img/verification/traversed/no-traversable.svg
-[verification-consumed-image]: img/verification/consumed/traversed-unconsumed.svg
+[verification-consumed-image]: img/verification/consumed/iterated-unconsumed.svg
 [verification-image]: img/verification.svg
-[verification-produced-image]: img/verification/produced/traversed-key-value-mismatch.svg
+[verification-produced-image]: img/verification/produced/iterated-key-value-mismatch.svg
 [verification-received-exception-image]: img/verification/received-exception/value-mismatch.svg
 [verification-received-image]: img/verification/received/value-mismatch.svg
 [verification-returned-image]: img/verification/generated-returned/value-mismatch.svg
 [verification-threw-image]: img/verification/generated-threw/value-mismatch.svg
-[verification-used-image]: img/verification/used/traversed-unused.svg
+[verification-used-image]: img/verification/used/iterated-unused.svg
 
 <!-- External references -->
 

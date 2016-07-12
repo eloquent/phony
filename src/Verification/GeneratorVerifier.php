@@ -28,13 +28,13 @@ use Throwable;
 /**
  * Checks and asserts the behavior of generators.
  */
-class GeneratorVerifier extends TraversableVerifier
+class GeneratorVerifier extends IterableVerifier
 {
     /**
      * Construct a new generator verifier.
      *
      * @param Spy|Call            $subject             The subject.
-     * @param array<Call>         $calls               The traversable calls.
+     * @param array<Call>         $calls               The generator calls.
      * @param MatcherFactory      $matcherFactory      The matcher factory to use.
      * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
@@ -91,7 +91,7 @@ class GeneratorVerifier extends TraversableVerifier
         foreach ($this->calls as $call) {
             $isMatchingCall = false;
 
-            foreach ($call->traversableEvents() as $event) {
+            foreach ($call->iterableEvents() as $event) {
                 if ($event instanceof ReceivedEvent) {
                     ++$eventCount;
 
@@ -183,7 +183,7 @@ class GeneratorVerifier extends TraversableVerifier
             foreach ($this->calls as $call) {
                 $isMatchingCall = false;
 
-                foreach ($call->traversableEvents() as $event) {
+                foreach ($call->iterableEvents() as $event) {
                     if ($event instanceof ReceivedExceptionEvent) {
                         ++$eventCount;
 
@@ -206,7 +206,7 @@ class GeneratorVerifier extends TraversableVerifier
             foreach ($this->calls as $call) {
                 $isMatchingCall = false;
 
-                foreach ($call->traversableEvents() as $event) {
+                foreach ($call->iterableEvents() as $event) {
                     if ($event instanceof ReceivedExceptionEvent) {
                         ++$eventCount;
 
@@ -238,7 +238,7 @@ class GeneratorVerifier extends TraversableVerifier
                 foreach ($this->calls as $call) {
                     $isMatchingCall = false;
 
-                    foreach ($call->traversableEvents() as $event) {
+                    foreach ($call->iterableEvents() as $event) {
                         if ($event instanceof ReceivedExceptionEvent) {
                             ++$eventCount;
 

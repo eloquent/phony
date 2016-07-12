@@ -90,7 +90,7 @@ class TraversableSpy implements ArrayAccess, Countable, Iterator
     {
         if (!$this->isUsed) {
             $this->call
-                ->addTraversableEvent($this->callEventFactory->createUsed());
+                ->addIterableEvent($this->callEventFactory->createUsed());
 
             if ($this->traversable instanceof IteratorAggregate) {
                 $this->iterator = $this->traversable->getIterator();
@@ -114,7 +114,7 @@ class TraversableSpy implements ArrayAccess, Countable, Iterator
         }
 
         if ($isValid) {
-            $this->call->addTraversableEvent(
+            $this->call->addIterableEvent(
                 $this->callEventFactory
                     ->createProduced($this->key, $this->value)
             );

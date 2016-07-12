@@ -799,62 +799,62 @@ class AssertionRenderer
                         is_array($returnValue) ||
                         $returnValue instanceof Traversable
                     ) {
-                        $traversableEvents = $call->traversableEvents();
-                        $renderedTraversableEvents = array();
+                        $iterableEvents = $call->iterableEvents();
+                        $renderedIterableEvents = array();
 
-                        foreach ($traversableEvents as $event) {
+                        foreach ($iterableEvents as $event) {
                             if ($event instanceof UsedEvent) {
-                                $renderedTraversableEvents[] =
+                                $renderedIterableEvents[] =
                                     '        - Started iterating';
                             } elseif ($event instanceof ProducedEvent) {
-                                $traversableKey = $event->key();
-                                $traversableValue = $event->value();
+                                $iterableKey = $event->key();
+                                $iterableValue = $event->value();
 
-                                $renderedTraversableEvents[] =
+                                $renderedIterableEvents[] =
                                     '        - Produced ' .
-                                    $this->exporter->export($traversableKey) .
+                                    $this->exporter->export($iterableKey) .
                                     ' => ' .
-                                    $this->exporter->export($traversableValue);
+                                    $this->exporter->export($iterableValue);
                             } elseif ($event instanceof ReceivedEvent) {
-                                $traversableValue = $event->value();
+                                $iterableValue = $event->value();
 
-                                $renderedTraversableEvents[] =
+                                $renderedIterableEvents[] =
                                     '        - Received ' .
-                                    $this->exporter->export($traversableValue);
+                                    $this->exporter->export($iterableValue);
                             } elseif (
                                 $event instanceof ReceivedExceptionEvent
                             ) {
-                                $traversableException = $event->exception();
+                                $iterableException = $event->exception();
 
-                                $renderedTraversableEvents[] =
+                                $renderedIterableEvents[] =
                                     '        - Received exception ' .
                                     $this->exporter
-                                        ->export($traversableException);
+                                        ->export($iterableException);
                             }
                         }
 
-                        if (!$traversableEvents) {
-                            $renderedTraversableEvents[] =
+                        if (!$iterableEvents) {
+                            $renderedIterableEvents[] =
                                 '        ' . $renderedResult .
                                 ' Never started iterating';
                         } elseif ($endEvent instanceof ConsumedEvent) {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $renderedResult .
                                 ' Finished iterating';
                         } elseif ($endEvent instanceof ReturnedEvent) {
                             $eventValue = $endEvent->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $renderedResult . ' Returned ' .
                                 $this->exporter->export($eventValue);
                         } elseif ($endEvent instanceof ThrewEvent) {
                             $eventException = $endEvent->exception();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $renderedResult . ' Threw ' .
                                 $this->exporter->export($eventException);
                         } else {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $renderedResult .
                                 ' Never finished iterating';
                         }
@@ -862,13 +862,13 @@ class AssertionRenderer
                         if ($returnValue instanceof Generator) {
                             $renderedResponse =
                                 'Returned Generator, then:' . PHP_EOL .
-                                implode(PHP_EOL, $renderedTraversableEvents);
+                                implode(PHP_EOL, $renderedIterableEvents);
                         } else {
                             $renderedResponse =
                                 'Returned ' .
                                 $this->exporter->export($returnValue, 0) .
                                 ', then:' . PHP_EOL .
-                                implode(PHP_EOL, $renderedTraversableEvents);
+                                implode(PHP_EOL, $renderedIterableEvents);
                         }
                     } else {
                         $renderedResponse =
@@ -1347,14 +1347,14 @@ class AssertionRenderer
     }
 
     /**
-     * Render a failed traversed() verification.
+     * Render a failed iterated() verification.
      *
      * @param Spy|Call    $subject     The subject.
      * @param Cardinality $cardinality The cardinality.
      *
      * @return string The rendered failure message.
      */
-    public function renderTraversed($subject, Cardinality $cardinality)
+    public function renderIterated($subject, Cardinality $cardinality)
     {
         $isCall = $subject instanceof Call;
 
@@ -1369,7 +1369,7 @@ class AssertionRenderer
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
         $renderedCriteria =
             'behave like:' .  PHP_EOL .
-            '    ' . $this->fail . ' Returned <traversable>';
+            '    ' . $this->fail . ' Returned <iterable>';
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
@@ -1478,7 +1478,7 @@ class AssertionRenderer
     }
 
     /**
-     * Render a failed traversable used() verification.
+     * Render a failed iterable used() verification.
      *
      * @param Spy|Call    $subject     The subject.
      * @param Cardinality $cardinality The cardinality.
@@ -1486,7 +1486,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderTraversableUsed(
+    public function renderIterableUsed(
         $subject,
         Cardinality $cardinality,
         $isGenerator
@@ -1511,60 +1511,60 @@ class AssertionRenderer
             $totalCount = 1;
 
             if ($isNever) {
-                $traversableResult = $this->fail;
+                $iterableResult = $this->fail;
             } else {
-                $traversableResult = $this->pass;
+                $iterableResult = $this->pass;
             }
 
-            $renderedTraversableCount = '';
+            $renderedIterableCount = '';
         } else {
             $totalCount = 0;
-            $traversableCount = 0;
+            $iterableCount = 0;
 
             foreach ($calls as $call) {
                 ++$totalCount;
 
                 if ($isGenerator) {
-                    $isTraversable = $call->isGenerator();
+                    $isIterable = $call->isGenerator();
                 } else {
-                    $isTraversable = $call->isTraversable();
+                    $isIterable = $call->isIterable();
                 }
 
-                if ($isTraversable) {
-                    ++$traversableCount;
+                if ($isIterable) {
+                    ++$iterableCount;
                 }
             }
 
-            if ($cardinality->matches($traversableCount, $traversableCount)) {
-                $traversableResultStart = $this->passStart;
-                $traversableResultText = self::PASS;
+            if ($cardinality->matches($iterableCount, $iterableCount)) {
+                $iterableResultStart = $this->passStart;
+                $iterableResultText = self::PASS;
             } else {
-                $traversableResultStart = $this->failStart;
-                $traversableResultText = self::FAIL;
+                $iterableResultStart = $this->failStart;
+                $iterableResultText = self::FAIL;
             }
 
-            $traversableResult =
-                $traversableResultStart .
-                $traversableResultText .
+            $iterableResult =
+                $iterableResultStart .
+                $iterableResultText .
                 $this->reset;
-            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
-            $renderedTraversableCount =
-                ' ' . $traversableResultStart . $this->faint .
-                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+            $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
+            $renderedIterableCount =
+                ' ' . $iterableResultStart . $this->faint .
+                '(' . $iterableCount . ' ' . $matchOrMatches . ')' .
                 $this->reset;
         }
 
         if ($isGenerator) {
-            $renderedTraversableType = 'Generator';
+            $renderedIterableType = 'Generator';
         } else {
-            $renderedTraversableType = '<traversable>';
+            $renderedIterableType = '<iterable>';
         }
 
         $renderedCriteria =
             'behave like:' . PHP_EOL .
-            '    ' . $traversableResult .
-            ' Returned ' . $renderedTraversableType .
-            ', then:' . $renderedTraversableCount . PHP_EOL .
+            '    ' . $iterableResult .
+            ' Returned ' . $renderedIterableType .
+            ', then:' . $renderedIterableCount . PHP_EOL .
             '        ' . $this->fail . ' Started iterating';
 
         if ($isCall) {
@@ -1581,25 +1581,25 @@ class AssertionRenderer
             }
         } else {
             if ($isGenerator) {
-                $renderedTraversableType = 'generator calls';
+                $renderedIterableType = 'generator calls';
             } else {
-                $renderedTraversableType = 'traversable calls';
+                $renderedIterableType = 'iterable calls';
             }
 
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' not to ' . $renderedCriteria;
             } elseif ($cardinality->isAlways()) {
                 $expected =
                     'Expected all ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' to ' . $renderedCriteria;
             } else {
                 $expected =
                     'Expected ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' to ' . $renderedCriteria;
             }
         }
@@ -1611,7 +1611,7 @@ class AssertionRenderer
             if ($isGenerator) {
                 $callIsRelevant = $call->isGenerator();
             } else {
-                $callIsRelevant = $call->isTraversable();
+                $callIsRelevant = $call->isIterable();
             }
 
             if ($callIsRelevant) {
@@ -1638,10 +1638,10 @@ class AssertionRenderer
                     is_array($returnValue) ||
                     $returnValue instanceof Traversable
                 ) {
-                    $traversableEvents = $call->traversableEvents();
-                    $renderedTraversableEvents = array();
+                    $iterableEvents = $call->iterableEvents();
+                    $renderedIterableEvents = array();
 
-                    foreach ($traversableEvents as $event) {
+                    foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
                             if ($callIsRelevant) {
                                 $isMatch = true;
@@ -1655,38 +1655,38 @@ class AssertionRenderer
                                 $eventResult = '-';
                             }
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $eventResult .
                                 ' Started iterating';
                         } elseif ($event instanceof ProducedEvent) {
-                            $traversableKey = $event->key();
-                            $traversableValue = $event->value();
+                            $iterableKey = $event->key();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Produced ' .
-                                $this->exporter->export($traversableKey) .
+                                $this->exporter->export($iterableKey) .
                                 ' => ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif ($event instanceof ReceivedEvent) {
-                            $traversableValue = $event->value();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif (
                             $event instanceof ReceivedExceptionEvent
                         ) {
-                            $traversableException = $event->exception();
+                            $iterableException = $event->exception();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received exception ' .
-                                $this->exporter->export($traversableException);
+                                $this->exporter->export($iterableException);
                         }
                     }
 
                     $endEvent = $call->endEvent();
 
-                    if (!$traversableEvents) {
+                    if (!$iterableEvents) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -1697,26 +1697,26 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never started iterating';
                     } elseif ($endEvent instanceof ConsumedEvent) {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Finished iterating';
                     } elseif ($endEvent instanceof ReturnedEvent) {
                         $eventValue = $endEvent->value();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Returned ' .
                             $this->exporter->export($eventValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
                         $eventException = $endEvent->exception();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Threw ' .
                             $this->exporter->export($eventException);
                     } else {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Never finished iterating';
                     }
 
@@ -1726,7 +1726,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     } else {
                         $renderedResponse =
@@ -1736,7 +1736,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     }
                 } else {
@@ -1783,7 +1783,7 @@ class AssertionRenderer
                 $minimum,
                 $maximum,
                 $matchCount,
-                $traversableCount,
+                $iterableCount,
                 $totalCount,
                 false
             );
@@ -1793,7 +1793,7 @@ class AssertionRenderer
     }
 
     /**
-     * Render a failed traversable produced() verification.
+     * Render a failed iterable produced() verification.
      *
      * @param Spy|Call     $subject     The subject.
      * @param Cardinality  $cardinality The cardinality.
@@ -1803,7 +1803,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderTraversableProduced(
+    public function renderIterableProduced(
         $subject,
         Cardinality $cardinality,
         $isGenerator,
@@ -1829,53 +1829,53 @@ class AssertionRenderer
         if ($isCall) {
             $totalCount = 0;
             $callCount = 1;
-            $traversableCount = 1;
+            $iterableCount = 1;
 
-            foreach ($subject->traversableEvents() as $event) {
+            foreach ($subject->iterableEvents() as $event) {
                 if ($event instanceof ProducedEvent) {
                     ++$totalCount;
                 }
             }
 
-            $renderedTraversableCount = '';
+            $renderedIterableCount = '';
         } else {
             $callCount = 0;
-            $traversableCount = 0;
+            $iterableCount = 0;
 
             foreach ($calls as $call) {
                 ++$callCount;
 
                 if ($isGenerator) {
-                    $isTraversable = $call->isGenerator();
+                    $isIterable = $call->isGenerator();
                 } else {
-                    $isTraversable = $call->isTraversable();
+                    $isIterable = $call->isIterable();
                 }
 
-                if ($isTraversable) {
-                    ++$traversableCount;
+                if ($isIterable) {
+                    ++$iterableCount;
                 }
             }
 
-            $totalCount = $traversableCount;
+            $totalCount = $iterableCount;
 
-            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
-            $renderedTraversableCount =
+            $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
+            $renderedIterableCount =
                 ' ' . $this->faint .
-                '(' . $traversableCount .
+                '(' . $iterableCount .
                 ' ' . $matchOrMatches .
                 ')' . $this->reset;
         }
 
-        if ($traversableCount xor $isNever) {
-            $traversableResult = $this->pass;
+        if ($iterableCount xor $isNever) {
+            $iterableResult = $this->pass;
         } else {
-            $traversableResult = $this->fail;
+            $iterableResult = $this->fail;
         }
 
         if ($isGenerator) {
-            $renderedTraversableType = 'Generator';
+            $renderedIterableType = 'Generator';
         } else {
-            $renderedTraversableType = '<traversable>';
+            $renderedIterableType = '<iterable>';
         }
 
         if ($key) {
@@ -1891,9 +1891,9 @@ class AssertionRenderer
 
         $renderedCriteria =
             'behave like:' . PHP_EOL .
-            '    ' . $traversableResult .
-            ' Returned ' . $renderedTraversableType .
-            ', then:' . $renderedTraversableCount . PHP_EOL .
+            '    ' . $iterableResult .
+            ' Returned ' . $renderedIterableType .
+            ', then:' . $renderedIterableCount . PHP_EOL .
             '        ' . $this->fail .
             ' Produced ' . $renderedKey .
             ' => ' . $renderedValue;
@@ -1912,25 +1912,25 @@ class AssertionRenderer
             }
         } else {
             if ($isGenerator) {
-                $renderedTraversableType = 'generator calls';
+                $renderedIterableType = 'generator calls';
             } else {
-                $renderedTraversableType = 'traversable calls';
+                $renderedIterableType = 'iterable calls';
             }
 
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' not to ' . $renderedCriteria;
             } elseif ($cardinality->isAlways()) {
                 $expected =
                     'Expected all ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' to ' . $renderedCriteria;
             } else {
                 $expected =
                     'Expected ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' to ' . $renderedCriteria;
             }
         }
@@ -1942,7 +1942,7 @@ class AssertionRenderer
             if ($isGenerator) {
                 $callIsRelevant = $call->isGenerator();
             } else {
-                $callIsRelevant = $call->isTraversable();
+                $callIsRelevant = $call->isIterable();
             }
 
             if ($callIsRelevant) {
@@ -1969,28 +1969,28 @@ class AssertionRenderer
                     is_array($returnValue) ||
                     $returnValue instanceof Traversable
                 ) {
-                    $traversableEvents = $call->traversableEvents();
-                    $renderedTraversableEvents = array();
+                    $iterableEvents = $call->iterableEvents();
+                    $renderedIterableEvents = array();
 
-                    foreach ($traversableEvents as $event) {
+                    foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Started iterating';
                         } elseif ($event instanceof ProducedEvent) {
-                            $traversableKey = $event->key();
-                            $renderedTraversableKey =
-                                $this->exporter->export($traversableKey);
+                            $iterableKey = $event->key();
+                            $renderedIterableKey =
+                                $this->exporter->export($iterableKey);
 
-                            $traversableValue = $event->value();
-                            $renderedTraversableValue =
-                                $this->exporter->export($traversableValue);
+                            $iterableValue = $event->value();
+                            $renderedIterableValue =
+                                $this->exporter->export($iterableValue);
 
                             if ($callIsRelevant) {
                                 $isKeyMatch =
-                                    !$key || $key->matches($traversableKey);
+                                    !$key || $key->matches($iterableKey);
                                 $isValueMatch =
                                     !$value ||
-                                    $value->matches($traversableValue);
+                                    $value->matches($iterableValue);
                                 $eventIsMatch = $isKeyMatch && $isValueMatch;
 
                                 if ($eventIsMatch) {
@@ -2005,10 +2005,10 @@ class AssertionRenderer
                                     !$isKeyMatch &&
                                     $key instanceof EqualToMatcher
                                 ) {
-                                    $renderedTraversableKey =
+                                    $renderedIterableKey =
                                         $this->differenceEngine->difference(
                                             $renderedKey,
-                                            $renderedTraversableKey
+                                            $renderedIterableKey
                                         );
                                 }
 
@@ -2016,10 +2016,10 @@ class AssertionRenderer
                                     !$isValueMatch &&
                                     $value instanceof EqualToMatcher
                                 ) {
-                                    $renderedTraversableValue =
+                                    $renderedIterableValue =
                                         $this->differenceEngine->difference(
                                             $renderedValue,
-                                            $renderedTraversableValue
+                                            $renderedIterableValue
                                         );
                                 }
 
@@ -2032,28 +2032,28 @@ class AssertionRenderer
                                 $eventResult = '-';
                             }
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $eventResult .
-                                ' Produced ' . $renderedTraversableKey .
-                                ' => ' . $renderedTraversableValue;
+                                ' Produced ' . $renderedIterableKey .
+                                ' => ' . $renderedIterableValue;
                         } elseif ($event instanceof ReceivedEvent) {
-                            $traversableValue = $event->value();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif ($event instanceof ReceivedExceptionEvent) {
-                            $traversableException = $event->exception();
+                            $iterableException = $event->exception();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received exception ' .
-                                $this->exporter->export($traversableException);
+                                $this->exporter->export($iterableException);
                         }
                     }
 
                     $endEvent = $call->endEvent();
 
-                    if (!$traversableEvents) {
+                    if (!$iterableEvents) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -2064,26 +2064,26 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never started iterating';
                     } elseif ($endEvent instanceof ConsumedEvent) {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Finished iterating';
                     } elseif ($endEvent instanceof ReturnedEvent) {
                         $eventValue = $endEvent->value();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Returned ' .
                             $this->exporter->export($eventValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
                         $eventException = $endEvent->exception();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Threw ' .
                             $this->exporter->export($eventException);
                     } else {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Never finished iterating';
                     }
 
@@ -2093,7 +2093,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     } else {
                         $renderedResponse =
@@ -2103,7 +2103,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     }
                 } else {
@@ -2155,7 +2155,7 @@ class AssertionRenderer
     }
 
     /**
-     * Render a failed traversable consumed() verification.
+     * Render a failed iterable consumed() verification.
      *
      * @param Spy|Call    $subject     The subject.
      * @param Cardinality $cardinality The cardinality.
@@ -2163,7 +2163,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderTraversableConsumed(
+    public function renderIterableConsumed(
         $subject,
         Cardinality $cardinality,
         $isGenerator
@@ -2186,63 +2186,63 @@ class AssertionRenderer
 
         if ($isCall) {
             $totalCount = 1;
-            $traversableCount = 1;
+            $iterableCount = 1;
 
             if ($isNever) {
-                $traversableResult = $this->fail;
+                $iterableResult = $this->fail;
             } else {
-                $traversableResult = $this->pass;
+                $iterableResult = $this->pass;
             }
 
-            $renderedTraversableCount = '';
+            $renderedIterableCount = '';
         } else {
             $totalCount = 0;
-            $traversableCount = 0;
+            $iterableCount = 0;
 
             foreach ($calls as $call) {
                 ++$totalCount;
 
                 if ($isGenerator) {
-                    $isTraversable = $call->isGenerator();
+                    $isIterable = $call->isGenerator();
                 } else {
-                    $isTraversable = $call->isTraversable();
+                    $isIterable = $call->isIterable();
                 }
 
-                if ($isTraversable) {
-                    ++$traversableCount;
+                if ($isIterable) {
+                    ++$iterableCount;
                 }
             }
 
-            if ($cardinality->matches($traversableCount, $traversableCount)) {
-                $traversableResultStart = $this->passStart;
-                $traversableResultText = self::PASS;
+            if ($cardinality->matches($iterableCount, $iterableCount)) {
+                $iterableResultStart = $this->passStart;
+                $iterableResultText = self::PASS;
             } else {
-                $traversableResultStart = $this->failStart;
-                $traversableResultText = self::FAIL;
+                $iterableResultStart = $this->failStart;
+                $iterableResultText = self::FAIL;
             }
 
-            $traversableResult =
-                $traversableResultStart .
-                $traversableResultText .
+            $iterableResult =
+                $iterableResultStart .
+                $iterableResultText .
                 $this->reset;
-            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
-            $renderedTraversableCount =
-                ' ' . $traversableResultStart . $this->faint .
-                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+            $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
+            $renderedIterableCount =
+                ' ' . $iterableResultStart . $this->faint .
+                '(' . $iterableCount . ' ' . $matchOrMatches . ')' .
                 $this->reset;
         }
 
         if ($isGenerator) {
-            $renderedTraversableType = 'Generator';
+            $renderedIterableType = 'Generator';
         } else {
-            $renderedTraversableType = '<traversable>';
+            $renderedIterableType = '<iterable>';
         }
 
         $renderedCriteria =
             'behave like:' . PHP_EOL .
-            '    ' . $traversableResult .
-            ' Returned ' . $renderedTraversableType .
-            ', then:' . $renderedTraversableCount . PHP_EOL .
+            '    ' . $iterableResult .
+            ' Returned ' . $renderedIterableType .
+            ', then:' . $renderedIterableCount . PHP_EOL .
             '        ' . $this->fail . ' Finished iterating';
 
         if ($isCall) {
@@ -2259,25 +2259,25 @@ class AssertionRenderer
             }
         } else {
             if ($isGenerator) {
-                $renderedTraversableType = 'generator calls';
+                $renderedIterableType = 'generator calls';
             } else {
-                $renderedTraversableType = 'traversable calls';
+                $renderedIterableType = 'iterable calls';
             }
 
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' not to ' . $renderedCriteria;
             } elseif ($cardinality->isAlways()) {
                 $expected =
                     'Expected all ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' to ' . $renderedCriteria;
             } else {
                 $expected =
                     'Expected ' . $renderedSubject .
-                    ' ' . $renderedTraversableType .
+                    ' ' . $renderedIterableType .
                     ' to ' . $renderedCriteria;
             }
         }
@@ -2289,7 +2289,7 @@ class AssertionRenderer
             if ($isGenerator) {
                 $callIsRelevant = $call->isGenerator();
             } else {
-                $callIsRelevant = $call->isTraversable();
+                $callIsRelevant = $call->isIterable();
             }
 
             if ($callIsRelevant) {
@@ -2316,42 +2316,42 @@ class AssertionRenderer
                     is_array($returnValue) ||
                     $returnValue instanceof Traversable
                 ) {
-                    $traversableEvents = $call->traversableEvents();
-                    $renderedTraversableEvents = array();
+                    $iterableEvents = $call->iterableEvents();
+                    $renderedIterableEvents = array();
 
-                    foreach ($traversableEvents as $event) {
+                    foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Started iterating';
                         } elseif ($event instanceof ProducedEvent) {
-                            $traversableKey = $event->key();
-                            $traversableValue = $event->value();
+                            $iterableKey = $event->key();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Produced ' .
-                                $this->exporter->export($traversableKey) .
+                                $this->exporter->export($iterableKey) .
                                 ' => ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif ($event instanceof ReceivedEvent) {
-                            $traversableValue = $event->value();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif (
                             $event instanceof ReceivedExceptionEvent
                         ) {
-                            $traversableException = $event->exception();
+                            $iterableException = $event->exception();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received exception ' .
-                                $this->exporter->export($traversableException);
+                                $this->exporter->export($iterableException);
                         }
                     }
 
                     $endEvent = $call->endEvent();
 
-                    if (!$traversableEvents) {
+                    if (!$iterableEvents) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -2362,7 +2362,7 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never started iterating';
                     } elseif ($endEvent instanceof ConsumedEvent) {
@@ -2378,11 +2378,11 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult . ' Finished iterating';
                     } elseif ($endEvent instanceof ReturnedEvent) {
                         $isMatch = true;
-                        $traversableValue = $endEvent->value();
+                        $iterableValue = $endEvent->value();
 
                         if ($isNever) {
                             $eventResult = $this->fail;
@@ -2390,9 +2390,9 @@ class AssertionRenderer
                             $eventResult = $this->pass;
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .  ' Returned ' .
-                            $this->exporter->export($traversableValue);
+                            $this->exporter->export($iterableValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
                         $isMatch = true;
 
@@ -2404,7 +2404,7 @@ class AssertionRenderer
 
                         $eventException = $endEvent->exception();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult . ' Threw ' .
                             $this->exporter->export($eventException);
                     } else {
@@ -2418,7 +2418,7 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never finished iterating';
                     }
@@ -2429,7 +2429,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     } else {
                         $renderedResponse =
@@ -2439,7 +2439,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     }
                 } else {
@@ -2486,7 +2486,7 @@ class AssertionRenderer
                 $minimum,
                 $maximum,
                 $matchCount,
-                $traversableCount,
+                $iterableCount,
                 $totalCount,
                 false
             );
@@ -2528,41 +2528,41 @@ class AssertionRenderer
         if ($isCall) {
             $totalCount = 0;
             $callCount = 1;
-            $traversableCount = 1;
+            $iterableCount = 1;
 
-            foreach ($subject->traversableEvents() as $event) {
+            foreach ($subject->iterableEvents() as $event) {
                 if ($event instanceof ReceivedEvent) {
                     ++$totalCount;
                 }
             }
 
-            $renderedTraversableCount = '';
+            $renderedIterableCount = '';
         } else {
             $callCount = 0;
-            $traversableCount = 0;
+            $iterableCount = 0;
 
             foreach ($calls as $call) {
                 ++$callCount;
 
                 if ($call->isGenerator()) {
-                    ++$traversableCount;
+                    ++$iterableCount;
                 }
             }
 
-            $totalCount = $traversableCount;
+            $totalCount = $iterableCount;
 
-            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
-            $renderedTraversableCount =
+            $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
+            $renderedIterableCount =
                 ' ' . $this->faint .
-                '(' . $traversableCount .
+                '(' . $iterableCount .
                 ' ' . $matchOrMatches .
                 ')' . $this->reset;
         }
 
-        if ($traversableCount xor $isNever) {
-            $traversableResult = $this->pass;
+        if ($iterableCount xor $isNever) {
+            $iterableResult = $this->pass;
         } else {
-            $traversableResult = $this->fail;
+            $iterableResult = $this->fail;
         }
 
         if ($value) {
@@ -2572,8 +2572,8 @@ class AssertionRenderer
         }
 
         $renderedCriteria =
-            'behave like:' . PHP_EOL . '    ' . $traversableResult .
-            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            'behave like:' . PHP_EOL . '    ' . $iterableResult .
+            ' Returned Generator, then:' . $renderedIterableCount . PHP_EOL .
             '        ' . $this->fail . ' Received ' . $renderedValue;
 
         if ($isCall) {
@@ -2634,30 +2634,30 @@ class AssertionRenderer
                     is_array($returnValue) ||
                     $returnValue instanceof Traversable
                 ) {
-                    $traversableEvents = $call->traversableEvents();
-                    $renderedTraversableEvents = array();
+                    $iterableEvents = $call->iterableEvents();
+                    $renderedIterableEvents = array();
 
-                    foreach ($traversableEvents as $event) {
+                    foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Started iterating';
                         } elseif ($event instanceof ProducedEvent) {
-                            $traversableKey = $event->key();
-                            $traversableValue = $event->value();
+                            $iterableKey = $event->key();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Produced ' .
-                                $this->exporter->export($traversableKey) .
+                                $this->exporter->export($iterableKey) .
                                 ' => ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif ($event instanceof ReceivedEvent) {
-                            $traversableValue = $event->value();
-                            $renderedTraversableValue =
-                                $this->exporter->export($traversableValue);
+                            $iterableValue = $event->value();
+                            $renderedIterableValue =
+                                $this->exporter->export($iterableValue);
 
                             $eventIsMatch =
                                 !$value ||
-                                $value->matches($traversableValue);
+                                $value->matches($iterableValue);
 
                             if ($eventIsMatch) {
                                 $isMatchingCall = true;
@@ -2668,10 +2668,10 @@ class AssertionRenderer
                             } elseif (
                                 $value instanceof EqualToMatcher
                             ) {
-                                $renderedTraversableValue =
+                                $renderedIterableValue =
                                     $this->differenceEngine->difference(
                                         $renderedValue,
-                                        $renderedTraversableValue
+                                        $renderedIterableValue
                                     );
                             }
 
@@ -2681,23 +2681,23 @@ class AssertionRenderer
                                 $eventResult = $this->fail;
                             }
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $eventResult . ' Received ' .
-                                $renderedTraversableValue;
+                                $renderedIterableValue;
                         } elseif (
                             $event instanceof ReceivedExceptionEvent
                         ) {
-                            $traversableException = $event->exception();
+                            $iterableException = $event->exception();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received exception ' .
-                                $this->exporter->export($traversableException);
+                                $this->exporter->export($iterableException);
                         }
                     }
 
                     $endEvent = $call->endEvent();
 
-                    if (!$traversableEvents) {
+                    if (!$iterableEvents) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -2708,26 +2708,26 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never started iterating';
                     } elseif ($endEvent instanceof ConsumedEvent) {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Finished iterating';
                     } elseif ($endEvent instanceof ReturnedEvent) {
                         $eventValue = $endEvent->value();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Returned ' .
                             $this->exporter->export($eventValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
                         $eventException = $endEvent->exception();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Threw ' .
                             $this->exporter->export($eventException);
                     } else {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Never finished iterating';
                     }
 
@@ -2737,7 +2737,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     } else {
                         $renderedResponse =
@@ -2747,7 +2747,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     }
                 } else {
@@ -2831,41 +2831,41 @@ class AssertionRenderer
         if ($isCall) {
             $totalCount = 0;
             $callCount = 1;
-            $traversableCount = 1;
+            $iterableCount = 1;
 
-            foreach ($subject->traversableEvents() as $event) {
+            foreach ($subject->iterableEvents() as $event) {
                 if ($event instanceof ReceivedExceptionEvent) {
                     ++$totalCount;
                 }
             }
 
-            $renderedTraversableCount = '';
+            $renderedIterableCount = '';
         } else {
             $callCount = 0;
-            $traversableCount = 0;
+            $iterableCount = 0;
 
             foreach ($calls as $call) {
                 ++$callCount;
 
                 if ($call->isGenerator()) {
-                    ++$traversableCount;
+                    ++$iterableCount;
                 }
             }
 
-            $totalCount = $traversableCount;
+            $totalCount = $iterableCount;
 
-            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
-            $renderedTraversableCount =
+            $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
+            $renderedIterableCount =
                 ' ' . $this->faint .
-                '(' . $traversableCount .
+                '(' . $iterableCount .
                 ' ' . $matchOrMatches .
                 ')' . $this->reset;
         }
 
-        if ($traversableCount xor $isNever) {
-            $traversableResult = $this->pass;
+        if ($iterableCount xor $isNever) {
+            $iterableResult = $this->pass;
         } else {
-            $traversableResult = $this->fail;
+            $iterableResult = $this->fail;
         }
 
         if ($type instanceof Matcher) {
@@ -2877,8 +2877,8 @@ class AssertionRenderer
         }
 
         $renderedCriteria =
-            'behave like:' . PHP_EOL . '    ' . $traversableResult .
-            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            'behave like:' . PHP_EOL . '    ' . $iterableResult .
+            ' Returned Generator, then:' . $renderedIterableCount . PHP_EOL .
             '        ' . $this->fail . ' Received exception ' . $renderedType;
 
         if ($isCall) {
@@ -2939,41 +2939,41 @@ class AssertionRenderer
                     is_array($returnValue) ||
                     $returnValue instanceof Traversable
                 ) {
-                    $traversableEvents = $call->traversableEvents();
-                    $renderedTraversableEvents = array();
+                    $iterableEvents = $call->iterableEvents();
+                    $renderedIterableEvents = array();
 
-                    foreach ($traversableEvents as $event) {
+                    foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Started iterating';
                         } elseif ($event instanceof ProducedEvent) {
-                            $traversableKey = $event->key();
-                            $traversableValue = $event->value();
+                            $iterableKey = $event->key();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Produced ' .
-                                $this->exporter->export($traversableKey) .
+                                $this->exporter->export($iterableKey) .
                                 ' => ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif ($event instanceof ReceivedEvent) {
-                            $traversableValue = $event->value();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif (
                             $event instanceof ReceivedExceptionEvent
                         ) {
-                            $traversableException = $event->exception();
-                            $renderedTraversableException =
-                                $this->exporter->export($traversableException);
+                            $iterableException = $event->exception();
+                            $renderedIterableException =
+                                $this->exporter->export($iterableException);
 
                             if ($type instanceof Matcher) {
                                 $eventIsMatch =
-                                    $type->matches($traversableException);
+                                    $type->matches($iterableException);
                             } elseif (is_string($type)) {
                                 $eventIsMatch =
-                                    is_a($traversableException, $type);
+                                    is_a($iterableException, $type);
                             } else {
                                 $eventIsMatch = true;
                             }
@@ -2985,10 +2985,10 @@ class AssertionRenderer
                                     ++$matchCount;
                                 }
                             } elseif ($type instanceof EqualToMatcher) {
-                                $renderedTraversableException =
+                                $renderedIterableException =
                                     $this->differenceEngine->difference(
                                         $renderedType,
-                                        $renderedTraversableException
+                                        $renderedIterableException
                                     );
                             }
 
@@ -2998,16 +2998,16 @@ class AssertionRenderer
                                 $eventResult = $this->fail;
                             }
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        ' . $eventResult .
                                 ' Received exception ' .
-                                $renderedTraversableException;
+                                $renderedIterableException;
                         }
                     }
 
                     $endEvent = $call->endEvent();
 
-                    if (!$traversableEvents) {
+                    if (!$iterableEvents) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -3018,26 +3018,26 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never started iterating';
                     } elseif ($endEvent instanceof ConsumedEvent) {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Finished iterating';
                     } elseif ($endEvent instanceof ReturnedEvent) {
                         $eventValue = $endEvent->value();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Returned ' .
                             $this->exporter->export($eventValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
                         $eventException = $endEvent->exception();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Threw ' .
                             $this->exporter->export($eventException);
                     } else {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Never finished iterating';
                     }
 
@@ -3047,7 +3047,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     } else {
                         $renderedResponse =
@@ -3057,7 +3057,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     }
                 } else {
@@ -3140,38 +3140,38 @@ class AssertionRenderer
 
         if ($isCall) {
             $totalCount = 1;
-            $traversableCount = 1;
-            $renderedTraversableCount = '';
+            $iterableCount = 1;
+            $renderedIterableCount = '';
         } else {
-            $traversableCount = 0;
+            $iterableCount = 0;
 
             foreach ($calls as $call) {
                 if ($call->isGenerator()) {
-                    ++$traversableCount;
+                    ++$iterableCount;
                 }
             }
 
-            $totalCount = $traversableCount;
+            $totalCount = $iterableCount;
 
-            if ($cardinality->matches($traversableCount, $traversableCount)) {
-                $traversableResultStart = $this->passStart;
-                $traversableResultText = self::PASS;
+            if ($cardinality->matches($iterableCount, $iterableCount)) {
+                $iterableResultStart = $this->passStart;
+                $iterableResultText = self::PASS;
             } else {
-                $traversableResultStart = $this->failStart;
-                $traversableResultText = self::FAIL;
+                $iterableResultStart = $this->failStart;
+                $iterableResultText = self::FAIL;
             }
 
-            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
-            $renderedTraversableCount =
-                ' ' . $traversableResultStart . $this->faint .
-                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+            $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
+            $renderedIterableCount =
+                ' ' . $iterableResultStart . $this->faint .
+                '(' . $iterableCount . ' ' . $matchOrMatches . ')' .
                 $this->reset;
         }
 
-        if ($traversableCount xor $isNever) {
-            $traversableResult = $this->pass;
+        if ($iterableCount xor $isNever) {
+            $iterableResult = $this->pass;
         } else {
-            $traversableResult = $this->fail;
+            $iterableResult = $this->fail;
         }
 
         if ($value) {
@@ -3181,8 +3181,8 @@ class AssertionRenderer
         }
 
         $renderedCriteria =
-            'behave like:' . PHP_EOL . '    ' . $traversableResult .
-            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            'behave like:' . PHP_EOL . '    ' . $iterableResult .
+            ' Returned Generator, then:' . $renderedIterableCount . PHP_EOL .
             '        ' . $this->fail . ' Returned ' . $renderedValue;
 
         if ($isCall) {
@@ -3243,42 +3243,42 @@ class AssertionRenderer
                     is_array($returnValue) ||
                     $returnValue instanceof Traversable
                 ) {
-                    $traversableEvents = $call->traversableEvents();
-                    $renderedTraversableEvents = array();
+                    $iterableEvents = $call->iterableEvents();
+                    $renderedIterableEvents = array();
 
-                    foreach ($traversableEvents as $event) {
+                    foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Started iterating';
                         } elseif ($event instanceof ProducedEvent) {
-                            $traversableKey = $event->key();
-                            $traversableValue = $event->value();
+                            $iterableKey = $event->key();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Produced ' .
-                                $this->exporter->export($traversableKey) .
+                                $this->exporter->export($iterableKey) .
                                 ' => ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif ($event instanceof ReceivedEvent) {
-                            $traversableValue = $event->value();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif (
                             $event instanceof ReceivedExceptionEvent
                         ) {
-                            $traversableException = $event->exception();
+                            $iterableException = $event->exception();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received exception ' .
-                                $this->exporter->export($traversableException);
+                                $this->exporter->export($iterableException);
                         }
                     }
 
                     $endEvent = $call->endEvent();
 
-                    if (!$traversableEvents) {
+                    if (!$iterableEvents) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -3289,28 +3289,28 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never started iterating';
                     } elseif ($endEvent instanceof ConsumedEvent) {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Finished iterating';
                     } elseif ($endEvent instanceof ReturnedEvent) {
-                        $traversableValue = $endEvent->value();
-                        $renderedTraversableValue =
-                            $this->exporter->export($traversableValue);
+                        $iterableValue = $endEvent->value();
+                        $renderedIterableValue =
+                            $this->exporter->export($iterableValue);
 
                         $eventIsMatch =
-                            !$value || $value->matches($traversableValue);
+                            !$value || $value->matches($iterableValue);
 
                         if ($eventIsMatch) {
                             ++$matchCount;
                             $isMatchingCall = true;
                         } elseif ($value instanceof EqualToMatcher) {
-                            $renderedTraversableValue =
+                            $renderedIterableValue =
                                 $this->differenceEngine->difference(
                                     $renderedValue,
-                                    $renderedTraversableValue
+                                    $renderedIterableValue
                                 );
                         }
 
@@ -3320,9 +3320,9 @@ class AssertionRenderer
                             $eventResult = $this->fail;
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult . ' Returned ' .
-                            $renderedTraversableValue;
+                            $renderedIterableValue;
                     } elseif ($endEvent instanceof ThrewEvent) {
                         if ($isNever) {
                             $eventResult = $this->pass;
@@ -3332,7 +3332,7 @@ class AssertionRenderer
 
                         $eventException = $endEvent->exception();
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult . ' Threw ' .
                             $this->exporter->export($eventException);
                     } else {
@@ -3346,7 +3346,7 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never finished iterating';
                     }
@@ -3357,7 +3357,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     } else {
                         $renderedResponse =
@@ -3367,7 +3367,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     }
                 } else {
@@ -3451,38 +3451,38 @@ class AssertionRenderer
 
         if ($isCall) {
             $totalCount = 1;
-            $traversableCount = 1;
-            $renderedTraversableCount = '';
+            $iterableCount = 1;
+            $renderedIterableCount = '';
         } else {
-            $traversableCount = 0;
+            $iterableCount = 0;
 
             foreach ($calls as $call) {
                 if ($call->isGenerator()) {
-                    ++$traversableCount;
+                    ++$iterableCount;
                 }
             }
 
-            $totalCount = $traversableCount;
+            $totalCount = $iterableCount;
 
-            if ($cardinality->matches($traversableCount, $traversableCount)) {
-                $traversableResultStart = $this->passStart;
-                $traversableResultText = self::PASS;
+            if ($cardinality->matches($iterableCount, $iterableCount)) {
+                $iterableResultStart = $this->passStart;
+                $iterableResultText = self::PASS;
             } else {
-                $traversableResultStart = $this->failStart;
-                $traversableResultText = self::FAIL;
+                $iterableResultStart = $this->failStart;
+                $iterableResultText = self::FAIL;
             }
 
-            $matchOrMatches = 1 === $traversableCount ? 'match' : 'matches';
-            $renderedTraversableCount =
-                ' ' . $traversableResultStart . $this->faint .
-                '(' . $traversableCount . ' ' . $matchOrMatches . ')' .
+            $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
+            $renderedIterableCount =
+                ' ' . $iterableResultStart . $this->faint .
+                '(' . $iterableCount . ' ' . $matchOrMatches . ')' .
                 $this->reset;
         }
 
-        if ($traversableCount xor $isNever) {
-            $traversableResult = $this->pass;
+        if ($iterableCount xor $isNever) {
+            $iterableResult = $this->pass;
         } else {
-            $traversableResult = $this->fail;
+            $iterableResult = $this->fail;
         }
 
         if ($type instanceof Matcher) {
@@ -3494,8 +3494,8 @@ class AssertionRenderer
         }
 
         $renderedCriteria =
-            'behave like:' . PHP_EOL . '    ' . $traversableResult .
-            ' Returned Generator, then:' . $renderedTraversableCount . PHP_EOL .
+            'behave like:' . PHP_EOL . '    ' . $iterableResult .
+            ' Returned Generator, then:' . $renderedIterableCount . PHP_EOL .
             '        ' . $this->fail . ' Threw ' . $renderedType;
 
         if ($isCall) {
@@ -3556,42 +3556,42 @@ class AssertionRenderer
                     is_array($returnValue) ||
                     $returnValue instanceof Traversable
                 ) {
-                    $traversableEvents = $call->traversableEvents();
-                    $renderedTraversableEvents = array();
+                    $iterableEvents = $call->iterableEvents();
+                    $renderedIterableEvents = array();
 
-                    foreach ($traversableEvents as $event) {
+                    foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Started iterating';
                         } elseif ($event instanceof ProducedEvent) {
-                            $traversableKey = $event->key();
-                            $traversableValue = $event->value();
+                            $iterableKey = $event->key();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Produced ' .
-                                $this->exporter->export($traversableKey) .
+                                $this->exporter->export($iterableKey) .
                                 ' => ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif ($event instanceof ReceivedEvent) {
-                            $traversableValue = $event->value();
+                            $iterableValue = $event->value();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received ' .
-                                $this->exporter->export($traversableValue);
+                                $this->exporter->export($iterableValue);
                         } elseif (
                             $event instanceof ReceivedExceptionEvent
                         ) {
-                            $traversableException = $event->exception();
+                            $iterableException = $event->exception();
 
-                            $renderedTraversableEvents[] =
+                            $renderedIterableEvents[] =
                                 '        - Received exception ' .
-                                $this->exporter->export($traversableException);
+                                $this->exporter->export($iterableException);
                         }
                     }
 
                     $endEvent = $call->endEvent();
 
-                    if (!$traversableEvents) {
+                    if (!$iterableEvents) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -3602,14 +3602,14 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never started iterating';
                     } elseif ($endEvent instanceof ConsumedEvent) {
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        - Finished iterating';
                     } elseif ($endEvent instanceof ReturnedEvent) {
-                        $traversableValue = $endEvent->value();
+                        $iterableValue = $endEvent->value();
 
                         if ($isNever) {
                             $eventResult = $this->pass;
@@ -3617,19 +3617,19 @@ class AssertionRenderer
                             $eventResult = $this->fail;
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .  ' Returned ' .
-                            $this->exporter->export($traversableValue);
+                            $this->exporter->export($iterableValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
-                        $traversableException = $endEvent->exception();
-                        $renderedTraversableException =
-                            $this->exporter->export($traversableException);
+                        $iterableException = $endEvent->exception();
+                        $renderedIterableException =
+                            $this->exporter->export($iterableException);
 
                         if ($type instanceof Matcher) {
                             $eventIsMatch =
-                                $type->matches($traversableException);
+                                $type->matches($iterableException);
                         } elseif (is_string($type)) {
-                            $eventIsMatch = is_a($traversableException, $type);
+                            $eventIsMatch = is_a($iterableException, $type);
                         } else {
                             $eventIsMatch = true;
                         }
@@ -3638,10 +3638,10 @@ class AssertionRenderer
                             ++$matchCount;
                             $isMatchingCall = true;
                         } elseif ($type instanceof EqualToMatcher) {
-                            $renderedTraversableException =
+                            $renderedIterableException =
                                 $this->differenceEngine->difference(
                                     $renderedType,
-                                    $renderedTraversableException
+                                    $renderedIterableException
                                 );
                         }
 
@@ -3651,9 +3651,9 @@ class AssertionRenderer
                             $eventResult = $this->fail;
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
-                            ' Threw ' . $renderedTraversableException;
+                            ' Threw ' . $renderedIterableException;
                     } else {
                         if ($callIsRelevant) {
                             if ($isNever) {
@@ -3665,7 +3665,7 @@ class AssertionRenderer
                             $eventResult = '-';
                         }
 
-                        $renderedTraversableEvents[] =
+                        $renderedIterableEvents[] =
                             '        ' . $eventResult .
                             ' Never finished iterating';
                     }
@@ -3676,7 +3676,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     } else {
                         $renderedResponse =
@@ -3686,7 +3686,7 @@ class AssertionRenderer
                             $callEnd . PHP_EOL . $callStart .
                             implode(
                                 $callEnd . PHP_EOL . $callStart,
-                                $renderedTraversableEvents
+                                $renderedIterableEvents
                             );
                     }
                 } else {

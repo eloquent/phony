@@ -5,7 +5,7 @@ use Eloquent\Phony\Test\Phony;
 // setup
 $stub = Phony::stub()
     ->setLabel('label')
-    ->setUseTraversableSpies(true)
+    ->setUseIterableSpies(true)
     ->returns(array('aardvark', 'bonobo', 'chameleon'));
 foreach ($stub() as $value) {
     if ('bonobo' === $value) {

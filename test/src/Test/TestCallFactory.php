@@ -45,7 +45,7 @@ class TestCallFactory extends CallFactory
     public function create(
         CalledEvent $calledEvent = null,
         ResponseEvent $responseEvent = null,
-        array $traversableEvents = null,
+        array $iterableEvents = null,
         EndEvent $endEvent = null
     ) {
         if (!$calledEvent) {
@@ -59,9 +59,9 @@ class TestCallFactory extends CallFactory
             $call->setResponseEvent($responseEvent);
         }
 
-        if ($traversableEvents) {
-            foreach ($traversableEvents as $traversableEvent) {
-                $call->addTraversableEvent($traversableEvent);
+        if ($iterableEvents) {
+            foreach ($iterableEvents as $iterableEvent) {
+                $call->addIterableEvent($iterableEvent);
             }
         }
 

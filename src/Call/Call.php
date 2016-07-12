@@ -14,7 +14,7 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\ResponseEvent;
-use Eloquent\Phony\Call\Event\TraversableEvent;
+use Eloquent\Phony\Call\Event\IterableEvent;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\Event;
@@ -48,11 +48,11 @@ interface Call extends Event, EventCollection
     public function hasResponded();
 
     /**
-     * Returns true if this call has responded with a traversable.
+     * Returns true if this call has responded with an iterable.
      *
-     * @return bool True if this call has responded with a traversable.
+     * @return bool True if this call has responded with an iterable.
      */
-    public function isTraversable();
+    public function isIterable();
 
     /**
      * Returns true if this call has responded with a generator.
@@ -68,9 +68,9 @@ interface Call extends Event, EventCollection
      * be considered complete until the generator has been completely consumed
      * via iteration.
      *
-     * Similarly, when traversable spies are in use, a call that returns a
-     * traversable will not be considered complete until the traversable has
-     * been completely consumed via iteration.
+     * Similarly, when iterable spies are in use, a call that returns an
+     * iterable will not be considered complete until the iterable has been
+     * completely consumed via iteration.
      *
      * @return bool True if this call has completed.
      */
@@ -167,9 +167,9 @@ interface Call extends Event, EventCollection
      * be considered complete until the generator has been completely consumed
      * via iteration.
      *
-     * Similarly, when traversable spies are in use, a call that returns a
-     * traversable will not be considered complete until the traversable has
-     * been completely consumed via iteration.
+     * Similarly, when iterable spies are in use, a call that returns an
+     * iterable will not be considered complete until the iterable has been
+     * completely consumed via iteration.
      *
      * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
@@ -199,22 +199,20 @@ interface Call extends Event, EventCollection
     public function responseEvent();
 
     /**
-     * Add a traversable event.
+     * Add an iterable event.
      *
-     * @param TraversableEvent $traversableEvent The traversable event.
+     * @param IterableEvent $iterableEvent The iterable event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addTraversableEvent(
-        TraversableEvent $traversableEvent
-    );
+    public function addIterableEvent(IterableEvent $iterableEvent);
 
     /**
-     * Get the traversable events.
+     * Get the iterable events.
      *
-     * @return array<TraversableEvent> The traversable events.
+     * @return array<IterableEvent> The iterable events.
      */
-    public function traversableEvents();
+    public function iterableEvents();
 
     /**
      * Set the end event.

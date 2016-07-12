@@ -1,0 +1,4 @@
+%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
+    %RED%✗%RESET% Returned <iterable>
+%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
+    %RED%✗%RESET% Threw RuntimeException#0{message: "BONOBO"}

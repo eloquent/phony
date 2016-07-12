@@ -28,7 +28,7 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Error;
 use Exception;
 use PHPUnit_Framework_TestCase;
@@ -55,7 +55,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->objectSequencer = new Sequencer();
         $this->exporter = new InlineExporter(1, $this->objectSequencer);
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->traversableVerifierFactory = TraversableVerifierFactory::instance();
+        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
@@ -73,7 +73,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -81,7 +81,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
-        $this->traversableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
+        $this->iterableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
 
         $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
         $this->argumentCount = count($this->arguments);
@@ -99,7 +99,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -114,7 +114,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -127,7 +127,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -143,7 +143,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->threwAssertionResult = new EventSequence(array($this->callWithException->responseEvent()));
         $this->emptyAssertionResult = new EventSequence(array());
 
-        $this->returnedTraversableEvent =
+        $this->returnedIterableEvent =
             $this->callEventFactory->createReturned(array('m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v'));
         $this->iteratorEventA = $this->callEventFactory->createProduced('m', 'n');
         $this->iteratorEventB = $this->callEventFactory->createProduced('p', 'q');
@@ -151,42 +151,42 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->iteratorEventG = $this->callEventFactory->createProduced('u', 'v');
         $this->iteratorEvents =
             array($this->iteratorEventA, $this->iteratorEventB, $this->iteratorEventE, $this->iteratorEventG);
-        $this->traversableEndEvent = $this->callEventFactory->createConsumed();
-        $this->traversableCall = $this->callFactory->create(
+        $this->iterableEndEvent = $this->callEventFactory->createConsumed();
+        $this->iterableCall = $this->callFactory->create(
             $this->calledEvent,
-            $this->returnedTraversableEvent,
+            $this->returnedIterableEvent,
             $this->iteratorEvents,
-            $this->traversableEndEvent
+            $this->iterableEndEvent
         );
-        $this->traversableCallEvents = array(
+        $this->iterableCallEvents = array(
             $this->calledEvent,
-            $this->returnedTraversableEvent,
+            $this->returnedIterableEvent,
             $this->iteratorEventA,
             $this->iteratorEventB,
-            $this->traversableEndEvent,
+            $this->iterableEndEvent,
         );
-        $this->traversableSubject = new CallVerifier(
-            $this->traversableCall,
+        $this->iterableSubject = new CallVerifier(
+            $this->iterableCall,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
         );
 
-        $this->traversableCallWithNoEnd = $this->callFactory->create(
+        $this->iterableCallWithNoEnd = $this->callFactory->create(
             $this->calledEvent,
-            $this->returnedTraversableEvent,
+            $this->returnedIterableEvent,
             $this->iteratorEvents
         );
-        $this->traversableSubjectWithNoEnd = new CallVerifier(
-            $this->traversableCallWithNoEnd,
+        $this->iterableSubjectWithNoEnd = new CallVerifier(
+            $this->iterableCallWithNoEnd,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -207,7 +207,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, count($this->subject));
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame(array(), $this->subject->traversableEvents());
+        $this->assertSame(array(), $this->subject->iterableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->calledEvent, $this->subject->firstEvent());
@@ -215,7 +215,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertSame(array($this->call), $this->subject->allCalls());
         $this->assertTrue($this->subject->hasResponded());
-        $this->assertFalse($this->subject->isTraversable());
+        $this->assertFalse($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
@@ -241,29 +241,29 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array($this->call), iterator_to_array($this->subject));
     }
 
-    public function testAddTraversableEvent()
+    public function testAddIterableEvent()
     {
         $returnedEvent = $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd'));
-        $traversableEventA = $this->callEventFactory->createProduced('a', 'b');
-        $traversableEventB = $this->callEventFactory->createProduced('c', 'd');
-        $traversableEvents = array($traversableEventA, $traversableEventB);
+        $iterableEventA = $this->callEventFactory->createProduced('a', 'b');
+        $iterableEventB = $this->callEventFactory->createProduced('c', 'd');
+        $iterableEvents = array($iterableEventA, $iterableEventB);
         $this->call = $this->callFactory->create($this->calledEvent, $returnedEvent);
         $this->subject = new CallVerifier(
             $this->call,
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
         );
-        $this->subject->addTraversableEvent($traversableEventA);
-        $this->subject->addTraversableEvent($traversableEventB);
+        $this->subject->addIterableEvent($iterableEventA);
+        $this->subject->addIterableEvent($iterableEventB);
 
-        $this->assertSame($traversableEvents, $this->subject->traversableEvents());
-        $this->assertSame($this->call, $traversableEventA->call());
-        $this->assertSame($this->call, $traversableEventB->call());
+        $this->assertSame($iterableEvents, $this->subject->iterableEvents());
+        $this->assertSame($this->call, $iterableEventA->call());
+        $this->assertSame($this->call, $iterableEventB->call());
     }
 
     public function testSetResponseEvent()
@@ -498,12 +498,12 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue((boolean) $this->subject->checkCompleted());
         $this->assertTrue((boolean) $this->subjectWithException->checkCompleted());
-        $this->assertTrue((boolean) $this->traversableSubject->checkCompleted());
+        $this->assertTrue((boolean) $this->iterableSubject->checkCompleted());
         $this->assertFalse((boolean) $this->subject->never()->checkCompleted());
         $this->assertFalse((boolean) $this->subjectWithNoResponse->checkCompleted());
         $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkCompleted());
-        $this->assertFalse((boolean) $this->traversableSubjectWithNoEnd->checkCompleted());
-        $this->assertTrue((boolean) $this->traversableSubjectWithNoEnd->never()->checkCompleted());
+        $this->assertFalse((boolean) $this->iterableSubjectWithNoEnd->checkCompleted());
+        $this->assertTrue((boolean) $this->iterableSubjectWithNoEnd->never()->checkCompleted());
     }
 
     public function testCompleted()
@@ -511,8 +511,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->returnedAssertionResult, $this->subject->completed());
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->completed());
         $this->assertEquals(
-            new EventSequence(array($this->traversableEndEvent)),
-            $this->traversableSubject->completed()
+            new EventSequence(array($this->iterableEndEvent)),
+            $this->iterableSubject->completed()
         );
         $this->assertEquals($this->emptyAssertionResult, $this->subjectWithNoResponse->never()->completed());
     }
@@ -520,13 +520,13 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testCompletedFailure()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->traversableSubjectWithNoEnd->completed();
+        $this->iterableSubjectWithNoEnd->completed();
     }
 
     public function testCompletedFailureNever()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->traversableSubject->never()->completed();
+        $this->iterableSubject->never()->completed();
     }
 
     public function testCheckReturned()
@@ -685,7 +685,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
-            $this->traversableVerifierFactory,
+            $this->iterableVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector
@@ -788,49 +788,49 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
     }
 
-    public function testCheckTraversed()
+    public function testCheckIterated()
     {
-        $this->assertTrue((boolean) $this->traversableSubject->checkTraversed());
-        $this->assertTrue((boolean) $this->traversableSubject->once()->checkTraversed());
-        $this->assertFalse((boolean) $this->subject->checkTraversed());
-        $this->assertTrue((boolean) $this->subject->never()->checkTraversed());
-        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkTraversed());
-        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkTraversed());
+        $this->assertTrue((boolean) $this->iterableSubject->checkIterated());
+        $this->assertTrue((boolean) $this->iterableSubject->once()->checkIterated());
+        $this->assertFalse((boolean) $this->subject->checkIterated());
+        $this->assertTrue((boolean) $this->subject->never()->checkIterated());
+        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkIterated());
+        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkIterated());
     }
 
-    public function testTraversed()
+    public function testIterated()
     {
         $this->assertEquals(
-            $this->traversableVerifierFactory->create($this->traversableCall, array($this->traversableCall)),
-            $this->traversableSubject->traversed()
+            $this->iterableVerifierFactory->create($this->iterableCall, array($this->iterableCall)),
+            $this->iterableSubject->iterated()
         );
         $this->assertEquals(
-            $this->traversableVerifierFactory->create($this->call, array()),
-            $this->subject->never()->traversed()
+            $this->iterableVerifierFactory->create($this->call, array()),
+            $this->subject->never()->iterated()
         );
     }
 
-    public function testTraversedFailure()
+    public function testIteratedFailure()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->traversed();
+        $this->subject->iterated();
     }
 
-    public function testTraversedFailureNever()
+    public function testIteratedFailureNever()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->traversableSubject->never()->traversed();
+        $this->iterableSubject->never()->iterated();
     }
 
-    public function testTraversedFailureWithException()
+    public function testIteratedFailureWithException()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subjectWithException->traversed();
+        $this->subjectWithException->iterated();
     }
 
-    public function testTraversedFailureNeverResponded()
+    public function testIteratedFailureNeverResponded()
     {
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subjectWithNoResponse->traversed();
+        $this->subjectWithNoResponse->iterated();
     }
 }

@@ -40,7 +40,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @param CallFactory           $callFactory           The call factory to use.
      * @param Invoker               $invoker               The invoker to use.
      * @param GeneratorSpyFactory   $generatorSpyFactory   The generator spy factory to use.
-     * @param TraversableSpyFactory $traversableSpyFactory The traversable spy factory to use.
+     * @param IterableSpyFactory $iterableSpyFactory The iterable spy factory to use.
      */
     public function __construct(
         $callback,
@@ -48,18 +48,18 @@ class SpyData extends AbstractWrappedInvocable implements Spy
         CallFactory $callFactory,
         Invoker $invoker,
         GeneratorSpyFactory $generatorSpyFactory,
-        TraversableSpyFactory $traversableSpyFactory
+        IterableSpyFactory $iterableSpyFactory
     ) {
         parent::__construct($callback, $label);
 
         $this->callFactory = $callFactory;
         $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
-        $this->traversableSpyFactory = $traversableSpyFactory;
+        $this->iterableSpyFactory = $iterableSpyFactory;
 
         $this->calls = array();
         $this->useGeneratorSpies = true;
-        $this->useTraversableSpies = false;
+        $this->useIterableSpies = false;
         $this->isRecording = true;
     }
 
@@ -98,27 +98,27 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     }
 
     /**
-     * Turn on or off the use of traversable spies.
+     * Turn on or off the use of iterable spies.
      *
-     * @param bool $useTraversableSpies True to use traversable spies.
+     * @param bool $useIterableSpies True to use iterable spies.
      *
      * @return $this This spy.
      */
-    public function setUseTraversableSpies($useTraversableSpies)
+    public function setUseIterableSpies($useIterableSpies)
     {
-        $this->useTraversableSpies = $useTraversableSpies;
+        $this->useIterableSpies = $useIterableSpies;
 
         return $this;
     }
 
     /**
-     * Returns true if this spy uses traversable spies.
+     * Returns true if this spy uses iterable spies.
      *
-     * @return bool True if this spy uses traversable spies.
+     * @return bool True if this spy uses iterable spies.
      */
-    public function useTraversableSpies()
+    public function useIterableSpies()
     {
-        return $this->useTraversableSpies;
+        return $this->useIterableSpies;
     }
 
     /**
@@ -381,10 +381,10 @@ class SpyData extends AbstractWrappedInvocable implements Spy
         }
 
         if (
-            $this->useTraversableSpies &&
+            $this->useIterableSpies &&
             ($returnValue instanceof Traversable || is_array($returnValue))
         ) {
-            return $this->traversableSpyFactory->create($call, $returnValue);
+            return $this->iterableSpyFactory->create($call, $returnValue);
         }
 
         $call->setEndEvent($call->responseEvent());
@@ -418,9 +418,9 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     private $callFactory;
     private $invoker;
     private $generatorSpyFactory;
-    private $traversableSpyFactory;
+    private $iterableSpyFactory;
     private $useGeneratorSpies;
-    private $useTraversableSpies;
+    private $useIterableSpies;
     private $isRecording;
     private $calls;
 }

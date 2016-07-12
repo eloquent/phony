@@ -1,7 +1,0 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% to behave like:
-    %RED%✗%RESET% Returned <traversable>
-%RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
-%GREEN%✓%RESET% Call #0 - {stub}[label]("aardvark"):
-    %GREEN%✓%RESET% Returned #0["AARDVARK"]
-%GREEN%✓%RESET% Call #1 - {stub}[label]("bonobo"):
-    %GREEN%✓%RESET% Returned #0["BONOBO"]

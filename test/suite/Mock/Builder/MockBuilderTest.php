@@ -523,7 +523,7 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertSame($actual, $this->subject->build());
     }
 
-    public function buildTraversablesData()
+    public function buildIterablesData()
     {
         return array(
             'Traversable' => array(
@@ -575,9 +575,9 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider buildTraversablesData
+     * @dataProvider buildIterablesData
      */
-    public function testBuildTraversables($typeNames, $expectedTypes, $expectedNonTypes)
+    public function testBuildIterables($typeNames, $expectedTypes, $expectedNonTypes)
     {
         $this->setUpWith($typeNames);
 

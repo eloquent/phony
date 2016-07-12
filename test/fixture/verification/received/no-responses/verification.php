@@ -3,7 +3,7 @@
 use Eloquent\Phony\Test\Phony;
 
 // setup
-$stub = Phony::stub()->setUseTraversableSpies(true)->setLabel('label');
+$stub = Phony::stub()->setUseIterableSpies(true)->setLabel('label');
 $stub->with('aardvark')->generates();
 $stub->with('bonobo', '*')->does(
     function ($animal, $verify, $depth = 0) use (&$stub) {

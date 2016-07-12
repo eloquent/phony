@@ -70,7 +70,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
-        $this->assertEquals($generatorEvents, $this->call->traversableEvents());
+        $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
 
@@ -115,7 +115,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
-        $this->assertEquals($generatorEvents, $this->call->traversableEvents());
+        $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($exception, $caughtException);
     }
@@ -168,7 +168,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
-        $this->assertEquals($generatorEvents, $this->call->traversableEvents());
+        $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
 
@@ -192,7 +192,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
-        $this->assertEquals($generatorEvents, $this->call->traversableEvents());
+        $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
 
@@ -221,25 +221,9 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
-        $this->assertEquals($generatorEvents, $this->call->traversableEvents());
+        $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($exception, $caughtException);
-    }
-
-    public function testCreateFailureInvalidTraversable()
-    {
-        $this->call = $this->callFactory->create();
-
-        $this->setExpectedException('InvalidArgumentException', 'Unsupported traversable of type NULL.');
-        $this->subject->create($this->call, null);
-    }
-
-    public function testCreateFailureInvalidTraversableObject()
-    {
-        $this->call = $this->callFactory->create();
-
-        $this->setExpectedException('InvalidArgumentException', "Unsupported traversable of type 'stdClass'.");
-        $this->subject->create($this->call, (object) array());
     }
 
     public function testInstance()

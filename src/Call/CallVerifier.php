@@ -16,7 +16,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\ResponseEvent;
-use Eloquent\Phony\Call\Event\TraversableEvent;
+use Eloquent\Phony\Call\Event\IterableEvent;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
@@ -29,8 +29,8 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\TraversableVerifier;
-use Eloquent\Phony\Verification\TraversableVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifier;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Error;
 use Exception;
 use Generator;
@@ -51,7 +51,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @param MatcherFactory             $matcherFactory             The matcher factory to use.
      * @param MatcherVerifier            $matcherVerifier            The matcher verifier to use.
      * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param TraversableVerifierFactory $traversableVerifierFactory The traversable verifier factory to use.
+     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
      * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
      * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
      * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
@@ -61,7 +61,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
         GeneratorVerifierFactory $generatorVerifierFactory,
-        TraversableVerifierFactory $traversableVerifierFactory,
+        IterableVerifierFactory $iterableVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
         InvocableInspector $invocableInspector
@@ -72,7 +72,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
         $this->generatorVerifierFactory = $generatorVerifierFactory;
-        $this->traversableVerifierFactory = $traversableVerifierFactory;
+        $this->iterableVerifierFactory = $iterableVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->invocableInspector = $invocableInspector;
@@ -286,26 +286,25 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
-     * Add a traversable event.
+     * Add an iterable event.
      *
-     * @param TraversableEvent $traversableEvent The traversable event.
+     * @param IterableEvent $iterableEvent The iterable event.
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addTraversableEvent(
-        TraversableEvent $traversableEvent
-    ) {
-        $this->call->addTraversableEvent($traversableEvent);
+    public function addIterableEvent(IterableEvent $iterableEvent)
+    {
+        $this->call->addIterableEvent($iterableEvent);
     }
 
     /**
-     * Get the traversable events.
+     * Get the iterable events.
      *
-     * @return array<TraversableEvent> The traversable events.
+     * @return array<IterableEvent> The iterable events.
      */
-    public function traversableEvents()
+    public function iterableEvents()
     {
-        return $this->call->traversableEvents();
+        return $this->call->iterableEvents();
     }
 
     /**
@@ -363,13 +362,13 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
-     * Returns true if this call has responded with a traversable.
+     * Returns true if this call has responded with an iterable.
      *
-     * @return bool True if this call has responded with a traversable.
+     * @return bool True if this call has responded with an iterable.
      */
-    public function isTraversable()
+    public function isIterable()
     {
-        return $this->call->isTraversable();
+        return $this->call->isIterable();
     }
 
     /**
@@ -389,9 +388,9 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * be considered complete until the generator has been completely consumed
      * via iteration.
      *
-     * Similarly, when traversable spies are in use, a call that returns a
-     * traversable will not be considered complete until the traversable has
-     * been completely consumed via iteration.
+     * Similarly, when iterable spies are in use, a call that returns an
+     * iterable will not be considered complete until the iterable has been
+     * completely consumed via iteration.
      *
      * @return bool True if this call has completed.
      */
@@ -521,9 +520,9 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * be considered complete until the generator has been completely consumed
      * via iteration.
      *
-     * Similarly, when traversable spies are in use, a call that returns a
-     * traversable will not be considered complete until the traversable has
-     * been completely consumed via iteration.
+     * Similarly, when iterable spies are in use, a call that returns an
+     * iterable will not be considered complete until the iterable has been
+     * completely consumed via iteration.
      *
      * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
@@ -1004,12 +1003,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     }
 
     /**
-     * Checks if this call returned a traversable.
+     * Checks if this call returned an iterable.
      *
-     * @return TraversableVerifier|null    The result.
+     * @return IterableVerifier|null    The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function checkTraversed()
+    public function checkIterated()
     {
         $cardinality = $this->resetCardinality()->assertSingular();
 
@@ -1027,29 +1026,29 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
 
         if ($cardinality->matches($matchCount, 1)) {
             return $this->assertionRecorder->createSuccessFromEventCollection(
-                $this->traversableVerifierFactory
+                $this->iterableVerifierFactory
                     ->create($this->call, $matchingEvents)
             );
         }
     }
 
     /**
-     * Throws an exception unless this call returned a traversable.
+     * Throws an exception unless this call returned an iterable.
      *
-     * @return TraversableVerifier         The result.
+     * @return IterableVerifier         The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function traversed()
+    public function iterated()
     {
         $cardinality = $this->cardinality;
 
-        if ($result = $this->checkTraversed()) {
+        if ($result = $this->checkIterated()) {
             return $result;
         }
 
         return $this->assertionRecorder->createFailure(
-            $this->assertionRenderer->renderTraversed($this->call, $cardinality)
+            $this->assertionRenderer->renderIterated($this->call, $cardinality)
         );
     }
 
@@ -1070,7 +1069,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     private $matcherFactory;
     private $matcherVerifier;
     private $generatorVerifierFactory;
-    private $traversableVerifierFactory;
+    private $iterableVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
     private $invocableInspector;
