@@ -16,6 +16,11 @@
 [version-image]: https://img.shields.io/packagist/v/eloquent/phony.svg?style=flat-square "This project uses semantic versioning"
 [windows-build-image]: https://img.shields.io/appveyor/ci/eloquent/phony/master.svg?label=windows&style=flat-square "Current Windows build status for the master branch"
 
+[![Example verification output][verification-output-image]][verification output]
+
+[verification output]: https://asciinema.org/a/79339
+[verification-output-image]: https://asciinema.org/a/79339.png "Example verification output"
+
 ## Installation and documentation
 
 - Available as [Composer] package [eloquent/phony].
