@@ -87,7 +87,7 @@ class StubFactory
         $callback = null,
         $self = null,
         $defaultAnswerCallback =
-            'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback'
+            'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback'
     ) {
         return new StubData(
             $callback,

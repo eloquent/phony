@@ -50,13 +50,13 @@ class CallVerifierFactory
     /**
      * Construct a new call verifier factory.
      *
-     * @param MatcherFactory             $matcherFactory             The matcher factory to use.
-     * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
-     * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
-     * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
-     * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
-     * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
+     * @param MatcherFactory           $matcherFactory           The matcher factory to use.
+     * @param MatcherVerifier          $matcherVerifier          The macther verifier to use.
+     * @param GeneratorVerifierFactory $generatorVerifierFactory The generator verifier factory to use.
+     * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
+     * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.
+     * @param AssertionRenderer        $assertionRenderer        The assertion renderer to use.
+     * @param InvocableInspector       $invocableInspector       The invocable inspector to use.
      */
     public function __construct(
         MatcherFactory $matcherFactory,

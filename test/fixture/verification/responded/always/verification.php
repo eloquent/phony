@@ -12,7 +12,7 @@ $stub = Phony::stub(
             $verify();
         }
     }
-)->setLabel('label');
+)->setLabel('label')->forwards();
 $stub(function () {});
 
 // verification

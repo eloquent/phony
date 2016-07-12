@@ -8,7 +8,7 @@ $stub = Phony::stub(
     function ($verify) use (&$stub) {
         $verify();
     }
-)->setLabel('label');
+)->setLabel('label')->forwards();
 
 // verification
 $stub(

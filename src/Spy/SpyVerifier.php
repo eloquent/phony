@@ -46,15 +46,15 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Construct a new spy verifier.
      *
-     * @param Spy                        $spy                        The spy.
-     * @param MatcherFactory             $matcherFactory             The matcher factory to use.
-     * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
-     * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
-     * @param CallVerifierFactory        $callVerifierFactory        The call verifier factory to use.
-     * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
-     * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
-     * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
+     * @param Spy                      $spy                      The spy.
+     * @param MatcherFactory           $matcherFactory           The matcher factory to use.
+     * @param MatcherVerifier          $matcherVerifier          The macther verifier to use.
+     * @param GeneratorVerifierFactory $generatorVerifierFactory The generator verifier factory to use.
+     * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
+     * @param CallVerifierFactory      $callVerifierFactory      The call verifier factory to use.
+     * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.
+     * @param AssertionRenderer        $assertionRenderer        The assertion renderer to use.
+     * @param InvocableInspector       $invocableInspector       The invocable inspector to use.
      */
     public function __construct(
         Spy $spy,
@@ -972,7 +972,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * Throws an exception unless this spy returned an iterable.
      *
      * @return IterableVerifier The result.
-     * @throws Exception           If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Exception        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function iterated()
     {

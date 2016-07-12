@@ -19,7 +19,6 @@ use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailHhvmWithReturn;
 use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailPhp;
 use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailPhpWithReturn;
 use Generator;
-use InvalidArgumentException;
 
 /**
  * Creates generator spies.

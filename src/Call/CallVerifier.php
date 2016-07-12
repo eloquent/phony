@@ -15,8 +15,8 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
-use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Event\IterableEvent;
+use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
@@ -47,14 +47,14 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Construct a new call verifier.
      *
-     * @param Call                       $call                       The call.
-     * @param MatcherFactory             $matcherFactory             The matcher factory to use.
-     * @param MatcherVerifier            $matcherVerifier            The matcher verifier to use.
-     * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
-     * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
-     * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
-     * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
+     * @param Call                     $call                     The call.
+     * @param MatcherFactory           $matcherFactory           The matcher factory to use.
+     * @param MatcherVerifier          $matcherVerifier          The matcher verifier to use.
+     * @param GeneratorVerifierFactory $generatorVerifierFactory The generator verifier factory to use.
+     * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
+     * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.
+     * @param AssertionRenderer        $assertionRenderer        The assertion renderer to use.
+     * @param InvocableInspector       $invocableInspector       The invocable inspector to use.
      */
     public function __construct(
         Call $call,
@@ -1005,7 +1005,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Checks if this call returned an iterable.
      *
-     * @return IterableVerifier|null    The result.
+     * @return IterableVerifier|null       The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkIterated()
@@ -1035,7 +1035,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Throws an exception unless this call returned an iterable.
      *
-     * @return IterableVerifier         The result.
+     * @return IterableVerifier            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
      */

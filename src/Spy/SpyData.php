@@ -35,12 +35,12 @@ class SpyData extends AbstractWrappedInvocable implements Spy
     /**
      * Construct a new spy.
      *
-     * @param callable|null         $callback              The callback, or null to create an anonymous spy.
-     * @param string|null           $label                 The label.
-     * @param CallFactory           $callFactory           The call factory to use.
-     * @param Invoker               $invoker               The invoker to use.
-     * @param GeneratorSpyFactory   $generatorSpyFactory   The generator spy factory to use.
-     * @param IterableSpyFactory $iterableSpyFactory The iterable spy factory to use.
+     * @param callable|null       $callback            The callback, or null to create an anonymous spy.
+     * @param string|null         $label               The label.
+     * @param CallFactory         $callFactory         The call factory to use.
+     * @param Invoker             $invoker             The invoker to use.
+     * @param GeneratorSpyFactory $generatorSpyFactory The generator spy factory to use.
+     * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
      */
     public function __construct(
         $callback,

@@ -7,7 +7,7 @@ $stub = Phony::stub(
     function () {
         return 'aardvark';
     }
-)->setLabel('label');
+)->setLabel('label')->forwards();
 $stub();
 $stub();
 

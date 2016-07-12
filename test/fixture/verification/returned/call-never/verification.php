@@ -7,7 +7,7 @@ $stub = Phony::stub(
     function ($animal) {
         return strtoupper($animal);
     }
-)->setLabel('label');
+)->setLabel('label')->forwards();
 $stub('aardvark');
 $stub('bonobo');
 

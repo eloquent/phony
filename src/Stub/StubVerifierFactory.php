@@ -68,7 +68,7 @@ class StubVerifierFactory
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
      * @param MatcherVerifier               $matcherVerifier               The macther verifier to use.
      * @param GeneratorVerifierFactory      $generatorVerifierFactory      The generator verifier factory to use.
-     * @param IterableVerifierFactory    $iterableVerifierFactory    The iterable verifier factory to use.
+     * @param IterableVerifierFactory       $iterableVerifierFactory       The iterable verifier factory to use.
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.
      * @param AssertionRecorder             $assertionRecorder             The assertion recorder to use.
      * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
@@ -171,9 +171,6 @@ class StubVerifierFactory
      * Create a new stub verifier for a global function and declare it in the
      * specified namespace.
      *
-     * Stubs returned by this function use the `returnsEmptyAnswerCallback`
-     * default answer callback, instead of the `forwardsAnswerCallback`.
-     *
      * @param string $function  The function name.
      * @param string $namespace The namespace.
      *
@@ -196,11 +193,7 @@ class StubVerifierFactory
             );
         }
 
-        $stub = $this->stubFactory->create(
-            $function,
-            null,
-            'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback'
-        );
+        $stub = $this->stubFactory->create($function);
         $spy = $this->spyFactory->create($stub);
         $this->functionHookManager->defineFunction($function, $namespace, $spy);
 

@@ -5,8 +5,11 @@
 - **[BC BREAK]** Replaced the term "traversable" with "iterable". Any function
   or method with "traversable" in the name has also been renamed accordingly
   ([#164]).
+- **[BC BREAK]** Stubs now return empty values by default, instead of forwarding
+  ([#174]).
 
 [#164]: https://github.com/eloquent/phony/issues/164
+[#174]: https://github.com/eloquent/phony/issues/174
 
 ## 0.11.0 (2016-07-12)
 

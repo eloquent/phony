@@ -12,7 +12,7 @@ $stub = Phony::stub(
 
         return $value;
     }
-)->setLabel('label');
+)->setLabel('label')->forwards();
 $stub(null, 'aardvark');
 try {
     $stub(new RuntimeException('bonobo'), null);

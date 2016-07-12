@@ -48,7 +48,7 @@ class IterableSpyFactory
     /**
      * Create a new iterable spy.
      *
-     * @param Call              $call        The call from which the iterable originated.
+     * @param Call              $call     The call from which the iterable originated.
      * @param Traversable|array $iterable The iterable.
      *
      * @return Traversable              The newly created iterable spy.

@@ -56,16 +56,16 @@ class SpyVerifierFactory
     /**
      * Construct a new spy verifier factory.
      *
-     * @param SpyFactory                 $spyFactory                 The spy factory to use.
-     * @param MatcherFactory             $matcherFactory             The matcher factory to use.
-     * @param MatcherVerifier            $matcherVerifier            The macther verifier to use.
-     * @param GeneratorVerifierFactory   $generatorVerifierFactory   The generator verifier factory to use.
-     * @param IterableVerifierFactory $iterableVerifierFactory The iterable verifier factory to use.
-     * @param CallVerifierFactory        $callVerifierFactory        The call verifier factory to use.
-     * @param AssertionRecorder          $assertionRecorder          The assertion recorder to use.
-     * @param AssertionRenderer          $assertionRenderer          The assertion renderer to use.
-     * @param InvocableInspector         $invocableInspector         The invocable inspector to use.
-     * @param FunctionHookManager        $functionHookManager        The function hook manager to use.
+     * @param SpyFactory               $spyFactory               The spy factory to use.
+     * @param MatcherFactory           $matcherFactory           The matcher factory to use.
+     * @param MatcherVerifier          $matcherVerifier          The macther verifier to use.
+     * @param GeneratorVerifierFactory $generatorVerifierFactory The generator verifier factory to use.
+     * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
+     * @param CallVerifierFactory      $callVerifierFactory      The call verifier factory to use.
+     * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.
+     * @param AssertionRenderer        $assertionRenderer        The assertion renderer to use.
+     * @param InvocableInspector       $invocableInspector       The invocable inspector to use.
+     * @param FunctionHookManager      $functionHookManager      The function hook manager to use.
      */
     public function __construct(
         SpyFactory $spyFactory,

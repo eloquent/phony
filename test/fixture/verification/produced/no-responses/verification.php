@@ -14,7 +14,7 @@ $stub = Phony::stub(
 
         return array();
     }
-)->setUseIterableSpies(true)->setLabel('label');
+)->setUseIterableSpies(true)->setLabel('label')->forwards();
 $stub(function () {});
 
 // verification

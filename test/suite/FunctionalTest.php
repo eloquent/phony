@@ -393,9 +393,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $spy = x\stub(eval('return function () : int { return 123; };'));
+        $stub = x\stub(eval('return function () : int { return 123; };'))->forwards();
 
-        $this->assertSame(123, $spy());
+        $this->assertSame(123, $stub());
     }
 
     public function testStubGlobal()

@@ -1010,13 +1010,13 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->with(array('a', 'b'))->calls($callbackA)
                 ->with(array('c', 'd'))->calls($callbackA, $callbackB)
         );
-        $this->assertSame('ab', call_user_func($this->subject, array('a', 'b')));
+        $this->assertNull(call_user_func($this->subject, array('a', 'b')));
         $this->assertSame(1, $callCountA);
         $this->assertSame(0, $callCountB);
-        $this->assertSame('cd', call_user_func($this->subject, array('c', 'd')));
+        $this->assertNull(call_user_func($this->subject, array('c', 'd')));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
-        $this->assertSame('ef', call_user_func($this->subject, array('e', 'f')));
+        $this->assertNull(call_user_func($this->subject, array('e', 'f')));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
     }

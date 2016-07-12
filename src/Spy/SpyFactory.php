@@ -43,11 +43,11 @@ class SpyFactory
     /**
      * Construct a new spy factory.
      *
-     * @param Sequencer             $labelSequencer        The label sequencer to use.
-     * @param CallFactory           $callFactory           The call factory to use.
-     * @param Invoker               $invoker               The invoker to use.
-     * @param GeneratorSpyFactory   $generatorSpyFactory   The generator spy factory to use.
-     * @param IterableSpyFactory $iterableSpyFactory The iterable spy factory to use.
+     * @param Sequencer           $labelSequencer      The label sequencer to use.
+     * @param CallFactory         $callFactory         The call factory to use.
+     * @param Invoker             $invoker             The invoker to use.
+     * @param GeneratorSpyFactory $generatorSpyFactory The generator spy factory to use.
+     * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
      */
     public function __construct(
         Sequencer $labelSequencer,

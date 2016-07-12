@@ -2581,13 +2581,26 @@ $stub = x\stub($callable);      // without `use function`
 $stub = Phony::stub($callable); // static
 ```
 
-By default, the created stub will behave exactly like the wrapped callable:
+By default, the created stub will return "empty" values. The exact value depends
+on the [return type] of the callable, but in many cases it will be `null`:
 
 ```php
-$stub = stub('max');
+$stubA = stub(
+    function () {
+        return 'a';
+    }
+);
+$stubB = stub(
+    function () : int {
+        return 111;
+    }
+);
 
-echo $stub(2, 3, 1); // outputs '3'
+var_dump($stubA()); // outputs 'NULL'
+var_dump($stubB()); // outputs 'int(0)'
 ```
+
+See [Default values for return types] for a full list of types and values.
 
 The stub can be configured to behave differently in specific circumstances,
 whilst falling back to the default behavior during regular operation:
@@ -2595,17 +2608,17 @@ whilst falling back to the default behavior during regular operation:
 ```php
 $stub = stub('max')->with(2, 3, 1)->returns(9);
 
-echo $stub(1, 2, 3); // outputs '3'
-echo $stub(2, 3, 1); // outputs '9'
+var_dump($stub(1, 2, 3)); // outputs 'NULL'
+var_dump($stub(2, 3, 1)); // outputs 'int(9)'
 ```
 
-The stub can also be configured to completely replace the default behavior:
+The stub can also be configured to behave exactly like the original callable:
 
 ```php
-$stub = stub('max')->returns(9);
+$stub = stub('max')->forwards();
 
-echo $stub(1, 2, 3); // outputs '9'
-echo $stub(2, 3, 1); // outputs '9'
+var_dump($stub(1, 2, 3)); // outputs 'int(3)'
+var_dump($stub(4, 5, 6)); // outputs 'int(6)'
 ```
 
 #### Stubbing global functions
@@ -2662,11 +2675,6 @@ printf('Keep it %s.', 'real');
 This code will now output:
 
     You're a total phony!
-
-Note that unlike stubs created via [`stub()`](#facade.stub), stubs created via
-[`stubGlobal()`](#facade.stubGlobal) will not call through to the original
-function by default. It is still possible to achieve this by using
-[`forwards()`](#stub.forwards), however.
 
 ##### Restoring global functions after stubbing
 
@@ -2923,17 +2931,17 @@ $stubB = stub()
 ```
 
 If a new rule is started before any answers are defined, the stub behaves as if
-[`forwards()`](#stub.forwards) were called, causing the stub to behave the same
-as the stubbed callable by default. For example, the two following stubs behave
+[`returns()`](#stub.returns) were called with no arguments, causing the stub to
+return an "empty" value by default. For example, the two following stubs behave
 the same:
 
 ```php
 $stubA = stub($callable)
-    ->with('*')->forwards()
+    ->with('*')->returns()
     ->with('a')->returns('x');
 
 $stubB = stub($callable)
-    // implicit ->with('*')->forwards()
+    // implicit ->with('*')->returns()
     ->with('a')->returns('x');
 ```
 
@@ -3213,8 +3221,8 @@ echo $stub(3, 4, 5); // outputs '9'
 echo $stub(7, 6, 5); // outputs '9'
 ```
 
-This technique can be used to return a mocked method to its default behavior in
-specific circumstances:
+This technique can be used to return a stub or mocked method to its default
+behavior in specific circumstances:
 
 ```php
 class Cat

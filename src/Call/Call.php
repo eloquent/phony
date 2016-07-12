@@ -13,8 +13,8 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
-use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Event\IterableEvent;
+use Eloquent\Phony\Call\Event\ResponseEvent;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\Event;

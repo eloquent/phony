@@ -14,7 +14,7 @@ $stub = Phony::stub(
 
         return $depth;
     }
-)->setLabel('label');
+)->setLabel('label')->forwards();
 $stub(function () {});
 
 // verification
