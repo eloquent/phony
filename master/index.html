@@ -251,7 +251,7 @@
 
 <ul>
 <li><a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a></li>
-<li><a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a></li>
+<li><a href="#verifying-iterables-returned-by-spies">Verifying iterables returned by spies</a></li>
 </ul>
 </li>
 <li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
@@ -296,7 +296,7 @@
 
 <ul>
 <li><a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a></li>
-<li><a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a></li>
+<li><a href="#verifying-iterables-returned-by-calls">Verifying iterables returned by calls</a></li>
 </ul>
 </li>
 <li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
@@ -319,7 +319,7 @@
 
 <ul>
 <li><a href="#the-verification-result-api">The verification result API</a></li>
-<li><a href="#the-traversable-verification-result-api">The traversable verification result API</a></li>
+<li><a href="#the-iterable-verification-result-api">The iterable verification result API</a></li>
 <li><a href="#the-generator-verification-result-api">The generator verification result API</a></li>
 <li><a href="#the-event-api">The event API</a></li>
 <li><a href="#the-order-verification-api">The order verification API</a></li>
@@ -336,7 +336,7 @@
 </ul>
 </li>
 <li>
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>
 
 <ul>
 <li><a href="#verifying-iteration">Verifying iteration</a></li>
@@ -345,13 +345,13 @@
 <li><a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a></li>
 <li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
 <li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
-<li><a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a></li>
+<li><a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a></li>
 <li>
-<a href="#traversable-verification-caveats">Traversable verification caveats</a>
+<a href="#iterable-verification-caveats">Iterable verification caveats</a>
 
 <ul>
-<li><a href="#repeated-iteration-of-traversable-spies">Repeated iteration of traversable spies</a></li>
-<li><a href="#spying-on-traversables-that-implement-array-like-interfaces">Spying on traversables that implement array-like interfaces</a></li>
+<li><a href="#repeated-iteration-of-iterable-spies">Repeated iteration of iterable spies</a></li>
+<li><a href="#spying-on-iterables-that-implement-array-like-interfaces">Spying on iterables that implement array-like interfaces</a></li>
 </ul>
 </li>
 </ul>
@@ -2288,7 +2288,7 @@ behavior customization.</p>
 <p><em>bool</em> $stub-&gt;<a href="#stub.useGeneratorSpies"><strong>useGeneratorSpies</strong></a>()</p>
 </blockquote>
 
-<p>Returns <code>true</code> if this stub uses <a href="#generator-and-traversable-verification">generator spies</a>.</p>
+<p>Returns <code>true</code> if this stub uses <a href="#generator-and-iterable-verification">generator spies</a>.</p>
 
 <p><a name="stub.setUseGeneratorSpies"></a></p>
 
@@ -2298,27 +2298,27 @@ behavior customization.</p>
 <p><em>fluent</em> $stub-&gt;<a href="#stub.setUseGeneratorSpies"><strong>setUseGeneratorSpies</strong></a>($useGeneratorSpies)</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#generator-and-traversable-verification">generator spies</a>.</p>
+<p>Turn on or off the use of <a href="#generator-and-iterable-verification">generator spies</a>.</p>
 
-<p><a name="stub.useTraversableSpies"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>bool</em> $stub-&gt;<a href="#stub.useTraversableSpies"><strong>useTraversableSpies</strong></a>()</p>
-</blockquote>
-
-<p>Returns <code>true</code> if this stub uses <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
-
-<p><a name="stub.setUseTraversableSpies"></a></p>
+<p><a name="stub.useIterableSpies"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em>fluent</em> $stub-&gt;<a href="#stub.setUseTraversableSpies"><strong>setUseTraversableSpies</strong></a>($useTraversableSpies)</p>
+<p><em>bool</em> $stub-&gt;<a href="#stub.useIterableSpies"><strong>useIterableSpies</strong></a>()</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
+<p>Returns <code>true</code> if this stub uses <a href="#generator-and-iterable-verification">iterable spies</a>.</p>
+
+<p><a name="stub.setUseIterableSpies"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>fluent</em> $stub-&gt;<a href="#stub.setUseIterableSpies"><strong>setUseIterableSpies</strong></a>($useIterableSpies)</p>
+</blockquote>
+
+<p>Turn on or off the use of <a href="#generator-and-iterable-verification">iterable spies</a>.</p>
 
 <p><a name="stub.stopRecording"></a></p>
 
@@ -2691,13 +2691,13 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Throws an exception unless this stub completed.</p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>.</em></p>
 
@@ -2711,13 +2711,13 @@ completely consumed via iteration.</em></p>
 
 <p>Checks if this stub completed.</p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -3919,7 +3919,7 @@ stubbing in a fluent manner:</p>
 <a id="yielding-from-a-generator" class="anchor" href="#yielding-from-a-generator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Yielding from a generator</h4>
 
 <p>Keys and values to be yielded can be passed directly to
-<a href="#stub.generates"><code>generates()</code></a> as any traversable value:</p>
+<a href="#stub.generates"><code>generates()</code></a> as any iterable value:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()</span>
 <span class="pl-s1">    <span class="pl-k">-&gt;</span>generates([<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>])<span class="pl-k">-&gt;</span>returns()</span>
@@ -4537,7 +4537,7 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p><em>bool</em> $spy-&gt;<a href="#spy.useGeneratorSpies"><strong>useGeneratorSpies</strong></a>()</p>
 </blockquote>
 
-<p>Returns <code>true</code> if this spy uses <a href="#generator-and-traversable-verification">generator spies</a>.</p>
+<p>Returns <code>true</code> if this spy uses <a href="#generator-and-iterable-verification">generator spies</a>.</p>
 
 <p><a name="spy.setUseGeneratorSpies"></a></p>
 
@@ -4547,27 +4547,27 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 <p><em>fluent</em> $spy-&gt;<a href="#spy.setUseGeneratorSpies"><strong>setUseGeneratorSpies</strong></a>($useGeneratorSpies)</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#generator-and-traversable-verification">generator spies</a>.</p>
+<p>Turn on or off the use of <a href="#generator-and-iterable-verification">generator spies</a>.</p>
 
-<p><a name="spy.useTraversableSpies"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>bool</em> $spy-&gt;<a href="#spy.useTraversableSpies"><strong>useTraversableSpies</strong></a>()</p>
-</blockquote>
-
-<p>Returns <code>true</code> if this spy uses <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
-
-<p><a name="spy.setUseTraversableSpies"></a></p>
+<p><a name="spy.useIterableSpies"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em>fluent</em> $spy-&gt;<a href="#spy.setUseTraversableSpies"><strong>setUseTraversableSpies</strong></a>($useTraversableSpies)</p>
+<p><em>bool</em> $spy-&gt;<a href="#spy.useIterableSpies"><strong>useIterableSpies</strong></a>()</p>
 </blockquote>
 
-<p>Turn on or off the use of <a href="#generator-and-traversable-verification">traversable spies</a>.</p>
+<p>Returns <code>true</code> if this spy uses <a href="#generator-and-iterable-verification">iterable spies</a>.</p>
+
+<p><a name="spy.setUseIterableSpies"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>fluent</em> $spy-&gt;<a href="#spy.setUseIterableSpies"><strong>setUseIterableSpies</strong></a>($useIterableSpies)</p>
+</blockquote>
+
+<p>Turn on or off the use of <a href="#generator-and-iterable-verification">iterable spies</a>.</p>
 
 <p><a name="spy.stopRecording"></a></p>
 
@@ -4940,13 +4940,13 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Throws an exception unless this spy completed.</p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>.</em></p>
 
@@ -4960,13 +4960,13 @@ completely consumed via iteration.</em></p>
 
 <p>Checks if this spy completed.</p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -4982,7 +4982,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p>Throws an exception unless this spy returned a generator.</p>
 
 <p><em>See <a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
 <p><a name="spy.checkGenerated"></a></p>
 
@@ -4995,34 +4995,34 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p>Checks if this spy returned a generator.</p>
 
 <p><em>See <a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
-<p><a name="spy.traversed"></a></p>
+<p><a name="spy.iterated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a></em> $spy-&gt;<a href="#spy.traversed"><strong>traversed</strong></a>()
+<p><em><a href="#the-iterable-verification-result-api">iterable-verification</a></em> $spy-&gt;<a href="#spy.iterated"><strong>iterated</strong></a>()
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Throws an exception unless this spy returned a traversable.</p>
+<p>Throws an exception unless this spy returned an iterable.</p>
 
-<p><em>See <a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<p><em>See <a href="#verifying-iterables-returned-by-spies">Verifying iterables returned by spies</a>,
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
-<p><a name="spy.checkTraversed"></a></p>
+<p><a name="spy.checkIterated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a>|null</em> $spy-&gt;<a href="#spy.checkTraversed"><strong>checkTraversed</strong></a>()</p>
+<p><em><a href="#the-iterable-verification-result-api">iterable-verification</a>|null</em> $spy-&gt;<a href="#spy.checkIterated"><strong>checkIterated</strong></a>()</p>
 </blockquote>
 
-<p>Checks if this spy returned a traversable.</p>
+<p>Checks if this spy returned an iterable.</p>
 
-<p><em>See <a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<p><em>See <a href="#verifying-iterables-returned-by-spies">Verifying iterables returned by spies</a>,
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
 <p><a name="spy.never"></a></p>
 
@@ -5373,7 +5373,7 @@ verification of the generator's behavior:</p>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// generator yielded 'a'</span></span>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// generator returned 'b'</span></span></pre></div>
 
-<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+<p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 
 <p>Example output from <a href="#spy.generated"><code>generated()</code></a>:</p>
@@ -5381,28 +5381,28 @@ available verifications.</p>
 <p><a href="img/verification/generated/no-generator.svg" target="_blank"><img src="img/verification/generated/no-generator.svg" alt="Example output from $spy-&gt;generated()" style="max-width:100%;"></a></p>
 
 <h5>
-<a id="verifying-traversables-returned-by-spies" class="anchor" href="#verifying-traversables-returned-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying traversables returned by spies</h5>
+<a id="verifying-iterables-returned-by-spies" class="anchor" href="#verifying-iterables-returned-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying iterables returned by spies</h5>
 
-<p>To verify that a spy returned a traversable value, such as an array or iterator,
-use <a href="#spy.traversed"><code>traversed()</code></a>:</p>
+<p>To verify that a spy returned an iterable value, such as an array or iterator,
+use <a href="#spy.iterated"><code>iterated()</code></a>:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>traversed();</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>iterated();</span></pre></div>
 
-<p>If <a href="#generator-and-traversable-verification">traversable spies</a> are enabled, the result returned by
-<a href="#spy.traversed"><code>traversed()</code></a> can be used for further verification of the
-traversable's behavior:</p>
+<p>If <a href="#generator-and-iterable-verification">iterable spies</a> are enabled, the result returned by
+<a href="#spy.iterated"><code>iterated()</code></a> can be used for further verification of the
+iterable's behavior:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$traversable</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>traversed(); <span class="pl-c">// returned a traversable</span></span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$iterable</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>iterated(); <span class="pl-c">// returned an iterable</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// traversable produced 'a'</span></span>
-<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>); <span class="pl-c">// traversable produced 'b' =&gt; 'c'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// iterable produced 'a'</span></span>
+<span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>); <span class="pl-c">// iterable produced 'b' =&gt; 'c'</span></span></pre></div>
 
-<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+<p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 
-<p>Example output from <a href="#spy.traversed"><code>traversed()</code></a>:</p>
+<p>Example output from <a href="#spy.iterated"><code>iterated()</code></a>:</p>
 
-<p><a href="img/verification/traversed/no-traversable.svg" target="_blank"><img src="img/verification/traversed/no-traversable.svg" alt="Example output from $spy-&gt;traversed()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/iterated/no-iterable.svg" target="_blank"><img src="img/verification/iterated/no-iterable.svg" alt="Example output from $spy-&gt;iterated()" style="max-width:100%;"></a></p>
 
 <h4>
 <a id="verifying-spy-exceptions" class="anchor" href="#verifying-spy-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy exceptions</h4>
@@ -5424,15 +5424,15 @@ available verifications.</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>completed();</span></pre></div>
 
-<p>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</p>
 
-<p>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</p>
+<p>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</p>
 
-<p>To ignore traversable events, and simply verify that a spy has returned a value
+<p>To ignore iterable events, and simply verify that a spy has returned a value
 <em>or</em> thrown an exception, use <a href="#spy.responded"><code>responded()</code></a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>responded();</span></pre></div>
@@ -5455,9 +5455,8 @@ must meet the requirements of a subsequent verification.</p>
 change the amount of <strong>events</strong> within the call that must meet the requirements
 of a subsequent verification.</p>
 
-<p>Note that cardinality also applies differently when using generator and
-traversable verification. See
-<a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>.</p>
+<p>Note that cardinality also applies differently when using generator and iterable
+verification. See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>.</p>
 
 <p>Cardinality must be specified <strong>before</strong> verification, and can be applied to
 any verification:</p>
@@ -5743,15 +5742,15 @@ completed iteration.</em></p>
 
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
 
-<p><a name="call.isTraversable"></a></p>
+<p><a name="call.isIterable"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em>bool</em> $call-&gt;<a href="#call.isTraversable"><strong>isTraversable</strong></a>()</p>
+<p><em>bool</em> $call-&gt;<a href="#call.isIterable"><strong>isIterable</strong></a>()</p>
 </blockquote>
 
-<p>Returns true if this call has responded with a traversable.</p>
+<p>Returns true if this call has responded with an iterable.</p>
 
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
 
@@ -5777,13 +5776,13 @@ completed iteration.</em></p>
 
 <p>Returns true if this call has completed.</p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><a name="call.time"></a></p>
 
@@ -5821,13 +5820,13 @@ completely consumed via iteration.</em></p>
 
 <p><em>If the call has not yet completed, <code>null</code> will be returned.</em></p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><a name="call.responseDuration"></a></p>
 
@@ -5855,13 +5854,13 @@ completely consumed via iteration.</em></p>
 
 <p><em>If the call has not yet completed, <code>null</code> will be returned.</em></p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><a name="call.index"></a></p>
 
@@ -6080,13 +6079,13 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Throws an exception unless this call completed.</p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><em>See <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
@@ -6100,13 +6099,13 @@ completely consumed via iteration.</em></p>
 
 <p>Checks if this call completed.</p>
 
-<p><em>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</em></p>
 
-<p><em>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</em></p>
+<p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</em></p>
 
 <p><em>See <a href="#verifying-call-progress">Verifying call progress</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -6122,7 +6121,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p>Throws an exception unless this call returned a generator.</p>
 
 <p><em>See <a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
 <p><a name="call.checkGenerated"></a></p>
 
@@ -6135,34 +6134,34 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p>Checks if this call returned a generator.</p>
 
 <p><em>See <a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
-<p><a name="call.traversed"></a></p>
+<p><a name="call.iterated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a></em> $call-&gt;<a href="#call.traversed"><strong>traversed</strong></a>()
+<p><em><a href="#the-iterable-verification-result-api">iterable-verification</a></em> $call-&gt;<a href="#call.iterated"><strong>iterated</strong></a>()
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Throws an exception unless this call returned a traversable.</p>
+<p>Throws an exception unless this call returned an iterable.</p>
 
-<p><em>See <a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<p><em>See <a href="#verifying-iterables-returned-by-calls">Verifying iterables returned by calls</a>,
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
-<p><a name="call.checkTraversed"></a></p>
+<p><a name="call.checkIterated"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-traversable-verification-result-api">traversable-verification</a>|null</em> $call-&gt;<a href="#call.checkTraversed"><strong>checkTraversed</strong></a>()</p>
+<p><em><a href="#the-iterable-verification-result-api">iterable-verification</a>|null</em> $call-&gt;<a href="#call.checkIterated"><strong>checkIterated</strong></a>()</p>
 </blockquote>
 
-<p>Checks if this call returned a traversable.</p>
+<p>Checks if this call returned an iterable.</p>
 
-<p><em>See <a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a>,
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>.</em></p>
+<p><em>See <a href="#verifying-iterables-returned-by-calls">Verifying iterables returned by calls</a>,
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>.</em></p>
 
 <p><a name="call.never"></a></p>
 
@@ -6454,7 +6453,7 @@ verification of the generator's behavior:</p>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// generator yielded 'a'</span></span>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// generator returned 'b'</span></span></pre></div>
 
-<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+<p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 
 <p>Example output from <a href="#call.generated"><code>generated()</code></a>:</p>
@@ -6462,28 +6461,28 @@ available verifications.</p>
 <p><a href="img/verification/generated/call-no-generator.svg" target="_blank"><img src="img/verification/generated/call-no-generator.svg" alt="Example output from $call-&gt;generated()" style="max-width:100%;"></a></p>
 
 <h5>
-<a id="verifying-traversables-returned-by-calls" class="anchor" href="#verifying-traversables-returned-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying traversables returned by calls</h5>
+<a id="verifying-iterables-returned-by-calls" class="anchor" href="#verifying-iterables-returned-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying iterables returned by calls</h5>
 
-<p>To verify that a call returned a traversable value, such as an array or
-iterator, use <a href="#call.traversed"><code>traversed()</code></a>:</p>
+<p>To verify that a call returned an iterable value, such as an array or iterator,
+use <a href="#call.iterated"><code>iterated()</code></a>:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>traversed();</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>iterated();</span></pre></div>
 
-<p>If <a href="#generator-and-traversable-verification">traversable spies</a> are enabled, the result returned by
-<a href="#call.traversed"><code>traversed()</code></a> can be used for further verification of the
-traversable's behavior:</p>
+<p>If <a href="#generator-and-iterable-verification">iterable spies</a> are enabled, the result returned by
+<a href="#call.iterated"><code>iterated()</code></a> can be used for further verification of the
+iterable's behavior:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$traversable</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>traversed(); <span class="pl-c">// returned a traversable</span></span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$iterable</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>iterated(); <span class="pl-c">// returned an iterable</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// traversable produced 'a'</span></span>
-<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>); <span class="pl-c">// traversable produced 'b' =&gt; 'c'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// iterable produced 'a'</span></span>
+<span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>); <span class="pl-c">// iterable produced 'b' =&gt; 'c'</span></span></pre></div>
 
-<p>See <a href="#generator-and-traversable-verification">Generator and traversable verification</a> for a complete explanation of the
+<p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 
-<p>Example output from <a href="#call.traversed"><code>traversed()</code></a>:</p>
+<p>Example output from <a href="#call.iterated"><code>iterated()</code></a>:</p>
 
-<p><a href="img/verification/traversed/call-no-traversable.svg" target="_blank"><img src="img/verification/traversed/call-no-traversable.svg" alt="Example output from $call-&gt;traversed()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/iterated/call-no-iterable.svg" target="_blank"><img src="img/verification/iterated/call-no-iterable.svg" alt="Example output from $call-&gt;iterated()" style="max-width:100%;"></a></p>
 
 <h4>
 <a id="verifying-call-exceptions" class="anchor" href="#verifying-call-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call exceptions</h4>
@@ -6505,15 +6504,15 @@ available verifications.</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>completed();</span></pre></div>
 
-<p>When <a href="#generator-and-traversable-verification">generator spies</a> are in use, a call that returns a generator will not be
+<p>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
 considered "complete" until the generator has been completely consumed via
 iteration.</p>
 
-<p>Similarly, when <a href="#generator-and-traversable-verification">traversable spies</a> are in use, a call that returns a
-traversable will not be considered "complete" until the traversable has been
-completely consumed via iteration.</p>
+<p>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
+will not be considered "complete" until the iterable has been completely
+consumed via iteration.</p>
 
-<p>To ignore traversable events, and simply verify that a call has returned a value
+<p>To ignore iterable events, and simply verify that a call has returned a value
 <em>or</em> thrown an exception, use <a href="#call.responded"><code>responded()</code></a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>responded();</span></pre></div>
@@ -6644,7 +6643,7 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 
 <ul>
 <li><a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a></li>
-<li><a href="#verifying-traversables-returned-by-spies">Verifying traversables returned by spies</a></li>
+<li><a href="#verifying-iterables-returned-by-spies">Verifying iterables returned by spies</a></li>
 </ul>
 </li>
 <li><a href="#verifying-spy-exceptions">Verifying spy exceptions</a></li>
@@ -6683,7 +6682,7 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 
 <ul>
 <li><a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a></li>
-<li><a href="#verifying-traversables-returned-by-calls">Verifying traversables returned by calls</a></li>
+<li><a href="#verifying-iterables-returned-by-calls">Verifying iterables returned by calls</a></li>
 </ul>
 </li>
 <li><a href="#verifying-call-exceptions">Verifying call exceptions</a></li>
@@ -6706,7 +6705,7 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 
 <ul>
 <li><a href="#the-verification-result-api">The verification result API</a></li>
-<li><a href="#the-traversable-verification-result-api">The traversable verification result API</a></li>
+<li><a href="#the-iterable-verification-result-api">The iterable verification result API</a></li>
 <li><a href="#the-generator-verification-result-api">The generator verification result API</a></li>
 <li><a href="#the-event-api">The event API</a></li>
 <li><a href="#the-order-verification-api">The order verification API</a></li>
@@ -6723,7 +6722,7 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 </ul>
 </li>
 <li>
-<a href="#generator-and-traversable-verification">Generator and traversable verification</a>
+<a href="#generator-and-iterable-verification">Generator and iterable verification</a>
 
 <ul>
 <li><a href="#verifying-iteration">Verifying iteration</a></li>
@@ -6732,13 +6731,13 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 <li><a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a></li>
 <li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
 <li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
-<li><a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a></li>
+<li><a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a></li>
 <li>
-<a href="#traversable-verification-caveats">Traversable verification caveats</a>
+<a href="#iterable-verification-caveats">Iterable verification caveats</a>
 
 <ul>
-<li><a href="#repeated-iteration-of-traversable-spies">Repeated iteration of traversable spies</a></li>
-<li><a href="#spying-on-traversables-that-implement-array-like-interfaces">Spying on traversables that implement array-like interfaces</a></li>
+<li><a href="#repeated-iteration-of-iterable-spies">Repeated iteration of iterable spies</a></li>
+<li><a href="#spying-on-iterables-that-implement-array-like-interfaces">Spying on iterables that implement array-like interfaces</a></li>
 </ul>
 </li>
 </ul>
@@ -6900,9 +6899,9 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 the last element, and <code>-2</code> indicates the second last element.</em></p>
 
 <h3>
-<a id="the-traversable-verification-result-api" class="anchor" href="#the-traversable-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The traversable verification result API</h3>
+<a id="the-iterable-verification-result-api" class="anchor" href="#the-iterable-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The iterable verification result API</h3>
 
-<p>In addition to the <a href="#the-verification-result-api">verification result</a> API, traversable verification results
+<p>In addition to the <a href="#the-verification-result-api">verification result</a> API, iterable verification results
 implement the following methods:</p>
 
 <p><a name="verification.used"></a></p>
@@ -6914,7 +6913,7 @@ implement the following methods:</p>
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Throws an exception unless iteration of the traversable commenced.</p>
+<p>Throws an exception unless iteration of the iterable commenced.</p>
 
 <p><em>See <a href="#verifying-iteration">Verifying iteration</a>.</em></p>
 
@@ -6926,7 +6925,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkUsed"><strong>checkUsed</strong></a>()</p>
 </blockquote>
 
-<p>Checks if iteration of the traversable commenced.</p>
+<p>Checks if iteration of the iterable commenced.</p>
 
 <p><em>See <a href="#verifying-iteration">Verifying iteration</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -6939,9 +6938,9 @@ throws <a href="#assertionexception">AssertionException</a></p>
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Throws an exception unless the traversable produced the supplied values.</p>
+<p>Throws an exception unless the iterable produced the supplied values.</p>
 
-<p><em>When called with no arguments, this method simply checks that the traversable
+<p><em>When called with no arguments, this method simply checks that the iterable
 produced any value.</em></p>
 
 <p><em>With a single argument, it checks that a value matching the argument was
@@ -6962,9 +6961,9 @@ arguments were produced together.</em></p>
 <p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkProduced"><strong>checkProduced</strong></a>($keyOrValue = null, $value = null)</p>
 </blockquote>
 
-<p>Checks if the traversable produced the supplied values.</p>
+<p>Checks if the iterable produced the supplied values.</p>
 
-<p><em>When called with no arguments, this method simply checks that the traversable
+<p><em>When called with no arguments, this method simply checks that the iterable
 produced any value.</em></p>
 
 <p><em>With a single argument, it checks that a value matching the argument was
@@ -6986,7 +6985,7 @@ arguments were produced together.</em></p>
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
-<p>Throws an exception unless iteration of the traversable completed.</p>
+<p>Throws an exception unless iteration of the iterable completed.</p>
 
 <p><em>See <a href="#verifying-iteration">Verifying iteration</a>.</em></p>
 
@@ -6998,7 +6997,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkConsumed"><strong>checkConsumed</strong></a>()</p>
 </blockquote>
 
-<p>Checks if iteration of the traversable completed.</p>
+<p>Checks if iteration of the iterable completed.</p>
 
 <p><em>See <a href="#verifying-iteration">Verifying iteration</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -7012,7 +7011,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Requires that the next verification never matches.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-an-exact-number-of-times">Verifying that a spy event happened an exact number of times</a>,
 <a href="#verifying-that-a-call-event-happened-an-exact-number-of-times">Verifying that a call event happened an exact number of times</a>.</em></p>
 
@@ -7026,7 +7025,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Requires that the next verification matches only once.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-an-exact-number-of-times">Verifying that a spy event happened an exact number of times</a>,
 <a href="#verifying-that-a-call-event-happened-an-exact-number-of-times">Verifying that a call event happened an exact number of times</a>.</em></p>
 
@@ -7040,7 +7039,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Requires that the next verification matches exactly two times.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-an-exact-number-of-times">Verifying that a spy event happened an exact number of times</a>,
 <a href="#verifying-that-a-call-event-happened-an-exact-number-of-times">Verifying that a call event happened an exact number of times</a>.</em></p>
 
@@ -7054,7 +7053,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Requires that the next verification matches exactly three times.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-an-exact-number-of-times">Verifying that a spy event happened an exact number of times</a>,
 <a href="#verifying-that-a-call-event-happened-an-exact-number-of-times">Verifying that a call event happened an exact number of times</a>.</em></p>
 
@@ -7068,7 +7067,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Requires that the next verification matches exactly <code>$times</code> times.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-an-exact-number-of-times">Verifying that a spy event happened an exact number of times</a>,
 <a href="#verifying-that-a-call-event-happened-an-exact-number-of-times">Verifying that a call event happened an exact number of times</a>.</em></p>
 
@@ -7083,7 +7082,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p>Requires that the next verification matches a number of times greater than or
 equal to <code>$minimum</code>.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-a-bounded-number-of-times">Verifying that a spy event happened a bounded number of times</a>,
 <a href="#verifying-that-a-call-event-happened-a-bounded-number-of-times">Verifying that a call event happened a bounded number of times</a>.</em></p>
 
@@ -7098,7 +7097,7 @@ equal to <code>$minimum</code>.</p>
 <p>Requires that the next verification matches a number of times less than or equal
 to <code>$maximum</code>.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-a-bounded-number-of-times">Verifying that a spy event happened a bounded number of times</a>,
 <a href="#verifying-that-a-call-event-happened-a-bounded-number-of-times">Verifying that a call event happened a bounded number of times</a>.</em></p>
 
@@ -7113,7 +7112,7 @@ to <code>$maximum</code>.</p>
 <p>Requires that the next verification matches a number of times greater than or
 equal to <code>$minimum</code>, and less than or equal to <code>$maximum</code>.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-a-spy-event-happened-a-bounded-number-of-times">Verifying that a spy event happened a bounded number of times</a>,
 <a href="#verifying-that-a-call-event-happened-a-bounded-number-of-times">Verifying that a call event happened a bounded number of times</a>.</em></p>
 
@@ -7127,14 +7126,14 @@ equal to <code>$minimum</code>, and less than or equal to <code>$maximum</code>.
 
 <p>Requires that the next verification matches for all possible items.</p>
 
-<p><em>See <a href="#verifying-cardinality-with-generators-and-traversables">Verifying cardinality with generators and traversables</a>,
+<p><em>See <a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a>,
 <a href="#verifying-that-all-spy-events-happen-the-same-way">Verifying that all spy events happen the same way</a>,
 <a href="#verifying-that-all-call-events-happen-the-same-way">Verifying that all call events happen the same way</a>.</em></p>
 
 <h3>
 <a id="the-generator-verification-result-api" class="anchor" href="#the-generator-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The generator verification result API</h3>
 
-<p>In addition to the <a href="#the-verification-result-api">verification result</a> and <a href="#the-traversable-verification-result-api">traversable verification result</a>
+<p>In addition to the <a href="#the-verification-result-api">verification result</a> and <a href="#the-iterable-verification-result-api">iterable verification result</a>
 APIs, generator verification results implement the following methods:</p>
 
 <p><a name="verification.received"></a></p>
@@ -7611,7 +7610,7 @@ of the second call did not match. The third array element was expected to be
 </ul>
 
 <h3>
-<a id="generator-and-traversable-verification" class="anchor" href="#generator-and-traversable-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generator and traversable verification</h3>
+<a id="generator-and-iterable-verification" class="anchor" href="#generator-and-iterable-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generator and iterable verification</h3>
 
 <p>When spying on a callable that returns a <a href="http://php.net/language.generators.overview">generator</a>, additional verification
 can be performed on events that happen after the generator is returned, such as
@@ -7622,45 +7621,45 @@ calling <a href="#spy.setUseGeneratorSpies"><code>setUseGeneratorSpies()</code><
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseGeneratorSpies(<span class="pl-c1">false</span>);</span></pre></div>
 
-<p>"Traversable spies" also exist for other iterators and arrays, but are disabled
+<p>"Iterable spies" also exist for other iterators and arrays, but are disabled
 by default because they typically change the return type of the spy. This
 feature can be enabled by calling
-<a href="#spy.setUseTraversableSpies"><code>setUseTraversableSpies()</code></a> on a spy:</p>
+<a href="#spy.setUseIterableSpies"><code>setUseIterableSpies()</code></a> on a spy:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseTraversableSpies(<span class="pl-c1">true</span>);</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseIterableSpies(<span class="pl-c1">true</span>);</span></pre></div>
 
 <p>Both <a href="#spy.setUseGeneratorSpies"><code>setUseGeneratorSpies()</code></a> and
-<a href="#spy.setUseTraversableSpies"><code>setUseTraversableSpies()</code></a> are fluent, meaning
+<a href="#spy.setUseIterableSpies"><code>setUseIterableSpies()</code></a> are fluent, meaning
 spy creation and setting of these options can be done in a single expression:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy()</span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>setUseTraversableSpies(<span class="pl-c1">true</span>)</span>
+<span class="pl-s1">    <span class="pl-k">-&gt;</span>setUseIterableSpies(<span class="pl-c1">true</span>)</span>
 <span class="pl-s1">    <span class="pl-k">-&gt;</span>setUseGeneratorSpies(<span class="pl-c1">false</span>);</span></pre></div>
 
 <h4>
 <a id="verifying-iteration" class="anchor" href="#verifying-iteration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying iteration</h4>
 
-<p>To verify that iteration of a generator or traversable commenced, use
+<p>To verify that iteration of a generator or iterable commenced, use
 <a href="#verification.used"><code>used()</code></a> on any <a href="#the-generator-verification-result-api">generator verification result</a> or
-<a href="#the-traversable-verification-result-api">traversable verification result</a>:</p>
+<a href="#the-iterable-verification-result-api">iterable verification result</a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated()<span class="pl-k">-&gt;</span>used(); <span class="pl-c">// iteration of the generator commenced</span></span>
-<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>traversed()<span class="pl-k">-&gt;</span>used(); <span class="pl-c">// iteration of the traversable commenced</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>used();  <span class="pl-c">// iteration of the iterable commenced</span></span></pre></div>
 
-<p>To verify that iteration of a generator or traversable completed, use
+<p>To verify that iteration of a generator or iterable completed, use
 <a href="#verification.consumed"><code>consumed()</code></a> on any <a href="#the-generator-verification-result-api">generator verification result</a> or
-<a href="#the-traversable-verification-result-api">traversable verification result</a>:</p>
+<a href="#the-iterable-verification-result-api">iterable verification result</a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated()<span class="pl-k">-&gt;</span>consumed(); <span class="pl-c">// iteration of the generator completed</span></span>
-<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>traversed()<span class="pl-k">-&gt;</span>consumed(); <span class="pl-c">// iteration of the traversable completed</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>consumed();  <span class="pl-c">// iteration of the iterable completed</span></span></pre></div>
 
 <p>Example output from <a href="#verification.used"><code>used()</code></a>:</p>
 
-<p><a href="img/verification/used/traversed-unused.svg" target="_blank"><img src="img/verification/used/traversed-unused.svg" alt="Example output from $traversable-&gt;used()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/used/iterated-unused.svg" target="_blank"><img src="img/verification/used/iterated-unused.svg" alt="Example output from $iterable-&gt;used()" style="max-width:100%;"></a></p>
 
 <p>Example output from <a href="#verification.consumed"><code>consumed()</code></a>:</p>
 
-<p><a href="img/verification/consumed/traversed-unconsumed.svg" target="_blank"><img src="img/verification/consumed/traversed-unconsumed.svg" alt="Example output from $traversable-&gt;consumed()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/consumed/iterated-unconsumed.svg" target="_blank"><img src="img/verification/consumed/iterated-unconsumed.svg" alt="Example output from $iterable-&gt;consumed()" style="max-width:100%;"></a></p>
 
 <h4>
 <a id="verifying-produced-values" class="anchor" href="#verifying-produced-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying produced values</h4>
@@ -7674,18 +7673,18 @@ spy creation and setting of these options can be done in a single expression:</p
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// produced 'a' with any key</span></span>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'b' with key 'a'</span></span></pre></div>
 
-<p>To verify that a value was produced by a traversable, use
-<a href="#verification.produced"><code>produced()</code></a> on any <a href="#the-traversable-verification-result-api">traversable verification result</a>:</p>
+<p>To verify that a value was produced by an iterable, use
+<a href="#verification.produced"><code>produced()</code></a> on any <a href="#the-iterable-verification-result-api">iterable verification result</a>:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$traversable</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>traversed(); <span class="pl-c">// returned a traversable</span></span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$iterable</span> <span class="pl-k">=</span> <span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>iterated(); <span class="pl-c">// returned an iterable</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced();         <span class="pl-c">// produced anything</span></span>
-<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// produced 'a' with any key</span></span>
-<span class="pl-s1"><span class="pl-smi">$traversable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'b' with key 'a'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced();         <span class="pl-c">// produced anything</span></span>
+<span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c">// produced 'a' with any key</span></span>
+<span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'b' with key 'a'</span></span></pre></div>
 
 <p>Example output from <a href="#verification.produced"><code>produced()</code></a>:</p>
 
-<p><a href="img/verification/produced/traversed-key-value-mismatch.svg" target="_blank"><img src="img/verification/produced/traversed-key-value-mismatch.svg" alt="Example output from $traversable-&gt;produced()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/produced/iterated-key-value-mismatch.svg" target="_blank"><img src="img/verification/produced/iterated-key-value-mismatch.svg" alt="Example output from $iterable-&gt;produced()" style="max-width:100%;"></a></p>
 
 <h4>
 <a id="verifying-values-received-by-generators" class="anchor" href="#verifying-values-received-by-generators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying values received by generators</h4>
@@ -7751,48 +7750,48 @@ on any <a href="#the-generator-verification-result-api">generator verification r
 <p><a href="img/verification/generated-threw/value-mismatch.svg" target="_blank"><img src="img/verification/generated-threw/value-mismatch.svg" alt="Example output from $generator-&gt;threw()" style="max-width:100%;"></a></p>
 
 <h4>
-<a id="verifying-cardinality-with-generators-and-traversables" class="anchor" href="#verifying-cardinality-with-generators-and-traversables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with generators and traversables</h4>
+<a id="verifying-cardinality-with-generators-and-iterables" class="anchor" href="#verifying-cardinality-with-generators-and-iterables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with generators and iterables</h4>
 
-<p>When used <strong>before</strong> <code>generated()</code> or <code>traversed()</code>, cardinality modifiers
-change the amount of calls that must return a <a href="http://php.net/language.generators.overview">generator</a> or traversable:</p>
+<p>When used <strong>before</strong> <code>generated()</code> or <code>iterated()</code>, cardinality modifiers change
+the amount of calls that must return a <a href="http://php.net/language.generators.overview">generator</a> or iterable:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>twice()<span class="pl-k">-&gt;</span>generated(); <span class="pl-c">// returned a generator exactly 2 times</span></span>
-<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>twice()<span class="pl-k">-&gt;</span>traversed(); <span class="pl-c">// returned a traversable exactly 2 times</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>twice()<span class="pl-k">-&gt;</span>iterated();  <span class="pl-c">// returned an iterable exactly 2 times</span></span></pre></div>
 
-<p>When used <strong>after</strong> <code>generated()</code> or <code>traversed()</code>, cardinality modifiers
-relate to the subset of calls that already satisfied the initial verification:</p>
+<p>When used <strong>after</strong> <code>generated()</code> or <code>iterated()</code>, cardinality modifiers relate
+to the subset of calls that already satisfied the initial verification:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated()<span class="pl-k">-&gt;</span>twice()<span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'a' from exactly 2 generator calls</span></span>
-<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>traversed()<span class="pl-k">-&gt;</span>twice()<span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// produced 'a' from exactly 2 traversable calls</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>twice()<span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);  <span class="pl-c">// produced 'a' from exactly 2 iterable calls</span></span></pre></div>
 
 <p>See <a href="#verifying-cardinality-with-spies">Verifying cardinality with spies</a> and <a href="#verifying-cardinality-with-calls">Verifying cardinality with calls</a>
 for a full list or cardinality modifiers.</p>
 
 <h4>
-<a id="traversable-verification-caveats" class="anchor" href="#traversable-verification-caveats" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Traversable verification caveats</h4>
+<a id="iterable-verification-caveats" class="anchor" href="#iterable-verification-caveats" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Iterable verification caveats</h4>
 
 <h5>
-<a id="repeated-iteration-of-traversable-spies" class="anchor" href="#repeated-iteration-of-traversable-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Repeated iteration of traversable spies</h5>
+<a id="repeated-iteration-of-iterable-spies" class="anchor" href="#repeated-iteration-of-iterable-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Repeated iteration of iterable spies</h5>
 
-<p>Events are only recorded the first time a traversable spy is iterated over. If
-the underlying value is an array, or is iterated with an iterator that supports
+<p>Events are only recorded the first time an iterable spy is iterated over. If the
+underlying value is an array, or is iterated with an iterator that supports
 <a href="http://php.net/iterator.rewind">rewind()</a>, subsequent iterations will behave as expected, but no events will
 be recorded.</p>
 
-<p>This has no relevance for <a href="#generator-and-traversable-verification">generator spies</a>, as generators cannot be rewound.</p>
+<p>This has no relevance for <a href="#generator-and-iterable-verification">generator spies</a>, as generators cannot be rewound.</p>
 
 <h5>
-<a id="spying-on-traversables-that-implement-array-like-interfaces" class="anchor" href="#spying-on-traversables-that-implement-array-like-interfaces" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spying on traversables that implement array-like interfaces</h5>
+<a id="spying-on-iterables-that-implement-array-like-interfaces" class="anchor" href="#spying-on-iterables-that-implement-array-like-interfaces" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spying on iterables that implement array-like interfaces</h5>
 
-<p>It's quite common for traversable objects to also implement <a href="http://php.net/arrayaccess">ArrayAccess</a> and
-<a href="http://php.net/countable">Countable</a>. Traversable spies <em>always</em> implement these interfaces, which may be
+<p>It's quite common for iterable objects to also implement <a href="http://php.net/arrayaccess">ArrayAccess</a> and
+<a href="http://php.net/countable">Countable</a>. Iterable spies <em>always</em> implement these interfaces, which may be
 incompatible with code that checks for these interfaces at run time.</p>
 
-<p>If the underlying traversable object implements <a href="http://php.net/arrayaccess">ArrayAccess</a> and/or
-<a href="http://php.net/countable">Countable</a>, <em>Phony</em> will pass relevant calls through to the underlying
-implementation. If these interfaces are <em>not</em> implemented, then the behavior of
-calls to <a href="http://php.net/arrayaccess">ArrayAccess</a> and/or <a href="http://php.net/countable">Countable</a> is undefined, but will most likely
-result in an error.</p>
+<p>If the underlying iterable object implements <a href="http://php.net/arrayaccess">ArrayAccess</a> and/or <a href="http://php.net/countable">Countable</a>,
+<em>Phony</em> will pass relevant calls through to the underlying implementation. If
+these interfaces are <em>not</em> implemented, then the behavior of calls to
+<a href="http://php.net/arrayaccess">ArrayAccess</a> and/or <a href="http://php.net/countable">Countable</a> is undefined, but will most likely result in an
+error.</p>
 
 <h3>
 <a id="order-verification" class="anchor" href="#order-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Order verification</h3>
@@ -7879,8 +7878,8 @@ and <a href="#facade.anyOrder"><code>anyOrder()</code></a> will accept any numbe
 <a href="#facade.anyOrder"><code>anyOrder()</code></a>, there are also
 <a href="#facade.inOrderSequence"><code>inOrderSequence()</code></a> and
 <a href="#facade.anyOrderSequence"><code>anyOrderSequence()</code></a> variants that accept any array
-or traversable containing <a href="#the-verification-result-api">verification results</a>. These variants can be used
-when the number of events to verify is dynamic:</p>
+or iterable containing <a href="#the-verification-result-api">verification results</a>. These variants can be used when
+the number of events to verify is dynamic:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$calledEvents</span> <span class="pl-k">=</span> [];</span>
 <span class="pl-s1"><span class="pl-smi">$returnedEvents</span> <span class="pl-k">=</span> [];</span>
