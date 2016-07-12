@@ -3023,26 +3023,39 @@ handles are equivalent to the mocks themselves.</em></p>
 <span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>stub(<span class="pl-smi">$callable</span>);      <span class="pl-c">// without `use function`</span></span>
 <span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>stub(<span class="pl-smi">$callable</span>); <span class="pl-c">// static</span></span></pre></div>
 
-<p>By default, the created stub will behave exactly like the wrapped callable:</p>
+<p>By default, the created stub will return "empty" values. The exact value depends
+on the <a href="http://php.net/functions.returning-values#functions.returning-values.type-declaration">return type</a> of the callable, but in many cases it will be <code>null</code>:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub(<span class="pl-s"><span class="pl-pds">'</span>max<span class="pl-pds">'</span></span>);</span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubA</span> <span class="pl-k">=</span> stub(</span>
+<span class="pl-s1">    <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span>
+<span class="pl-s1"><span class="pl-smi">$stubB</span> <span class="pl-k">=</span> stub(</span>
+<span class="pl-s1">    <span class="pl-k">function</span> () : int {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">111</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>); <span class="pl-c">// outputs '3'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c1">var_dump</span>($<span class="pl-smi">stubA</span>()); <span class="pl-c">// outputs 'NULL'</span></span>
+<span class="pl-s1"><span class="pl-c1">var_dump</span>($<span class="pl-smi">stubB</span>()); <span class="pl-c">// outputs 'int(0)'</span></span></pre></div>
+
+<p>See <a href="#default-values-for-return-types">Default values for return types</a> for a full list of types and values.</p>
 
 <p>The stub can be configured to behave differently in specific circumstances,
 whilst falling back to the default behavior during regular operation:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub(<span class="pl-s"><span class="pl-pds">'</span>max<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>with(<span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-c1">9</span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>); <span class="pl-c">// outputs '3'</span></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>); <span class="pl-c">// outputs '9'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c1">var_dump</span>($<span class="pl-smi">stub</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>)); <span class="pl-c">// outputs 'NULL'</span></span>
+<span class="pl-s1"><span class="pl-c1">var_dump</span>($<span class="pl-smi">stub</span>(<span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>)); <span class="pl-c">// outputs 'int(9)'</span></span></pre></div>
 
-<p>The stub can also be configured to completely replace the default behavior:</p>
+<p>The stub can also be configured to behave exactly like the original callable:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub(<span class="pl-s"><span class="pl-pds">'</span>max<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-c1">9</span>);</span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub(<span class="pl-s"><span class="pl-pds">'</span>max<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>forwards();</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>); <span class="pl-c">// outputs '9'</span></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>); <span class="pl-c">// outputs '9'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c1">var_dump</span>($<span class="pl-smi">stub</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>)); <span class="pl-c">// outputs 'int(3)'</span></span>
+<span class="pl-s1"><span class="pl-c1">var_dump</span>($<span class="pl-smi">stub</span>(<span class="pl-c1">4</span>, <span class="pl-c1">5</span>, <span class="pl-c1">6</span>)); <span class="pl-c">// outputs 'int(6)'</span></span></pre></div>
 
 <h4>
 <a id="stubbing-global-functions" class="anchor" href="#stubbing-global-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stubbing global functions</h4>
@@ -3097,11 +3110,6 @@ behavior can be changed:</p>
 
 <pre><code>You're a total phony!
 </code></pre>
-
-<p>Note that unlike stubs created via <a href="#facade.stub"><code>stub()</code></a>, stubs created via
-<a href="#facade.stubGlobal"><code>stubGlobal()</code></a> will not call through to the original
-function by default. It is still possible to achieve this by using
-<a href="#stub.forwards"><code>forwards()</code></a>, however.</p>
 
 <h5>
 <a id="restoring-global-functions-after-stubbing" class="anchor" href="#restoring-global-functions-after-stubbing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Restoring global functions after stubbing</h5>
@@ -3332,16 +3340,16 @@ stubs behave the same:</p>
 <span class="pl-s1">    <span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span></pre></div>
 
 <p>If a new rule is started before any answers are defined, the stub behaves as if
-<a href="#stub.forwards"><code>forwards()</code></a> were called, causing the stub to behave the same
-as the stubbed callable by default. For example, the two following stubs behave
+<a href="#stub.returns"><code>returns()</code></a> were called with no arguments, causing the stub to
+return an "empty" value by default. For example, the two following stubs behave
 the same:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubA</span> <span class="pl-k">=</span> stub(<span class="pl-smi">$callable</span>)</span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>forwards()</span>
+<span class="pl-s1">    <span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns()</span>
 <span class="pl-s1">    <span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$stubB</span> <span class="pl-k">=</span> stub(<span class="pl-smi">$callable</span>)</span>
-<span class="pl-s1">    <span class="pl-c">// implicit -&gt;with('*')-&gt;forwards()</span></span>
+<span class="pl-s1">    <span class="pl-c">// implicit -&gt;with('*')-&gt;returns()</span></span>
 <span class="pl-s1">    <span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span></pre></div>
 
 <h5>
@@ -3635,8 +3643,8 @@ original callable using <a href="#stub.forwards"><code>forwards()</code></a>:</p
 <span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">3</span>, <span class="pl-c1">4</span>, <span class="pl-c1">5</span>); <span class="pl-c">// outputs '9'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">stub</span>(<span class="pl-c1">7</span>, <span class="pl-c1">6</span>, <span class="pl-c1">5</span>); <span class="pl-c">// outputs '9'</span></span></pre></div>
 
-<p>This technique can be used to return a mocked method to its default behavior in
-specific circumstances:</p>
+<p>This technique can be used to return a stub or mocked method to its default
+behavior in specific circumstances:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">Cat</span></span>
 <span class="pl-s1">{</span>
