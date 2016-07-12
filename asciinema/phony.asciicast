@@ -1,0 +1,702 @@
+{
+  "version": 1,
+  "width": 120,
+  "height": 30,
+  "duration": 31.666227,
+  "command": "/usr/local/bin/zsh",
+  "title": "",
+  "env": {
+    "TERM": "xterm-256color",
+    "SHELL": "/usr/local/bin/zsh"
+  },
+  "stdout": [
+    [
+      0.002199,
+      "\u001b[H\u001b[2J"
+    ],
+    [
+      0.000301,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                       \r \r"
+    ],
+    [
+      0.000063,
+      "\u001b]2;erin@Erins-MacBook-Pro: ~/git/hub/eloquent/phony-videos/asciinema\u0007"
+    ],
+    [
+      0.000009,
+      "\u001b]1;..eos/asciinema\u0007"
+    ],
+    [
+      0.028445,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[32m$\u001b[00m \u001b[K"
+    ],
+    [
+      0.000006,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000052,
+      "\u001b[?2004h"
+    ],
+    [
+      0.644069,
+      "\u001b[4mv\u001b[24m\u001b[90mi FileWriter.php\u001b[39m\u001b[16D"
+    ],
+    [
+      0.127524,
+      "\u0008\u001b[24m\u001b[32mv\u001b[32mi\u001b[39m"
+    ],
+    [
+      0.201299,
+      "\u001b[39m "
+    ],
+    [
+      0.399909,
+      "\u001b[39m\u001b[4mF\u001b[24m"
+    ],
+    [
+      0.207913,
+      "\u0008\u001b[4mF\u001b[39m\u001b[4mi\u001b[24m"
+    ],
+    [
+      0.080984,
+      "\u0008\u001b[4mi\u001b[39m\u001b[4ml\u001b[24m"
+    ],
+    [
+      0.707407,
+      "\u0008\u001b[4ml\u001b[39m\u001b[4me\u001b[39m\u001b[4mW\u001b[39m\u001b[4mr\u001b[39m\u001b[4mi\u001b[39m\u001b[4mt\u001b[39m\u001b[4me\u001b[39m\u001b[4mr\u001b[39m\u001b[4m.\u001b[39m\u001b[4mp\u001b[39m\u001b[4mh\u001b[39m\u001b[4mp\u001b[24m"
+    ],
+    [
+      0.374347,
+      "\u001b[?1l\u001b\u003e"
+    ],
+    [
+      0.000006,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000498,
+      "\u001b]2;vi FileWriter.php\u0007\u001b]1;vi\u0007"
+    ],
+    [
+      0.017480,
+      "\u001b[?1049h\u001b[?1h\u001b="
+    ],
+    [
+      0.001983,
+      "\u001b[1;30r\u001b[?12;25h\u001b[?12l\u001b[?25h\u001b[27m\u001b[m\u001b[H\u001b[2J\u001b[?25l\u001b[30;1H\"FileWriter.php\""
+    ],
+    [
+      0.000047,
+      " 27L, 513C"
+    ],
+    [
+      0.009322,
+      "\u001b[\u003ec"
+    ],
+    [
+      0.004131,
+      "\u001b[1;1H\u001b[35m\u003c?php\u001b[m\r\n\r\nnamespace Filesystem;\r\n\r\nuse Psr\\\u001b[36mLog\u001b[m\\LoggerInterface;\r\n\r\n\u001b[32mclass\u001b[m FileWriter\r\n\u001b[35m{\u001b[m\r\n    \u001b[32mpublic\u001b[m \u001b[35mfunction\u001b[m \u001b[38;5;130m__construct\u001b[m\u001b[35m(\u001b[mLoggerInterface \u001b[38;5;130m$\u001b[m\u001b[36mlogger\u001b[m\u001b[35m)\u001b[m\r\n    \u001b[35m{\u001b[m\u001b[11;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mlogger \u001b[38;5;130m=\u001b[m \u001b[38;5;130m$\u001b[m\u001b[36mlogger\u001b[m;\r\n    \u001b[35m}\u001b[m\u001b[14;4H \u001b[32mpublic\u001b[m \u001b[35mfunction\u001b[m write\u001b[35m(\u001b[m\u001b[38;5;130m$\u001b[m\u001b[36mpath\u001b[m, \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m\r\n    \u001b[35m{\u001b[m\u001b[16;8H \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m \u001b[38;5;130m=\u001b[m \u001b[36mstr_replace\u001b[m\u001b[35m(\u001b[m'\u001b[31mamazing\u001b[m', '\u001b[31mterrible\u001b[m', \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m;\u001b[18;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mlogger\u001b[32m-\u003e\u001b[m\u001b[36minfo\u001b[m\u001b[35m(\u001b[m\u001b[19;12H '\u001b[31mAttempting to write {size} bytes to {path}\u001b[m',\u001b[20;12H \u001b[35m[\u001b[m'\u001b[31msize\u001b[m' \u001b[38;5;130m=\u003e\u001b[m \u001b[36mstrlen\u001b[m\u001b[35m(\u001b[m\u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m, '\u001b[31mpath\u001b[m' \u001b[38;5;130m=\u003e\u001b[m \u001b[38;5;130m$\u001b[m\u001b[36mpath\u001b[m\u001b[35m]\u001b[m\u001b[21;8H \u001b[35m)\u001b[m;\u001b[23;8H \u001b[36mfil"
+    ],
+    [
+      0.000033,
+      "e_put_contents\u001b[m\u001b[35m(\u001b[m\u001b[38;5;130m$\u001b[m\u001b[36mpath\u001b[m, \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m;\r\n    \u001b[35m}\u001b[m\u001b[26;4H \u001b[32mprivate\u001b[m \u001b[38;5;130m$\u001b[m\u001b[36mlogger\u001b[m;\r\n\u001b[35m}\u001b[m\r\n\u001b[94m~                                                                                                                       \u001b[29;1H~                                                                                                                       \u001b[1;1H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      1.436006,
+      "\u0007"
+    ],
+    [
+      0.248018,
+      "\u0007\u001b[?25l\u001b[m\u001b[30;1H\u001b[K\u001b[30;1H:"
+    ],
+    [
+      0.000032,
+      "\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.159990,
+      "q"
+    ],
+    [
+      0.184154,
+      "\r"
+    ],
+    [
+      0.001238,
+      "\u001b[?25l"
+    ],
+    [
+      0.000005,
+      "\u001b[30;1H\u001b[K\u001b[30;1H\u001b[?1l\u001b\u003e\u001b[?12l\u001b[?25h\u001b[?1049l"
+    ],
+    [
+      0.001290,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                       \r \r"
+    ],
+    [
+      0.000144,
+      "\u001b]2;erin@Erins-MacBook-Pro: ~/git/hub/eloquent/phony-videos/asciinema\u0007\u001b]1;..eos/asciinema\u0007"
+    ],
+    [
+      0.027644,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[32m$\u001b[00m \u001b[K"
+    ],
+    [
+      0.000008,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000047,
+      "\u001b[?2004h"
+    ],
+    [
+      0.912141,
+      "\u001b[4mv\u001b[24m\u001b[90mi FileWriter.php\u001b[39m\u001b[16D"
+    ],
+    [
+      0.160316,
+      "\u0008\u001b[24m\u001b[32mv\u001b[32mi\u001b[39m"
+    ],
+    [
+      0.222491,
+      "\u001b[39m "
+    ],
+    [
+      0.360266,
+      "\u001b[39m\u001b[4mF\u001b[24m"
+    ],
+    [
+      0.264028,
+      "\u0008\u001b[4mF\u001b[39m\u001b[4mi\u001b[24m"
+    ],
+    [
+      0.057258,
+      "\u0008\u001b[4mi\u001b[39m\u001b[4ml\u001b[24m"
+    ],
+    [
+      0.119900,
+      "\u0008\u001b[4ml\u001b[39m\u001b[4me\u001b[39m\u001b[4mW\u001b[39m\u001b[4mr\u001b[39m\u001b[4mi\u001b[39m\u001b[4mt\u001b[39m\u001b[4me\u001b[39m\u001b[4mr\u001b[39m\u001b[4m.\u001b[39m\u001b[4mp\u001b[39m\u001b[4mh\u001b[39m\u001b[4mp\u001b[24m\u0008\u0008\u0008\u0008"
+    ],
+    [
+      0.729673,
+      "\u001b[10D\u001b[24mF\u001b[24mi\u001b[24ml\u001b[24me\u001b[24mW\u001b[24mr\u001b[24mi\u001b[24mt\u001b[24me\u001b[24mr\u001b[24m.\u001b[24m.\u001b[24mp\u001b[24mhp\u0008\u0008\u0008\u0008"
+    ],
+    [
+      0.089629,
+      "\u001b[11D\u001b[4mF\u001b[4mi\u001b[4ml\u001b[4me\u001b[4mW\u001b[4mr\u001b[4mi\u001b[4mt\u001b[4me\u001b[4mr\u001b[4m.\u001b[4ms\u001b[4mp\u001b[4me\u001b[4mc\u001b[4m.php\u001b[24m\u001b[1m \u001b[0m"
+    ],
+    [
+      0.552131,
+      "\u0008\u001b[0m \u0008"
+    ],
+    [
+      0.000005,
+      "\u001b[?1l\u001b\u003e"
+    ],
+    [
+      0.000054,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000486,
+      "\u001b]2;vi FileWriter.spec.php\u0007\u001b]1;vi\u0007"
+    ],
+    [
+      0.017495,
+      "\u001b[?1049h\u001b[?1h\u001b="
+    ],
+    [
+      0.002010,
+      "\u001b[1;30r\u001b[?12;25h\u001b[?12l\u001b[?25h\u001b[27m\u001b[m\u001b[H\u001b[2J\u001b[?25l\u001b[30;1H\"FileWriter.spec.php\""
+    ],
+    [
+      0.000064,
+      " 28L, 744C"
+    ],
+    [
+      0.010272,
+      "\u001b[\u003ec"
+    ],
+    [
+      0.005364,
+      "\u001b[1;1H\u001b[35m\u003c?php\u001b[m\r\n\r\nnamespace Filesystem;\r\n\r\nuse \u001b[35mfunction\u001b[m Eloquent\\Phony\\mock;\r\nuse \u001b[35mfunction\u001b[m Eloquent\\Phony\\restoreGlobalFunctions;\r\nuse \u001b[35mfunction\u001b[m Eloquent\\Phony\\stubGlobal;\r\nuse Psr\\\u001b[36mLog\u001b[m\\LoggerInterface;\r\n\r\ndescribe\u001b[35m(\u001b[m'\u001b[31mFileWriter\u001b[m', \u001b[35mfunction\u001b[m \u001b[35m()\u001b[m \u001b[35m{\u001b[m\r\n    beforeEach\u001b[35m(function\u001b[m \u001b[35m()\u001b[m \u001b[35m{\u001b[m\u001b[12;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mfilePutContents \u001b[38;5;130m=\u001b[m stubGlobal\u001b[35m(\u001b[m'\u001b[31mfile_put_contents\u001b[m', __NAMESPACE__\u001b[35m)\u001b[m;\u001b[13;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mlogger \u001b[38;5;130m=\u001b[m mock\u001b[35m(\u001b[mLoggerInterface\u001b[38;5;130m::\u001b[m\u001b[32mclass\u001b[m\u001b[35m)\u001b[m;\u001b[15;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mwriter \u001b[38;5;130m=\u001b[m \u001b[35mnew\u001b[m FileWriter\u001b[35m(\u001b[m\u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mlogger\u001b[32m-\u003e\u001b[mmock\u001b[35m())\u001b[m;\r\n    \u001b[35m})\u001b[m;\u001b[18;4H afterEach\u001b[35m(function\u001b[m \u001b[35m()\u001b[m \u001b[35m{\u001b[m\u001b[19;8H restoreGlobalFunctions\u001b[35m()\u001b[m;\r\n    \u001b[35m})\u001b[m;\u001b[22;4H it\u001b[35m(\u001b[m'\u001b[31mwrites files\u001b[m', \u001b[35mfunction\u001b[m \u001b[35m()\u001b[m \u001b"
+    ],
+    [
+      0.000029,
+      "[35m{\u001b[m\u001b[23;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mwriter\u001b[32m-\u003e\u001b[mwrite\u001b[35m(\u001b[m'\u001b[31m/path/to/file\u001b[m', '\u001b[31mPhony is amazing!\u001b[m'\u001b[35m)\u001b[m;\u001b[25;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mfilePutContents\u001b[26;12H \u001b[32m-\u003e\u001b[mcalledWith\u001b[35m(\u001b[m'\u001b[31m/path/to/file\u001b[m', '\u001b[31mPhony is amazing!\u001b[m'\u001b[35m)\u001b[m;\r\n    \u001b[35m})\u001b[m;\r\n\u001b[35m})\u001b[m;\r\n\u001b[94m~                                                                                                                       \u001b[1;1H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      2.337634,
+      "\u0007\u001b[?25l\u001b[m\u001b[30;1H\u001b[K\u001b[30;1H:"
+    ],
+    [
+      0.000006,
+      "\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.248192,
+      "q"
+    ],
+    [
+      0.415460,
+      "\r"
+    ],
+    [
+      0.001058,
+      "\u001b[?25l"
+    ],
+    [
+      0.000005,
+      "\u001b[30;1H\u001b[K\u001b[30;1H\u001b[?1l\u001b\u003e\u001b[?12l\u001b[?25h\u001b[?1049l"
+    ],
+    [
+      0.001240,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                       \r \r"
+    ],
+    [
+      0.000124,
+      "\u001b]2;erin@Erins-MacBook-Pro: ~/git/hub/eloquent/phony-videos/asciinema\u0007"
+    ],
+    [
+      0.000007,
+      "\u001b]1;..eos/asciinema\u0007"
+    ],
+    [
+      0.028974,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[32m$\u001b[00m \u001b[K"
+    ],
+    [
+      0.000005,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000057,
+      "\u001b[?2004h"
+    ],
+    [
+      0.769775,
+      "\u001b[32mp\u001b[39m\u001b[90meridot --bail\u001b[39m\u001b[13D"
+    ],
+    [
+      0.110838,
+      "\u0008\u001b[39m\u001b[4mp\u001b[39m\u001b[4me\u001b[24m"
+    ],
+    [
+      0.088229,
+      "\u0008\u0008\u001b[4mp\u001b[4me\u001b[39m\u001b[4mr\u001b[24m"
+    ],
+    [
+      0.167205,
+      "\u0008\u001b[4mr\u001b[39m\u001b[4mi\u001b[24m"
+    ],
+    [
+      0.239434,
+      "\u0008\u001b[4mi\u001b[39m\u001b[4md\u001b[24m"
+    ],
+    [
+      0.628746,
+      "\u0008\u0008\u0008\u0008\u0008\u001b[24m\u001b[32mp\u001b[24m\u001b[32me\u001b[24m\u001b[32mr\u001b[24m\u001b[32mi\u001b[24m\u001b[32md\u001b[32mo\u001b[32mt\u001b[39m\u001b[39m \u001b[39m-\u001b[39m-\u001b[39mb\u001b[39ma\u001b[39mi\u001b[39ml"
+    ],
+    [
+      0.320227,
+      "\u001b[?1l\u001b\u003e"
+    ],
+    [
+      0.000006,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000583,
+      "\u001b]2;peridot --bail\u0007\u001b]1;peridot\u0007"
+    ],
+    [
+      0.026683,
+      "\r\n"
+    ],
+    [
+      0.000005,
+      "  FileWriter\r\n"
+    ],
+    [
+      0.015023,
+      "    \u001b[31m1) writes files\u001b[39m\r\n"
+    ],
+    [
+      0.000006,
+      "\r\n\u001b[32m\r\n  0 passing\u001b[39m"
+    ],
+    [
+      0.000145,
+      "\u001b[90m (15 ms)\u001b[0m\r\n"
+    ],
+    [
+      0.000004,
+      "\u001b[31m  1 failing\u001b[39m\r\n"
+    ],
+    [
+      0.000002,
+      "\r\n"
+    ],
+    [
+      0.000038,
+      "  1) FileWriter writes files:\r\n"
+    ],
+    [
+      0.000007,
+      "\u001b[31m     \u001b[0mExpected \u001b[1mfile_put_contents[0]\u001b[0m call with arguments:\r\n         \u001b[32m✓\u001b[0m \"/path/to/file\" \u001b[32m\u001b[2m(1 match)\u001b[0m\r\n         \u001b[31m✗\u001b[0m \"Phony is amazing!\" \u001b[31m\u001b[2m(0 matches)\u001b[0m\r\n     Matched 0 of 1:\r\n     \u001b[31m✗\u001b[0m Call #0:\r\n         \u001b[32m✓\u001b[0m \"/path/to/file\"\r\n         \u001b[31m✗\u001b[0m \"Phony is \u001b[36m\u001b[2m[-\u001b[0m\u001b[36mamazing\u001b[2m-]\u001b[0m\u001b[33m\u001b[2m{+\u001b[0m\u001b[33mterrible\u001b[2m+}\u001b[0m!\"\u001b[39m\r\n"
+    ],
+    [
+      0.000098,
+      "\u001b[90m      #0 /Users/erin/git/hub/eloquent/phony-videos/asciinema/FileWriter.spec.php(26): Eloquent\\Phony\\Spy\\SpyVerifier-\u003ecalledWith('/path/to/file', 'Phony is amazin...')\r\n      #1 {main}\u001b[0m\r\n"
+    ],
+    [
+      0.005011,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                       \r \r"
+    ],
+    [
+      0.000088,
+      "\u001b]2;erin@Erins-MacBook-Pro: ~/git/hub/eloquent/phony-videos/asciinema\u0007"
+    ],
+    [
+      0.000010,
+      "\u001b]1;..eos/asciinema\u0007"
+    ],
+    [
+      0.027372,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[32m$\u001b[00m \u001b[K"
+    ],
+    [
+      0.000006,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000034,
+      "\u001b[?2004h"
+    ],
+    [
+      2.073571,
+      "\u001b[4mv\u001b[24m\u001b[90mi FileWriter.spec.php\u001b[39m\u001b[21D"
+    ],
+    [
+      0.118811,
+      "\u0008\u001b[24m\u001b[32mv\u001b[32mi\u001b[39m"
+    ],
+    [
+      0.150928,
+      "\u001b[39m "
+    ],
+    [
+      0.320608,
+      "\u001b[39m\u001b[4mF\u001b[24m"
+    ],
+    [
+      0.232051,
+      "\u0008\u001b[4mF\u001b[39m\u001b[4mi\u001b[24m"
+    ],
+    [
+      0.047229,
+      "\u0008\u001b[4mi\u001b[39m\u001b[4ml\u001b[24m"
+    ],
+    [
+      0.110081,
+      "\u0008\u001b[4ml\u001b[39m\u001b[4me\u001b[39m\u001b[4mW\u001b[39m\u001b[4mr\u001b[39m\u001b[4mi\u001b[39m\u001b[4mt\u001b[39m\u001b[4me\u001b[39m\u001b[4mr\u001b[39m\u001b[4m.\u001b[39m\u001b[4mp\u001b[39m\u001b[4mh\u001b[39m\u001b[4mp\u001b[24m\u001b[39m \u001b[39m \u001b[39m \u001b[39m \u001b[39m \u001b[9D"
+    ],
+    [
+      0.695106,
+      "\u001b[?1l\u001b\u003e"
+    ],
+    [
+      0.000005,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000547,
+      "\u001b]2;vi FileWriter.php\u0007\u001b]1;vi\u0007"
+    ],
+    [
+      0.018171,
+      "\u001b[?1049h\u001b[?1h\u001b="
+    ],
+    [
+      0.001871,
+      "\u001b[1;30r\u001b[?12;25h\u001b[?12l\u001b[?25h\u001b[27m\u001b[m\u001b[H\u001b[2J\u001b[?25l\u001b[30;1H\"FileWriter.php\""
+    ],
+    [
+      0.000070,
+      " 27L, 513C"
+    ],
+    [
+      0.009407,
+      "\u001b[\u003ec"
+    ],
+    [
+      0.003909,
+      "\u001b[1;1H\u001b[35m\u003c?php\u001b[m\r\n\r\nnamespace Filesystem;\r\n\r\nuse Psr\\\u001b[36mLog\u001b[m\\LoggerInterface;\r\n\r\n\u001b[32mclass\u001b[m FileWriter\r\n\u001b[35m{\u001b[m\r\n    \u001b[32mpublic\u001b[m \u001b[35mfunction\u001b[m \u001b[38;5;130m__construct\u001b[m\u001b[35m(\u001b[mLoggerInterface \u001b[38;5;130m$\u001b[m\u001b[36mlogger\u001b[m\u001b[35m)\u001b[m\r\n    \u001b[35m{\u001b[m\u001b[11;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mlogger \u001b[38;5;130m=\u001b[m \u001b[38;5;130m$\u001b[m\u001b[36mlogger\u001b[m;\r\n    \u001b[35m}\u001b[m\u001b[14;4H \u001b[32mpublic\u001b[m \u001b[35mfunction\u001b[m write\u001b[35m(\u001b[m\u001b[38;5;130m$\u001b[m\u001b[36mpath\u001b[m, \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m\r\n    \u001b[35m{\u001b[m\u001b[16;8H \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m \u001b[38;5;130m=\u001b[m \u001b[36mstr_replace\u001b[m\u001b[35m(\u001b[m'\u001b[31mamazing\u001b[m', '\u001b[31mterrible\u001b[m', \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m;\u001b[18;8H \u001b[38;5;130m$\u001b[m\u001b[36mthis\u001b[m\u001b[32m-\u003e\u001b[mlogger\u001b[32m-\u003e\u001b[m\u001b[36minfo\u001b[m\u001b[35m(\u001b[m\u001b[19;12H '\u001b[31mAttempting to write {size} bytes to {path}\u001b[m',\u001b[20;12H \u001b[35m[\u001b[m'\u001b[31msize\u001b[m' \u001b[38;5;130m=\u003e\u001b[m \u001b[36mstrlen\u001b[m\u001b[35m(\u001b[m\u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m, '\u001b[31mpath\u001b[m' \u001b[38;5;130m=\u003e\u001b[m \u001b[38;5;130m$\u001b[m\u001b[36mpath\u001b[m\u001b[35m]\u001b[m\u001b[21;8H \u001b[35m)\u001b[m;\u001b[23;8H \u001b[36mfil"
+    ],
+    [
+      0.000049,
+      "e_put_contents\u001b[m\u001b[35m(\u001b[m\u001b[38;5;130m$\u001b[m\u001b[36mpath\u001b[m, \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m;\r\n    \u001b[35m}\u001b[m\u001b[26;4H \u001b[32mprivate\u001b[m \u001b[38;5;130m$\u001b[m\u001b[36mlogger\u001b[m;\r\n\u001b[35m}\u001b[m\r\n\u001b[94m~                                                                                                                       \u001b[29;1H~                                                                                                                       \u001b[1;1H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.834563,
+      "\r\n"
+    ],
+    [
+      0.500883,
+      "\r\n"
+    ],
+    [
+      0.083643,
+      "\r\n"
+    ],
+    [
+      0.083540,
+      "\r\n"
+    ],
+    [
+      0.084536,
+      "\r\n"
+    ],
+    [
+      0.084626,
+      "\r\n"
+    ],
+    [
+      0.088348,
+      "\u001b[?25l\u001b[m\r\n\u001b[35m\u001b[106m{\u001b[27;1H}\u001b[8;1H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.085192,
+      "\u001b[?25l\u001b[m\u001b[35m{\u001b[27;1H}\u001b[9;1H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.077684,
+      "\r\n"
+    ],
+    [
+      0.084745,
+      "\r\n"
+    ],
+    [
+      0.084556,
+      "\r\n"
+    ],
+    [
+      0.084399,
+      "\r\n"
+    ],
+    [
+      0.084565,
+      "\r\n"
+    ],
+    [
+      0.084072,
+      "\r\n"
+    ],
+    [
+      0.084939,
+      "\r\n"
+    ],
+    [
+      0.091998,
+      "\u001b[m "
+    ],
+    [
+      0.501093,
+      " "
+    ],
+    [
+      0.084809,
+      " "
+    ],
+    [
+      0.084382,
+      " "
+    ],
+    [
+      0.084499,
+      " "
+    ],
+    [
+      0.084564,
+      " "
+    ],
+    [
+      0.084090,
+      " "
+    ],
+    [
+      0.276584,
+      " "
+    ],
+    [
+      0.648160,
+      "\u001b[?25l\u001b[30;1H\u001b[1m-- INSERT --\u001b[m\u001b[30;13H\u001b[K"
+    ],
+    [
+      0.000009,
+      "\u001b[16;9H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.481079,
+      "\u001b[?25l\u0008 \u001b[38;5;130m/$\u001b[m\u001b[36mdata\u001b[m \u001b[38;5;130m=\u001b[m \u001b[36mstr_replace\u001b[m\u001b[35m(\u001b[m'\u001b[31mamazing\u001b[m', '\u001b[31mterrible\u001b[m', \u001b[38;5;130m$\u001b[m\u001b[36mdata\u001b[m\u001b[35m)\u001b[m;\u001b[16;10H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.151499,
+      "\u001b[?25l\u0008\u001b[34m//$data = str_replace('amazing', 'terrible', $data);\u001b[16;11H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.152166,
+      "\u001b[?25l\u0008/ $data = str_replace('amazing', 'terrible', $data);\u001b[16;12H\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.796140,
+      "\u001b[m\u001b[30;1H\u001b[K\u001b[16;11H"
+    ],
+    [
+      0.219039,
+      "\u001b[?25l"
+    ],
+    [
+      0.000173,
+      "\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.367812,
+      "\u0007\u001b[?25l\u001b[30;1H:"
+    ],
+    [
+      0.000026,
+      "\u001b[?12l\u001b[?25h"
+    ],
+    [
+      0.168221,
+      "w"
+    ],
+    [
+      0.071697,
+      "q"
+    ],
+    [
+      0.127711,
+      "\r"
+    ],
+    [
+      0.000069,
+      "\u001b[?25l"
+    ],
+    [
+      0.000056,
+      "\"FileWriter.php\""
+    ],
+    [
+      0.001071,
+      " 27L, 516C written"
+    ],
+    [
+      0.000980,
+      "\r\r\r\n\u001b[?1l\u001b\u003e\u001b[?12l\u001b[?25h\u001b[?1049l"
+    ],
+    [
+      0.000882,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                       \r \r"
+    ],
+    [
+      0.000129,
+      "\u001b]2;erin@Erins-MacBook-Pro: ~/git/hub/eloquent/phony-videos/asciinema\u0007"
+    ],
+    [
+      0.000005,
+      "\u001b]1;..eos/asciinema\u0007"
+    ],
+    [
+      0.027689,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[32m$\u001b[00m \u001b[K"
+    ],
+    [
+      0.000005,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000032,
+      "\u001b[?2004h"
+    ],
+    [
+      0.688038,
+      "\u001b[32mvi\u001b[39m \u001b[4mFileWriter.php\u001b[24m"
+    ],
+    [
+      0.141025,
+      "\u001b[17D\u001b[32mp\u001b[32me\u001b[32mr\u001b[24m\u001b[32mi\u001b[24m\u001b[32md\u001b[24m\u001b[32mo\u001b[24m\u001b[32mt\u001b[39m\u001b[24m \u001b[24m-\u001b[24m-\u001b[24mb\u001b[24ma\u001b[24mi\u001b[24ml\u001b[24m \u001b[24m \u001b[24m \u0008\u0008\u0008"
+    ],
+    [
+      0.541991,
+      "\u001b[?1l\u001b\u003e"
+    ],
+    [
+      0.000004,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000414,
+      "\u001b]2;peridot --bail\u0007\u001b]1;peridot\u0007"
+    ],
+    [
+      0.028202,
+      "\r\n"
+    ],
+    [
+      0.000007,
+      "  FileWriter\r\n"
+    ],
+    [
+      0.015620,
+      "    \u001b[32m✓\u001b[39m \u001b[90mwrites files\u001b[0m\r\n"
+    ],
+    [
+      0.000006,
+      "\r\n\u001b[32m\r\n  1 passing\u001b[39m"
+    ],
+    [
+      0.000144,
+      "\u001b[90m (16 ms)\u001b[0m\r\n"
+    ],
+    [
+      0.000005,
+      "\r\n"
+    ],
+    [
+      0.004217,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                       \r \r"
+    ],
+    [
+      0.000102,
+      "\u001b]2;erin@Erins-MacBook-Pro: ~/git/hub/eloquent/phony-videos/asciinema\u0007"
+    ],
+    [
+      0.000025,
+      "\u001b]1;..eos/asciinema\u0007"
+    ],
+    [
+      0.028981,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[32m$\u001b[00m \u001b[K"
+    ],
+    [
+      0.000007,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000050,
+      "\u001b[?2004h"
+    ],
+    [
+      2.896473,
+      "\u001b[?2004l"
+    ],
+    [
+      0.000006,
+      "\r\r\n"
+    ]
+  ]
+}

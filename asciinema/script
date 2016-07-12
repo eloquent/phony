@@ -1,0 +1,5 @@
+vi FileWriter.php
+vi FileWriter.spec.php
+peridot --bail
+vi FileWriter.php, comment out str_replace
+peridot --bail

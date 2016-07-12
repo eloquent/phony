@@ -1,0 +1,4 @@
+export PROMPT="%{$fg[green]%}\$%{$reset_color%} "
+export RPROMPT=""
+
+clear

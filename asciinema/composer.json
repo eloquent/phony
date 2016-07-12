@@ -1,0 +1,12 @@
+{
+    "autoload": {
+        "classmap": ["."]
+    },
+    "require": {
+        "psr/log": "^1"
+    },
+    "require-dev": {
+        "eloquent/phony": "^0.11",
+        "peridot-php/peridot": "^1"
+    }
+}
