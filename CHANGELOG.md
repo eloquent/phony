@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.12.0 (2016-07-13)
 
 - **[BC BREAK]** Replaced the term "traversable" with "iterable". Any function
   or method with "traversable" in the name has also been renamed accordingly
