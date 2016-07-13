@@ -31,9 +31,10 @@
 
 ## What is *Phony*?
 
-*Phony* is a PHP library for creating [test doubles]. *Phony* has first-class
-support for many modern PHP features such as [traits] and [generators], and
-supports PHP 7 and [HHVM].
+*Phony* is a PHP library for creating [test doubles]. *Phony* supports a wide
+range of PHP versions, from 5.3 through to 7, as well as [HHVM]. In addition,
+*Phony* has excellent support for modern language features, such as
+[generators].
 
 [generators]: http://php.net/language.generators.overview
 [test doubles]: https://en.wikipedia.org/wiki/Test_double
