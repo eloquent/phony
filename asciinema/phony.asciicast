@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "width": 46,
+    "width": 120,
     "height": 25,
     "duration": 112.95876,
     "command": "/usr/local/bin/zsh",
