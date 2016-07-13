@@ -1,3 +1,4 @@
+version: "{branch}-{build}"
 build: false
 clone_folder: C:\projects\phony
 
