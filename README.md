@@ -18,8 +18,8 @@
 
 [![Example verification output][verification-output-image]][verification output]
 
-[verification output]: https://asciinema.org/a/79339
-[verification-output-image]: https://asciinema.org/a/79339.png "Example verification output"
+[verification output]: https://asciinema.org/a/79430
+[verification-output-image]: https://asciinema.org/a/79430.png "Example verification output"
 
 ## Installation and documentation
 
