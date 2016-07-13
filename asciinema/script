@@ -1,5 +1,26 @@
-vi FileWriter.php
-vi FileWriter.spec.php
-peridot --bail
-vi FileWriter.php, comment out str_replace
-peridot --bail
+vi example.php:
+    <?php
+
+    use function Eloquent\Phony\spy;
+
+    require 'vendor/autoload.php';
+
+    function callIt($callback)
+    {
+        $callback('Phony is awful!');
+    }
+
+    $spy = spy();
+    callIt($spy);
+
+    try {
+        $spy->calledWith('Phony is awesome!');
+        echo "Success.\n";
+    } catch (Exception $e) {
+        echo $e->getMessage() . "\n";
+    }
+:wq
+php example.php
+vi example.php:
+    $callback('Phony is awesome!');
+php example.php
