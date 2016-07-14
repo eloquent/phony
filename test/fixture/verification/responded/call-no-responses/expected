@@ -1,3 +1,3 @@
 %RESET%Expected %BOLD%{closure}[label]%RESET% call #0 to respond.
-%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:1}):
+%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:2}):
     %RED%✗%RESET% Never responded

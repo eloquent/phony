@@ -12,9 +12,17 @@
 namespace Eloquent\Phony\Exporter;
 
 use Closure;
+use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Handle\StaticHandle;
+use Eloquent\Phony\Mock\Handle\Verification\VerificationHandle;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Spy\SpyVerifier;
+use Eloquent\Phony\Stub\Stub;
+use Eloquent\Phony\Stub\StubVerifier;
 use Exception;
+use ReflectionFunction;
 use SplObjectStorage;
 use Throwable;
 
@@ -220,18 +228,135 @@ class InlineExporter implements Exporter
                     }
 
                     if ($value instanceof Closure) {
+                        $isClosure = true;
+                        $isException = false;
+                        $isHandle = false;
+                        $isSpy = false;
+                        $isStub = false;
+                    } elseif (
+                        $value instanceof Throwable ||
+                        $value instanceof Exception
+                    ) {
+                        $isClosure = false;
+                        $isException = true;
+                        $isHandle = false;
+                        $isSpy = false;
+                        $isStub = false;
+                    } elseif ($value instanceof Handle) {
+                        $isClosure = false;
+                        $isException = false;
+                        $isHandle = true;
+                        $isSpy = false;
+                        $isStub = false;
+
+                        $isVerificationHandle =
+                            $value instanceof VerificationHandle;
+                        $isStaticHandle = $value instanceof StaticHandle;
+                    } elseif ($value instanceof Stub) {
+                        $isClosure = false;
+                        $isException = false;
+                        $isHandle = false;
+                        $isSpy = false;
+                        $isStub = true;
+
+                        $isStubVerifier = $value instanceof StubVerifier;
+                    } elseif ($value instanceof Spy) {
+                        $isClosure = false;
+                        $isException = false;
+                        $isHandle = false;
+                        $isSpy = true;
+                        $isStub = false;
+
+                        $isSpyVerifier = $value instanceof SpyVerifier;
+                    } else {
+                        $isClosure = false;
+                        $isException = false;
+                        $isHandle = false;
+                        $isSpy = false;
+                        $isStub = false;
+                    }
+
+                    $isMock = $value instanceof Mock;
+
+                    if ($isClosure) {
                         $result->type = 'Closure';
+                    } elseif ($isHandle) {
+                        if ($isVerificationHandle) {
+                            if ($isStaticHandle) {
+                                $result->type = 'static-verification-handle';
+                            } else {
+                                $result->type = 'verification-handle';
+                            }
+                        } elseif ($isStaticHandle) {
+                            $result->type = 'static-stubbing-handle';
+                        } else {
+                            $result->type = 'stubbing-handle';
+                        }
+                    } elseif ($isStub) {
+                        if ($isStubVerifier) {
+                            $result->type = 'stub-verifier';
+                        } else {
+                            $result->type = 'stub';
+                        }
+                    } elseif ($isSpy) {
+                        if ($isSpyVerifier) {
+                            $result->type = 'spy-verifier';
+                        } else {
+                            $result->type = 'spy';
+                        }
                     } else {
                         $result->type = get_class($value);
                     }
 
-                    $isException = $value instanceof Throwable ||
-                        $value instanceof Exception;
                     $phpValues = (array) $value;
 
-                    unset($phpValues["\0gcdata"]);
+                    if ($isHandle) {
+                        $class = $phpValues["\0*\0class"]->getName();
 
-                    if ($value instanceof Mock) {
+                        if ($isStaticHandle) {
+                            $phpValues = array('class' => $class);
+                        } else {
+                            $mock = $phpValues["\0*\0mock"];
+                            $phpValues =
+                                array('class' => $class, 'mock' => $mock);
+                        }
+                    } elseif ($isSpy) {
+                        if ($isSpyVerifier) {
+                            $phpValues = (array) $phpValues[
+                                "\0Eloquent\Phony\Spy\SpyVerifier\0spy"
+                            ];
+                        }
+
+                        if ($phpValues["\0*\0isAnonymous"]) {
+                            $callback = null;
+                        } else {
+                            $callback = $phpValues["\0*\0callback"];
+                        }
+
+                        $label = $phpValues["\0*\0label"];
+                        $phpValues =
+                            array('callback' => $callback, 'label' => $label);
+                    } elseif ($isStub) {
+                        if ($isStubVerifier) {
+                            $phpValues = (array) $phpValues[
+                                "\0Eloquent\Phony\Stub\StubVerifier\0stub"
+                            ];
+                        }
+
+                        if ($phpValues["\0*\0isAnonymous"]) {
+                            $callback = null;
+                        } else {
+                            $callback = $phpValues["\0*\0callback"];
+                        }
+
+                        $label = $phpValues["\0*\0label"];
+                        $phpValues =
+                            array('callback' => $callback, 'label' => $label);
+                    } else {
+                        unset($phpValues["\0gcdata"]);
+                    }
+
+                    if ($isMock) {
                         $handleProperty = "\0" . $result->type . "\0_handle";
 
                         if ($phpValues[$handleProperty]) {
@@ -249,6 +374,12 @@ class InlineExporter implements Exporter
                             $phpValues["\0Exception\0trace"],
                             $phpValues["\0Exception\0string"],
                             $phpValues['xdebug_message']
+                        );
+                    } elseif ($isClosure) {
+                        $reflector = new ReflectionFunction($value);
+                        $phpValues = array(
+                            'file' => basename($reflector->getFilename()),
+                            'line' => $reflector->getStartLine(),
                         );
                     }
 

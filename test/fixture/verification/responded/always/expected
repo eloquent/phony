@@ -1,10 +1,10 @@
 %RESET%Expected all %BOLD%{closure}[label]%RESET% calls to respond.
 Matched 2 of 4:
-%GREEN%✓%RESET% Call #0 - {closure}[label](Closure#0{:1}):
+%GREEN%✓%RESET% Call #0 - {closure}[label](Closure#0{:2}):
     %GREEN%✓%RESET% Returned null
-%GREEN%✓%RESET% Call #1 - {closure}[label](Closure#0{:1}, 1):
+%GREEN%✓%RESET% Call #1 - {closure}[label](Closure#0{:2}, 1):
     %GREEN%✓%RESET% Returned null
-%RED%✗%RESET% Call #2 - {closure}[label](Closure#1{:1}):
+%RED%✗%RESET% Call #2 - {closure}[label](Closure#1{:2}):
     %RED%✗%RESET% Never responded
-%RED%✗%RESET% Call #3 - {closure}[label](Closure#1{:1}, 1):
+%RED%✗%RESET% Call #3 - {closure}[label](Closure#1{:2}, 1):
     %RED%✗%RESET% Never responded

@@ -1,7 +1,7 @@
 %RESET%Expected %BOLD%{closure}[label]%RESET% to behave like:
     %RED%✗%RESET% Returned Generator
 Matched 0 of 2:
-%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:1}):
+%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:2}):
     %RED%✗%RESET% Never responded
-%RED%✗%RESET% Call #1 - {closure}[label](Closure#0{:1}, 1):
+%RED%✗%RESET% Call #1 - {closure}[label](Closure#0{:2}, 1):
     %RED%✗%RESET% Never responded

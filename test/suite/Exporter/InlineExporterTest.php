@@ -15,6 +15,10 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\SpyFactory;
+use Eloquent\Phony\Spy\SpyVerifierFactory;
+use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
 use PHPUnit_Framework_TestCase;
@@ -171,17 +175,87 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $this->subject->export($value));
     }
 
+    public function testExportClosure()
+    {
+        $value = function () {};
+        $line = __LINE__ - 1;
+
+        $this->assertSame(
+            'Closure#0{file: "' . basename(__FILE__) . '", line: ' . $line . '}',
+            $this->subject->export($value)
+        );
+    }
+
     public function testExportMocks()
     {
         $builder = MockBuilderFactory::instance()->create('Eloquent\Phony\Test\Properties\TestBaseClass')
             ->named('PhonyMockInlineExporterExportMocks');
         $mock = $builder->get();
-        Phony::on($mock)->setLabel('label');
+        $stubbingHandle = Phony::on($mock)->setLabel('label');
+        $verificationHandle = Phony::verify($mock)->setLabel('label');
+        $staticStubbingHandle = Phony::onStatic($mock);
+        $staticVerificationHandle = Phony::verifyStatic($mock);
 
         $this->assertSame(
             'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
                 'baseProtected: "<base-protected>", phony.label: "label"}',
             $this->subject->export($mock)
+        );
+        $this->assertSame(
+            'stubbing-handle#1{class: "PhonyMockInlineExporterExportMocks", mock: ' .
+                'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
+                'baseProtected: "<base-protected>", phony.label: "label"}}',
+            $this->subject->export($stubbingHandle)
+        );
+        $this->assertSame(
+            'verification-handle#2{class: "PhonyMockInlineExporterExportMocks", mock: ' .
+                'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
+                'baseProtected: "<base-protected>", phony.label: "label"}}',
+            $this->subject->export($verificationHandle)
+        );
+        $this->assertSame(
+            'static-stubbing-handle#3{class: "PhonyMockInlineExporterExportMocks"}',
+            $this->subject->export($staticStubbingHandle)
+        );
+        $this->assertSame(
+            'static-verification-handle#4{class: "PhonyMockInlineExporterExportMocks"}',
+            $this->subject->export($staticVerificationHandle)
+        );
+    }
+
+    public function testExportSpies()
+    {
+        $spyFactory = SpyFactory::instance();
+        $verifierFactory = SpyVerifierFactory::instance();
+        $spy = $spyFactory->create('implode')->setLabel('label');
+        $anonymous = $spyFactory->create()->setLabel('anonymous');
+        $verifier = $verifierFactory->createFromCallback('implode')->setLabel('verifier');
+        $anonymousVerifier = $verifierFactory->createFromCallback()->setLabel('anonymous-verifier');
+
+        $this->assertSame('spy#0{callback: "implode", label: "label"}', $this->subject->export($spy));
+        $this->assertSame('spy#1{callback: null, label: "anonymous"}', $this->subject->export($anonymous));
+        $this->assertSame('spy-verifier#2{callback: "implode", label: "verifier"}', $this->subject->export($verifier));
+        $this->assertSame(
+            'spy-verifier#3{callback: null, label: "anonymous-verifier"}',
+            $this->subject->export($anonymousVerifier)
+        );
+    }
+
+    public function testExportStubs()
+    {
+        $stubFactory = StubFactory::instance();
+        $verifierFactory = StubVerifierFactory::instance();
+        $stub = $stubFactory->create('implode')->setLabel('label');
+        $anonymous = $stubFactory->create()->setLabel('anonymous');
+        $verifier = $verifierFactory->createFromCallback('implode')->setLabel('verifier');
+        $anonymousVerifier = $verifierFactory->createFromCallback()->setLabel('anonymous-verifier');
+
+        $this->assertSame('stub#0{callback: "implode", label: "label"}', $this->subject->export($stub));
+        $this->assertSame('stub#1{callback: null, label: "anonymous"}', $this->subject->export($anonymous));
+        $this->assertSame('stub-verifier#2{callback: "implode", label: "verifier"}', $this->subject->export($verifier));
+        $this->assertSame(
+            'stub-verifier#3{callback: null, label: "anonymous-verifier"}',
+            $this->subject->export($anonymousVerifier)
         );
     }
 

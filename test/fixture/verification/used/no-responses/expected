@@ -2,13 +2,13 @@
     %GREEN%✓%RESET% Returned <iterable>, then: %GREEN%%FAINT%(2 matches)%RESET%
         %RED%✗%RESET% Started iterating
 Matched 0 of 2:
-%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:1}):
+%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:2}):
     %RED%✗%RESET% Returned #0[], then:
         %RED%✗%RESET% Never started iterating
-%RED%✗%RESET% Call #1 - {closure}[label](Closure#0{:1}, 1):
+%RED%✗%RESET% Call #1 - {closure}[label](Closure#0{:2}, 1):
     %RED%✗%RESET% Returned #0[], then:
         %RED%✗%RESET% Never started iterating
-%FAINT%- Call #2 - {closure}[label](Closure#1{:1}):%RESET%
+%FAINT%- Call #2 - {closure}[label](Closure#1{:2}):%RESET%
 %FAINT%    - Never responded%RESET%
-%FAINT%- Call #3 - {closure}[label](Closure#1{:1}, 1):%RESET%
+%FAINT%- Call #3 - {closure}[label](Closure#1{:2}, 1):%RESET%
 %FAINT%    - Never responded%RESET%

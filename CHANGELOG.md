@@ -1,5 +1,12 @@
 # Phony changelog
 
+## Next release
+
+- **[IMPROVED]** Improved exporting of mock handles, stubs, spies, and closures
+  ([#177]).
+
+[#177]: https://github.com/eloquent/phony/issues/177
+
 ## 0.12.0 (2016-07-13)
 
 - **[BC BREAK]** Replaced the term "traversable" with "iterable". Any function

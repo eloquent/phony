@@ -6,7 +6,7 @@ Matched 0 of 1:
     %RED%✗%RESET% Returned Generator, then:
         - Started iterating
         - Returned null
-%FAINT%- Call #1 - {stub}[label]("bonobo", Closure#0{:1}):%RESET%
+%FAINT%- Call #1 - {stub}[label]("bonobo", Closure#0{:2}):%RESET%
 %FAINT%    - Never responded%RESET%
-%FAINT%- Call #2 - {stub}[label]("bonobo", Closure#0{:1}, 1):%RESET%
+%FAINT%- Call #2 - {stub}[label]("bonobo", Closure#0{:2}, 1):%RESET%
 %FAINT%    - Never responded%RESET%
