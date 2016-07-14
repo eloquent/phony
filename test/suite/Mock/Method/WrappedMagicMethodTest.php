@@ -29,7 +29,7 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
-        $this->handle = $this->handleFactory->createStubbing($this->mock);
+        $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, $this->isUncallable, $this->handle);
     }
 
@@ -48,7 +48,7 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithStatic()
     {
         $this->callMagicMethod = new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB');
-        $this->handle = $this->handleFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, $this->isUncallable, $this->handle);
 
         $this->assertSame($this->callMagicMethod, $this->subject->callMagicMethod());
@@ -81,7 +81,7 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
         $callMagicMethod = $class->getMethod('_callMagic');
         $callMagicMethod->setAccessible(true);
         $mock = $mockBuilder->get();
-        $handle = $this->handleFactory->createStubbing($mock);
+        $handle = $this->handleFactory->instanceHandle($mock);
         $subject = new WrappedMagicMethod($this->name, $callMagicMethod, false, $handle);
 
         $this->assertSame('magic nonexistent ab', $subject('a', 'b'));
@@ -96,7 +96,7 @@ class WrappedMagicMethodTest extends PHPUnit_Framework_TestCase
         $class = $mockBuilder->build();
         $callMagicMethod = $class->getMethod('_callMagicStatic');
         $callMagicMethod->setAccessible(true);
-        $handle = $this->handleFactory->createStubbingStatic($mockBuilder->build());
+        $handle = $this->handleFactory->staticHandle($mockBuilder->build());
         $subject = new WrappedMagicMethod($this->name, $callMagicMethod, false, $handle);
 
         $this->assertSame('static magic nonexistent ab', $subject('a', 'b'));

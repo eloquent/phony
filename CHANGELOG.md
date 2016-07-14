@@ -2,10 +2,15 @@
 
 ## Next release
 
+- **[BC BREAK]** Removed `verify()` and `verifyStatic()` ([#179]).
+- **[BC BREAK]** Removed magic calls from mock handles. All stubbing must now
+  use `with()`, and all call argument verification must now use `calledWith()`
+  ([#179]).
 - **[IMPROVED]** Improved exporting of mock handles, stubs, spies, and closures
   ([#177]).
 
 [#177]: https://github.com/eloquent/phony/issues/177
+[#179]: https://github.com/eloquent/phony/issues/179
 
 ## 0.12.0 (2016-07-13)
 

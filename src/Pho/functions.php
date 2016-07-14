@@ -19,10 +19,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
-use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandle;
-use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
-use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle;
-use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\StubVerifier;
@@ -47,7 +44,7 @@ function mockBuilder($types = array())
 }
 
 /**
- * Create a new full mock, and return a stubbing handle.
+ * Create a new full mock, and return a handle.
  *
  * Each value in `$types` can be either a class name, or an ad hoc mock
  * definition. If only a single type is being mocked, the class name or
@@ -55,19 +52,19 @@ function mockBuilder($types = array())
  *
  * @param mixed $types The types to mock.
  *
- * @return InstanceStubbingHandle A stubbing handle around the new mock.
+ * @return InstanceHandle A handle around the new mock.
  */
 function mock($types = array())
 {
     $driver = PhoFacadeDriver::instance();
 
-    return $driver->handleFactory->createStubbing(
+    return $driver->handleFactory->instanceHandle(
         $driver->mockBuilderFactory->create($types)->full()
     );
 }
 
 /**
- * Create a new partial mock, and return a stubbing handle.
+ * Create a new partial mock, and return a handle.
  *
  * Each value in `$types` can be either a class name, or an ad hoc mock
  * definition. If only a single type is being mocked, the class name or
@@ -80,70 +77,41 @@ function mock($types = array())
  * @param mixed                $types     The types to mock.
  * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
  *
- * @return InstanceStubbingHandle A stubbing handle around the new mock.
+ * @return InstanceHandle A handle around the new mock.
  */
 function partialMock($types = array(), $arguments = array())
 {
     $driver = PhoFacadeDriver::instance();
 
-    return $driver->handleFactory->createStubbing(
+    return $driver->handleFactory->instanceHandle(
         $driver->mockBuilderFactory->create($types)->partialWith($arguments)
     );
 }
 
 /**
- * Create a new stubbing handle.
+ * Create a new handle.
  *
  * @param Mock|InstanceHandle $mock The mock.
  *
- * @return InstanceStubbingHandle The newly created handle.
- * @throws MockException          If the supplied mock is invalid.
+ * @return InstanceHandle The newly created handle.
+ * @throws MockException  If the supplied mock is invalid.
  */
 function on($mock)
 {
-    return PhoFacadeDriver::instance()->handleFactory->createStubbing($mock);
+    return PhoFacadeDriver::instance()->handleFactory->instanceHandle($mock);
 }
 
 /**
- * Create a new verification handle.
- *
- * @param Mock|Handle|ReflectionClass|string $class The class.
- *
- * @return InstanceVerificationHandle The newly created handle.
- * @throws MockException              If the supplied mock is invalid.
- */
-function verify($mock)
-{
-    return PhoFacadeDriver::instance()->handleFactory
-        ->createVerification($mock);
-}
-
-/**
- * Create a new static stubbing handle.
+ * Create a new static handle.
  *
  * @param Handle|ReflectionClass|object|string $class The class.
  *
- * @return StaticStubbingHandle The newly created handle.
- * @throws MockException        If the supplied class name is not a mock class.
+ * @return StaticHandle  The newly created handle.
+ * @throws MockException If the supplied class name is not a mock class.
  */
 function onStatic($class)
 {
-    return PhoFacadeDriver::instance()->handleFactory
-        ->createStubbingStatic($class);
-}
-
-/**
- * Create a new static verification handle.
- *
- * @param Mock|Handle|ReflectionClass|string $class The class.
- *
- * @return StaticVerificationHandle The newly created handle.
- * @throws MockException            If the supplied class name is not a mock class.
- */
-function verifyStatic($class)
-{
-    return PhoFacadeDriver::instance()->handleFactory
-        ->createVerificationStatic($class);
+    return PhoFacadeDriver::instance()->handleFactory->staticHandle($class);
 }
 
 /**

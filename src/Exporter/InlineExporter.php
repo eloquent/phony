@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Exporter;
 use Closure;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
-use Eloquent\Phony\Mock\Handle\Verification\VerificationHandle;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\Spy;
@@ -249,8 +248,6 @@ class InlineExporter implements Exporter
                         $isSpy = false;
                         $isStub = false;
 
-                        $isVerificationHandle =
-                            $value instanceof VerificationHandle;
                         $isStaticHandle = $value instanceof StaticHandle;
                     } elseif ($value instanceof Stub) {
                         $isClosure = false;
@@ -281,16 +278,10 @@ class InlineExporter implements Exporter
                     if ($isClosure) {
                         $result->type = 'Closure';
                     } elseif ($isHandle) {
-                        if ($isVerificationHandle) {
-                            if ($isStaticHandle) {
-                                $result->type = 'static-verification-handle';
-                            } else {
-                                $result->type = 'verification-handle';
-                            }
-                        } elseif ($isStaticHandle) {
-                            $result->type = 'static-stubbing-handle';
+                        if ($isStaticHandle) {
+                            $result->type = 'static-handle';
                         } else {
-                            $result->type = 'stubbing-handle';
+                            $result->type = 'handle';
                         }
                     } elseif ($isStub) {
                         if ($isStubVerifier) {

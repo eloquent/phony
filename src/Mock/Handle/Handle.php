@@ -133,13 +133,6 @@ interface Handle
     public function startRecording();
 
     /**
-     * Get the stubs.
-     *
-     * @return stdClass The stubs.
-     */
-    public function stubs();
-
-    /**
      * Get a spy.
      *
      * @param string $name The method name.

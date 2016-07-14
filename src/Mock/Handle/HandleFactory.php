@@ -19,10 +19,6 @@ use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
 use Eloquent\Phony\Mock\Exception\InvalidMockException;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
-use Eloquent\Phony\Mock\Handle\Stubbing\InstanceStubbingHandle;
-use Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle;
-use Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle;
-use Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
@@ -78,22 +74,18 @@ class HandleFactory
     }
 
     /**
-     * Create a new stubbing handle.
+     * Create a new handle.
      *
      * @param Mock|InstanceHandle $mock  The mock.
      * @param string|null         $label The label.
      *
-     * @return InstanceStubbingHandle The newly created handle.
-     * @throws MockException          If the supplied mock is invalid.
+     * @return InstanceHandle The newly created handle.
+     * @throws MockException  If the supplied mock is invalid.
      */
-    public function createStubbing($mock, $label = null)
+    public function instanceHandle($mock, $label = null)
     {
-        if ($mock instanceof InstanceStubbingHandle) {
-            return $mock;
-        }
-
         if ($mock instanceof InstanceHandle) {
-            $mock = $mock->mock();
+            return $mock;
         }
 
         if (!$mock instanceof Mock) {
@@ -109,7 +101,7 @@ class HandleFactory
             return $handle;
         }
 
-        $handle = new InstanceStubbingHandle(
+        $handle = new InstanceHandle(
             $mock,
             (object) array(
                 'defaultAnswerCallback' =>
@@ -131,43 +123,16 @@ class HandleFactory
     }
 
     /**
-     * Create a new verification handle.
-     *
-     * @param Mock|InstanceHandle $mock The mock.
-     *
-     * @return InstanceVerificationHandle The newly created handle.
-     * @throws MockException              If the supplied mock is invalid.
-     */
-    public function createVerification($mock)
-    {
-        if ($mock instanceof InstanceVerificationHandle) {
-            return $mock;
-        }
-
-        $stubbingHandle = $this->createStubbing($mock);
-
-        return new InstanceVerificationHandle(
-            $stubbingHandle->mock(),
-            $stubbingHandle->state(),
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
-        );
-    }
-
-    /**
-     * Create a new static stubbing handle.
+     * Create a new static handle.
      *
      * @param Mock|Handle|ReflectionClass|string $class The class.
      *
-     * @return StaticStubbingHandle The newly created handle.
-     * @throws MockException        If the supplied class name is not a mock class.
+     * @return StaticHandle  The newly created handle.
+     * @throws MockException If the supplied class name is not a mock class.
      */
-    public function createStubbingStatic($class)
+    public function staticHandle($class)
     {
-        if ($class instanceof StaticStubbingHandle) {
+        if ($class instanceof StaticHandle) {
             return $class;
         }
 
@@ -196,7 +161,7 @@ class HandleFactory
             return $handle;
         }
 
-        $handle = new StaticStubbingHandle(
+        $handle = new StaticHandle(
             $class,
             (object) array(
                 'defaultAnswerCallback' =>
@@ -216,35 +181,8 @@ class HandleFactory
         return $handle;
     }
 
-    /**
-     * Create a new static verification handle.
-     *
-     * @param Mock|Handle|ReflectionClass|string $class The class.
-     *
-     * @return StaticVerificationHandle The newly created handle.
-     * @throws MockException            If the supplied class name is not a mock class.
-     */
-    public function createVerificationStatic($class)
-    {
-        if ($class instanceof StaticVerificationHandle) {
-            return $class;
-        }
-
-        $stubbingHandle = $this->createStubbingStatic($class);
-
-        return new StaticVerificationHandle(
-            $stubbingHandle->clazz(),
-            $stubbingHandle->state(),
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
-        );
-    }
-
     private static $instance;
-    private $mockFactory;
+    private $stubFactory;
     private $stubVerifierFactory;
     private $assertionRenderer;
     private $assertionRecorder;

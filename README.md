@@ -66,7 +66,7 @@ See the [example] directory.
 use function Eloquent\Phony\mock;
 
 $handle = mock('ClassA');
-$handle->methodA('argument')->returns('value');
+$handle->methodA->with('argument')->returns('value');
 
 $mock = $handle->mock();
 
@@ -82,7 +82,7 @@ use function Eloquent\Phony\mock;
 describe('Phony', function () {
     it('integrates with Peridot', function () {
         $handle = mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 
@@ -102,7 +102,7 @@ use function Eloquent\Phony\Pho\mock;
 describe('Phony', function () {
     it('integrates with Pho', function () {
         $handle = mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 
@@ -124,7 +124,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testIntegration()
     {
         $handle = Phony::mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 
@@ -144,7 +144,7 @@ class PhonyTest extends UnitTestCase
     public function testIntegration()
     {
         $handle = Phony::mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 

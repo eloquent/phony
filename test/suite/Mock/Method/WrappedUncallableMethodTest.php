@@ -25,7 +25,7 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = MockBuilderFactory::instance()->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
-        $this->handle = $this->handleFactory->createStubbing($this->mock);
+        $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedUncallableMethod($this->method, $this->handle);
     }
 
@@ -42,7 +42,7 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA');
-        $this->handle = $this->handleFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedUncallableMethod($this->method, $this->handle);
 
         $this->assertSame($this->method, $this->subject->method());

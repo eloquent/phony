@@ -191,10 +191,8 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
         $builder = MockBuilderFactory::instance()->create('Eloquent\Phony\Test\Properties\TestBaseClass')
             ->named('PhonyMockInlineExporterExportMocks');
         $mock = $builder->get();
-        $stubbingHandle = Phony::on($mock)->setLabel('label');
-        $verificationHandle = Phony::verify($mock)->setLabel('label');
-        $staticStubbingHandle = Phony::onStatic($mock);
-        $staticVerificationHandle = Phony::verifyStatic($mock);
+        $handle = Phony::on($mock)->setLabel('label');
+        $staticHandle = Phony::onStatic($mock);
 
         $this->assertSame(
             'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
@@ -202,24 +200,14 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
             $this->subject->export($mock)
         );
         $this->assertSame(
-            'stubbing-handle#1{class: "PhonyMockInlineExporterExportMocks", mock: ' .
+            'handle#1{class: "PhonyMockInlineExporterExportMocks", mock: ' .
                 'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
                 'baseProtected: "<base-protected>", phony.label: "label"}}',
-            $this->subject->export($stubbingHandle)
+            $this->subject->export($handle)
         );
         $this->assertSame(
-            'verification-handle#2{class: "PhonyMockInlineExporterExportMocks", mock: ' .
-                'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
-                'baseProtected: "<base-protected>", phony.label: "label"}}',
-            $this->subject->export($verificationHandle)
-        );
-        $this->assertSame(
-            'static-stubbing-handle#3{class: "PhonyMockInlineExporterExportMocks"}',
-            $this->subject->export($staticStubbingHandle)
-        );
-        $this->assertSame(
-            'static-verification-handle#4{class: "PhonyMockInlineExporterExportMocks"}',
-            $this->subject->export($staticVerificationHandle)
+            'static-handle#2{class: "PhonyMockInlineExporterExportMocks"}',
+            $this->subject->export($staticHandle)
         );
     }
 

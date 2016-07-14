@@ -35,7 +35,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
-        $this->handle = $this->handleFactory->createStubbing($this->mock);
+        $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->handle);
     }
 
@@ -55,7 +55,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA');
-        $this->handle = $this->handleFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->handle);
 
         $this->assertSame($this->callTraitMethod, $this->subject->callTraitMethod());
@@ -90,7 +90,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $callTraitMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB');
         $mock = $mockBuilder->get();
-        $handle = $this->handleFactory->createStubbing($mock);
+        $handle = $this->handleFactory->instanceHandle($mock);
         $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $handle);
 
         $this->assertSame('ab', $subject('a', 'b'));
@@ -106,7 +106,7 @@ class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
         $callTraitMethod = $class->getMethod('_callTraitStatic');
         $callTraitMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA');
-        $handle = $this->handleFactory->createStubbingStatic($mockBuilder->build());
+        $handle = $this->handleFactory->staticHandle($mockBuilder->build());
         $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $handle);
         $a = 'a';
 

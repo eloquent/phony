@@ -154,7 +154,7 @@ class MockFactory
         $customMethodsProperty->setAccessible(true);
         $customMethodsProperty->setValue(null, $customMethods);
 
-        $this->handleFactory->createStubbingStatic($class);
+        $this->handleFactory->staticHandle($class);
 
         $this->definitions[] = array($signature, $class);
 
@@ -184,7 +184,7 @@ class MockFactory
         // @codeCoverageIgnoreEnd
 
         $this->handleFactory
-            ->createStubbing($mock, strval($this->labelSequencer->next()));
+            ->instanceHandle($mock, strval($this->labelSequencer->next()));
 
         return $mock;
     }
@@ -215,7 +215,7 @@ class MockFactory
         // @codeCoverageIgnoreEnd
 
         $handle = $this->handleFactory
-            ->createStubbing($mock, strval($this->labelSequencer->next()));
+            ->instanceHandle($mock, strval($this->labelSequencer->next()));
 
         $handle->partial();
 

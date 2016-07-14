@@ -160,16 +160,6 @@ abstract class AbstractHandle implements Handle
     }
 
     /**
-     * Get the stubs.
-     *
-     * @return stdClass The stubs.
-     */
-    public function stubs()
-    {
-        return $this->state->stubs;
-    }
-
-    /**
      * Get a stub verifier.
      *
      * @param string $name      The method name.

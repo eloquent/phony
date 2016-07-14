@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Eloquent\Phony\Mock\Handle\Stubbing;
+namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
@@ -29,7 +29,7 @@ use Eloquent\Phony\Test\TestClassH;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
 
-class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
+class InstanceHandleTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -69,7 +69,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder->named($mockClassName);
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new InstanceStubbingHandle(
+        $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
             $this->stubFactory,
@@ -235,32 +235,12 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
         $this->subject->noInteraction();
     }
 
-    public function testMagicCall()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-        $actual = $this->subject->testClassAMethodA();
-        $actual->returns();
-
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
-        $this->assertSame($actual, $this->subject->testClassAMethodA);
-        $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda);
-        $this->assertSame($actual, $this->subject->testClassAMethodA()->returns());
-    }
-
-    public function testMagicCallFailure()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
-        $this->subject->nonexistent();
-    }
-
     public function testConstruct()
     {
         $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new InstanceStubbingHandle(
+        $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
             $this->stubFactory,
@@ -280,7 +260,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new InstanceStubbingHandle(
+        $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
             $this->stubFactory,
@@ -300,7 +280,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
-        $this->subject = new InstanceStubbingHandle(
+        $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
             $this->stubFactory,
@@ -322,7 +302,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
         $this->subject->partial();
-        $this->subject->testClassAMethodA('a', 'b')->returns('x');
+        $this->subject->testClassAMethodA->with('a', 'b')->returns('x');
 
         $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $this->mock->testClassAMethodA('c', 'd'));
@@ -336,7 +316,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
 
         $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
         $this->subject->partial();
-        $this->subject->testClassAMethodB('a', 'b')->returns('x');
+        $this->subject->testClassAMethodB->with('a', 'b')->returns('x');
 
         $this->assertSame('x', $this->mock->testClassAMethodB('a', 'b'));
         $this->assertSame('cd', $this->mock->testClassAMethodB('c', 'd'));
@@ -346,7 +326,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassB');
         $this->subject->partial();
-        $this->subject->nonexistent('a', 'b')->returns('x');
+        $this->subject->nonexistent->with('a', 'b')->returns('x');
 
         $this->assertSame('x', $this->mock->nonexistent('a', 'b'));
         $this->assertSame('magic nonexistent cd', $this->mock->nonexistent('c', 'd'));
@@ -356,7 +336,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
         $this->subject->partial();
-        $this->subject->testClassAMethodA('a', 'b')->returns('x');
+        $this->subject->testClassAMethodA->with('a', 'b')->returns('x');
 
         $this->assertSame('x', $this->mock->testClassAMethodA('a', 'b'));
         $this->assertNull($this->mock->testClassAMethodA('c', 'd'));
@@ -379,7 +359,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
 
         $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
         $this->subject->partial();
-        $this->subject->testTraitGMethodA('a', 'b')->returns('x');
+        $this->subject->testTraitGMethodA->with('a', 'b')->returns('x');
 
         $this->assertSame('x', $this->mock->testTraitGMethodA('a', 'b'));
         $this->assertSame('cd', $this->mock->testTraitGMethodA('c', 'd'));
@@ -396,7 +376,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
         );
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new InstanceStubbingHandle(
+        $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
             $this->stubFactory,
@@ -409,7 +389,7 @@ class InstanceStubbingHandleTest extends PHPUnit_Framework_TestCase
         $handleProperty->setAccessible(true);
         $handleProperty->setValue($this->mock, $this->subject);
         $this->subject->partial();
-        $this->subject->methodA('a', 'b')->returns('x');
+        $this->subject->methodA->with('a', 'b')->returns('x');
 
         $this->assertSame('x', $this->mock->methodA('a', 'b'));
         $this->assertSame('cd', $this->mock->methodA('c', 'd'));

@@ -29,7 +29,7 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = MockBuilderFactory::instance()->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
-        $this->handle = $this->handleFactory->createStubbing($this->mock);
+        $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->invoker = new Invoker();
         $this->subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
     }
@@ -49,7 +49,7 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB');
-        $this->handle = $this->handleFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
 
         $this->assertSame($this->customCallback, $this->subject->customCallback());
@@ -88,7 +88,7 @@ class WrappedCustomMethodTest extends PHPUnit_Framework_TestCase
     public function testInvokeMethodsWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB');
-        $this->handle = $this->handleFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
 
         $this->assertSame('custom ab', $subject('a', 'b'));

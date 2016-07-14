@@ -28,8 +28,6 @@
     - [Calling a constructor manually]
     - [Labeling mocks]
     - [Mock handles]
-        - [Stubbing handles]
-        - [Verification handles]
         - [Mock handle substitution]
     - [Mock builders]
         - [Customizing the mock class]
@@ -217,7 +215,7 @@ See the [example] directory.
 use function Eloquent\Phony\mock;
 
 $handle = mock('ClassA');
-$handle->methodA('argument')->returns('value');
+$handle->methodA->with('argument')->returns('value');
 
 $mock = $handle->mock();
 
@@ -233,7 +231,7 @@ use function Eloquent\Phony\mock;
 describe('Phony', function () {
     it('integrates with Peridot', function () {
         $handle = mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 
@@ -251,7 +249,7 @@ use function Eloquent\Phony\Pho\mock;
 describe('Phony', function () {
     it('integrates with Pho', function () {
         $handle = mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 
@@ -271,7 +269,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testIntegration()
     {
         $handle = Phony::mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 
@@ -291,7 +289,7 @@ class PhonyTest extends UnitTestCase
     public function testIntegration()
     {
         $handle = Phony::mock('ClassA');
-        $handle->methodA('argument')->returns('value');
+        $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->mock();
 
@@ -365,7 +363,7 @@ can be useful when a "real" object becomes difficult to use in a test.
 > *[handle][mock-api]* x\\[**mock**](#facade.mock)($types = []) *(without [use function])*<br />
 > *[handle][mock-api]* Phony::[**mock**](#facade.mock)($types = []) *(static)*
 
-Create a new [full mock], and return a [stubbing handle].
+Create a new [full mock], and return a [mock handle].
 
 *Each value in `$types` can be either a class name, or an [ad hoc mock]
 definition. If only a single type is being mocked, the class name or definition
@@ -381,7 +379,7 @@ can be passed without being wrapped in an array.*
 > *[handle][mock-api]* x\\[**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(without [use function])*<br />
 > *[handle][mock-api]* Phony::[**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(static)*
 
-Create a new [partial mock], and return a [stubbing handle].
+Create a new [partial mock], and return a [mock handle].
 
 *Each value in `$types` can be either a class name, or an [ad hoc mock]
 definition. If only a single type is being mocked, the class name or definition
@@ -401,17 +399,7 @@ the original constructor will not be called at all.*
 > *[handle][mock-api]* x\\[**on**](#facade.on)($mock) *(without [use function])*<br />
 > *[handle][mock-api]* Phony::[**on**](#facade.on)($mock) *(static)*
 
-Returns a [stubbing handle] for `$mock`.
-
-<a name="facade.verify" />
-
-----
-
-> *[handle][mock-api]* [**verify**](#facade.verify)($mock) *(with [use function])*<br />
-> *[handle][mock-api]* x\\[**verify**](#facade.verify)($mock) *(without [use function])*<br />
-> *[handle][mock-api]* Phony::[**verify**](#facade.verify)($mock) *(static)*
-
-Returns a [verification handle] for `$mock`.
+Returns a [mock handle] for `$mock`.
 
 <a name="facade.onStatic" />
 
@@ -421,19 +409,7 @@ Returns a [verification handle] for `$mock`.
 > *[handle][mock-api]* x\\[**onStatic**](#facade.onStatic)($class) *(without [use function])*<br />
 > *[handle][mock-api]* Phony::[**onStatic**](#facade.onStatic)($class) *(static)*
 
-Returns a static [stubbing handle] for `$class`.
-
-*See [Static mocks].*
-
-<a name="facade.verifyStatic" />
-
-----
-
-> *[handle][mock-api]* [**verifyStatic**](#facade.verifyStatic)($class) *(with [use function])*<br />
-> *[handle][mock-api]* x\\[**verifyStatic**](#facade.verifyStatic)($class) *(without [use function])*<br />
-> *[handle][mock-api]* Phony::[**verifyStatic**](#facade.verifyStatic)($class) *(static)*
-
-Returns a static [verification handle] for `$class`.
+Returns a static [static handle] for `$class`.
 
 *See [Static mocks].*
 
@@ -448,36 +424,6 @@ Get the [mock].
 *This method is not available on [static mock handles].*
 
 *See [Mocking basics], [Mock handles].*
-
-<a name="handle.__call" />
-
-----
-
-> *[stub][stub-api]* $handle->[**$method**](#handle.__call)(...$arguments) (on a [stubbing handle])<br />
-> *fluent* $handle->[**$method**](#handle.__call)(...$arguments) (on a [verification handle])
-
-**When called on a [stubbing handle]:**
-
-Get a stub, and modify its current criteria to match the supplied arguments.
-
-*This is equivalent to `$handle->$method->with(...$arguments)`.*
-
-*This method supports [mock handle substitution].*
-
-*See [Mocking basics], [Stubbing handles].*
-
-**When called on a [verification handle]:**
-
-Throws an exception unless the specified method was called with the supplied
-arguments.
-
-*This is equivalent to `$handle->$method->calledWith(...$arguments)`, except
-that it returns `$handle`, allowing a fluent interface for multiple
-verifications.*
-
-*This method supports [mock handle substitution].*
-
-*See [Verification handles].*
 
 <a name="handle.stub" />
 <a name="handle.__get" />
@@ -895,17 +841,6 @@ $handle->methodA->calledWith('swiggity', 'swooty');
 $handle->methodB->called();
 ```
 
-The mock handle returned by [`mock()`](#facade.mock) is a type of handle called
-a [stubbing handle], which means it implements magic
-[`__call()`](#handle.__call) methods that are equivalent to a call to
-[`with()`](#stub.with):
-
-```php
-// these two statements are equivalent
-$handle->methodA('a', 'b')->returns('c');
-$handle->methodA->with('a', 'b')->returns('c');
-```
-
 To access the actual mock object, call the [`mock()`](#handle.mock) method of
 the handle:
 
@@ -1137,8 +1072,8 @@ echo $mock->set('a', 1)->get('a'); // outputs '1'
 
 *Phony* can be used to stub the behavior of static methods of generated mock
 classes. To modify the behavior of a static method, use
-[`onStatic()`](#facade.onStatic) to obtain a static stubbing handle from either
-an existing handle, or a mock instance:
+[`onStatic()`](#facade.onStatic) to obtain a static handle from either an
+existing handle, or a mock instance:
 
 ```php
 $handle = mock('DateTime');
@@ -1153,8 +1088,8 @@ $static = x\onStatic($mock);      // without `use function`
 $static = Phony::onStatic($mock); // static
 ```
 
-This static handle is just like a normal [stubbing handle], except that it
-refers to static methods instead of instance methods:
+This static handle is just like a normal [mock handle], except that it refers to
+static methods instead of instance methods:
 
 ```php
 $static->createFromFormat->returns(new DateTime('2001-02-03T04:05:06Z'));
@@ -1169,23 +1104,6 @@ The static handle can also be used to verify interactions with static methods:
 
 ```php
 $static->createFromFormat->calledWith('format', 'time');
-```
-
-There is also a static variant of the normal [verification handle], which can
-be created from either an existing handle, or a mock instance, using
-[`verifyStatic()`](#facade.verifyStatic):
-
-```php
-$handle = mock('DateTime');
-$mock = $handle->mock();
-
-$static = verifyStatic($handle);        // with `use function`
-$static = x\verifyStatic($handle);      // without `use function`
-$static = Phony::verifyStatic($handle); // static
-
-$static = verifyStatic($mock);        // with `use function`
-$static = x\verifyStatic($mock);      // without `use function`
-$static = Phony::verifyStatic($mock); // static
 ```
 
 ### Calling a constructor manually
@@ -1260,114 +1178,39 @@ following:
 
 ### Mock handles
 
-Mock handles come in two varieties. [Stubbing handles] are the default type
-returned when using [`mock()`](#facade.mock), but there are also
-[verification handles] that are designed to make multiple verifications easier.
+Mock handles are objects that provide access to stubs for each method of a mock
+object. Each method stub implements both [the stub API] for stubbing, and
+[the spy API] for verification.
 
-Despite their names, both types of handles provide stubs that implement both
-[the stub API] for stubbing, and [the spy API] for verification. The difference
-is *only* in the handle's implementation of the magic
-[`__call()`](#handle.__call) methods. These magic methods are tailored for
-convenience when stubbing or verifying, depending on which type of handle is in
-use.
-
-#### Stubbing handles
-
-Stubbing handles are the default handle type. They are returned when
-[`mock()`](#facade.mock) or [`partialMock()`](#facade.partialMock) is called:
+Mock handles are returned when [`mock()`](#facade.mock) or
+[`partialMock()`](#facade.partialMock) is called:
 
 ```php
-$stubbingHandle = mock('ClassA');
-$stubbingHandle = partialMock('ClassA');
+$handle = mock('ClassA');
+$handle = partialMock('ClassA');
 ```
 
 They can also be retrieved at any time from a mock instance, or another handle,
 by using [`on()`](#facade.on):
 
 ```php
-$stubbingHandle = on($mock);        // with `use function`
-$stubbingHandle = x\on($mock);      // without `use function`
-$stubbingHandle = Phony::on($mock); // static
+$handle = on($mock);        // with `use function`
+$handle = x\on($mock);      // without `use function`
+$handle = Phony::on($mock); // static
 
-$stubbingHandle = on($otherHandle);        // with `use function`
-$stubbingHandle = x\on($otherHandle);      // without `use function`
-$stubbingHandle = Phony::on($otherHandle); // static
+$handle = on($otherHandle);        // with `use function`
+$handle = x\on($otherHandle);      // without `use function`
+$handle = Phony::on($otherHandle); // static
 ```
 
 To access the actual mock object, call the [`mock()`](#handle.mock) method of
 the handle:
 
 ```php
-$mock = $stubbingHandle->mock();
+$mock = $handle->mock();
 ```
 
-Stubbing handles implement magic [`__call()`](#handle.__call) methods that are
-equivalent to a call to [`with()`](#stub.with):
-
-```php
-// these two statements are equivalent
-$stubbingHandle->methodA('a', 'b')->returns('c');
-$stubbingHandle->methodA->with('a', 'b')->returns('c');
-```
-
-This provides the most convenience when setting up mock behaviors.
-
-Note that a static variant of the stubbing handle exists. See [Static mocks].
-
-#### Verification handles
-
-Verification handles are a type of handle that provides the ability to make
-verifications using a fluent interface.
-
-A verification handle can also be created at any time from a mock instance, or
-another handle, by using [`verify()`](#facade.verify):
-
-```php
-$verificationHandle = verify($mock);        // with `use function`
-$verificationHandle = x\verify($mock);      // without `use function`
-$verificationHandle = Phony::verify($mock); // static
-
-$verificationHandle = verify($otherHandle);        // with `use function`
-$verificationHandle = x\verify($otherHandle);      // without `use function`
-$verificationHandle = Phony::verify($otherHandle); // static
-```
-
-To access the actual mock object, call the [`mock()`](#handle.mock) method of
-the handle:
-
-```php
-$mock = $verificationHandle->mock();
-```
-
-Verification handles implement magic [`__call()`](#handle.__call) methods that
-are equivalent to a call to [`calledWith()`](#stub.calledWith):
-
-```php
-// these two statements are equivalent
-$verificationHandle->methodA('a', 'b');
-$verificationHandle->methodA->calledWith('a', 'b');
-```
-
-These magic methods can be used in a fluent manner to perform multiple
-verifications easily:
-
-```php
-$verificationHandle
-    ->methodA('a', 'b')
-    ->methodB('c', 'd')
-    ->methodC('e', 'f');
-
-// the above is equivalent to these statements:
-$verificationHandle->methodA->calledWith('a', 'b');
-$verificationHandle->methodB->calledWith('c', 'd');
-$verificationHandle->methodC->calledWith('e', 'f');
-```
-
-Note that this does not verify the order of events. If order is important, use
-[order verification].
-
-Note that a static variant of the verification handle exists. See
-[Static mocks].
+Note that a static handle variant exists. See [Static mocks].
 
 #### Mock handle substitution
 
@@ -1505,8 +1348,8 @@ If no mock instance already exists, [`get()`](#builder.get) will create a new
 full mock instance, and return it.
 
 Note that unlike using [`mock()`](#facade.mock), these methods do not
-automatically wrap the returned mock in a [mock handle]. To obtain a stubbing
-handle, use [`on()`](#facade.on):
+automatically wrap the returned mock in a [mock handle]. To obtain a handle,
+use [`on()`](#facade.on):
 
 ```php
 $mock = $builder->mock();
@@ -8142,7 +7985,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [stubbing an existing callable]: #stubbing-an-existing-callable
 [stubbing generators]: #stubbing-generators
 [stubbing global functions]: #stubbing-global-functions
-[stubbing handles]: #stubbing-handles
 [stubs]: #stubs
 [terminology]: #terminology
 [the "any" matcher]: #the-any-matcher
@@ -8180,7 +8022,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [usage]: #usage
 [using a callable as an answer]: #using-a-callable-as-an-answer
 [using colored verification output]: #using-colored-verification-output
-[verification handles]: #verification-handles
 [verification]: #verification
 [verifying call closure binding]: #verifying-call-closure-binding
 [verifying call exceptions]: #verifying-call-exceptions
@@ -8250,12 +8091,11 @@ For the full copyright and license information, please view the [LICENSE file].
 [references]: #export-identifiers-and-references
 [self value]: #stub-self-values
 [spy]: #spies
+[static handle]: #static-mocks
 [static mock handles]: #static-mocks
 [stub]: #stubs
-[stubbing handle]: #stubbing-handles
 [testing framework]: #integration-with-test-frameworks
 [testing frameworks]: #integration-with-test-frameworks
-[verification handle]: #verification-handles
 [verification result]: #the-verification-result-api
 [verification results]: #the-verification-result-api
 

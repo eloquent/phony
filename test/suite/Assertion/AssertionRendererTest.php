@@ -55,14 +55,14 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
 
         $mockBuilder = $mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
         $this->thisObjectB = $mockBuilder->get();
-        $this->thisObjectBHandle = $this->handleFactory->createStubbing($this->thisObjectB);
+        $this->thisObjectBHandle = $this->handleFactory->instanceHandle($this->thisObjectB);
         $this->thisObjectBHandle->setLabel('label');
         $this->thisObjectB->testClassAMethodA();
 
         $mockBuilder = $mockBuilderFactory->create('IteratorAggregate');
         $mockBuilder->named('PhonyMockAssertionRendererTestIteratorAggregate');
         $this->thisObjectC = $mockBuilder->get();
-        $this->thisObjectCHandle = $this->handleFactory->createStubbing($this->thisObjectC);
+        $this->thisObjectCHandle = $this->handleFactory->instanceHandle($this->thisObjectC);
         $this->thisObjectCHandle->setLabel('label');
 
         $this->callFactory = new TestCallFactory();

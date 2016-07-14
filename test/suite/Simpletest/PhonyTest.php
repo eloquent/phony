@@ -112,7 +112,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $arguments = new Arguments(array('a', 'b'));
         $actual = Phony::partialMock($types, $arguments);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -126,7 +126,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $arguments = null;
         $actual = Phony::partialMock($types, $arguments);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -139,7 +139,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $actual = Phony::partialMock($types);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -151,7 +151,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $actual = Phony::partialMock();
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
     }
 
@@ -161,7 +161,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $arguments = new Arguments(array('a', 'b'));
         $actual = partialMock($types, $arguments);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -175,7 +175,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $arguments = null;
         $actual = partialMock($types, $arguments);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -188,7 +188,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $actual = partialMock($types);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -200,7 +200,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $actual = partialMock();
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
     }
 
@@ -209,7 +209,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $actual = Phony::mock($types);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -222,7 +222,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $types = array('Eloquent\Phony\Test\TestClassB', 'Countable');
         $actual = mock($types);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual->mock());
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual->mock());
         $this->assertInstanceOf('Countable', $actual->mock());
@@ -235,7 +235,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $class = Phony::mockBuilder()->build();
         $actual = Phony::onStatic($class);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\StaticHandle', $actual);
         $this->assertSame($class, $actual->clazz());
     }
 
@@ -244,7 +244,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $class = mockBuilder()->build();
         $actual = onStatic($class);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StaticStubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\StaticHandle', $actual);
         $this->assertSame($class, $actual->clazz());
     }
 
@@ -253,7 +253,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $mock = Phony::mockBuilder()->partial();
         $actual = Phony::on($mock);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertSame($mock, $actual->mock());
     }
 
@@ -261,49 +261,9 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $mock = mockBuilder()->partial();
         $actual = on($mock);
-        $expected = $this->handleFactory->createStubbing($mock);
+        $expected = $this->handleFactory->instanceHandle($mock);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Stubbing\StubbingHandle', $actual);
-        $this->assertSame($mock, $actual->mock());
-    }
-
-    public function testVerifyStatic()
-    {
-        $class = Phony::mockBuilder()->build();
-        $actual = Phony::verifyStatic($class);
-        $expected = $this->handleFactory->createVerificationStatic($class);
-
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle', $actual);
-        $this->assertSame($class, $actual->clazz());
-    }
-
-    public function testVerifyStaticFunction()
-    {
-        $class = mockBuilder()->build();
-        $actual = verifyStatic($class);
-        $expected = $this->handleFactory->createVerificationStatic($class);
-
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\StaticVerificationHandle', $actual);
-        $this->assertSame($class, $actual->clazz());
-    }
-
-    public function testVerify()
-    {
-        $mock = Phony::mockBuilder()->partial();
-        $actual = Phony::verify($mock);
-        $expected = $this->handleFactory->createVerification($mock);
-
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle', $actual);
-        $this->assertSame($mock, $actual->mock());
-    }
-
-    public function testVerifyFunction()
-    {
-        $mock = mockBuilder()->partial();
-        $actual = verify($mock);
-        $expected = $this->handleFactory->createVerification($mock);
-
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\Verification\InstanceVerificationHandle', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertSame($mock, $actual->mock());
     }
 

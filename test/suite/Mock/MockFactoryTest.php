@@ -122,7 +122,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertSame('0', $this->handleFactory->createStubbing($actual)->label());
+        $this->assertSame('0', $this->handleFactory->instanceHandle($actual)->label());
         $this->assertNull($actual->testClassAMethodA('a', 'b'));
         $this->assertNull($protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertNull($actual->methodB('a', 'b'));
@@ -156,7 +156,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
         $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
-        $this->assertSame('0', $this->handleFactory->createStubbing($actual)->label());
+        $this->assertSame('0', $this->handleFactory->instanceHandle($actual)->label());
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke($actual, 'a', 'b'));
         $this->assertSame('custom ab', $actual->methodB('a', 'b'));

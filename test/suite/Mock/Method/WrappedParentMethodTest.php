@@ -28,7 +28,7 @@ class WrappedParentMethodTest extends PHPUnit_Framework_TestCase
         $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
-        $this->handle = $this->handleFactory->createStubbing($this->mock);
+        $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedParentMethod($this->callParentMethod, $this->method, $this->handle);
     }
 
@@ -47,7 +47,7 @@ class WrappedParentMethodTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithStatic()
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodE');
-        $this->handle = $this->handleFactory->createStubbingStatic($this->mockBuilder->build());
+        $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedParentMethod($this->callParentMethod, $this->method, $this->handle);
 
         $this->assertSame($this->callParentMethod, $this->subject->callParentMethod());
@@ -81,7 +81,7 @@ class WrappedParentMethodTest extends PHPUnit_Framework_TestCase
         $callParentMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodC');
         $mock = $mockBuilder->get();
-        $handle = $this->handleFactory->createStubbing($mock);
+        $handle = $this->handleFactory->instanceHandle($mock);
         $subject = new WrappedParentMethod($callParentMethod, $method, $handle);
 
         $this->assertSame('protected ab', $subject('a', 'b'));
@@ -97,7 +97,7 @@ class WrappedParentMethodTest extends PHPUnit_Framework_TestCase
         $callParentMethod = $class->getMethod('_callParentStatic');
         $callParentMethod->setAccessible(true);
         $method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC');
-        $handle = $this->handleFactory->createStubbingStatic($mockBuilder->build());
+        $handle = $this->handleFactory->staticHandle($mockBuilder->build());
         $subject = new WrappedParentMethod($callParentMethod, $method, $handle);
 
         $this->assertSame('protected ab', $subject('a', 'b'));
