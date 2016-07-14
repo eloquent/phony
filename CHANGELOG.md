@@ -2,6 +2,7 @@
 
 ## Next release
 
+- **[BC BREAK]** Renamed `$handle->mock()` to `$handle->get()` ([#180]).
 - **[BC BREAK]** Removed `verify()` and `verifyStatic()` ([#179]).
 - **[BC BREAK]** Removed magic calls from mock handles. All stubbing must now
   use `with()`, and all call argument verification must now use `calledWith()`
@@ -11,6 +12,7 @@
 
 [#177]: https://github.com/eloquent/phony/issues/177
 [#179]: https://github.com/eloquent/phony/issues/179
+[#180]: https://github.com/eloquent/phony/issues/180
 
 ## 0.12.0 (2016-07-13)
 

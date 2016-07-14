@@ -11,14 +11,14 @@ error_reporting(-1);
 
 // should record passing mock assertions (static)
 $handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
-$mock = $handle->mock();
+$mock = $handle->get();
 $mock->testClassAMethodA('aardvark', 'bonobo');
 
 $handle->testClassAMethodA->calledWith('aardvark', 'bonobo');
 
 // should record failing mock assertions (static)
 $handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
-$mock = $handle->mock();
+$mock = $handle->get();
 $mock->testClassAMethodA('aardvark', array('bonobo', 'capybara', 'dugong'));
 $mock->testClassAMethodA('armadillo', array('bonobo', 'chameleon', 'dormouse'));
 

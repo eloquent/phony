@@ -49,7 +49,7 @@ class CallRequestTest extends PHPUnit_Framework_TestCase
         $this->arguments = new Arguments(array($adaptable, $unadaptable));
         $this->subject = new CallRequest($this->callback, $this->arguments, false, false, false);
 
-        $this->assertSame($adaptable->mock(), $this->subject->arguments()->get(0));
+        $this->assertSame($adaptable->get(), $this->subject->arguments()->get(0));
         $this->assertSame($unadaptable, $this->subject->arguments()->get(1));
     }
 

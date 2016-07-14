@@ -16,7 +16,7 @@ error_reporting(-1);
 describe('Phony', function () {
     beforeEach(function () {
         $this->handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
-        $this->mock = $this->handle->mock();
+        $this->mock = $this->handle->get();
     });
 
     it('should record passing mock assertions', function () {

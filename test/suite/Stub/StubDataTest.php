@@ -638,7 +638,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $b = null;
         $this->subject->invokeWith(array(&$a, &$b));
 
-        $this->assertSame($adaptable->mock(), $a);
+        $this->assertSame($adaptable->get(), $a);
         $this->assertSame($unadaptable, $b);
     }
 
@@ -933,7 +933,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $unadaptable = Phony::mock()->setIsAdaptable(false);
         $this->subject->returns($adaptable, $unadaptable);
 
-        $this->assertSame($adaptable->mock(), call_user_func($this->subject));
+        $this->assertSame($adaptable->get(), call_user_func($this->subject));
         $this->assertSame($unadaptable, call_user_func($this->subject));
     }
 

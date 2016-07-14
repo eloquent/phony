@@ -371,7 +371,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             $value instanceof InstanceHandle &&
             $value->isAdaptable()
         ) {
-            $value = $value->mock();
+            $value = $value->get();
         }
 
         return $this->callsWith(
@@ -561,7 +561,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
 
         foreach (func_get_args() as $value) {
             if ($value instanceof InstanceHandle && $value->isAdaptable()) {
-                $value = $value->mock();
+                $value = $value->get();
             }
 
             $this->doesWith(
@@ -648,7 +648,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
                 $exception instanceof InstanceHandle &&
                 $exception->isAdaptable()
             ) {
-                $exception = $exception->mock();
+                $exception = $exception->get();
             }
 
             $this->doesWith(

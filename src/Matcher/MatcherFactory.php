@@ -151,7 +151,7 @@ class MatcherFactory
         if (is_object($value)) {
             if ($value instanceof InstanceHandle) {
                 if ($value->isAdaptable()) {
-                    return new EqualToMatcher($value->mock(), $this->exporter);
+                    return new EqualToMatcher($value->get(), $this->exporter);
                 }
             } else {
                 foreach ($this->driverIndex as $className => $driver) {
@@ -198,7 +198,7 @@ class MatcherFactory
                 if ($value instanceof InstanceHandle) {
                     if ($value->isAdaptable()) {
                         $matchers[] =
-                            new EqualToMatcher($value->mock(), $this->exporter);
+                            new EqualToMatcher($value->get(), $this->exporter);
 
                         continue;
                     }

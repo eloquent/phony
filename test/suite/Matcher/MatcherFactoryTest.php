@@ -137,7 +137,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $adaptable = Phony::mock();
         $unadaptable = Phony::mock()->setIsAdaptable(false);
 
-        $this->assertEquals(new EqualToMatcher($adaptable->mock(), $this->exporter), $this->subject->adapt($adaptable));
+        $this->assertEquals(new EqualToMatcher($adaptable->get(), $this->exporter), $this->subject->adapt($adaptable));
         $this->assertEquals(new EqualToMatcher($unadaptable, $this->exporter), $this->subject->adapt($unadaptable));
     }
 
@@ -165,7 +165,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
             new EqualToMatcher('a', $this->exporter),
             $valueB,
             new EqualToMatcher($valueC, $this->exporter),
-            new EqualToMatcher($valueD->mock(), $this->exporter),
+            new EqualToMatcher($valueD->get(), $this->exporter),
             new EqualToMatcher($valueE, $this->exporter),
             new EqualToMatcher('a', $this->exporter),
             WildcardMatcher::instance(),

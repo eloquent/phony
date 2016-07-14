@@ -217,7 +217,7 @@ use function Eloquent\Phony\mock;
 $handle = mock('ClassA');
 $handle->methodA->with('argument')->returns('value');
 
-$mock = $handle->mock();
+$mock = $handle->get();
 
 assert($mock->methodA('argument') === 'value');
 $handle->methodA->calledWith('argument');
@@ -233,7 +233,7 @@ describe('Phony', function () {
         $handle = mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         expect($mock->methodA('argument'))->to->equal('value');
         $handle->methodA->calledWith('argument');
@@ -251,7 +251,7 @@ describe('Phony', function () {
         $handle = mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         expect($mock->methodA('argument'))->toBe('value');
         $handle->methodA->calledWith('argument');
@@ -271,7 +271,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $handle = Phony::mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame('value', $mock->methodA('argument'));
         $handle->methodA->calledWith('argument');
@@ -291,7 +291,7 @@ class PhonyTest extends UnitTestCase
         $handle = Phony::mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame($mock->methodA('argument'), 'value');
         $handle->methodA->calledWith('argument');
@@ -413,11 +413,11 @@ Returns a static [static handle] for `$class`.
 
 *See [Static mocks].*
 
-<a name="handle.mock" />
+<a name="handle.get" />
 
 ----
 
-> *mock* $handle->[**mock**](#handle.mock)()
+> *mock* $handle->[**get**](#handle.get)()
 
 Get the [mock].
 
@@ -841,11 +841,11 @@ $handle->methodA->calledWith('swiggity', 'swooty');
 $handle->methodB->called();
 ```
 
-To access the actual mock object, call the [`mock()`](#handle.mock) method of
-the handle:
+To access the actual mock object, call the [`get()`](#handle.get) method of the
+handle:
 
 ```php
-$mock = $handle->mock();
+$mock = $handle->get();
 ```
 
 ### Partial mocks
@@ -897,7 +897,7 @@ $cat = new Cat();
 $handle = mock('Animal'); // a generic animal mock
 $handle->proxy($cat);     // now it behaves exactly like `$cat`
 
-listen($handle->mock());  // outputs 'It said: Meow meow meow? Meow.'
+listen($handle->get());  // outputs 'It said: Meow meow meow? Meow.'
 ```
 
 The [`proxy()`](#handle.proxy) method is also fluent, meaning that mock creation
@@ -946,7 +946,7 @@ $handle = partialMock(
     ]
 );
 
-$mock = $handle->mock();
+$mock = $handle->get();
 
 echo $mock;              // outputs 'What is this sorcery?'
 echo $mock->a('b', 'c'); // outputs 'a(b, c)'
@@ -973,7 +973,7 @@ $handle = partialMock(
     ]
 );
 
-$mock = $handle->mock();
+$mock = $handle->get();
 $mock->count->returns(111);
 
 echo $mock();      // outputs 'You called me?'
@@ -997,7 +997,7 @@ $handle = partialMock(
     ]
 );
 
-$mock = $handle->mock();
+$mock = $handle->get();
 
 echo $mock->a(); // outputs 'A is for apple.'
 echo $mock->b;   // outputs 'B is for banana.'
@@ -1024,7 +1024,7 @@ $handle = partialMock(
     ]
 );
 
-$mock = $handle->mock();
+$mock = $handle->get();
 $class = get_class($mock);
 
 echo $class::A;   // outputs 'A is for apple.'
@@ -1063,7 +1063,7 @@ $handle = partialMock(
     ]
 );
 
-$mock = $handle->mock();
+$mock = $handle->get();
 
 echo $mock->set('a', 1)->get('a'); // outputs '1'
 ```
@@ -1077,7 +1077,7 @@ existing handle, or a mock instance:
 
 ```php
 $handle = mock('DateTime');
-$mock = $handle->mock();
+$mock = $handle->get();
 
 $static = onStatic($handle);        // with `use function`
 $static = x\onStatic($handle);      // without `use function`
@@ -1156,7 +1156,7 @@ on any mock handle associated with the mock:
 
 ```php
 $handle = mock('ClassA');
-$mock = $handle->mock();
+$mock = $handle->get();
 
 $handle->setLabel('a');
 
@@ -1168,7 +1168,7 @@ The [`setLabel()`](#handle.setLabel) method is also fluent, meaning that mock
 creation and label setting can be done in a single expression:
 
 ```php
-$mock = mock('ClassA')->setLabel('a')->mock();
+$mock = mock('ClassA')->setLabel('a')->get();
 ```
 
 When a verification fails for a labeled mock, the output is similar to the
@@ -1203,11 +1203,11 @@ $handle = x\on($otherHandle);      // without `use function`
 $handle = Phony::on($otherHandle); // static
 ```
 
-To access the actual mock object, call the [`mock()`](#handle.mock) method of
-the handle:
+To access the actual mock object, call the [`get()`](#handle.get) method of the
+handle:
 
 ```php
-$mock = $handle->mock();
+$mock = $handle->get();
 ```
 
 Note that a static handle variant exists. See [Static mocks].
@@ -1228,7 +1228,7 @@ $result = mock('Result');
 
 // these two statements are equivalent
 $database->select->returns($result);
-$database->select->returns($result->mock());
+$database->select->returns($result->get());
 ```
 
 Another common situation is the use of a mock handle when
@@ -1242,7 +1242,7 @@ $result = mock('Result');
 
 // these two statements are equivalent
 $database->select($query)->returns($result);
-$database->select($query->mock())->returns($result);
+$database->select($query->get())->returns($result);
 ```
 
 The same is true when [verifying that a spy was called with specific arguments]:
@@ -1253,7 +1253,7 @@ $query = mock('Query');
 
 // these two statements are equivalent
 $database->select->calledWith($query);
-$database->select->calledWith($query->mock());
+$database->select->calledWith($query->get());
 ```
 
 There are other edge-case situations where *Phony* will exhibit this behaviour.
@@ -1439,7 +1439,7 @@ $handle = mock(
         'methodA' => function () {},
     ]
 );
-$mock = $handle->mock();
+$mock = $handle->get();
 
 $mock->methodA('a');
 $handle->stopRecording();
@@ -2633,7 +2633,7 @@ to the mock itself:
 
 ```php
 $handle = mock('ClassA');
-$mock = $handle->mock();
+$mock = $handle->get();
 $stub = $handle->methodA;
 
 echo $stub->self() === $mock ? 'true' : 'false'; // outputs 'true'
@@ -2942,7 +2942,7 @@ $handle = mock('FluentInterface')
 $handle->methodA->returnsSelf();
 $handle->methodB->returns('x');
 
-$fluent = $handle->mock();
+$fluent = $handle->get();
 
 echo $fluent->methodA()->methodB(); // outputs 'x'
 ```
@@ -3080,7 +3080,7 @@ $handle = mock('Cat');
 $handle->speak->returns('Meow.');
 $handle->speak(true)->forwards();
 
-$cat = $handle->mock();
+$cat = $handle->get();
 
 echo $cat->speak();     // outputs 'Meow.'
 echo $cat->speak(true); // outputs 'Cower in fear, mortal.'
@@ -3566,7 +3566,7 @@ The stub [self value] can be returned from a generator by using
 $handle = mock();
 $handle->methodA->generates()->returnsSelf();
 
-$mock = $handle->mock();
+$mock = $handle->get();
 $generator = $mock->methodA();
 
 iterator_to_array($generator); // consume the generator
@@ -7173,7 +7173,7 @@ To verify that there was no interaction with a mock, use
 
 ```php
 $handle = mock('ClassA');
-$mock = $handle->mock();
+$mock = $handle->get();
 
 $handle->noInteraction(); // passes
 
@@ -7492,18 +7492,18 @@ In the following example, note that differing mock behaviors are ignored, but
 differing labels are not:
 
 ```php
-$matcher = equalTo(mock('ClassX')->setLabel('x')->mock());
+$matcher = equalTo(mock('ClassX')->setLabel('x')->get());
 
 $a = mock('ClassX')->setLabel('x');
 $a->methodX->returns('x');
 
-echo $matcher->matches($a->mock()) ? 'true' : 'false'; // outputs 'true'
+echo $matcher->matches($a->get()) ? 'true' : 'false'; // outputs 'true'
 
 $b = mock('ClassX')->setLabel('y');
 $c = mock('ClassX');
 
-echo $matcher->matches($b->mock()) ? 'true' : 'false'; // outputs 'false'
-echo $matcher->matches($c->mock()) ? 'true' : 'false'; // outputs 'false'
+echo $matcher->matches($b->get()) ? 'true' : 'false'; // outputs 'false'
+echo $matcher->matches($c->get()) ? 'true' : 'false'; // outputs 'false'
 ```
 
 Since mocks are labeled with a unique integer by default, they can normally be
@@ -7511,8 +7511,8 @@ used to differentiate calls without requiring the use of an 'identical to'
 matcher:
 
 ```php
-$a = mock('ClassX')->mock();
-$b = mock('ClassX')->mock();
+$a = mock('ClassX')->get();
+$b = mock('ClassX')->get();
 
 $stub = stub();
 $stub->with($a)->returns('a');
@@ -7766,7 +7766,7 @@ will be included as a special property `phony.label`:
 $handle = mock('ClassA');
 $handle->setLabel('a');
 
-$value = $handle->mock();
+$value = $handle->get();
 // $value is exported as 'Phony_ClassA_0#0{phony.label: "a"}'
 ```
 

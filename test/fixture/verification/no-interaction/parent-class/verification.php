@@ -4,7 +4,7 @@ use Eloquent\Phony\Test\Phony;
 
 // setup
 $handle = Phony::mock('ClassA')->setLabel('label');
-$mock = $handle->mock();
+$mock = $handle->get();
 $mock->methodA('b', 'c');
 $mock->methodB('c', 'd');
 

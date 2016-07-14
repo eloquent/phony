@@ -101,7 +101,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return Mock The mock.
      */
-    public function mock()
+    public function get()
     {
         return $this->mock;
     }

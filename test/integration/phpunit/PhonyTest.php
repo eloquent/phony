@@ -20,7 +20,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
-        $this->mock = $this->handle->mock();
+        $this->mock = $this->handle->get();
     }
 
     public function testShouldRecordPassingMockAssertions()

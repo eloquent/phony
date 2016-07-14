@@ -50,7 +50,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
                 '__callStatic',
             );
         } else {
-            $this->mock = $handle->mock();
+            $this->mock = $handle->get();
             $callback = array($this->mock, '__call');
         }
 

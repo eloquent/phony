@@ -23,7 +23,7 @@ class PhonyTest extends UnitTestCase
     public function setUp()
     {
         $this->handle = Phony::mock('Eloquent\Phony\Test\TestClassA');
-        $this->mock = $this->handle->mock();
+        $this->mock = $this->handle->get();
     }
 
     public function testShouldRecordPassingMockAssertions()

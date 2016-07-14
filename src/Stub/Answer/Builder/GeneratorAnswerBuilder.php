@@ -217,7 +217,7 @@ class GeneratorAnswerBuilder
             $value instanceof InstanceHandle &&
             $value->isAdaptable()
         ) {
-            $value = $value->mock();
+            $value = $value->get();
         }
 
         return $this->callsWith(
@@ -270,14 +270,14 @@ class GeneratorAnswerBuilder
             $key instanceof InstanceHandle &&
             $key->isAdaptable()
         ) {
-            $key = $key->mock();
+            $key = $key->get();
         }
 
         if (
             $value instanceof InstanceHandle &&
             $value->isAdaptable()
         ) {
-            $value = $value->mock();
+            $value = $value->get();
         }
 
         $this->iterations[] = new GeneratorYieldIteration(
@@ -330,7 +330,7 @@ class GeneratorAnswerBuilder
             $value instanceof InstanceHandle &&
             $value->isAdaptable()
         ) {
-            $value = $value->mock();
+            $value = $value->get();
         }
 
         if ($this->isGeneratorReturnSupported || null === $value) {
@@ -424,7 +424,7 @@ class GeneratorAnswerBuilder
             $exception instanceof InstanceHandle &&
             $exception->isAdaptable()
         ) {
-            $exception = $exception->mock();
+            $exception = $exception->get();
         } elseif (!$exception) {
             $exception = new Exception();
         }

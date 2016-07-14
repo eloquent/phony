@@ -294,7 +294,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $arguments = new Arguments(array(&$a, &$b));
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
-        $this->assertSame($adaptable->mock(), $a);
+        $this->assertSame($adaptable->get(), $a);
         $this->assertSame($unadaptable, $b);
     }
 
@@ -324,7 +324,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject->yields($adaptable)->yields($unadaptable);
 
         $this->assertSame(
-            array($adaptable->mock(), $unadaptable),
+            array($adaptable->get(), $unadaptable),
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
@@ -340,7 +340,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $generator->next();
         }
 
-        $this->assertSame($adaptable->mock(), $generator->key());
+        $this->assertSame($adaptable->get(), $generator->key());
 
         $generator->next();
 
@@ -380,7 +380,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject->yieldsFrom(array($adaptable, $unadaptable));
 
         $this->assertSame(
-            array($adaptable->mock(), $unadaptable),
+            array($adaptable->get(), $unadaptable),
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
@@ -403,7 +403,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $generator->next();
         }
 
-        $this->assertSame($adaptable->mock(), $generator->key());
+        $this->assertSame($adaptable->get(), $generator->key());
 
         $generator->next();
 
@@ -450,7 +450,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
         $this->assertSame(array('a', 'b'), iterator_to_array($generator));
-        $this->assertSame($adaptable->mock(), $generator->getReturn());
+        $this->assertSame($adaptable->get(), $generator->getReturn());
     }
 
     public function testReturnsWithMulitpleValues()
@@ -622,7 +622,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         } catch (Exception $actual) {
         }
 
-        $this->assertSame($adaptable->mock(), $actual);
+        $this->assertSame($adaptable->get(), $actual);
     }
 
     public function testThrowsWithException()

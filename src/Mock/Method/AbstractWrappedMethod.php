@@ -42,7 +42,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
                 $this->name,
             );
         } else {
-            $this->mock = $handle->mock();
+            $this->mock = $handle->get();
             $callback = array($this->mock, $this->name);
         }
 

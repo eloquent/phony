@@ -30,7 +30,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         $handle = Phony::partialMock('Eloquent\Phony\Test\TestClassA');
         $handle->testClassAMethodA->with('a', 'b')->returns('x');
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
@@ -46,7 +46,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassA');
         $handle->testClassAMethodA->with('a', 'b')->returns('x');
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
@@ -59,7 +59,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMockCalls()
     {
-        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB', array('A', 'B'))->mock();
+        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB', array('A', 'B'))->get();
         $e = 'e';
         $n = 'n';
         $q = 'q';
@@ -82,7 +82,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testMagicMethodMocking()
     {
-        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB')->mock();
+        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB')->get();
 
         $this->assertSame('static magic nonexistent ab', $mock::nonexistent('a', 'b'));
         $this->assertSame('magic nonexistent ab', $mock->nonexistent('a', 'b'));
@@ -101,8 +101,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $mock = x\partialMock();
         $mockMock = x\partialMock($mock->className());
 
-        $this->assertInstanceOf(get_class($mock->mock()), $mockMock->mock());
-        $this->assertNotInstanceOf(get_class($mockMock->mock()), $mock->mock());
+        $this->assertInstanceOf(get_class($mock->get()), $mockMock->get());
+        $this->assertNotInstanceOf(get_class($mockMock->get()), $mock->get());
     }
 
     public function testVariadicParameterMocking()
@@ -121,7 +121,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertSame(array(1, 2), $handle->mock()->method(1, 2));
+        $this->assertSame(array(1, 2), $handle->get()->method(1, 2));
     }
 
     public function testVariadicParameterMockingWithType()
@@ -142,7 +142,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $a = (object) array();
         $b = (object) array();
 
-        $this->assertSame(array($a, $b), $handle->mock()->method($a, $b));
+        $this->assertSame(array($a, $b), $handle->get()->method($a, $b));
     }
 
     public function testVariadicParameterMockingByReference()
@@ -158,7 +158,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             ->returns();
         $a = null;
         $b = null;
-        $handle->mock()->method($a, $b);
+        $handle->get()->method($a, $b);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -172,7 +172,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint');
 
-        $handle->mock()->method(123, 1.23, '<string>', true);
+        $handle->get()->method(123, 1.23, '<string>', true);
         $handle->method->calledWith(123, 1.23, '<string>', true);
     }
 
@@ -195,12 +195,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertSame($object, $handle->mock()->classType('x'));
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $handle->mock()->classType());
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $handle->mock()->classType());
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', x\on($handle->mock()->classType()));
-        $this->assertSame(123, $handle->mock()->scalarType('x'));
-        $this->assertSame(0, $handle->mock()->scalarType());
+        $this->assertSame($object, $handle->get()->classType('x'));
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $handle->get()->classType());
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $handle->get()->classType());
+        $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', x\on($handle->get()->classType()));
+        $this->assertSame(123, $handle->get()->scalarType('x'));
+        $this->assertSame(0, $handle->get()->scalarType());
     }
 
     public function testMagicMethodReturnTypeMocking()
@@ -209,7 +209,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires return type declarations.');
         }
 
-        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType')->mock();
+        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType')->get();
 
         x\onStatic($mock)->nonexistent->returns('x');
         x\on($mock)->nonexistent->returns('z');
@@ -243,7 +243,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $handle->scalarType->returns('<string>');
 
         $this->setExpectedException('TypeError');
-        $handle->mock()->scalarType();
+        $handle->get()->scalarType();
     }
 
     public function testSpyStatic()
@@ -469,7 +469,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassA');
         $handle->testClassAMethodA->with('a', 'b')->returns(123);
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame(123, $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
@@ -479,7 +479,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testFullMockDefaultStubAnswerCanBeOverridden()
     {
         $handle = x\mock('Eloquent\Phony\Test\TestClassA');
-        $mock = $handle->mock();
+        $mock = $handle->get();
         $handle->testClassAMethodA->with('a', 'b')->returns(123);
 
         $this->assertSame(123, $mock->testClassAMethodA('a', 'b'));
@@ -490,7 +490,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testMagicMockDefaultStubAnswerCanBeOverridden()
     {
         $handle = x\mock('Eloquent\Phony\Test\TestClassB');
-        $mock = $handle->mock();
+        $mock = $handle->get();
         $handle->nonexistentA->with('a', 'b')->returns(123);
 
         $this->assertSame(123, $mock->nonexistentA('a', 'b'));
@@ -501,7 +501,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testDoesntCallParentOnInterfaceOnlyMock()
     {
         $handle = x\partialMock('Eloquent\Phony\Test\TestInterfaceA');
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
     }
@@ -513,7 +513,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         }
 
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassC');
-        $handle->mock()->methodB('a');
+        $handle->get()->methodB('a');
 
         $handle->methodB->calledWith('a');
     }
@@ -524,23 +524,23 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $handle->testClassAMethodA->returns('x');
         $handle->testClassAMethodA->returns('y', 'z');
 
-        $this->assertSame('y', $handle->mock()->testClassAMethodA());
-        $this->assertSame('z', $handle->mock()->testClassAMethodA());
-        $this->assertSame('z', $handle->mock()->testClassAMethodA());
+        $this->assertSame('y', $handle->get()->testClassAMethodA());
+        $this->assertSame('z', $handle->get()->testClassAMethodA());
+        $this->assertSame('z', $handle->get()->testClassAMethodA());
     }
 
     public function testCanCallMockedInterfaceMethod()
     {
         $handle = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestInterfaceA'));
 
-        $this->assertNull($handle->mock()->testClassAMethodA('a', 'b'));
+        $this->assertNull($handle->get()->testClassAMethodA('a', 'b'));
     }
 
     public function testCanCallMockedInterfaceMethodWithoutParentClass()
     {
         $handle = x\partialMock('Eloquent\Phony\Test\TestInterfaceA');
 
-        $this->assertNull($handle->mock()->testClassAMethodA('a', 'b'));
+        $this->assertNull($handle->get()->testClassAMethodA('a', 'b'));
     }
 
     public function testCanCallMockedTraitMethod()
@@ -551,7 +551,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestTraitA'));
 
-        $this->assertSame('ab', $handle->mock()->testClassAMethodB('a', 'b'));
+        $this->assertSame('ab', $handle->get()->testClassAMethodB('a', 'b'));
     }
 
     public function testCanCallMockedTraitMethodWithoutParentClass()
@@ -562,7 +562,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock(array('Eloquent\Phony\Test\TestTraitA'));
 
-        $this->assertSame('ab', $handle->mock()->testClassAMethodB('a', 'b'));
+        $this->assertSame('ab', $handle->get()->testClassAMethodB('a', 'b'));
     }
 
     public function testCanCallMockedAbstractTraitMethod()
@@ -573,7 +573,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestTraitC'));
 
-        $this->assertNull($handle->mock()->testTraitCMethodA('a', 'b'));
+        $this->assertNull($handle->get()->testTraitCMethodA('a', 'b'));
     }
 
     public function testCanCallMockedAbstractTraitMethodWithoutParentClass()
@@ -584,7 +584,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock(array('Eloquent\Phony\Test\TestTraitC'));
 
-        $this->assertNull($handle->mock()->testTraitCMethodA('a', 'b'));
+        $this->assertNull($handle->get()->testTraitCMethodA('a', 'b'));
     }
 
     public function testCanCallMockedTraitMethodWithInterface()
@@ -595,14 +595,14 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock(array('Eloquent\Phony\Test\TestTraitH', 'Eloquent\Phony\Test\TestInterfaceE'));
 
-        $this->assertSame('a', $handle->mock()->methodA());
+        $this->assertSame('a', $handle->get()->methodA());
     }
 
     public function testCanMockClassWithPrivateConstructor()
     {
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassD');
 
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassD', $handle->mock());
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassD', $handle->get());
     }
 
     public function testCanMockTraitWithPrivateConstructor()
@@ -613,7 +613,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock('Eloquent\Phony\Test\TestTraitF', array('a', 'b'));
 
-        $this->assertSame(array('a', 'b'), $handle->mock()->constructorArguments);
+        $this->assertSame(array('a', 'b'), $handle->get()->constructorArguments);
     }
 
     public function testCanMockClassAndCallPrivateConstructor()
@@ -624,7 +624,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassD', array('a', 'b'));
 
-        $this->assertSame(array('a', 'b'), $handle->mock()->constructorArguments);
+        $this->assertSame(array('a', 'b'), $handle->get()->constructorArguments);
     }
 
     public function testMatcherAdaptationForBooleanValues()
@@ -632,7 +632,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $handle = x\mock('Eloquent\Phony\Test\TestClassA');
         $handle->testClassAMethodA->with(true)->returns('a');
 
-        $this->assertNull($handle->mock()->testClassAMethodA());
+        $this->assertNull($handle->get()->testClassAMethodA());
     }
 
     public function testAssertionExceptionTrimming()
@@ -694,7 +694,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testIterableInterfaceMockingWithPDOStatement()
     {
-        $this->assertInstanceOf('PDOStatement', x\mock('PDOStatement')->mock());
+        $this->assertInstanceOf('PDOStatement', x\mock('PDOStatement')->get());
     }
 
     public function testTraitConstructorCalling()
@@ -705,7 +705,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $handle = x\partialMock('Eloquent\Phony\Test\TestTraitD', array('a', 'b', 'c'));
 
-        $this->assertSame(array('a', 'b', 'c'), $handle->mock()->constructorArguments);
+        $this->assertSame(array('a', 'b', 'c'), $handle->get()->constructorArguments);
     }
 
     public function testTraitConstructorConflictResolution()
@@ -719,7 +719,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             array('a', 'b', 'c')
         );
 
-        $this->assertSame(array('a', 'b', 'c'), $handle->mock()->constructorArguments);
+        $this->assertSame(array('a', 'b', 'c'), $handle->get()->constructorArguments);
     }
 
     public function testCallAtWithAssertionResult()
@@ -748,8 +748,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
                 }
             );
 
-        $this->assertSame($handle->mock(), $handle->mock()->testClassAMethodA());
-        $this->assertSame(array($handle->mock()), $callArguments);
+        $this->assertSame($handle->get(), $handle->get()->testClassAMethodA());
+        $this->assertSame(array($handle->get()), $callArguments);
     }
 
     public function testOrderVerification()
@@ -773,7 +773,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testCanForwardAfterFullMock()
     {
         $handle = x\mock('Eloquent\Phony\Test\TestClassA');
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertNull($mock->testClassAMethodA('a', 'b'));
 
@@ -789,7 +789,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testCanForwardToMagicCallAfterFullMock()
     {
         $handle = x\mock('Eloquent\Phony\Test\TestClassB');
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertNull($mock->nonexistent());
 
@@ -806,7 +806,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testCanForwardToMagicCallAfterPartialMock()
     {
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassB');
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame('magic nonexistent a', $mock->nonexistent('a'));
 
@@ -824,7 +824,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         $handle = x\mock('Exception');
 
-        $this->assertInstanceOf('Exception', $handle->mock());
+        $this->assertInstanceOf('Exception', $handle->get());
     }
 
     public function testMockMethodAssertionRenderingWithRealMethod()
@@ -911,14 +911,14 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testCanCallCustomMethodWithInvocableObjectImplementation()
     {
-        $mock = x\partialMock(array('methodA' => new TestInvocable()))->mock();
+        $mock = x\partialMock(array('methodA' => new TestInvocable()))->get();
 
         $this->assertSame(array('invokeWith', array('a', 'b')), $mock->methodA('a', 'b'));
     }
 
     public function testMockWithUncallableMagicMethod()
     {
-        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceD')->mock();
+        $mock = x\mock('Eloquent\Phony\Test\TestInterfaceD')->get();
 
         $this->assertNull($mock->nonexistent());
     }
@@ -936,7 +936,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $handle->testClassAMethodA->callsArgument(0);
         $spy = Phony::spy();
 
-        $this->assertNull($handle->mock()->testClassAMethodA($spy));
+        $this->assertNull($handle->get()->testClassAMethodA($spy));
         $spy->called();
     }
 
@@ -989,7 +989,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         }
 
         $handle = x\partialMock('Eloquent\Phony\Test\TestTraitJ');
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame('magic a bc', $mock->a('b', 'c'));
         $handle->a->calledWith('b', 'c');
@@ -1001,7 +1001,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $mock = x\partialMock('Eloquent\Phony\Test\TestTraitJ')->mock();
+        $mock = x\partialMock('Eloquent\Phony\Test\TestTraitJ')->get();
         $class = get_class($mock);
 
         $this->assertSame('magic a bc', $class::a('b', 'c'));
@@ -1037,14 +1037,14 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testAutomaticInstanceHandleAdaptation()
     {
         $handleA = x\mock();
-        $mockA = $handleA->mock();
+        $mockA = $handleA->get();
         $handleB = x\mock(array('methodA' => function () {}));
-        $mockB = $handleB->mock();
+        $mockB = $handleB->get();
         $handleB->methodA->returns($handleA);
         $handleB->methodA->with($handleA)->returns('a');
 
-        $this->assertSame($handleA->mock(), $mockB->methodA());
-        $this->assertSame('a', $mockB->methodA($handleA->mock()));
+        $this->assertSame($handleA->get(), $mockB->methodA());
+        $this->assertSame('a', $mockB->methodA($handleA->get()));
         $handleB->methodA->calledWith($handleA);
         $handleB->methodA->returned($handleA);
     }
@@ -1054,7 +1054,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $a = 'a';
         $b = 'b';
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassG');
-        $mock = $handle->mock();
+        $mock = $handle->get();
         $class = get_class($mock);
         $static = $class::testClassGStaticMethodA(true, $a, $b);
         $staticMagic = $class::nonexistent(true, $a, $b);
@@ -1076,8 +1076,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testAdHocMocksWithSameSignatures()
     {
-        $foo = x\partialMock(array('test' => function () { return 'foo'; }))->mock();
-        $bar = x\partialMock(array('test' => function () { return 'bar'; }))->mock();
+        $foo = x\partialMock(array('test' => function () { return 'foo'; }))->get();
+        $bar = x\partialMock(array('test' => function () { return 'bar'; }))->get();
 
         $this->assertSame('foo', $foo->test());
         $this->assertSame('bar', $bar->test());
@@ -1085,7 +1085,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testAdHocMocksWithMagicSelf()
     {
-        $mock = x\partialMock(array('test' => function ($phonySelf) { return $phonySelf; }))->mock();
+        $mock = x\partialMock(array('test' => function ($phonySelf) { return $phonySelf; }))->get();
 
         $this->assertSame($mock, $mock->test());
     }
@@ -1215,7 +1215,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         }
 
         $handle = x\mock('Eloquent\Phony\Test\TestClassA');
-        $mock = $handle->mock();
+        $mock = $handle->get();
         $mock->testClassAMethodA();
 
         $handle->testClassAMethodA->calledOn($mock);
@@ -1228,7 +1228,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         }
 
         $handle = x\mock(array('a' => function () {}));
-        $mock = $handle->mock();
+        $mock = $handle->get();
         $mock->a();
 
         $handle->a->calledOn($mock);

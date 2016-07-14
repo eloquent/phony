@@ -68,14 +68,14 @@ abstract class GeneratorAnswerBuilderDetail
                             $key instanceof InstanceHandle &&
                             $key->isAdaptable()
                         ) {
-                            $key = $key->mock();
+                            $key = $key->get();
                         }
 
                         if (
                             $value instanceof InstanceHandle &&
                             $value->isAdaptable()
                         ) {
-                            $value = $value->mock();
+                            $value = $value->get();
                         }
 
                         yield $key => $value;

@@ -46,7 +46,7 @@ class CallRequest
                 $argument instanceof InstanceHandle &&
                 $argument->isAdaptable()
             ) {
-                $this->arguments->set($index, $argument->mock());
+                $this->arguments->set($index, $argument->get());
             }
         }
     }
