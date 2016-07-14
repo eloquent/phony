@@ -79,8 +79,8 @@
     <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">{closure}[label]</tspan> to behave like:</text>
     <text x="16" y="44" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &lt;any&gt;</text>
     <text x="16" y="60" xml:space="preserve">Matched 0 of 2:</text>
-    <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #0 - {closure}[label](Closure#0{:1}):</text>
+    <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #0 - {closure}[label](Closure#0{:2}):</text>
     <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Never responded</text>
-    <text x="16" y="108" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - {closure}[label](Closure#0{:1}, 1):</text>
+    <text x="16" y="108" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - {closure}[label](Closure#0{:2}, 1):</text>
     <text x="16" y="124" xml:space="preserve">    <tspan class="red">✗</tspan> Never responded</text>
 </svg>
