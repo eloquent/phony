@@ -1016,24 +1016,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub();
     }
 
-    public function testInvalidStubUsageWithDestructor()
-    {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('Destructor is unpredictable under HHVM.');
-        }
-
-        $this->expectOutputString(
-            "WARNING: Stub criteria '<none>' were never used. Check for incomplete stub rules." . PHP_EOL
-        );
-
-        call_user_func(
-            function () {
-                x\stub()->with();
-            }
-        );
-        gc_collect_cycles();
-    }
-
     public function testAutomaticInstanceHandleAdaptation()
     {
         $handleA = x\mock();

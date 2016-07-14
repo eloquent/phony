@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -99,25 +98,6 @@ class StubData extends AbstractWrappedInvocable implements Stub
         $this->rules = array();
 
         $this->setSelf($self);
-    }
-
-    /**
-     * Used to detect invalid stub usage.
-     */
-    public function __destruct()
-    {
-        if (!$this->answers && null !== $this->criteria) {
-            printf(
-                'WARNING: Stub criteria %s were never used. ' .
-                    'Check for incomplete stub rules.%s',
-                var_export(
-                    AssertionRenderer::instance()
-                        ->renderMatchers($this->criteria),
-                    true
-                ),
-                PHP_EOL
-            );
-        }
     }
 
     /**
