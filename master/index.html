@@ -91,8 +91,6 @@
 <a href="#mock-handles">Mock handles</a>
 
 <ul>
-<li><a href="#stubbing-handles">Stubbing handles</a></li>
-<li><a href="#verification-handles">Verification handles</a></li>
 <li><a href="#mock-handle-substitution">Mock handle substitution</a></li>
 </ul>
 </li>
@@ -499,9 +497,9 @@ so that others may benefit from the outcome.</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\mock</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">assert</span>(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>) <span class="pl-k">===</span> <span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span></pre></div>
@@ -514,9 +512,9 @@ so that others may benefit from the outcome.</p>
 <span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>Phony<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
 <span class="pl-s1">    it(<span class="pl-s"><span class="pl-pds">'</span>integrates with Peridot<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">        expect(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>))<span class="pl-k">-&gt;</span><span class="pl-smi">to</span><span class="pl-k">-&gt;</span>equal(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
@@ -531,9 +529,9 @@ so that others may benefit from the outcome.</p>
 <span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>Phony<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
 <span class="pl-s1">    it(<span class="pl-s"><span class="pl-pds">'</span>integrates with Pho<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">        expect(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>))<span class="pl-k">-&gt;</span>toBe(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
@@ -550,9 +548,9 @@ so that others may benefit from the outcome.</p>
 <span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">testIntegration</span>()</span>
 <span class="pl-s1">    {</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>assertSame(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>, <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>));</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
@@ -569,9 +567,9 @@ so that others may benefit from the outcome.</p>
 <span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">testIntegration</span>()</span>
 <span class="pl-s1">    {</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>assertSame(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>), <span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
@@ -649,7 +647,7 @@ can be useful when a "real" object becomes difficult to use in a test.</p>
 <em><a href="#the-mock-api">handle</a></em> Phony::<a href="#facade.mock"><strong>mock</strong></a>($types = []) <em>(static)</em></p>
 </blockquote>
 
-<p>Create a new <a href="#mocking-basics">full mock</a>, and return a <a href="#stubbing-handles">stubbing handle</a>.</p>
+<p>Create a new <a href="#mocking-basics">full mock</a>, and return a <a href="#mock-handles">mock handle</a>.</p>
 
 <p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
 definition. If only a single type is being mocked, the class name or definition
@@ -667,7 +665,7 @@ can be passed without being wrapped in an array.</em></p>
 <em><a href="#the-mock-api">handle</a></em> Phony::<a href="#facade.partialMock"><strong>partialMock</strong></a>($types = [], $arguments = []) <em>(static)</em></p>
 </blockquote>
 
-<p>Create a new <a href="#partial-mocks">partial mock</a>, and return a <a href="#stubbing-handles">stubbing handle</a>.</p>
+<p>Create a new <a href="#partial-mocks">partial mock</a>, and return a <a href="#mock-handles">mock handle</a>.</p>
 
 <p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
 definition. If only a single type is being mocked, the class name or definition
@@ -689,19 +687,7 @@ the original constructor will not be called at all.</em></p>
 <em><a href="#the-mock-api">handle</a></em> Phony::<a href="#facade.on"><strong>on</strong></a>($mock) <em>(static)</em></p>
 </blockquote>
 
-<p>Returns a <a href="#stubbing-handles">stubbing handle</a> for <code>$mock</code>.</p>
-
-<p><a name="facade.verify"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-mock-api">handle</a></em> <a href="#facade.verify"><strong>verify</strong></a>($mock) <em>(with <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
-<em><a href="#the-mock-api">handle</a></em> x\<a href="#facade.verify"><strong>verify</strong></a>($mock) <em>(without <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
-<em><a href="#the-mock-api">handle</a></em> Phony::<a href="#facade.verify"><strong>verify</strong></a>($mock) <em>(static)</em></p>
-</blockquote>
-
-<p>Returns a <a href="#verification-handles">verification handle</a> for <code>$mock</code>.</p>
+<p>Returns a <a href="#mock-handles">mock handle</a> for <code>$mock</code>.</p>
 
 <p><a name="facade.onStatic"></a></p>
 
@@ -713,30 +699,16 @@ the original constructor will not be called at all.</em></p>
 <em><a href="#the-mock-api">handle</a></em> Phony::<a href="#facade.onStatic"><strong>onStatic</strong></a>($class) <em>(static)</em></p>
 </blockquote>
 
-<p>Returns a static <a href="#stubbing-handles">stubbing handle</a> for <code>$class</code>.</p>
+<p>Returns a static <a href="#static-mocks">static handle</a> for <code>$class</code>.</p>
 
 <p><em>See <a href="#static-mocks">Static mocks</a>.</em></p>
 
-<p><a name="facade.verifyStatic"></a></p>
+<p><a name="handle.get"></a></p>
 
 <hr>
 
 <blockquote>
-<p><em><a href="#the-mock-api">handle</a></em> <a href="#facade.verifyStatic"><strong>verifyStatic</strong></a>($class) <em>(with <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
-<em><a href="#the-mock-api">handle</a></em> x\<a href="#facade.verifyStatic"><strong>verifyStatic</strong></a>($class) <em>(without <a href="http://php.net/language.namespaces.importing">use function</a>)</em><br>
-<em><a href="#the-mock-api">handle</a></em> Phony::<a href="#facade.verifyStatic"><strong>verifyStatic</strong></a>($class) <em>(static)</em></p>
-</blockquote>
-
-<p>Returns a static <a href="#verification-handles">verification handle</a> for <code>$class</code>.</p>
-
-<p><em>See <a href="#static-mocks">Static mocks</a>.</em></p>
-
-<p><a name="handle.mock"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>mock</em> $handle-&gt;<a href="#handle.mock"><strong>mock</strong></a>()</p>
+<p><em>mock</em> $handle-&gt;<a href="#handle.get"><strong>get</strong></a>()</p>
 </blockquote>
 
 <p>Get the <a href="#mocks">mock</a>.</p>
@@ -744,38 +716,6 @@ the original constructor will not be called at all.</em></p>
 <p><em>This method is not available on <a href="#static-mocks">static mock handles</a>.</em></p>
 
 <p><em>See <a href="#mocking-basics">Mocking basics</a>, <a href="#mock-handles">Mock handles</a>.</em></p>
-
-<p><a name="handle.__call"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-stub-api">stub</a></em> $handle-&gt;<a href="#handle.__call"><strong>$method</strong></a>(...$arguments) (on a <a href="#stubbing-handles">stubbing handle</a>)<br>
-<em>fluent</em> $handle-&gt;<a href="#handle.__call"><strong>$method</strong></a>(...$arguments) (on a <a href="#verification-handles">verification handle</a>)</p>
-</blockquote>
-
-<p><strong>When called on a <a href="#stubbing-handles">stubbing handle</a>:</strong></p>
-
-<p>Get a stub, and modify its current criteria to match the supplied arguments.</p>
-
-<p><em>This is equivalent to <code>$handle-&gt;$method-&gt;with(...$arguments)</code>.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#mocking-basics">Mocking basics</a>, <a href="#stubbing-handles">Stubbing handles</a>.</em></p>
-
-<p><strong>When called on a <a href="#verification-handles">verification handle</a>:</strong></p>
-
-<p>Throws an exception unless the specified method was called with the supplied
-arguments.</p>
-
-<p><em>This is equivalent to <code>$handle-&gt;$method-&gt;calledWith(...$arguments)</code>, except
-that it returns <code>$handle</code>, allowing a fluent interface for multiple
-verifications.</em></p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
-
-<p><em>See <a href="#verification-handles">Verification handles</a>.</em></p>
 
 <p><a name="handle.stub"></a>
 <a name="handle.__get"></a></p>
@@ -1261,19 +1201,10 @@ the same name as the stubbed method, and implements both <a href="#the-stub-api"
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>swiggity<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>swooty<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodB</span><span class="pl-k">-&gt;</span>called();</span></pre></div>
 
-<p>The mock handle returned by <a href="#facade.mock"><code>mock()</code></a> is a type of handle called
-a <a href="#stubbing-handles">stubbing handle</a>, which means it implements magic
-<a href="#handle.__call"><code>__call()</code></a> methods that are equivalent to a call to
-<a href="#stub.with"><code>with()</code></a>:</p>
+<p>To access the actual mock object, call the <a href="#handle.get"><code>get()</code></a> method of the
+handle:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
-<span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>);</span></pre></div>
-
-<p>To access the actual mock object, call the <a href="#handle.mock"><code>mock()</code></a> method of
-the handle:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span></pre></div>
 
 <h3>
 <a id="partial-mocks" class="anchor" href="#partial-mocks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Partial mocks</h3>
@@ -1321,7 +1252,7 @@ Any mock can proxy methods on to any other object by using
 <span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>Animal<span class="pl-pds">'</span></span>); <span class="pl-c">// a generic animal mock</span></span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>proxy(<span class="pl-smi">$cat</span>);     <span class="pl-c">// now it behaves exactly like `$cat`</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1">listen(<span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock());  <span class="pl-c">// outputs 'It said: Meow meow meow? Meow.'</span></span></pre></div>
+<span class="pl-s1">listen(<span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get());  <span class="pl-c">// outputs 'It said: Meow meow meow? Meow.'</span></span></pre></div>
 
 <p>The <a href="#handle.proxy"><code>proxy()</code></a> method is also fluent, meaning that mock creation
 and proxying can be done in a single expression:</p>
@@ -1364,7 +1295,7 @@ using special "definition" values, which can be passed to
 <span class="pl-s1">    ]</span>
 <span class="pl-s1">);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span>;              <span class="pl-c">// outputs 'What is this sorcery?'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>a(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>); <span class="pl-c">// outputs 'a(b, c)'</span></span></pre></div>
@@ -1389,7 +1320,7 @@ specify all types to be mocked in a single array:</p>
 <span class="pl-s1">    ]</span>
 <span class="pl-s1">);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"><span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span><span class="pl-smi">count</span><span class="pl-k">-&gt;</span>returns(<span class="pl-c1">111</span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> $<span class="pl-smi">mock</span>();      <span class="pl-c">// outputs 'You called me?'</span></span>
@@ -1412,7 +1343,7 @@ a property:</p>
 <span class="pl-s1">    ]</span>
 <span class="pl-s1">);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>a(); <span class="pl-c">// outputs 'A is for apple.'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span><span class="pl-smi">b</span>;   <span class="pl-c">// outputs 'B is for banana.'</span></span></pre></div>
@@ -1437,7 +1368,7 @@ properties, keywords can be added to the keys of the definition value:</p>
 <span class="pl-s1">    ]</span>
 <span class="pl-s1">);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"><span class="pl-smi">$class</span> <span class="pl-k">=</span> <span class="pl-c1">get_class</span>(<span class="pl-smi">$mock</span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$class</span><span class="pl-k">::</span><span class="pl-c1">A</span>;   <span class="pl-c">// outputs 'A is for apple.'</span></span>
@@ -1475,7 +1406,7 @@ fluent interfaces:</p>
 <span class="pl-s1">    ]</span>
 <span class="pl-s1">);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>set(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-c1">1</span>)<span class="pl-k">-&gt;</span>get(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// outputs '1'</span></span></pre></div>
 
@@ -1484,11 +1415,11 @@ fluent interfaces:</p>
 
 <p><em>Phony</em> can be used to stub the behavior of static methods of generated mock
 classes. To modify the behavior of a static method, use
-<a href="#facade.onStatic"><code>onStatic()</code></a> to obtain a static stubbing handle from either
-an existing handle, or a mock instance:</p>
+<a href="#facade.onStatic"><code>onStatic()</code></a> to obtain a static handle from either an
+existing handle, or a mock instance:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>DateTime<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> onStatic(<span class="pl-smi">$handle</span>);        <span class="pl-c">// with `use function`</span></span>
 <span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>onStatic(<span class="pl-smi">$handle</span>);      <span class="pl-c">// without `use function`</span></span>
@@ -1498,8 +1429,8 @@ an existing handle, or a mock instance:</p>
 <span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>onStatic(<span class="pl-smi">$mock</span>);      <span class="pl-c">// without `use function`</span></span>
 <span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>onStatic(<span class="pl-smi">$mock</span>); <span class="pl-c">// static</span></span></pre></div>
 
-<p>This static handle is just like a normal <a href="#stubbing-handles">stubbing handle</a>, except that it
-refers to static methods instead of instance methods:</p>
+<p>This static handle is just like a normal <a href="#mock-handles">mock handle</a>, except that it refers to
+static methods instead of instance methods:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$static</span><span class="pl-k">-&gt;</span><span class="pl-smi">createFromFormat</span><span class="pl-k">-&gt;</span>returns(<span class="pl-k">new</span> <span class="pl-c1">DateTime</span>(<span class="pl-s"><span class="pl-pds">'</span>2001-02-03T04:05:06Z<span class="pl-pds">'</span></span>));</span>
 <span class="pl-s1"></span>
@@ -1511,21 +1442,6 @@ refers to static methods instead of instance methods:</p>
 <p>The static handle can also be used to verify interactions with static methods:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$static</span><span class="pl-k">-&gt;</span><span class="pl-smi">createFromFormat</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>format<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>time<span class="pl-pds">'</span></span>);</span></pre></div>
-
-<p>There is also a static variant of the normal <a href="#verification-handles">verification handle</a>, which can
-be created from either an existing handle, or a mock instance, using
-<a href="#facade.verifyStatic"><code>verifyStatic()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>DateTime<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> verifyStatic(<span class="pl-smi">$handle</span>);        <span class="pl-c">// with `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>verifyStatic(<span class="pl-smi">$handle</span>);      <span class="pl-c">// without `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>verifyStatic(<span class="pl-smi">$handle</span>); <span class="pl-c">// static</span></span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> verifyStatic(<span class="pl-smi">$mock</span>);        <span class="pl-c">// with `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>verifyStatic(<span class="pl-smi">$mock</span>);      <span class="pl-c">// without `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$static</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>verifyStatic(<span class="pl-smi">$mock</span>); <span class="pl-c">// static</span></span></pre></div>
 
 <h3>
 <a id="calling-a-constructor-manually" class="anchor" href="#calling-a-constructor-manually" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Calling a constructor manually</h3>
@@ -1570,7 +1486,7 @@ unique sequential integer label upon creation.</p>
 on any mock handle associated with the mock:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
@@ -1580,7 +1496,7 @@ on any mock handle associated with the mock:</p>
 <p>The <a href="#handle.setLabel"><code>setLabel()</code></a> method is also fluent, meaning that mock
 creation and label setting can be done in a single expression:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>mock();</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>get();</span></pre></div>
 
 <p>When a verification fails for a labeled mock, the output is similar to the
 following:</p>
@@ -1590,100 +1506,33 @@ following:</p>
 <h3>
 <a id="mock-handles" class="anchor" href="#mock-handles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mock handles</h3>
 
-<p>Mock handles come in two varieties. <a href="#stubbing-handles">Stubbing handles</a> are the default type
-returned when using <a href="#facade.mock"><code>mock()</code></a>, but there are also
-<a href="#verification-handles">verification handles</a> that are designed to make multiple verifications easier.</p>
+<p>Mock handles are objects that provide access to stubs for each method of a mock
+object. Each method stub implements both <a href="#the-stub-api">the stub API</a> for stubbing, and
+<a href="#the-spy-api">the spy API</a> for verification.</p>
 
-<p>Despite their names, both types of handles provide stubs that implement both
-<a href="#the-stub-api">the stub API</a> for stubbing, and <a href="#the-spy-api">the spy API</a> for verification. The difference
-is <em>only</em> in the handle's implementation of the magic
-<a href="#handle.__call"><code>__call()</code></a> methods. These magic methods are tailored for
-convenience when stubbing or verifying, depending on which type of handle is in
-use.</p>
+<p>Mock handles are returned when <a href="#facade.mock"><code>mock()</code></a> or
+<a href="#facade.partialMock"><code>partialMock()</code></a> is called:</p>
 
-<h4>
-<a id="stubbing-handles" class="anchor" href="#stubbing-handles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stubbing handles</h4>
-
-<p>Stubbing handles are the default handle type. They are returned when
-<a href="#facade.mock"><code>mock()</code></a> or <a href="#facade.partialMock"><code>partialMock()</code></a> is called:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> partialMock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> partialMock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span></pre></div>
 
 <p>They can also be retrieved at any time from a mock instance, or another handle,
 by using <a href="#facade.on"><code>on()</code></a>:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> on(<span class="pl-smi">$mock</span>);        <span class="pl-c">// with `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>on(<span class="pl-smi">$mock</span>);      <span class="pl-c">// without `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>on(<span class="pl-smi">$mock</span>); <span class="pl-c">// static</span></span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> on(<span class="pl-smi">$mock</span>);        <span class="pl-c">// with `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>on(<span class="pl-smi">$mock</span>);      <span class="pl-c">// without `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>on(<span class="pl-smi">$mock</span>); <span class="pl-c">// static</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> on(<span class="pl-smi">$otherHandle</span>);        <span class="pl-c">// with `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>on(<span class="pl-smi">$otherHandle</span>);      <span class="pl-c">// without `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>on(<span class="pl-smi">$otherHandle</span>); <span class="pl-c">// static</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> on(<span class="pl-smi">$otherHandle</span>);        <span class="pl-c">// with `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>on(<span class="pl-smi">$otherHandle</span>);      <span class="pl-c">// without `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>on(<span class="pl-smi">$otherHandle</span>); <span class="pl-c">// static</span></span></pre></div>
 
-<p>To access the actual mock object, call the <a href="#handle.mock"><code>mock()</code></a> method of
-the handle:</p>
+<p>To access the actual mock object, call the <a href="#handle.get"><code>get()</code></a> method of the
+handle:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$stubbingHandle</span><span class="pl-k">-&gt;</span>mock();</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span></pre></div>
 
-<p>Stubbing handles implement magic <a href="#handle.__call"><code>__call()</code></a> methods that are
-equivalent to a call to <a href="#stub.with"><code>with()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$stubbingHandle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>);</span></pre></div>
-
-<p>This provides the most convenience when setting up mock behaviors.</p>
-
-<p>Note that a static variant of the stubbing handle exists. See <a href="#static-mocks">Static mocks</a>.</p>
-
-<h4>
-<a id="verification-handles" class="anchor" href="#verification-handles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verification handles</h4>
-
-<p>Verification handles are a type of handle that provides the ability to make
-verifications using a fluent interface.</p>
-
-<p>A verification handle can also be created at any time from a mock instance, or
-another handle, by using <a href="#facade.verify"><code>verify()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$verificationHandle</span> <span class="pl-k">=</span> verify(<span class="pl-smi">$mock</span>);        <span class="pl-c">// with `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>verify(<span class="pl-smi">$mock</span>);      <span class="pl-c">// without `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>verify(<span class="pl-smi">$mock</span>); <span class="pl-c">// static</span></span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span> <span class="pl-k">=</span> verify(<span class="pl-smi">$otherHandle</span>);        <span class="pl-c">// with `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>verify(<span class="pl-smi">$otherHandle</span>);      <span class="pl-c">// without `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>verify(<span class="pl-smi">$otherHandle</span>); <span class="pl-c">// static</span></span></pre></div>
-
-<p>To access the actual mock object, call the <a href="#handle.mock"><code>mock()</code></a> method of
-the handle:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$verificationHandle</span><span class="pl-k">-&gt;</span>mock();</span></pre></div>
-
-<p>Verification handles implement magic <a href="#handle.__call"><code>__call()</code></a> methods that
-are equivalent to a call to <a href="#stub.calledWith"><code>calledWith()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);</span></pre></div>
-
-<p>These magic methods can be used in a fluent manner to perform multiple
-verifications easily:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$verificationHandle</span></span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>)</span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>methodB(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>)</span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>methodC(<span class="pl-s"><span class="pl-pds">'</span>e<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>f<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c">// the above is equivalent to these statements:</span></span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodB</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$verificationHandle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodC</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>e<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>f<span class="pl-pds">'</span></span>);</span></pre></div>
-
-<p>Note that this does not verify the order of events. If order is important, use
-<a href="#order-verification">order verification</a>.</p>
-
-<p>Note that a static variant of the verification handle exists. See
-<a href="#static-mocks">Static mocks</a>.</p>
+<p>Note that a static handle variant exists. See <a href="#static-mocks">Static mocks</a>.</p>
 
 <h4>
 <a id="mock-handle-substitution" class="anchor" href="#mock-handle-substitution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mock handle substitution</h4>
@@ -1701,7 +1550,7 @@ the mock itself:</p>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
 <span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span>
-<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span><span class="pl-k">-&gt;</span>mock());</span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span><span class="pl-k">-&gt;</span>get());</span></pre></div>
 
 <p>Another common situation is the use of a mock handle when
 <a href="#matching-stub-arguments">matching stub arguments</a>. Use of a mock handle in a argument list is equivalent
@@ -1713,7 +1562,7 @@ to use of the mock itself:</p>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
 <span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>select(<span class="pl-smi">$query</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span>
-<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>select(<span class="pl-smi">$query</span><span class="pl-k">-&gt;</span>mock())<span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>select(<span class="pl-smi">$query</span><span class="pl-k">-&gt;</span>get())<span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span></pre></div>
 
 <p>The same is true when <a href="#verifying-that-a-spy-was-called-with-specific-arguments">verifying that a spy was called with specific arguments</a>:</p>
 
@@ -1722,7 +1571,7 @@ to use of the mock itself:</p>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
 <span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$query</span>);</span>
-<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$query</span><span class="pl-k">-&gt;</span>mock());</span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$query</span><span class="pl-k">-&gt;</span>get());</span></pre></div>
 
 <p>There are other edge-case situations where <em>Phony</em> will exhibit this behaviour.
 Refer to the API documentation for more detailed information.</p>
@@ -1803,8 +1652,8 @@ instance on the builder. To retrieve the last created mock instance, use
 full mock instance, and return it.</p>
 
 <p>Note that unlike using <a href="#facade.mock"><code>mock()</code></a>, these methods do not
-automatically wrap the returned mock in a <a href="#mock-handles">mock handle</a>. To obtain a stubbing
-handle, use <a href="#facade.on"><code>on()</code></a>:</p>
+automatically wrap the returned mock in a <a href="#mock-handles">mock handle</a>. To obtain a handle,
+use <a href="#facade.on"><code>on()</code></a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$builder</span><span class="pl-k">-&gt;</span>mock();</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> on(<span class="pl-smi">$mock</span>);</span></pre></div>
@@ -1882,7 +1731,7 @@ original builder:</p>
 <span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>methodA<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-k">function</span> () {},</span>
 <span class="pl-s1">    ]</span>
 <span class="pl-s1">);</span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>stopRecording();</span>
@@ -3210,7 +3059,7 @@ creation and self value setting can be done in a single expression:</p>
 to the mock itself:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>self() <span class="pl-k">===</span> <span class="pl-smi">$mock</span> ? <span class="pl-s"><span class="pl-pds">'</span>true<span class="pl-pds">'</span></span> : <span class="pl-s"><span class="pl-pds">'</span>false<span class="pl-pds">'</span></span>; <span class="pl-c">// outputs 'true'</span></span></pre></div>
@@ -3533,7 +3382,7 @@ the mock itself. This allows mocking of <a href="http://en.wikipedia.org/wiki/Fl
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>returnsSelf();</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodB</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$fluent</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$fluent</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$fluent</span><span class="pl-k">-&gt;</span>methodA()<span class="pl-k">-&gt;</span>methodB(); <span class="pl-c">// outputs 'x'</span></span></pre></div>
 
@@ -3658,7 +3507,7 @@ behavior in specific circumstances:</p>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">speak</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>Meow.<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>speak(<span class="pl-c1">true</span>)<span class="pl-k">-&gt;</span>forwards();</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$cat</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$cat</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$cat</span><span class="pl-k">-&gt;</span>speak();     <span class="pl-c">// outputs 'Meow.'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$cat</span><span class="pl-k">-&gt;</span>speak(<span class="pl-c1">true</span>); <span class="pl-c">// outputs 'Cower in fear, mortal.'</span></span></pre></div>
@@ -4106,7 +3955,7 @@ generator:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock();</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>generates()<span class="pl-k">-&gt;</span>returnsSelf();</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"><span class="pl-smi">$generator</span> <span class="pl-k">=</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">iterator_to_array</span>(<span class="pl-smi">$generator</span>); <span class="pl-c">// consume the generator</span></span>
@@ -8009,7 +7858,7 @@ of other types of events:</p>
 <a href="#handle.noInteraction"><code>noInteraction()</code></a> on any <a href="#mock-handles">mock handle</a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>noInteraction(); <span class="pl-c">// passes</span></span>
 <span class="pl-s1"></span>
@@ -8333,25 +8182,25 @@ the comparison.</p>
 <p>In the following example, note that differing mock behaviors are ignored, but
 differing labels are not:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> equalTo(mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>mock());</span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> equalTo(mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>get());</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$a</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"><span class="pl-smi">$a</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodX</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>x<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$matcher</span><span class="pl-k">-&gt;</span>matches(<span class="pl-smi">$a</span><span class="pl-k">-&gt;</span>mock()) ? <span class="pl-s"><span class="pl-pds">'</span>true<span class="pl-pds">'</span></span> : <span class="pl-s"><span class="pl-pds">'</span>false<span class="pl-pds">'</span></span>; <span class="pl-c">// outputs 'true'</span></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$matcher</span><span class="pl-k">-&gt;</span>matches(<span class="pl-smi">$a</span><span class="pl-k">-&gt;</span>get()) ? <span class="pl-s"><span class="pl-pds">'</span>true<span class="pl-pds">'</span></span> : <span class="pl-s"><span class="pl-pds">'</span>false<span class="pl-pds">'</span></span>; <span class="pl-c">// outputs 'true'</span></span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>y<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"><span class="pl-smi">$c</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$matcher</span><span class="pl-k">-&gt;</span>matches(<span class="pl-smi">$b</span><span class="pl-k">-&gt;</span>mock()) ? <span class="pl-s"><span class="pl-pds">'</span>true<span class="pl-pds">'</span></span> : <span class="pl-s"><span class="pl-pds">'</span>false<span class="pl-pds">'</span></span>; <span class="pl-c">// outputs 'false'</span></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$matcher</span><span class="pl-k">-&gt;</span>matches(<span class="pl-smi">$c</span><span class="pl-k">-&gt;</span>mock()) ? <span class="pl-s"><span class="pl-pds">'</span>true<span class="pl-pds">'</span></span> : <span class="pl-s"><span class="pl-pds">'</span>false<span class="pl-pds">'</span></span>; <span class="pl-c">// outputs 'false'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$matcher</span><span class="pl-k">-&gt;</span>matches(<span class="pl-smi">$b</span><span class="pl-k">-&gt;</span>get()) ? <span class="pl-s"><span class="pl-pds">'</span>true<span class="pl-pds">'</span></span> : <span class="pl-s"><span class="pl-pds">'</span>false<span class="pl-pds">'</span></span>; <span class="pl-c">// outputs 'false'</span></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$matcher</span><span class="pl-k">-&gt;</span>matches(<span class="pl-smi">$c</span><span class="pl-k">-&gt;</span>get()) ? <span class="pl-s"><span class="pl-pds">'</span>true<span class="pl-pds">'</span></span> : <span class="pl-s"><span class="pl-pds">'</span>false<span class="pl-pds">'</span></span>; <span class="pl-c">// outputs 'false'</span></span></pre></div>
 
 <p>Since mocks are labeled with a unique integer by default, they can normally be
 used to differentiate calls without requiring the use of an 'identical to'
 matcher:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$a</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>mock();</span>
-<span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>mock();</span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$a</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>get();</span>
+<span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassX<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub();</span>
 <span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>with(<span class="pl-smi">$a</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);</span>
@@ -8631,7 +8480,7 @@ will be included as a special property <code>phony.label</code>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>mock();</span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
 <span class="pl-s1"><span class="pl-c">// $value is exported as 'Phony_ClassA_0#0{phony.label: "a"}'</span></span></pre></div>
 
 <h3>
