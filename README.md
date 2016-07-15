@@ -32,12 +32,155 @@
 ## What is *Phony*?
 
 *Phony* is a PHP library for creating [test doubles]. *Phony* supports a wide
-range of PHP versions, from 5.3 through to 7, as well as [HHVM]. In addition,
-*Phony* has excellent support for modern language features, such as
-[generators].
+range of PHP versions, from 5.3 through to 7, as well as [HHVM].
 
-[generators]: http://php.net/language.generators.overview
 [test doubles]: https://en.wikipedia.org/wiki/Test_double
+
+## Features
+
+*Phony* has an extensive and powerful feature set. For detailed information on
+a particular feature, select one of the following:
+
+- Support for a wide range of PHP versions
+    - Supports PHP from 5.3 onward
+    - Supports [HHVM]
+- Support for important PHP features
+    - Passed-by-reference arguments "just work" in most use cases
+    - [Setting of passed-by-reference arguments]
+    - [Stubbing of functions and methods with PHP 7 return types]
+    - Support for generator [stubbing][generator stubbing] and
+      [verification][generator verification]
+    - [Mocking of traits]
+    - Support for modern [variable-length argument lists] using the `...` token
+- [Integrates seamlessly with other testing libraries and tools]
+    - [No configuration or bootstrap code necessary]
+    - [Most test frameworks "just work" with *Phony*]
+    - Tight integration with [PHPUnit][phpunit integration],
+      [Pho][pho integration] and [SimpleTest][simpletest integration]
+    - [Can be used standalone, too]
+    - Supports matchers from [Counterpart][counterpart matchers],
+      [Hamcrest][hamcrest matchers], [PHPUnit][phpunit matchers],
+      [SimpleTest][simpletest matchers], and even other mocking frameworks like
+      [Phake][phake matchers], [Prophecy][prophecy matchers], and
+      [Mockery][mockery matchers]
+- [Mock objects]
+    - [Mocking of classes, interfaces, and traits]
+    - [Mocking of multiple types simultaneously]
+    - [Partial mocks] function as transparent "object spies"
+    - [Proxy mocks for `final` classes]
+    - [Composition of ad-hoc mock classes with custom methods and properties]
+    - [Customizable class names]
+    - [Constructor bypassing, and manual constructor calling]
+    - [Static method mocking]
+    - [Labeling of mocks for easy identification]
+    - [Fluent interface mocking]
+    - [Mock builders for advanced usage]
+- [Stubbing]
+    - Mock method stubs are built upon [function-level stubs], which can also be
+      used on [individual functions and callbacks][stubbing callables]
+    - [Anonymous stubs]
+    - Returning of [specific values][returning values],
+      [arguments][returning arguments], and [more][returning self]
+    - [Throwing of exceptions]
+    - [Replacement of behavior with another callback]
+    - [Conditional use of the original function or method]
+    - [Returning of generators with customizable behavior]
+    - [Multiple actions can be performed in a single invocation]
+- [Spying]
+    - Mock method verification is built upon [function-level spies], which can
+      also be used on [individual functions and callbacks][spying on callables]
+    - [Anonymous spies]
+    - Verify-after-running style produces more durable tests than outdated
+      [expect-run-verify] style
+    - [Clear, detailed verification output]
+    - Verification of [calls][verifying calls] and
+      [call arguments][verifying arguments]
+    - Verification of [return values][verifying return values] and
+      [thrown exceptions][verifying thrown exceptions]
+    - Verification of [generators][verifying generators], including
+      [yielded values], [received values], [received exceptions],
+      [return values][verifying generator return values], and
+      [thrown exceptions][verifying generator thrown exceptions]
+    - [Verification of other iterables]
+    - [Verification of cardinality (the amount of times something happened)]
+    - [Verification of no interaction with a mock]
+    - [Order verification]
+    - [Check verification (verifying without throwing exceptions)]
+    - [Individual call level verification]
+    - [Retrieval of call arguments]
+    - [Labeling of spies for easy identification]
+    - [Spies can be paused and resumed]
+
+Full [documentation] is also available.
+
+[anonymous spies]: http://eloquent-software.com/phony/latest/#anonymous-spies
+[anonymous stubs]: http://eloquent-software.com/phony/latest/#anonymous-stubs
+[can be used standalone, too]: http://eloquent-software.com/phony/latest/#standalone-usage
+[check verification (verifying without throwing exceptions)]: http://eloquent-software.com/phony/latest/#check-verification
+[clear, detailed verification output]: http://eloquent-software.com/phony/latest/#understanding-verification-output
+[composition of ad-hoc mock classes with custom methods and properties]: http://eloquent-software.com/phony/latest/#ad-hoc-mocks
+[conditional use of the original function or method]: http://eloquent-software.com/phony/latest/#forwarding-to-the-original-callable
+[constructor bypassing, and manual constructor calling]: http://eloquent-software.com/phony/latest/#calling-a-constructor-manually
+[counterpart matchers]: http://eloquent-software.com/phony/latest/#counterpart-matchers
+[customizable class names]: http://eloquent-software.com/phony/latest/#builder.named
+[fluent interface mocking]: http://eloquent-software.com/phony/latest/#returning-the-self-value
+[function-level spies]: http://eloquent-software.com/phony/latest/#spies
+[function-level stubs]: http://eloquent-software.com/phony/latest/#stubs
+[generator stubbing]: http://eloquent-software.com/phony/latest/#stubbing-generators
+[generator verification]: http://eloquent-software.com/phony/latest/#generator-and-iterable-verification
+[hamcrest matchers]: http://eloquent-software.com/phony/latest/#hamcrest-matchers
+[individual call level verification]: http://eloquent-software.com/phony/latest/#calls
+[integrates seamlessly with other testing libraries and tools]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[labeling of mocks for easy identification]: http://eloquent-software.com/phony/latest/#labeling-mocks
+[labeling of spies for easy identification]: http://eloquent-software.com/phony/latest/#labeling-spies
+[mock builders for advanced usage]: http://eloquent-software.com/phony/latest/#mock-builders
+[mock objects]: http://eloquent-software.com/phony/latest/#mocks
+[mockery matchers]: http://eloquent-software.com/phony/latest/#mockery-matchers
+[mocking of classes, interfaces, and traits]: http://eloquent-software.com/phony/latest/#mocking-basics
+[mocking of multiple types simultaneously]: http://eloquent-software.com/phony/latest/#mocking-multiple-types
+[mocking of traits]: http://eloquent-software.com/phony/latest/#mocking-basics
+[most test frameworks "just work" with *phony*]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[multiple actions can be performed in a single invocation]: http://eloquent-software.com/phony/latest/#answers-that-perform-multiple-actions
+[no configuration or bootstrap code necessary]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[order verification]: http://eloquent-software.com/phony/latest/#order-verification
+[partial mocks]: http://eloquent-software.com/phony/latest/#partial-mocks
+[phake matchers]: http://eloquent-software.com/phony/latest/#phake-matchers
+[pho integration]: http://eloquent-software.com/phony/latest/#pho-usage
+[phpunit integration]: http://eloquent-software.com/phony/latest/#phpunit-usage
+[phpunit matchers]: http://eloquent-software.com/phony/latest/#phpunit-constraints
+[prophecy matchers]: http://eloquent-software.com/phony/latest/#prophecy-argument-tokens
+[proxy mocks for `final` classes]: http://eloquent-software.com/phony/latest/#proxy-mocks
+[received exceptions]: http://eloquent-software.com/phony/latest/#verifying-exceptions-received-by-generators
+[received values]: http://eloquent-software.com/phony/latest/#verifying-values-received-by-generators
+[replacement of behavior with another callback]: http://eloquent-software.com/phony/latest/#using-a-callable-as-an-answer
+[retrieval of call arguments]: http://eloquent-software.com/phony/latest/#verifying-that-a-spy-was-called-with-specific-arguments
+[returning arguments]: http://eloquent-software.com/phony/latest/#returning-arguments
+[returning of generators with customizable behavior]: http://eloquent-software.com/phony/latest/#stubbing-generators
+[returning self]: http://eloquent-software.com/phony/latest/#returning-the-self-value
+[returning values]: http://eloquent-software.com/phony/latest/#returning-values
+[setting of passed-by-reference arguments]: http://eloquent-software.com/phony/latest/#setting-passed-by-reference-arguments
+[simpletest integration]: http://eloquent-software.com/phony/latest/#simpletest-usage
+[simpletest matchers]: http://eloquent-software.com/phony/latest/#simpletest-expectations
+[spies can be paused and resumed]: http://eloquent-software.com/phony/latest/#pausing-spy-recording
+[spying on callables]: http://eloquent-software.com/phony/latest/#spying-on-an-existing-callable
+[spying]: http://eloquent-software.com/phony/latest/#spies
+[static method mocking]: http://eloquent-software.com/phony/latest/#static-mocks
+[stubbing callables]: http://eloquent-software.com/phony/latest/#stubbing-an-existing-callable
+[stubbing of functions and methods with php 7 return types]: http://eloquent-software.com/phony/latest/#default-values-for-return-types
+[stubbing]: http://eloquent-software.com/phony/latest/#stubs
+[throwing of exceptions]: http://eloquent-software.com/phony/latest/#throwing-exceptions
+[variable-length argument lists]: http://php.net/functions.arguments#functions.variable-arg-list
+[verification of cardinality (the amount of times something happened)]: http://eloquent-software.com/phony/latest/#verifying-cardinality-with-spies
+[verification of no interaction with a mock]: http://eloquent-software.com/phony/latest/#verifying-that-there-was-no-interaction-with-a-mock
+[verification of other iterables]: http://eloquent-software.com/phony/latest/#generator-and-iterable-verification
+[verifying arguments]: http://eloquent-software.com/phony/latest/#verifying-that-a-spy-was-called-with-specific-arguments
+[verifying calls]: http://eloquent-software.com/phony/latest/#verifying-that-a-call-was-made
+[verifying generator return values]: http://eloquent-software.com/phony/latest/#verifying-generator-return-values
+[verifying generator thrown exceptions]: http://eloquent-software.com/phony/latest/#verifying-generator-exceptions
+[verifying generators]: http://eloquent-software.com/phony/latest/#generator-and-iterable-verification
+[verifying return values]: http://eloquent-software.com/phony/latest/#verifying-spy-return-values
+[verifying thrown exceptions]: http://eloquent-software.com/phony/latest/#verifying-spy-exceptions
+[yielded values]: http://eloquent-software.com/phony/latest/#verifying-produced-values
 
 ## Help
 

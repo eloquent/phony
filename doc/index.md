@@ -7324,8 +7324,8 @@ $spy->calledWith(equalTo('a'));
 
 #### [Mockery] matchers
 
-[Mockery] is a mocking library, similar to *Phony*. [Mockery matchers] can be
-used in any *Phony* verification:
+[Mockery] is a mocking library, similar to *Phony*.
+[Mockery matchers][mockery-matchers] can be used in any *Phony* verification:
 
 ```php
 $spy->calledWith(Mockery::mustBe('a'));
@@ -7333,8 +7333,8 @@ $spy->calledWith(Mockery::mustBe('a'));
 
 #### [Phake] matchers
 
-[Phake] is a mocking library, similar to *Phony*. [Phake matchers] can be used
-in any *Phony* verification:
+[Phake] is a mocking library, similar to *Phony*.
+[Phake matchers][phake-matchers] can be used in any *Phony* verification:
 
 ```php
 $spy->calledWith(Phake::equalTo('a'));
@@ -7397,9 +7397,9 @@ $spy->calledWith(equalTo('~'), equalTo('*'));
 This matcher matches a single argument of any value:
 
 ```php
-$matcher = any($value);        // with `use function`
-$matcher = x\any($value);      // without `use function`
-$matcher = Phony::any($value); // static
+$matcher = any();        // with `use function`
+$matcher = x\any();      // without `use function`
+$matcher = Phony::any(); // static
 
 $spy->calledWith(any()); // typical usage
 ```
@@ -8172,11 +8172,11 @@ For the full copyright and license information, please view the [LICENSE file].
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
 [isolator]: https://github.com/IcecaveStudios/isolator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
-[mockery matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
+[mockery-matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
 [mockery]: http://docs.mockery.io/
 [peridot]: http://peridot-php.github.io/
-[phake matchers]: http://phake.readthedocs.org/en/latest/method-parameter-matchers.html
 [phake wildcard matchers]: http://phake.readthedocs.org/en/latest/method-stubbing.html?highlight=anyparameters#stubbing-consecutive-calls
+[phake-matchers]: http://phake.readthedocs.org/en/latest/method-parameter-matchers.html
 [phake]: http://phake.readthedocs.org/
 [pho]: https://github.com/danielstjules/pho
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
