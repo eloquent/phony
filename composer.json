@@ -1,8 +1,10 @@
 {
     "require": {
         "php": ">=7",
-        "eloquent/phony": "^0.10",
-        "phpunit/phpunit": "^5",
         "psr/log": "^1"
+    },
+    "require-dev": {
+        "eloquent/phony": "^0.13",
+        "phpunit/phpunit": "^5"
     }
 }

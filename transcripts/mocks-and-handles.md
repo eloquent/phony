@@ -14,20 +14,6 @@ frameworks to Phony.
 I *am* planning to produce some more beginner-focused videos in the future, so
 check the description for links to those, and other useful resources.
 
-<!--
-Also please note that when I refer to Phony's mocks as "mocks", it's probably
-not the textbook correct term. Wikipedia has a list of definitions for different
-types of [test doubles], and according to those definitions, Phony's mocks would
-actually fall somewhere between "stubs" and "spies".
-
-[test doubles]: https://en.wikipedia.org/wiki/Test_double#Types_of_test_doubles
-
-But, since Phony *also* has stubs and spies for functions and other callables
-(more on that in another video), its object-based test doubles are referred to
-as mocks, for simplicity. It's also the generally accepted term in the PHP
-community for anything that does what a Phony mock does.
--->
-
 All right, let's get started.
 
 ## Creating mocks
@@ -459,7 +445,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 ```
 
 Now, in order to fix up our test, we need to get the *actual* mock object out of
-the handle, which we can do by calling `mock()` on the handle itself:
+the handle, which we can do by calling `get()` on the handle itself:
 
 > (typing)
 
@@ -475,7 +461,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $logger = mock(LoggerInterface::class);
 
-        $this->assertTrue($logger->mock() instanceof LoggerInterface);
+        $this->assertTrue($logger->get() instanceof LoggerInterface);
     }
 }
 ```
@@ -507,9 +493,9 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
 
-        $this->assertTrue($logger->mock() instanceof LoggerInterface);
+        $this->assertTrue($logger->get() instanceof LoggerInterface);
     }
 }
 ```
@@ -529,10 +515,10 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
         $writer->write('phony');
 
-        $this->assertTrue($logger->mock() instanceof LoggerInterface);
+        $this->assertTrue($logger->get() instanceof LoggerInterface);
     }
 }
 ```
@@ -552,7 +538,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
         $writer->write('phony');
 
         $logger->debug->calledWith("You're a phony!");
@@ -584,7 +570,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
         $writer->write('phony');
 
         $logger->debug->calledWith("You're a phony!");
@@ -617,7 +603,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
         $writer->write('phony');
 
         $logger->debug->calledWith("You're a phony!");
@@ -628,8 +614,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 > (run in terminal)
 
 Okay, now we're actually seeing our first verification failure from Phony. The
-failure message is telling us "expected call on `LoggerInterface::debug()` with
-arguments like: "You're a phony!", but it was never called".
+failure message is telling us "expected LoggerInterface debug call with
+arguments: "You're a phony!", but it was never called".
 
 So at this point, the only way to get the test working is to actually make our
 `write()` method call the logger in the right way:
@@ -662,7 +648,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
         $writer->write('phony');
 
         $logger->debug->calledWith("You're a phony!");
@@ -704,7 +690,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
         $writer->write('phony');
         $writer->write('fake');
 
@@ -718,7 +704,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
 As you can see, our code isn't responding correctly to the input we're giving
 it. Phony tells us that we've got two calls to the logger with the same
-arguments. Let's fix up our `write()` method:
+arguments, and neither of them match this second verification. Let's fix up our
+`write()` method:
 
 > (typing)
 
@@ -748,7 +735,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     public function testExample()
     {
         $logger = mock(LoggerInterface::class);
-        $writer = new LogWriter($logger->mock());
+        $writer = new LogWriter($logger->get());
         $writer->write('phony');
         $writer->write('fake');
 
