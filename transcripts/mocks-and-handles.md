@@ -411,9 +411,9 @@ And let's run the tests to try it out:
 
 > (run in terminal)
 
-Hmm, that didn't so well. Our test is failing, so that tells us that what we're
-getting back from this call to `mock()` isn't actually a logger. So what's going
-on here?
+Hmm, that didn't go so well. Our test is failing, so that tells us that what
+we're getting back from this call to `mock()` isn't actually a logger. So what's
+going on here?
 
 Well, when you call `mock()` in Phony, what you get back isn't actually the mock
 object itself, but another type of object, called a "mock handle".
@@ -545,6 +545,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     }
 }
 ```
+
+TODO: Briefly explain `calledWith()`.
 
 That should do it. Now, standard practice when doing TDD, let's make sure our
 tests fail first before proceeding:
