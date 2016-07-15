@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 192" class="verification">
+    <defs>
+        <style>
+            @import url(//fonts.googleapis.com/css?family=Inconsolata:400,700);
+
+            svg.verification {
+                background-color: #262a31;
+                fill: #9ea9bb;
+                font-size: 13px;
+                font-family: Inconsolata, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            }
+
+            svg.verification .tooltip {
+                cursor: help;
+            }
+
+            svg.verification ::selection {
+                background: #f0f6ff;
+                fill: #4a515d;
+            }
+
+            svg.verification .bold {
+                fill: #b9c0cb;
+                font-weight: bold;
+            }
+            svg.verification .faint {
+                fill: #686f7c;
+            }
+            svg.verification .tooltip:hover {
+                fill: #ffffff;
+                text-decoration: underline;
+            }
+
+            svg.verification .red {
+                fill: #e88388;
+            }
+            svg.verification .red.faint {
+                fill: #915a60;
+            }
+            svg.verification .red.bold,
+            svg.verification .red .tooltip:hover {
+                fill: #ff9095;
+            }
+
+            svg.verification .green {
+                fill: #a7cc8c;
+            }
+            svg.verification .green.faint {
+                fill: #6d8263;
+            }
+            svg.verification .green.bold,
+            svg.verification .green .tooltip:hover {
+                fill: #c2eca2;
+            }
+
+            svg.verification .yellow {
+                fill: #dbaa79;
+            }
+            svg.verification .yellow.faint {
+                fill: #896f59;
+            }
+            svg.verification .yellow.bold,
+            svg.verification .yellow .tooltip:hover {
+                fill: #f9c28a;
+            }
+
+            svg.verification .cyan {
+                fill: #65c2cd;
+            }
+            svg.verification .cyan.faint {
+                fill: #4a7d86;
+            }
+            svg.verification .cyan.bold,
+            svg.verification .cyan .tooltip:hover {
+                fill: #79e7f4;
+            }
+        </style>
+    </defs>
+    <text x="16" y="28">
+        <tspan>Expected </tspan>
+        <tspan class="bold"><tspan class="tooltip"><title>The class name</title>ClassA</tspan>[<tspan class="tooltip"><title>The label</title>label</tspan>]-&gt;<tspan class="tooltip"><title>The method name</title>methodA</tspan></tspan>
+        <tspan>call with arguments:</tspan>
+    </text>
+    <text x="16" y="44">
+        <tspan xml:space="preserve">    </tspan>
+        <tspan class="green"><tspan class="tooltip"><title>This matcher matched the correct number of times</title>✓</tspan></tspan>
+        <tspan><tspan class="tooltip"><title>The first argument should be a string</title>"aardvark"</tspan></tspan>
+        <tspan class="green faint"><tspan class="tooltip"><title>This matcher matched one time</title>(1 match)</tspan></tspan>
+    </text>
+    <text x="16" y="60">
+        <tspan xml:space="preserve">    </tspan>
+        <tspan class="red"><tspan class="tooltip"><title>This matcher matched an incorrect number of times</title>✗</tspan></tspan>
+        <tspan><tspan class="tooltip"><title>The second argument should be an array with 3 elements</title>#0["bonobo", "chameleon", "dugong"]</tspan></tspan>
+        <tspan class="red faint"><tspan class="tooltip"><title>This matcher never matched</title>(0 matches)</tspan></tspan>
+    </text>
+    <text x="16" y="76" xml:space="preserve"><tspan class="tooltip"><title>There were 2 calls, and neither of them matched</title>Matched 0 of 2:</tspan></text>
+    <text x="16" y="92">
+        <tspan class="red"><tspan class="tooltip"><title>This call did not match</title>✗</tspan></tspan>
+        <tspan class="tooltip">
+            <title>The first call that was made on the method</title>
+            Call #0:
+        </tspan>
+    </text>
+    <text x="16" y="108">
+        <tspan xml:space="preserve">    </tspan>
+        <tspan class="green"><tspan class="tooltip"><title>This argument matched</title>✓</tspan></tspan>
+        <tspan><tspan class="tooltip"><title>This argument was a matching string</title>"aardvark"</tspan></tspan>
+    </text>
+    <text x="16" y="124">
+        <tspan xml:space="preserve">    </tspan>
+        <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
+        <tspan>#0["bonobo", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan"><tspan class="tooltip"><title>This expected value was missing</title>chameleon</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow"><tspan class="tooltip"><title>This unexpected value was encountered</title>capybara</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>", "dugong"]</tspan>
+    </text>
+    <text x="16" y="140">
+        <tspan class="red"><tspan class="tooltip"><title>This call did not match</title>✗</tspan></tspan>
+        <tspan class="tooltip">
+            <title>The second call that was made on the method</title>
+            Call #1:
+        </tspan>
+    </text>
+    <text x="16" y="156">
+        <tspan xml:space="preserve">    </tspan>
+        <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
+        <tspan>"</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan"><tspan class="tooltip"><title>This expected value was missing</title>aardvark</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow"><tspan class="tooltip"><title>This unexpected value was encountered</title>armadillo</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"</tspan>
+    </text>
+    <text x="16" y="172">
+        <tspan xml:space="preserve">    </tspan>
+        <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
+        <tspan>#0["bonobo", "chameleon", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan"><tspan class="tooltip"><title>This expected value was missing</title>dugong</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow"><tspan class="tooltip"><title>This unexpected value was encountered</title>dormouse</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"]</tspan>
+    </text>
+</svg>
