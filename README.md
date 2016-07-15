@@ -68,7 +68,7 @@ use function Eloquent\Phony\mock;
 $handle = mock('ClassA');
 $handle->methodA->with('argument')->returns('value');
 
-$mock = $handle->mock();
+$mock = $handle->get();
 
 assert($mock->methodA('argument') === 'value');
 $handle->methodA->calledWith('argument');
@@ -84,7 +84,7 @@ describe('Phony', function () {
         $handle = mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         expect($mock->methodA('argument'))->to->equal('value');
         $handle->methodA->calledWith('argument');
@@ -104,7 +104,7 @@ describe('Phony', function () {
         $handle = mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         expect($mock->methodA('argument'))->toBe('value');
         $handle->methodA->calledWith('argument');
@@ -126,7 +126,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $handle = Phony::mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame('value', $mock->methodA('argument'));
         $handle->methodA->calledWith('argument');
@@ -146,7 +146,7 @@ class PhonyTest extends UnitTestCase
         $handle = Phony::mock('ClassA');
         $handle->methodA->with('argument')->returns('value');
 
-        $mock = $handle->mock();
+        $mock = $handle->get();
 
         $this->assertSame($mock->methodA('argument'), 'value');
         $handle->methodA->calledWith('argument');
