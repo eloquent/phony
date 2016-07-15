@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.13.0 (2016-07-15)
 
 - **[BC BREAK]** Renamed `$handle->mock()` to `$handle->get()` ([#180]).
 - **[BC BREAK]** Removed `verify()` and `verifyStatic()` ([#179]).
