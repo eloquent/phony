@@ -385,8 +385,8 @@
 <ul>
 <li><a href="#counterpart-matchers">Counterpart matchers</a></li>
 <li><a href="#hamcrest-matchers">Hamcrest matchers</a></li>
-<li><a href="http://docs.mockery.io/en/latest/reference/argument_validation.html">Mockery matchers</a></li>
-<li><a href="http://phake.readthedocs.org/en/latest/method-parameter-matchers.html">Phake matchers</a></li>
+<li><a href="#mockery-matchers">Mockery matchers</a></li>
+<li><a href="#phake-matchers">Phake matchers</a></li>
 <li><a href="#phpunit-constraints">PHPUnit constraints</a></li>
 <li><a href="#prophecy-argument-tokens">Prophecy argument tokens</a></li>
 <li><a href="#simpletest-expectations">SimpleTest expectations</a></li>
@@ -8028,16 +8028,16 @@ matchers can be used in any <em>Phony</em> verification:</p>
 <h4>
 <a id="mockery-matchers" class="anchor" href="#mockery-matchers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="http://docs.mockery.io/">Mockery</a> matchers</h4>
 
-<p><a href="http://docs.mockery.io/">Mockery</a> is a mocking library, similar to <em>Phony</em>. <a href="http://docs.mockery.io/en/latest/reference/argument_validation.html">Mockery matchers</a> can be
-used in any <em>Phony</em> verification:</p>
+<p><a href="http://docs.mockery.io/">Mockery</a> is a mocking library, similar to <em>Phony</em>.
+<a href="http://docs.mockery.io/en/latest/reference/argument_validation.html">Mockery matchers</a> can be used in any <em>Phony</em> verification:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-c1">Mockery</span><span class="pl-k">::</span>mustBe(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>));</span></pre></div>
 
 <h4>
 <a id="phake-matchers" class="anchor" href="#phake-matchers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="http://phake.readthedocs.org/">Phake</a> matchers</h4>
 
-<p><a href="http://phake.readthedocs.org/">Phake</a> is a mocking library, similar to <em>Phony</em>. <a href="http://phake.readthedocs.org/en/latest/method-parameter-matchers.html">Phake matchers</a> can be used
-in any <em>Phony</em> verification:</p>
+<p><a href="http://phake.readthedocs.org/">Phake</a> is a mocking library, similar to <em>Phony</em>.
+<a href="http://phake.readthedocs.org/en/latest/method-parameter-matchers.html">Phake matchers</a> can be used in any <em>Phony</em> verification:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-c1">Phake</span><span class="pl-k">::</span>equalTo(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>));</span></pre></div>
 
@@ -8098,9 +8098,9 @@ matchers:</p>
 
 <p>This matcher matches a single argument of any value:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> any(<span class="pl-smi">$value</span>);        <span class="pl-c">// with `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>any(<span class="pl-smi">$value</span>);      <span class="pl-c">// without `use function`</span></span>
-<span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>any(<span class="pl-smi">$value</span>); <span class="pl-c">// static</span></span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> any();        <span class="pl-c">// with `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> <span class="pl-c1">x\</span>any();      <span class="pl-c">// without `use function`</span></span>
+<span class="pl-s1"><span class="pl-smi">$matcher</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>any(); <span class="pl-c">// static</span></span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(any()); <span class="pl-c">// typical usage</span></span></pre></div>
 
