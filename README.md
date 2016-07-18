@@ -202,16 +202,6 @@ a particular feature, select one of the following:
 [verifying return values]: http://eloquent-software.com/phony/latest/#verifying-spy-return-values
 [verifying thrown exceptions]: http://eloquent-software.com/phony/latest/#verifying-spy-exceptions
 
-### Designed to help you
-
-*Phony* recognizes that writing tests cannot always be as idealistic as we'd
-like. Legacy projects, and third-party libraries outside our control mean that
-sometimes we have to settle for less-than-perfect testing practices.
-
-*Phony* doesn't try to be righteous, and it doesn't pass judgment on how you
-choose to write tests. *Phony*'s focus is, first and foremost, on helping you
-get the job done.
-
 ## Help
 
 For help with a difficult testing scenario, questions regarding how to use
