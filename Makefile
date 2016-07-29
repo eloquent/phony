@@ -43,13 +43,10 @@ serve: web
 publish: web
 	@scripts/publish-web
 
-build-hhvm:
-	docker build -f hhvm.Dockerfile -t phony-hhvm .
-
 test-fixtures:
 	scripts/build-test-fixtures
 
-.PHONY: test coverage open-coverage lint install examples edge-cases benchmarks integration output-examples doc-img serve publish build-hhvm test-fixtures
+.PHONY: test coverage open-coverage lint install examples edge-cases benchmarks integration output-examples doc-img serve publish test-fixtures
 
 vendor/autoload.php: composer.lock
 	composer install

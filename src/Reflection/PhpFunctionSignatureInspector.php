@@ -118,13 +118,8 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
                 if (' = NULL' === $match[6]) {
                     $defaultValue = ' = null';
                 } else {
-                    $defaultValue = $parameter->getDefaultValue();
-
-                    if (is_float($defaultValue)) {
-                        $defaultValue = sprintf(' = %f', $defaultValue);
-                    } else {
-                        $defaultValue = ' = ' . var_export($defaultValue, true);
-                    }
+                    $defaultValue = ' = ' .
+                        var_export($parameter->getDefaultValue(), true);
                 }
             } elseif ($optional || $match[3]) {
                 $defaultValue = ' = null';

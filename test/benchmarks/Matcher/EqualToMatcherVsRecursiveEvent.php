@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Matcher;
 
 use Athletic\AthleticEvent;
+use Eloquent\Phony\Exporter\InlineExporter;
 
 class EqualToMatcherVsRecursiveEvent extends AthleticEvent
 {
@@ -34,7 +35,8 @@ class EqualToMatcherVsRecursiveEvent extends AthleticEvent
         $this->array1 = $this->generateNestedArray(200);
         $this->array2 = $this->generateNestedArray(200);
 
-        $this->iterative = new EqualToMatcher($this->array1);
+        $this->exporter = InlineExporter::instance();
+        $this->iterative = new EqualToMatcher($this->array1, $this->exporter);
         $this->recursive = new RecursiveEqualToMatcher($this->array1);
     }
 

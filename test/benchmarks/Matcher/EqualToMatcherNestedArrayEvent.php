@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Matcher;
 
 use Athletic\AthleticEvent;
+use Eloquent\Phony\Exporter\InlineExporter;
 
 class EqualToMatcherNestedArrayEvent extends AthleticEvent
 {
@@ -31,7 +32,8 @@ class EqualToMatcherNestedArrayEvent extends AthleticEvent
         $this->array1 = $this->generateNestedArray(1000);
         $this->array2 = $this->generateNestedArray(1000);
 
-        $this->subject = new EqualToMatcher($this->array1);
+        $this->exporter = InlineExporter::instance();
+        $this->subject = new EqualToMatcher($this->array1, $this->exporter);
     }
 
     /**

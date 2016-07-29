@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\ExporterInterface;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Exception;
@@ -24,7 +25,7 @@ use Exception;
  *
  * @internal
  */
-class RecursiveEqualToMatcher extends AbstractMatcher
+class RecursiveEqualToMatcher implements Matcher
 {
     /**
      * Construct a new equal to matcher.
@@ -199,9 +200,21 @@ class RecursiveEqualToMatcher extends AbstractMatcher
     /**
      * Describe this matcher.
      *
+     * @param Exporter|null $exporter The exporter to use.
+     *
      * @return string The description.
      */
-    public function describe()
+    public function describe(Exporter $exporter = null)
+    {
+        return $this->exporter->export($this->value);
+    }
+
+    /**
+     * Describe this matcher.
+     *
+     * @return string The description.
+     */
+    public function __toString()
     {
         return $this->exporter->export($this->value);
     }
