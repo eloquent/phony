@@ -24,6 +24,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = $a2[$i - 2];
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'methodA'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -50,6 +59,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = $a2[$i - 2];
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'methodB'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -74,6 +92,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 2; $i < $argumentCount; ++$i) {
             $arguments[] = &$a2[$i - 2];
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'methodC'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(

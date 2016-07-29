@@ -50,6 +50,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'testClassAStaticMethodB'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -64,6 +73,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'testClassBStaticMethodA'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
@@ -91,6 +109,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'testClassBStaticMethodB'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -105,6 +132,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'testClassAStaticMethodA'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
@@ -132,6 +168,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'methodA'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -142,16 +187,16 @@ implements \Eloquent\Phony\Mock\Mock,
     public static function methodB(
         $a0 = null,
         $a1 = 111,
-        $a2 = array(
-  ),
-        $a3 = array(
-    0 => 'valueA',
-    1 => 'valueB',
-  ),
-        $a4 = array(
-    'keyA' => 'valueA',
-    'keyB' => 'valueB',
-  )
+        $a2 = array (
+),
+        $a3 = array (
+  0 => 'valueA',
+  1 => 'valueB',
+),
+        $a4 = array (
+  'keyA' => 'valueA',
+  'keyB' => 'valueB',
+)
     ) {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -174,6 +219,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 5; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'methodB'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
@@ -219,6 +273,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testClassAMethodB'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -233,6 +296,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testClassBMethodA'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -260,6 +332,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testClassBMethodB'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -274,6 +355,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testClassAMethodA'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -292,6 +382,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testTraitBMethodA'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -306,6 +405,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'current'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -324,6 +432,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'key'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -338,6 +455,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'next'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -356,6 +482,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'rewind'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -372,6 +507,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'valid'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -386,6 +530,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'count'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -409,6 +562,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'offsetExists'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -428,6 +590,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'offsetGet'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -455,6 +626,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'offsetSet'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -476,6 +656,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'offsetUnset'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -486,8 +675,8 @@ implements \Eloquent\Phony\Mock\Mock,
     public function methodC(
         \Eloquent\Phony\Test\TestClassA $a0,
         \Eloquent\Phony\Test\TestClassA $a1 = null,
-        array $a2 = array(
-  ),
+        array $a2 = array (
+),
         array $a3 = null
     ) {
         $argumentCount = \func_num_args();
@@ -510,6 +699,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'methodC'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -524,6 +722,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'methodD'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -552,6 +759,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'testClassAStaticMethodC'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -577,6 +793,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'testClassAStaticMethodD'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -591,6 +816,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testClassAMethodC'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -616,6 +850,15 @@ implements \Eloquent\Phony\Mock\Mock,
 
         for ($i = 2; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testClassAMethodD'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -712,7 +955,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public static $propertyB = 222;
     public $propertyC = 'valueC';
     public $propertyD = 333;
-    private static $_uncallableMethods = array(
+    private static $_uncallableMethods = array (
   'current' => true,
   'key' => true,
   'next' => true,
@@ -724,7 +967,7 @@ implements \Eloquent\Phony\Mock\Mock,
   'offsetset' => true,
   'offsetunset' => true,
 );
-    private static $_traitMethods = array(
+    private static $_traitMethods = array (
   'testtraitbmethoda' => 'Eloquent\\Phony\\Test\\TestTraitB',
 );
     private static $_customMethods = array();

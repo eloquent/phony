@@ -15,12 +15,10 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use ReflectionFunctionAbstract;
 
 /**
- * Inspects functions to determine their signature.
+ * An abstract base class for implementing function signature inspectors.
  */
-class FunctionSignatureInspector
+abstract class FunctionSignatureInspector
 {
-    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^\]]+)? ]$/m';
-
     /**
      * Get the static instance of this inspector.
      *
@@ -29,10 +27,21 @@ class FunctionSignatureInspector
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self(
-                InvocableInspector::instance(),
-                FeatureDetector::instance()
-            );
+            $featureDetector = FeatureDetector::instance();
+
+            if ($featureDetector->isSupported('runtime.hhvm')) {
+                // @codeCoverageIgnoreStart
+                self::$instance = new HhvmFunctionSignatureInspector(
+                    InvocableInspector::instance(),
+                    $featureDetector
+                );
+                // @codeCoverageIgnoreEnd
+            } else {
+                self::$instance = new PhpFunctionSignatureInspector(
+                    InvocableInspector::instance(),
+                    $featureDetector
+                );
+            }
         }
 
         return self::$instance;
@@ -42,142 +51,10 @@ class FunctionSignatureInspector
      * Construct a new function signature inspector.
      *
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
-     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
-    public function __construct(
-        InvocableInspector $invocableInspector,
-        FeatureDetector $featureDetector
-    ) {
-        $this->invocableInspector = $invocableInspector;
-        $this->featureDetector = $featureDetector;
-        $this->isExportDefaultArraySupported = $featureDetector
-            ->isSupported('reflection.function.export.default.array');
-        $this->isExportReferenceSupported = $featureDetector
-            ->isSupported('reflection.function.export.reference');
-        $this->isVariadicParameterSupported = $featureDetector
-            ->isSupported('parameter.variadic');
-        $this->isScalarTypeHintSupported = $featureDetector
-            ->isSupported('parameter.hint.scalar');
-        $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
-    }
-
-    /**
-     * Get the function signature of the supplied function.
-     *
-     * @param ReflectionFunctionAbstract $function The function.
-     *
-     * @return array<string,array<string>> The function signature.
-     */
-    public function signature(ReflectionFunctionAbstract $function)
+    public function __construct(InvocableInspector $invocableInspector)
     {
-        $isMatch = preg_match_all(
-            static::PARAMETER_PATTERN,
-            $function,
-            $matches,
-            PREG_SET_ORDER
-        );
-
-        if (!$isMatch) {
-            return array();
-        }
-
-        $parameters = $function->getParameters();
-        $signature = array();
-        $index = -1;
-
-        foreach ($matches as $match) {
-            $parameter = $parameters[++$index];
-
-            $typehint = $match[2];
-
-            if ($this->isHhvm) {
-                // @codeCoverageIgnoreStart
-                if (false !== strpos($typehint, 'HH\\')) {
-                    $typehint = '';
-                } elseif ('?' === $typehint[0]) {
-                    $typehint = substr($typehint, 1);
-                }
-                // @codeCoverageIgnoreEnd
-            }
-
-            if ('self ' === $typehint) {
-                $typehint = '\\' . $parameter->getDeclaringClass()->getName()
-                    . ' ';
-            } elseif (
-                '' !== $typehint &&
-                'array ' !== $typehint &&
-                'callable ' !== $typehint
-            ) {
-                if (!$this->isScalarTypeHintSupported) {
-                    $typehint = '\\' . $typehint; // @codeCoverageIgnore
-                } elseif (
-                    'integer ' === $typehint &&
-                    $parameter->getType()->isBuiltin()
-                ) {
-                    $typehint = 'int ';
-                } elseif (
-                    'boolean ' === $typehint &&
-                    $parameter->getType()->isBuiltin()
-                ) {
-                    $typehint = 'bool ';
-                } elseif ('float ' !== $typehint && 'string ' !== $typehint) {
-                    $typehint = '\\' . $typehint;
-                }
-            }
-
-            if ($this->isExportReferenceSupported) {
-                $byReference = $match[4];
-            } else {
-                $byReference = $parameter->isPassedByReference() ? '&' : ''; // @codeCoverageIgnore
-            }
-
-            if (
-                $this->isVariadicParameterSupported &&
-                $parameter->isVariadic()
-            ) {
-                $variadic = '...';
-                $optional = false;
-            } else {
-                $variadic = '';
-                $optional = 'optional' === $match[1];
-            }
-
-            if (isset($match[6])) {
-                if (
-                    !$this->isExportDefaultArraySupported &&
-                    ' = Array' === $match[6]
-                ) {
-                    $defaultValue = ' = ' .
-                        var_export($parameter->getDefaultValue(), true);
-                } else {
-                    $defaultValue = $match[6];
-                }
-
-                switch ($defaultValue) {
-                    case ' = NULL':
-                        $defaultValue = ' = null';
-
-                        break;
-
-                    default:
-                        $defaultValue =
-                            str_replace('array (', 'array(', $defaultValue);
-                }
-            } elseif (
-                $optional ||
-                $match[3] ||
-                ($this->isHhvm && $parameter->isDefaultValueAvailable())
-            ) {
-                $defaultValue = ' = null';
-            } else {
-                $defaultValue = '';
-            }
-
-            $signature[$match[5]] =
-                array($typehint, $byReference, $variadic, $defaultValue);
-        }
-
-        return $signature;
+        $this->invocableInspector = $invocableInspector;
     }
 
     /**
@@ -194,11 +71,15 @@ class FunctionSignatureInspector
         );
     }
 
+    /**
+     * Get the function signature of the supplied function.
+     *
+     * @param ReflectionFunctionAbstract $function The function.
+     *
+     * @return array<string,array<string>> The function signature.
+     */
+    abstract public function signature(ReflectionFunctionAbstract $function);
+
     private static $instance;
     private $invocableInspector;
-    private $featureDetector;
-    private $isExportDefaultArraySupported;
-    private $isExportReferenceSupported;
-    private $isScalarTypeHintSupported;
-    private $isHhvm;
 }

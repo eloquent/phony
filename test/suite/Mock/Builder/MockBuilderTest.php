@@ -73,8 +73,13 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
 
     protected function setUpWith($typeNames)
     {
-        $this->factory = new MockFactory(new Sequencer(), MockGenerator::instance(), HandleFactory::instance());
         $this->handleFactory = HandleFactory::instance();
+        $this->factory = new MockFactory(
+            new Sequencer(),
+            MockGenerator::instance(),
+            $this->handleFactory,
+            $this->featureDetector
+        );
 
         return $this->subject = new MockBuilder(
             $typeNames,

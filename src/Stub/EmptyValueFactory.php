@@ -72,12 +72,27 @@ class EmptyValueFactory
         $typeName = strval($type);
 
         switch (strtolower($typeName)) {
-            case 'bool': return false;
-            case 'int': return 0;
-            case 'float': return .0;
-            case 'string': return '';
-            case 'array': return array();
-            case 'stdclass': return (object) array();
+            case 'bool':
+            case 'hh\bool':
+                return false;
+
+            case 'int':
+            case 'hh\int':
+                return 0;
+
+            case 'float':
+            case 'hh\float':
+                return .0;
+
+            case 'string':
+            case 'hh\string':
+                return '';
+
+            case 'array':
+                return array();
+
+            case 'stdclass':
+                return (object) array();
 
             case 'callable':
                 return $this->stubVerifierFactory->create();
@@ -89,6 +104,9 @@ class EmptyValueFactory
                 $fn = function () { return; yield; };
 
                 return $fn();
+
+            case 'hh\mixed':
+                return null;
         }
 
         return $this->mockBuilderFactory->create($typeName)->full();

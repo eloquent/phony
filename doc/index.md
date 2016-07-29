@@ -35,6 +35,7 @@
         - [Generating mock classes from a builder]
         - [Copying mock builders]
     - [Pausing mock recording]
+    - [Mocking problematic classes]
     - [Terminology]
 - [Stubs]
     - [The stub API]
@@ -528,7 +529,7 @@ Turn the mock into a [partial mock].
 Use the supplied object as the implementation for all methods of the mock.
 
 *This method may help when partial mocking of a particular implementation is not
-possible; as in the case of a final class.*
+possible; as in the case of a `final` class.*
 
 *See [Proxy mocks].*
 
@@ -1452,6 +1453,15 @@ $handle->methodA->calledWith('c'); // passes
 
 $handle->methodA->calledWith('b'); // fails
 ```
+
+### Mocking problematic classes
+
+Some PHP classes can be difficult, if not impossible, to mock. In particular,
+`final` classes can only be mocked via [proxy mocks], and only in certain
+circumstances.
+
+For up-to-date information on known issues with other problematic classes, see
+[Mocking problematic classes][wiki-mocking-problematic-classes] in the wiki.
 
 ### Terminology
 
@@ -7937,6 +7947,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [mockery matchers]: #mockery-matchers
 [mocking basics]: #mocking-basics
 [mocking multiple types]: #mocking-multiple-types
+[mocking problematic classes]: #mocking-problematic-classes
 [mocks]: #mocks
 [multiple answers]: #multiple-answers
 [multiple rules]: #multiple-rules
@@ -8193,4 +8204,5 @@ For the full copyright and license information, please view the [LICENSE file].
 [traversable]: http://php.net/traversable
 [twitter]: https://twitter.com/ezzatron
 [use function]: http://php.net/language.namespaces.importing
+[wiki-mocking-problematic-classes]: https://github.com/eloquent/phony/wiki/Mocking-problematic-classes
 [yield]: http://php.net/language.generators.syntax#control-structures.yield

@@ -5,10 +5,10 @@ extends \DateTime
 implements \Eloquent\Phony\Mock\Mock
 {
     public static function createFromFormat(
-        $a0,
-        $a1,
-        \DateTimeZone $a2 = null
-    ) {
+        \HH\string $a0,
+        \HH\string $a1,
+        $a2 = null
+    ) : \HH\mixed {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -26,6 +26,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'createFromFormat'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -33,13 +42,22 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
-    public static function getLastErrors()
+    public static function getLastErrors() : array
     {
         $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'getLastErrors'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
@@ -55,7 +73,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function add(
         \DateInterval $a0
-    ) {
+    ) : \DateTime {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -65,6 +83,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'add'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -77,7 +104,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function diff(
         $a0,
         $a1 = false
-    ) {
+    ) : \DateInterval {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -92,6 +119,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'diff'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -101,7 +137,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function format(
         $a0
-    ) {
+    ) : \HH\string {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -113,20 +149,13 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'format'),
+                $arguments
+            );
 
-        return $result;
-    }
-
-    public function getOffset()
-    {
-        $argumentCount = \func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -136,13 +165,22 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
-    public function getTimestamp()
+    public function getOffset() : \HH\int
     {
         $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getOffset'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -152,13 +190,47 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
-    public function getTimezone()
+    public function getTimestamp() : \HH\int
     {
         $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getTimestamp'),
+                $arguments
+            );
+
+            return $result;
+        }
+
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Arguments($arguments)
+        );
+
+        return $result;
+    }
+
+    public function getTimezone() : \HH\mixed
+    {
+        $argumentCount = \func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; ++$i) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getTimezone'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -169,8 +241,8 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function modify(
-        $a0
-    ) {
+        \HH\string $a0
+    ) : \HH\mixed {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -180,6 +252,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'modify'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -190,10 +271,10 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function setDate(
-        $a0,
-        $a1,
-        $a2
-    ) {
+        \HH\int $a0,
+        \HH\int $a1,
+        \HH\int $a2
+    ) : \DateTime {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -209,6 +290,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 3; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'setDate'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -219,10 +309,10 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function setISODate(
-        $a0,
-        $a1,
-        $a2 = 1
-    ) {
+        \HH\int $a0,
+        \HH\int $a1,
+        \HH\int $a2 = 1
+    ) : \DateTime {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -238,6 +328,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 3; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'setISODate'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -248,10 +347,10 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function setTime(
-        $a0,
-        $a1,
-        $a2 = 0
-    ) {
+        \HH\int $a0,
+        \HH\int $a1,
+        \HH\int $a2 = 0
+    ) : \DateTime {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -269,6 +368,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'setTime'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -277,8 +385,8 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function setTimestamp(
-        $a0
-    ) {
+        \HH\int $a0
+    ) : \DateTime {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -288,6 +396,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'setTimestamp'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -299,7 +416,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function setTimezone(
         \DateTimeZone $a0
-    ) {
+    ) : \DateTime {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -309,6 +426,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'setTimezone'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -320,7 +446,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function sub(
         \DateInterval $a0
-    ) {
+    ) : \DateTime {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -332,20 +458,13 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'sub'),
+                $arguments
+            );
 
-        return $result;
-    }
-
-    public function __sleep()
-    {
-        $argumentCount = \func_num_args();
-        $arguments = array();
-
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -355,13 +474,22 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
-    public function __wakeup()
+    public function __sleep() : array
     {
         $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . '__sleep'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -371,13 +499,47 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
-    public function __debugInfo()
+    public function __wakeup() : \HH\void
     {
         $argumentCount = \func_num_args();
         $arguments = array();
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . '__wakeup'),
+                $arguments
+            );
+
+            return $result;
+        }
+
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Arguments($arguments)
+        );
+
+        return $result;
+    }
+
+    public function __debugInfo() : array
+    {
+        $argumentCount = \func_num_args();
+        $arguments = array();
+
+        for ($i = 0; $i < $argumentCount; ++$i) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . '__debugInfo'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(

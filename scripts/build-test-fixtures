@@ -1,0 +1,76 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Asplode\Asplode;
+use Eloquent\Phony\Hook\FunctionHookGenerator;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+
+$rootPath = dirname(__DIR__);
+require $rootPath . '/vendor/autoload.php';
+require $rootPath . '/test/src/TestClassOldConstructor.php';
+
+Asplode::install();
+
+$fixturePath = $rootPath . '/test/fixture/';
+$detector = FeatureDetector::instance();
+
+$mockGeneratorFixturePath = $fixturePath . '/mock-generator';
+$factory = MockBuilderFactory::instance();
+
+foreach (scandir($mockGeneratorFixturePath) as $name) {
+    if ('.' === $name[0]) {
+        continue;
+    }
+
+    $thisPath = $mockGeneratorFixturePath . '/' . $name;
+    $supportedPath = $thisPath . '/supported.php';
+
+    if (is_file($supportedPath)) {
+        $isSupported = require $supportedPath;
+
+        if (!$isSupported) {
+            continue;
+        }
+    }
+
+    $builder = require $thisPath . '/builder.php';
+
+    file_put_contents(
+        $thisPath . '/expected.php',
+        "<?php\n\n" . $builder->source()
+    );
+}
+
+$hookGeneratorFixturePath = $fixturePath . '/hook-generator';
+$signatureInspector = FunctionSignatureInspector::instance();
+$hookGenerator = FunctionHookGenerator::instance();
+
+foreach (scandir($hookGeneratorFixturePath) as $name) {
+    if ('.' === $name[0]) {
+        continue;
+    }
+
+    $thisPath = $hookGeneratorFixturePath . '/' . $name;
+    $supportedPath = $thisPath . '/supported.php';
+
+    if (is_file($supportedPath)) {
+        $isSupported = require $supportedPath;
+
+        if (!$isSupported) {
+            continue;
+        }
+    }
+
+    require $thisPath . '/callback.php';
+
+    $signature = $signatureInspector->callbackSignature($callback);
+    $source =
+        $hookGenerator->generateHook($functionName, $namespace, $signature);
+
+    file_put_contents(
+        $thisPath . '/expected.php',
+        "<?php\n\n" . $source
+    );
+}

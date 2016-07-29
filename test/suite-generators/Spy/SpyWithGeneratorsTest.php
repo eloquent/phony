@@ -27,7 +27,8 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->callFactory = new TestCallFactory();
         $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, FeatureDetector::instance());
+        $this->featureDetector = FeatureDetector::instance();
+        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, $this->featureDetector);
         $this->iterableSpyFactory = new IterableSpyFactory($this->callEventFactory);
         $this->subject = new SpyData(
             $this->callback,

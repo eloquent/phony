@@ -201,6 +201,15 @@ class FeatureDetector
                 return $detector->checkInternalClass('Generator');
             },
 
+            'generator.implicit-next' => function ($detector) {
+                return $detector->isSupported('generator') &&
+                    $detector->checkStatement(
+                        '$f=function(){yield 0;yield 1;};$g=$f();$g->next();' .
+                            'return 1===$g->current();',
+                        false
+                    );
+            },
+
             'generator.exception' => function ($detector) {
                 return $detector->checkInternalMethod('Generator', 'throw');
             },
@@ -275,6 +284,38 @@ class FeatureDetector
                 }
 
                 return version_compare(PHP_VERSION, '7.x', '<');
+            },
+
+            'object.constructor.bypass' => function ($detector) {
+                return $detector->checkInternalMethod(
+                    'ReflectionClass',
+                    'newInstanceWithoutConstructor'
+                );
+            },
+
+            'object.constructor.bypass.extended-internal' => function (
+                $detector
+            ) {
+                if (!$detector->isSupported('object.constructor.bypass')) {
+                    return false; // @codeCoverageIgnore
+                }
+
+                $symbol = $detector->uniqueSymbolName();
+                $exportedSymbol = var_export($symbol, true);
+
+                return $detector->checkStatement(
+                    sprintf(
+                        'class %s extends ArrayObject{}' .
+                            '$r=new ReflectionClass(%s);$o=0;try{' .
+                            '$o=$r->newInstanceWithoutConstructor();' .
+                            '}catch(Throwable $e){}catch(Exception $e){}' .
+                            'return $o instanceof %s;',
+                        $symbol,
+                        $exportedSymbol,
+                        $symbol
+                    ),
+                    false
+                );
             },
 
             'parameter.default.constant' => function ($detector) {

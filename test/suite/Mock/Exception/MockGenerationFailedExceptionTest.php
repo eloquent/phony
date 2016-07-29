@@ -53,7 +53,7 @@ ERROR
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
         $error = array('message' => 'errorMessage', 'line' => 5);
-        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException('ClassName', $this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:
@@ -90,7 +90,7 @@ ERROR
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
         $error = null;
-        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException('ClassName', $this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed.
 Relevant lines:
@@ -126,7 +126,7 @@ ERROR
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
         $error = array('message' => 'errorMessage', 'line' => 2);
-        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException('ClassName', $this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 2.
 Relevant lines:
@@ -158,7 +158,7 @@ ERROR
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
         $error = array('message' => 'errorMessage', 'line' => 5);
-        $exception = new MockGenerationFailedException($this->definition, $source, $error, $this->cause);
+        $exception = new MockGenerationFailedException('ClassName', $this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
 Relevant lines:

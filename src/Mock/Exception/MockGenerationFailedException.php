@@ -24,12 +24,14 @@ final class MockGenerationFailedException extends Exception implements
     /**
      * Construct a mock generation failed exception.
      *
+     * @param string                   $className  The class name.
      * @param MockDefinition           $definition The definition.
      * @param string                   $source     The generated source code.
      * @param array<string,mixed>|null $error      The error details.
      * @param Exception|Error|null     $cause      The cause, if available.
      */
     public function __construct(
+        $className,
         MockDefinition $definition,
         $source,
         array $error = null,
@@ -44,7 +46,7 @@ final class MockGenerationFailedException extends Exception implements
         if (null === $error) {
             $message = sprintf(
                 'Mock class %s generation failed.%sRelevant lines:%%s',
-                $definition->className(),
+                $className,
                 PHP_EOL
             );
             $errorLineNumber = null;
@@ -64,7 +66,7 @@ final class MockGenerationFailedException extends Exception implements
                 'Mock class %s generation failed: ' .
                     '%s in generated code on line %d.%s' .
                     'Relevant lines:%%s',
-                $definition->className(),
+                $className,
                 $error['message'],
                 $errorLineNumber,
                 PHP_EOL

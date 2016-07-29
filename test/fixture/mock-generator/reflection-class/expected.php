@@ -22,6 +22,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'export'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -42,6 +51,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . '__toString'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -56,6 +74,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getName'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -74,6 +101,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isInternal'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -88,6 +124,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isUserDefined'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -106,6 +151,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isInstantiable'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -120,6 +174,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getFileName'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -138,6 +201,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getStartLine'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -152,6 +224,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getEndLine'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -170,6 +251,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getDocComment'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -184,6 +274,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getConstructor'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -207,6 +306,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'hasMethod'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -226,6 +334,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getMethod'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -249,6 +366,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getMethods'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -268,6 +394,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'hasProperty'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -291,6 +426,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getProperty'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -310,6 +454,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getProperties'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -333,6 +486,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'hasConstant'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -347,6 +509,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getConstants'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -370,6 +541,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getConstant'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -384,6 +564,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getInterfaces'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -402,6 +591,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getInterfaceNames'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -416,6 +614,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isInterface'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -434,6 +641,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isAbstract'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -450,6 +666,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isFinal'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -464,6 +689,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getModifiers'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -487,6 +721,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isInstance'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -506,6 +749,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'newInstance'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -529,6 +781,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'newInstanceArgs'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -543,6 +804,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getParentClass'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -566,6 +836,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isSubclassOf'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -580,6 +859,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getStaticProperties'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -607,6 +895,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getStaticPropertyValue'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -632,6 +929,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'setStaticPropertyValue'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -648,6 +954,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getDefaultProperties'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -662,6 +977,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'isIterateable'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -685,6 +1009,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'implementsInterface'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -699,6 +1032,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getExtension'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -717,6 +1059,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getExtensionName'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -731,6 +1082,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'inNamespace'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -749,6 +1109,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getNamespaceName'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -763,6 +1132,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'getShortName'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(

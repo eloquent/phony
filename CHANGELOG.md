@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[IMPROVED]** Improved support for mocking many problematic classes ([#182]).
+
+[#182]: https://github.com/eloquent/phony/issues/182
+
 ## 0.13.0 (2016-07-15)
 
 - **[BC BREAK]** Renamed `$handle->mock()` to `$handle->get()` ([#180]).

@@ -30,6 +30,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'method'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -51,6 +60,15 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'customMethod'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -58,7 +76,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    private static $_uncallableMethods = array(
+    private static $_uncallableMethods = array (
   'method' => true,
 );
     private static $_traitMethods = array();

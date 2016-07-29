@@ -29,7 +29,9 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $this->labelSequencer = new Sequencer();
         $this->generator = MockGenerator::instance();
         $this->handleFactory = HandleFactory::instance();
-        $this->subject = new MockFactory($this->labelSequencer, $this->generator, $this->handleFactory);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->subject =
+            new MockFactory($this->labelSequencer, $this->generator, $this->handleFactory, $this->featureDetector);
 
         $this->builderFactory = MockBuilderFactory::instance();
         $this->featureDetector = FeatureDetector::instance();
@@ -83,7 +85,12 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateMockClassFailureSyntax()
     {
-        $this->subject = new MockFactory($this->labelSequencer, new TestMockGenerator('{'), $this->handleFactory);
+        $this->subject = new MockFactory(
+            $this->labelSequencer,
+            new TestMockGenerator('{'),
+            $this->handleFactory,
+            $this->featureDetector
+        );
         $builder = $this->builderFactory->create();
         $reporting = error_reporting();
 

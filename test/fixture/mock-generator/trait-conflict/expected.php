@@ -37,6 +37,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!self::$_staticHandle) {
+            $result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . 'testClassAStaticMethodA'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -70,6 +79,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testClassAMethodB'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -86,6 +104,15 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testTraitBMethodA'),
+                $arguments
+            );
+
+            return $result;
+        }
+
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
@@ -100,6 +127,15 @@ implements \Eloquent\Phony\Mock\Mock
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = \call_user_func_array(
+                array($this, 'parent::' . 'testTraitCMethodA'),
+                $arguments
+            );
+
+            return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
@@ -143,10 +179,10 @@ implements \Eloquent\Phony\Mock\Mock
         );
     }
 
-    private static $_uncallableMethods = array(
+    private static $_uncallableMethods = array (
   'testtraitcmethoda' => true,
 );
-    private static $_traitMethods = array(
+    private static $_traitMethods = array (
   'testclassastaticmethoda' => 'Eloquent\\Phony\\Test\\TestTraitA',
   'testclassamethodb' => 'Eloquent\\Phony\\Test\\TestTraitA',
   'testtraitbmethoda' => 'Eloquent\\Phony\\Test\\TestTraitB',

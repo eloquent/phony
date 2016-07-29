@@ -46,7 +46,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
             $spy->next();
         }
 
@@ -89,7 +89,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $spy = $this->subject->create($this->call, $generator, true);
         $caughtException = null;
         try {
-            if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            if (!$this->featureDetector->isSupported('generator.implicit-next')) {
                 $spy->next();
             }
 
@@ -140,7 +140,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
             $spy->next();
         }
 

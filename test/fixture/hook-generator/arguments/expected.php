@@ -12,7 +12,7 @@ function functionName(
     $a6,
     \Eloquent\Phony\Test\TestClassA $a7,
     \Eloquent\Phony\Test\TestClassA $a8 = null,
-    array $a9 = array(
+    array $a9 = array (
 ),
     array $a10 = null
 ) {

@@ -55,6 +55,8 @@ class GeneratorSpyFactory
         $this->callEventFactory = $callEventFactory;
         $this->featureDetector = $featureDetector;
 
+        $this->isGeneratorImplicitNextSupported = $featureDetector
+            ->isSupported('generator.implicit-next');
         $this->isGeneratorReturnSupported = $featureDetector
             ->isSupported('generator.return');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
@@ -77,14 +79,16 @@ class GeneratorSpyFactory
                     GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
                         $call,
                         $generator,
-                        $this->callEventFactory
+                        $this->callEventFactory,
+                        $this->isGeneratorImplicitNextSupported
                     );
             }
 
             return GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
                 $call,
                 $generator,
-                $this->callEventFactory
+                $this->callEventFactory,
+                $this->isGeneratorImplicitNextSupported
             );
             // @codeCoverageIgnoreEnd
         } elseif ($this->isGeneratorReturnSupported) {
@@ -107,6 +111,7 @@ class GeneratorSpyFactory
     private static $instance;
     private $featureDetector;
     private $callEventFactory;
+    private $isGeneratorImplicitNextSupported;
     private $isGeneratorReturnSupported;
     private $isHhvm;
 }

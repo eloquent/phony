@@ -81,7 +81,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     ) {
         parent::__construct($callback, $label);
 
-        if (!$self) {
+        if (empty($self)) {
             $self = $this->callback;
         }
 

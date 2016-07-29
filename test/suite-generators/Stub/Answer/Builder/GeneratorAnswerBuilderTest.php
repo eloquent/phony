@@ -336,7 +336,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject->yields($adaptable, 'a')->yields($unadaptable, 'b');
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
             $generator->next();
         }
 
@@ -399,7 +399,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         );
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
             $generator->next();
         }
 

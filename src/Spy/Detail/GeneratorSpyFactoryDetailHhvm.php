@@ -28,16 +28,18 @@ abstract class GeneratorSpyFactoryDetailHhvm
     /**
      * Create a new generator spy.
      *
-     * @param Call             $call             The call from which the generator originated.
-     * @param Generator        $generator        The generator.
-     * @param CallEventFactory $callEventFactory The call event factory to use.
+     * @param Call             $call                             The call from which the generator originated.
+     * @param Generator        $generator                        The generator.
+     * @param CallEventFactory $callEventFactory                 The call event factory to use.
+     * @param bool             $isGeneratorImplicitNextSupported True if implicit generator next() behavior is supported.
      *
      * @return Generator The newly created generator spy.
      */
     public static function createGeneratorSpy(
         Call $call,
         Generator $generator,
-        CallEventFactory $callEventFactory
+        CallEventFactory $callEventFactory,
+        $isGeneratorImplicitNextSupported
     ) {
         $call->addIterableEvent($callEventFactory->createUsed());
 
@@ -52,7 +54,9 @@ abstract class GeneratorSpyFactoryDetailHhvm
 
             try {
                 if ($isFirst) {
-                    $generator->next();
+                    if (!$isGeneratorImplicitNextSupported) {
+                        $generator->next();
+                    }
                 } else {
                     if ($receivedException) {
                         $generator->throw($receivedException);

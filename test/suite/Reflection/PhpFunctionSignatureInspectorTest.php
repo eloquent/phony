@@ -17,15 +17,20 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
+class PhpFunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
 {
     const CONSTANT_A = 'a';
 
     protected function setUp()
     {
-        $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();
-        $this->subject = new FunctionSignatureInspector($this->invocableInspector, $this->featureDetector);
+
+        if (!$this->featureDetector->isSupported('runtime.php')) {
+            $this->markTestSkipped('Requires the standard PHP runtime.');
+        }
+
+        $this->invocableInspector = new InvocableInspector();
+        $this->subject = new PhpFunctionSignatureInspector($this->invocableInspector, $this->featureDetector);
     }
 
     public function testSignature()
@@ -147,8 +152,8 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
         $function = new ReflectionMethod($this, 'methodB');
         $actual = $this->subject->signature($function);
         $expected = array(
-            'a' => array('\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ' = null'),
-            'b' => array('\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ''),
+            'a' => array('\Eloquent\Phony\Reflection\PhpFunctionSignatureInspectorTest ', '', '', ' = null'),
+            'b' => array('\Eloquent\Phony\Reflection\PhpFunctionSignatureInspectorTest ', '', '', ''),
         );
 
         $this->assertEquals($expected, $actual);
@@ -194,7 +199,7 @@ class FunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
 
     public function testInstance()
     {
-        $class = get_class($this->subject);
+        $class = __NAMESPACE__ . '\FunctionSignatureInspector';
         $reflector = new ReflectionClass($class);
         $property = $reflector->getProperty('instance');
         $property->setAccessible(true);

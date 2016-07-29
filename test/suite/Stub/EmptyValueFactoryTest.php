@@ -192,12 +192,16 @@ class EmptyValueFactoryTest extends PHPUnit_Framework_TestCase
      */
     public function testFromTypeWithThrowableType($type)
     {
+        if (!class_exists($type) && !interface_exists($type)) {
+            $this->markTestSkipped("Requires $type.");
+        }
+
         $actual = $this->subject->fromType($this->createType($type));
 
         $this->assertInstanceOf($type, $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
-        $this->assertSame('', $actual->getMessage());
-        $this->assertSame(0, $actual->getCode());
+        $this->assertSame('', (string) $actual->getMessage());
+        $this->assertSame(0, (int) $actual->getCode());
         $this->assertNull($actual->getPrevious());
     }
 

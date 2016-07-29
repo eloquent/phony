@@ -191,7 +191,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     public function testSetLabel()
     {
         $this->assertSame($this->subject, $this->subject->setLabel(null));
-        $this->assertNull($this->subject->label());
+        $this->assertSame('', (string) $this->subject->label());
 
         $this->subject->setLabel($this->label);
 
@@ -209,8 +209,8 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));
-        $this->assertNull(call_user_func($this->subject, 'a', 'b', 'c'));
-        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame('', (string) call_user_func($this->subject, 'a', 'b', 'c'));
+        $this->assertSame('', (string) call_user_func($this->subject));
     }
 
     public function testCalls()
@@ -222,7 +222,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->calls($this->callbackA, $this->callbackB)->calls($this->callbackC)->returns()
         );
 
-        $this->assertNull(call_user_func($this->subject, 'a', 'b'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(
             array(
                 array('a', 'b'),
@@ -232,7 +232,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $this->callsB);
         $this->assertSame(array(), $this->callsC);
 
-        $this->assertNull(call_user_func($this->subject, 'c', 'd'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'c', 'd'));
         $this->assertSame(
             array(
                 array('a', 'b'),
@@ -253,7 +253,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callsC
         );
 
-        $this->assertNull(call_user_func($this->subject, 'e', 'f'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'e', 'f'));
         $this->assertSame(
             array(
                 array('a', 'b'),
@@ -301,7 +301,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->returns()
         );
 
-        $this->assertNull(call_user_func($this->subject, 'a', 'b'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'a', 'b'));
         $this->assertEquals(
             array(
                 array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
@@ -310,7 +310,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame(array(), $this->callsB);
 
-        $this->assertNull(call_user_func($this->subject, 'c', 'd'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'c', 'd'));
         $this->assertEquals(
             array(
                 array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
@@ -325,7 +325,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callsB
         );
 
-        $this->assertNull(call_user_func($this->subject, 'e', 'f'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'e', 'f'));
         $this->assertEquals(
             array(
                 array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
@@ -352,7 +352,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->callsWith($this->callbackA)->callsWith($this->callbackB)->returns()
         );
 
-        $this->assertNull(call_user_func($this->subject, 'a', 'b'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(
             array(
                 array('a', 'b'),
@@ -361,7 +361,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame(array(), $this->callsB);
 
-        $this->assertNull(call_user_func($this->subject, 'c', 'd'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'c', 'd'));
         $this->assertSame(
             array(
                 array('a', 'b'),
@@ -376,7 +376,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callsB
         );
 
-        $this->assertNull(call_user_func($this->subject, 'e', 'f'));
+        $this->assertSame('', (string) call_user_func($this->subject, 'e', 'f'));
         $this->assertSame(
             array(
                 array('a', 'b'),
@@ -418,17 +418,17 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->callsArgument(1)->callsArgument(2, 0)->returns()
         );
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
         $this->assertSame(1, $this->callCountA);
         $this->assertSame(0, $this->callCountB);
         $this->assertSame(0, $this->callCountC);
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
         $this->assertSame(2, $this->callCountA);
         $this->assertSame(1, $this->callCountB);
         $this->assertSame(1, $this->callCountC);
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB, $this->callbackC));
         $this->assertSame(3, $this->callCountA);
         $this->assertSame(2, $this->callCountB);
         $this->assertSame(2, $this->callCountC);
@@ -446,7 +446,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->returns()
         );
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertEquals(
             array(
                 array(
@@ -462,7 +462,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame(array(), $this->callsB);
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertEquals(
             array(
                 array(
@@ -498,7 +498,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callsB
         );
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertEquals(
             array(
                 array(
@@ -560,15 +560,15 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->callsArgumentWith(0)->callsArgumentWith(1)->returns()
         );
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertSame(1, $this->callCountA);
         $this->assertSame(0, $this->callCountB);
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertSame(2, $this->callCountA);
         $this->assertSame(1, $this->callCountB);
 
-        $this->assertNull(call_user_func($this->subject, $this->callbackA, $this->callbackB));
+        $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertSame(3, $this->callCountA);
         $this->assertSame(2, $this->callCountB);
     }
@@ -840,7 +840,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame('b', call_user_func($this->subject));
         $this->assertSame('b', call_user_func($this->subject));
         $this->assertSame($this->subject, $this->subject->with()->returns());
-        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame('', (string) call_user_func($this->subject));
     }
 
     public function testReturnsArgument()
@@ -1010,13 +1010,13 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
                 ->with(array('a', 'b'))->calls($callbackA)
                 ->with(array('c', 'd'))->calls($callbackA, $callbackB)
         );
-        $this->assertNull(call_user_func($this->subject, array('a', 'b')));
+        $this->assertSame('', (string) call_user_func($this->subject, array('a', 'b')));
         $this->assertSame(1, $callCountA);
         $this->assertSame(0, $callCountB);
-        $this->assertNull(call_user_func($this->subject, array('c', 'd')));
+        $this->assertSame('', (string) call_user_func($this->subject, array('c', 'd')));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
-        $this->assertNull(call_user_func($this->subject, array('e', 'f')));
+        $this->assertSame('', (string) call_user_func($this->subject, array('e', 'f')));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
     }
@@ -1025,9 +1025,9 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->returns();
 
-        $this->assertNull($this->subject->invokeWith());
-        $this->assertNull($this->subject->invoke());
-        $this->assertNull(call_user_func($this->subject));
+        $this->assertSame('', (string) $this->subject->invokeWith());
+        $this->assertSame('', (string) $this->subject->invoke());
+        $this->assertSame('', (string) call_user_func($this->subject));
     }
 
     public function testInvokeWithWithReferenceParameters()

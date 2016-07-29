@@ -97,7 +97,9 @@ class HandleFactory
         $handleProperty = $class->getProperty('_handle');
         $handleProperty->setAccessible(true);
 
-        if ($handle = $handleProperty->getValue($mock)) {
+        $handle = @$handleProperty->getValue($mock);
+
+        if ($handle) {
             return $handle;
         }
 
@@ -117,7 +119,7 @@ class HandleFactory
             $this->invoker
         );
 
-        $handleProperty->setValue($mock, $handle);
+        @$handleProperty->setValue($mock, $handle);
 
         return $handle;
     }

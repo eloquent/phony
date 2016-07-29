@@ -169,6 +169,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         if (!$this->featureDetector->isSupported('parameter.hint.scalar')) {
             $this->markTestSkipped('Requires scalar type hints.');
         }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
+        }
 
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint');
 
@@ -180,6 +183,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         if (!$this->featureDetector->isSupported('return.type')) {
             $this->markTestSkipped('Requires return type declarations.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
         }
 
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
@@ -207,6 +213,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         if (!$this->featureDetector->isSupported('return.type')) {
             $this->markTestSkipped('Requires return type declarations.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
         }
 
         $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType')->get();
@@ -237,6 +246,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         if (!$this->featureDetector->isSupported('return.type')) {
             $this->markTestSkipped('Requires return type declarations.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
         }
 
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
@@ -294,6 +306,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         if (!$this->featureDetector->isSupported('return.type')) {
             $this->markTestSkipped('Requires return type declarations.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
         }
 
         $spy = x\spy(eval('return function () : int { return 123; };'));
@@ -385,6 +400,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         if (!$this->featureDetector->isSupported('return.type')) {
             $this->markTestSkipped('Requires return type declarations.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
         }
 
         $stub = x\stub(eval('return function () : int { return 123; };'))->forwards();
@@ -1214,5 +1232,13 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $mock->a();
 
         $handle->a->calledOn($mock);
+    }
+
+    public function testFinalConstructorBypass()
+    {
+        $handle = x\mock('Eloquent\Phony\Test\TestClassI');
+        $mock = $handle->get();
+
+        $this->assertNull($mock->constructorArguments);
     }
 }

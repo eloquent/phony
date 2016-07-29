@@ -16,7 +16,6 @@ use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
-use ReflectionMethod;
 
 /**
  * Generates mock classes.
@@ -61,6 +60,7 @@ class MockGenerator
             $this->featureDetector->isSupported('closure.bind');
         $this->isReturnTypeSupported =
             $this->featureDetector->isSupported('return.type');
+        $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
     /**
@@ -224,7 +224,7 @@ class MockGenerator
                 $source .= "\n    const " .
                     $name .
                     ' = ' .
-                    (null === $value ? 'null' : $this->renderValue($value)) .
+                    (null === $value ? 'null' : var_export($value, true)) .
                     ';';
             }
 
@@ -274,11 +274,36 @@ EOD;
             $methodReflector->hasReturnType()
         ) {
             $type = $methodReflector->getReturnType();
+            $isBuiltin = $type->isBuiltin();
 
-            if ($type->isBuiltin()) {
-                $source .= "\n    ) : " . $type . " {\n";
+            if ($this->isHhvm) {
+                // @codeCoverageIgnoreStart
+                $typeString = $methodReflector->getReturnTypeText();
+
+                if (0 === strpos($typeString, '?')) {
+                    $typeString = '';
+                } else {
+                    $genericPosition = strpos($typeString, '<');
+
+                    if (false !== $genericPosition) {
+                        $typeString = substr($typeString, 0, $genericPosition);
+                    }
+                }
+
+                $isBuiltin = $isBuiltin && false === strpos($typeString, '\\');
+                // @codeCoverageIgnoreEnd
             } else {
-                $source .= "\n    ) : \\" . $type . " {\n";
+                $typeString = (string) $type;
+            }
+
+            if ($typeString) {
+                if ($isBuiltin) {
+                    $source .= "\n    ) : " . $typeString . " {\n";
+                } else {
+                    $source .= "\n    ) : \\" . $typeString . " {\n";
+                }
+            } else {
+                $source .= "\n    ) {\n";
             }
         } else {
             $source .= "\n    ) {\n";
@@ -328,28 +353,15 @@ EOD;
         foreach ($methods as $method) {
             $name = $method->name();
             $nameLower = strtolower($name);
+            $nameExported = var_export($name, true);
             $methodReflector = $method->method();
 
             switch ($nameLower) {
                 case '__construct':
+                case '__destruct':
                 case '__call':
                 case '__callstatic':
                     continue 2;
-
-                // @codeCoverageIgnoreStart
-                case 'inittrace':
-                    if ($methodReflector instanceof ReflectionMethod) {
-                        $declaringClass =
-                            $methodReflector->getDeclaringClass()->getName();
-
-                        if (
-                            'Exception' === $declaringClass ||
-                            'Error' === $declaringClass
-                        ) {
-                            continue 2;
-                        }
-                    }
-                    // @codeCoverageIgnoreEnd
             }
 
             $signature = $this->signatureInspector->signature($methodReflector);
@@ -403,36 +415,47 @@ EOD;
                 $handle = '$this->_handle';
             }
 
+            $body =
+                "        \$argumentCount = \\func_num_args();\n" .
+                '        $arguments = array();' .
+                $argumentPacking .
+                "\n\n        for (\$i = " .
+                $parameterCount .
+                "; \$i < \$argumentCount; ++\$i) {\n";
+
             if ($variadicIndex > -1) {
-                $body =
-                    "        \$argumentCount = \\func_num_args();\n" .
-                    '        $arguments = array();' .
-                    $argumentPacking .
-                    "\n\n        for (\$i = " .
-                    $parameterCount .
-                    "; \$i < \$argumentCount; ++\$i) {\n" .
-                    "            \$arguments[] = $variadicReference\$a" .
-                    "${variadicIndex}[\$i - $variadicIndex];\n" .
-                    "        }\n\n        \$result = ${handle}->spy" .
-                    "(__FUNCTION__)->invokeWith(\n" .
-                    '            new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n        );\n\n" .
-                    '        return $result;';
+                $body .= "            \$arguments[] = $variadicReference\$a" .
+                    "${variadicIndex}[\$i - $variadicIndex];\n";
             } else {
-                $body =
-                    "        \$argumentCount = \\func_num_args();\n" .
-                    '        $arguments = array();' .
-                    $argumentPacking .
-                    "\n\n        for (\$i = " .
-                    $parameterCount .
-                    "; \$i < \$argumentCount; ++\$i) {\n" .
-                    "            \$arguments[] = \\func_get_arg(\$i);\n" .
-                    "        }\n\n        \$result = ${handle}->spy" .
-                    "(__FUNCTION__)->invokeWith(\n" .
-                    '            new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n        );\n\n" .
-                    '        return $result;';
+                $body .= "            \$arguments[] = \\func_get_arg(\$i);\n";
             }
+
+            $body .=
+                "        }\n\n        if (!${handle}) {\n";
+
+            if ($isStatic) {
+                $body .=  <<<EOD
+            \$result = \call_user_func_array(
+                array(__CLASS__, 'parent::' . $nameExported),
+                \$arguments
+            );
+EOD;
+            } else {
+                $body .=  <<<EOD
+            \$result = \call_user_func_array(
+                array(\$this, 'parent::' . $nameExported),
+                \$arguments
+            );
+EOD;
+            }
+
+            $body .=
+                "\n\n            return \$result;\n        }\n\n" .
+                "        \$result = ${handle}->spy" .
+                "(__FUNCTION__)->invokeWith(\n" .
+                '            new \Eloquent\Phony\Call\Arguments' .
+                "(\$arguments)\n        );\n\n" .
+                '        return $result;';
 
             $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
@@ -449,11 +472,38 @@ EOD;
                 $methodReflector->hasReturnType()
             ) {
                 $type = $methodReflector->getReturnType();
+                $isBuiltin = $type->isBuiltin();
 
-                if ($type->isBuiltin()) {
-                    $returnType = ' : ' . $type;
+                if ($this->isHhvm) {
+                    // @codeCoverageIgnoreStart
+                    $typeString = $methodReflector->getReturnTypeText();
+
+                    if (0 === strpos($typeString, '?')) {
+                        $typeString = '';
+                    } else {
+                        $genericPosition = strpos($typeString, '<');
+
+                        if (false !== $genericPosition) {
+                            $typeString =
+                                substr($typeString, 0, $genericPosition);
+                        }
+                    }
+
+                    $isBuiltin =
+                        $isBuiltin && false === strpos($typeString, '\\');
+                    // @codeCoverageIgnoreEnd
                 } else {
-                    $returnType = ' : \\' . $type;
+                    $typeString = (string) $type;
+                }
+
+                if ($typeString) {
+                    if ($isBuiltin) {
+                        $returnType = ' : ' . $typeString;
+                    } else {
+                        $returnType = ' : \\' . $typeString;
+                    }
+                } else {
+                    $returnType = '';
                 }
             } else {
                 $returnType = '';
@@ -528,11 +578,36 @@ EOD;
             $methodReflector->hasReturnType()
         ) {
             $type = $methodReflector->getReturnType();
+            $isBuiltin = $type->isBuiltin();
 
-            if ($type->isBuiltin()) {
-                $source .= "\n    ) : " . $type . " {\n";
+            if ($this->isHhvm) {
+                // @codeCoverageIgnoreStart
+                $typeString = $methodReflector->getReturnTypeText();
+
+                if (0 === strpos($typeString, '?')) {
+                    $typeString = '';
+                } else {
+                    $genericPosition = strpos($typeString, '<');
+
+                    if (false !== $genericPosition) {
+                        $typeString = substr($typeString, 0, $genericPosition);
+                    }
+                }
+
+                $isBuiltin = $isBuiltin && false === strpos($typeString, '\\');
+                // @codeCoverageIgnoreEnd
             } else {
-                $source .= "\n    ) : \\" . $type . " {\n";
+                $typeString = (string) $type;
+            }
+
+            if ($typeString) {
+                if ($isBuiltin) {
+                    $source .= "\n    ) : " . $typeString . " {\n";
+                } else {
+                    $source .= "\n    ) : \\" . $typeString . " {\n";
+                }
+            } else {
+                $source .= "\n    ) {\n";
             }
         } else {
             $source .= "\n    ) {\n";
@@ -803,7 +878,7 @@ EOD;
                 "\n    public static $" .
                 $name .
                 ' = ' .
-                (null === $value ? 'null' : $this->renderValue($value)) .
+                (null === $value ? 'null' : var_export($value, true)) .
                 ';';
         }
 
@@ -812,7 +887,7 @@ EOD;
                 "\n    public $" .
                 $name .
                 ' = ' .
-                (null === $value ? 'null' : $this->renderValue($value)) .
+                (null === $value ? 'null' : var_export($value, true)) .
                 ';';
         }
 
@@ -834,7 +909,7 @@ EOD;
         $source .= "\n    private static \$_uncallableMethods = ";
 
         if ($uncallableMethodNames) {
-            $source .= $this->renderValue($uncallableMethodNames);
+            $source .= var_export($uncallableMethodNames, true);
         } else {
             $source .= 'array()';
         }
@@ -842,7 +917,7 @@ EOD;
         $source .= ";\n    private static \$_traitMethods = ";
 
         if ($traitMethodNames) {
-            $source .= $this->renderValue($traitMethodNames);
+            $source .= var_export($traitMethodNames, true);
         } else {
             $source .= 'array()';
         }
@@ -855,15 +930,11 @@ EOD;
         return $source;
     }
 
-    private function renderValue($value)
-    {
-        return str_replace('array (', 'array(', var_export($value, true));
-    }
-
     private static $instance;
     private $labelSequencer;
     private $signatureInspector;
     private $featureDetector;
     private $isClosureBindingSupported;
     private $isReturnTypeSupported;
+    private $isHhvm;
 }

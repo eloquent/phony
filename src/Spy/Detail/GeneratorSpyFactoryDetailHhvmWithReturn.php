@@ -50,9 +50,7 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
             $value = null;
 
             try {
-                if ($isFirst) {
-                    $generator->next();
-                } else {
+                if (!$isFirst) {
                     if ($receivedException) {
                         $generator->throw($receivedException);
                     } else {

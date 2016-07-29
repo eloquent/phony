@@ -86,7 +86,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     private static $_uncallableMethods = array();
-    private static $_traitMethods = array(
+    private static $_traitMethods = array (
   '__callstatic' => 'Eloquent\\Phony\\Test\\TestTraitJ',
   '__call' => 'Eloquent\\Phony\\Test\\TestTraitJ',
 );
