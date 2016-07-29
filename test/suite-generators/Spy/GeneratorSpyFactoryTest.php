@@ -11,8 +11,6 @@
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Call\CallFactory;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;

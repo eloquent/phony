@@ -130,7 +130,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateGlobalWithReferenceParameters()
     {
-        $actual = $this->subject->createGlobal('preg_match', 'Eloquent\Phony\Test\SpyVerifierFactory');
+        $this->subject->createGlobal('preg_match', 'Eloquent\Phony\Test\SpyVerifierFactory');
 
         \Eloquent\Phony\Test\SpyVerifierFactory\preg_match('/./', 'a', $matches);
 

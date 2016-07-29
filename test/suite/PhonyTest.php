@@ -204,7 +204,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $mock = mockBuilder()->partial();
         $actual = on($mock);
-        $expected = $this->handleFactory->instanceHandle($mock);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertSame($mock, $actual->get());

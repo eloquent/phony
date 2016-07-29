@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -327,21 +326,17 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
             $this->generatorSpyFactory,
             $this->iterableSpyFactory
         );
-        $caughtExceptions = array();
         try {
             $spy->invokeWith(array('a'));
         } catch (Exception $caughtException) {
-            $caughtExceptions[] = $caughtException;
         }
         try {
             $spy->invoke('b', 'c');
         } catch (Exception $caughtException) {
-            $caughtExceptions[] = $caughtException;
         }
         try {
             $spy('d');
         } catch (Exception $caughtException) {
-            $caughtExceptions[] = $caughtException;
         }
         $this->callFactory->reset();
         $expected = array(
@@ -420,7 +415,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
         $this->callback = function () {
             return array_map('strtoupper', func_get_args());
         };
-        $generator = call_user_func($this->callback);
+        call_user_func($this->callback);
         $spy = new SpyData(
             $this->callback,
             null,

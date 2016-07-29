@@ -18,7 +18,6 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestMockGenerator;
-use Mockery\Generator\Generator;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 

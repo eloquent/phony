@@ -133,7 +133,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
         }
 
-        $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
+        $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameterWithType');
         $handle->method->does(
             function () {
                 return func_get_args();
@@ -1037,7 +1037,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     public function testAutomaticInstanceHandleAdaptation()
     {
         $handleA = x\mock();
-        $mockA = $handleA->get();
+        $handleA->get();
         $handleB = x\mock(array('methodA' => function () {}));
         $mockB = $handleB->get();
         $handleB->methodA->returns($handleA);

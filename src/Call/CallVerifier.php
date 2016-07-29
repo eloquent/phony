@@ -963,8 +963,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     {
         $cardinality = $this->resetCardinality()->assertSingular();
 
-        if ($responseEvent = $this->call->responseEvent()) {
-            list($exception, $returnValue) = $this->call->response();
+        if ($this->call->responseEvent()) {
+            list(, $returnValue) = $this->call->response();
 
             $isMatch = $returnValue instanceof Generator;
         } else {
@@ -1012,8 +1012,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     {
         $cardinality = $this->resetCardinality()->assertSingular();
 
-        if ($responseEvent = $this->call->responseEvent()) {
-            list($exception, $returnValue) = $this->call->response();
+        if ($this->call->responseEvent()) {
+            list(, $returnValue) = $this->call->response();
 
             $isMatch =
                 $returnValue instanceof Traversable || is_array($returnValue);

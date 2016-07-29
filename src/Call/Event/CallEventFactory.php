@@ -178,5 +178,4 @@ class CallEventFactory
     private static $instance;
     private $sequencer;
     private $clock;
-    private $invoker;
 }

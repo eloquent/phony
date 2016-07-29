@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use ReflectionClass;
 use ReflectionType;
 
 /**
@@ -32,16 +31,6 @@ class EmptyValueFactory
         }
 
         return self::$instance;
-    }
-
-    /**
-     * Construct a new empty value factory.
-     */
-    public function __construct()
-    {
-        $functionReflector = new ReflectionClass('ReflectionFunction');
-        $this->isReturnTypeSupported =
-            $functionReflector->hasMethod('getReturnType');
     }
 
     public function setStubVerifierFactory(
@@ -115,5 +104,4 @@ class EmptyValueFactory
     private static $instance;
     private $stubVerifierFactory;
     private $mockBuilderFactory;
-    private $isReturnTypeSupported;
 }

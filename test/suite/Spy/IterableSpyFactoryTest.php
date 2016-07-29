@@ -12,8 +12,6 @@
 namespace Eloquent\Phony\Spy;
 
 use ArrayIterator;
-use Eloquent\Phony\Call\CallFactory;
-use Eloquent\Phony\Call\Event\Factory\CallEventFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestIteratorAggregate;
 use PHPUnit_Framework_TestCase;

@@ -152,7 +152,6 @@ class InlineExporter implements Exporter
                 case 'array':
                     if (isset($value[self::ARRAY_ID_KEY])) {
                         $id = $value[self::ARRAY_ID_KEY];
-                        $displayId = $id;
                     } else {
                         $id = $value[self::ARRAY_ID_KEY] = '#' . $arrayId++;
                     }

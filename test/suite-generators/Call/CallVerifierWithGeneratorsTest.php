@@ -13,9 +13,6 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Call\Event\CalledEvent;
-use Eloquent\Phony\Call\Event\ReturnedEvent;
-use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
@@ -31,7 +28,6 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use Exception;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
 

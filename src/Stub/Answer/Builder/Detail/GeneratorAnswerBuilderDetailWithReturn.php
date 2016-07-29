@@ -111,8 +111,4 @@ abstract class GeneratorAnswerBuilderDetailWithReturn
             return $returnValue;
         };
     }
-
-    private $invoker;
-    private $requests;
-    private $iterations;
 }

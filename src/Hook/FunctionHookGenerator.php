@@ -117,7 +117,6 @@ class FunctionHookGenerator
         }
 
         $ret = 'ret' . 'urn';
-        $thr = 'thr' . 'ow';
 
         $renderedName = var_export(strtolower($namespace . '\\' . $name), true);
         $renderedShortName = var_export($name, true);

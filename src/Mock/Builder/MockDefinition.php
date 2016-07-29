@@ -68,7 +68,7 @@ class MockDefinition
         );
 
         foreach ($customMethods as $name => $method) {
-            list($callable, $reflector) = $method;
+            list(, $reflector) = $method;
 
             $this->signature['customMethods'][$name] = array(
                 'custom',
@@ -79,7 +79,7 @@ class MockDefinition
         }
 
         foreach ($customStaticMethods as $name => $method) {
-            list($callable, $reflector) = $method;
+            list(, $reflector) = $method;
 
             $this->signature['customStaticMethods'][$name] = array(
                 'custom',

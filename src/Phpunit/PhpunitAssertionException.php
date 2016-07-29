@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Phpunit;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Exception;
 use PHPUnit_Framework_ExpectationFailedException;
 
 /**

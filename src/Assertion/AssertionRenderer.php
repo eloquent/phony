@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Assertion;
 
-use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CallEvent;
@@ -3155,10 +3154,8 @@ class AssertionRenderer
 
             if ($cardinality->matches($iterableCount, $iterableCount)) {
                 $iterableResultStart = $this->passStart;
-                $iterableResultText = self::PASS;
             } else {
                 $iterableResultStart = $this->failStart;
-                $iterableResultText = self::FAIL;
             }
 
             $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';
@@ -3466,10 +3463,8 @@ class AssertionRenderer
 
             if ($cardinality->matches($iterableCount, $iterableCount)) {
                 $iterableResultStart = $this->passStart;
-                $iterableResultText = self::PASS;
             } else {
                 $iterableResultStart = $this->failStart;
-                $iterableResultText = self::FAIL;
             }
 
             $matchOrMatches = 1 === $iterableCount ? 'match' : 'matches';

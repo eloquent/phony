@@ -103,8 +103,4 @@ abstract class GeneratorAnswerBuilderDetail
             }
         };
     }
-
-    private $invoker;
-    private $requests;
-    private $iterations;
 }

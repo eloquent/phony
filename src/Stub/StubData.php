@@ -26,7 +26,6 @@ use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Error;
 use Exception;
-use Generator;
 
 /**
  * Provides canned answers to function or method invocations.

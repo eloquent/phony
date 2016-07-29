@@ -482,21 +482,17 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer,
             $this->invocableInspector
         );
-        $caughtExceptions = array();
         try {
             $verifier->invokeWith(array('a'));
         } catch (Exception $caughtException) {
-            $caughtExceptions[] = $caughtException;
         }
         try {
             $verifier->invoke('b', 'c');
         } catch (Exception $caughtException) {
-            $caughtExceptions[] = $caughtException;
         }
         try {
             $verifier('d');
         } catch (Exception $caughtException) {
-            $caughtExceptions[] = $caughtException;
         }
         $this->callFactory->reset();
         $expected = array(

@@ -20,7 +20,6 @@ use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventOrderVerifier;
-use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Hook\FunctionHookGenerator;
 use Eloquent\Phony\Hook\FunctionHookManager;
@@ -224,7 +223,6 @@ class FacadeDriver
             $assertionRecorder,
             $assertionRenderer,
             $invocableInspector,
-            $invoker,
             $generatorAnswerBuilderFactory,
             $functionHookManager
         );

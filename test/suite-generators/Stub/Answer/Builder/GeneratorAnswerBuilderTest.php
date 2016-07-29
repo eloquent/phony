@@ -680,7 +680,6 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testThrowsWithMessage()
     {
-        $exception = new Exception();
         $this->subject->throws('a');
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 

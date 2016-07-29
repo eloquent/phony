@@ -58,7 +58,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
             $this->assertionRecorder,
             AssertionRenderer::instance(),
             InvocableInspector::instance(),
-            Invoker::instance(),
             GeneratorAnswerBuilderFactory::instance(),
             FunctionHookManager::instance()
         );
@@ -248,7 +247,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $mock = mockBuilder()->partial();
         $actual = on($mock);
-        $expected = $this->handleFactory->instanceHandle($mock);
 
         $this->assertInstanceOf('Eloquent\Phony\Mock\Handle\InstanceHandle', $actual);
         $this->assertSame($mock, $actual->get());

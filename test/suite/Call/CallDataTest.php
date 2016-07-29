@@ -147,7 +147,6 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testLastEventWithIterable()
     {
-        $exception = new RuntimeException('You done goofed.');
         $this->returnValue = new ArrayIterator();
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->iterableEventA = $this->callEventFactory->createProduced('a', 'b');
@@ -165,7 +164,6 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testLastEventWithUnconsumedIterable()
     {
-        $exception = new RuntimeException('You done goofed.');
         $this->returnValue = new ArrayIterator();
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->iterableEventA = $this->callEventFactory->createProduced('a', 'b');
@@ -181,7 +179,6 @@ class CallDataTest extends PHPUnit_Framework_TestCase
 
     public function testLastEventWithUniteratedIterable()
     {
-        $exception = new RuntimeException('You done goofed.');
         $this->returnValue = new ArrayIterator();
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->subject = new CallData($this->index, $this->calledEvent);

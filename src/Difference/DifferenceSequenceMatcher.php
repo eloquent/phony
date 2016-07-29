@@ -173,7 +173,6 @@ class DifferenceSequenceMatcher
     private function findLongestMatch($alo, $ahi, $blo, $bhi)
     {
         $a = $this->a;
-        $b = $this->b;
 
         $bestI = $alo;
         $bestJ = $blo;

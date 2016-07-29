@@ -150,8 +150,6 @@ class MatcherVerifierTest extends PHPUnit_Framework_TestCase
 
     public function explainData()
     {
-        $factory = MatcherFactory::instance();
-
         //                                    matchers                   isMatch matcherMatches                  argumentMatches
         return array(
             'Exact arguments'        => array(array('a', 'b', 'c'),      true,   array(true, true, true),        array(true, true, true)),

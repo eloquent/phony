@@ -337,7 +337,7 @@ class GeneratorVerifier extends IterableVerifier
                     continue;
                 }
 
-                list($exception, $returnValue) = $call->generatorResponse();
+                list($exception) = $call->generatorResponse();
 
                 if (!$exception) {
                     $matchingEvents[] = $endEvent;
@@ -428,7 +428,7 @@ class GeneratorVerifier extends IterableVerifier
                     continue;
                 }
 
-                list($exception, $returnValue) = $call->generatorResponse();
+                list($exception) = $call->generatorResponse();
 
                 if ($exception) {
                     $matchingEvents[] = $endEvent;
@@ -443,7 +443,7 @@ class GeneratorVerifier extends IterableVerifier
                     continue;
                 }
 
-                list($exception, $returnValue) = $call->generatorResponse();
+                list($exception) = $call->generatorResponse();
 
                 if ($exception && is_a($exception, $type)) {
                     $matchingEvents[] = $endEvent;
@@ -468,7 +468,7 @@ class GeneratorVerifier extends IterableVerifier
                         continue;
                     }
 
-                    list($exception, $returnValue) = $call->generatorResponse();
+                    list($exception) = $call->generatorResponse();
 
                     if ($exception && $type->matches($exception)) {
                         $matchingEvents[] = $endEvent;

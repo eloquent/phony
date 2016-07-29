@@ -701,7 +701,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
                     continue;
                 }
 
-                list($exception, $returnValue) = $call->response();
+                list($exception) = $call->response();
 
                 if (!$exception) {
                     $matchingEvents[] = $responseEvent;
@@ -789,7 +789,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
                     continue;
                 }
 
-                list($exception, $returnValue) = $call->response();
+                list($exception) = $call->response();
 
                 if ($exception) {
                     $matchingEvents[] = $responseEvent;
@@ -804,7 +804,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
                     continue;
                 }
 
-                list($exception, $returnValue) = $call->response();
+                list($exception) = $call->response();
 
                 if ($exception && is_a($exception, $type)) {
                     $matchingEvents[] = $responseEvent;
@@ -826,7 +826,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
                         continue;
                     }
 
-                    list($exception, $returnValue) = $call->response();
+                    list($exception) = $call->response();
 
                     if ($exception && $type->matches($exception)) {
                         $matchingEvents[] = $responseEvent;
@@ -894,11 +894,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $matchCount = 0;
 
         foreach ($calls as $call) {
-            if (!$responseEvent = $call->responseEvent()) {
+            if (!$call->responseEvent()) {
                 continue;
             }
 
-            list($exception, $returnValue) = $call->response();
+            list(, $returnValue) = $call->response();
 
             if ($returnValue instanceof Generator) {
                 $matchingEvents[] = $call;
@@ -948,11 +948,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $matchCount = 0;
 
         foreach ($calls as $call) {
-            if (!$responseEvent = $call->responseEvent()) {
+            if (!$call->responseEvent()) {
                 continue;
             }
 
-            list($exception, $returnValue) = $call->response();
+            list(, $returnValue) = $call->response();
 
             if ($returnValue instanceof Traversable || is_array($returnValue)) {
                 $matchingEvents[] = $call;

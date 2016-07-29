@@ -53,7 +53,6 @@ class GeneratorAnswerBuilderFactory
     ) {
         $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
-        $this->featureDetector = $featureDetector;
 
         $this->isGeneratorReturnSupported =
             $featureDetector->isSupported('generator.return');
@@ -79,6 +78,5 @@ class GeneratorAnswerBuilderFactory
     private static $instance;
     private $invocableInspector;
     private $invoker;
-    private $featureDetector;
     private $isGeneratorReturnSupported;
 }

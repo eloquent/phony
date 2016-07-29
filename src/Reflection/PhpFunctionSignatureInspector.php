@@ -33,8 +33,6 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
     ) {
         parent::__construct($invocableInspector);
 
-        $this->isExportDefaultArraySupported = $featureDetector
-            ->isSupported('reflection.function.export.default.array');
         $this->isExportReferenceSupported = $featureDetector
             ->isSupported('reflection.function.export.reference');
         $this->isVariadicParameterSupported = $featureDetector
@@ -134,7 +132,6 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
         return $signature;
     }
 
-    private $isExportDefaultArraySupported;
     private $isExportReferenceSupported;
     private $isVariadicParameterSupported;
     private $isScalarTypeHintSupported;

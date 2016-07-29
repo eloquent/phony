@@ -15,7 +15,6 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
@@ -44,7 +43,6 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->invocableInspector = InvocableInspector::instance();
-        $this->invoker = new Invoker();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubVerifier(
             $this->stub,
@@ -57,7 +55,6 @@ class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->assertionRecorder,
             $this->assertionRenderer,
             $this->invocableInspector,
-            $this->invoker,
             $this->generatorAnswerBuilderFactory
         );
 
