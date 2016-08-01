@@ -216,6 +216,8 @@ $commitMessage = sprintf(
 );
 
 passthru('git add -A');
+passthru('git config user.email ' . escapeshellarg('e@lqnt.co'));
+passthru('git config user.name ' . escapeshellarg('Eloquent Software'));
 passthru('git commit -m ' . escapeshellarg($commitMessage));
 
 if (!$isTravis) {
