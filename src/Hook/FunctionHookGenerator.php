@@ -42,8 +42,9 @@ class FunctionHookGenerator
     public function generateHook($name, $namespace, array $signature)
     {
         $source = "namespace $namespace;\n\nfunction $name";
+        $parameterCount = count($signature);
 
-        if ($signature) {
+        if ($parameterCount > 0) {
             $index = -1;
             $isFirst = true;
 
@@ -68,11 +69,10 @@ class FunctionHookGenerator
             $source .= "()\n{\n";
         }
 
-        $parameterCount = count($signature);
         $variadicIndex = -1;
         $variadicReference = '';
 
-        if ($signature) {
+        if ($parameterCount > 0) {
             $argumentPacking = "\n";
             $index = -1;
 

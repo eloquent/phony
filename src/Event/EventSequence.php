@@ -121,7 +121,7 @@ class EventSequence implements EventCollection
      */
     public function firstEvent()
     {
-        if (!$this->events) {
+        if (empty($this->events)) {
             throw new UndefinedEventException(0);
         }
 

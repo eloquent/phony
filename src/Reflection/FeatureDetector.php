@@ -373,14 +373,14 @@ class FeatureDetector
                 );
             },
 
-            'reflection.function.export.default.array' => function ($detector) {
+            'reflection.function.export.default.array' => function () {
                 $function =
                     new ReflectionFunction(function ($a0 = array('a')) {});
 
                 return false !== strpos(strval($function), "'a'");
             },
 
-            'reflection.function.export.reference' => function ($detector) {
+            'reflection.function.export.reference' => function () {
                 $function = new ReflectionFunction(function (&$a0) {});
 
                 return false !== strpos(strval($function), '&');
@@ -400,7 +400,7 @@ class FeatureDetector
                     !version_compare(PHP_VERSION, '7.x', '<');
             },
 
-            'stdout.ansi' => function ($detector) {
+            'stdout.ansi' => function () {
                 // @codeCoverageIgnoreStart
                 if (DIRECTORY_SEPARATOR === '\\') {
                     return

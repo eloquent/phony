@@ -168,7 +168,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     {
         $this->closeRule();
 
-        if (!$this->rules) {
+        if (empty($this->rules)) {
             call_user_func($this->defaultAnswerCallback, $this);
             $this->closeRule();
         }
@@ -679,12 +679,12 @@ class StubData extends AbstractWrappedInvocable implements Stub
      */
     public function closeRule()
     {
-        if ($this->secondaryRequests) {
+        if (!empty($this->secondaryRequests)) {
             call_user_func($this->defaultAnswerCallback, $this);
             $this->secondaryRequests = array();
         }
 
-        if ($this->answers) {
+        if (!empty($this->answers)) {
             if (null !== $this->criteria) {
                 $rule = new StubRule($this->criteria, $this->answers);
 
@@ -722,7 +722,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     {
         $this->closeRule();
 
-        if (!$this->rules) {
+        if (empty($this->rules)) {
             call_user_func($this->defaultAnswerCallback, $this);
             $this->closeRule();
         }

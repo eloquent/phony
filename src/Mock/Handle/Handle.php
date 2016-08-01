@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Mock\Exception\MockException;
+use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\StubVerifier;
 use Exception;
 use ReflectionClass;

@@ -47,7 +47,7 @@ class MatcherVerifier
                 $matchCount = 0;
                 $innerMatcher = $matcher->matcher();
 
-                while ($pair && $innerMatcher->matches($pair[1])) {
+                while (!empty($pair) && $innerMatcher->matches($pair[1])) {
                     ++$matchCount;
                     $pair = each($arguments);
                 }

@@ -33,12 +33,22 @@ class EmptyValueFactory
         return self::$instance;
     }
 
+    /**
+     * Set the stub verifier factory.
+     *
+     * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
+     */
     public function setStubVerifierFactory(
         StubVerifierFactory $stubVerifierFactory
     ) {
         $this->stubVerifierFactory = $stubVerifierFactory;
     }
 
+    /**
+     * Set the mock builder factory.
+     *
+     * @param MockBuilderFactory $mockBuilderFactory The mock builder factory to use.
+     */
     public function setMockBuilderFactory(
         MockBuilderFactory $mockBuilderFactory
     ) {

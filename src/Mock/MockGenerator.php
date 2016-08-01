@@ -91,7 +91,7 @@ class MockGenerator
             $subject = null;
         }
 
-        if ($subject) {
+        if (null !== $subject) {
             $subjectAtoms = preg_split('/[_\\\\]/', $subject);
             $className .= '_' . array_pop($subjectAtoms);
         }
@@ -113,7 +113,7 @@ class MockGenerator
         MockDefinition $definition,
         $className = null
     ) {
-        if (!$className) {
+        if (null === $className) {
             $className = $this->generateClassName($definition);
         }
 
@@ -145,16 +145,6 @@ class MockGenerator
 
     private function generateHeader($definition, $className)
     {
-        if ($typeNames = $definition->typeNames()) {
-            $usedTypes = "\n *";
-
-            foreach ($typeNames as $typeName) {
-                $usedTypes .= "\n * @uses \\" . $typeName;
-            }
-        } else {
-            $usedTypes = '';
-        }
-
         $classNameParts = explode('\\', $className);
 
         if (count($classNameParts) > 1) {
@@ -382,7 +372,9 @@ EOD;
             $variadicIndex = -1;
             $variadicReference = '';
 
-            if ($signature) {
+            if (empty($signature)) {
+                $argumentPacking = '';
+            } else {
                 $argumentPacking = "\n";
                 $index = -1;
 
@@ -403,8 +395,6 @@ EOD;
                             ";\n        }";
                     }
                 }
-            } else {
-                $argumentPacking = '';
             }
 
             $isStatic = $method->isStatic() ? 'static ' : '';
@@ -509,7 +499,9 @@ EOD;
                 $returnType = '';
             }
 
-            if ($signature) {
+            if (empty($signature)) {
+                $source .= '()' . $returnType . "\n    {\n";
+            } else {
                 $index = -1;
                 $isFirst = true;
 
@@ -530,8 +522,6 @@ EOD;
                 }
 
                 $source .= "\n    )" . $returnType . " {\n";
-            } else {
-                $source .= '()' . $returnType . "\n    {\n";
             }
 
             $source .= $body . "\n    }\n";
@@ -908,18 +898,18 @@ EOD;
 
         $source .= "\n    private static \$_uncallableMethods = ";
 
-        if ($uncallableMethodNames) {
-            $source .= var_export($uncallableMethodNames, true);
-        } else {
+        if (empty($uncallableMethodNames)) {
             $source .= 'array()';
+        } else {
+            $source .= var_export($uncallableMethodNames, true);
         }
 
         $source .= ";\n    private static \$_traitMethods = ";
 
-        if ($traitMethodNames) {
-            $source .= var_export($traitMethodNames, true);
-        } else {
+        if (empty($traitMethodNames)) {
             $source .= 'array()';
+        } else {
+            $source .= var_export($traitMethodNames, true);
         }
 
         $source .= ";\n" .

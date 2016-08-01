@@ -44,8 +44,6 @@ abstract class GeneratorSpyFactoryDetailPhpWithReturn
 
         while (true) {
             $thrown = null;
-            $key = null;
-            $value = null;
 
             try {
                 if (!$isFirst) {
@@ -65,8 +63,10 @@ abstract class GeneratorSpyFactoryDetailPhpWithReturn
                     return $returnValue;
                 }
             } catch (Throwable $thrown) {
+                // re-thrown after recording
                 // @codeCoverageIgnoreStart
             } catch (Exception $thrown) {
+                // re-thrown after recording
             }
             // @codeCoverageIgnoreEnd
 

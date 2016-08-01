@@ -107,7 +107,7 @@ class InlineExporter implements Exporter
         $arrayResults = array();
         $arrayId = 0;
 
-        while ($stack) {
+        while (!empty($stack)) {
             $entry = array_shift($stack);
             $value = &$entry[0];
             $result = $entry[1];
@@ -445,10 +445,10 @@ class InlineExporter implements Exporter
                     $result->type .= $id;
 
                     if ($depth > -1 && $currentDepth >= $depth) {
-                        if ($values) {
-                            $result->type .= '{:' . count($values) . '}';
-                        } else {
+                        if (empty($values)) {
                             $result->type .= '{}';
+                        } else {
+                            $result->type .= '{:' . count($values) . '}';
                         }
 
                         break;
@@ -550,4 +550,5 @@ class InlineExporter implements Exporter
     private $depth;
     private $objectSequencer;
     private $objectIds;
+    private $jsonFlags;
 }

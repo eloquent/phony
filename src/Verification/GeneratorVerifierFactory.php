@@ -17,6 +17,7 @@ use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Spy\Spy;
 
 /**
  * Creates generator verifiers.
@@ -72,7 +73,7 @@ class GeneratorVerifierFactory
     /**
      * Create a new generator verifier.
      *
-     * @param callable    $subject The subject.
+     * @param Spy|Call    $subject The subject.
      * @param array<Call> $calls   The calls.
      *
      * @return GeneratorVerifier The newly created generator verifier.

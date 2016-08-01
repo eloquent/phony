@@ -175,7 +175,7 @@ class MockBuilder
 
         foreach (func_get_args() as $type) {
             if (is_array($type)) {
-                if ($type) {
+                if (!empty($type)) {
                     if (array_values($type) === $type) {
                         $types = array_merge($types, $type);
                     } else {
@@ -377,7 +377,7 @@ class MockBuilder
     /**
      * Set the class name.
      *
-     * @param string $className|null The class name, or null to use a generated name.
+     * @param string|null $className The class name, or null to use a generated name.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
@@ -676,8 +676,6 @@ class MockBuilder
             if (!$isFunction && !$isProperty && !$isConstant) {
                 if (is_object($value) && is_callable($value)) {
                     $isFunction = true;
-                } else {
-                    $isProperty = true;
                 }
             }
 

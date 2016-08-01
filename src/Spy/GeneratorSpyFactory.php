@@ -78,8 +78,7 @@ class GeneratorSpyFactory
                     GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
                         $call,
                         $generator,
-                        $this->callEventFactory,
-                        $this->isGeneratorImplicitNextSupported
+                        $this->callEventFactory
                     );
             }
 

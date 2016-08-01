@@ -18,6 +18,7 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReceivedEvent;
 use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Spy\Spy;
 use Error;
@@ -162,7 +163,7 @@ class GeneratorVerifier extends IterableVerifier
     /**
      * Checks if the subject received an exception of the supplied type.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
@@ -284,7 +285,7 @@ class GeneratorVerifier extends IterableVerifier
      * Throws an exception unless the subject received an exception of the
      * supplied type.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If the type is invalid.
@@ -403,7 +404,7 @@ class GeneratorVerifier extends IterableVerifier
     /**
      * Checks if an exception of the supplied type was thrown from a generator.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
@@ -496,7 +497,7 @@ class GeneratorVerifier extends IterableVerifier
      * Throws an exception unless an exception of the supplied type was thrown
      * from a generator.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If the type is invalid.

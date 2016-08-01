@@ -39,17 +39,17 @@ abstract class AbstractHandle implements Handle
     /**
      * Construct a new handle.
      *
-     * @param ReflectionClass          $class               The class.
-     * @param stdClass                 $state               The state.
-     * @param ReflectionMethod|null    $callParentMethod    The call parent method, or null if no parent class exists.
-     * @param ReflectionMethod|null    $callTraitMethod     The call trait method, or null if no trait methods are implemented.
-     * @param ReflectionMethod|null    $callMagicMethod     The call magic method, or null if magic calls are not supported.
-     * @param Mock|null                $mock                The mock, or null if this is a static handle.
-     * @param StubFactory|null         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactory|null $stubVerifierFactory The stub verifier factory to use.
-     * @param AssertionRenderer|null   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorder|null   $assertionRecorder   The assertion recorder to use.
-     * @param Invoker|null             $invoker             The invoker to use.
+     * @param ReflectionClass       $class               The class.
+     * @param stdClass              $state               The state.
+     * @param ReflectionMethod|null $callParentMethod    The call parent method, or null if no parent class exists.
+     * @param ReflectionMethod|null $callTraitMethod     The call trait method, or null if no trait methods are implemented.
+     * @param ReflectionMethod|null $callMagicMethod     The call magic method, or null if magic calls are not supported.
+     * @param Mock|null             $mock                The mock, or null if this is a static handle.
+     * @param StubFactory           $stubFactory         The stub factory to use.
+     * @param StubVerifierFactory   $stubVerifierFactory The stub verifier factory to use.
+     * @param AssertionRenderer     $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorder     $assertionRecorder   The assertion recorder to use.
+     * @param Invoker               $invoker             The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,

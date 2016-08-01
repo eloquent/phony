@@ -133,7 +133,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      */
     public function firstEvent()
     {
-        if (!$this->events) {
+        if ($this->eventCount < 1) {
             throw new UndefinedEventException(0);
         }
 

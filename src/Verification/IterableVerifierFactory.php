@@ -17,6 +17,7 @@ use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Spy\Spy;
 
 /**
  * Creates iterable verifiers.

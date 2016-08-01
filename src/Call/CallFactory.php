@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Spy\SpyData;
 use Exception;
 use Throwable;
 
@@ -58,14 +58,14 @@ class CallFactory
      *
      * @param callable  $callback  The callback.
      * @param Arguments $arguments The arguments.
-     * @param Spy       $spy       The spy to record the call to.
+     * @param SpyData   $spy       The spy to record the call to.
      *
      * @return CallData The newly created call.
      */
     public function record(
         $callback,
         Arguments $arguments,
-        Spy $spy
+        SpyData $spy
     ) {
         $originalArguments = $arguments->copy();
 

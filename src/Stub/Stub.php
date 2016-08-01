@@ -123,7 +123,7 @@ interface Stub extends WrappedInvocable
      *
      * @param int             $index                 The argument index.
      * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param bool            $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
@@ -132,7 +132,7 @@ interface Stub extends WrappedInvocable
     public function callsArgumentWith(
         $index = 0,
         $arguments = array(),
-        $prefixSelf = null,
+        $prefixSelf = false,
         $suffixArgumentsObject = false,
         $suffixArguments = true
     );

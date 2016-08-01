@@ -111,7 +111,9 @@ class FunctionHookManager
                     $e
                 );
             } catch (Throwable $error) {
+                // re-thrown after cleanup
             } catch (Exception $error) {
+                // re-thrown after cleanup
             }
             // @codeCoverageIgnoreEnd
 

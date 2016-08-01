@@ -24,6 +24,7 @@ use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\AbstractCardinalityVerifier;
@@ -854,7 +855,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Checks if an exception of the supplied type was thrown.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection|null        The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
@@ -926,7 +927,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * Throws an exception unless this call threw an exception of the supplied
      * type.
      *
-     * @param Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection             The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.

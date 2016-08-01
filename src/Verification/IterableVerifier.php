@@ -19,6 +19,7 @@ use Eloquent\Phony\Call\Event\ProducedEvent;
 use Eloquent\Phony\Call\Event\UsedEvent;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Spy\Spy;
 use Exception;
 
 /**

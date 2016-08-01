@@ -11,7 +11,7 @@
 
 namespace Eloquent\Phony\Integration;
 
-use Eloquent\Phony\Matcher\Matcher;
+use Eloquent\Phony\Matcher\Matchable;
 use Eloquent\Phony\Matcher\MatcherDriver;
 use Eloquent\Phony\Matcher\WrappedMatcher;
 
@@ -59,7 +59,7 @@ class CounterpartMatcherDriver implements MatcherDriver
      *
      * @param object $matcher The matcher to wrap.
      *
-     * @return Matcher The wrapped matcher.
+     * @return Matchable The wrapped matcher.
      */
     public function wrapMatcher($matcher)
     {

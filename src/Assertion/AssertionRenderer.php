@@ -102,7 +102,7 @@ class AssertionRenderer
      *
      * Pass `null` to detect automatically.
      *
-     * @param bool $useColor True to use color.
+     * @param bool|null $useColor True to use color.
      */
     public function setUseColor($useColor)
     {
@@ -142,15 +142,28 @@ class AssertionRenderer
     /**
      * Render a failed called() verification.
      *
-     * @param Spy         $subject     The subject.
+     * @param Spy|Call    $subject     The subject.
      * @param Cardinality $cardinality The cardinality.
      *
      * @return string The rendered failure message.
      */
-    public function renderCalled(Spy $subject, Cardinality $cardinality)
+    public function renderCalled($subject, Cardinality $cardinality)
     {
-        $renderedSubject =
-            $this->bold . $this->renderCallable($subject) . $this->reset;
+        $isCall = $subject instanceof Call;
+
+        if ($isCall) {
+            $calls = array($subject);
+            $renderedSubject =
+                $this->bold .
+                $this->renderCallable($subject->callback()) .
+                $this->reset;
+        } else {
+            $calls = $subject->allCalls();
+            $renderedSubject =
+                $this->bold .
+                $this->renderCallable($subject) .
+                $this->reset;
+        }
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
@@ -163,7 +176,6 @@ class AssertionRenderer
                 'Expected ' . $renderedSubject . ' call with any arguments.';
         }
 
-        $calls = $subject->allCalls();
         $totalCount = count($calls);
         $matchCount = $totalCount;
 
@@ -185,11 +197,11 @@ class AssertionRenderer
                         ' ' . $this->exporter->export($argument);
                 }
 
-                if ($renderedArguments) {
+                if (empty($renderedArguments)) {
+                    $renderedArgumentList = ' (no arguments)';
+                } else {
                     $renderedArgumentList =
                         ':' . PHP_EOL . implode(PHP_EOL, $renderedArguments);
-                } else {
-                    $renderedArgumentList = ' (no arguments)';
                 }
 
                 $renderedCalls[] =
@@ -328,11 +340,11 @@ class AssertionRenderer
                 $matcherMatchCount;
         }
 
-        if ($renderedMatchers) {
+        if (empty($renderedMatchers)) {
+            $renderedCriteria = 'no arguments.';
+        } else {
             $renderedCriteria =
                 'arguments:' . PHP_EOL . implode(PHP_EOL, $renderedMatchers);
-        } else {
-            $renderedCriteria = 'no arguments.';
         }
 
         $minimum = $cardinality->minimum();
@@ -426,11 +438,11 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                if ($renderedArguments) {
+                if (empty($renderedArguments)) {
+                    $renderedArgumentList = ' (no arguments)';
+                } else {
                     $renderedArgumentList =
                         ':' . PHP_EOL . implode(PHP_EOL, $renderedArguments);
-                } else {
-                    $renderedArgumentList = ' (no arguments)';
                 }
 
                 $renderedCalls[] =
@@ -466,7 +478,7 @@ class AssertionRenderer
      *
      * @param Spy|Call    $subject     The subject.
      * @param Cardinality $cardinality The cardinality.
-     * @param object      $value       The value.
+     * @param object|null $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -832,7 +844,7 @@ class AssertionRenderer
                             }
                         }
 
-                        if (!$iterableEvents) {
+                        if (empty($iterableEvents)) {
                             $renderedIterableEvents[] =
                                 '        ' . $renderedResult .
                                 ' Never started iterating';
@@ -1685,7 +1697,7 @@ class AssertionRenderer
 
                     $endEvent = $call->endEvent();
 
-                    if (!$iterableEvents) {
+                    if (empty($iterableEvents)) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -1879,12 +1891,13 @@ class AssertionRenderer
 
         if ($key) {
             $renderedKey = $key->describe($this->exporter);
-            $renderedValue = $value->describe($this->exporter);
-        } elseif ($value) {
-            $renderedKey = '<any>';
-            $renderedValue = $value->describe($this->exporter);
         } else {
             $renderedKey = '<any>';
+        }
+
+        if ($value) {
+            $renderedValue = $value->describe($this->exporter);
+        } else {
             $renderedValue = '<any>';
         }
 
@@ -2052,7 +2065,7 @@ class AssertionRenderer
 
                     $endEvent = $call->endEvent();
 
-                    if (!$iterableEvents) {
+                    if (empty($iterableEvents)) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -2350,7 +2363,7 @@ class AssertionRenderer
 
                     $endEvent = $call->endEvent();
 
-                    if (!$iterableEvents) {
+                    if (empty($iterableEvents)) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -2696,7 +2709,7 @@ class AssertionRenderer
 
                     $endEvent = $call->endEvent();
 
-                    if (!$iterableEvents) {
+                    if (empty($iterableEvents)) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -2800,9 +2813,9 @@ class AssertionRenderer
     /**
      * Render a failed generator receivedException() verification.
      *
-     * @param Spy|Call                    $subject     The subject.
-     * @param Cardinality                 $cardinality The cardinality.
-     * @param Exception|Error|string|null $type        The type of exception.
+     * @param Spy|Call                            $subject     The subject.
+     * @param Cardinality                         $cardinality The cardinality.
+     * @param Matcher|Exception|Error|string|null $type        The type of exception.
      *
      * @return string The rendered failure message.
      */
@@ -3006,7 +3019,7 @@ class AssertionRenderer
 
                     $endEvent = $call->endEvent();
 
-                    if (!$iterableEvents) {
+                    if (empty($iterableEvents)) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -3275,7 +3288,7 @@ class AssertionRenderer
 
                     $endEvent = $call->endEvent();
 
-                    if (!$iterableEvents) {
+                    if (empty($iterableEvents)) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -3419,9 +3432,9 @@ class AssertionRenderer
     /**
      * Render a failed generator threw() verification.
      *
-     * @param Spy|Call                    $subject     The subject.
-     * @param Cardinality                 $cardinality The cardinality.
-     * @param Exception|Error|string|null $type        The type of exception.
+     * @param Spy|Call                            $subject     The subject.
+     * @param Cardinality                         $cardinality The cardinality.
+     * @param Matcher|Exception|Error|string|null $type        The type of exception.
      *
      * @return string The rendered failure message.
      */
@@ -3586,7 +3599,7 @@ class AssertionRenderer
 
                     $endEvent = $call->endEvent();
 
-                    if (!$iterableEvents) {
+                    if (empty($iterableEvents)) {
                         if ($callIsRelevant) {
                             if ($isNever) {
                                 $eventResult = $this->pass;
@@ -3793,7 +3806,7 @@ class AssertionRenderer
      */
     public function renderInOrder(array $expected, array $actual)
     {
-        if (!$expected) {
+        if (empty($expected)) {
             return $this->reset . 'Expected events.' . PHP_EOL .
                 $this->failStart . 'No events recorded.' . $this->reset;
         }
@@ -3801,7 +3814,7 @@ class AssertionRenderer
         $from = $this->renderEvents($expected);
         $to = $this->renderEvents($actual);
 
-        $matcher = new DifferenceSequenceMatcher($from, $to, null, array());
+        $matcher = new DifferenceSequenceMatcher($from, $to);
         $diff = array();
 
         foreach ($matcher->getOpcodes() as $opcode) {
@@ -3907,7 +3920,7 @@ class AssertionRenderer
             $label = $wrappedCallback->label();
         }
 
-        if (!$rendered) {
+        if (null === $rendered) {
             $reflector = $this->invocableInspector
                 ->callbackReflector($callback);
 

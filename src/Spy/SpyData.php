@@ -243,7 +243,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      */
     public function firstEvent()
     {
-        if (!$this->calls) {
+        if (empty($this->calls)) {
             throw new UndefinedEventException(0);
         }
 

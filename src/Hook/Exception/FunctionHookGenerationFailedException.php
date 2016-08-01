@@ -73,11 +73,8 @@ final class FunctionHookGenerationFailedException extends Exception implements
             );
         }
 
-        $lineNumber = 0;
-
-        foreach ($lines as $lineNumber => $line) {
-        }
-
+        end($lines);
+        $lineNumber = key($lines);
         $padSize = strlen($lineNumber + 1) + 4;
         $renderedLines = '';
 

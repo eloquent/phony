@@ -205,9 +205,7 @@ class FacadeDriver
             $assertionRenderer,
             $invocableInspector
         );
-        $functionHookGenerator = new FunctionHookGenerator(
-            $featureDetector
-        );
+        $functionHookGenerator = new FunctionHookGenerator();
         $functionHookManager = new FunctionHookManager(
             $functionSignatureInspector,
             $functionHookGenerator

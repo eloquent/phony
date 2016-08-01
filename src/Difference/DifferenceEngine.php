@@ -49,7 +49,7 @@ class DifferenceEngine
      *
      * Pass `null` to detect automatically.
      *
-     * @param bool $useColor True to use color.
+     * @param bool|null $useColor True to use color.
      */
     public function setUseColor($useColor)
     {
@@ -86,7 +86,7 @@ class DifferenceEngine
         $from = preg_split('/(\W+)/u', $from, -1, $flags);
         $to = preg_split('/(\W+)/u', $to, -1, $flags);
 
-        $matcher = new DifferenceSequenceMatcher($from, $to, null, array());
+        $matcher = new DifferenceSequenceMatcher($from, $to);
         $diff = '';
 
         foreach ($matcher->getOpcodes() as $opcode) {

@@ -16,6 +16,7 @@ use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Facade\FacadeDriver;
 use Eloquent\Phony\Matcher\Matcher;
+use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Handle\Handle;
@@ -133,8 +134,8 @@ function spy($callback = null)
  * Create a spy of a function in the global namespace, and declare it as a
  * function in another namespace.
  *
- * @param callable $function  The name of the function in the global namespace.
- * @param string   $namespace The namespace in which to create the new function.
+ * @param string $function  The name of the function in the global namespace.
+ * @param string $namespace The namespace in which to create the new function.
  *
  * @return SpyVerifier The new spy.
  */
@@ -164,8 +165,8 @@ function stub($callback = null)
  * Stubs created via this function do not forward to the original function by
  * default. This differs from stubs created by other methods.
  *
- * @param callable $function  The name of the function in the global namespace.
- * @param string   $namespace The namespace in which to create the new function.
+ * @param string $function  The name of the function in the global namespace.
+ * @param string $namespace The namespace in which to create the new function.
  *
  * @return StubVerifier The new stub.
  */

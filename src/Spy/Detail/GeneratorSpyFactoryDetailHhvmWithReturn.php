@@ -46,8 +46,6 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
 
         while (true) {
             $thrown = null;
-            $key = null;
-            $value = null;
 
             try {
                 if (!$isFirst) {
@@ -67,7 +65,9 @@ abstract class GeneratorSpyFactoryDetailHhvmWithReturn
                     return $returnValue;
                 }
             } catch (Throwable $thrown) {
+                // re-thrown after recording
             } catch (Exception $thrown) {
+                // re-thrown after recording
             }
 
             if ($thrown) {

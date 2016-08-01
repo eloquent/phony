@@ -129,7 +129,9 @@ class MockFactory
                 $e
             );
         } catch (Throwable $error) {
+            // re-thrown after cleanup
         } catch (Exception $error) {
+            // re-thrown after cleanup
         }
         // @codeCoverageIgnoreEnd
 
@@ -218,7 +220,9 @@ class MockFactory
                     $mock = @unserialize($serialized);
                     $isDone = $mock instanceof $className;
                 } catch (Throwable $error) {
+                    // re-thrown after cleanup
                 } catch (Exception $error) {
+                    // re-thrown after cleanup
                 }
             }
         }
@@ -285,7 +289,9 @@ class MockFactory
                     $mock = @unserialize($serialized);
                     $isDone = $mock instanceof $className;
                 } catch (Throwable $error) {
+                    // re-thrown after cleanup
                 } catch (Exception $error) {
+                    // re-thrown after cleanup
                 }
             }
 
