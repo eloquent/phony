@@ -234,7 +234,7 @@ if (!$token) {
 
 echo "Pushing...\n";
 
-exec('git push 2>&1', $output, $exitCode);
+exec('git push origin gh-pages 2>&1', $output, $exitCode);
 
 $output = implode("\n", $output) . "\n";
 
