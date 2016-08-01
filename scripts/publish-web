@@ -12,6 +12,7 @@ Asplode::install();
 $isTravis = (bool) getenv('TRAVIS');
 $tag = getenv('TRAVIS_TAG');
 $branch = getenv('TRAVIS_BRANCH');
+$token = getenv('GITHUB_TOKEN');
 
 if ($tag) {
     $currentVersion = $tag;
@@ -23,45 +24,67 @@ if (!$tag && !$branch) {
     throw new RuntimeException('No tag or branch information.');
 }
 
-echo 'Publishing Phony website... ';
+echo "Publishing Phony website...\n";
 
-if ($token = getenv('GITHUB_TOKEN')) {
-    $header = "Authorization: token $token\r\n";
+$workPath = __DIR__ . '/../build/gh-pages';
+$webPath = __DIR__ . '/../web';
+
+if (file_exists($workPath)) {
+    chdir($workPath);
+    passthru('git reset --hard origin/gh-pages');
+    passthru('git checkout .');
+    passthru('git clean -fdx');
+    passthru('git pull --rebase');
 } else {
-    $header = '';
+    if ($token) {
+        $repo = sprintf(
+            'https://%s:x-oauth-basic@github.com/eloquent/phony.git',
+            rawurlencode($token)
+        );
+    } else {
+        $repo = 'https://github.com/eloquent/phony.git';
+    }
+
+    exec(
+        'git clone -b gh-pages --single-branch --depth 1 ' .
+            escapeshellarg($repo) . ' ' .
+            escapeshellarg($workPath) . ' 2>&1',
+        $output,
+        $exitCode
+    );
+
+    $output = implode("\n", $output) . "\n";
+
+    if ($token) {
+        $output = str_replace($token, 'xxx', $output);
+    }
+
+    echo $output;
+
+    if (0 !== $exitCode) {
+        throw new RuntimeException('Failed to clone Phony website.');
+    }
+
+    chdir($workPath);
 }
 
-$json = file_get_contents(
-    'https://api.github.com/repos/eloquent/phony/contents?ref=gh-pages',
-    false,
-    stream_context_create(
-        array(
-            'http' => array(
-                'user_agent' => 'PHP',
-                'header' => $header,
-                'method' => 'GET',
-            ),
-        )
-    )
-);
+echo "Detecting versions...\n";
 
-$data = json_decode($json);
-
-if (JSON_ERROR_NONE !== json_last_error()) {
-    throw new RuntimeException('Failed to decode tag data.');
-}
-
-$versions = [];
+$versions = array();
 
 if (Version::tryParse($currentVersion, $version)) {
     $versions[] = $version;
 }
 
-foreach ($data as $file) {
-    if ('dir' === $file->type && Version::tryParse($file->name, $version)) {
-        if (!$version->preReleaseVersion()) {
-            $versions[] = $version;
-        }
+foreach (scandir($workPath) as $entry) {
+    if ('.' === substr($entry, 0, 1)) {
+        continue;
+    }
+
+    $entryPath = $workPath . '/' . $entry;
+
+    if (is_dir($entryPath) && Version::tryParse($entry, $version)) {
+        $versions[] = $version;
     }
 }
 
@@ -77,60 +100,150 @@ if ($versions) {
 
     $latestVersion = $versions[0]->string();
 } else {
+    echo 'wat';
     $latestVersion = 'master';
 }
 
-$arguments = [
-    'vendor/bin/woodhouse',
-    'publish',
-    'eloquent/phony',
-];
+$versionStrings = array();
 
-if ($token) {
-    $arguments[] = '--auth-token';
-    $arguments[] = $token;
+foreach ($versions as $version) {
+    $versionString = $version->string();
+    $versionStrings[] = $versionString;
 }
 
-$arguments[] = '--link';
-$arguments[] = sprintf('%s:latest', $latestVersion);
-$arguments[] = sprintf('web/index.html:%s/index.html', $currentVersion);
-$arguments[] = sprintf('web/img:%s/img', $currentVersion);
-$arguments[] = 'web/data:data';
-$arguments[] = 'web/css:css';
-$arguments[] = 'web/js:js';
+$versionStrings[] = 'master';
 
-$command = implode(' ', array_map('escapeshellarg', $arguments));
+foreach ($versionStrings as $version) {
+    echo "    - $version\n";
+}
 
-if ($isTravis) {
-    $versionStrings = [];
+echo "Updating latest symlink...\n";
 
-    foreach ($versions as $version) {
-        $versionStrings[] = $version->string();
+$latestPath = $workPath . '/latest';
+
+if (is_link($latestPath)) {
+    unlink($latestPath);
+}
+
+symlink($latestVersion, $latestPath);
+
+echo "Updating version data...\n";
+
+file_put_contents(
+    $workPath . '/data/versions.json',
+    json_encode($versionStrings, JSON_PRETTY_PRINT) . "\n"
+);
+
+echo "Updating assets...\n";
+
+passthru('rm -rf ' . escapeshellarg($workPath . '/css'));
+passthru(
+    'cp -r ' . escapeshellarg($webPath . '/css') . ' ' .
+    escapeshellarg($workPath . '/css')
+);
+passthru('rm -rf ' . escapeshellarg($workPath . '/js'));
+passthru(
+    'cp -r ' . escapeshellarg($webPath . '/js') . ' ' .
+    escapeshellarg($workPath . '/js')
+);
+
+echo "Updating documentation for $currentVersion...\n";
+
+$currentVersionPath = $workPath . '/' . $currentVersion;
+passthru('rm -rf ' . escapeshellarg($currentVersionPath));
+passthru('mkdir -p ' . escapeshellarg($currentVersionPath));
+passthru(
+    'cp -r ' . escapeshellarg($webPath . '/img') . ' ' .
+    escapeshellarg($currentVersionPath . '/img')
+);
+
+$html = file_get_contents($webPath . '/index.html');
+$html = strtr(
+    $html,
+    [
+        'data-version="master"' => sprintf(
+            'data-version="%s"',
+            htmlspecialchars($currentVersion)
+        ),
+    ]
+);
+
+file_put_contents($currentVersionPath . '/index.html', $html);
+
+echo "Updating headers and footers...\n";
+
+$header = file_get_contents(__DIR__ . '/../assets/web/header.tpl.html') . "\n";
+$footer = "\n\n" .file_get_contents(__DIR__ . '/../assets/web/footer.tpl.html');
+
+foreach ($versionStrings as $version) {
+    if ($version === $currentVersion) {
+        continue;
     }
 
-    $versionStrings[] = 'master';
+    echo "    - $version\n";
 
-    file_put_contents(
-        __DIR__ . '/../web/data/versions.json',
-        json_encode($versionStrings, JSON_PRETTY_PRINT) . "\n"
+    $versionPath = $workPath . '/' . $version;
+
+    $html = file_get_contents($versionPath . '/index.html');
+    $html = preg_replace('/^(.*)(?=<!-- START content -->)/s', $header, $html);
+    $html = preg_replace('/(?<=<!-- END content -->)(.*)$/s', $footer, $html);
+    $html = strtr(
+        $html,
+        [
+            'data-version="master"' => sprintf(
+                'data-version="%s"',
+                htmlspecialchars($version)
+            ),
+        ]
     );
 
-    file_put_contents(
-        __DIR__ . '/../web/index.html',
-        strtr(
-            file_get_contents(__DIR__ . '/../web/index.html'),
-            [
-                'data-version="master"' => sprintf(
-                    'data-version="%s"',
-                    htmlspecialchars($currentVersion)
-                ),
-            ]
-        )
-    );
-
-    passthru($command);
-
-    echo "done.\n";
-} else {
-    echo "travis not detected, would have run:\n" . $command . "\n";
+    file_put_contents($versionPath . '/index.html', $html);
 }
+
+exec('git diff --quiet', $output, $exitCode);
+
+if (0 === $exitCode) {
+    echo "No website changes detected.\n";
+
+    exit(0);
+}
+
+echo "Committing...\n";
+
+$commitMessage = sprintf(
+    'Automated documentation update for %s.',
+    var_export($currentVersion, true)
+);
+
+passthru('git add -A');
+passthru('git commit -m ' . escapeshellarg($commitMessage));
+
+if (!$isTravis) {
+    echo "Travis not detected.\n";
+
+    exit(1);
+}
+
+if (!$token) {
+    echo "GitHub token not detected.\n";
+
+    exit(1);
+}
+
+echo "Pushing...\n";
+
+exec('git push 2>&1', $output, $exitCode);
+
+$output = implode("\n", $output) . "\n";
+
+if ($token) {
+    $output = str_replace($token, 'xxx', $output);
+}
+
+echo $output;
+
+if (0 !== $exitCode) {
+    throw new RuntimeException('Failed to clone Phony website.');
+}
+
+echo "Done.\n";

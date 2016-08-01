@@ -62,13 +62,21 @@ if ($needsRender) {
     );
 }
 
-file_put_contents(
-    'web/index.html',
-    strtr(
-        file_get_contents('assets/web/site.tpl.html'),
-        array('{content}' => $content)
-    )
-);
+$header = file_get_contents('assets/web/header.tpl.html');
+$footer = file_get_contents('assets/web/footer.tpl.html');
+$content = rtrim($content, "\n");
+$content = <<<EOD
+$header
+<!-- START content -->
+
+$content
+
+<!-- END content -->
+
+$footer
+EOD;
+
+file_put_contents('web/index.html', $content);
 
 passthru('cp -a assets/web/css web/');
 passthru('cp -a assets/web/data web/');
