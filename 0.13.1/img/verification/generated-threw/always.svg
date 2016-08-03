@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 224" class="verification">
+    <defs>
+        <style>
+            @import url(//fonts.googleapis.com/css?family=Inconsolata:400,700);
+
+            svg.verification {
+                background-color: #262a31;
+                fill: #9ea9bb;
+                font-size: 13px;
+                font-family: Inconsolata, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            }
+
+            svg.verification .tooltip {
+                cursor: help;
+            }
+
+            svg.verification ::selection {
+                background: #f0f6ff;
+                fill: #4a515d;
+            }
+
+            svg.verification .bold {
+                fill: #b9c0cb;
+                font-weight: bold;
+            }
+            svg.verification .faint {
+                fill: #686f7c;
+            }
+            svg.verification .tooltip:hover {
+                fill: #ffffff;
+                text-decoration: underline;
+            }
+
+            svg.verification .red {
+                fill: #e88388;
+            }
+            svg.verification .red.faint {
+                fill: #915a60;
+            }
+            svg.verification .red.bold,
+            svg.verification .red .tooltip:hover {
+                fill: #ff9095;
+            }
+
+            svg.verification .green {
+                fill: #a7cc8c;
+            }
+            svg.verification .green.faint {
+                fill: #6d8263;
+            }
+            svg.verification .green.bold,
+            svg.verification .green .tooltip:hover {
+                fill: #c2eca2;
+            }
+
+            svg.verification .yellow {
+                fill: #dbaa79;
+            }
+            svg.verification .yellow.faint {
+                fill: #896f59;
+            }
+            svg.verification .yellow.bold,
+            svg.verification .yellow .tooltip:hover {
+                fill: #f9c28a;
+            }
+
+            svg.verification .cyan {
+                fill: #65c2cd;
+            }
+            svg.verification .cyan.faint {
+                fill: #4a7d86;
+            }
+            svg.verification .cyan.bold,
+            svg.verification .cyan .tooltip:hover {
+                fill: #79e7f4;
+            }
+        </style>
+    </defs>
+    <text x="16" y="28" xml:space="preserve">Expected all <tspan class="bold">{stub}[label]</tspan> generator calls to behave like:</text>
+    <text x="16" y="44" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator, then: <tspan class="faint green">(2 matches)</tspan></text>
+    <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Threw RuntimeException#0{message: &quot;BONOBO&quot;}</text>
+    <text x="16" y="76" xml:space="preserve">Matched 1 of 2:</text>
+    <text x="16" y="92" xml:space="preserve"><tspan class="red">✗</tspan> Call #0 - {stub}[label](&quot;aardvark&quot;):</text>
+    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator, then:</text>
+    <text x="16" y="124" xml:space="preserve">        - Started iterating</text>
+    <text x="16" y="140" xml:space="preserve">        <tspan class="red">✗</tspan> Threw RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan">0</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">1</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">BONOBO</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">AARDVARK</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
+    <text x="16" y="156" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - {stub}[label](&quot;bonobo&quot;):</text>
+    <text x="16" y="172" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator, then:</text>
+    <text x="16" y="188" xml:space="preserve">        - Started iterating</text>
+    <text x="16" y="204" xml:space="preserve">        <tspan class="green">✓</tspan> Threw RuntimeException#2{message: &quot;BONOBO&quot;}</text>
+</svg>
