@@ -26,6 +26,8 @@ if (!$tag && !$branch) {
 
 echo "Publishing Phony website...\n";
 
+passthru('git --version');
+
 $workPath = __DIR__ . '/../build/gh-pages';
 $webPath = __DIR__ . '/../web';
 
@@ -45,6 +47,7 @@ if (file_exists($workPath)) {
         $repo = 'https://github.com/eloquent/phony.git';
     }
 
+    $exitCode = -1;
     exec(
         'git clone -b gh-pages --single-branch --depth 1 ' .
             escapeshellarg($repo) . ' ' .
@@ -100,7 +103,6 @@ if ($versions) {
 
     $latestVersion = $versions[0]->string();
 } else {
-    echo 'wat';
     $latestVersion = 'master';
 }
 
@@ -129,6 +131,7 @@ symlink($latestVersion, $latestPath);
 
 echo "Updating version data...\n";
 
+passthru('mkdir -p ' . escapeshellarg($workPath . '/data'));
 file_put_contents(
     $workPath . '/data/versions.json',
     json_encode($versionStrings, JSON_PRETTY_PRINT) . "\n"
@@ -200,9 +203,13 @@ foreach ($versionStrings as $version) {
     file_put_contents($versionPath . '/index.html', $html);
 }
 
-exec('git diff --quiet', $output, $exitCode);
+echo "Checking for differences...\n";
 
-if (0 === $exitCode) {
+exec('git status --porcelain', $output);
+$output = implode("\n", $output) . "\n";
+echo $output;
+
+if ('' === trim($output)) {
     echo "No website changes detected.\n";
 
     exit(0);
@@ -245,7 +252,7 @@ if ($token) {
 echo $output;
 
 if (0 !== $exitCode) {
-    throw new RuntimeException('Failed to clone Phony website.');
+    throw new RuntimeException('Failed to push Phony website.');
 }
 
 echo "Done.\n";
