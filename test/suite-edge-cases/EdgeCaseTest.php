@@ -120,9 +120,6 @@ class EdgeCaseTest extends PHPUnit_Framework_TestCase
                     case 'HH\WaitHandle':
                     case 'HH\ResumableWaitHandle':
 
-                    // causes Warning: finfo_close() expects parameter 1 to be resource, null given
-                    case 'finfo':
-
                         continue 2;
                 }
             }

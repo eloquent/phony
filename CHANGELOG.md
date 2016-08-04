@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Fixed mocking of destructors ([#183]).
+
+[#183]: https://github.com/eloquent/phony/issues/183
+
 ## 0.13.1 (2016-08-02)
 
 - **[IMPROVED]** Improved support for mocking many problematic classes ([#182]).

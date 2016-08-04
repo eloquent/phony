@@ -61,6 +61,9 @@ class MockGenerator
         $this->isReturnTypeSupported =
             $this->featureDetector->isSupported('return.type');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
+
+        $this->canMockPharDestruct =
+            $this->isHhvm || !version_compare(PHP_VERSION, '7.x', '<');
     }
 
     /**
@@ -123,7 +126,7 @@ class MockGenerator
                 $definition->methods()->publicStaticMethods()
             ) .
             $this->generateMagicCallStatic($definition) .
-            $this->generateConstructors($definition) .
+            $this->generateStructors($definition) .
             $this->generateMethods($definition->methods()->publicMethods()) .
             $this->generateMagicCall($definition) .
             $this->generateMethods(
@@ -311,29 +314,67 @@ EOD;
         return $source;
     }
 
-    private function generateConstructors($definition)
+    private function generateStructors($definition)
     {
         $constructor = null;
+        $destructor = null;
 
-        foreach ($definition->types() as $type) {
-            $constructor = $type->getConstructor();
+        foreach ($definition->types() as $name => $type) {
+            if (!$constructor) {
+                $constructor = $type->getConstructor();
 
-            if ($constructor) {
-                break;
+                if ($constructor && $constructor->isFinal()) {
+                    return '';
+                }
+            }
+
+            if (!$destructor && $type->hasMethod('__destruct')) {
+                switch ($name) {
+                    case 'phar':
+                    case 'phardata':
+                    case 'pharfileinfo':
+                        if ($this->canMockPharDestruct) {
+                            $destructor = $type->getMethod('__destruct');
+                        }
+
+                        break;
+
+                    default:
+                        $destructor = $type->getMethod('__destruct');
+                }
             }
         }
 
-        if (!$constructor || $constructor->isFinal()) {
-            return '';
-        }
+        $source = '';
 
-        return <<<'EOD'
+        if ($constructor) {
+            $source .= <<<'EOD'
 
     public function __construct()
     {
     }
 
 EOD;
+        }
+
+        if ($destructor) {
+            $source .= <<<'EOD'
+
+    public function __destruct()
+    {
+        if (!$this->_handle) {
+            parent::__destruct();
+
+            return;
+        }
+
+        $this->_handle->spy('__destruct')->invokeWith(array());
+    }
+
+EOD;
+        }
+
+        return $source;
     }
 
     private function generateMethods($methods)
@@ -926,5 +967,6 @@ EOD;
     private $featureDetector;
     private $isClosureBindingSupported;
     private $isReturnTypeSupported;
+    private $canMockPharDestruct;
     private $isHhvm;
 }
