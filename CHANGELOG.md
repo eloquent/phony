@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.13.2 (2016-08-05)
 
 - **[FIXED]** Fixed mocking of destructors ([#183]).
 
