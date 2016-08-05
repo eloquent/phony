@@ -7,7 +7,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 Asplode::install();
 
-echo 'Generating Phony website... ';
+echo 'Generating website... ';
 
 passthru('rm -rf web');
 passthru('mkdir -p web');

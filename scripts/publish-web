@@ -9,6 +9,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 Asplode::install();
 
+const ELOQUENT_REPO = 'phony';
+
 $isTravis = (bool) getenv('TRAVIS');
 $tag = getenv('TRAVIS_TAG');
 $branch = getenv('TRAVIS_BRANCH');
@@ -24,7 +26,7 @@ if (!$tag && !$branch) {
     throw new RuntimeException('No tag or branch information.');
 }
 
-echo "Publishing Phony website...\n";
+echo "Publishing website...\n";
 
 passthru('git --version');
 
@@ -40,11 +42,15 @@ if (file_exists($workPath)) {
 } else {
     if ($token) {
         $repo = sprintf(
-            'https://%s:x-oauth-basic@github.com/eloquent/phony.git',
-            rawurlencode($token)
+            'https://%s:x-oauth-basic@github.com/eloquent/%s.git',
+            rawurlencode($token),
+            rawurlencode(ELOQUENT_REPO)
         );
     } else {
-        $repo = 'https://github.com/eloquent/phony.git';
+        $repo = sprintf(
+            'https://github.com/eloquent/%s.git',
+            rawurlencode(ELOQUENT_REPO)
+        );
     }
 
     $exitCode = -1;
@@ -65,7 +71,7 @@ if (file_exists($workPath)) {
     echo $output;
 
     if (0 !== $exitCode) {
-        throw new RuntimeException('Failed to clone Phony website.');
+        throw new RuntimeException('Failed to clone website.');
     }
 
     chdir($workPath);
@@ -80,13 +86,18 @@ if (Version::tryParse($currentVersion, $version)) {
 }
 
 foreach (scandir($workPath) as $entry) {
-    if ('.' === substr($entry, 0, 1)) {
+    if (!preg_match('/^\d+\.\d+$/', $entry)) {
         continue;
     }
 
     $entryPath = $workPath . '/' . $entry;
 
-    if (is_dir($entryPath) && Version::tryParse($entry, $version)) {
+    if (
+        is_dir($entryPath) &&
+        Version::tryParse($entry . '.0', $version) &&
+        null === $version->preReleaseVersion() &&
+        null === $version->buildMetaData()
+    ) {
         $versions[] = $version;
     }
 }
@@ -101,7 +112,7 @@ if ($versions) {
         }
     );
 
-    $latestVersion = $versions[0]->string();
+    $latestVersion = $versions[0]->major() . '.' . $versions[0]->minor();
 } else {
     $latestVersion = 'master';
 }
@@ -109,10 +120,11 @@ if ($versions) {
 $versionStrings = array();
 
 foreach ($versions as $version) {
-    $versionString = $version->string();
-    $versionStrings[] = $versionString;
+    $versionString = $version->major() . '.' . $version->minor();
+    $versionStrings[$versionString] = $versionString;
 }
 
+$versionStrings = array_values($versionStrings);
 $versionStrings[] = 'master';
 
 foreach ($versionStrings as $version) {
@@ -252,7 +264,7 @@ if ($token) {
 echo $output;
 
 if (0 !== $exitCode) {
-    throw new RuntimeException('Failed to push Phony website.');
+    throw new RuntimeException('Failed to push website.');
 }
 
 echo "Done.\n";
