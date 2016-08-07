@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.13.3 (2016-08-07)
 
 - **[FIXED]** Verification results now return call verifiers instead of
   unwrapped calls ([#185]).
