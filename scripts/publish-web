@@ -83,6 +83,9 @@ $versions = array();
 
 if (Version::tryParse($currentVersion, $version)) {
     $versions[] = $version;
+    $currentVersionRendered = $version->major() . '.' . $version->minor();
+} else {
+    $currentVersionRendered = $currentVersion;
 }
 
 foreach (scandir($workPath) as $entry) {
@@ -164,7 +167,7 @@ passthru(
 
 echo "Updating documentation for $currentVersion...\n";
 
-$currentVersionPath = $workPath . '/' . $currentVersion;
+$currentVersionPath = $workPath . '/' . $currentVersionRendered;
 passthru('rm -rf ' . escapeshellarg($currentVersionPath));
 passthru('mkdir -p ' . escapeshellarg($currentVersionPath));
 passthru(
@@ -178,7 +181,7 @@ $html = strtr(
     [
         'data-version="master"' => sprintf(
             'data-version="%s"',
-            htmlspecialchars($currentVersion)
+            htmlspecialchars($currentVersionRendered)
         ),
     ]
 );
@@ -191,7 +194,7 @@ $header = file_get_contents(__DIR__ . '/../assets/web/header.tpl.html') . "\n";
 $footer = "\n\n" .file_get_contents(__DIR__ . '/../assets/web/footer.tpl.html');
 
 foreach ($versionStrings as $version) {
-    if ($version === $currentVersion) {
+    if ($version === $currentVersionRendered) {
         continue;
     }
 
