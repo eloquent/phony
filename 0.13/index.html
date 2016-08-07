@@ -51,6 +51,7 @@
 <a href="#usage">Usage</a>
 
 <ul>
+<li><a href="#using-this-documentation">Using this documentation</a></li>
 <li><a href="#example-test-suites">Example test suites</a></li>
 <li><a href="#standalone-usage">Standalone usage</a></li>
 <li><a href="#peridot-usage">Peridot usage</a></li>
@@ -491,6 +492,25 @@ so that others may benefit from the outcome.</p>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
 <h3>
+<a id="using-this-documentation" class="anchor" href="#using-this-documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using this documentation</h3>
+
+<ul>
+<li>The documentation can be searched with the standard search shortcut:
+
+<ul>
+<li>
+<kbd>⌘</kbd> + <kbd>F</kbd> for Mac OS</li>
+<li>
+<kbd>Ctrl</kbd> + <kbd>F</kbd> for other platforms</li>
+</ul>
+</li>
+<li>The menu automatically opens to the correct section as the documentation is
+scrolled.</li>
+<li>An expanded table of contents can be viewed by clicking the "+" symbol in the
+menu.</li>
+</ul>
+
+<h3>
 <a id="example-test-suites" class="anchor" href="#example-test-suites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example test suites</h3>
 
 <p>See the <a href="https://github.com/eloquent/phony/tree/HEAD/doc/example">example</a> directory.</p>
@@ -519,6 +539,20 @@ so that others may benefit from the outcome.</p>
 <span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        expect(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>))<span class="pl-k">-&gt;</span><span class="pl-smi">to</span><span class="pl-k">-&gt;</span>equal(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1">});</span></pre></div>
+
+<p>There is also a <a href="https://github.com/eloquent/peridot-phony">Phony for Peridot</a> plugin that provides auto-wired mocks:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\on</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>Phony for Peridot<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    it(<span class="pl-s"><span class="pl-pds">'</span>supports auto-wiring<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-c1">ClassA</span> <span class="pl-smi">$mock</span>) {</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> on(<span class="pl-smi">$mock</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">        expect(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>))<span class="pl-k">-&gt;</span><span class="pl-smi">to</span><span class="pl-k">-&gt;</span>equal(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
