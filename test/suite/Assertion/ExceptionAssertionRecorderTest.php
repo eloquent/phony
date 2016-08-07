@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Assertion;
 
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Event\EventSequence;
 use PHPUnit_Framework_TestCase;
@@ -21,26 +22,29 @@ class ExceptionAssertionRecorderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new ExceptionAssertionRecorder();
+
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->subject->setCallVerifierFactory($this->callVerifierFactory);
     }
 
     public function testCreateSuccess()
     {
         $events = array(new ReturnedEvent(0, 0.0, null), new ReturnedEvent(1, 1.0, null));
-        $expected = new EventSequence($events);
+        $expected = new EventSequence($events, $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->createSuccess($events));
     }
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new EventSequence(array());
+        $expected = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->createSuccess());
     }
 
     public function testCreateSuccessFromEventCollection()
     {
-        $events = new EventSequence(array());
+        $events = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
     }

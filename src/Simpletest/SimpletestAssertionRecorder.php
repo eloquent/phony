@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Simpletest;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\EventSequence;
@@ -52,6 +53,17 @@ class SimpletestAssertionRecorder implements AssertionRecorder
     }
 
     /**
+     * Set the call verifier factory.
+     *
+     * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
+     */
+    public function setCallVerifierFactory(
+        CallVerifierFactory $callVerifierFactory
+    ) {
+        $this->callVerifierFactory = $callVerifierFactory;
+    }
+
+    /**
      * Record that a successful assertion occurred.
      *
      * @param array<Event> $events The events.
@@ -62,7 +74,7 @@ class SimpletestAssertionRecorder implements AssertionRecorder
     {
         $this->simpletestContext->getReporter()->paintPass('');
 
-        return new EventSequence($events);
+        return new EventSequence($events, $this->callVerifierFactory);
     }
 
     /**
@@ -106,4 +118,5 @@ class SimpletestAssertionRecorder implements AssertionRecorder
 
     private static $instance;
     private $simpletestContext;
+    private $callVerifierFactory;
 }

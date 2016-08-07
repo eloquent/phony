@@ -11,25 +11,11 @@
 
 namespace Eloquent\Phony\Phpunit;
 
-use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Event\EventSequence;
-use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
-use Eloquent\Phony\Spy\SpyFactory;
-use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\StubFactory;
-use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestEvent;
-use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
 
@@ -37,37 +23,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->assertionRecorder = PhpunitAssertionRecorder::instance();
-        $this->callVerifierFactory = new CallVerifierFactory(
-            MatcherFactory::instance(),
-            MatcherVerifier::instance(),
-            GeneratorVerifierFactory::instance(),
-            IterableVerifierFactory::instance(),
-            $this->assertionRecorder,
-            AssertionRenderer::instance(),
-            InvocableInspector::instance()
-        );
-        $this->stubVerifierFactory = new StubVerifierFactory(
-            StubFactory::instance(),
-            SpyFactory::instance(),
-            MatcherFactory::instance(),
-            MatcherVerifier::instance(),
-            GeneratorVerifierFactory::instance(),
-            IterableVerifierFactory::instance(),
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            AssertionRenderer::instance(),
-            InvocableInspector::instance(),
-            GeneratorAnswerBuilderFactory::instance(),
-            FunctionHookManager::instance()
-        );
-        $this->handleFactory = new HandleFactory(
-            StubFactory::instance(),
-            $this->stubVerifierFactory,
-            AssertionRenderer::instance(),
-            $this->assertionRecorder,
-            Invoker::instance()
-        );
         $this->matcherFactory = MatcherFactory::instance();
 
         $this->eventA = new TestEvent(0, 0.0);
@@ -259,7 +214,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertSpyAssertionRecorder($this->assertionRecorder, $actual);
+        $this->assertSpyAssertionRecorder($actual);
     }
 
     public function testSpyFunction()
@@ -269,7 +224,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\SpyVerifier', $actual);
         $this->assertSame($callback, $actual->callback());
-        $this->assertSpyAssertionRecorder($this->assertionRecorder, $actual);
+        $this->assertSpyAssertionRecorder($actual);
     }
 
     public function testSpyGlobal()
@@ -298,7 +253,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
-        $this->assertStubAssertionRecorder($this->assertionRecorder, $actual);
+        $this->assertStubAssertionRecorder($actual);
     }
 
     public function testStubFunction()
@@ -309,7 +264,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
         $this->assertSame('a', call_user_func($actual->stub()->callback()));
         $this->assertSame($actual->stub(), $actual->spy()->callback());
-        $this->assertStubAssertionRecorder($this->assertionRecorder, $actual);
+        $this->assertStubAssertionRecorder($actual);
     }
 
     public function testStubGlobal()
@@ -366,16 +321,36 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue((boolean) Phony::checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) Phony::checkInOrder($this->eventB, $this->eventA));
-        $this->assertEquals(
-            new EventSequence(array($this->eventA, $this->eventB)),
-            Phony::inOrder($this->eventA, $this->eventB)
-        );
+
+        $result = Phony::inOrder($this->eventA, $this->eventB);
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
+
         $this->assertTrue((boolean) Phony::checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) Phony::checkInOrderSequence(array($this->eventB, $this->eventA)));
-        $this->assertEquals(
-            new EventSequence(array($this->eventA, $this->eventB)),
-            Phony::inOrderSequence(array($this->eventA, $this->eventB))
-        );
+
+        $result = Phony::inOrderSequence(array($this->eventA, $this->eventB));
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
+
+        $this->assertTrue((boolean) Phony::checkAnyOrder($this->eventA, $this->eventB));
+        $this->assertFalse((boolean) Phony::checkAnyOrder());
+
+        $result = Phony::anyOrder($this->eventA, $this->eventB);
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
+
+        $this->assertTrue((boolean) Phony::checkAnyOrderSequence(array($this->eventA, $this->eventB)));
+        $this->assertFalse((boolean) Phony::checkAnyOrderSequence(array()));
+        $this->assertFalse((boolean) Phony::checkAnyOrder());
+
+        $result = Phony::anyOrderSequence(array($this->eventA, $this->eventB));
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
     }
 
     public function testInOrderMethodFailure()
@@ -394,28 +369,36 @@ class PhonyTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue((boolean) checkInOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) checkInOrder($this->eventB, $this->eventA));
-        $this->assertEquals(
-            new EventSequence(array($this->eventA, $this->eventB)),
-            inOrder($this->eventA, $this->eventB)
-        );
+
+        $result = inOrder($this->eventA, $this->eventB);
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
+
         $this->assertTrue((boolean) checkInOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) checkInOrderSequence(array($this->eventB, $this->eventA)));
-        $this->assertEquals(
-            new EventSequence(array($this->eventA, $this->eventB)),
-            inOrderSequence(array($this->eventA, $this->eventB))
-        );
+
+        $result = inOrderSequence(array($this->eventA, $this->eventB));
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
+
         $this->assertTrue((boolean) checkAnyOrder($this->eventA, $this->eventB));
         $this->assertFalse((boolean) checkAnyOrder());
-        $this->assertEquals(
-            new EventSequence(array($this->eventA, $this->eventB)),
-            anyOrder($this->eventA, $this->eventB)
-        );
+
+        $result = anyOrder($this->eventA, $this->eventB);
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
+
         $this->assertTrue((boolean) checkAnyOrderSequence(array($this->eventA, $this->eventB)));
         $this->assertFalse((boolean) checkAnyOrderSequence(array()));
-        $this->assertEquals(
-            new EventSequence(array($this->eventA, $this->eventB)),
-            anyOrderSequence(array($this->eventA, $this->eventB))
-        );
+        $this->assertFalse((boolean) checkAnyOrder());
+
+        $result = anyOrderSequence(array($this->eventA, $this->eventB));
+
+        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
+        $this->assertEquals(array($this->eventA, $this->eventB), $result->allEvents());
     }
 
     public function testInOrderFunctionFailure()
@@ -500,7 +483,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
         $this->assertNull(setUseColor(false));
     }
 
-    private function assertSpyAssertionRecorder($expected, $spy)
+    private function assertSpyAssertionRecorder($spy)
     {
         $reflector = new ReflectionObject($spy);
         $property = $reflector->getProperty('callVerifierFactory');
@@ -514,10 +497,10 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $assertionRecorder = $property->getValue($callVerifierFactory);
 
-        $this->assertEquals($expected, $assertionRecorder);
+        $this->assertInstanceOf('Eloquent\Phony\Phpunit\PhpunitAssertionRecorder', $assertionRecorder);
     }
 
-    private function assertStubAssertionRecorder($expected, $stub)
+    private function assertStubAssertionRecorder($stub)
     {
         $reflector = new ReflectionObject($stub);
         $property = $reflector->getParentClass()->getProperty('callVerifierFactory');
@@ -531,6 +514,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
         $assertionRecorder = $property->getValue($callVerifierFactory);
 
-        $this->assertEquals($expected, $assertionRecorder);
+        $this->assertInstanceOf('Eloquent\Phony\Phpunit\PhpunitAssertionRecorder', $assertionRecorder);
     }
 }

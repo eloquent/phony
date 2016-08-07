@@ -77,6 +77,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
 
         $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
         $this->iterableVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
 
@@ -135,10 +136,12 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
 
-        $this->assertionResult = new EventSequence(array($this->call));
-        $this->returnedAssertionResult = new EventSequence(array($this->call->responseEvent()));
-        $this->threwAssertionResult = new EventSequence(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new EventSequence(array());
+        $this->assertionResult = new EventSequence(array($this->call), $this->callVerifierFactory);
+        $this->returnedAssertionResult =
+            new EventSequence(array($this->call->responseEvent()), $this->callVerifierFactory);
+        $this->threwAssertionResult =
+            new EventSequence(array($this->callWithException->responseEvent()), $this->callVerifierFactory);
+        $this->emptyAssertionResult = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->returnedIterableEvent =
             $this->callEventFactory->createReturned(array('m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v'));
@@ -195,9 +198,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
     public function testProxyMethods()
     {
         $this->assertSame($this->calledEvent, $this->subject->eventAt(0));
-        $this->assertSame($this->call, $this->subject->firstCall());
-        $this->assertSame($this->call, $this->subject->lastCall());
-        $this->assertSame($this->call, $this->subject->callAt(0));
         $this->assertTrue($this->subject->hasCalls());
         $this->assertSame(2, $this->subject->eventCount());
         $this->assertSame(1, $this->subject->callCount());
@@ -231,6 +231,29 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertSame($this->returnedEvent->time(), $this->subject->endTime());
+    }
+
+    public function testFirstCall()
+    {
+        $this->assertSame($this->subject, $this->subject->firstCall());
+    }
+
+    public function testLastCall()
+    {
+        $this->assertSame($this->subject, $this->subject->lastCall());
+    }
+
+    public function testCallAt()
+    {
+        $this->assertSame($this->subject, $this->subject->callAt());
+        $this->assertSame($this->subject, $this->subject->callAt(0));
+        $this->assertSame($this->subject, $this->subject->callAt(-1));
+    }
+
+    public function testCallAtFailure()
+    {
+        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->subject->callAt(1);
     }
 
     public function testIteration()
@@ -508,7 +531,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->returnedAssertionResult, $this->subject->completed());
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->completed());
         $this->assertEquals(
-            new EventSequence(array($this->iterableEndEvent)),
+            new EventSequence(array($this->iterableEndEvent), $this->callVerifierFactory),
             $this->iterableSubject->completed()
         );
         $this->assertEquals($this->emptyAssertionResult, $this->subjectWithNoResponse->never()->completed());
@@ -687,7 +710,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer,
             $this->invocableInspector
         );
-        $this->threwAssertionResult = new EventSequence(array($this->callWithException->responseEvent()));
+        $this->threwAssertionResult =
+            new EventSequence(array($this->callWithException->responseEvent()), $this->callVerifierFactory);
 
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw());
     }

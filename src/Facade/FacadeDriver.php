@@ -205,6 +205,7 @@ class FacadeDriver
             $assertionRenderer,
             $invocableInspector
         );
+        $assertionRecorder->setCallVerifierFactory($callVerifierFactory);
         $functionHookGenerator = new FunctionHookGenerator();
         $functionHookManager = new FunctionHookManager(
             $functionSignatureInspector,

@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Pho;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\EventSequence;
 use Exception;
@@ -36,6 +37,17 @@ class PhoAssertionRecorder implements AssertionRecorder
     }
 
     /**
+     * Set the call verifier factory.
+     *
+     * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
+     */
+    public function setCallVerifierFactory(
+        CallVerifierFactory $callVerifierFactory
+    ) {
+        $this->callVerifierFactory = $callVerifierFactory;
+    }
+
+    /**
      * Record that a successful assertion occurred.
      *
      * @param array<Event> $events The events.
@@ -44,7 +56,7 @@ class PhoAssertionRecorder implements AssertionRecorder
      */
     public function createSuccess(array $events = array())
     {
-        return new EventSequence($events);
+        return new EventSequence($events, $this->callVerifierFactory);
     }
 
     /**
@@ -72,4 +84,5 @@ class PhoAssertionRecorder implements AssertionRecorder
     }
 
     private static $instance;
+    private $callVerifierFactory;
 }

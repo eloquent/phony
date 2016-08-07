@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Event;
 
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
@@ -28,7 +29,12 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
         $this->eventD =
             $this->callFactory->create($this->callEventFactory->createCalled(null, Arguments::create('e', 'f')));
         $this->events = array($this->eventA, $this->eventB, $this->eventC, $this->eventD);
-        $this->subject = new EventSequence($this->events);
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->subject = new EventSequence($this->events, $this->callVerifierFactory);
+
+        $this->wrappedCallB = $this->callVerifierFactory->fromCall($this->eventB);
+        $this->wrappedCallD = $this->callVerifierFactory->fromCall($this->eventD);
+        $this->wrappedCalls = array($this->wrappedCallB, $this->wrappedCallD);
     }
 
     public function testConstructor()
@@ -36,7 +42,6 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->hasEvents());
         $this->assertTrue($this->subject->hasCalls());
         $this->assertSame($this->events, $this->subject->allEvents());
-        $this->assertSame(array($this->eventB, $this->eventD), $this->subject->allCalls());
         $this->assertSame(2, $this->subject->callCount());
         $this->assertSame(4, $this->subject->eventCount());
         $this->assertSame(4, count($this->subject));
@@ -44,7 +49,7 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new EventSequence(array());
+        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->assertFalse($this->subject->hasEvents());
         $this->assertFalse($this->subject->hasCalls());
@@ -62,7 +67,7 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
 
     public function testFirstEventFailureUndefined()
     {
-        $this->subject = new EventSequence(array());
+        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->firstEvent();
@@ -75,7 +80,7 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
 
     public function testLastEventFailureUndefined()
     {
-        $this->subject = new EventSequence(array());
+        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->lastEvent();
@@ -97,12 +102,12 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
 
     public function testFirstCall()
     {
-        $this->assertSame($this->eventB, $this->subject->firstCall());
+        $this->assertEquals($this->wrappedCallB, $this->subject->firstCall());
     }
 
     public function testFirstCallFailureUndefined()
     {
-        $this->subject = new EventSequence(array());
+        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->firstCall();
@@ -110,23 +115,28 @@ class EventSequenceTest extends PHPUnit_Framework_TestCase
 
     public function testLastCall()
     {
-        $this->assertSame($this->eventD, $this->subject->lastCall());
+        $this->assertEquals($this->wrappedCallD, $this->subject->lastCall());
     }
 
     public function testLastCallFailureUndefined()
     {
-        $this->subject = new EventSequence(array());
+        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->lastCall();
     }
 
+    public function testAllCalls()
+    {
+        $this->assertEquals($this->wrappedCalls, $this->subject->allCalls());
+    }
+
     public function testCallAt()
     {
-        $this->assertSame($this->eventB, $this->subject->callAt());
-        $this->assertSame($this->eventB, $this->subject->callAt(0));
-        $this->assertSame($this->eventD, $this->subject->callAt(1));
-        $this->assertSame($this->eventD, $this->subject->callAt(-1));
+        $this->assertEquals($this->wrappedCallB, $this->subject->callAt());
+        $this->assertEquals($this->wrappedCallB, $this->subject->callAt(0));
+        $this->assertEquals($this->wrappedCallD, $this->subject->callAt(1));
+        $this->assertEquals($this->wrappedCallD, $this->subject->callAt(-1));
     }
 
     public function testCallAtFailure()

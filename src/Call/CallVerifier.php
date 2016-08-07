@@ -214,7 +214,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      */
     public function firstCall()
     {
-        return $this->call->firstCall();
+        return $this;
     }
 
     /**
@@ -225,7 +225,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      */
     public function lastCall()
     {
-        return $this->call->lastCall();
+        return $this;
     }
 
     /**
@@ -241,7 +241,11 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      */
     public function callAt($index = 0)
     {
-        return $this->call->callAt($index);
+        if (0 === $index || -1 === $index) {
+            return $this;
+        }
+
+        throw new UndefinedCallException($index);
     }
 
     /**

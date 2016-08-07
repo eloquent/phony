@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Pho;
 
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\EventSequence;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
@@ -20,11 +21,14 @@ class PhoAssertionRecorderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new PhoAssertionRecorder();
+
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->subject->setCallVerifierFactory($this->callVerifierFactory);
     }
 
     public function testCreateSuccessFromEventCollection()
     {
-        $events = new EventSequence(array());
+        $events = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
     }

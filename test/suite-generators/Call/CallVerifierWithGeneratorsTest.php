@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Difference\DifferenceEngine;
-use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\AnyMatcher;
@@ -54,6 +53,8 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
@@ -133,11 +134,6 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->earlyCall = $this->callFactory->create();
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
-
-        $this->assertionResult = new EventSequence(array($this->call));
-        $this->returnedAssertionResult = new EventSequence(array($this->call->responseEvent()));
-        $this->threwAssertionResult = new EventSequence(array($this->callWithException->responseEvent()));
-        $this->emptyAssertionResult = new EventSequence(array());
 
         // additions for generators
 

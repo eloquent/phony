@@ -134,6 +134,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
         $this->spy->setCalls($calls);
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
+        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->matcherVerifier = new MatcherVerifier();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
@@ -359,21 +360,33 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->used());
+        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->never()->used());
 
         $this->setUpWith($this->nonIterableCalls);
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->used());
+        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->never()->used());
 
         $this->setUpWith($this->calls);
 
-        $this->assertEquals(new EventSequence(array($this->iteratorUsedEvent)), $this->subject->used());
-        $this->assertEquals(new EventSequence(array($this->iteratorUsedEvent)), $this->subject->times(1)->used());
-        $this->assertEquals(new EventSequence(array($this->iteratorUsedEvent)), $this->subject->once()->used());
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorUsedEvent), $this->callVerifierFactory),
+            $this->subject->used()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorUsedEvent), $this->callVerifierFactory),
+            $this->subject->times(1)->used()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorUsedEvent), $this->callVerifierFactory),
+            $this->subject->once()->used()
+        );
 
         $this->setUpWith(array($this->iteratorCall));
 
-        $this->assertEquals(new EventSequence(array($this->iteratorUsedEvent)), $this->subject->always()->used());
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorUsedEvent), $this->callVerifierFactory),
+            $this->subject->always()->used()
+        );
     }
 
     public function testUsedFailureNonIterables()
@@ -459,29 +472,41 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             new EventSequence(
-                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG)
+                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG),
+                $this->callVerifierFactory
             ),
             $this->subject->produced()
         );
-        $this->assertEquals(new EventSequence(array($this->iteratorEventA)), $this->subject->produced('n'));
-        $this->assertEquals(new EventSequence(array($this->iteratorEventA)), $this->subject->produced('m', 'n'));
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorEventA), $this->callVerifierFactory),
+            $this->subject->produced('n')
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorEventA), $this->callVerifierFactory),
+            $this->subject->produced('m', 'n')
+        );
         $this->assertEquals(
             new EventSequence(
-                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG)
+                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG),
+                $this->callVerifierFactory
             ),
             $this->subject->times(1)->produced()
         );
         $this->assertEquals(
-            new EventSequence(array($this->iteratorEventA)),
+            new EventSequence(array($this->iteratorEventA), $this->callVerifierFactory),
             $this->subject->once()->produced('n')
         );
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->produced('m'));
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->produced('m')
+        );
 
         $this->setUpWith(array($this->iteratorCall));
 
         $this->assertEquals(
             new EventSequence(
-                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG)
+                array($this->iteratorEventA, $this->iteratorEventC, $this->iteratorEventE, $this->iteratorEventG),
+                $this->callVerifierFactory
             ),
             $this->subject->always()->produced()
         );
@@ -569,21 +594,39 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->consumed());
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->consumed()
+        );
 
         $this->setUpWith($this->nonIterableCalls);
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->consumed());
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->consumed()
+        );
 
         $this->setUpWith($this->calls);
 
-        $this->assertEquals(new EventSequence(array($this->iterableEndEvent)), $this->subject->consumed());
-        $this->assertEquals(new EventSequence(array($this->iterableEndEvent)), $this->subject->times(1)->consumed());
-        $this->assertEquals(new EventSequence(array($this->iterableEndEvent)), $this->subject->once()->consumed());
+        $this->assertEquals(
+            new EventSequence(array($this->iterableEndEvent), $this->callVerifierFactory),
+            $this->subject->consumed()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->iterableEndEvent), $this->callVerifierFactory),
+            $this->subject->times(1)->consumed()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->iterableEndEvent), $this->callVerifierFactory),
+            $this->subject->once()->consumed()
+        );
 
         $this->setUpWith(array($this->iteratorCall));
 
-        $this->assertEquals(new EventSequence(array($this->iterableEndEvent)), $this->subject->always()->consumed());
+        $this->assertEquals(
+            new EventSequence(array($this->iterableEndEvent), $this->callVerifierFactory),
+            $this->subject->always()->consumed()
+        );
     }
 
     public function testConsumedFailureNonIterables()

@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Phpunit;
 
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Event\EventSequence;
 use PHPUnit_Framework_Assert;
@@ -22,12 +23,15 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new PhpunitAssertionRecorder();
+
+        $this->callVerifierFactory = CallVerifierFactory::instance();
+        $this->subject->setCallVerifierFactory($this->callVerifierFactory);
     }
 
     public function testCreateSuccess()
     {
         $events = array(new ReturnedEvent(0, 0.0, null), new ReturnedEvent(1, 1.0, null));
-        $expected = new EventSequence($events);
+        $expected = new EventSequence($events, $this->callVerifierFactory);
         $beforeCount = PHPUnit_Framework_Assert::getCount();
         $actual = $this->subject->createSuccess($events);
         $afterCount = PHPUnit_Framework_Assert::getCount();
@@ -38,7 +42,7 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new EventSequence(array());
+        $expected = new EventSequence(array(), $this->callVerifierFactory);
         $beforeCount = PHPUnit_Framework_Assert::getCount();
         $actual = $this->subject->createSuccess();
         $afterCount = PHPUnit_Framework_Assert::getCount();
@@ -49,7 +53,7 @@ class PhpunitAssertionRecorderTest extends PHPUnit_Framework_TestCase
 
     public function testCreateSuccessFromEventCollection()
     {
-        $events = new EventSequence(array());
+        $events = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
     }

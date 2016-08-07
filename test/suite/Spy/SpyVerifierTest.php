@@ -64,6 +64,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
+        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
@@ -631,7 +632,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalled()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new EventSequence($this->calls);
+        $expected = new EventSequence($this->calls, $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->called());
     }
@@ -658,7 +659,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledOnce()
     {
         $this->subject->addCall($this->callA);
-        $expected = new EventSequence(array($this->callA));
+        $expected = new EventSequence(array($this->callA), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->once()->called());
     }
@@ -690,7 +691,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledTimes()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new EventSequence($this->calls);
+        $expected = new EventSequence($this->calls, $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->times(5)->called());
     }
@@ -763,7 +764,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledWith()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new EventSequence(array($this->callA, $this->callC));
+        $expected = new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -781,7 +782,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->subject->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
         );
         $this->assertEquals(
-            new EventSequence($this->calls),
+            new EventSequence($this->calls, $this->callVerifierFactory),
             $this->subject->calledWith($this->matcherFactory->wildcard())
         );
     }
@@ -837,7 +838,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledOnceWith()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new EventSequence(array($this->callA));
+        $expected = new EventSequence(array($this->callA), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->once()->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -887,7 +888,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testCalledTimesWith()
     {
         $this->subject->setCalls($this->calls);
-        $expected = new EventSequence(array($this->callA, $this->callC));
+        $expected = new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->times(2)->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -900,7 +901,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->subject->times(2)->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
         );
 
-        $expected = new EventSequence($this->calls);
+        $expected = new EventSequence($this->calls, $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->times(5)->calledWith($this->matcherFactory->wildcard()));
         $this->assertEquals($expected, $this->subject->times(5)->calledWith($this->matcherFactory->wildcard()));
@@ -989,7 +990,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysCalledWith()
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new EventSequence(array($this->callA, $this->callA));
+        $expected = new EventSequence(array($this->callA, $this->callA), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->always()->calledWith('a', 'b', 'c'));
         $this->assertEquals(
@@ -1067,7 +1068,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testNeverCalledWith()
     {
-        $expected = new EventSequence(array());
+        $expected = new EventSequence(array(), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->never()->calledWith());
 
@@ -1142,14 +1143,20 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertEquals(new EventSequence(array($this->callD, $this->callE)), $this->subject->calledOn(null));
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callC)),
+            new EventSequence(array($this->callD, $this->callE), $this->callVerifierFactory),
+            $this->subject->calledOn(null)
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
             $this->subject->calledOn($this->thisValueA)
         );
-        $this->assertEquals(new EventSequence(array($this->callB)), $this->subject->calledOn($this->thisValueB));
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB, $this->callC)),
+            new EventSequence(array($this->callB), $this->callVerifierFactory),
+            $this->subject->calledOn($this->thisValueB)
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->callA, $this->callB, $this->callC), $this->callVerifierFactory),
             $this->subject->calledOn($this->matcherFactory->equalTo($this->thisValueA))
         );
     }
@@ -1214,7 +1221,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysCalledOn()
     {
         $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new EventSequence(array($this->callC, $this->callC));
+        $expected = new EventSequence(array($this->callC, $this->callC), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->always()->calledOn($this->thisValueA));
         $this->assertEquals(
@@ -1271,7 +1278,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testResponded()
     {
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->responded());
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->responded()
+        );
 
         $this->subject->setCalls($this->calls);
 
@@ -1282,7 +1292,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
                     $this->callB->responseEvent(),
                     $this->callC->responseEvent(),
                     $this->callD->responseEvent(),
-                )
+                ),
+                $this->callVerifierFactory
             ),
             $this->subject->responded()
         );
@@ -1290,7 +1301,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls(array($this->iteratorCall));
 
         $this->assertEquals(
-            new EventSequence(array($this->iteratorCall->responseEvent())),
+            new EventSequence(array($this->iteratorCall->responseEvent()), $this->callVerifierFactory),
             $this->subject->responded()
         );
     }
@@ -1324,7 +1335,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysResponded()
     {
         $this->subject->setCalls(array($this->callA, $this->callB));
-        $expected = new EventSequence(array($this->callA->responseEvent(), $this->callB->responseEvent()));
+        $expected = new EventSequence(
+            array($this->callA->responseEvent(), $this->callB->responseEvent()),
+            $this->callVerifierFactory
+        );
 
         $this->assertEquals($expected, $this->subject->always()->responded());
     }
@@ -1369,7 +1383,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCompleted()
     {
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->completed());
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->completed()
+        );
 
         $this->subject->setCalls($this->calls);
 
@@ -1380,14 +1397,18 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
                     $this->callB->endEvent(),
                     $this->callC->endEvent(),
                     $this->callD->endEvent(),
-                )
+                ),
+                $this->callVerifierFactory
             ),
             $this->subject->completed()
         );
 
         $this->subject->setCalls(array($this->iteratorCall));
 
-        $this->assertEquals(new EventSequence(array($this->iteratorCall->endEvent())), $this->subject->completed());
+        $this->assertEquals(
+            new EventSequence(array($this->iteratorCall->endEvent()), $this->callVerifierFactory),
+            $this->subject->completed()
+        );
     }
 
     public function testCompletedFailure()
@@ -1419,7 +1440,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysCompleted()
     {
         $this->subject->setCalls(array($this->callA, $this->iteratorCall));
-        $expected = new EventSequence(array($this->callA->endEvent(), $this->iteratorCall->endEvent()));
+        $expected = new EventSequence(
+            array($this->callA->endEvent(), $this->iteratorCall->endEvent()),
+            $this->callVerifierFactory
+        );
 
         $this->assertEquals($expected, $this->subject->always()->completed());
     }
@@ -1465,19 +1489,19 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals(
-            new EventSequence(array($this->callAResponse, $this->callBResponse)),
+            new EventSequence(array($this->callAResponse, $this->callBResponse), $this->callVerifierFactory),
             $this->subject->returned()
         );
         $this->assertEquals(
-            new EventSequence(array($this->callAResponse)),
+            new EventSequence(array($this->callAResponse), $this->callVerifierFactory),
             $this->subject->returned($this->returnValueA)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callBResponse)),
+            new EventSequence(array($this->callBResponse), $this->callVerifierFactory),
             $this->subject->returned($this->returnValueB)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callAResponse)),
+            new EventSequence(array($this->callAResponse), $this->callVerifierFactory),
             $this->subject->returned($this->matcherFactory->equalTo($this->returnValueA))
         );
     }
@@ -1539,7 +1563,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysReturned()
     {
         $this->subject->setCalls(array($this->callA, $this->callA));
-        $expected = new EventSequence(array($this->callAResponse, $this->callAResponse));
+        $expected = new EventSequence(array($this->callAResponse, $this->callAResponse), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->always()->returned());
         $this->assertEquals($expected, $this->subject->always()->returned($this->returnValueA));
@@ -1619,27 +1643,27 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals(
-            new EventSequence(array($this->callCResponse, $this->callDResponse)),
+            new EventSequence(array($this->callCResponse, $this->callDResponse), $this->callVerifierFactory),
             $this->subject->threw()
         );
         $this->assertEquals(
-            new EventSequence(array($this->callCResponse, $this->callDResponse)),
+            new EventSequence(array($this->callCResponse, $this->callDResponse), $this->callVerifierFactory),
             $this->subject->threw('Exception')
         );
         $this->assertEquals(
-            new EventSequence(array($this->callCResponse, $this->callDResponse)),
+            new EventSequence(array($this->callCResponse, $this->callDResponse), $this->callVerifierFactory),
             $this->subject->threw('RuntimeException')
         );
         $this->assertEquals(
-            new EventSequence(array($this->callCResponse)),
+            new EventSequence(array($this->callCResponse), $this->callVerifierFactory),
             $this->subject->threw($this->exceptionA)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callDResponse)),
+            new EventSequence(array($this->callDResponse), $this->callVerifierFactory),
             $this->subject->threw($this->exceptionB)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callCResponse)),
+            new EventSequence(array($this->callCResponse), $this->callVerifierFactory),
             $this->subject->threw($this->matcherFactory->equalTo($this->exceptionA))
         );
     }
@@ -1673,7 +1697,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals(
-            new EventSequence(array($this->callCResponse, $this->callDResponse)),
+            new EventSequence(array($this->callCResponse, $this->callDResponse), $this->callVerifierFactory),
             $this->subject->threw()
         );
     }
@@ -1816,7 +1840,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysThrew()
     {
         $this->subject->setCalls(array($this->callC, $this->callC));
-        $expected = new EventSequence(array($this->callCResponse, $this->callCResponse));
+        $expected = new EventSequence(array($this->callCResponse, $this->callCResponse), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->always()->threw());
         $this->assertEquals($expected, $this->subject->always()->threw('Exception'));

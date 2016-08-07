@@ -13,19 +13,26 @@ namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\SpyFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassH;
+use Eloquent\Phony\Verification\GeneratorVerifierFactory;
+use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit_Framework_TestCase;
 use ReflectionMethod;
 
@@ -40,7 +47,6 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             'label' => 'label',
         );
         $this->stubFactory = StubFactory::instance();
-        $this->stubVerifierFactory = StubVerifierFactory::instance();
         $this->objectSequencer = new Sequencer();
         $this->exporter = new InlineExporter(1, $this->objectSequencer);
         $this->matcherVerifier = new MatcherVerifier();
@@ -56,7 +62,23 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             $this->featureDetector
         );
         $this->assertionRenderer->setUseColor(false);
+        $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
+        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
+        $this->stubVerifierFactory = new StubVerifierFactory(
+            $this->stubFactory,
+            SpyFactory::instance(),
+            MatcherFactory::instance(),
+            $this->matcherVerifier,
+            GeneratorVerifierFactory::instance(),
+            IterableVerifierFactory::instance(),
+            $this->callVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer,
+            $this->invocableInspector,
+            GeneratorAnswerBuilderFactory::instance(),
+            FunctionHookManager::instance()
+        );
         $this->invoker = new Invoker();
 
         $this->mockBuilderFactory = MockBuilderFactory::instance();
@@ -221,7 +243,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->noInteraction());
+        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()

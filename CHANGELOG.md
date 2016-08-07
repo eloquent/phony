@@ -1,5 +1,12 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Verification results now return call verifiers instead of
+  unwrapped calls ([#185]).
+
+[#185]: https://github.com/eloquent/phony/issues/185
+
 ## 0.13.2 (2016-08-05)
 
 - **[FIXED]** Fixed mocking of destructors ([#183]).

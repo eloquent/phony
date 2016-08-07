@@ -159,6 +159,7 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->spy->setCalls($calls);
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
+        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->invocableInspector = InvocableInspector::instance();
         $this->matcherVerifier = MatcherVerifier::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
@@ -383,21 +384,33 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->used());
+        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->never()->used());
 
         $this->setUpWith($this->nonGeneratorCalls);
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->used());
+        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->never()->used());
 
         $this->setUpWith($this->calls);
 
-        $this->assertEquals(new EventSequence(array($this->generatorUsedEvent)), $this->subject->used());
-        $this->assertEquals(new EventSequence(array($this->generatorUsedEvent)), $this->subject->times(1)->used());
-        $this->assertEquals(new EventSequence(array($this->generatorUsedEvent)), $this->subject->once()->used());
+        $this->assertEquals(
+            new EventSequence(array($this->generatorUsedEvent), $this->callVerifierFactory),
+            $this->subject->used()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorUsedEvent), $this->callVerifierFactory),
+            $this->subject->times(1)->used()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorUsedEvent), $this->callVerifierFactory),
+            $this->subject->once()->used()
+        );
 
         $this->setUpWith(array($this->generatorCall));
 
-        $this->assertEquals(new EventSequence(array($this->generatorUsedEvent)), $this->subject->always()->used());
+        $this->assertEquals(
+            new EventSequence(array($this->generatorUsedEvent), $this->callVerifierFactory),
+            $this->subject->always()->used()
+        );
     }
 
     public function testUsedFailureNonIterables()
@@ -479,29 +492,41 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             new EventSequence(
-                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
+                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG),
+                $this->callVerifierFactory
             ),
             $this->subject->produced()
         );
-        $this->assertEquals(new EventSequence(array($this->generatorEventA)), $this->subject->produced('n'));
-        $this->assertEquals(new EventSequence(array($this->generatorEventA)), $this->subject->produced('m', 'n'));
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEventA), $this->callVerifierFactory),
+            $this->subject->produced('n')
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEventA), $this->callVerifierFactory),
+            $this->subject->produced('m', 'n')
+        );
         $this->assertEquals(
             new EventSequence(
-                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
+                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG),
+                $this->callVerifierFactory
             ),
             $this->subject->times(1)->produced()
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventA)),
+            new EventSequence(array($this->generatorEventA), $this->callVerifierFactory),
             $this->subject->once()->produced('n')
         );
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->produced('m'));
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->produced('m')
+        );
 
         $this->setUpWith(array($this->generatorCall));
 
         $this->assertEquals(
             new EventSequence(
-                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG)
+                array($this->generatorEventA, $this->generatorEventC, $this->generatorEventE, $this->generatorEventG),
+                $this->callVerifierFactory
             ),
             $this->subject->always()->produced()
         );
@@ -594,19 +619,22 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->setUpWith($this->typicalCallsPlusGeneratorCall);
 
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventB, $this->generatorEventF)),
+            new EventSequence(array($this->generatorEventB, $this->generatorEventF), $this->callVerifierFactory),
             $this->subject->received()
         );
-        $this->assertEquals(new EventSequence(array($this->generatorEventB)), $this->subject->received('o'));
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventB, $this->generatorEventF)),
+            new EventSequence(array($this->generatorEventB), $this->callVerifierFactory),
+            $this->subject->received('o')
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEventB, $this->generatorEventF), $this->callVerifierFactory),
             $this->subject->times(1)->received()
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventB)),
+            new EventSequence(array($this->generatorEventB), $this->callVerifierFactory),
             $this->subject->once()->received('o')
         );
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->received('x'));
+        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->never()->received('x'));
     }
 
     public function testReceivedFailureNoGeneratorsNoMatcher()
@@ -716,31 +744,31 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->setUpWith($this->typicalCallsPlusGeneratorCall);
 
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventD, $this->generatorEventH)),
+            new EventSequence(array($this->generatorEventD, $this->generatorEventH), $this->callVerifierFactory),
             $this->subject->receivedException()
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventD, $this->generatorEventH)),
+            new EventSequence(array($this->generatorEventD, $this->generatorEventH), $this->callVerifierFactory),
             $this->subject->receivedException('Exception')
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventD, $this->generatorEventH)),
+            new EventSequence(array($this->generatorEventD, $this->generatorEventH), $this->callVerifierFactory),
             $this->subject->receivedException('RuntimeException')
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventD)),
+            new EventSequence(array($this->generatorEventD), $this->callVerifierFactory),
             $this->subject->receivedException($this->receivedExceptionA)
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventH)),
+            new EventSequence(array($this->generatorEventH), $this->callVerifierFactory),
             $this->subject->receivedException($this->receivedExceptionB)
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorEventD)),
+            new EventSequence(array($this->generatorEventD), $this->callVerifierFactory),
             $this->subject->receivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
         $this->assertEquals(
-            new EventSequence(array()),
+            new EventSequence(array(), $this->callVerifierFactory),
             $this->subject->never()->receivedException('InvalidArgumentException')
         );
     }
@@ -864,21 +892,39 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->consumed());
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->consumed()
+        );
 
         $this->setUpWith($this->nonGeneratorCalls);
 
-        $this->assertEquals(new EventSequence(array()), $this->subject->never()->consumed());
+        $this->assertEquals(
+            new EventSequence(array(), $this->callVerifierFactory),
+            $this->subject->never()->consumed()
+        );
 
         $this->setUpWith($this->calls);
 
-        $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->consumed());
-        $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->times(1)->consumed());
-        $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->once()->consumed());
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
+            $this->subject->consumed()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
+            $this->subject->times(1)->consumed()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
+            $this->subject->once()->consumed()
+        );
 
         $this->setUpWith(array($this->generatorCall));
 
-        $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->always()->consumed());
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
+            $this->subject->always()->consumed()
+        );
 
         $this->generatorEndEvent = $this->eventFactory->createThrew($this->exceptionA);
         $this->generatorCall = $this->callFactory->create(
@@ -889,7 +935,10 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->setUpWith(array($this->generatorCall));
 
-        $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->always()->consumed());
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
+            $this->subject->always()->consumed()
+        );
     }
 
     public function testConsumedFailureNonIterables()
@@ -951,10 +1000,16 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->calls);
 
-        $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->returned());
-        $this->assertEquals(new EventSequence(array($this->generatorEndEvent)), $this->subject->returned('w'));
         $this->assertEquals(
-            new EventSequence(array($this->generatorEndEvent)),
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
+            $this->subject->returned()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
+            $this->subject->returned('w')
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorEndEvent), $this->callVerifierFactory),
             $this->subject->returned($this->matcherFactory->equalTo('w'))
         );
     }
@@ -1005,7 +1060,8 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysReturned()
     {
         $this->setUpWith(array($this->generatorCall, $this->generatorCall));
-        $expected = new EventSequence(array($this->generatorEndEvent, $this->generatorEndEvent));
+        $expected =
+            new EventSequence(array($this->generatorEndEvent, $this->generatorEndEvent), $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->always()->returned());
         $this->assertEquals($expected, $this->subject->always()->returned('w'));
@@ -1075,18 +1131,24 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->callsWithThrow);
 
-        $this->assertEquals(new EventSequence(array($this->generatorThrewEvent)), $this->subject->threw());
-        $this->assertEquals(new EventSequence(array($this->generatorThrewEvent)), $this->subject->threw('Exception'));
         $this->assertEquals(
-            new EventSequence(array($this->generatorThrewEvent)),
+            new EventSequence(array($this->generatorThrewEvent), $this->callVerifierFactory),
+            $this->subject->threw()
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorThrewEvent), $this->callVerifierFactory),
+            $this->subject->threw('Exception')
+        );
+        $this->assertEquals(
+            new EventSequence(array($this->generatorThrewEvent), $this->callVerifierFactory),
             $this->subject->threw('RuntimeException')
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorThrewEvent)),
+            new EventSequence(array($this->generatorThrewEvent), $this->callVerifierFactory),
             $this->subject->threw($this->exceptionA)
         );
         $this->assertEquals(
-            new EventSequence(array($this->generatorThrewEvent)),
+            new EventSequence(array($this->generatorThrewEvent), $this->callVerifierFactory),
             $this->subject->threw($this->matcherFactory->equalTo($this->exceptionA))
         );
     }
@@ -1113,7 +1175,7 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->setUpWith($this->callsWithThrow);
 
         $this->assertEquals(
-            new EventSequence(array($this->generatorThrewEvent)),
+            new EventSequence(array($this->generatorThrewEvent), $this->callVerifierFactory),
             $this->subject->threw()
         );
     }
@@ -1214,7 +1276,10 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     public function testAlwaysThrew()
     {
         $this->setUpWith(array($this->generatorThrowCall, $this->generatorThrowCall));
-        $expected = new EventSequence(array($this->generatorThrewEvent, $this->generatorThrewEvent));
+        $expected = new EventSequence(
+            array($this->generatorThrewEvent, $this->generatorThrewEvent),
+            $this->callVerifierFactory
+        );
 
         $this->assertEquals($expected, $this->subject->always()->threw());
         $this->assertEquals($expected, $this->subject->always()->threw('Exception'));

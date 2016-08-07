@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Event;
 
 use ArrayIterator;
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Iterator;
@@ -25,10 +26,13 @@ class EventSequence implements EventCollection
     /**
      * Construct a new event sequence.
      *
-     * @param array<Event> $events The events.
+     * @param array<Event>        $events              The events.
+     * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
      */
-    public function __construct(array $events)
-    {
+    public function __construct(
+        array $events,
+        CallVerifierFactory $callVerifierFactory
+    ) {
         $calls = array();
 
         foreach ($events as $event) {
@@ -41,6 +45,7 @@ class EventSequence implements EventCollection
         $this->calls = $calls;
         $this->eventCount = count($events);
         $this->callCount = count($calls);
+        $this->callVerifierFactory = $callVerifierFactory;
     }
 
     /**
@@ -110,7 +115,7 @@ class EventSequence implements EventCollection
      */
     public function allCalls()
     {
-        return $this->calls;
+        return $this->callVerifierFactory->fromCalls($this->calls);
     }
 
     /**
@@ -172,7 +177,7 @@ class EventSequence implements EventCollection
     public function firstCall()
     {
         if (isset($this->calls[0])) {
-            return $this->calls[0];
+            return $this->callVerifierFactory->fromCall($this->calls[0]);
         }
 
         throw new UndefinedCallException(0);
@@ -186,8 +191,9 @@ class EventSequence implements EventCollection
      */
     public function lastCall()
     {
-        if ($count = count($this->calls)) {
-            return $this->calls[$count - 1];
+        if ($this->callCount) {
+            return $this->callVerifierFactory
+                ->fromCall($this->calls[$this->callCount - 1]);
         }
 
         throw new UndefinedCallException(0);
@@ -210,7 +216,7 @@ class EventSequence implements EventCollection
             throw new UndefinedCallException($index);
         }
 
-        return $this->calls[$normalized];
+        return $this->callVerifierFactory->fromCall($this->calls[$normalized]);
     }
 
     /**
@@ -246,8 +252,9 @@ class EventSequence implements EventCollection
         return true;
     }
 
-    protected $events;
-    protected $calls;
-    protected $eventCount;
-    protected $callCount;
+    private $events;
+    private $calls;
+    private $eventCount;
+    private $callCount;
+    private $callVerifierFactory;
 }
