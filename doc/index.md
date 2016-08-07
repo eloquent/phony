@@ -3,6 +3,7 @@
 - [Installation]
 - [Help]
 - [Usage]
+    - [Using this documentation]
     - [Example test suites]
     - [Standalone usage]
     - [Peridot usage]
@@ -205,6 +206,16 @@ so that others may benefit from the outcome.
 Alternatively, [@ezzatron] may be contacted directly via [Twitter].
 
 ## Usage
+
+### Using this documentation
+
+- The documentation can be searched with the standard search shortcut:
+    - <kbd>⌘</kbd> + <kbd>F</kbd> for Mac OS
+    - <kbd>Ctrl</kbd> + <kbd>F</kbd> for other platforms
+- The menu automatically opens to the correct section as the documentation is
+  scrolled.
+- An expanded table of contents can be viewed by clicking the "+" symbol in the
+  menu.
 
 ### Example test suites
 
@@ -8049,6 +8060,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [usage]: #usage
 [using a callable as an answer]: #using-a-callable-as-an-answer
 [using colored verification output]: #using-colored-verification-output
+[using this documentation]: #using-this-documentation
 [verification]: #verification
 [verifying call closure binding]: #verifying-call-closure-binding
 [verifying call exceptions]: #verifying-call-exceptions
