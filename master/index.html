@@ -525,6 +525,20 @@ so that others may benefit from the outcome.</p>
 <span class="pl-s1">    });</span>
 <span class="pl-s1">});</span></pre></div>
 
+<p>There is also a <a href="https://github.com/eloquent/peridot-phony">Phony for Peridot</a> plugin that provides auto-wired mocks:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\on</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>Phony for Peridot<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    it(<span class="pl-s"><span class="pl-pds">'</span>supports auto-wiring<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-c1">ClassA</span> <span class="pl-smi">$mock</span>) {</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> on(<span class="pl-smi">$mock</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        expect(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>))<span class="pl-k">-&gt;</span><span class="pl-smi">to</span><span class="pl-k">-&gt;</span>equal(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1">});</span></pre></div>
+
 <h3>
 <a id="pho-usage" class="anchor" href="#pho-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://github.com/danielstjules/pho">Pho</a> usage</h3>
 
