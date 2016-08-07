@@ -5,13 +5,14 @@
 [![Current version image][version-image]][current version]
 [![Current build status image][build-image]][current build status]
 [![Current Windows build status image][windows-build-image]][current windows build status]
-[![Tested against HHVM][hhvm-image]][hhvm]
+[![Tested against HHVM][hhvm-image]][current hhvm build status]
 [![Current coverage status image][coverage-image]][current coverage status]
 
 [build-image]: https://img.shields.io/travis/eloquent/phony/master.svg?style=flat-square "Current build status for the master branch"
 [coverage-image]: https://img.shields.io/codecov/c/github/eloquent/phony/master.svg?style=flat-square "Current test coverage for the master branch"
 [current build status]: https://travis-ci.org/eloquent/phony
 [current coverage status]: https://codecov.io/github/eloquent/phony
+[current hhvm build status]: http://hhvm.h4cc.de/package/eloquent/phony
 [current version]: https://packagist.org/packages/eloquent/phony
 [current windows build status]: https://ci.appveyor.com/project/eloquent/phony
 [hhvm-image]: https://img.shields.io/hhvm/eloquent/phony/master.svg?style=flat-square "Tested against HHVM"
@@ -256,7 +257,24 @@ describe('Phony', function () {
 });
 ```
 
+There is also a [Phony for Peridot] plugin that provides auto-wired mocks:
+
+```php
+use function Eloquent\Phony\on;
+
+describe('Phony for Peridot', function () {
+    it('supports auto-wiring', function (ClassA $mock) {
+        $handle = on($mock);
+        $handle->methodA->with('argument')->returns('value');
+
+        expect($mock->methodA('argument'))->to->equal('value');
+        $handle->methodA->calledWith('argument');
+    });
+});
+```
+
 [peridot]: http://peridot-php.github.io/
+[phony for peridot]: https://github.com/eloquent/peridot-phony
 
 ### [Pho] usage
 

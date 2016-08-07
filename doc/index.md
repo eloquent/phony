@@ -242,6 +242,22 @@ describe('Phony', function () {
 });
 ```
 
+There is also a [Phony for Peridot] plugin that provides auto-wired mocks:
+
+```php
+use function Eloquent\Phony\on;
+
+describe('Phony for Peridot', function () {
+    it('supports auto-wiring', function (ClassA $mock) {
+        $handle = on($mock);
+        $handle->methodA->with('argument')->returns('value');
+
+        expect($mock->methodA('argument'))->to->equal('value');
+        $handle->methodA->calledWith('argument');
+    });
+});
+```
+
 ### [Pho] usage
 
 ```php
@@ -8190,6 +8206,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [phake-matchers]: http://phake.readthedocs.org/en/latest/method-parameter-matchers.html
 [phake]: http://phake.readthedocs.org/
 [pho]: https://github.com/danielstjules/pho
+[phony for peridot]: https://github.com/eloquent/peridot-phony
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 [phpunit]: https://phpunit.de/
 [prophecy matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
