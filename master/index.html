@@ -452,17 +452,6 @@
 </ul>
 </li>
 <li>
-<a href="#thrown-exceptions">Thrown exceptions</a>
-
-<ul>
-<li><a href="#assertionexception">AssertionException</a></li>
-<li><a href="#undefinedargumentexception">UndefinedArgumentException</a></li>
-<li><a href="#undefinedcallexception">UndefinedCallException</a></li>
-<li><a href="#undefinedeventexception">UndefinedEventException</a></li>
-<li><a href="#undefinedresponseexception">UndefinedResponseException</a></li>
-</ul>
-</li>
-<li>
 <a href="#the-api">The API</a>
 
 <ul>
@@ -480,6 +469,17 @@
 <li><a href="#the-event-api">The event API</a></li>
 <li><a href="#the-matcher-api">The matcher API</a></li>
 <li><a href="#the-wildcard-matcher-api">The wildcard matcher API</a></li>
+<li>
+<a href="#thrown-exceptions">Thrown exceptions</a>
+
+<ul>
+<li><a href="#assertionexception">AssertionException</a></li>
+<li><a href="#undefinedargumentexception">UndefinedArgumentException</a></li>
+<li><a href="#undefinedcallexception">UndefinedCallException</a></li>
+<li><a href="#undefinedeventexception">UndefinedEventException</a></li>
+<li><a href="#undefinedresponseexception">UndefinedResponseException</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#license">License</a></li>
@@ -4663,80 +4663,6 @@ exist within that value:</p>
 values in their entirety. Note that this can produce immense amounts of output
 for large nested structures.</p>
 
-<h2>
-<a id="thrown-exceptions" class="anchor" href="#thrown-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thrown exceptions</h2>
-
-<h3>
-<a id="assertionexception" class="anchor" href="#assertionexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AssertionException</h3>
-
-<p>Thrown when a verification fails. The exact exception class and implementation
-depends on the <a href="#integration-with-test-frameworks">testing framework</a> in use. See <a href="#standard-verification">Standard verification</a>.</p>
-
-<p>Other than the standard PHP <a href="http://php.net/class.exception">Exception</a> methods, assertion exceptions have no
-public API methods.</p>
-
-<h3>
-<a id="undefinedargumentexception" class="anchor" href="#undefinedargumentexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedArgumentException</h3>
-
-<p>Thrown when an argument that was requested does not exist.</p>
-
-<p>Namespace: <code>Eloquent\Phony\Call\Exception</code></p>
-
-<p><a name="undefinedargumentexception.index"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>int</em> $exception-&gt;<a href="#undefinedargumentexception.index"><strong>index</strong></a>()</p>
-</blockquote>
-
-<p>Get the index.</p>
-
-<h3>
-<a id="undefinedcallexception" class="anchor" href="#undefinedcallexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedCallException</h3>
-
-<p>Thrown when a call that was requested does not exist.</p>
-
-<p>Namespace: <code>Eloquent\Phony\Call\Exception</code></p>
-
-<p><a name="undefinedcallexception.index"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>int</em> $exception-&gt;<a href="#undefinedcallexception.index"><strong>index</strong></a>()</p>
-</blockquote>
-
-<p>Get the index.</p>
-
-<h3>
-<a id="undefinedeventexception" class="anchor" href="#undefinedeventexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedEventException</h3>
-
-<p>Thrown when an event that was requested does not exist.</p>
-
-<p>Namespace: <code>Eloquent\Phony\Event\Exception</code></p>
-
-<p><a name="undefinedeventexception.index"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em>int</em> $exception-&gt;<a href="#undefinedeventexception.index"><strong>index</strong></a>()</p>
-</blockquote>
-
-<p>Get the index.</p>
-
-<h3>
-<a id="undefinedresponseexception" class="anchor" href="#undefinedresponseexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedResponseException</h3>
-
-<p>Thrown when the call has not yet produced a response of the requested type.</p>
-
-<p>This can occur when an individual call is queried for its response details
-before the call has returned a value, or thrown an exception.</p>
-
-<p>Other than the standard PHP <a href="http://php.net/class.exception">Exception</a> methods, undefined response exceptions
-have no public API methods.</p>
-
 <p><a name="api"></a></p>
 
 <h2>
@@ -8590,6 +8516,80 @@ can be used to determine event order.</em></p>
 </blockquote>
 
 <p>Describe this matcher.</p>
+
+<h3>
+<a id="thrown-exceptions" class="anchor" href="#thrown-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thrown exceptions</h3>
+
+<h4>
+<a id="assertionexception" class="anchor" href="#assertionexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AssertionException</h4>
+
+<p>Thrown when a verification fails. The exact exception class and implementation
+depends on the <a href="#integration-with-test-frameworks">testing framework</a> in use. See <a href="#standard-verification">Standard verification</a>.</p>
+
+<p>Other than the standard PHP <a href="http://php.net/class.exception">Exception</a> methods, assertion exceptions have no
+public API methods.</p>
+
+<h4>
+<a id="undefinedargumentexception" class="anchor" href="#undefinedargumentexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedArgumentException</h4>
+
+<p>Thrown when an argument that was requested does not exist.</p>
+
+<p>Namespace: <code>Eloquent\Phony\Call\Exception</code></p>
+
+<p><a name="undefinedargumentexception.index"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>int</em> $exception-&gt;<a href="#undefinedargumentexception.index"><strong>index</strong></a>()</p>
+</blockquote>
+
+<p>Get the index.</p>
+
+<h4>
+<a id="undefinedcallexception" class="anchor" href="#undefinedcallexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedCallException</h4>
+
+<p>Thrown when a call that was requested does not exist.</p>
+
+<p>Namespace: <code>Eloquent\Phony\Call\Exception</code></p>
+
+<p><a name="undefinedcallexception.index"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>int</em> $exception-&gt;<a href="#undefinedcallexception.index"><strong>index</strong></a>()</p>
+</blockquote>
+
+<p>Get the index.</p>
+
+<h4>
+<a id="undefinedeventexception" class="anchor" href="#undefinedeventexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedEventException</h4>
+
+<p>Thrown when an event that was requested does not exist.</p>
+
+<p>Namespace: <code>Eloquent\Phony\Event\Exception</code></p>
+
+<p><a name="undefinedeventexception.index"></a></p>
+
+<hr>
+
+<blockquote>
+<p><em>int</em> $exception-&gt;<a href="#undefinedeventexception.index"><strong>index</strong></a>()</p>
+</blockquote>
+
+<p>Get the index.</p>
+
+<h4>
+<a id="undefinedresponseexception" class="anchor" href="#undefinedresponseexception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedResponseException</h4>
+
+<p>Thrown when the call has not yet produced a response of the requested type.</p>
+
+<p>This can occur when an individual call is queried for its response details
+before the call has returned a value, or thrown an exception.</p>
+
+<p>Other than the standard PHP <a href="http://php.net/class.exception">Exception</a> methods, undefined response exceptions
+have no public API methods.</p>
 
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
