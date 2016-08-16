@@ -217,6 +217,7 @@ Alternatively, [@ezzatron] may be contacted directly via [Twitter].
   scrolled.
 - An expanded table of contents can be viewed by clicking the "+" symbol in the
   menu.
+- Documentation for other versions can be selected in the bottom-right corner.
 
 ### Example test suites
 
