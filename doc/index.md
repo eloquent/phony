@@ -171,12 +171,6 @@
             - [Exporting mocks]
     - [Export depth]
         - [Setting the export depth]
-- [Thrown exceptions]
-    - [AssertionException]
-    - [UndefinedArgumentException]
-    - [UndefinedCallException]
-    - [UndefinedEventException]
-    - [UndefinedResponseException]
 - [The API]
     - [The top-level API]
     - [The mock handle API]
@@ -192,6 +186,12 @@
     - [The event API]
     - [The matcher API]
     - [The wildcard matcher API]
+    - [Thrown exceptions]
+        - [AssertionException]
+        - [UndefinedArgumentException]
+        - [UndefinedCallException]
+        - [UndefinedEventException]
+        - [UndefinedResponseException]
 - [License]
 
 ## Installation
@@ -4503,68 +4503,6 @@ Negative values are treated as infinite depth, and will cause *Phony* to export
 values in their entirety. Note that this can produce immense amounts of output
 for large nested structures.
 
-## Thrown exceptions
-
-### AssertionException
-
-Thrown when a verification fails. The exact exception class and implementation
-depends on the [testing framework] in use. See [Standard verification].
-
-Other than the standard PHP [Exception] methods, assertion exceptions have no
-public API methods.
-
-### UndefinedArgumentException
-
-Thrown when an argument that was requested does not exist.
-
-Namespace: `Eloquent\Phony\Call\Exception`
-
-<a name="undefinedargumentexception.index" />
-
-----
-
-> *int* $exception->[**index**](#undefinedargumentexception.index)()
-
-Get the index.
-
-### UndefinedCallException
-
-Thrown when a call that was requested does not exist.
-
-Namespace: `Eloquent\Phony\Call\Exception`
-
-<a name="undefinedcallexception.index" />
-
-----
-
-> *int* $exception->[**index**](#undefinedcallexception.index)()
-
-Get the index.
-
-### UndefinedEventException
-
-Thrown when an event that was requested does not exist.
-
-Namespace: `Eloquent\Phony\Event\Exception`
-
-<a name="undefinedeventexception.index" />
-
-----
-
-> *int* $exception->[**index**](#undefinedeventexception.index)()
-
-Get the index.
-
-### UndefinedResponseException
-
-Thrown when the call has not yet produced a response of the requested type.
-
-This can occur when an individual call is queried for its response details
-before the call has returned a value, or thrown an exception.
-
-Other than the standard PHP [Exception] methods, undefined response exceptions
-have no public API methods.
-
 <a name="api" />
 
 ## The API
@@ -7885,6 +7823,68 @@ Get the maximum number of arguments to match.
 > *string* $wildcard->[**describe**](#wildcard.describe)()
 
 Describe this matcher.
+
+### Thrown exceptions
+
+#### AssertionException
+
+Thrown when a verification fails. The exact exception class and implementation
+depends on the [testing framework] in use. See [Standard verification].
+
+Other than the standard PHP [Exception] methods, assertion exceptions have no
+public API methods.
+
+#### UndefinedArgumentException
+
+Thrown when an argument that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Call\Exception`
+
+<a name="undefinedargumentexception.index" />
+
+----
+
+> *int* $exception->[**index**](#undefinedargumentexception.index)()
+
+Get the index.
+
+#### UndefinedCallException
+
+Thrown when a call that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Call\Exception`
+
+<a name="undefinedcallexception.index" />
+
+----
+
+> *int* $exception->[**index**](#undefinedcallexception.index)()
+
+Get the index.
+
+#### UndefinedEventException
+
+Thrown when an event that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Event\Exception`
+
+<a name="undefinedeventexception.index" />
+
+----
+
+> *int* $exception->[**index**](#undefinedeventexception.index)()
+
+Get the index.
+
+#### UndefinedResponseException
+
+Thrown when the call has not yet produced a response of the requested type.
+
+This can occur when an individual call is queried for its response details
+before the call has returned a value, or thrown an exception.
+
+Other than the standard PHP [Exception] methods, undefined response exceptions
+have no public API methods.
 
 ## License
 
