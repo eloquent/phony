@@ -60,11 +60,12 @@ var run = function () {
 
     var contentElement = document.getElementById('content');
     var tocElement = document.getElementById('toc');
+    var tocScrollElement = document.getElementById('toc-scroll');
     var tocListElement = contentElement.querySelector('ul');
     var tocListElementCopy = tocListElement.cloneNode(true);
 
     tocListElement.style.display = 'none';
-    tocElement.appendChild(tocListElementCopy);
+    tocScrollElement.appendChild(tocListElementCopy);
 
     var phonyLink = document.createElement('a');
     phonyLink.href = '#phony';
@@ -80,17 +81,20 @@ var run = function () {
     );
 
     var activateTocHeading = function (data) {
-        var activeElements = tocElement.querySelectorAll('.active');
+        var activeElements = tocScrollElement.querySelectorAll('.active');
 
         for (var i = 0; i < activeElements.length; ++i) {
             activeElements[i].classList.remove('active');
         }
 
         if (!data) {
+            tocScrollElement.scrollTop = 0;
+
             return;
         }
 
-        var node = data.parent;
+        var end = data.parent;
+        var node = end;
         node.classList.add('active');
 
         while (
@@ -101,6 +105,13 @@ var run = function () {
             node = node.parentNode.parentNode;
 
             node.classList.add('active');
+        }
+
+        var tocHeight = tocScrollElement.clientHeight;
+        var endOffset = end.offsetTop;
+
+        if (tocScrollElement.scrollHeight > tocHeight) {
+            tocScrollElement.scrollTop = endOffset - Math.floor(tocHeight / 2);
         }
     };
 
@@ -224,12 +235,17 @@ var run = function () {
     };
 
     window.addEventListener('hashchange', dispatch);
-    document.addEventListener('scroll', _.throttle(redrawToc, 10));
+    document.addEventListener('scroll', function () {
+        requestAnimationFrame(redrawToc)
+    });
+    document.addEventListener('resize', function () {
+        requestAnimationFrame(activateTocHeading)
+    });
     tocHideElement.addEventListener('click', hideToc);
 
     gumshoe.init(
         {
-            selector: '#toc > ul a',
+            selector: '#toc-scroll > ul a',
             offset: 30,
             callback: activateTocHeading
         }

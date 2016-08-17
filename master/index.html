@@ -34,8 +34,14 @@
         <a href="#" title="Return to top"><i class="fa fa-chevron-circle-up"></i></a>
         <a href="https://github.com/eloquent/phony" title="View on GitHub"><i class="fa fa-github"></i></a>
     </h2>
-    <ul id="versions"></ul>
+    <div id="toc-relative">
+        <div id="toc-scroll"></div>
+        <div id="toc-fade-top"></div>
+        <div id="toc-fade-bottom"></div>
+    </div>
 </div>
+
+<ul id="versions"></ul>
 
 <div id="content">
 
@@ -519,6 +525,7 @@ so that others may benefit from the outcome.</p>
 scrolled.</li>
 <li>An expanded table of contents can be viewed by clicking the "+" symbol in the
 menu.</li>
+<li>Documentation for other versions can be selected in the bottom-right corner.</li>
 </ul>
 
 <h3>
@@ -2931,6 +2938,12 @@ The API for verifying calls mirrors the methods available for spy verification.<
 
 <p>These methods will throw an exception if no call is found.</p>
 
+<p>Similar methods also exist for <a href="#the-verification-result-api">verification results</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall();</span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>lastCall();</span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>callAt(<span class="pl-c1">0</span>);</span></pre></div>
+
 <h3>
 <a id="verifying-spy-input" class="anchor" href="#verifying-spy-input" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy input</h3>
 
@@ -2964,14 +2977,11 @@ passed to <a href="#spy.calledWith"><code>calledWith()</code></a> can be literal
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument();  <span class="pl-c">// first argument</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c">// second argument</span></span></pre></div>
 
-<p>The same methods can be used on any <a href="#the-verification-result-api">verification result</a>:</p>
+<p>Calls can also be retrieved from any <a href="#the-verification-result-api">verification result</a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>arguments(); <span class="pl-c">// all arguments as an array</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument();  <span class="pl-c">// first argument</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c">// second argument</span></span></pre></div>
-
-<p>Note that this will return the arguments for the first call that matches the
-verification in use.</p>
 
 <p>Example output from <a href="#spy.calledWith"><code>calledWith()</code></a>:</p>
 
@@ -2999,6 +3009,15 @@ verification in use.</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>returned();    <span class="pl-c">// returned anything</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// returned 'a'</span></span></pre></div>
+
+<p>Return values can be retrieved by calling <a href="#call.returnValue"><code>returnValue()</code></a>
+on an <a href="#individual-calls">individual call</a> recorded via the spy:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>returnValue();</span></pre></div>
+
+<p>Calls can also be retrieved from any <a href="#the-verification-result-api">verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>returnValue();</span></pre></div>
 
 <p>Example output from <a href="#spy.returned"><code>returned()</code></a>:</p>
 
@@ -3060,6 +3079,15 @@ available verifications.</p>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// threw a runtime exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// threw a runtime exception with a specific message</span></span></pre></div>
 
+<p>Thrown exceptions can be retrieved by calling <a href="#call.exception"><code>exception()</code></a>
+on an <a href="#individual-calls">individual call</a> recorded via the spy:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$exception</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>exception();</span></pre></div>
+
+<p>Calls can also be retrieved from any <a href="#the-verification-result-api">verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$exception</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>exception();</span></pre></div>
+
 <p>Example output from <a href="#spy.threw"><code>threw()</code></a>:</p>
 
 <p><a href="img/verification/threw/value-mismatch.svg" target="_blank"><img src="img/verification/threw/value-mismatch.svg" alt="Example output from $spy-&gt;threw()" style="max-width:100%;"></a></p>
@@ -3083,6 +3111,22 @@ consumed via iteration.</p>
 <em>or</em> thrown an exception, use <a href="#spy.responded"><code>responded()</code></a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>responded();</span></pre></div>
+
+<p>Responses can be retrieved by calling <a href="#call.response"><code>response()</code></a> on an
+<a href="#individual-calls">individual call</a> recorded via the spy:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>response();</span></pre></div>
+
+<p>Generator responses can be retrieved by calling
+<a href="#call.generatorResponse"><code>generatorResponse()</code></a> on an <a href="#individual-calls">individual call</a>
+recorded via the spy:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>generatorResponse();</span></pre></div>
+
+<p>Calls can also be retrieved from any <a href="#the-verification-result-api">verification result</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>response();</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>generatorResponse();</span></pre></div>
 
 <p>Example output from <a href="#spy.completed"><code>completed()</code></a>:</p>
 
@@ -3312,6 +3356,10 @@ passed to <a href="#call.calledWith"><code>calledWith()</code></a> can be litera
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>returned();    <span class="pl-c">// returned anything</span></span>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// returned 'a'</span></span></pre></div>
 
+<p>Return values can be retrieved with <a href="#call.returnValue"><code>returnValue()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>returnValue();</span></pre></div>
+
 <p>Example output from <a href="#call.returned"><code>returned()</code></a>:</p>
 
 <p><a href="img/verification/returned/call-value-mismatch.svg" target="_blank"><img src="img/verification/returned/call-value-mismatch.svg" alt="Example output from $call-&gt;returned()" style="max-width:100%;"></a></p>
@@ -3372,6 +3420,10 @@ available verifications.</p>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>threw(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c">// threw a runtime exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c">// threw a runtime exception with a specific message</span></span></pre></div>
 
+<p>Thrown exceptions can be retrieved with <a href="#call.exception"><code>exception()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$exception</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>exception();</span></pre></div>
+
 <p>Example output from <a href="#call.threw"><code>threw()</code></a>:</p>
 
 <p><a href="img/verification/threw/call-value-mismatch.svg" target="_blank"><img src="img/verification/threw/call-value-mismatch.svg" alt="Example output from $call-&gt;threw()" style="max-width:100%;"></a></p>
@@ -3395,6 +3447,14 @@ consumed via iteration.</p>
 <em>or</em> thrown an exception, use <a href="#call.responded"><code>responded()</code></a>:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>responded();</span></pre></div>
+
+<p>Responses can be retrieved with <a href="#call.exception"><code>exception()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>response();</span></pre></div>
+
+<p>Generator responses can be retrieved with <a href="#call.exception"><code>exception()</code></a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>generatorResponse();</span></pre></div>
 
 <p>Example output from <a href="#call.completed"><code>completed()</code></a>:</p>
 
@@ -5070,6 +5130,8 @@ event.</p>
 
 <p><em>Negative depths are treated as infinite depth.</em></p>
 
+<p><em>See <a href="#setting-the-export-depth">Setting the export depth</a>.</em></p>
+
 <h3>
 <a id="the-mock-handle-api" class="anchor" href="#the-mock-handle-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The mock handle API</h3>
 
@@ -5386,6 +5448,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p><em>Each type value can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a> definition.</em></p>
 
+<p><em>See <a href="#customizing-the-mock-class">Customizing the mock class</a>.</em></p>
+
 <p><a name="builder.addMethod"></a></p>
 
 <hr>
@@ -5468,6 +5532,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Returns <code>true</code> if this builder is finalized.</p>
 
+<p><em>See <a href="#generating-mock-classes-from-a-builder">Generating mock classes from a builder</a>.</em></p>
+
 <p><a name="builder.finalize"></a></p>
 
 <hr>
@@ -5478,6 +5544,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Finalize the mock builder.</p>
 
+<p><em>See <a href="#generating-mock-classes-from-a-builder">Generating mock classes from a builder</a>.</em></p>
+
 <p><a name="builder.isBuilt"></a></p>
 
 <hr>
@@ -5487,6 +5555,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 
 <p>Returns <code>true</code> if the mock class has been built.</p>
+
+<p><em>See <a href="#generating-mock-classes-from-a-builder">Generating mock classes from a builder</a>.</em></p>
 
 <p><a name="builder.build"></a></p>
 
@@ -6286,6 +6356,8 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 
 <p>Returns <code>true</code> if any calls were recorded.</p>
 
+<p><em>See <a href="#call-verification">Call verification</a>.</em></p>
+
 <p><a name="spy.callCount"></a></p>
 
 <hr>
@@ -6296,6 +6368,8 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 
 <p>Get the number of calls.</p>
 
+<p><em>See <a href="#call-count">Call count</a>.</em></p>
+
 <p><a name="spy.allCalls"></a></p>
 
 <hr>
@@ -6305,6 +6379,8 @@ throws <a href="http://php.net/class.exception">Exception</a>, <a href="http://p
 </blockquote>
 
 <p>Get all calls as an array.</p>
+
+<p><em>See <a href="#call-verification">Call verification</a>.</em></p>
 
 <p><a name="spy.firstCall"></a></p>
 
@@ -6317,6 +6393,8 @@ throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
 
 <p>Get the first call.</p>
 
+<p><em>See <a href="#individual-calls">Individual calls</a>.</em></p>
+
 <p><a name="spy.lastCall"></a></p>
 
 <hr>
@@ -6327,6 +6405,8 @@ throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
 </blockquote>
 
 <p>Get the last call.</p>
+
+<p><em>See <a href="#individual-calls">Individual calls</a>.</em></p>
 
 <p><a name="spy.callAt"></a></p>
 
@@ -6342,6 +6422,8 @@ throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
 
+<p><em>See <a href="#individual-calls">Individual calls</a>.</em></p>
+
 <p><a name="spy.hasEvents"></a></p>
 
 <hr>
@@ -6351,6 +6433,8 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 </blockquote>
 
 <p>Returns <code>true</code> if any events were recorded.</p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <p><a name="spy.eventCount"></a></p>
 
@@ -6362,6 +6446,8 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p>Get the number of events.</p>
 
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
+
 <p><a name="spy.allEvents"></a></p>
 
 <hr>
@@ -6371,6 +6457,8 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 </blockquote>
 
 <p>Get all events as an array.</p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <p><a name="spy.firstEvent"></a></p>
 
@@ -6383,6 +6471,8 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 
 <p>Get the first event.</p>
 
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
+
 <p><a name="spy.lastEvent"></a></p>
 
 <hr>
@@ -6393,6 +6483,8 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 </blockquote>
 
 <p>Get the last event.</p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <p><a name="spy.eventAt"></a></p>
 
@@ -6407,6 +6499,8 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <p><a name="spy.called"></a></p>
 
@@ -6894,6 +6988,9 @@ equal to <code>$minimum</code>, and less than or equal to <code>$maximum</code>.
 
 <p>Get the arguments.</p>
 
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
+
 <p><a name="call.argument"></a></p>
 
 <hr>
@@ -6908,6 +7005,9 @@ throws <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
 
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
+
 <p><a name="call.argumentCount"></a></p>
 
 <hr>
@@ -6917,6 +7017,9 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 </blockquote>
 
 <p>Get the number of arguments.</p>
+
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
 
 <p><a name="call.returnValue"></a></p>
 
@@ -6931,6 +7034,8 @@ throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 
 <p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
 responded, or threw an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-return-values">Verifying spy return values</a>, <a href="#verifying-call-return-values">Verifying call return values</a>.</em></p>
 
 <p><a name="call.generatorReturnValue"></a></p>
 
@@ -6947,6 +7052,8 @@ throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 responded, did not respond by returning a generator, has not completed
 iteration, or if the generator ended by throwing an exception.</em></p>
 
+<p><em>See <a href="#verifying-generator-return-values">Verifying generator return values</a>.</em></p>
+
 <p><a name="call.exception"></a></p>
 
 <hr>
@@ -6960,6 +7067,8 @@ throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 
 <p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
 responded, or did not throw an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-exceptions">Verifying spy exceptions</a>, <a href="#verifying-call-exceptions">Verifying call exceptions</a>.</em></p>
 
 <p><a name="call.generatorException"></a></p>
 
@@ -6975,6 +7084,8 @@ throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 <p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
 responded, did not respond by returning a generator, has not completed
 iteration, or if the generator ended by returning a value.</em></p>
+
+<p><em>See <a href="#verifying-generator-exceptions">Verifying generator exceptions</a>.</em></p>
 
 <p><a name="call.response"></a></p>
 
@@ -6993,6 +7104,8 @@ or <code>null</code> if an exception was thrown.</em></p>
 
 <p><em>An <a href="#undefinedresponseexception">UndefinedResponseException</a> will be thrown if the call has not yet
 responded.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
 <p><a name="call.generatorResponse"></a></p>
 
@@ -7013,6 +7126,8 @@ or <code>null</code> if an exception was thrown.</em></p>
 responded, did not respond by returning a generator, or if the generator has not
 completed iteration.</em></p>
 
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
+
 <p><a name="call.hasResponded"></a></p>
 
 <hr>
@@ -7024,6 +7139,8 @@ completed iteration.</em></p>
 <p>Returns true if this call has responded.</p>
 
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
 <p><a name="call.isIterable"></a></p>
 
@@ -7037,6 +7154,8 @@ completed iteration.</em></p>
 
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
 
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
+
 <p><a name="call.isGenerator"></a></p>
 
 <hr>
@@ -7048,6 +7167,8 @@ completed iteration.</em></p>
 <p>Returns true if this call has responded with a generator.</p>
 
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
 <p><a name="call.hasCompleted"></a></p>
 
@@ -7067,6 +7188,8 @@ iteration.</em></p>
 will not be considered "complete" until the iterable has been completely
 consumed via iteration.</em></p>
 
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
+
 <p><a name="call.time"></a></p>
 
 <hr>
@@ -7076,6 +7199,8 @@ consumed via iteration.</em></p>
 </blockquote>
 
 <p>Get the time at which the call occurred, in seconds since the Unix epoch.</p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
 <p><a name="call.responseTime"></a></p>
 
@@ -7090,6 +7215,8 @@ consumed via iteration.</em></p>
 <p><em>If the call has not yet responded, <code>null</code> will be returned.</em></p>
 
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
 <p><a name="call.endTime"></a></p>
 
@@ -7111,6 +7238,8 @@ iteration.</em></p>
 will not be considered "complete" until the iterable has been completely
 consumed via iteration.</em></p>
 
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
+
 <p><a name="call.responseDuration"></a></p>
 
 <hr>
@@ -7124,6 +7253,8 @@ consumed via iteration.</em></p>
 <p><em>If the call has not yet responded, <code>null</code> will be returned.</em></p>
 
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
 <p><a name="call.duration"></a></p>
 
@@ -7144,6 +7275,8 @@ iteration.</em></p>
 <p><em>Similarly, when <a href="#generator-and-iterable-verification">iterable spies</a> are in use, a call that returns an iterable
 will not be considered "complete" until the iterable has been completely
 consumed via iteration.</em></p>
+
+<p><em>See <a href="#verifying-spy-progress">Verifying spy progress</a>, <a href="#verifying-call-progress">Verifying call progress</a>.</em></p>
 
 <p><a name="call.index"></a></p>
 
@@ -7611,6 +7744,9 @@ methods:</p>
 
 <p><em>Arguments passed by reference will be references in the returned array.</em></p>
 
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
+
 <p><a name="arguments.count"></a></p>
 
 <hr>
@@ -7622,6 +7758,9 @@ methods:</p>
 
 <p>Returns the total number of arguments.</p>
 
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
+
 <p><a name="arguments.implements.Traversable"></a></p>
 
 <hr>
@@ -7632,6 +7771,9 @@ methods:</p>
 
 <p>Arguments implement the <a href="http://php.net/traversable">Traversable</a> interface, allowing them to be used in a
 <code>foreach</code> statement.</p>
+
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
 
 <p><a name="arguments.has"></a></p>
 
@@ -7646,6 +7788,9 @@ methods:</p>
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
 
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
+
 <p><a name="arguments.get"></a></p>
 
 <hr>
@@ -7659,6 +7804,9 @@ throws <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
 
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
+
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
 
 <p><a name="arguments.set"></a></p>
 
@@ -7678,6 +7826,9 @@ throws <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
 <p><em>If called with two arguments, sets the argument at <code>$indexOrValue</code> to
 <code>$value</code>.</em></p>
 
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
+
 <p><a name="arguments.copy"></a></p>
 
 <hr>
@@ -7687,6 +7838,9 @@ throws <a href="#undefinedargumentexception">UndefinedArgumentException</a></p>
 </blockquote>
 
 <p>Copy these arguments, breaking any references.</p>
+
+<p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
+<a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
 
 <h3>
 <a id="the-verification-result-api" class="anchor" href="#the-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The verification result API</h3>
@@ -7782,6 +7936,8 @@ following methods:</p>
 
 <p>Returns <code>true</code> if this verification matched any calls.</p>
 
+<p><em>See <a href="#call-verification">Call verification</a>.</em></p>
+
 <p><a name="verification.callCount"></a></p>
 
 <hr>
@@ -7792,6 +7948,8 @@ following methods:</p>
 
 <p>Get the number of calls.</p>
 
+<p><em>See <a href="#call-count">Call count</a>.</em></p>
+
 <p><a name="verification.allCalls"></a></p>
 
 <hr>
@@ -7801,6 +7959,8 @@ following methods:</p>
 </blockquote>
 
 <p>Get all calls as an array.</p>
+
+<p><em>See <a href="#call-verification">Call verification</a>.</em></p>
 
 <p><a name="verification.firstCall"></a></p>
 
@@ -7813,6 +7973,8 @@ throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
 
 <p>Get the first call.</p>
 
+<p><em>See <a href="#individual-calls">Individual calls</a>.</em></p>
+
 <p><a name="verification.lastCall"></a></p>
 
 <hr>
@@ -7823,6 +7985,8 @@ throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
 </blockquote>
 
 <p>Get the last call.</p>
+
+<p><em>See <a href="#individual-calls">Individual calls</a>.</em></p>
 
 <p><a name="verification.callAt"></a></p>
 
@@ -7838,6 +8002,8 @@ throws <a href="#undefinedcallexception">UndefinedCallException</a></p>
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
 
+<p><em>See <a href="#individual-calls">Individual calls</a>.</em></p>
+
 <p><a name="verification.hasEvents"></a></p>
 
 <hr>
@@ -7847,6 +8013,8 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 </blockquote>
 
 <p>Returns <code>true</code> if this verification matched any events.</p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <p><a name="verification.eventCount"></a></p>
 
@@ -7858,6 +8026,8 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p>Get the number of events.</p>
 
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
+
 <p><a name="verification.allEvents"></a></p>
 
 <hr>
@@ -7867,6 +8037,8 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 </blockquote>
 
 <p>Get all events as an array.</p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <p><a name="verification.firstEvent"></a></p>
 
@@ -7879,6 +8051,8 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 
 <p>Get the first event.</p>
 
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
+
 <p><a name="verification.lastEvent"></a></p>
 
 <hr>
@@ -7889,6 +8063,8 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 </blockquote>
 
 <p>Get the last event.</p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <p><a name="verification.eventAt"></a></p>
 
@@ -7903,6 +8079,8 @@ throws <a href="#undefinedeventexception">UndefinedEventException</a></p>
 
 <p><em>Negative indices are offset from the end of the list. That is, <code>-1</code> indicates
 the last element, and <code>-2</code> indicates the second last element.</em></p>
+
+<p><em>See <a href="#similar-events-in-order-verification">Similar events in order verification</a>.</em></p>
 
 <h3>
 <a id="the-iterable-verification-result-api" class="anchor" href="#the-iterable-verification-result-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The iterable verification result API</h3>
@@ -8444,6 +8622,8 @@ can be used to determine event order.</em></p>
 
 <p>Returns <code>true</code> if <code>$value</code> matches this matcher's criteria.</p>
 
+<p><em>See <a href="#matchers">Matchers</a>.</em></p>
+
 <p><a name="matcher.__toString"></a>
 <a name="matcher.describe"></a></p>
 
@@ -8455,6 +8635,8 @@ can be used to determine event order.</em></p>
 </blockquote>
 
 <p>Describe this matcher.</p>
+
+<p><em>See <a href="#matchers">Matchers</a>.</em></p>
 
 <h3>
 <a id="the-wildcard-matcher-api" class="anchor" href="#the-wildcard-matcher-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The wildcard matcher API</h3>
@@ -8485,6 +8667,8 @@ can be used to determine event order.</em></p>
 
 <p>Get the matcher to use for each argument.</p>
 
+<p><em>See <a href="#the-wildcard-matcher">The "wildcard" matcher</a>.</em></p>
+
 <p><a name="wildcard.minimumArguments"></a></p>
 
 <hr>
@@ -8495,6 +8679,8 @@ can be used to determine event order.</em></p>
 
 <p>Get the minimum number of arguments to match.</p>
 
+<p><em>See <a href="#the-wildcard-matcher">The "wildcard" matcher</a>.</em></p>
+
 <p><a name="wildcard.maximumArguments"></a></p>
 
 <hr>
@@ -8504,6 +8690,8 @@ can be used to determine event order.</em></p>
 </blockquote>
 
 <p>Get the maximum number of arguments to match.</p>
+
+<p><em>See <a href="#the-wildcard-matcher">The "wildcard" matcher</a>.</em></p>
 
 <p><a name="wildcard.__toString"></a>
 <a name="wildcard.describe"></a></p>
@@ -8516,6 +8704,8 @@ can be used to determine event order.</em></p>
 </blockquote>
 
 <p>Describe this matcher.</p>
+
+<p><em>See <a href="#the-wildcard-matcher">The "wildcard" matcher</a>.</em></p>
 
 <h3>
 <a id="thrown-exceptions" class="anchor" href="#thrown-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thrown exceptions</h3>
@@ -8602,7 +8792,6 @@ have no public API methods.</p>
 
 </div>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/gumshoe/3.1.2/js/gumshoe.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/svg-injector/1.1.3/svg-injector.min.js"></script>
 <script src="../js/phony.js"></script>
