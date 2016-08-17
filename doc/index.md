@@ -2804,6 +2804,14 @@ $spy->callAt(9); // returns the tenth call
 
 These methods will throw an exception if no call is found.
 
+Similar methods also exist for [verification results]:
+
+```php
+$spy->called()->firstCall();
+$spy->called()->lastCall();
+$spy->called()->callAt(0);
+```
+
 ### Verifying spy input
 
 #### Verifying that a call was made
@@ -2840,16 +2848,13 @@ $spy->firstCall()->argument();  // first argument
 $spy->firstCall()->argument(1); // second argument
 ```
 
-The same methods can be used on any [verification result]:
+Calls can also be retrieved from any [verification result]:
 
 ```php
 $spy->called()->firstCall()->arguments(); // all arguments as an array
 $spy->called()->firstCall()->argument();  // first argument
 $spy->called()->firstCall()->argument(1); // second argument
 ```
-
-Note that this will return the arguments for the first call that matches the
-verification in use.
 
 Example output from [`calledWith()`](#spy.calledWith):
 
@@ -2877,6 +2882,19 @@ To verify a spy's return value, use [`returned()`](#spy.returned):
 ```php
 $spy->returned();    // returned anything
 $spy->returned('a'); // returned 'a'
+```
+
+Return values can be retrieved by calling [`returnValue()`](#call.returnValue)
+on an [individual call] recorded via the spy:
+
+```php
+$value = $spy->firstCall()->returnValue();
+```
+
+Calls can also be retrieved from any [verification result]:
+
+```php
+$value = $spy->called()->firstCall()->returnValue();
 ```
 
 Example output from [`returned()`](#spy.returned):
@@ -2946,6 +2964,19 @@ $spy->threw('RuntimeException');                       // threw a runtime except
 $spy->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
 
+Thrown exceptions can be retrieved by calling [`exception()`](#call.exception)
+on an [individual call] recorded via the spy:
+
+```php
+$exception = $spy->firstCall()->exception();
+```
+
+Calls can also be retrieved from any [verification result]:
+
+```php
+$exception = $spy->called()->firstCall()->exception();
+```
+
 Example output from [`threw()`](#spy.threw):
 
 ![Example output from $spy->threw()][spy-threw-image]
@@ -2971,6 +3002,28 @@ To ignore iterable events, and simply verify that a spy has returned a value
 
 ```php
 $spy->responded();
+```
+
+Responses can be retrieved by calling [`response()`](#call.response) on an
+[individual call] recorded via the spy:
+
+```php
+list($exception, $value) = $spy->firstCall()->response();
+```
+
+Generator responses can be retrieved by calling
+[`generatorResponse()`](#call.generatorResponse) on an [individual call]
+recorded via the spy:
+
+```php
+list($exception, $value) = $spy->firstCall()->generatorResponse();
+```
+
+Calls can also be retrieved from any [verification result]:
+
+```php
+list($exception, $value) = $spy->called()->firstCall()->response();
+list($exception, $value) = $spy->called()->firstCall()->generatorResponse();
 ```
 
 Example output from [`completed()`](#spy.completed):
@@ -3223,6 +3276,12 @@ $call->returned();    // returned anything
 $call->returned('a'); // returned 'a'
 ```
 
+Return values can be retrieved with [`returnValue()`](#call.returnValue):
+
+```php
+$value = $call->returnValue();
+```
+
 Example output from [`returned()`](#call.returned):
 
 ![Example output from $call->returned()][call-returned-image]
@@ -3290,6 +3349,12 @@ $call->threw('RuntimeException');                       // threw a runtime excep
 $call->threw(new RuntimeException('You done goofed.')); // threw a runtime exception with a specific message
 ```
 
+Thrown exceptions can be retrieved with [`exception()`](#call.exception):
+
+```php
+$exception = $call->exception();
+```
+
 Example output from [`threw()`](#call.threw):
 
 ![Example output from $call->threw()][call-threw-image]
@@ -3315,6 +3380,18 @@ To ignore iterable events, and simply verify that a call has returned a value
 
 ```php
 $call->responded();
+```
+
+Responses can be retrieved with [`exception()`](#call.exception):
+
+```php
+list($exception, $value) = $call->response();
+```
+
+Generator responses can be retrieved with [`exception()`](#call.exception):
+
+```php
+list($exception, $value) = $call->generatorResponse();
 ```
 
 Example output from [`completed()`](#call.completed):
@@ -4861,6 +4938,8 @@ Set the default export depth, and return the previous depth.
 
 *Negative depths are treated as infinite depth.*
 
+*See [Setting the export depth].*
+
 ### The mock handle API
 
 [Mock handles] implement the following methods:
@@ -5127,6 +5206,8 @@ Add classes, interfaces, or traits.
 
 *Each type value can be either a class name, or an [ad hoc mock] definition.*
 
+*See [Customizing the mock class].*
+
 <a name="builder.addMethod" />
 
 ----
@@ -5195,6 +5276,8 @@ Set the class name.
 
 Returns `true` if this builder is finalized.
 
+*See [Generating mock classes from a builder].*
+
 <a name="builder.finalize" />
 
 ----
@@ -5203,6 +5286,8 @@ Returns `true` if this builder is finalized.
 
 Finalize the mock builder.
 
+*See [Generating mock classes from a builder].*
+
 <a name="builder.isBuilt" />
 
 ----
@@ -5210,6 +5295,8 @@ Finalize the mock builder.
 > *bool* $builder->[**isBuilt**](#builder.isBuilt)()
 
 Returns `true` if the mock class has been built.
+
+*See [Generating mock classes from a builder].*
 
 <a name="builder.build" />
 
@@ -5902,6 +5989,8 @@ Start recording calls.
 
 Returns `true` if any calls were recorded.
 
+*See [Call verification].*
+
 <a name="spy.callCount" />
 
 ----
@@ -5910,6 +5999,8 @@ Returns `true` if any calls were recorded.
 
 Get the number of calls.
 
+*See [Call count].*
+
 <a name="spy.allCalls" />
 
 ----
@@ -5917,6 +6008,8 @@ Get the number of calls.
 > *array\<[call][call-api]>* $spy->[**allCalls**](#spy.allCalls)()
 
 Get all calls as an array.
+
+*See [Call verification].*
 
 <a name="spy.firstCall" />
 
@@ -5927,6 +6020,8 @@ Get all calls as an array.
 
 Get the first call.
 
+*See [Individual calls].*
+
 <a name="spy.lastCall" />
 
 ----
@@ -5935,6 +6030,8 @@ Get the first call.
 > throws [UndefinedCallException]
 
 Get the last call.
+
+*See [Individual calls].*
 
 <a name="spy.callAt" />
 
@@ -5948,6 +6045,8 @@ Get the call at `$index`.
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
 
+*See [Individual calls].*
+
 <a name="spy.hasEvents" />
 
 ----
@@ -5955,6 +6054,8 @@ the last element, and `-2` indicates the second last element.*
 > *bool* $spy->[**hasEvents**](#spy.hasEvents)()
 
 Returns `true` if any events were recorded.
+
+*See [Similar events in order verification].*
 
 <a name="spy.eventCount" />
 
@@ -5964,6 +6065,8 @@ Returns `true` if any events were recorded.
 
 Get the number of events.
 
+*See [Similar events in order verification].*
+
 <a name="spy.allEvents" />
 
 ----
@@ -5971,6 +6074,8 @@ Get the number of events.
 > *array\<[event][event-api]>* $spy->[**allEvents**](#spy.allEvents)()
 
 Get all events as an array.
+
+*See [Similar events in order verification].*
 
 <a name="spy.firstEvent" />
 
@@ -5981,6 +6086,8 @@ Get all events as an array.
 
 Get the first event.
 
+*See [Similar events in order verification].*
+
 <a name="spy.lastEvent" />
 
 ----
@@ -5989,6 +6096,8 @@ Get the first event.
 > throws [UndefinedEventException]
 
 Get the last event.
+
+*See [Similar events in order verification].*
 
 <a name="spy.eventAt" />
 
@@ -6001,6 +6110,8 @@ Get the event at `$index`.
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
+
+*See [Similar events in order verification].*
 
 <a name="spy.called" />
 
@@ -6427,6 +6538,9 @@ See also:
 
 Get the arguments.
 
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
+
 <a name="call.argument" />
 
 ----
@@ -6439,6 +6553,9 @@ Get an argument by index.
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
 
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
+
 <a name="call.argumentCount" />
 
 ----
@@ -6446,6 +6563,9 @@ the last element, and `-2` indicates the second last element.*
 > *int* $call->[**argumentCount**](#call.argumentCount)()
 
 Get the number of arguments.
+
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
 
 <a name="call.returnValue" />
 
@@ -6458,6 +6578,8 @@ Get the return value.
 
 *An [UndefinedResponseException] will be thrown if the call has not yet
 responded, or threw an exception.*
+
+*See [Verifying spy return values], [Verifying call return values].*
 
 <a name="call.generatorReturnValue" />
 
@@ -6472,6 +6594,8 @@ Get the generator return value.
 responded, did not respond by returning a generator, has not completed
 iteration, or if the generator ended by throwing an exception.*
 
+*See [Verifying generator return values].*
+
 <a name="call.exception" />
 
 ----
@@ -6483,6 +6607,8 @@ Get the thrown exception.
 
 *An [UndefinedResponseException] will be thrown if the call has not yet
 responded, or did not throw an exception.*
+
+*See [Verifying spy exceptions], [Verifying call exceptions].*
 
 <a name="call.generatorException" />
 
@@ -6496,6 +6622,8 @@ Get the exception thrown by the generator.
 *An [UndefinedResponseException] will be thrown if the call has not yet
 responded, did not respond by returning a generator, has not completed
 iteration, or if the generator ended by returning a value.*
+
+*See [Verifying generator exceptions].*
 
 <a name="call.response" />
 
@@ -6512,6 +6640,8 @@ or `null` if an exception was thrown.*
 
 *An [UndefinedResponseException] will be thrown if the call has not yet
 responded.*
+
+*See [Verifying spy progress], [Verifying call progress].*
 
 <a name="call.generatorResponse" />
 
@@ -6530,6 +6660,8 @@ or `null` if an exception was thrown.*
 responded, did not respond by returning a generator, or if the generator has not
 completed iteration.*
 
+*See [Verifying spy progress], [Verifying call progress].*
+
 <a name="call.hasResponded" />
 
 ----
@@ -6539,6 +6671,8 @@ completed iteration.*
 Returns true if this call has responded.
 
 *A call that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress], [Verifying call progress].*
 
 <a name="call.isIterable" />
 
@@ -6550,6 +6684,8 @@ Returns true if this call has responded with an iterable.
 
 *A call that has "responded" has returned a value, or thrown an exception.*
 
+*See [Verifying spy progress], [Verifying call progress].*
+
 <a name="call.isGenerator" />
 
 ----
@@ -6559,6 +6695,8 @@ Returns true if this call has responded with an iterable.
 Returns true if this call has responded with a generator.
 
 *A call that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress], [Verifying call progress].*
 
 <a name="call.hasCompleted" />
 
@@ -6576,6 +6714,8 @@ iteration.*
 will not be considered "complete" until the iterable has been completely
 consumed via iteration.*
 
+*See [Verifying spy progress], [Verifying call progress].*
+
 <a name="call.time" />
 
 ----
@@ -6583,6 +6723,8 @@ consumed via iteration.*
 > *float* $call->[**time**](#call.time)()
 
 Get the time at which the call occurred, in seconds since the Unix epoch.
+
+*See [Verifying spy progress], [Verifying call progress].*
 
 <a name="call.responseTime" />
 
@@ -6595,6 +6737,8 @@ Get the time at which the call responded, in seconds since the Unix epoch.
 *If the call has not yet responded, `null` will be returned.*
 
 *A call that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress], [Verifying call progress].*
 
 <a name="call.endTime" />
 
@@ -6614,6 +6758,8 @@ iteration.*
 will not be considered "complete" until the iterable has been completely
 consumed via iteration.*
 
+*See [Verifying spy progress], [Verifying call progress].*
+
 <a name="call.responseDuration" />
 
 ----
@@ -6625,6 +6771,8 @@ Get the call response duration, in seconds.
 *If the call has not yet responded, `null` will be returned.*
 
 *A call that has "responded" has returned a value, or thrown an exception.*
+
+*See [Verifying spy progress], [Verifying call progress].*
 
 <a name="call.duration" />
 
@@ -6643,6 +6791,8 @@ iteration.*
 *Similarly, when [iterable spies] are in use, a call that returns an iterable
 will not be considered "complete" until the iterable has been completely
 consumed via iteration.*
+
+*See [Verifying spy progress], [Verifying call progress].*
 
 <a name="call.index" />
 
@@ -7047,6 +7197,9 @@ Get the arguments as an array.
 
 *Arguments passed by reference will be references in the returned array.*
 
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
+
 <a name="arguments.count" />
 
 ----
@@ -7056,6 +7209,9 @@ Get the arguments as an array.
 
 Returns the total number of arguments.
 
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
+
 <a name="arguments.implements.Traversable" />
 
 ----
@@ -7064,6 +7220,9 @@ Returns the total number of arguments.
 
 Arguments implement the [Traversable] interface, allowing them to be used in a
 `foreach` statement.
+
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
 
 <a name="arguments.has" />
 
@@ -7076,6 +7235,9 @@ Returns `true` if an argument exists at `$index`.
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
 
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
+
 <a name="arguments.get" />
 
 ----
@@ -7087,6 +7249,9 @@ Get the argument at `$index`.
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
+
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
 
 <a name="arguments.set" />
 
@@ -7104,6 +7269,9 @@ Set an argument by index.
 *If called with two arguments, sets the argument at `$indexOrValue` to
 `$value`.*
 
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
+
 <a name="arguments.copy" />
 
 ----
@@ -7111,6 +7279,9 @@ Set an argument by index.
 > *[arguments][arguments-api]* $arguments->[**copy**](#arguments.copy)()
 
 Copy these arguments, breaking any references.
+
+*See [Verifying that a spy was called with specific arguments],
+[Verifying that a call was made with specific arguments].*
 
 ### The verification result API
 
@@ -7199,6 +7370,8 @@ See also:
 
 Returns `true` if this verification matched any calls.
 
+*See [Call verification].*
+
 <a name="verification.callCount" />
 
 ----
@@ -7207,6 +7380,8 @@ Returns `true` if this verification matched any calls.
 
 Get the number of calls.
 
+*See [Call count].*
+
 <a name="verification.allCalls" />
 
 ----
@@ -7214,6 +7389,8 @@ Get the number of calls.
 > *array\<[call][call-api]>* $verification->[**allCalls**](#verification.allCalls)()
 
 Get all calls as an array.
+
+*See [Call verification].*
 
 <a name="verification.firstCall" />
 
@@ -7224,6 +7401,8 @@ Get all calls as an array.
 
 Get the first call.
 
+*See [Individual calls].*
+
 <a name="verification.lastCall" />
 
 ----
@@ -7232,6 +7411,8 @@ Get the first call.
 > throws [UndefinedCallException]
 
 Get the last call.
+
+*See [Individual calls].*
 
 <a name="verification.callAt" />
 
@@ -7245,6 +7426,8 @@ Get the call at `$index`.
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
 
+*See [Individual calls].*
+
 <a name="verification.hasEvents" />
 
 ----
@@ -7252,6 +7435,8 @@ the last element, and `-2` indicates the second last element.*
 > *bool* $verification->[**hasEvents**](#verification.hasEvents)()
 
 Returns `true` if this verification matched any events.
+
+*See [Similar events in order verification].*
 
 <a name="verification.eventCount" />
 
@@ -7261,6 +7446,8 @@ Returns `true` if this verification matched any events.
 
 Get the number of events.
 
+*See [Similar events in order verification].*
+
 <a name="verification.allEvents" />
 
 ----
@@ -7268,6 +7455,8 @@ Get the number of events.
 > *array\<[event][event-api]>* $verification->[**allEvents**](#verification.allEvents)()
 
 Get all events as an array.
+
+*See [Similar events in order verification].*
 
 <a name="verification.firstEvent" />
 
@@ -7278,6 +7467,8 @@ Get all events as an array.
 
 Get the first event.
 
+*See [Similar events in order verification].*
+
 <a name="verification.lastEvent" />
 
 ----
@@ -7286,6 +7477,8 @@ Get the first event.
 > throws [UndefinedEventException]
 
 Get the last event.
+
+*See [Similar events in order verification].*
 
 <a name="verification.eventAt" />
 
@@ -7298,6 +7491,8 @@ Get the event at `$index`.
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
+
+*See [Similar events in order verification].*
 
 ### The iterable verification result API
 
@@ -7767,6 +7962,8 @@ See also:
 
 Returns `true` if `$value` matches this matcher's criteria.
 
+*See [Matchers].*
+
 <a name="matcher.__toString" />
 <a name="matcher.describe" />
 
@@ -7776,6 +7973,8 @@ Returns `true` if `$value` matches this matcher's criteria.
 > *string* $matcher->[**describe**](#matcher.describe)()
 
 Describe this matcher.
+
+*See [Matchers].*
 
 ### The wildcard matcher API
 
@@ -7799,6 +7998,8 @@ See also:
 
 Get the matcher to use for each argument.
 
+*See [The "wildcard" matcher].*
+
 <a name="wildcard.minimumArguments" />
 
 ----
@@ -7807,6 +8008,8 @@ Get the matcher to use for each argument.
 
 Get the minimum number of arguments to match.
 
+*See [The "wildcard" matcher].*
+
 <a name="wildcard.maximumArguments" />
 
 ----
@@ -7814,6 +8017,8 @@ Get the minimum number of arguments to match.
 > *int|null* $wildcard->[**maximumArguments**](#wildcard.maximumArguments)()
 
 Get the maximum number of arguments to match.
+
+*See [The "wildcard" matcher].*
 
 <a name="wildcard.__toString" />
 <a name="wildcard.describe" />
@@ -7824,6 +8029,8 @@ Get the maximum number of arguments to match.
 > *string* $wildcard->[**describe**](#wildcard.describe)()
 
 Describe this matcher.
+
+*See [The "wildcard" matcher].*
 
 ### Thrown exceptions
 
