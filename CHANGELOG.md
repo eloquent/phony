@@ -1,5 +1,14 @@
 # Phony changelog
 
+## 0.13.4 (2016-08-17)
+
+- **[IMPROVED]** Documentation improvements ([#186], [#188], [#189], [#190]).
+
+[#186]: https://github.com/eloquent/phony/issues/186
+[#188]: https://github.com/eloquent/phony/issues/188
+[#189]: https://github.com/eloquent/phony/issues/189
+[#190]: https://github.com/eloquent/phony/issues/190
+
 ## 0.13.3 (2016-08-07)
 
 - **[FIXED]** Verification results now return call verifiers instead of
