@@ -67,6 +67,39 @@ var run = function () {
     tocListElement.style.display = 'none';
     tocScrollElement.appendChild(tocListElementCopy);
 
+    tocScrollElement.addEventListener('wheel', function (event) {
+        var tocHeight = tocScrollElement.clientHeight;
+        var tocScrollHeight = tocScrollElement.scrollHeight;
+
+        if (tocScrollHeight <= tocHeight) {
+            return;
+        }
+
+        var scrollBottom = tocScrollHeight - tocHeight;
+        var newScrollTop = tocScrollElement.scrollTop + event.deltaY;
+        var shouldSuppress = false;
+
+        if (newScrollTop >= scrollBottom) {
+            newScrollTop = scrollBottom;
+            shouldSuppress = true;
+        } else if (newScrollTop < 1) {
+            newScrollTop = 0;
+            shouldSuppress = true;
+        }
+
+        if (shouldSuppress) {
+            tocScrollElement.scrollTop = newScrollTop;
+
+            event.stopPropagation();
+            event.preventDefault();
+            event.returnValue = false;
+
+            return false;
+        }
+
+        return true;
+    });
+
     var phonyLink = document.createElement('a');
     phonyLink.href = '#phony';
     phonyLink.appendChild(document.createTextNode('Phony'));
