@@ -39,6 +39,10 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
             ->isSupported('parameter.variadic');
         $this->isScalarTypeHintSupported = $featureDetector
             ->isSupported('parameter.hint.scalar');
+        $this->isCallableTypeHintSupported = $featureDetector
+            ->isSupported('type.callable');
+        $this->isIterableTypeHintSupported = $featureDetector
+            ->isSupported('type.iterable');
     }
 
     /**
@@ -76,7 +80,14 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
             } elseif (
                 '' !== $typehint &&
                 'array ' !== $typehint &&
-                'callable ' !== $typehint
+                (
+                    !$this->isCallableTypeHintSupported ||
+                    'callable ' !== $typehint
+                ) &&
+                (
+                    !$this->isIterableTypeHintSupported ||
+                    'iterable ' !== $typehint
+                )
             ) {
                 if (!$this->isScalarTypeHintSupported) {
                     $typehint = '\\' . $typehint; // @codeCoverageIgnore
@@ -135,4 +146,6 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
     private $isExportReferenceSupported;
     private $isVariadicParameterSupported;
     private $isScalarTypeHintSupported;
+    private $isCallableTypeHintSupported;
+    private $isIterableTypeHintSupported;
 }

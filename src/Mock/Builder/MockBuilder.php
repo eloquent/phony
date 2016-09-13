@@ -37,7 +37,7 @@ class MockBuilder
     /**
      * The regular expression used to validate symbol names.
      */
-    const SYMBOL_PATTERN = '[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*';
+    const SYMBOL_PATTERN = '[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*(?:\\\\[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)*';
 
     /**
      * Construct a new mock builder.

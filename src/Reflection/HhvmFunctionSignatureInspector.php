@@ -35,6 +35,8 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
 
         $this->isVariadicParameterSupported = $featureDetector
             ->isSupported('parameter.variadic');
+        $this->isIterableTypeHintSupported = $featureDetector
+            ->isSupported('type.iterable');
     }
 
     /**
@@ -58,6 +60,15 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
                         $typehint .= ' ';
 
                         break;
+
+                    case 'iterable':
+                        if ($this->isIterableTypeHintSupported) {
+                            $typehint .= ' ';
+
+                            break;
+                        }
+
+                        // fall through to default behavior
 
                     default:
                         $typehint = '\\' . $typehint . ' ';
@@ -105,4 +116,5 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
     }
 
     private $isVariadicParameterSupported;
+    private $isIterableTypeHintSupported;
 }

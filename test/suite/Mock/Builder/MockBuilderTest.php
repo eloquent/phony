@@ -495,6 +495,14 @@ class MockBuilderTest extends PHPUnit_Framework_TestCase
         $this->subject->named('1');
     }
 
+    public function testNamedFailureInvalidPostPhp71()
+    {
+        $this->setUpWith(array());
+
+        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidClassNameException');
+        $this->subject->named("abc\x7fdef");
+    }
+
     public function testNamedFailureFinalized()
     {
         $this->setUpWith(array());

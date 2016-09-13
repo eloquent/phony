@@ -1,5 +1,15 @@
 # Phony changelog
 
+## Next release
+
+- **[IMPROVED]** Support for PHP 7.1 `iterable` pseudo-type ([#195]).
+- **[IMPROVED]** Support for PHP 7.1 `void` pseudo-type ([#195]).
+- **[IMPROVED]** Support for PHP 7.1 nullable types ([#195]).
+- **[IMPROVED]** Disallow ASCII delete in symbol names, matching the change in
+  PHP 7.1 ([#195]).
+
+[#195]: https://github.com/eloquent/phony/issues/195
+
 ## 0.13.4 (2016-08-17)
 
 - **[IMPROVED]** Documentation improvements ([#186], [#188], [#189], [#190]).

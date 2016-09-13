@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionFunction;
@@ -27,6 +28,8 @@ class EmptyValueFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject = new EmptyValueFactory();
         $this->subject->setStubVerifierFactory(StubVerifierFactory::instance());
         $this->subject->setMockBuilderFactory(MockBuilderFactory::instance());
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     private function createType($type)
@@ -77,6 +80,34 @@ class EmptyValueFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Closure', $actual);
         $this->assertNull($actual());
+    }
+
+    public function testFromTypeWithIterable()
+    {
+        if (!$this->featureDetector->isSupported('type.iterable')) {
+            $this->markTestSkipped('Requires the iterable type.');
+        }
+
+        $this->assertSame(array(), $this->subject->fromType($this->createType('iterable')));
+    }
+
+    public function testFromTypeWithVoid()
+    {
+        if (!$this->featureDetector->isSupported('type.void')) {
+            $this->markTestSkipped('Requires the void type.');
+        }
+
+        $this->assertNull($this->subject->fromType($this->createType('void')));
+    }
+
+    public function testFromTypeWithNullable()
+    {
+        if (!$this->featureDetector->isSupported('type.nullable')) {
+            $this->markTestSkipped('Requires nullable types.');
+        }
+
+        $this->assertNull($this->subject->fromType($this->createType('?int')));
+        $this->assertNull($this->subject->fromType($this->createType('?stdClass')));
     }
 
     public function fromTypeWithIteratorTypeData()

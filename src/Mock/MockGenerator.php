@@ -60,6 +60,8 @@ class MockGenerator
             $this->featureDetector->isSupported('closure.bind');
         $this->isReturnTypeSupported =
             $this->featureDetector->isSupported('return.type');
+        $this->isNullableTypeSupported =
+            $this->featureDetector->isSupported('type.nullable');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
 
         $this->canMockPharDestruct =
@@ -273,6 +275,7 @@ EOD;
                 // @codeCoverageIgnoreStart
                 $typeString = $methodReflector->getReturnTypeText();
 
+                // TODO: review HHVM usage of ? prefix
                 if (0 === strpos($typeString, '?')) {
                     $typeString = '';
                 } else {
@@ -289,20 +292,39 @@ EOD;
                 $typeString = (string) $type;
             }
 
-            if ($typeString) {
-                if ($isBuiltin) {
-                    $source .= "\n    ) : " . $typeString . " {\n";
-                } else {
-                    $source .= "\n    ) : \\" . $typeString . " {\n";
-                }
+            if ($isBuiltin) {
+                $source .= "\n    ) : " . $typeString . " {\n";
+
+                // TODO: remove once PHP 7.1 is used for coverage
+                // @codeCoverageIgnoreStart
+            } elseif (
+                $this->isNullableTypeSupported &&
+                0 === strpos($typeString, '?')
+            ) {
+                $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
+                // @codeCoverageIgnoreEnd
             } else {
-                $source .= "\n    ) {\n";
+                $source .= "\n    ) : \\" . $typeString . " {\n";
             }
+
+            $isVoidReturn = $isBuiltin && 'void' === $typeString;
         } else {
             $source .= "\n    ) {\n";
+            $isVoidReturn = false;
         }
 
-        $source .= <<<'EOD'
+        // TODO: remove once PHP 7.1 is used for coverage
+        // @codeCoverageIgnoreStart
+        if ($isVoidReturn) {
+            $source .= <<<'EOD'
+        self::$_staticHandle->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+    }
+
+EOD;
+        } else {
+            // @codeCoverageIgnoreEnd
+            $source .= <<<'EOD'
         $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
@@ -310,6 +332,7 @@ EOD;
     }
 
 EOD;
+        }
 
         return $source;
     }
@@ -438,6 +461,56 @@ EOD;
                 }
             }
 
+            if (
+                $this->isReturnTypeSupported &&
+                $methodReflector->hasReturnType()
+            ) {
+                $type = $methodReflector->getReturnType();
+                $isBuiltin = $type->isBuiltin();
+
+                if ($this->isHhvm) {
+                    // @codeCoverageIgnoreStart
+                    $typeString = $methodReflector->getReturnTypeText();
+
+                    // TODO: review HHVM usage of ? prefix
+                    if (0 === strpos($typeString, '?')) {
+                        $typeString = '';
+                    } else {
+                        $genericPosition = strpos($typeString, '<');
+
+                        if (false !== $genericPosition) {
+                            $typeString =
+                                substr($typeString, 0, $genericPosition);
+                        }
+                    }
+
+                    $isBuiltin =
+                        $isBuiltin && false === strpos($typeString, '\\');
+                    // @codeCoverageIgnoreEnd
+                } else {
+                    $typeString = (string) $type;
+                }
+
+                if ($isBuiltin) {
+                    $returnType = ' : ' . $typeString;
+                    // TODO: remove once PHP 7.1 is used for coverage
+                    // @codeCoverageIgnoreStart
+                } elseif (
+                    $this->isNullableTypeSupported &&
+                    0 === strpos($typeString, '?')
+                ) {
+                    $returnType = ' : ?\\' . substr($typeString, 1);
+                    // @codeCoverageIgnoreEnd
+                } else {
+                    $returnType = ' : \\' . $typeString;
+                }
+
+                $isVoidReturn = $isBuiltin && 'void' === $typeString;
+            } else {
+                $returnType = '';
+                $isVoidReturn = false;
+            }
+
             $isStatic = $method->isStatic() ? 'static ' : '';
 
             if ($isStatic) {
@@ -464,29 +537,50 @@ EOD;
             $body .=
                 "        }\n\n        if (!${handle}) {\n";
 
+            // TODO: remove once PHP 7.1 is used for coverage
+            // @codeCoverageIgnoreStart
+            if ($isVoidReturn) {
+                $resultAssign = '';
+            } else {
+                // @codeCoverageIgnoreEnd
+                $resultAssign = '$result = ';
+            }
+
             if ($isStatic) {
                 $body .=  <<<EOD
-            \$result = \call_user_func_array(
+            $resultAssign\call_user_func_array(
                 array(__CLASS__, 'parent::' . $nameExported),
                 \$arguments
             );
 EOD;
             } else {
                 $body .=  <<<EOD
-            \$result = \call_user_func_array(
+            $resultAssign\call_user_func_array(
                 array(\$this, 'parent::' . $nameExported),
                 \$arguments
             );
 EOD;
             }
 
-            $body .=
-                "\n\n            return \$result;\n        }\n\n" .
-                "        \$result = ${handle}->spy" .
-                "(__FUNCTION__)->invokeWith(\n" .
-                '            new \Eloquent\Phony\Call\Arguments' .
-                "(\$arguments)\n        );\n\n" .
-                '        return $result;';
+            // TODO: remove once PHP 7.1 is used for coverage
+            // @codeCoverageIgnoreStart
+            if ($isVoidReturn) {
+                $body .=
+                    "\n\n            return;\n        }\n\n" .
+                    "        ${handle}->spy" .
+                    "(__FUNCTION__)->invokeWith(\n" .
+                    '            new \Eloquent\Phony\Call\Arguments' .
+                    "(\$arguments)\n        );";
+            } else {
+                // @codeCoverageIgnoreEnd
+                $body .=
+                    "\n\n            return \$result;\n        }\n\n" .
+                    "        \$result = ${handle}->spy" .
+                    "(__FUNCTION__)->invokeWith(\n" .
+                    '            new \Eloquent\Phony\Call\Arguments' .
+                    "(\$arguments)\n        );\n\n" .
+                    '        return $result;';
+            }
 
             $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
@@ -497,48 +591,6 @@ EOD;
                 'function ' .
                 $returnsReference .
                 $name;
-
-            if (
-                $this->isReturnTypeSupported &&
-                $methodReflector->hasReturnType()
-            ) {
-                $type = $methodReflector->getReturnType();
-                $isBuiltin = $type->isBuiltin();
-
-                if ($this->isHhvm) {
-                    // @codeCoverageIgnoreStart
-                    $typeString = $methodReflector->getReturnTypeText();
-
-                    if (0 === strpos($typeString, '?')) {
-                        $typeString = '';
-                    } else {
-                        $genericPosition = strpos($typeString, '<');
-
-                        if (false !== $genericPosition) {
-                            $typeString =
-                                substr($typeString, 0, $genericPosition);
-                        }
-                    }
-
-                    $isBuiltin =
-                        $isBuiltin && false === strpos($typeString, '\\');
-                    // @codeCoverageIgnoreEnd
-                } else {
-                    $typeString = (string) $type;
-                }
-
-                if ($typeString) {
-                    if ($isBuiltin) {
-                        $returnType = ' : ' . $typeString;
-                    } else {
-                        $returnType = ' : \\' . $typeString;
-                    }
-                } else {
-                    $returnType = '';
-                }
-            } else {
-                $returnType = '';
-            }
 
             if (empty($signature)) {
                 $source .= '()' . $returnType . "\n    {\n";
@@ -615,6 +667,7 @@ EOD;
                 // @codeCoverageIgnoreStart
                 $typeString = $methodReflector->getReturnTypeText();
 
+                // TODO: review HHVM usage of ? prefix
                 if (0 === strpos($typeString, '?')) {
                     $typeString = '';
                 } else {
@@ -631,20 +684,39 @@ EOD;
                 $typeString = (string) $type;
             }
 
-            if ($typeString) {
-                if ($isBuiltin) {
-                    $source .= "\n    ) : " . $typeString . " {\n";
-                } else {
-                    $source .= "\n    ) : \\" . $typeString . " {\n";
-                }
+            if ($isBuiltin) {
+                $source .= "\n    ) : " . $typeString . " {\n";
+
+                // TODO: remove once PHP 7.1 is used for coverage
+                // @codeCoverageIgnoreStart
+            } elseif (
+                $this->isNullableTypeSupported &&
+                0 === strpos($typeString, '?')
+            ) {
+                $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
+                // @codeCoverageIgnoreEnd
             } else {
-                $source .= "\n    ) {\n";
+                $source .= "\n    ) : \\" . $typeString . " {\n";
             }
+
+            $isVoidReturn = $isBuiltin && 'void' === $typeString;
         } else {
             $source .= "\n    ) {\n";
+            $isVoidReturn = false;
         }
 
-        $source .= <<<'EOD'
+        // TODO: remove once PHP 7.1 is used for coverage
+        // @codeCoverageIgnoreStart
+        if ($isVoidReturn) {
+            $source .= <<<'EOD'
+        $this->_handle->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+    }
+
+EOD;
+        } else {
+            // @codeCoverageIgnoreEnd
+            $source .= <<<'EOD'
         $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
@@ -652,6 +724,7 @@ EOD;
     }
 
 EOD;
+        }
 
         return $source;
     }
@@ -967,6 +1040,7 @@ EOD;
     private $featureDetector;
     private $isClosureBindingSupported;
     private $isReturnTypeSupported;
+    private $isNullableTypeSupported;
     private $canMockPharDestruct;
     private $isHhvm;
 }

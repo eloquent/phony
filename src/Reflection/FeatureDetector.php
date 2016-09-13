@@ -16,6 +16,7 @@ use Exception;
 use ParseError;
 use ParseException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 use Throwable;
@@ -325,11 +326,6 @@ class FeatureDetector
                 );
             },
 
-            'parameter.type.callable' => function ($detector) {
-                return $detector
-                    ->checkInternalMethod('ReflectionParameter', 'isCallable');
-            },
-
             'parameter.type.self.override' => function ($detector) {
                 if ($detector->isSupported('runtime.hhvm')) {
                     return true; // @codeCoverageIgnore
@@ -366,6 +362,12 @@ class FeatureDetector
                     ->checkInternalMethod('ReflectionParameter', 'getType');
             },
 
+            'parser.relaxed-keywords' => function ($detector) {
+                // syntax causes fatal on PHP < 7.0 and HHVM
+                return $detector->isSupported('runtime.php') &&
+                    !version_compare(PHP_VERSION, '7.x', '<');
+            },
+
             'return.type' => function ($detector) {
                 return $detector->checkInternalMethod(
                     'ReflectionFunctionAbstract',
@@ -394,12 +396,6 @@ class FeatureDetector
                 return 'php' === $detector->runtime();
             },
 
-            'parser.relaxed-keywords' => function ($detector) {
-                // syntax causes fatal on PHP < 7.0 and HHVM
-                return $detector->isSupported('runtime.php') &&
-                    !version_compare(PHP_VERSION, '7.x', '<');
-            },
-
             'stdout.ansi' => function () {
                 // @codeCoverageIgnoreStart
                 if (DIRECTORY_SEPARATOR === '\\') {
@@ -423,6 +419,48 @@ class FeatureDetector
             'trait' => function ($detector) {
                 return $detector
                     ->checkInternalMethod('ReflectionClass', 'isTrait');
+            },
+
+            'type.callable' => function ($detector) {
+                return $detector
+                    ->checkInternalMethod('ReflectionParameter', 'isCallable');
+            },
+
+            'type.iterable' => function () {
+                try {
+                    $function =
+                        new ReflectionFunction(function (iterable $a) {});
+                    $parameters = $function->getParameters();
+                    $result = null === $parameters[0]->getClass();
+                } catch (ReflectionException $e) {
+                    $result = false;
+                }
+
+                return $result;
+            },
+
+            'type.nullable' => function ($detector) {
+                return $detector->checkStatement(
+                    sprintf(
+                        'function(?int $a){}',
+                        $detector->uniqueSymbolName()
+                    ),
+                    false
+                );
+            },
+
+            'type.void' => function ($detector) {
+                // @codeCoverageIgnoreStart
+                if (!$detector->isSupported('return.type')) {
+                    return false;
+                }
+                // @codeCoverageIgnoreEnd
+
+                return $detector->checkStatement(
+                    '$r=new ReflectionFunction(function():void{});' .
+                        'return $r->getReturnType()->isBuiltin();',
+                    false
+                );
             },
         );
     }

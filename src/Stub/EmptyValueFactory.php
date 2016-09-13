@@ -88,6 +88,7 @@ class EmptyValueFactory
                 return '';
 
             case 'array':
+            case 'iterable':
                 return array();
 
             case 'stdclass':
@@ -104,6 +105,7 @@ class EmptyValueFactory
 
                 return $fn();
 
+            case 'void':
             case 'hh\mixed':
                 return null;
         }

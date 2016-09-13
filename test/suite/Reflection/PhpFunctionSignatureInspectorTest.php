@@ -112,7 +112,7 @@ class PhpFunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
 
     public function testSignatureWithCallableTypeHint()
     {
-        if (!$this->featureDetector->isSupported('parameter.type.callable')) {
+        if (!$this->featureDetector->isSupported('type.callable')) {
             $this->markTestSkipped('Requires callable type hint support.');
         }
 
