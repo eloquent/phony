@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.13.5 (2016-09-20)
 
 - **[IMPROVED]** Support for PHP 7.1 `iterable` pseudo-type ([#195]).
 - **[IMPROVED]** Support for PHP 7.1 `void` pseudo-type ([#195]).
