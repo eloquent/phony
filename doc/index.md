@@ -542,8 +542,8 @@ $handle = partialMock(
     ]
 );
 
+$handle->count->returns(111);
 $mock = $handle->get();
-$mock->count->returns(111);
 
 echo $mock();      // outputs 'You called me?'
 echo $mock;        // outputs 'Are you stringing me along?'
