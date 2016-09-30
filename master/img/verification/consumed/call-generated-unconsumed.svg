@@ -76,10 +76,10 @@
             }
         </style>
     </defs>
-    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">{stub}[label]</tspan> call #1 to behave like:</text>
+    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">stub#0[label]</tspan> call #1 to behave like:</text>
     <text x="16" y="44" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator, then:</text>
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Finished iterating</text>
-    <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - {stub}[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator, then:</text>
+    <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
+    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#1{}, then:</text>
     <text x="16" y="108" xml:space="preserve">        <tspan class="red">✗</tspan> Never started iterating</text>
 </svg>

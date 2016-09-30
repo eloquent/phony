@@ -76,16 +76,16 @@
             }
         </style>
     </defs>
-    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">{stub}[label]</tspan> generator calls to behave like:</text>
+    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">stub#0[label]</tspan> generator calls to behave like:</text>
     <text x="16" y="44" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator, then: <tspan class="faint red">(2 matches)</tspan></text>
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Returned &quot;AARDVARK&quot;</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">Exactly 3 required. Matched 2 of 2:</tspan></text>
-    <text x="16" y="92" xml:space="preserve"><tspan class="green">✓</tspan> Call #0 - {stub}[label](&quot;aardvark&quot;):</text>
-    <text x="16" y="108" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator, then:</text>
+    <text x="16" y="92" xml:space="preserve"><tspan class="green">✓</tspan> Call #0 - stub#0[label](&quot;aardvark&quot;):</text>
+    <text x="16" y="108" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator#1{}, then:</text>
     <text x="16" y="124" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="140" xml:space="preserve">        <tspan class="green">✓</tspan> Returned &quot;AARDVARK&quot;</text>
-    <text x="16" y="156" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - {stub}[label](&quot;aardvark&quot;):</text>
-    <text x="16" y="172" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator, then:</text>
+    <text x="16" y="156" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - stub#0[label](&quot;aardvark&quot;):</text>
+    <text x="16" y="172" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator#2{}, then:</text>
     <text x="16" y="188" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="204" xml:space="preserve">        <tspan class="green">✓</tspan> Returned &quot;AARDVARK&quot;</text>
 </svg>

@@ -349,12 +349,15 @@
 <li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
 <li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
 <li><a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a></li>
+<li><a href="#iterable-spy-substitution">Iterable spy substitution</a></li>
 <li>
 <a href="#iterable-verification-caveats">Iterable verification caveats</a>
 
 <ul>
+<li><a href="#using-iterable-spies-changes-the-return-value">Using iterable spies changes the return value</a></li>
 <li><a href="#repeated-iteration-of-iterable-spies">Repeated iteration of iterable spies</a></li>
 <li><a href="#spying-on-iterables-that-implement-array-like-interfaces">Spying on iterables that implement array-like interfaces</a></li>
+<li><a href="#nested-iterable-spies">Nested iterable spies</a></li>
 </ul>
 </li>
 </ul>
@@ -436,14 +439,25 @@
 <a href="#the-export-format">The export format</a>
 
 <ul>
-<li><a href="#export-identifiers-and-references">Export identifiers and references</a></li>
+<li>
+<a href="#export-identifiers-and-references">Export identifiers and references</a>
+
+<ul>
+<li><a href="#export-reference-types">Export reference types</a></li>
+<li><a href="#export-reference-exclusions">Export reference exclusions</a></li>
+<li><a href="#export-identifier-persistence">Export identifier persistence</a></li>
+</ul>
+</li>
 <li><a href="#exporting-recursive-values">Exporting recursive values</a></li>
 <li>
 <a href="#exporter-special-cases">Exporter special cases</a>
 
 <ul>
+<li><a href="#exporting-closures">Exporting closures</a></li>
 <li><a href="#exporting-exceptions">Exporting exceptions</a></li>
 <li><a href="#exporting-mocks">Exporting mocks</a></li>
+<li><a href="#exporting-stubs">Exporting stubs</a></li>
+<li><a href="#exporting-spies">Exporting spies</a></li>
 </ul>
 </li>
 </ul>
@@ -1074,8 +1088,8 @@ to use of the mock itself:</p>
 <span class="pl-s1"><span class="pl-smi">$result</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>Result<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
-<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>select(<span class="pl-smi">$query</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span>
-<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>select(<span class="pl-smi">$query</span><span class="pl-k">-&gt;</span>get())<span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>with(<span class="pl-smi">$query</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>with(<span class="pl-smi">$query</span><span class="pl-k">-&gt;</span>get())<span class="pl-k">-&gt;</span>returns(<span class="pl-smi">$result</span>);</span></pre></div>
 
 <p>The same is true when <a href="#verifying-that-a-spy-was-called-with-specific-arguments">verifying that a spy was called with specific arguments</a>:</p>
 
@@ -1086,7 +1100,7 @@ to use of the mock itself:</p>
 <span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$query</span>);</span>
 <span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$query</span><span class="pl-k">-&gt;</span>get());</span></pre></div>
 
-<p>There are other edge-case situations where <em>Phony</em> will exhibit this behaviour.
+<p>There are other edge-case situations where <em>Phony</em> will exhibit this behavior.
 Refer to the <a href="#api">API</a> documentation for more detailed information.</p>
 
 <h3>
@@ -3665,12 +3679,15 @@ assertion failure will be recorded with the <a href="#integration-with-test-fram
 <li><a href="#verifying-generator-return-values">Verifying generator return values</a></li>
 <li><a href="#verifying-generator-exceptions">Verifying generator exceptions</a></li>
 <li><a href="#verifying-cardinality-with-generators-and-iterables">Verifying cardinality with generators and iterables</a></li>
+<li><a href="#iterable-spy-substitution">Iterable spy substitution</a></li>
 <li>
 <a href="#iterable-verification-caveats">Iterable verification caveats</a>
 
 <ul>
+<li><a href="#using-iterable-spies-changes-the-return-value">Using iterable spies changes the return value</a></li>
 <li><a href="#repeated-iteration-of-iterable-spies">Repeated iteration of iterable spies</a></li>
 <li><a href="#spying-on-iterables-that-implement-array-like-interfaces">Spying on iterables that implement array-like interfaces</a></li>
+<li><a href="#nested-iterable-spies">Nested iterable spies</a></li>
 </ul>
 </li>
 </ul>
@@ -3735,6 +3752,8 @@ not yet have first-class support in <em>Phony</em>:</p>
 
 <h3>
 <a id="understanding-verification-output" class="anchor" href="#understanding-verification-output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Understanding verification output</h3>
+
+<p>See also: <a href="#the-export-format">The export format</a>.</p>
 
 <p>Typical verification output looks something like the following example. Hovering
 over a section of the example will provide an explanation of that part of the
@@ -3959,7 +3978,71 @@ to the subset of calls that already satisfied the initial verification:</p>
 for a full list or cardinality modifiers.</p>
 
 <h4>
+<a id="iterable-spy-substitution" class="anchor" href="#iterable-spy-substitution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Iterable spy substitution</h4>
+
+<p>Phony will sometimes accept an iterable spy, or generator spy, as equivalent to
+the iterable value it is spying on. This simplifies some stubbing and
+verification scenarios.</p>
+
+<p>When stubbing, iterable spies and generator spies are substituted when
+<a href="#matching-stub-arguments">matching stub arguments</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubA</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>setUseIterableSpies(<span class="pl-c1">true</span>)<span class="pl-k">-&gt;</span>returnsArgument();</span>
+<span class="pl-s1"><span class="pl-smi">$iterable</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$iterableSpy</span> <span class="pl-k">=</span> $<span class="pl-smi">stubA</span>(<span class="pl-smi">$iterable</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stubB</span> <span class="pl-k">=</span> stub();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
+<span class="pl-s1"><span class="pl-smi">$stubB</span><span class="pl-k">-&gt;</span>with(<span class="pl-smi">$iterable</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$stubB</span><span class="pl-k">-&gt;</span>with(<span class="pl-smi">$iterableSpy</span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>);</span></pre></div>
+
+<p>The same is true when <a href="#verifying-that-a-spy-was-called-with-specific-arguments">verifying that a spy was called with specific arguments</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stubA</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>setUseIterableSpies(<span class="pl-c1">true</span>)<span class="pl-k">-&gt;</span>returnsArgument();</span>
+<span class="pl-s1"><span class="pl-smi">$iterable</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$iterableSpy</span> <span class="pl-k">=</span> $<span class="pl-smi">stubA</span>(<span class="pl-smi">$iterable</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stubB</span> <span class="pl-k">=</span> stub();</span>
+<span class="pl-s1">$<span class="pl-smi">stubB</span>(<span class="pl-smi">$iterableSpy</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
+<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$iterable</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$database</span><span class="pl-k">-&gt;</span><span class="pl-smi">select</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$iterableSpy</span>);</span></pre></div>
+
+<p>And also when <a href="#verifying-spy-return-values">verifying spy return values</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>setUseIterableSpies(<span class="pl-c1">true</span>)<span class="pl-k">-&gt;</span>returnsArgument();</span>
+<span class="pl-s1"><span class="pl-smi">$iterable</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$iterableSpy</span> <span class="pl-k">=</span> $<span class="pl-smi">stub</span>(<span class="pl-smi">$iterable</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// these two statements are equivalent</span></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>returned(<span class="pl-smi">$iterable</span>);    <span class="pl-c">// passes</span></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span><span class="pl-k">-&gt;</span>returned(<span class="pl-smi">$iterableSpy</span>); <span class="pl-c">// passes</span></span></pre></div>
+
+<p>There are other edge-case situations where <em>Phony</em> will exhibit this behavior.
+Refer to the <a href="#api">API</a> documentation for more detailed information.</p>
+
+<h4>
 <a id="iterable-verification-caveats" class="anchor" href="#iterable-verification-caveats" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Iterable verification caveats</h4>
+
+<h5>
+<a id="using-iterable-spies-changes-the-return-value" class="anchor" href="#using-iterable-spies-changes-the-return-value" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using iterable spies changes the return value</h5>
+
+<p>When generator spies are enabled, the return value of spied functions that
+produce generators will automatically be wrapped in another generator that spies
+on the original. This is usually not a problem, because it is impossible to
+distinguish the two generators aside from an identity comparison (<code>===</code>).</p>
+
+<p>If the system under test relies upon the identity of returned generators, it may
+be advisable to disable generator spies using
+<a href="#spy.setUseGeneratorSpies"><code>$spy-&gt;setUseGeneratorSpies(false)</code></a>.</p>
+
+<p>Similarly, when iterable spies are enabled, the return value of functions that
+produce iterable values will automatically be wrapped in an iterator that spies
+on the original value. This can be more problematic than with generator spies,
+because it changes the <em>type</em> of the return value. That is why iterable spies
+are disabled by default.</p>
 
 <h5>
 <a id="repeated-iteration-of-iterable-spies" class="anchor" href="#repeated-iteration-of-iterable-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Repeated iteration of iterable spies</h5>
@@ -3983,6 +4066,45 @@ incompatible with code that checks for these interfaces at run time.</p>
 these interfaces are <em>not</em> implemented, then the behavior of calls to
 <a href="http://php.net/arrayaccess">ArrayAccess</a> and/or <a href="http://php.net/countable">Countable</a> is undefined, but will most likely result in an
 error.</p>
+
+<h5>
+<a id="nested-iterable-spies" class="anchor" href="#nested-iterable-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Nested iterable spies</h5>
+
+<p>It is possible for an iterable value to become nested in multiple iterable
+spies. Consider the following:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy(</span>
+<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-c1">Traversable</span> <span class="pl-smi">$traversable</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$traversable</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span>
+<span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>setUseIterableSpies(<span class="pl-c1">true</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$traversable</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ArrayIterator</span>(<span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1"><span class="pl-smi">$iterableSpy</span> <span class="pl-k">=</span> $<span class="pl-smi">spy</span>(<span class="pl-smi">$traversable</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$nestedIterableSpy</span> <span class="pl-k">=</span> $<span class="pl-smi">spy</span>(<span class="pl-smi">$iterableSpy</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// note that $traversable !== $iterableSpy !== $nestedIterableSpy</span></span>
+<span class="pl-s1"><span class="pl-c">// in other words, they are all different iterator instances</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">iterator_to_array</span>(<span class="pl-smi">$nestedIterableSpy</span>); <span class="pl-c">// consume the outer-most traversable</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$firstCall</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>callAt(<span class="pl-c1">0</span>);          <span class="pl-c">// the call that returned $iterableSpy</span></span>
+<span class="pl-s1"><span class="pl-smi">$firstCall</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// passes</span></span>
+<span class="pl-s1"><span class="pl-smi">$firstCall</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// passes</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$secondCall</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>callAt(<span class="pl-c1">1</span>);          <span class="pl-c">// the call that returned $nestedIterableSpy</span></span>
+<span class="pl-s1"><span class="pl-smi">$secondCall</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c">// passes</span></span>
+<span class="pl-s1"><span class="pl-smi">$secondCall</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c">// passes</span></span></pre></div>
+
+<p>This example demonstrates that even when iterable spies are nested, in most
+cases this is desirable, because it means that the iterable events are recorded
+against <em>both</em> of the relevant calls.</p>
+
+<p>Note that this nesting behavior can lead to some confusing results when an
+iterable is partially traversed before being wrapped in another iterable spy.
+Behavior in these circumstances is up to the PHP runtime, but generally
+speaking, it "just works".</p>
 
 <h3>
 <a id="order-verification" class="anchor" href="#order-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Order verification</h3>
@@ -4218,7 +4340,7 @@ of other types of events:</p>
 
 <p>Passing <code>true</code> turns color on, passing <code>false</code> turns color off, and passing
 <code>null</code> will cause <em>Phony</em> to automatically detect whether color should be used
-(this is the default behaviour).</p>
+(this is the default behavior).</p>
 
 <h2>
 <a id="matchers" class="anchor" href="#matchers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Matchers</h2>
@@ -4570,7 +4692,7 @@ any PHP value, including recursive objects and arrays:</p>
 </tr>
 <tr>
 <td><code>['a' =&gt; 1, 'b' =&gt; 2]</code></td>
-<td><code>'#0[a: 1, b: 2]'</code></td>
+<td><code>'#0["a": 1, "b": 2]</code></td>
 </tr>
 <tr>
 <td><code>(object) ['a' =&gt; 1, 'b' =&gt; 2]</code></td>
@@ -4586,25 +4708,52 @@ any PHP value, including recursive objects and arrays:</p>
 <h4>
 <a id="export-identifiers-and-references" class="anchor" href="#export-identifiers-and-references" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export identifiers and references</h4>
 
-<p>Exported arrays and objects include a numeric identifier that can be used to
-identify re-use of the same value in nested structures. When a value appears
-multiple times, its internal structure will only be described the first time.
-Subsequent appearances will be indicated by a reference to the value's
-identifier:</p>
+<p>Exported arrays, objects, and "wrapper" types (such as <a href="#mock-handles">mock handles</a>) include a
+numeric identifier that can be used to identify repeated occurrences of the same
+value. This is represented as a number sign (<code>#</code>) followed by the identifier:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) <span class="pl-c1">array</span>();</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0{}'</span></span></pre></div>
+
+<p>When a value appears multiple times, its internal structure will only be
+described the first time. Subsequent appearances will be indicated by a
+reference to the value's identifier. This is represented as an ampersand (<code>&amp;</code>)
+followed by the identifier:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$inner</span> <span class="pl-k">=</span> [<span class="pl-c1">1</span>, <span class="pl-c1">2</span>];</span>
-<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$inner</span>, <span class="pl-smi">$inner</span>];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1[1, 2], #1[]]'</span></span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$inner</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$inner</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1[1, 2], &amp;1[]]'</span></span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$inner</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">1</span>];</span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$inner</span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$inner</span>];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0{b: #1{a: 1}, c: #1{}}'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0{b: #1{a: 1}, c: &amp;1{}}'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$inner</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>mock-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$inner</span>, <span class="pl-smi">$inner</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[handle#1(PhonyMock_ClassA_0#0{}[mock-label]), &amp;1()]'</span></span></pre></div>
 
-<p>Array references appear followed by brackets (e.g. <code>#0[]</code>), and object
-references appear followed by braces (e.g. <code>#0{}</code>). This is because the
-identifier sequences used for arrays and objects are independent, meaning that
-identical array identifiers and object identifiers can co-exist in the same
-exporter output:</p>
+<h5>
+<a id="export-reference-types" class="anchor" href="#export-reference-types" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export reference types</h5>
+
+<p>Array references appear followed by brackets (e.g. <code>&amp;0[]</code>), object references
+appear followed by braces (e.g. <code>&amp;0{}</code>), and wrapper references appear followed
+by parentheses (e.g. <code>&amp;0()</code>):</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$array</span> <span class="pl-k">=</span> [];</span>
+<span class="pl-s1"><span class="pl-smi">$object</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [];</span>
+<span class="pl-s1"><span class="pl-smi">$wrapper</span> <span class="pl-k">=</span> spy(<span class="pl-s"><span class="pl-pds">'</span>implode<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>spy-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$array</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$array</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1[], &amp;1[]]'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$object</span>, <span class="pl-smi">$object</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0{}, &amp;0{}]'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$wrapper</span>, <span class="pl-smi">$wrapper</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[spy#1(implode)[spy-label], &amp;1()]'</span></span></pre></div>
+
+<p>This is necessary in order to disambiguate references, because arrays and other
+types can sometimes have the same identifier:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [</span>
 <span class="pl-s1">    (<span class="pl-k">object</span>) [],</span>
@@ -4614,22 +4763,36 @@ exporter output:</p>
 <span class="pl-s1">];</span>
 <span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0{}, #1[#1{}]]'</span></span></pre></div>
 
-<p>Object references also exclude the class name for brevity:</p>
+<h5>
+<a id="export-reference-exclusions" class="anchor" href="#export-reference-exclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export reference exclusions</h5>
+
+<p>As well as excluding the content, object references exclude the class name, and
+wrapper references exclude the type, for brevity:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$inner</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ClassA</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$inner</span><span class="pl-k">-&gt;</span><span class="pl-smi">c</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>d<span class="pl-pds">"</span></span>;</span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$inner</span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$inner</span>];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0{a: ClassA#1{}, b: #1{}}'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0{a: ClassA#1{c: "d"}, b: &amp;1{}}'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$inner</span> <span class="pl-k">=</span> mock();</span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$inner</span>, <span class="pl-smi">$inner</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[handle#0(PhonyMock_0#1{}[0]), &amp;0()]'</span></span></pre></div>
 
-<p>Identifiers for objects are persistent across invocations of the exporter:</p>
+<h5>
+<a id="export-identifier-persistence" class="anchor" href="#export-identifier-persistence" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export identifier persistence</h5>
+
+<p>Identifiers for objects and wrappers are persistent across invocations of the
+exporter, and share a single sequence of numbers:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$a</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [];</span>
 <span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [];</span>
+<span class="pl-s1"><span class="pl-smi">$c</span> <span class="pl-k">=</span> mock();</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$a</span>];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0{}, #1{}, #0{}]'</span></span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$c</span>, <span class="pl-smi">$a</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &amp;0{}]'</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$b</span>, <span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1{}, #0{}, #1{}]'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$b</span>, <span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$c</span>];</span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1{}, #0{}, &amp;1{}, handle#2(PhonyMock_0#3{}[0])]'</span></span></pre></div>
 
 <p>But due to PHP's limitations, array identifiers are only persistent within a
 single exporter invocation:</p>
@@ -4637,9 +4800,9 @@ single exporter invocation:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$a</span> <span class="pl-k">=</span> [];</span>
 <span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> [];</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$valueA</span> <span class="pl-k">=</span> [<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$a</span>];</span>
-<span class="pl-s1"><span class="pl-smi">$valueB</span> <span class="pl-k">=</span> [<span class="pl-smi">$b</span>, <span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>];</span>
-<span class="pl-s1"><span class="pl-c">// both $valueA and $valueB are exported as '#0[#1[], #2[], #1[]]'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$valueA</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$a</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$b</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$a</span>];</span>
+<span class="pl-s1"><span class="pl-smi">$valueB</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$b</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$a</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$b</span>];</span>
+<span class="pl-s1"><span class="pl-c">// both $valueA and $valueB are exported as '#0[#1[], #2[], &amp;1[]]'</span></span></pre></div>
 
 <h4>
 <a id="exporting-recursive-values" class="anchor" href="#exporting-recursive-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting recursive values</h4>
@@ -4650,11 +4813,11 @@ handled:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [];</span>
 <span class="pl-s1"><span class="pl-smi">$value</span>[] <span class="pl-k">=</span> <span class="pl-k">&amp;</span><span class="pl-smi">$value</span>;</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0[]]'</span></span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[&amp;0[]]'</span></span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [];</span>
 <span class="pl-s1"><span class="pl-smi">$value</span><span class="pl-k">-&gt;</span><span class="pl-smi">a</span> <span class="pl-k">=</span> <span class="pl-smi">$value</span>;</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0{"a": #0{}}'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0{a: &amp;0{}}'</span></span></pre></div>
 
 <h4>
 <a id="exporter-special-cases" class="anchor" href="#exporter-special-cases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporter special cases</h4>
@@ -4664,39 +4827,115 @@ order to improve the usefulness of its output, or to improve performance in
 common use cases.</p>
 
 <h5>
+<a id="exporting-closures" class="anchor" href="#exporting-closures" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting closures</h5>
+
+<p>When a closure is exported, the file path and start line number are included in
+the output:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$closure</span> <span class="pl-k">=</span> <span class="pl-k">function</span> () {}; <span class="pl-c">// file path is /path/to/example.php, line number is 123</span></span>
+<span class="pl-s1"><span class="pl-c">// $closure is exported as 'Closure#0{}[example.php:123]'</span></span></pre></div>
+
+<p>Only the basename of the path is included, for brevity. Also note that the class
+name will always be exported as <code>Closure</code>, even for runtimes such as <a href="http://hhvm.com/">HHVM</a> that
+use different class names for closures.</p>
+
+<h5>
 <a id="exporting-exceptions" class="anchor" href="#exporting-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting exceptions</h5>
 
 <p>When an exception is exported, some internal PHP details are stripped from the
 output, including file path, line number, and stack trace:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Exception</span>(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-c1">1</span>, <span class="pl-k">new</span> <span class="pl-c1">Exception</span>());</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'</span></span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$exception</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Exception</span>(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-c1">1</span>, <span class="pl-k">new</span> <span class="pl-c1">Exception</span>());</span>
+<span class="pl-s1"><span class="pl-c">// $exception is exported as 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'</span></span></pre></div>
 
 <p>Additionally, when the message is <code>''</code>, the code is <code>0</code>, and/or the previous
 exception is <code>null</code>, these values are excluded for brevity:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>();</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as 'RuntimeException#0{}'</span></span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$exception</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>();</span>
+<span class="pl-s1"><span class="pl-c">// $exception is exported as 'RuntimeException#0{}'</span></span></pre></div>
 
 <h5>
 <a id="exporting-mocks" class="anchor" href="#exporting-mocks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting mocks</h5>
 
 <p>When a mock is exported, some internal <em>Phony</em> details are stripped from the
 output. In addition, if a <a href="#labeling-mocks">label</a> has been set on the mock, this
-will be included as a special property <code>phony.label</code>:</p>
+will be included in the output:</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);</span>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>mock-label<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as 'Phony_ClassA_0#0{phony.label: "a"}'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
+<span class="pl-s1"><span class="pl-c">// $mock is exported as 'PhonyMock_ClassA_0#0{}[mock-label]'</span></span></pre></div>
+
+<p>When a <a href="#mock-handles">mock handle</a> is exported, it is represented as a wrapper around the mock
+itself:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>mock-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $handle is exported as 'handle#1(PhonyMock_ClassA_0#0{}[mock-label])'</span></span></pre></div>
+
+<p>When a <a href="#static-mocks">static handle</a> is exported, it is represented as a wrapper around the
+mock class:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$staticHandle</span> <span class="pl-k">=</span> onStatic(<span class="pl-smi">$handle</span>);</span>
+<span class="pl-s1"><span class="pl-c">// $staticHandle is exported as 'static-handle#0(PhonyMock_ClassA_0)'</span></span></pre></div>
+
+<h5>
+<a id="exporting-stubs" class="anchor" href="#exporting-stubs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting stubs</h5>
+
+<p>When a <a href="#stubs">stub</a> is exported, it is represented as a wrapper around the callable
+entity that is stubbed, with the <a href="#labeling-spies">label</a> also included in the output:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub(<span class="pl-s"><span class="pl-pds">'</span>implode<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>stub-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $stub is exported as 'stub#0(implode)[stub-label]'</span></span></pre></div>
+
+<p>Anonymous stubs have a simpler representation, since they don't wrap any
+callable entity:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>stub-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $stub is exported as 'stub#0[stub-label]'</span></span></pre></div>
+
+<p>In the case of method stubs, class name information is also included:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-s"><span class="pl-pds">'</span>ClassA<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>mock-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-smi">$staticHandle</span> <span class="pl-k">=</span> onStatic(<span class="pl-smi">$handle</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>stub-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $stub is exported as 'stub#0(ClassA[mock-label]-&gt;methodA)[stub-label]'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> <span class="pl-smi">$staticHandle</span><span class="pl-k">-&gt;</span><span class="pl-smi">staticMethodA</span><span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>stub-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $stub is exported as 'stub#1(ClassA::staticMethodA)[stub-label]'</span></span></pre></div>
+
+<h5>
+<a id="exporting-spies" class="anchor" href="#exporting-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting spies</h5>
+
+<p>When a <a href="#spies">spy</a> is exported, it is represented as a wrapper around the callable
+entity that is spied on, with the <a href="#labeling-spies">label</a> also included in the
+output:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy(<span class="pl-s"><span class="pl-pds">'</span>implode<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>spy-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $spy is exported as 'spy#0(implode)[spy-label]'</span></span></pre></div>
+
+<p>Anonymous spies have a simpler representation, since they don't wrap any
+callable entity:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy()<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>spy-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $spy is exported as 'spy#0[spy-label]'</span></span></pre></div>
+
+<p>In the case of method spies, class name information is also included:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$object</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ClassA</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy([<span class="pl-smi">$object</span>, <span class="pl-s"><span class="pl-pds">'</span>methodA<span class="pl-pds">'</span></span>])<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>spy-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $spy is exported as 'spy#0(ClassA-&gt;methodA)[spy-label]'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy([<span class="pl-c1">ClassA</span><span class="pl-k">::</span><span class="pl-c1">class</span>, <span class="pl-s"><span class="pl-pds">'</span>staticMethodA<span class="pl-pds">'</span></span>])<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>spy-label<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"><span class="pl-c">// $spy is exported as 'spy#1(ClassA::staticMethodA)[spy-label]'</span></span></pre></div>
 
 <h3>
 <a id="export-depth" class="anchor" href="#export-depth" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export depth</h3>
 
 <p>For complicated nested structures, exporting the entire value right down to its
 innermost values is not always desirable. <em>Phony</em> sets a limit on how deep into
-a nested structure the exporter will traverse.</p>
+a nested structure the exporter will descend.</p>
 
 <p>When a value is beyond the export depth, and has sub-values, its contents will
 be replaced with a special notation that simply indicates how many sub-values
@@ -4706,7 +4945,7 @@ exist within that value:</p>
 <span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1[], #2[:3]]'</span></span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [(<span class="pl-k">object</span>) [], (<span class="pl-k">object</span>) [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>]];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1{}, #2{:3}]'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0{}, #1{:3}]'</span></span></pre></div>
 
 <h4>
 <a id="setting-the-export-depth" class="anchor" href="#setting-the-export-depth" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting the export depth</h4>
@@ -5749,7 +5988,8 @@ existing mock is available.</em></p>
 
 <p>Modify the current criteria to match the supplied arguments.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#matching-stub-arguments">Matching stub arguments</a>.</em></p>
 
@@ -5779,8 +6019,7 @@ existing mock is available.</em></p>
 
 <p><em>Note that all supplied callbacks will be called in the same invocation.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#invoking-callables">Invoking callables</a>.</em></p>
 
@@ -5818,8 +6057,7 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p><em>Note that all supplied callbacks will be called in the same invocation.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#invoking-arguments">Invoking arguments</a>.</em></p>
 
@@ -5840,7 +6078,7 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 <p><em>If called with two arguments, sets the argument at <code>$indexOrValue</code> to
 <code>$value</code>.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> of the value.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#setting-passed-by-reference-arguments">Setting passed-by-reference arguments</a>.</em></p>
 
@@ -5868,8 +6106,7 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p><em>The supplied arguments support reference parameters.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#using-a-callable-as-an-answer">Using a callable as an answer</a>.</em></p>
 
@@ -5885,8 +6122,7 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p><em>The supplied arguments support reference parameters.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#forwarding-to-the-original-callable">Forwarding to the original callable</a>.</em></p>
 
@@ -5941,8 +6177,7 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p>Add answers that throw exceptions.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any supplied exception mock
-handles are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#throwing-exceptions">Throwing exceptions</a>.</em></p>
 
@@ -6009,8 +6244,7 @@ behavior customization.</p>
 
 <p>Add callbacks to be called as part of the answer.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#invoking-callables-in-a-generator">Invoking callables in a generator</a>.</em></p>
 
@@ -6044,8 +6278,7 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p><em>This method supports reference parameters.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#invoking-arguments-in-a-generator">Invoking arguments in a generator</a>.</em></p>
 
@@ -6160,8 +6393,7 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 
 <p>End the generator by throwing an exception.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any supplied exception mock
-handles are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
 
 <p><em>See <a href="#throwing-exceptions-from-a-generator">Throwing exceptions from a generator</a>.</em></p>
 
@@ -6538,8 +6770,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Throws an exception unless called with the supplied arguments.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>.</em></p>
 
@@ -6553,8 +6785,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Checks if called with the supplied arguments.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
 <a href="#check-verification">Check verification</a>.</em></p>
@@ -6571,7 +6803,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p>Throws an exception unless the bound <code>$this</code> value is equal to the supplied
 value.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-spy-closure-binding">Verifying spy closure binding</a>.</em></p>
 
@@ -6585,7 +6818,8 @@ value.</p>
 
 <p>Checks if the bound <code>$this</code> value is equal to the supplied value.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-spy-closure-binding">Verifying spy closure binding</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -6603,7 +6837,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em>When called with no arguments, this method simply checks that the spy returned
 any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-spy-return-values">Verifying spy return values</a>.</em></p>
 
@@ -6620,7 +6855,8 @@ any value.</em></p>
 <p><em>When called with no arguments, this method simply checks that the spy returned
 any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-spy-return-values">Verifying spy return values</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -6647,7 +6883,8 @@ an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the spy threw an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-spy-exceptions">Verifying spy exceptions</a>.</em></p>
 
@@ -6673,7 +6910,8 @@ an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the spy threw an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-spy-exceptions">Verifying spy exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -7316,8 +7554,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Throws an exception unless called with the supplied arguments.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
 
@@ -7331,8 +7569,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p>Checks if called with the supplied arguments.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>. Any mock handles in
-<code>$arguments</code> are equivalent to the mocks themselves.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>,
 <a href="#check-verification">Check verification</a>.</em></p>
@@ -7349,7 +7587,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p>Throws an exception unless the bound <code>$this</code> value is equal to the supplied
 value.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-call-closure-binding">Verifying call closure binding</a>.</em></p>
 
@@ -7363,7 +7602,8 @@ value.</p>
 
 <p>Checks if the bound <code>$this</code> value is equal to the supplied value.</p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-call-closure-binding">Verifying call closure binding</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -7381,7 +7621,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em>When called with no arguments, this method simply checks that the call returned
 any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-call-return-values">Verifying call return values</a>.</em></p>
 
@@ -7398,7 +7639,8 @@ any value.</em></p>
 <p><em>When called with no arguments, this method simply checks that the call returned
 any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-call-return-values">Verifying call return values</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -7425,7 +7667,8 @@ an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the call threw an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-call-exceptions">Verifying call exceptions</a>.</em></p>
 
@@ -7451,7 +7694,8 @@ an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the call threw an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-call-exceptions">Verifying call exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -8160,7 +8404,8 @@ produced.</em></p>
 <p><em>With two arguments, it checks that a key and value matching the respective
 arguments were produced together.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-produced-values">Verifying produced values</a>.</em></p>
 
@@ -8183,7 +8428,8 @@ produced.</em></p>
 <p><em>With two arguments, it checks that a key and value matching the respective
 arguments were produced together.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> for both keys and values.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-produced-values">Verifying produced values</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -8382,7 +8628,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em>When called with no arguments, this method simply checks that the generator
 received any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-values-received-by-generators">Verifying values received by generators</a>.</em></p>
 
@@ -8399,7 +8646,8 @@ received any value.</em></p>
 <p><em>When called with no arguments, this method simply checks that the generator
 received any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-values-received-by-generators">Verifying values received by generators</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -8427,7 +8675,8 @@ received an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator received an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a>.</em></p>
 
@@ -8453,7 +8702,8 @@ received an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator received an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-exceptions-received-by-generators">Verifying exceptions received by generators</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -8471,7 +8721,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em>When called with no arguments, this method simply checks that the generator
 returned any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-generator-return-values">Verifying generator return values</a>.</em></p>
 
@@ -8488,7 +8739,8 @@ returned any value.</em></p>
 <p><em>When called with no arguments, this method simply checks that the generator
 returned any value.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-generator-return-values">Verifying generator return values</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
@@ -8516,7 +8768,8 @@ threw an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator threw an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-generator-exceptions">Verifying generator exceptions</a>.</em></p>
 
@@ -8542,7 +8795,8 @@ threw an exception that is equal to the supplied instance.</em></p>
 <p><em>When called with a <a href="#matchers">matcher</a>, this method checks that the generator threw an
 exception that matches the supplied matcher.</em></p>
 
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a>.</em></p>
+<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
+<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
 
 <p><em>See <a href="#verifying-generator-exceptions">Verifying generator exceptions</a>, <a href="#check-verification">Check verification</a>.</em></p>
 

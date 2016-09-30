@@ -77,25 +77,25 @@
         </style>
     </defs>
     <text x="16" y="28" xml:space="preserve">Expected events in order:</text>
-    <text x="16" y="44" xml:space="preserve">    - Called {spy}[a](1)</text>
-    <text x="16" y="60" xml:space="preserve">    - Called {spy}[a](2)</text>
-    <text x="16" y="76" xml:space="preserve">    - Called {spy}[a](3)</text>
-    <text x="16" y="92" xml:space="preserve">    - Called {spy}[b](1)</text>
-    <text x="16" y="108" xml:space="preserve">    - Called {spy}[b](2)</text>
-    <text x="16" y="124" xml:space="preserve">    - Called {spy}[b](3)</text>
+    <text x="16" y="44" xml:space="preserve">    - Called spy#0[a](1)</text>
+    <text x="16" y="60" xml:space="preserve">    - Called spy#0[a](2)</text>
+    <text x="16" y="76" xml:space="preserve">    - Called spy#0[a](3)</text>
+    <text x="16" y="92" xml:space="preserve">    - Called spy#1[b](1)</text>
+    <text x="16" y="108" xml:space="preserve">    - Called spy#1[b](2)</text>
+    <text x="16" y="124" xml:space="preserve">    - Called spy#1[b](3)</text>
     <text x="16" y="140" xml:space="preserve">Actual order:</text>
-    <text x="16" y="156" xml:space="preserve">    - Called {spy}[a](1)</text>
-    <text x="16" y="172" xml:space="preserve">    - Called {spy}[a](2)</text>
-    <text x="16" y="188" xml:space="preserve">    - Called {spy}[b](1)</text>
-    <text x="16" y="204" xml:space="preserve">    - Called {spy}[a](3)</text>
-    <text x="16" y="220" xml:space="preserve">    - Called {spy}[b](2)</text>
-    <text x="16" y="236" xml:space="preserve">    - Called {spy}[b](3)</text>
+    <text x="16" y="156" xml:space="preserve">    - Called spy#0[a](1)</text>
+    <text x="16" y="172" xml:space="preserve">    - Called spy#0[a](2)</text>
+    <text x="16" y="188" xml:space="preserve">    - Called spy#1[b](1)</text>
+    <text x="16" y="204" xml:space="preserve">    - Called spy#0[a](3)</text>
+    <text x="16" y="220" xml:space="preserve">    - Called spy#1[b](2)</text>
+    <text x="16" y="236" xml:space="preserve">    - Called spy#1[b](3)</text>
     <text x="16" y="252" xml:space="preserve">Difference:</text>
-    <text x="16" y="268" xml:space="preserve">    <tspan class="green">✓</tspan>   Called {spy}[a](1)</text>
-    <text x="16" y="284" xml:space="preserve">    <tspan class="green">✓</tspan>   Called {spy}[a](2)</text>
-    <text x="16" y="300" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Called {spy}[b](1)</tspan><tspan class="faint yellow">+}</tspan></text>
-    <text x="16" y="316" xml:space="preserve">    <tspan class="green">✓</tspan>   Called {spy}[a](3)</text>
-    <text x="16" y="332" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">Called {spy}[b](1)</tspan><tspan class="faint cyan">-]</tspan></text>
-    <text x="16" y="348" xml:space="preserve">    <tspan class="green">✓</tspan>   Called {spy}[b](2)</text>
-    <text x="16" y="364" xml:space="preserve">    <tspan class="green">✓</tspan>   Called {spy}[b](3)</text>
+    <text x="16" y="268" xml:space="preserve">    <tspan class="green">✓</tspan>   Called spy#0[a](1)</text>
+    <text x="16" y="284" xml:space="preserve">    <tspan class="green">✓</tspan>   Called spy#0[a](2)</text>
+    <text x="16" y="300" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Called spy#1[b](1)</tspan><tspan class="faint yellow">+}</tspan></text>
+    <text x="16" y="316" xml:space="preserve">    <tspan class="green">✓</tspan>   Called spy#0[a](3)</text>
+    <text x="16" y="332" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">Called spy#1[b](1)</tspan><tspan class="faint cyan">-]</tspan></text>
+    <text x="16" y="348" xml:space="preserve">    <tspan class="green">✓</tspan>   Called spy#1[b](2)</text>
+    <text x="16" y="364" xml:space="preserve">    <tspan class="green">✓</tspan>   Called spy#1[b](3)</text>
 </svg>

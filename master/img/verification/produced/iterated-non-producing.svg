@@ -76,18 +76,18 @@
             }
         </style>
     </defs>
-    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">{stub}[label]</tspan> iterable calls to behave like:</text>
+    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">stub#0[label]</tspan> iterable calls to behave like:</text>
     <text x="16" y="44" xml:space="preserve">    <tspan class="green">✓</tspan> Returned &lt;iterable&gt;, then: <tspan class="faint">(2 matches)</tspan></text>
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Produced &lt;any&gt; =&gt; &lt;any&gt;</text>
     <text x="16" y="76" xml:space="preserve">Matched 0 of 2:</text>
-    <text x="16" y="92" xml:space="preserve"><tspan class="faint">- Call #0 - {stub}[label](&quot;aardvark&quot;):</tspan></text>
+    <text x="16" y="92" xml:space="preserve"><tspan class="faint">- Call #0 - stub#0[label](&quot;aardvark&quot;):</tspan></text>
     <text x="16" y="108" xml:space="preserve"><tspan class="faint">    - Returned &quot;AARDVARK&quot;</tspan></text>
-    <text x="16" y="124" xml:space="preserve"><tspan class="faint">- Call #1 - {stub}[label](&quot;bonobo&quot;):</tspan></text>
-    <text x="16" y="140" xml:space="preserve"><tspan class="faint">    - Threw RuntimeException#0{message: &quot;BONOBO&quot;}</tspan></text>
-    <text x="16" y="156" xml:space="preserve"><tspan class="red">✗</tspan> Call #2 - {stub}[label](&quot;chameleon&quot;):</text>
+    <text x="16" y="124" xml:space="preserve"><tspan class="faint">- Call #1 - stub#0[label](&quot;bonobo&quot;):</tspan></text>
+    <text x="16" y="140" xml:space="preserve"><tspan class="faint">    - Threw RuntimeException#1{message: &quot;BONOBO&quot;}</tspan></text>
+    <text x="16" y="156" xml:space="preserve"><tspan class="red">✗</tspan> Call #2 - stub#0[label](&quot;chameleon&quot;):</text>
     <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[:1], then:</text>
     <text x="16" y="188" xml:space="preserve">        <tspan class="red">✗</tspan> Never started iterating</text>
-    <text x="16" y="204" xml:space="preserve"><tspan class="red">✗</tspan> Call #3 - {stub}[label](&quot;dugong&quot;):</text>
-    <text x="16" y="220" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator, then:</text>
+    <text x="16" y="204" xml:space="preserve"><tspan class="red">✗</tspan> Call #3 - stub#0[label](&quot;dugong&quot;):</text>
+    <text x="16" y="220" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#2{}, then:</text>
     <text x="16" y="236" xml:space="preserve">        <tspan class="red">✗</tspan> Never started iterating</text>
 </svg>
