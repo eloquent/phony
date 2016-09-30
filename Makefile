@@ -37,6 +37,9 @@ web: install $(shell find doc assets/web test/fixture/verification)
 	make doc-img
 	scripts/build-web
 
+open-web:
+	open http://localhost:8000/
+
 serve: web
 	php -S 0.0.0.0:8000 -t web
 
@@ -46,7 +49,7 @@ publish: web
 test-fixtures:
 	scripts/build-test-fixtures
 
-.PHONY: test coverage open-coverage lint install examples edge-cases benchmarks integration output-examples doc-img serve publish test-fixtures
+.PHONY: test coverage open-coverage lint install examples edge-cases benchmarks integration output-examples doc-img open-web serve publish test-fixtures
 
 vendor/autoload.php: composer.lock
 	composer install

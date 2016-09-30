@@ -9,9 +9,6 @@ Asplode::install();
 
 echo 'Generating website... ';
 
-passthru('rm -rf web');
-passthru('mkdir -p web');
-
 passthru('mkdir -p build');
 
 $hash = sha1_file('doc/index.md');
@@ -75,6 +72,9 @@ $content
 
 $footer
 EOD;
+
+passthru('rm -rf web');
+passthru('mkdir -p web');
 
 file_put_contents('web/index.html', $content);
 
