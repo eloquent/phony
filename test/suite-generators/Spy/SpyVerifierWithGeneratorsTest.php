@@ -53,7 +53,8 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         );
 
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer);
+        $this->invocableInspector = new InvocableInspector();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
         $this->matcherFactory =
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
@@ -61,7 +62,6 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);

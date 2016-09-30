@@ -11,18 +11,15 @@
 
 namespace Eloquent\Phony\Spy;
 
-use ArrayAccess;
-use Countable;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
-use Iterator;
 use IteratorAggregate;
 use Traversable;
 
 /**
  * Spies on an traversable.
  */
-class TraversableSpy implements ArrayAccess, Countable, Iterator
+class TraversableSpy implements IterableSpy
 {
     /**
      * Construct a new traversable spy.
@@ -41,6 +38,16 @@ class TraversableSpy implements ArrayAccess, Countable, Iterator
         $this->callEventFactory = $callEventFactory;
         $this->isUsed = false;
         $this->isConsumed = false;
+    }
+
+    /**
+     * Get the original iterable value.
+     *
+     * @return mixed The original value.
+     */
+    public function iterable()
+    {
+        return $this->traversable;
     }
 
     /**

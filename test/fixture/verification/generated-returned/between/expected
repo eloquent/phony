@@ -1,12 +1,12 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls to behave like:
+%RESET%Expected %BOLD%stub#0[label]%RESET% generator calls to behave like:
     %GREEN%✓%RESET% Returned Generator, then: %RED%%FAINT%(2 matches)%RESET%
         %RED%✗%RESET% Returned "AARDVARK"
 %RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
-%GREEN%✓%RESET% Call #0 - {stub}[label]("aardvark"):
-    %GREEN%✓%RESET% Returned Generator, then:
+%GREEN%✓%RESET% Call #0 - stub#0[label]("aardvark"):
+    %GREEN%✓%RESET% Returned Generator#1{}, then:
         - Started iterating
         %GREEN%✓%RESET% Returned "AARDVARK"
-%GREEN%✓%RESET% Call #1 - {stub}[label]("aardvark"):
-    %GREEN%✓%RESET% Returned Generator, then:
+%GREEN%✓%RESET% Call #1 - stub#0[label]("aardvark"):
+    %GREEN%✓%RESET% Returned Generator#2{}, then:
         - Started iterating
         %GREEN%✓%RESET% Returned "AARDVARK"

@@ -30,6 +30,11 @@ class TraversableSpyTest extends PHPUnit_Framework_TestCase
         $this->subject = new TraversableSpy($this->call, $this->value, $this->callEventFactory);
     }
 
+    public function testConstructor()
+    {
+        $this->assertSame($this->value, $this->subject->iterable());
+    }
+
     public function testIterator()
     {
         $this->assertSame($this->array, iterator_to_array($this->subject));

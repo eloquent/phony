@@ -1,7 +1,7 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 not to behave like:
+%RESET%Expected %BOLD%stub#0[label]%RESET% call #1 not to behave like:
     %RED%✗%RESET% Returned Generator, then:
         %RED%✗%RESET% Returned "BONOBO"
-%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
-    %RED%✗%RESET% Returned Generator, then:
+%RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator#1{}, then:
         - Started iterating
         %RED%✗%RESET% Returned "BONOBO"

@@ -1,10 +1,10 @@
-%RESET%Expected %BOLD%{closure}[label]%RESET% not to respond.
+%RESET%Expected %BOLD%Closure#0{}[verification.php:8][label]%RESET% not to respond.
 Matched 2 of 4:
-%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:2}):
+%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:8][label](Closure#1{}[verification.php:18]):
     %RED%✗%RESET% Returned 0
-%RED%✗%RESET% Call #1 - {closure}[label](Closure#0{:2}, 1):
+%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:8][label](Closure#1{}[verification.php:18], 1):
     %RED%✗%RESET% Returned 1
-%GREEN%✓%RESET% Call #2 - {closure}[label](Closure#1{:2}):
+%GREEN%✓%RESET% Call #2 - Closure#0{}[verification.php:8][label](Closure#2{}[verification.php:22]):
     %GREEN%✓%RESET% Never responded
-%GREEN%✓%RESET% Call #3 - {closure}[label](Closure#1{:2}, 1):
+%GREEN%✓%RESET% Call #3 - Closure#0{}[verification.php:8][label](Closure#2{}[verification.php:22], 1):
     %GREEN%✓%RESET% Never responded

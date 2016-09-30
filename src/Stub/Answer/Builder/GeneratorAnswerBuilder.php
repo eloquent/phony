@@ -213,10 +213,7 @@ class GeneratorAnswerBuilder
             $value = $indexOrValue;
         }
 
-        if (
-            $value instanceof InstanceHandle &&
-            $value->isAdaptable()
-        ) {
+        if ($value instanceof InstanceHandle) {
             $value = $value->get();
         }
 
@@ -266,17 +263,11 @@ class GeneratorAnswerBuilder
             $key = null;
         }
 
-        if (
-            $key instanceof InstanceHandle &&
-            $key->isAdaptable()
-        ) {
+        if ($key instanceof InstanceHandle) {
             $key = $key->get();
         }
 
-        if (
-            $value instanceof InstanceHandle &&
-            $value->isAdaptable()
-        ) {
+        if ($value instanceof InstanceHandle) {
             $value = $value->get();
         }
 
@@ -326,10 +317,7 @@ class GeneratorAnswerBuilder
             $copies[$i] = clone $this;
         }
 
-        if (
-            $value instanceof InstanceHandle &&
-            $value->isAdaptable()
-        ) {
+        if ($value instanceof InstanceHandle) {
             $value = $value->get();
         }
 
@@ -420,10 +408,7 @@ class GeneratorAnswerBuilder
 
         if (is_string($exception)) {
             $exception = new Exception($exception);
-        } elseif (
-            $exception instanceof InstanceHandle &&
-            $exception->isAdaptable()
-        ) {
+        } elseif ($exception instanceof InstanceHandle) {
             $exception = $exception->get();
         } elseif (!$exception) {
             $exception = new Exception();

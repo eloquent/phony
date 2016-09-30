@@ -33,7 +33,7 @@ class EqualToMatcherNestedArrayEvent extends AthleticEvent
         $this->array2 = $this->generateNestedArray(1000);
 
         $this->exporter = InlineExporter::instance();
-        $this->subject = new EqualToMatcher($this->array1, $this->exporter);
+        $this->subject = new EqualToMatcher($this->array1, true, $this->exporter);
     }
 
     /**

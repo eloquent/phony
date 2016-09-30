@@ -1,4 +1,4 @@
-%RESET%Expected %BOLD%{closure}[label]%RESET% call #1 to behave like:
+%RESET%Expected %BOLD%Closure#0{}[verification.php:7][label]%RESET% call #1 to behave like:
     %RED%✗%RESET% Returned "CHAMELEON"
-%RED%✗%RESET% Call #1 - {closure}[label]("bonobo"):
+%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo"):
     %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"

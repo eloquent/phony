@@ -86,9 +86,13 @@ class FacadeDriver
 
         $anyMatcher = new AnyMatcher();
         $objectIdSequence = Sequencer::sequence('exporter-object-id');
-        $exporter = new InlineExporter(1, $objectIdSequence);
-        $featureDetector = new FeatureDetector();
         $invocableInspector = new InvocableInspector();
+        $exporter = new InlineExporter(
+            1,
+            $objectIdSequence,
+            $invocableInspector
+        );
+        $featureDetector = new FeatureDetector();
         $invoker = new Invoker();
         $matcherVerifier = new MatcherVerifier();
 

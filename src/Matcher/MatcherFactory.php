@@ -18,7 +18,6 @@ use Eloquent\Phony\Integration\HamcrestMatcherDriver;
 use Eloquent\Phony\Integration\MockeryMatcherDriver;
 use Eloquent\Phony\Integration\PhakeMatcherDriver;
 use Eloquent\Phony\Integration\ProphecyMatcherDriver;
-use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Simpletest\SimpletestMatcherDriver;
 
@@ -121,10 +120,6 @@ class MatcherFactory
                 return true;
             }
 
-            if ($value instanceof InstanceHandle) {
-                return $value->isAdaptable();
-            }
-
             foreach ($this->driverIndex as $className => $driver) {
                 if (is_a($value, $className)) {
                     return true;
@@ -149,15 +144,9 @@ class MatcherFactory
         }
 
         if (is_object($value)) {
-            if ($value instanceof InstanceHandle) {
-                if ($value->isAdaptable()) {
-                    return new EqualToMatcher($value->get(), $this->exporter);
-                }
-            } else {
-                foreach ($this->driverIndex as $className => $driver) {
-                    if (is_a($value, $className)) {
-                        return $driver->wrapMatcher($value);
-                    }
+            foreach ($this->driverIndex as $className => $driver) {
+                if (is_a($value, $className)) {
+                    return $driver->wrapMatcher($value);
                 }
             }
         }
@@ -170,7 +159,7 @@ class MatcherFactory
             return $this->anyMatcher;
         }
 
-        return new EqualToMatcher($value, $this->exporter);
+        return new EqualToMatcher($value, true, $this->exporter);
     }
 
     /**
@@ -195,20 +184,11 @@ class MatcherFactory
             }
 
             if (is_object($value)) {
-                if ($value instanceof InstanceHandle) {
-                    if ($value->isAdaptable()) {
-                        $matchers[] =
-                            new EqualToMatcher($value->get(), $this->exporter);
+                foreach ($this->driverIndex as $className => $driver) {
+                    if (is_a($value, $className)) {
+                        $matchers[] = $driver->wrapMatcher($value);
 
-                        continue;
-                    }
-                } else {
-                    foreach ($this->driverIndex as $className => $driver) {
-                        if (is_a($value, $className)) {
-                            $matchers[] = $driver->wrapMatcher($value);
-
-                            continue 2;
-                        }
+                        continue 2;
                     }
                 }
             }
@@ -218,7 +198,7 @@ class MatcherFactory
             } elseif ('~' === $value) {
                 $matchers[] = $this->anyMatcher;
             } else {
-                $matchers[] = new EqualToMatcher($value, $this->exporter);
+                $matchers[] = new EqualToMatcher($value, true, $this->exporter);
             }
         }
 
@@ -238,13 +218,14 @@ class MatcherFactory
     /**
      * Create a new equal to matcher.
      *
-     * @param mixed $value The value to check.
+     * @param mixed $value           The value to check.
+     * @param bool  $useSubstitution True to use substitution for wrapper types.
      *
      * @return Matcher The newly created matcher.
      */
-    public function equalTo($value)
+    public function equalTo($value, $useSubstitution = false)
     {
-        return new EqualToMatcher($value, $this->exporter);
+        return new EqualToMatcher($value, $useSubstitution, $this->exporter);
     }
 
     /**

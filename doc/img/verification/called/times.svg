@@ -76,7 +76,7 @@
             }
         </style>
     </defs>
-    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">{spy}[label]</tspan> call with any arguments.</text>
+    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">spy#0[label]</tspan> call with any arguments.</text>
     <text x="16" y="44" xml:space="preserve"><tspan class="red">Exactly 3 required. Matched 2 of 2:</tspan></text>
     <text x="16" y="60" xml:space="preserve"><tspan class="green">✓</tspan> Call #0:</text>
     <text x="16" y="76" xml:space="preserve">    <tspan class="green">✓</tspan> &quot;aardvark&quot;</text>

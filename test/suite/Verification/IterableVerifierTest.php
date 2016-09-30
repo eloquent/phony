@@ -40,7 +40,8 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = WildcardMatcher::instance();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer);
+        $this->invocableInspector = new InvocableInspector();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
         $this->matcherFactory = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
 
         $this->iterableCalledEvent = $this->eventFactory->createCalled();
@@ -136,7 +137,6 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->matcherVerifier = new MatcherVerifier();
-        $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);

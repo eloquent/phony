@@ -29,6 +29,6 @@ class TestMatcherDriverA implements MatcherDriver
 
     public function wrapMatcher($matcher)
     {
-        return new EqualToMatcher('a', InlineExporter::instance());
+        return new EqualToMatcher('a', false, InlineExporter::instance());
     }
 }

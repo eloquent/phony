@@ -60,7 +60,7 @@ class VerificationTest extends PHPUnit_Framework_TestCase
     {
         $path = __DIR__ . '/../fixture/verification/' . $verification . '/' . $testName;
 
-        $featureDetector = $this->featureDetector;
+        $detector = $this->featureDetector;
 
         if (is_file($path . '/supported.php')) {
             $isSupported = require $path . '/supported.php';

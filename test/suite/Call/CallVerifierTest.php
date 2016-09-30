@@ -50,7 +50,7 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer);
+        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();

@@ -1,14 +1,14 @@
-%RESET%Expected %BOLD%{closure}[label]%RESET% iterable calls to behave like:
+%RESET%Expected %BOLD%Closure#0{}[verification.php:8][label]%RESET% iterable calls to behave like:
     %GREEN%✓%RESET% Returned <iterable>, then: %GREEN%%FAINT%(2 matches)%RESET%
         %RED%✗%RESET% Finished iterating
 Matched 0 of 2:
-%RED%✗%RESET% Call #0 - {closure}[label](Closure#0{:2}):
+%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:8][label](Closure#1{}[verification.php:18]):
     %RED%✗%RESET% Returned #0[], then:
         %RED%✗%RESET% Never started iterating
-%RED%✗%RESET% Call #1 - {closure}[label](Closure#0{:2}, 1):
+%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:8][label](Closure#1{}[verification.php:18], 1):
     %RED%✗%RESET% Returned #0[], then:
         %RED%✗%RESET% Never started iterating
-%FAINT%- Call #2 - {closure}[label](Closure#1{:2}):%RESET%
+%FAINT%- Call #2 - Closure#0{}[verification.php:8][label](Closure#2{}[verification.php:22]):%RESET%
 %FAINT%    - Never responded%RESET%
-%FAINT%- Call #3 - {closure}[label](Closure#1{:2}, 1):%RESET%
+%FAINT%- Call #3 - Closure#0{}[verification.php:8][label](Closure#2{}[verification.php:22], 1):%RESET%
 %FAINT%    - Never responded%RESET%

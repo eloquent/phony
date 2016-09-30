@@ -26,7 +26,6 @@ use Eloquent\Phony\Difference\DifferenceSequenceMatcher;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Matchable;
@@ -35,16 +34,12 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
-use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\Spy;
-use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Verification\Cardinality;
 use Error;
 use Exception;
 use Generator;
-use ReflectionException;
-use ReflectionMethod;
 use Traversable;
 
 /**
@@ -155,13 +150,13 @@ class AssertionRenderer
             $calls = array($subject);
             $renderedSubject =
                 $this->bold .
-                $this->renderCallable($subject->callback()) .
+                $this->exporter->exportCallable($subject->callback()) .
                 $this->reset;
         } else {
             $calls = $subject->allCalls();
             $renderedSubject =
                 $this->bold .
-                $this->renderCallable($subject) .
+                $this->exporter->exportCallable($subject) .
                 $this->reset;
         }
 
@@ -260,13 +255,13 @@ class AssertionRenderer
             $calls = array($subject);
             $renderedSubject =
                 $this->bold .
-                $this->renderCallable($subject->callback()) .
+                $this->exporter->exportCallable($subject->callback()) .
                 $this->reset;
         } else {
             $calls = $subject->allCalls();
             $renderedSubject =
                 $this->bold .
-                $this->renderCallable($subject) .
+                $this->exporter->exportCallable($subject) .
                 $this->reset;
         }
 
@@ -488,10 +483,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -625,10 +621,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -740,10 +737,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -870,17 +868,11 @@ class AssertionRenderer
                                 ' Never finished iterating';
                         }
 
-                        if ($returnValue instanceof Generator) {
-                            $renderedResponse =
-                                'Returned Generator, then:' . PHP_EOL .
-                                implode(PHP_EOL, $renderedIterableEvents);
-                        } else {
-                            $renderedResponse =
-                                'Returned ' .
-                                $this->exporter->export($returnValue, 0) .
-                                ', then:' . PHP_EOL .
-                                implode(PHP_EOL, $renderedIterableEvents);
-                        }
+                        $renderedResponse =
+                            'Returned ' .
+                            $this->exporter->export($returnValue, 0) .
+                            ', then:' . PHP_EOL .
+                            implode(PHP_EOL, $renderedIterableEvents);
                     } else {
                         $renderedResponse =
                             'Returned ' . $this->exporter->export($returnValue);
@@ -941,10 +933,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -1090,10 +1083,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -1241,10 +1235,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -1371,10 +1366,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -1506,10 +1502,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -1731,25 +1728,13 @@ class AssertionRenderer
                             '        - Never finished iterating';
                     }
 
-                    if ($returnValue instanceof Generator) {
-                        $renderedResponse =
-                            'Returned Generator, then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    } else {
-                        $renderedResponse =
-                            'Returned ' .
-                            $this->exporter->export($returnValue, 0) .
-                            ', then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    }
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue, 0) .
+                        ', then:' . $callEnd . PHP_EOL . $callStart .
+                        implode(
+                            $callEnd . PHP_EOL . $callStart,
+                            $renderedIterableEvents
+                        );
                 } else {
                     $renderedResponse =
                         'Returned ' . $this->exporter->export($returnValue);
@@ -1825,10 +1810,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -2099,25 +2085,13 @@ class AssertionRenderer
                             '        - Never finished iterating';
                     }
 
-                    if ($returnValue instanceof Generator) {
-                        $renderedResponse =
-                            'Returned Generator, then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    } else {
-                        $renderedResponse =
-                            'Returned ' .
-                            $this->exporter->export($returnValue, 0) .
-                            ', then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    }
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue, 0) .
+                        ', then:' . $callEnd . PHP_EOL . $callStart .
+                        implode(
+                            $callEnd . PHP_EOL . $callStart,
+                            $renderedIterableEvents
+                        );
                 } else {
                     $renderedResponse =
                         'Returned ' . $this->exporter->export($returnValue);
@@ -2184,10 +2158,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -2435,25 +2410,13 @@ class AssertionRenderer
                             ' Never finished iterating';
                     }
 
-                    if ($returnValue instanceof Generator) {
-                        $renderedResponse =
-                            'Returned Generator, then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    } else {
-                        $renderedResponse =
-                            'Returned ' .
-                            $this->exporter->export($returnValue, 0) .
-                            ', then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    }
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue, 0) .
+                        ', then:' . $callEnd . PHP_EOL . $callStart .
+                        implode(
+                            $callEnd . PHP_EOL . $callStart,
+                            $renderedIterableEvents
+                        );
                 } else {
                     $renderedResponse =
                         'Returned ' . $this->exporter->export($returnValue);
@@ -2525,10 +2488,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -2743,25 +2707,13 @@ class AssertionRenderer
                             '        - Never finished iterating';
                     }
 
-                    if ($returnValue instanceof Generator) {
-                        $renderedResponse =
-                            'Returned Generator, then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    } else {
-                        $renderedResponse =
-                            'Returned ' .
-                            $this->exporter->export($returnValue, 0) .
-                            ', then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    }
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue, 0) .
+                        ', then:' . $callEnd . PHP_EOL . $callStart .
+                        implode(
+                            $callEnd . PHP_EOL . $callStart,
+                            $renderedIterableEvents
+                        );
                 } else {
                     $renderedResponse =
                         'Returned ' . $this->exporter->export($returnValue);
@@ -2828,10 +2780,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -3053,25 +3006,13 @@ class AssertionRenderer
                             '        - Never finished iterating';
                     }
 
-                    if ($returnValue instanceof Generator) {
-                        $renderedResponse =
-                            'Returned Generator, then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    } else {
-                        $renderedResponse =
-                            'Returned ' .
-                            $this->exporter->export($returnValue, 0) .
-                            ', then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    }
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue, 0) .
+                        ', then:' . $callEnd . PHP_EOL . $callStart .
+                        implode(
+                            $callEnd . PHP_EOL . $callStart,
+                            $renderedIterableEvents
+                        );
                 } else {
                     $renderedResponse =
                         'Returned ' . $this->exporter->export($returnValue);
@@ -3138,10 +3079,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -3361,25 +3303,13 @@ class AssertionRenderer
                             ' Never finished iterating';
                     }
 
-                    if ($returnValue instanceof Generator) {
-                        $renderedResponse =
-                            'Returned Generator, then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    } else {
-                        $renderedResponse =
-                            'Returned ' .
-                            $this->exporter->export($returnValue, 0) .
-                            ', then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    }
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue, 0) .
+                        ', then:' . $callEnd . PHP_EOL . $callStart .
+                        implode(
+                            $callEnd . PHP_EOL . $callStart,
+                            $renderedIterableEvents
+                        );
                 } else {
                     $renderedResponse =
                         'Returned ' . $this->exporter->export($returnValue);
@@ -3447,10 +3377,11 @@ class AssertionRenderer
 
         if ($isCall) {
             $calls = array($subject);
-            $renderedCallee = $this->renderCallable($subject->callback());
+            $renderedCallee =
+                $this->exporter->exportCallable($subject->callback());
         } else {
             $calls = $subject->allCalls();
-            $renderedCallee = $this->renderCallable($subject);
+            $renderedCallee = $this->exporter->exportCallable($subject);
         }
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
@@ -3678,25 +3609,13 @@ class AssertionRenderer
                             ' Never finished iterating';
                     }
 
-                    if ($returnValue instanceof Generator) {
-                        $renderedResponse =
-                            'Returned Generator, then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    } else {
-                        $renderedResponse =
-                            'Returned ' .
-                            $this->exporter->export($returnValue, 0) .
-                            ', then:' .
-                            $callEnd . PHP_EOL . $callStart .
-                            implode(
-                                $callEnd . PHP_EOL . $callStart,
-                                $renderedIterableEvents
-                            );
-                    }
+                    $renderedResponse =
+                        'Returned ' . $this->exporter->export($returnValue, 0) .
+                        ', then:' . $callEnd . PHP_EOL . $callStart .
+                        implode(
+                            $callEnd . PHP_EOL . $callStart,
+                            $renderedIterableEvents
+                        );
                 } else {
                     $renderedResponse =
                         'Returned ' . $this->exporter->export($returnValue);
@@ -3787,7 +3706,7 @@ class AssertionRenderer
 
             $renderedCalls[] =
                 '    ' . $this->fail .
-                ' ' . $this->renderCallable($call->callback()) .
+                ' ' . $this->exporter->exportCallable($call->callback()) .
                 '(' . implode(', ', $renderedArguments) . ')';
         }
 
@@ -3896,87 +3815,6 @@ class AssertionRenderer
         return implode(', ', $rendered);
     }
 
-    private function renderCallable($callback)
-    {
-        $wrappedCallback = null;
-
-        while ($callback instanceof WrappedInvocable) {
-            $wrappedCallback = $callback;
-            $callback = $callback->callback();
-        }
-
-        $rendered = null;
-        $label = null;
-
-        if ($wrappedCallback) {
-            if ($wrappedCallback->isAnonymous()) {
-                if ($wrappedCallback instanceof Spy) {
-                    $rendered = '{spy}';
-                } elseif ($wrappedCallback instanceof Stub) {
-                    $rendered = '{stub}';
-                }
-            }
-
-            $label = $wrappedCallback->label();
-        }
-
-        if (null === $rendered) {
-            $reflector = $this->invocableInspector
-                ->callbackReflector($callback);
-
-            if ($reflector instanceof ReflectionMethod) {
-                $class = $reflector->getDeclaringClass();
-
-                if ($class->implementsInterface('Eloquent\Phony\Mock\Mock')) {
-                    if ($parentClass = $class->getParentClass()) {
-                        $class = $parentClass;
-                    } else {
-                        try {
-                            $prototype = $reflector->getPrototype();
-                            $class = $prototype->getDeclaringClass();
-                        } catch (ReflectionException $e) {
-                            // ignore
-                        }
-                    }
-                }
-
-                $atoms = explode('\\', $class->getName());
-                $rendered = array_pop($atoms);
-
-                if ($wrappedCallback instanceof WrappedMethod) {
-                    $name = $wrappedCallback->name();
-                    $handle = $wrappedCallback->handle();
-
-                    if ($handle instanceof InstanceHandle) {
-                        $mockLabel = $handle->label();
-
-                        if (null !== $mockLabel) {
-                            $rendered .= '[' . $mockLabel . ']';
-                        }
-                    }
-                } else {
-                    $name = $reflector->getName();
-                }
-
-                if ($reflector->isStatic()) {
-                    $callOperator = '::';
-                } else {
-                    $callOperator = '->';
-                }
-
-                $rendered .= $callOperator . $name;
-            } else {
-                $rendered = $reflector->getName();
-            }
-        }
-
-        if (null !== $label) {
-            $rendered .= '[' . $label . ']';
-        }
-
-        return $rendered;
-    }
-
     private function renderEvents($events)
     {
         $rendered = array();
@@ -3992,7 +3830,7 @@ class AssertionRenderer
                 }
 
                 $call =
-                    $this->renderCallable($call->callback()) .
+                    $this->exporter->exportCallable($call->callback()) .
                     '(' . implode(', ', $renderedArguments) . ')';
             }
 
@@ -4004,7 +3842,8 @@ class AssertionRenderer
                 }
 
                 $rendered[] =
-                    'Called ' . $this->renderCallable($event->callback()) .
+                    'Called ' .
+                    $this->exporter->exportCallable($event->callback()) .
                     '(' . implode(', ', $renderedArguments) . ')';
             } elseif ($event instanceof CalledEvent) {
                 $rendered[] = 'Called ' . $call;

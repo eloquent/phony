@@ -1,2 +1,2 @@
-%RESET%Expected %BOLD%{spy}[label]%RESET% call with any arguments.
+%RESET%Expected %BOLD%spy#0[label]%RESET% call with any arguments.
 %RED%Never called.%RESET%

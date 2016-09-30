@@ -1,2 +1,2 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% to respond.
+%RESET%Expected %BOLD%stub#0[label]%RESET% to respond.
 %RED%Never called.%RESET%

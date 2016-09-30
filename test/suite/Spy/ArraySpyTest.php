@@ -28,6 +28,11 @@ class ArraySpyTest extends PHPUnit_Framework_TestCase
         $this->subject = new ArraySpy($this->call, $this->array, $this->callEventFactory);
     }
 
+    public function testConstructor()
+    {
+        $this->assertSame($this->array, $this->subject->iterable());
+    }
+
     public function testIterator()
     {
         $this->assertSame($this->array, iterator_to_array($this->subject));

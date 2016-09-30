@@ -639,16 +639,13 @@ class StubDataTest extends PHPUnit_Framework_TestCase
 
     public function testSetsArgumentWithInstanceHandles()
     {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-        $this->subject->setsArgument(0, $adaptable)->setsArgument(1, $unadaptable);
+        $handle = Phony::mock();
+        $this->subject->setsArgument(0, $handle);
 
         $a = null;
-        $b = null;
-        $this->subject->invokeWith(array(&$a, &$b));
+        $this->subject->invokeWith(array(&$a));
 
-        $this->assertSame($adaptable->get(), $a);
-        $this->assertSame($unadaptable, $b);
+        $this->assertSame($handle->get(), $a);
     }
 
     public function testDoes()
@@ -938,12 +935,10 @@ class StubDataTest extends PHPUnit_Framework_TestCase
 
     public function testReturnsWithInstanceHandles()
     {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-        $this->subject->returns($adaptable, $unadaptable);
+        $handle = Phony::mock();
+        $this->subject->returns($handle);
 
-        $this->assertSame($adaptable->get(), call_user_func($this->subject));
-        $this->assertSame($unadaptable, call_user_func($this->subject));
+        $this->assertSame($handle->get(), call_user_func($this->subject));
     }
 
     public function testReturnsArgument()

@@ -1,24 +1,24 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls not to behave like:
+%RESET%Expected %BOLD%stub#0[label]%RESET% generator calls not to behave like:
     %RED%✗%RESET% Returned Generator, then: %RED%%FAINT%(5 matches)%RESET%
-        %RED%✗%RESET% Threw RuntimeException#0{message: "BONOBO"}
+        %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}
 Matched 1 of 5:
-%GREEN%✓%RESET% Call #0 - {stub}[label]("aardvark"):
-    %GREEN%✓%RESET% Returned Generator, then:
+%GREEN%✓%RESET% Call #0 - stub#0[label]("aardvark"):
+    %GREEN%✓%RESET% Returned Generator#2{}, then:
         - Started iterating
         %GREEN%✓%RESET% Returned "AARDVARK"
-%GREEN%✓%RESET% Call #1 - {stub}[label]("bonobo"):
-    %GREEN%✓%RESET% Returned Generator, then:
+%GREEN%✓%RESET% Call #1 - stub#0[label]("bonobo"):
+    %GREEN%✓%RESET% Returned Generator#3{}, then:
         - Started iterating
         %GREEN%✓%RESET% Returned "BONOBO"
-%RED%✗%RESET% Call #2 - {stub}[label]("chameleon"):
-    %RED%✗%RESET% Returned Generator, then:
+%RED%✗%RESET% Call #2 - stub#0[label]("chameleon"):
+    %RED%✗%RESET% Returned Generator#5{}, then:
         - Started iterating
-        %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}
-%GREEN%✓%RESET% Call #3 - {stub}[label]("dugong"):
-    %GREEN%✓%RESET% Returned Generator, then:
+        %RED%✗%RESET% Threw RuntimeException#4{message: "BONOBO"}
+%GREEN%✓%RESET% Call #3 - stub#0[label]("dugong"):
+    %GREEN%✓%RESET% Returned Generator#6{}, then:
         - Started iterating
         - Produced 0 => "dog"
         %GREEN%✓%RESET% Never finished iterating
-%GREEN%✓%RESET% Call #4 - {stub}[label]("dugong"):
-    %GREEN%✓%RESET% Returned Generator, then:
+%GREEN%✓%RESET% Call #4 - stub#0[label]("dugong"):
+    %GREEN%✓%RESET% Returned Generator#7{}, then:
         %GREEN%✓%RESET% Never started iterating

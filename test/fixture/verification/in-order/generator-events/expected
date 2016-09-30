@@ -1,22 +1,22 @@
 %RESET%Expected events in order:
-    - Called {stub}[label]()
-    - Produced 0 => "a" from {stub}[label]()
-    - Received "A" in {stub}[label]()
-    - Produced 1 => "b" from {stub}[label]()
-    - Received exception Exception#0{message: "B"} in {stub}[label]()
-    - Called {spy}[first]()
+    - Called stub#0[label]()
+    - Produced 0 => "a" from stub#0[label]()
+    - Received "A" in stub#0[label]()
+    - Produced 1 => "b" from stub#0[label]()
+    - Received exception Exception#1{message: "B"} in stub#0[label]()
+    - Called spy#2[first]()
 Actual order:
-    - Called {spy}[first]()
-    - Called {stub}[label]()
-    - Produced 0 => "a" from {stub}[label]()
-    - Received "A" in {stub}[label]()
-    - Produced 1 => "b" from {stub}[label]()
-    - Received exception Exception#0{message: "B"} in {stub}[label]()
+    - Called spy#2[first]()
+    - Called stub#0[label]()
+    - Produced 0 => "a" from stub#0[label]()
+    - Received "A" in stub#0[label]()
+    - Produced 1 => "b" from stub#0[label]()
+    - Received exception Exception#1{message: "B"} in stub#0[label]()
 Difference:
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Called {spy}[first]()%FAINT%+}%RESET%
-    %GREEN%✓%RESET%   Called {stub}[label]()
-    %GREEN%✓%RESET%   Produced 0 => "a" from {stub}[label]()
-    %GREEN%✓%RESET%   Received "A" in {stub}[label]()
-    %GREEN%✓%RESET%   Produced 1 => "b" from {stub}[label]()
-    %GREEN%✓%RESET%   Received exception Exception#0{message: "B"} in {stub}[label]()
-    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Called {spy}[first]()%FAINT%-]%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Called spy#2[first]()%FAINT%+}%RESET%
+    %GREEN%✓%RESET%   Called stub#0[label]()
+    %GREEN%✓%RESET%   Produced 0 => "a" from stub#0[label]()
+    %GREEN%✓%RESET%   Received "A" in stub#0[label]()
+    %GREEN%✓%RESET%   Produced 1 => "b" from stub#0[label]()
+    %GREEN%✓%RESET%   Received exception Exception#1{message: "B"} in stub#0[label]()
+    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Called spy#2[first]()%FAINT%-]%RESET%

@@ -324,7 +324,7 @@ function any()
 function equalTo($value)
 {
     return SimpletestFacadeDriver::instance()->matcherFactory
-        ->equalTo($value);
+        ->equalTo($value, false);
 }
 
 /**

@@ -1,4 +1,4 @@
-%RESET%Expected no %BOLD%{spy}[label]%RESET% call.
+%RESET%Expected no %BOLD%spy#0[label]%RESET% call.
 %RED%Matched 2 of 2:%RESET%
 %RED%✗%RESET% Call #0:
     %RED%✗%RESET% "aardvark"

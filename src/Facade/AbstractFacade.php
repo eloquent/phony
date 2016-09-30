@@ -320,7 +320,7 @@ abstract class AbstractFacade
      */
     public static function equalTo($value)
     {
-        return static::driver()->matcherFactory->equalTo($value);
+        return static::driver()->matcherFactory->equalTo($value, false);
     }
 
     /**

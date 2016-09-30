@@ -20,7 +20,7 @@ class WildcardMatcherTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->exporter = InlineExporter::instance();
-        $this->matcher = new EqualToMatcher('x', $this->exporter);
+        $this->matcher = new EqualToMatcher('x', true, $this->exporter);
         $this->minimumArguments = 1;
         $this->maximumArguments = 2;
         $this->subject = new WildcardMatcher($this->matcher, $this->minimumArguments, $this->maximumArguments);
@@ -36,7 +36,7 @@ class WildcardMatcherTest extends PHPUnit_Framework_TestCase
     public function describeData()
     {
         $this->exporter = InlineExporter::instance();
-        $this->matcher = new EqualToMatcher('x', $this->exporter);
+        $this->matcher = new EqualToMatcher('x', true, $this->exporter);
 
         //                                        matcher                 minimum maximum expected
         return array(

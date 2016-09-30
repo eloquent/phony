@@ -285,17 +285,14 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testSetsArgumentWithInstanceHandles()
     {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-        $this->subject->setsArgument(0, $adaptable)->setsArgument(1, $unadaptable);
+        $handle = Phony::mock();
+        $this->subject->setsArgument(0, $handle);
 
         $a = null;
-        $b = null;
-        $arguments = new Arguments(array(&$a, &$b));
+        $arguments = new Arguments(array(&$a));
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
-        $this->assertSame($adaptable->get(), $a);
-        $this->assertSame($unadaptable, $b);
+        $this->assertSame($handle->get(), $a);
     }
 
     public function testYields()
@@ -319,32 +316,26 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testYieldsWithInstanceHandles()
     {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-        $this->subject->yields($adaptable)->yields($unadaptable);
+        $handle = Phony::mock();
+        $this->subject->yields($handle);
 
         $this->assertSame(
-            array($adaptable->get(), $unadaptable),
+            array($handle->get()),
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
 
     public function testYieldsWithInstanceHandleKeys()
     {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-        $this->subject->yields($adaptable, 'a')->yields($unadaptable, 'b');
+        $handle = Phony::mock();
+        $this->subject->yields($handle, 'a');
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
         if (!$this->featureDetector->isSupported('generator.implicit-next')) {
             $generator->next();
         }
 
-        $this->assertSame($adaptable->get(), $generator->key());
-
-        $generator->next();
-
-        $this->assertSame($unadaptable, $generator->key());
+        $this->assertSame($handle->get(), $generator->key());
     }
 
     public function testYieldsFrom()
@@ -375,25 +366,22 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testYieldsFromWithInstanceHandles()
     {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-        $this->subject->yieldsFrom(array($adaptable, $unadaptable));
+        $handle = Phony::mock();
+        $this->subject->yieldsFrom(array($handle));
 
         $this->assertSame(
-            array($adaptable->get(), $unadaptable),
+            array($handle->get()),
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
 
     public function testYieldsFromWithInstanceHandleKeys()
     {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
+        $handle = Phony::mock();
         $this->subject->yieldsFrom(
             new TupleIterator(
                 array(
-                    array($adaptable, 'a'),
-                    array($unadaptable, 'b'),
+                    array($handle, 'a'),
                 )
             )
         );
@@ -403,11 +391,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $generator->next();
         }
 
-        $this->assertSame($adaptable->get(), $generator->key());
-
-        $generator->next();
-
-        $this->assertSame($unadaptable, $generator->key());
+        $this->assertSame($handle->get(), $generator->key());
     }
 
     public function testReturns()
@@ -444,13 +428,13 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires generator return values.');
         }
 
-        $adaptable = Phony::mock();
-        $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns($adaptable));
+        $handle = Phony::mock();
+        $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns($handle));
 
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
         $this->assertSame(array('a', 'b'), iterator_to_array($generator));
-        $this->assertSame($adaptable->get(), $generator->getReturn());
+        $this->assertSame($handle->get(), $generator->getReturn());
     }
 
     public function testReturnsWithMulitpleValues()
@@ -611,8 +595,8 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
 
     public function testThrowsWithInstanceHandles()
     {
-        $adaptable = Phony::mock('RuntimeException');
-        $this->subject->throws($adaptable);
+        $handle = Phony::mock('RuntimeException');
+        $this->subject->throws($handle);
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
         $actual = null;
@@ -622,7 +606,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         } catch (Exception $actual) {
         }
 
-        $this->assertSame($adaptable->get(), $actual);
+        $this->assertSame($handle->get(), $actual);
     }
 
     public function testThrowsWithException()

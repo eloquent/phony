@@ -38,4 +38,13 @@ interface Exporter
      * @return string The exported value.
      */
     public function export(&$value, $depth = null);
+
+    /**
+     * Export a string representation of a callable value.
+     *
+     * @param callable $callback The callable.
+     *
+     * @return string The exported callable.
+     */
+    public function exportCallable($callback);
 }

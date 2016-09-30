@@ -35,7 +35,7 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->invocableInspector = new InvocableInspector();
         $this->matcherVerifier = MatcherVerifier::instance();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer);
+        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
         $this->differenceEngine = DifferenceEngine::instance();
         $this->differenceEngine->setUseColor(false);
         $this->featureDetector = FeatureDetector::instance();

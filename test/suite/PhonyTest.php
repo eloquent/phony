@@ -12,9 +12,7 @@
 namespace Eloquent\Phony;
 
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
@@ -436,50 +434,54 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 
     public function testAny()
     {
-        $expected = new AnyMatcher();
         $actual = Phony::any();
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\AnyMatcher', $actual);
     }
 
     public function testAnyFunction()
     {
-        $expected = new AnyMatcher();
         $actual = any();
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\AnyMatcher', $actual);
     }
 
     public function testEqualTo()
     {
-        $expected = $this->matcherFactory->equalTo('a');
         $actual = Phony::equalTo('a');
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\EqualToMatcher', $actual);
+        $this->assertSame('a', $actual->value());
     }
 
     public function testEqualToFunction()
     {
-        $expected = $this->matcherFactory->equalTo('a');
         $actual = equalTo('a');
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\EqualToMatcher', $actual);
+        $this->assertSame('a', $actual->value());
     }
 
     public function testWildcard()
     {
-        $expected = new WildcardMatcher($this->matcherFactory->equalTo('a'), 1, 2);
         $actual = Phony::wildcard('a', 1, 2);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\WildcardMatcher', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\EqualToMatcher', $actual->matcher());
+        $this->assertSame('a', $actual->matcher()->value());
+        $this->assertSame(1, $actual->minimumArguments());
+        $this->assertSame(2, $actual->maximumArguments());
     }
 
     public function testWildcardFunction()
     {
-        $expected = new WildcardMatcher($this->matcherFactory->equalTo('a'), 1, 2);
         $actual = wildcard('a', 1, 2);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\WildcardMatcher', $actual);
+        $this->assertInstanceOf('Eloquent\Phony\Matcher\EqualToMatcher', $actual->matcher());
+        $this->assertSame('a', $actual->matcher()->value());
+        $this->assertSame(1, $actual->minimumArguments());
+        $this->assertSame(2, $actual->maximumArguments());
     }
 
     public function testSetExportDepth()

@@ -320,7 +320,7 @@ function any()
  */
 function equalTo($value)
 {
-    return FacadeDriver::instance()->matcherFactory->equalTo($value);
+    return FacadeDriver::instance()->matcherFactory->equalTo($value, false);
 }
 
 /**

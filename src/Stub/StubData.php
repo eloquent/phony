@@ -346,10 +346,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             $value = $indexOrValue;
         }
 
-        if (
-            $value instanceof InstanceHandle &&
-            $value->isAdaptable()
-        ) {
+        if ($value instanceof InstanceHandle) {
             $value = $value->get();
         }
 
@@ -539,7 +536,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         }
 
         foreach (func_get_args() as $value) {
-            if ($value instanceof InstanceHandle && $value->isAdaptable()) {
+            if ($value instanceof InstanceHandle) {
                 $value = $value->get();
             }
 
@@ -623,10 +620,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         foreach (func_get_args() as $exception) {
             if (is_string($exception)) {
                 $exception = new Exception($exception);
-            } elseif (
-                $exception instanceof InstanceHandle &&
-                $exception->isAdaptable()
-            ) {
+            } elseif ($exception instanceof InstanceHandle) {
                 $exception = $exception->get();
             }
 

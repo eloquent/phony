@@ -48,9 +48,9 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
         );
         $this->stubFactory = StubFactory::instance();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer);
-        $this->matcherVerifier = new MatcherVerifier();
         $this->invocableInspector = new InvocableInspector();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
+        $this->matcherVerifier = new MatcherVerifier();
         $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
@@ -116,15 +116,6 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->subject->label());
         $this->assertSame($this->subject, $this->subject->setLabel($this->state->label));
         $this->assertSame($this->state->label, $this->subject->label());
-    }
-
-    public function testSetIsAdaptable()
-    {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
-
-        $this->assertTrue($this->subject->isAdaptable());
-        $this->assertSame($this->subject, $this->subject->setIsAdaptable(false));
-        $this->assertFalse($this->subject->isAdaptable());
     }
 
     public function testFull()

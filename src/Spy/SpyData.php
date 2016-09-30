@@ -382,7 +382,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
 
         if (
             $this->useIterableSpies &&
-            ($returnValue instanceof Traversable || is_array($returnValue))
+            (is_array($returnValue) || $returnValue instanceof Traversable)
         ) {
             return $this->iterableSpyFactory->create($call, $returnValue);
         }

@@ -43,7 +43,8 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = WildcardMatcher::instance();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer);
+        $this->invocableInspector = InvocableInspector::instance();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
         $this->matcherFactory = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
 
         $this->receivedExceptionA = new RuntimeException('Consequences will never be the same.');
@@ -160,7 +161,6 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
-        $this->invocableInspector = InvocableInspector::instance();
         $this->matcherVerifier = MatcherVerifier::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);

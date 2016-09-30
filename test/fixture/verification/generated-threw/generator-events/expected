@@ -1,26 +1,26 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls to behave like:
+%RESET%Expected %BOLD%stub#0[label]%RESET% generator calls to behave like:
     %GREEN%✓%RESET% Returned Generator, then: %GREEN%%FAINT%(4 matches)%RESET%
         %RED%✗%RESET% Threw InvalidArgumentException
 Matched 0 of 4:
-%RED%✗%RESET% Call #0 - {stub}[label](#0[:2]):
-    %RED%✗%RESET% Returned Generator, then:
+%RED%✗%RESET% Call #0 - stub#0[label](#0[:2]):
+    %RED%✗%RESET% Returned Generator#1{}, then:
         %RED%✗%RESET% Never started iterating
-%RED%✗%RESET% Call #1 - {stub}[label](#0[:2]):
-    %RED%✗%RESET% Returned Generator, then:
+%RED%✗%RESET% Call #1 - stub#0[label](#0[:2]):
+    %RED%✗%RESET% Returned Generator#2{}, then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Received "AARDVARK"
         - Produced 1 => "bonobo"
         - Received "BONOBO"
         %RED%✗%RESET% Returned 2
-%RED%✗%RESET% Call #2 - {stub}[label](#0[:1]):
-    %RED%✗%RESET% Returned Generator, then:
+%RED%✗%RESET% Call #2 - stub#0[label](#0[:1]):
+    %RED%✗%RESET% Returned Generator#4{}, then:
         - Started iterating
         - Produced 0 => "aardvark"
-        - Received exception RuntimeException#0{message: "AARDVARK"}
-        %RED%✗%RESET% Threw RuntimeException#0{message: "AARDVARK"}
-%RED%✗%RESET% Call #3 - {stub}[label](#0[:2]):
-    %RED%✗%RESET% Returned Generator, then:
+        - Received exception RuntimeException#3{message: "AARDVARK"}
+        %RED%✗%RESET% Threw RuntimeException#3{message: "AARDVARK"}
+%RED%✗%RESET% Call #3 - stub#0[label](#0[:2]):
+    %RED%✗%RESET% Returned Generator#5{}, then:
         - Started iterating
         - Produced 0 => "aardvark"
         %RED%✗%RESET% Never finished iterating

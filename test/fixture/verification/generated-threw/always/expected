@@ -1,12 +1,12 @@
-%RESET%Expected all %BOLD%{stub}[label]%RESET% generator calls to behave like:
+%RESET%Expected all %BOLD%stub#0[label]%RESET% generator calls to behave like:
     %GREEN%✓%RESET% Returned Generator, then: %GREEN%%FAINT%(2 matches)%RESET%
-        %RED%✗%RESET% Threw RuntimeException#0{message: "BONOBO"}
+        %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}
 Matched 1 of 2:
-%RED%✗%RESET% Call #0 - {stub}[label]("aardvark"):
-    %RED%✗%RESET% Returned Generator, then:
+%RED%✗%RESET% Call #0 - stub#0[label]("aardvark"):
+    %RED%✗%RESET% Returned Generator#3{}, then:
         - Started iterating
-        %RED%✗%RESET% Threw RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%0%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%1%FAINT%+}%RESET%{message: "%CYAN%%FAINT%[-%RESET%%CYAN%BONOBO%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%AARDVARK%FAINT%+}%RESET%"}
-%GREEN%✓%RESET% Call #1 - {stub}[label]("bonobo"):
-    %GREEN%✓%RESET% Returned Generator, then:
+        %RED%✗%RESET% Threw RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%1%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%2%FAINT%+}%RESET%{message: "%CYAN%%FAINT%[-%RESET%%CYAN%BONOBO%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%AARDVARK%FAINT%+}%RESET%"}
+%GREEN%✓%RESET% Call #1 - stub#0[label]("bonobo"):
+    %GREEN%✓%RESET% Returned Generator#5{}, then:
         - Started iterating
-        %GREEN%✓%RESET% Threw RuntimeException#2{message: "BONOBO"}
+        %GREEN%✓%RESET% Threw RuntimeException#4{message: "BONOBO"}

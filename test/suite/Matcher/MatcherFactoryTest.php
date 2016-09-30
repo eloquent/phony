@@ -19,6 +19,7 @@ use Eloquent\Phony\Integration\PhakeMatcherDriver;
 use Eloquent\Phony\Integration\ProphecyMatcherDriver;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Phpunit\PhpunitMatcherDriver;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Test\TestMatcherA;
 use Eloquent\Phony\Test\TestMatcherB;
@@ -39,6 +40,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->driverA = new TestMatcherDriverA();
         $this->driverB = new TestMatcherDriverB();
         $this->drivers = array($this->driverA, $this->driverB);
+
+        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testAddMatcherDriver()
@@ -80,25 +83,16 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->subject->addMatcherDriver($this->driverA);
         $this->subject->addMatcherDriver($this->driverB);
 
-        $this->assertTrue($this->subject->isMatcher(new EqualToMatcher('a', $this->exporter)));
+        $this->assertTrue($this->subject->isMatcher(new EqualToMatcher('a', true, $this->exporter)));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherA()));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherB()));
         $this->assertFalse($this->subject->isMatcher((object) array()));
     }
 
-    public function testIsMatcherWithInstanceHandles()
-    {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-
-        $this->assertTrue($this->subject->isMatcher($adaptable));
-        $this->assertFalse($this->subject->isMatcher($unadaptable));
-    }
-
     public function testAdapt()
     {
         $value = (object) array('key' => 'value');
-        $matcher = new EqualToMatcher($value, $this->exporter);
+        $matcher = new EqualToMatcher($value, true, $this->exporter);
         $adaptedValue = $this->subject->adapt($value);
 
         $this->assertSame($matcher, $this->subject->adapt($matcher));
@@ -109,7 +103,7 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
     public function testAdaptBoolean()
     {
         $value = true;
-        $matcher = new EqualToMatcher($value, $this->exporter);
+        $matcher = new EqualToMatcher($value, true, $this->exporter);
         $adaptedValue = $this->subject->adapt($value);
 
         $this->assertEquals($matcher, $adaptedValue);
@@ -122,8 +116,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $driverAMatcher = new TestMatcherA();
         $driverBMatcher = new TestMatcherB();
 
-        $this->assertEquals(new EqualToMatcher('a', $this->exporter), $this->subject->adapt($driverAMatcher));
-        $this->assertEquals(new EqualToMatcher('b', $this->exporter), $this->subject->adapt($driverBMatcher));
+        $this->assertEquals(new EqualToMatcher('a', false, $this->exporter), $this->subject->adapt($driverAMatcher));
+        $this->assertEquals(new EqualToMatcher('b', false, $this->exporter), $this->subject->adapt($driverBMatcher));
     }
 
     public function testAdaptSpecialCases()
@@ -132,42 +126,30 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
     }
 
-    public function testAdaptInstanceHandles()
-    {
-        $adaptable = Phony::mock();
-        $unadaptable = Phony::mock()->setIsAdaptable(false);
-
-        $this->assertEquals(new EqualToMatcher($adaptable->get(), $this->exporter), $this->subject->adapt($adaptable));
-        $this->assertEquals(new EqualToMatcher($unadaptable, $this->exporter), $this->subject->adapt($unadaptable));
-    }
-
     public function testAdaptAll()
     {
         $this->subject->addMatcherDriver($this->driverA);
         $this->subject->addMatcherDriver($this->driverB);
 
-        $valueB = new EqualToMatcher('b', $this->exporter);
+        $valueB = new EqualToMatcher('b', true, $this->exporter);
         $valueC = (object) array();
         $valueD = Phony::mock();
-        $valueE = Phony::mock()->setIsAdaptable(false);
         $values = array(
             'a',
             $valueB,
             $valueC,
             $valueD,
-            $valueE,
             new TestMatcherA(),
             '*',
             '~',
         );
         $actual = $this->subject->adaptAll($values);
         $expected = array(
-            new EqualToMatcher('a', $this->exporter),
+            new EqualToMatcher('a', true, $this->exporter),
             $valueB,
-            new EqualToMatcher($valueC, $this->exporter),
-            new EqualToMatcher($valueD->get(), $this->exporter),
-            new EqualToMatcher($valueE, $this->exporter),
-            new EqualToMatcher('a', $this->exporter),
+            new EqualToMatcher($valueC, true, $this->exporter),
+            new EqualToMatcher($valueD, true, $this->exporter),
+            new EqualToMatcher('a', false, $this->exporter),
             WildcardMatcher::instance(),
             $this->anyMatcher,
         );
@@ -177,14 +159,14 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testEqualTo()
     {
-        $expected = new EqualToMatcher('x', $this->exporter);
+        $expected = new EqualToMatcher('x', false, $this->exporter);
 
         $this->assertEquals($expected, $this->subject->equalTo('x'));
     }
 
     public function testWildcard()
     {
-        $expected = new WildcardMatcher(new EqualToMatcher('x', $this->exporter), 111, 222);
+        $expected = new WildcardMatcher(new EqualToMatcher('x', true, $this->exporter), 111, 222);
 
         $this->assertEquals($expected, $this->subject->wildcard('x', 111, 222));
     }

@@ -36,7 +36,7 @@ class EqualToMatcherVsRecursiveEvent extends AthleticEvent
         $this->array2 = $this->generateNestedArray(200);
 
         $this->exporter = InlineExporter::instance();
-        $this->iterative = new EqualToMatcher($this->array1, $this->exporter);
+        $this->iterative = new EqualToMatcher($this->array1, true, $this->exporter);
         $this->recursive = new RecursiveEqualToMatcher($this->array1);
     }
 

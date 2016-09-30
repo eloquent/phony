@@ -318,7 +318,7 @@ function any()
  */
 function equalTo($value)
 {
-    return PhoFacadeDriver::instance()->matcherFactory->equalTo($value);
+    return PhoFacadeDriver::instance()->matcherFactory->equalTo($value, false);
 }
 
 /**

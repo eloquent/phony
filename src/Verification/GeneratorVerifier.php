@@ -229,7 +229,7 @@ class GeneratorVerifier extends IterableVerifier
         } elseif (is_object($type)) {
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
-                $type = $this->matcherFactory->equalTo($type);
+                $type = $this->matcherFactory->equalTo($type, true);
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->adapt($type);
@@ -296,7 +296,7 @@ class GeneratorVerifier extends IterableVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof Throwable || $type instanceof Exception) {
-            $type = $this->matcherFactory->equalTo($type);
+            $type = $this->matcherFactory->equalTo($type, true);
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);
         }
@@ -454,7 +454,7 @@ class GeneratorVerifier extends IterableVerifier
         } elseif (is_object($type)) {
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
-                $type = $this->matcherFactory->equalTo($type);
+                $type = $this->matcherFactory->equalTo($type, true);
             } elseif ($this->matcherFactory->isMatcher($type)) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->adapt($type);
@@ -508,7 +508,7 @@ class GeneratorVerifier extends IterableVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof Throwable || $type instanceof Exception) {
-            $type = $this->matcherFactory->equalTo($type);
+            $type = $this->matcherFactory->equalTo($type, true);
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);
         }

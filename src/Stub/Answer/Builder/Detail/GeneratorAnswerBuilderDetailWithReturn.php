@@ -62,17 +62,11 @@ abstract class GeneratorAnswerBuilderDetailWithReturn
 
                 if ($iteration instanceof GeneratorYieldFromIteration) {
                     foreach ($iteration->values as $key => $value) {
-                        if (
-                            $key instanceof InstanceHandle &&
-                            $key->isAdaptable()
-                        ) {
+                        if ($key instanceof InstanceHandle) {
                             $key = $key->get();
                         }
 
-                        if (
-                            $value instanceof InstanceHandle &&
-                            $value->isAdaptable()
-                        ) {
+                        if ($value instanceof InstanceHandle) {
                             $value = $value->get();
                         }
 

@@ -1,12 +1,12 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% generator calls to behave like:
+%RESET%Expected %BOLD%stub#0[label]%RESET% generator calls to behave like:
     %GREEN%✓%RESET% Returned Generator, then: %GREEN%%FAINT%(1 match)%RESET%
         %RED%✗%RESET% Returned "ZEBRA"
 Matched 0 of 1:
-%RED%✗%RESET% Call #0 - {stub}[label]("aardvark"):
-    %RED%✗%RESET% Returned Generator, then:
+%RED%✗%RESET% Call #0 - stub#0[label]("aardvark"):
+    %RED%✗%RESET% Returned Generator#1{}, then:
         - Started iterating
         %RED%✗%RESET% Returned %CYAN%%FAINT%[-%RESET%%CYAN%"ZEBRA"%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%null%FAINT%+}%RESET%
-%FAINT%- Call #1 - {stub}[label]("bonobo", Closure#0{:2}):%RESET%
+%FAINT%- Call #1 - stub#0[label]("bonobo", Closure#2{}[verification.php:25]):%RESET%
 %FAINT%    - Never responded%RESET%
-%FAINT%- Call #2 - {stub}[label]("bonobo", Closure#0{:2}, 1):%RESET%
+%FAINT%- Call #2 - stub#0[label]("bonobo", Closure#2{}[verification.php:25], 1):%RESET%
 %FAINT%    - Never responded%RESET%

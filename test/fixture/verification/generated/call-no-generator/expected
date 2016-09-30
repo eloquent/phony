@@ -1,4 +1,4 @@
-%RESET%Expected %BOLD%{stub}[label]%RESET% call #1 to behave like:
+%RESET%Expected %BOLD%stub#0[label]%RESET% call #1 to behave like:
     %RED%✗%RESET% Returned Generator
-%RED%✗%RESET% Call #1 - {stub}[label]("bonobo"):
-    %RED%✗%RESET% Threw RuntimeException#0{message: "BONOBO"}
+%RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
+    %RED%✗%RESET% Threw RuntimeException#1{message: "BONOBO"}

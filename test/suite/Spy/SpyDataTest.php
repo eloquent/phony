@@ -415,7 +415,6 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
         $this->callback = function () {
             return array_map('strtoupper', func_get_args());
         };
-        call_user_func($this->callback);
         $spy = new SpyData(
             $this->callback,
             null,
@@ -430,29 +429,41 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
         foreach ($spy->invoke('c') as $value) {
         }
         $this->callFactory->reset();
-        $expected = array(
-            $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')),
-                $this->callEventFactory->createReturned(array('A', 'B')),
-                array(
-                    $this->callEventFactory->createUsed(),
-                    $this->callEventFactory->createProduced(0, 'A'),
-                    $this->callEventFactory->createProduced(1, 'B'),
-                ),
-                $this->callEventFactory->createConsumed()
-            ),
-            $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('c')),
-                $this->callEventFactory->createReturned(array('C')),
-                array(
-                    $this->callEventFactory->createUsed(),
-                    $this->callEventFactory->createProduced(0, 'C'),
-                ),
-                $this->callEventFactory->createConsumed()
-            ),
-        );
+        $expectedCallA =
+            $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')));
+        $iterableSpyA = $this->iterableSpyFactory->create($expectedCallA, array('A', 'B'));
+        $expectedCallA->setResponseEvent($this->callEventFactory->createReturned(array('A', 'B')));
+        iterator_to_array($iterableSpyA);
+        $expectedCallB =
+            $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('c')));
+        $iterableSpyB = $this->iterableSpyFactory->create($expectedCallB, array('C'));
+        $expectedCallB->setResponseEvent($this->callEventFactory->createReturned(array('C')));
+        iterator_to_array($iterableSpyB);
+        $expected = array($expectedCallA, $expectedCallB);
 
         $this->assertEquals($expected, $spy->allCalls());
+    }
+
+    public function testInvokeWithIterableSpyDoubleWrap()
+    {
+        $this->callback = function ($a) {
+            return $a;
+        };
+        $spy = new SpyData(
+            $this->callback,
+            null,
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->iterableSpyFactory
+        );
+        $spy->setUseIterableSpies(true);
+        $iterableSpyA = $spy->invoke(array());
+        $iterableSpyB = $spy->invoke($iterableSpyA);
+
+        $this->assertInstanceOf('Eloquent\Phony\Spy\IterableSpy', $iterableSpyA);
+        $this->assertInstanceOf('Eloquent\Phony\Spy\IterableSpy', $iterableSpyB);
+        $this->assertNotSame($iterableSpyA, $iterableSpyB);
     }
 
     public function testStopRecording()

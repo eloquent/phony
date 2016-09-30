@@ -10,6 +10,7 @@
  */
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Phpunit as x;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
@@ -22,6 +23,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->featureDetector = FeatureDetector::instance();
+        $this->exporter = InlineExporter::instance();
 
         x\setUseColor(false);
     }
@@ -1034,7 +1036,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub();
     }
 
-    public function testAutomaticInstanceHandleAdaptation()
+    public function testMockHandleSubstitution()
     {
         $handleA = x\mock();
         $handleA->get();
@@ -1047,6 +1049,27 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame('a', $mockB->methodA($handleA->get()));
         $handleB->methodA->calledWith($handleA);
         $handleB->methodA->returned($handleA);
+    }
+
+    public function testIterableSpySubstitution()
+    {
+        $stub = x\stub()->setUseIterableSpies(true)->returnsArgument();
+        $iterable = array('a', 'b');
+        $iterableSpy = $stub($iterable);
+        $spy = x\spy();
+        $spy($iterable);
+        $spy($iterableSpy);
+
+        $stub->returned($iterable);
+        $stub->returned($iterableSpy);
+        $stub->returned(x\equalTo($iterable));
+        $stub->never()->returned(x\equalTo($iterableSpy));
+        $spy->callAt(0)->calledWith($iterable);
+        $spy->callAt(0)->calledWith($iterableSpy);
+        $spy->callAt(0)->never()->calledWith(x\equalTo($iterableSpy));
+        $spy->callAt(1)->calledWith($iterable);
+        $spy->callAt(1)->calledWith($iterableSpy);
+        $spy->callAt(1)->never()->calledWith(x\equalTo($iterable));
     }
 
     public function testReturnByReferenceMocking()
@@ -1240,5 +1263,373 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $mock = $handle->get();
 
         $this->assertNull($mock->constructorArguments);
+    }
+
+    public function testIterableSpyDoubleWrappingWithArray()
+    {
+        $stub = x\stub()->setUseIterableSpies(true)->returns(array('a', 'b'));
+        $iterableSpyA = $stub();
+        $stub->returns($iterableSpyA);
+        $iterableSpyB = $stub();
+        foreach ($iterableSpyA as $iterableSpyAFirst) {
+            break;
+        }
+        $iterableSpyBContents = iterator_to_array($iterableSpyB);
+        $singleWrapped = $stub->callAt(0)->iterated();
+        $doubleWrapped = $stub->callAt(1)->iterated();
+
+        $this->assertSame('a', $iterableSpyAFirst);
+        $this->assertSame(array('a', 'b'), $iterableSpyBContents);
+        $singleWrapped->twice()->produced('a');
+        $singleWrapped->once()->produced('b');
+        $doubleWrapped->once()->produced('a');
+        $doubleWrapped->once()->produced('b');
+    }
+
+    public function testIterableSpyDoubleWrappingWithTraversable()
+    {
+        $stub = x\stub()->setUseIterableSpies(true)->returns(new ArrayIterator(array('a', 'b')));
+        $iterableSpyA = $stub();
+        $stub->returns($iterableSpyA);
+        $iterableSpyB = $stub();
+        foreach ($iterableSpyA as $iterableSpyAFirst) {
+            break;
+        }
+        $iterableSpyBContents = iterator_to_array($iterableSpyB);
+        $singleWrapped = $stub->callAt(0)->iterated();
+        $doubleWrapped = $stub->callAt(1)->iterated();
+
+        $this->assertSame('a', $iterableSpyAFirst);
+        $this->assertSame(array('a', 'b'), $iterableSpyBContents);
+        $singleWrapped->twice()->produced('a');
+        $singleWrapped->once()->produced('b');
+        $doubleWrapped->once()->produced('a');
+        $doubleWrapped->once()->produced('b');
+    }
+
+    public function testIterableSpyDoubleWrappingWithGenerator()
+    {
+        if (!$this->featureDetector->isSupported('generator')) {
+            $this->markTestSkipped('Requires generators.');
+        }
+        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
+            $this->markTestSkipped('Requires implicit next() generators.');
+        }
+
+        $stub = x\stub()->generates()->yieldsFrom(array('a', 'b', 'c'))->returns();
+        $generatorSpyA = $stub();
+        $stub->returns($generatorSpyA);
+        $generatorSpyB = $stub();
+
+        $this->assertSame($generatorSpyA, $generatorSpyB->_phonySubject);
+
+        $first = true;
+        $generatorSpyAContents = array();
+        foreach ($generatorSpyA as $value) {
+            $generatorSpyAContents[] = $value;
+
+            if ($first) {
+                $first = false;
+
+                continue;
+            }
+
+            break;
+        }
+        $generatorSpyBContents = iterator_to_array($generatorSpyB);
+        $singleWrapped = $stub->callAt(0)->generated();
+        $doubleWrapped = $stub->callAt(1)->generated();
+
+        $this->assertSame(array('a', 'b'), $generatorSpyAContents);
+        $this->assertSame(array(1 => 'b', 2 => 'c'), $generatorSpyBContents);
+        $singleWrapped->once()->produced(0, 'a');
+        $singleWrapped->once()->produced(1, 'b');
+        $singleWrapped->once()->produced(2, 'c');
+        $doubleWrapped->never()->produced('a');
+        $doubleWrapped->once()->produced(1, 'b');
+        $doubleWrapped->once()->produced(2, 'c');
+    }
+
+    public function testIterableSpyDoubleWrappingWithGeneratorWithoutImplicitNext()
+    {
+        if (!$this->featureDetector->isSupported('generator')) {
+            $this->markTestSkipped('Requires generators.');
+        }
+        if ($this->featureDetector->isSupported('generator.implicit-next')) {
+            $this->markTestSkipped('Requires explicit next() generators.');
+        }
+
+        $stub = x\stub()->generates()->yieldsFrom(array('a', 'b', 'c'))->returns();
+        $generatorSpyA = $stub();
+        $stub->returns($generatorSpyA);
+        $generatorSpyB = $stub();
+
+        $this->assertSame($generatorSpyA, $generatorSpyB->_phonySubject);
+
+        $first = true;
+        $generatorSpyAContents = array();
+        foreach ($generatorSpyA as $value) {
+            $generatorSpyAContents[] = $value;
+
+            if ($first) {
+                $first = false;
+
+                continue;
+            }
+
+            break;
+        }
+        $generatorSpyBContents = iterator_to_array($generatorSpyB);
+        $singleWrapped = $stub->callAt(0)->generated();
+        $doubleWrapped = $stub->callAt(1)->generated();
+
+        $this->assertSame(array('a', 'b'), $generatorSpyAContents);
+        $this->assertSame(array(2 => 'c'), $generatorSpyBContents);
+        $singleWrapped->once()->produced(0, 'a');
+        $singleWrapped->once()->produced(1, 'b');
+        $singleWrapped->once()->produced(2, 'c');
+        $doubleWrapped->never()->produced('a');
+        $doubleWrapped->never()->produced('b');
+        $doubleWrapped->once()->produced(2, 'c');
+    }
+
+    public function exporterExamplesTest()
+    {
+        $sequence = array(1, 2);
+        $repeatedSequences = array(&$sequence, &$sequence);
+        $inner = (object) array('a' => 1);
+        $repeatedObjects = (object) array('b' => $inner, 'c' => $inner);
+        $identifierCollision = array((object) array(), array((object) array()));
+        $inner = new ClassA();
+        $inner->c = 'd';
+        $classNameExclusion = (object) array('a' => $inner, 'b' => $inner);
+
+        return array(
+            // The exporter format
+            'null'           => array(null,                               'null'),
+            'true'           => array(true,                               'true'),
+            'false'          => array(false,                              'false'),
+            'integer'        => array(111,                                '111'),
+            'float'          => array(1.11,                               '1.110000e+0'),
+            'float string'   => array('1.11',                             '"1.11"'),
+            'string'         => array("a\nb",                             '"a\nb"'),
+            'resource'       => array(STDIN,                              'resource#1'),
+            'sequence'       => array($sequence,                          '#0[1, 2]'),
+            'map'            => array(array('a' => 1, 'b' => 2),          '#0["a": 1, "b": 2]'),
+            'generic object' => array((object) array('a' => 1, 'b' => 2), '#0{a: 1, b: 2}'),
+            'object'         => array(new ClassA(),                       'ClassA#0{}'),
+
+            // Export identifiers and references
+            'repeated sequence'       => array($repeatedSequences, '#0[#1[1, 2], &1[]]'),
+            'repeated generic object' => array($repeatedObjects,   '#0{b: #1{a: 1}, c: &1{}}'),
+
+            // Export reference types
+            'identifier collision' => array($identifierCollision, '#0[#0{}, #1[#1{}]]'),
+
+            // Export reference exclusions
+            'class name exclusion' => array($classNameExclusion, '#0{a: ClassA#1{c: "d"}, b: &1{}}'),
+
+            // Exporting closures
+            'closure' => array(function () {}, 'Closure#0{}[FunctionalTest.php:' . __LINE__ . ']'),
+
+            // Exporting exceptions
+            'exception'           => array(new Exception('a', 1, new Exception()), 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'),
+            'exception defaulted' => array(new RuntimeException(),                 'RuntimeException#0{}'),
+        );
+    }
+
+    /**
+     * @dataProvider exporterExamplesTest
+     */
+    public function testExporterExamples($value, $expected)
+    {
+        $this->exporter->reset();
+
+        $this->assertSame($expected, $this->exporter->export($value, -1));
+    }
+
+    public function testExporterExamplesRepeatedWrappers()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $inner = x\mock('ClassA')->setLabel('mock-label');
+        $value = array($inner, $inner);
+        $this->exporter->reset();
+
+        $this->assertSame(
+            '#0[handle#0(PhonyMock_ClassA_0#1{}[mock-label]), &0()]',
+            $this->exporter->export($value, -1)
+        );
+    }
+
+    public function testExporterExamplesReferenceTypes()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $array = array();
+        $object = (object) array();
+        $wrapper = x\spy('implode')->setLabel('spy-label');
+        $valueA = array(&$array, &$array);
+        $valueB = array($object, $object);
+        $valueC = array($wrapper, $wrapper);
+        $this->exporter->reset();
+
+        $this->assertSame('#0[#1[], &1[]]', $this->exporter->export($valueA, -1));
+        $this->assertSame('#0[#0{}, &0{}]', $this->exporter->export($valueB, -1));
+        $this->assertSame('#0[spy#1(implode)[spy-label], &1()]', $this->exporter->export($valueC, -1));
+    }
+
+    public function testExporterExamplesExcludeWrapperValue()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $inner = x\mock();
+        $value = array($inner, $inner);
+        $this->exporter->reset();
+
+        $this->assertSame('#0[handle#0(PhonyMock_0#1{}[0]), &0()]', $this->exporter->export($value, -1));
+    }
+
+    public function testExporterExamplesIdentifierPersistenceObjects()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $a = (object) array();
+        $b = (object) array();
+        $c = x\mock();
+        $valueA = array($a, $b, $c, $a);
+        $valueB = array($b, $a, $b, $c);
+        $this->exporter->reset();
+
+        $this->assertSame('#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &0{}]', $this->exporter->export($valueA, -1));
+        $this->assertSame('#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]', $this->exporter->export($valueB, -1));
+    }
+
+    public function testExporterExamplesIdentifierPersistenceArrays()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $a = array();
+        $b = array();
+        $valueA = array(&$a, &$b, &$a);
+        $valueB = array(&$b, &$a, &$b);
+        $this->exporter->reset();
+
+        $this->assertSame('#0[#1[], #2[], &1[]]', $this->exporter->export($valueA, -1));
+        $this->assertSame('#0[#1[], #2[], &1[]]', $this->exporter->export($valueB, -1));
+    }
+
+    public function testExporterExamplesRecursiveValues()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $recursiveArray = array();
+        $recursiveArray[] = &$recursiveArray;
+        $recursiveObject = (object) array();
+        $recursiveObject->a = $recursiveObject;
+        $this->exporter->reset();
+
+        $this->assertSame('#0[&0[]]', $this->exporter->export($recursiveArray, -1));
+        $this->assertSame('#0{a: &0{}}', $this->exporter->export($recursiveObject, -1));
+    }
+
+    public function testExporterExamplesMocks()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $handle = x\mock('ClassA')->setLabel('mock-label');
+        $mock = $handle->get();
+        $this->exporter->reset();
+
+        $this->assertSame('PhonyMock_ClassA_0#0{}[mock-label]', $this->exporter->export($mock, -1));
+        $this->assertSame('handle#1(PhonyMock_ClassA_0#0{}[mock-label])', $this->exporter->export($handle, -1));
+    }
+
+    public function testExporterExamplesStaticHandle()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $handle = x\mock('ClassA')->setLabel('mock-label');
+        $staticHandle = x\onStatic($handle);
+        $this->exporter->reset();
+
+        $this->assertSame('static-handle#0(PhonyMock_ClassA_0)', $this->exporter->export($staticHandle, -1));
+    }
+
+    public function testExporterExamplesStubs()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $stub = x\stub('implode')->setLabel('stub-label');
+        $this->exporter->reset();
+
+        $this->assertSame('stub#0(implode)[stub-label]', $this->exporter->export($stub, -1));
+    }
+
+    public function testExporterExamplesAnonymousStubs()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $stub = x\stub()->setLabel('stub-label');
+        $this->exporter->reset();
+
+        $this->assertSame('stub#0[stub-label]', $this->exporter->export($stub, -1));
+    }
+
+    public function testExporterExamplesMockStubs()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $handle = x\mock('ClassA')->setLabel('mock-label');
+        $staticHandle = x\onStatic($handle);
+        $stubA = $handle->methodA->setLabel('stub-label');
+        $stubB = $staticHandle->staticMethodA->setLabel('stub-label');
+        $this->exporter->reset();
+
+        $this->assertSame('stub#0(ClassA[mock-label]->methodA)[stub-label]', $this->exporter->export($stubA, -1));
+        $this->assertSame('stub#1(ClassA::staticMethodA)[stub-label]', $this->exporter->export($stubB, -1));
+    }
+
+    public function testExporterExamplesSpies()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $spy = x\spy('implode')->setLabel('spy-label');
+        $this->exporter->reset();
+
+        $this->assertSame('spy#0(implode)[spy-label]', $this->exporter->export($spy, -1));
+    }
+
+    public function testExporterExamplesAnonymousSpies()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $spy = x\spy()->setLabel('spy-label');
+        $this->exporter->reset();
+
+        $this->assertSame('spy#0[spy-label]', $this->exporter->export($spy, -1));
+    }
+
+    public function testExporterExamplesMethodSpies()
+    {
+        $this->markTestSkipped('Requires process isolation to actually work.');
+
+        $object = new ClassA();
+        $spyA = x\spy(array($object, 'methodA'))->setLabel('spy-label');
+        $spyB = x\spy(array('ClassA', 'staticMethodA'))->setLabel('spy-label');
+        $this->exporter->reset();
+
+        $this->assertSame('spy#0(ClassA->methodA)[spy-label]', $this->exporter->export($spyA, -1));
+        $this->assertSame('spy#1(ClassA::staticMethodA)[spy-label]', $this->exporter->export($spyB, -1));
+    }
+
+    public function testExporterExamplesExportDepth()
+    {
+        $valueA = array(array(), array('a', 'b', 'c'));
+        $valueB = array((object) array(), (object) array('a', 'b', 'c'));
+        $this->exporter->reset();
+
+        $this->assertSame('#0[#1[], #2[:3]]', $this->exporter->export($valueA));
+        $this->assertSame('#0[#0{}, #1{:3}]', $this->exporter->export($valueB));
     }
 }

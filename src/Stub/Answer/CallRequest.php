@@ -42,10 +42,7 @@ class CallRequest
         $this->suffixArguments = $suffixArguments;
 
         foreach ($this->arguments->all() as $index => $argument) {
-            if (
-                $argument instanceof InstanceHandle &&
-                $argument->isAdaptable()
-            ) {
+            if ($argument instanceof InstanceHandle) {
                 $this->arguments->set($index, $argument->get());
             }
         }

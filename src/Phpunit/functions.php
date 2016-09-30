@@ -320,7 +320,8 @@ function any()
  */
 function equalTo($value)
 {
-    return PhpunitFacadeDriver::instance()->matcherFactory->equalTo($value);
+    return PhpunitFacadeDriver::instance()->matcherFactory
+        ->equalTo($value, false);
 }
 
 /**

@@ -74,36 +74,40 @@ class GeneratorSpyFactory
         if ($this->isHhvm) {
             // @codeCoverageIgnoreStart
             if ($this->isGeneratorReturnSupported) {
-                return
+                $spy =
                     GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
                         $call,
                         $generator,
                         $this->callEventFactory
                     );
+            } else {
+                $spy = GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
+                    $call,
+                    $generator,
+                    $this->callEventFactory,
+                    $this->isGeneratorImplicitNextSupported
+                );
             }
-
-            return GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
-                $call,
-                $generator,
-                $this->callEventFactory,
-                $this->isGeneratorImplicitNextSupported
-            );
             // @codeCoverageIgnoreEnd
         } elseif ($this->isGeneratorReturnSupported) {
-            return GeneratorSpyFactoryDetailPhpWithReturn::createGeneratorSpy(
+            $spy = GeneratorSpyFactoryDetailPhpWithReturn::createGeneratorSpy(
+                $call,
+                $generator,
+                $this->callEventFactory
+            );
+            // @codeCoverageIgnoreStart
+        } else {
+            $spy = GeneratorSpyFactoryDetailPhp::createGeneratorSpy(
                 $call,
                 $generator,
                 $this->callEventFactory
             );
         }
-
-        // @codeCoverageIgnoreStart
-        return GeneratorSpyFactoryDetailPhp::createGeneratorSpy(
-            $call,
-            $generator,
-            $this->callEventFactory
-        );
         // @codeCoverageIgnoreEnd
+
+        $spy->_phonySubject = $generator;
+
+        return $spy;
     }
 
     private static $instance;

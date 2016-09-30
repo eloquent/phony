@@ -12,8 +12,11 @@
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\Exporter;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Spy\IterableSpy;
 use Exception;
+use Generator;
 use Throwable;
 
 /**
@@ -26,12 +29,14 @@ class EqualToMatcher implements Matcher
     /**
      * Construct a new equal to matcher.
      *
-     * @param mixed    $value    The value to check against.
-     * @param Exporter $exporter The exporter to use.
+     * @param mixed    $value           The value to check against.
+     * @param bool     $useSubstitution True to use substitution for wrapper types.
+     * @param Exporter $exporter        The exporter to use.
      */
-    public function __construct($value, Exporter $exporter)
+    public function __construct($value, $useSubstitution, Exporter $exporter)
     {
         $this->value = $value;
+        $this->useSubstitution = $useSubstitution;
         $this->exporter = $exporter;
     }
 
@@ -56,6 +61,30 @@ class EqualToMatcher implements Matcher
     {
         $left = $this->value;
         $right = $value;
+
+        if ($this->useSubstitution) {
+            if ($left instanceof IterableSpy) {
+                $left = $left->iterable();
+            } elseif (
+                $left instanceof Generator &&
+                isset($left->_phonySubject)
+            ) {
+                $left = $left->_phonySubject;
+            } elseif ($left instanceof InstanceHandle) {
+                $left = $left->get();
+            }
+
+            if ($right instanceof IterableSpy) {
+                $right = $right->iterable();
+            } elseif (
+                $right instanceof Generator &&
+                isset($right->_phonySubject)
+            ) {
+                $right = $right->_phonySubject;
+            } elseif ($right instanceof InstanceHandle) {
+                $right = $right->get();
+            }
+        }
 
         /*
          * @var array<string,bool> The set of object comparisons that have been made.
@@ -342,5 +371,6 @@ class EqualToMatcher implements Matcher
     const ARRAY_ID_KEY = "\0__phony__\0";
 
     private $value;
+    private $useSubstitution;
     private $exporter;
 }

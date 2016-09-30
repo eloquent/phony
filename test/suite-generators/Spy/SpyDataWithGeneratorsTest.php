@@ -17,7 +17,7 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit_Framework_TestCase;
 
-class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class SpyDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -52,7 +52,6 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
                 yield strtoupper($argument);
             }
         };
-        $generator = call_user_func($this->callback);
         $spy = new SpyData(
             $this->callback,
             null,
@@ -66,31 +65,46 @@ class SpyWithGeneratorsTest extends PHPUnit_Framework_TestCase
         foreach ($spy->invoke('c') as $value) {
         }
         $this->callFactory->reset();
-        $expected = array(
-            $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')),
-                $this->callEventFactory->createReturned($generator),
-                array(
-                    $this->callEventFactory->createUsed(),
-                    $this->callEventFactory->createProduced(0, 'A'),
-                    $this->callEventFactory->createReceived(null),
-                    $this->callEventFactory->createProduced(1, 'B'),
-                    $this->callEventFactory->createReceived(null),
-                ),
-                $this->callEventFactory->createReturned(null)
-            ),
-            $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('c')),
-                $this->callEventFactory->createReturned($generator),
-                array(
-                    $this->callEventFactory->createUsed(),
-                    $this->callEventFactory->createProduced(0, 'C'),
-                    $this->callEventFactory->createReceived(null),
-                ),
-                $this->callEventFactory->createReturned(null)
-            ),
-        );
+        $generatorA = call_user_func($this->callback, 'a', 'b');
+        $generatorB = call_user_func($this->callback, 'c');
+        $expectedCallA =
+            $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')));
+        $generatorSpyA = $this->generatorSpyFactory->create($expectedCallA, $generatorA);
+        $expectedCallA->setResponseEvent($this->callEventFactory->createReturned($generatorA));
+        iterator_to_array($generatorSpyA);
+        $expectedCallB =
+            $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('c')));
+        $generatorSpyB = $this->generatorSpyFactory->create($expectedCallB, $generatorB);
+        $expectedCallB->setResponseEvent($this->callEventFactory->createReturned($generatorB));
+        iterator_to_array($generatorSpyB);
+        $expected = array($expectedCallA, $expectedCallB);
 
         $this->assertEquals($expected, $spy->allCalls());
+    }
+
+    public function testInvokeWithGeneratorSpyDoubleWrap()
+    {
+        $this->callback = function ($a) {
+            return $a;
+        };
+        $spy = new SpyData(
+            $this->callback,
+            null,
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->iterableSpyFactory
+        );
+        $function = function () {
+            return;
+            yield;
+        };
+        $generator = $function();
+        $generatorSpyA = $spy->invoke($generator);
+        $generatorSpyB = $spy->invoke($generatorSpyA);
+
+        $this->assertInstanceOf('Generator', $generatorSpyA);
+        $this->assertInstanceOf('Generator', $generatorSpyB);
+        $this->assertNotSame($generatorSpyA, $generatorSpyB);
     }
 }

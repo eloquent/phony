@@ -1,7 +1,7 @@
-%RESET%Expected %BOLD%{closure}[label]%RESET% to behave like:
+%RESET%Expected %BOLD%Closure#0{}[verification.php:7][label]%RESET% to behave like:
     %RED%✗%RESET% Threw <any>
 %RED%Exactly 3 required. Matched 2 of 2:%RESET%
-%GREEN%✓%RESET% Call #0 - {closure}[label]("aardvark"):
-    %GREEN%✓%RESET% Threw RuntimeException#0{message: "AARDVARK"}
-%GREEN%✓%RESET% Call #1 - {closure}[label]("bonobo"):
-    %GREEN%✓%RESET% Threw RuntimeException#1{message: "BONOBO"}
+%GREEN%✓%RESET% Call #0 - Closure#0{}[verification.php:7][label]("aardvark"):
+    %GREEN%✓%RESET% Threw RuntimeException#1{message: "AARDVARK"}
+%GREEN%✓%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo"):
+    %GREEN%✓%RESET% Threw RuntimeException#2{message: "BONOBO"}

@@ -76,7 +76,7 @@
             }
         </style>
     </defs>
-    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">{spy}[label]</tspan> call #1 not to have arguments:</text>
+    <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">spy#0[label]</tspan> call #1 not to have arguments:</text>
     <text x="16" y="44" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;aardvark&quot;</text>
     <text x="16" y="60" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;dugong&quot;]</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #1:</text>

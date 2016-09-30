@@ -47,9 +47,9 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
         );
         $this->stubFactory = StubFactory::instance();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer);
-        $this->matcherVerifier = new MatcherVerifier();
         $this->invocableInspector = new InvocableInspector();
+        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
+        $this->matcherVerifier = new MatcherVerifier();
         $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);

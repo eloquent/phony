@@ -68,6 +68,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
+        $this->assertSame($generator, $spy->_phonySubject);
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
@@ -113,6 +114,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
+        $this->assertSame($generator, $spy->_phonySubject);
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($exception, $caughtException);
@@ -166,6 +168,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
+        $this->assertSame($generator, $spy->_phonySubject);
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
@@ -190,6 +193,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
+        $this->assertSame($generator, $spy->_phonySubject);
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
@@ -219,22 +223,10 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf('Generator', $spy);
+        $this->assertSame($generator, $spy->_phonySubject);
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($exception, $caughtException);
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 
     public function testGeneratorReturn()
@@ -257,5 +249,18 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             123,
             $spy->getReturn()
         );
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
     }
 }

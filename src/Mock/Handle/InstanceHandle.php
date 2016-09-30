@@ -79,7 +79,6 @@ class InstanceHandle extends AbstractHandle
         }
 
         $this->callParentConstructorMethod = $callParentConstructorMethod;
-        $this->isAdaptable = true;
 
         parent::__construct(
             $class,
@@ -207,30 +206,5 @@ class InstanceHandle extends AbstractHandle
         return $this;
     }
 
-    /**
-     * Set whether this handle should be adapted to its mock automatically.
-     *
-     * @param bool $isAdaptable True if this handle should be adapted automatically.
-     *
-     * @return $this This handle.
-     */
-    public function setIsAdaptable($isAdaptable)
-    {
-        $this->isAdaptable = $isAdaptable;
-
-        return $this;
-    }
-
-    /**
-     * Returns true if this handle should be adapted to its mock automatically.
-     *
-     * @return bool True if this handle should be adapted automatically.
-     */
-    public function isAdaptable()
-    {
-        return $this->isAdaptable;
-    }
-
     private $callParentConstructorMethod;
-    private $isAdaptable;
 }

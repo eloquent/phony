@@ -1,12 +1,12 @@
 <?php
 
-if (!$featureDetector->isSupported('generator')) {
+if (!$detector->isSupported('generator')) {
     $message = 'Requires support for generators.';
 
     return false;
 }
 
-if (!$featureDetector->isSupported('generator.return')) {
+if (!$detector->isSupported('generator.return')) {
     $message = 'Requires support for generator returns.';
 
     return false;

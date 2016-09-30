@@ -1,22 +1,22 @@
-%RESET%Expected all %BOLD%{stub}[label]%RESET% calls to complete.
+%RESET%Expected all %BOLD%stub#0[label]%RESET% calls to complete.
 Matched 2 of 4:
-%GREEN%✓%RESET% Call #0 - {stub}[label]():
+%GREEN%✓%RESET% Call #0 - stub#0[label]():
     %GREEN%✓%RESET% Returned #0[:3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"
         - Produced 2 => "chameleon"
         %GREEN%✓%RESET% Finished iterating
-%RED%✗%RESET% Call #1 - {stub}[label]():
+%RED%✗%RESET% Call #1 - stub#0[label]():
     %RED%✗%RESET% Returned #0[:3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"
         %RED%✗%RESET% Never finished iterating
-%RED%✗%RESET% Call #2 - {stub}[label]():
+%RED%✗%RESET% Call #2 - stub#0[label]():
     %RED%✗%RESET% Returned #0[:3], then:
         %RED%✗%RESET% Never started iterating
-%GREEN%✓%RESET% Call #3 - {stub}[label]():
+%GREEN%✓%RESET% Call #3 - stub#0[label]():
     %GREEN%✓%RESET% Returned #0[:3], then:
         - Started iterating
         - Produced 0 => "aardvark"

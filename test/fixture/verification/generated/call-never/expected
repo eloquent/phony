@@ -1,4 +1,4 @@
-%RESET%Expected %BOLD%{closure}[label]%RESET% call #1 not to behave like:
+%RESET%Expected %BOLD%Closure#0{}[verification.php:7][label]%RESET% call #1 not to behave like:
     %RED%✗%RESET% Returned Generator
-%RED%✗%RESET% Call #1 - {closure}[label]("bonobo"):
-    %RED%✗%RESET% Returned Generator#0{}
+%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo"):
+    %RED%✗%RESET% Returned Generator#1{}

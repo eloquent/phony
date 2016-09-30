@@ -132,9 +132,12 @@
         - [Verifying generator return values]
         - [Verifying generator exceptions]
         - [Verifying cardinality with generators and iterables]
+        - [Iterable spy substitution]
         - [Iterable verification caveats]
+            - [Using iterable spies changes the return value]
             - [Repeated iteration of iterable spies]
             - [Spying on iterables that implement array-like interfaces]
+            - [Nested iterable spies]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -165,10 +168,16 @@
 - [The exporter]
     - [The export format]
         - [Export identifiers and references]
+            - [Export reference types]
+            - [Export reference exclusions]
+            - [Export identifier persistence]
         - [Exporting recursive values]
         - [Exporter special cases]
+            - [Exporting closures]
             - [Exporting exceptions]
             - [Exporting mocks]
+            - [Exporting stubs]
+            - [Exporting spies]
     - [Export depth]
         - [Setting the export depth]
 - [The API]
@@ -810,8 +819,8 @@ $query = mock('Query');
 $result = mock('Result');
 
 // these two statements are equivalent
-$database->select($query)->returns($result);
-$database->select($query->get())->returns($result);
+$database->select->with($query)->returns($result);
+$database->select->with($query->get())->returns($result);
 ```
 
 The same is true when [verifying that a spy was called with specific arguments]:
@@ -825,7 +834,7 @@ $database->select->calledWith($query);
 $database->select->calledWith($query->get());
 ```
 
-There are other edge-case situations where *Phony* will exhibit this behaviour.
+There are other edge-case situations where *Phony* will exhibit this behavior.
 Refer to the [API] documentation for more detailed information.
 
 ### Mock builders
@@ -3541,9 +3550,12 @@ For information on specific verification methods, see these sections:
         - [Verifying generator return values]
         - [Verifying generator exceptions]
         - [Verifying cardinality with generators and iterables]
+        - [Iterable spy substitution]
         - [Iterable verification caveats]
+            - [Using iterable spies changes the return value]
             - [Repeated iteration of iterable spies]
             - [Spying on iterables that implement array-like interfaces]
+            - [Nested iterable spies]
     - [Order verification]
         - [Dynamic order verification]
         - [Order verification caveats]
@@ -3590,6 +3602,8 @@ expect($spy->checkCalled())->to->be->ok;
 ```
 
 ### Understanding verification output
+
+See also: [The export format].
 
 Typical verification output looks something like the following example. Hovering
 over a section of the example will provide an explanation of that part of the
@@ -3811,7 +3825,75 @@ $subject->iterated()->twice()->produced('a');  // produced 'a' from exactly 2 it
 See [Verifying cardinality with spies] and [Verifying cardinality with calls]
 for a full list or cardinality modifiers.
 
+#### Iterable spy substitution
+
+Phony will sometimes accept an iterable spy, or generator spy, as equivalent to
+the iterable value it is spying on. This simplifies some stubbing and
+verification scenarios.
+
+When stubbing, iterable spies and generator spies are substituted when
+[matching stub arguments]:
+
+```php
+$stubA = stub()->setUseIterableSpies(true)->returnsArgument();
+$iterable = array('a', 'b');
+$iterableSpy = $stubA($iterable);
+
+$stubB = stub();
+
+// these two statements are equivalent
+$stubB->with($iterable)->returns('c');
+$stubB->with($iterableSpy)->returns('c');
+```
+
+The same is true when [verifying that a spy was called with specific arguments]:
+
+```php
+$stubA = stub()->setUseIterableSpies(true)->returnsArgument();
+$iterable = array('a', 'b');
+$iterableSpy = $stubA($iterable);
+
+$stubB = stub();
+$stubB($iterableSpy);
+
+// these two statements are equivalent
+$database->select->calledWith($iterable);
+$database->select->calledWith($iterableSpy);
+```
+
+And also when [verifying spy return values]:
+
+```php
+$stub = stub()->setUseIterableSpies(true)->returnsArgument();
+$iterable = array('a', 'b');
+$iterableSpy = $stub($iterable);
+
+// these two statements are equivalent
+$stub->returned($iterable);    // passes
+$stub->returned($iterableSpy); // passes
+```
+
+There are other edge-case situations where *Phony* will exhibit this behavior.
+Refer to the [API] documentation for more detailed information.
+
 #### Iterable verification caveats
+
+##### Using iterable spies changes the return value
+
+When generator spies are enabled, the return value of spied functions that
+produce generators will automatically be wrapped in another generator that spies
+on the original. This is usually not a problem, because it is impossible to
+distinguish the two generators aside from an identity comparison (`===`).
+
+If the system under test relies upon the identity of returned generators, it may
+be advisable to disable generator spies using
+[`$spy->setUseGeneratorSpies(false)`](#spy.setUseGeneratorSpies).
+
+Similarly, when iterable spies are enabled, the return value of functions that
+produce iterable values will automatically be wrapped in an iterator that spies
+on the original value. This can be more problematic than with generator spies,
+because it changes the *type* of the return value. That is why iterable spies
+are disabled by default.
 
 ##### Repeated iteration of iterable spies
 
@@ -3833,6 +3915,46 @@ If the underlying iterable object implements [ArrayAccess] and/or [Countable],
 these interfaces are *not* implemented, then the behavior of calls to
 [ArrayAccess] and/or [Countable] is undefined, but will most likely result in an
 error.
+
+##### Nested iterable spies
+
+It is possible for an iterable value to become nested in multiple iterable
+spies. Consider the following:
+
+```php
+$spy = spy(
+    function (Traversable $traversable) {
+        return $traversable;
+    }
+);
+$spy->setUseIterableSpies(true);
+
+$traversable = new ArrayIterator(array('a', 'b'));
+$iterableSpy = $spy($traversable);
+$nestedIterableSpy = $spy($iterableSpy);
+
+// note that $traversable !== $iterableSpy !== $nestedIterableSpy
+// in other words, they are all different iterator instances
+
+iterator_to_array($nestedIterableSpy); // consume the outer-most traversable
+
+$firstCall = $spy->callAt(0);          // the call that returned $iterableSpy
+$firstCall->iterated()->produced('a'); // passes
+$firstCall->iterated()->produced('b'); // passes
+
+$secondCall = $spy->callAt(1);          // the call that returned $nestedIterableSpy
+$secondCall->iterated()->produced('a'); // passes
+$secondCall->iterated()->produced('b'); // passes
+```
+
+This example demonstrates that even when iterable spies are nested, in most
+cases this is desirable, because it means that the iterable events are recorded
+against *both* of the relevant calls.
+
+Note that this nesting behavior can lead to some confusing results when an
+iterable is partially traversed before being wrapped in another iterable spy.
+Behavior in these circumstances is up to the PHP runtime, but generally
+speaking, it "just works".
 
 ### Order verification
 
@@ -4081,7 +4203,7 @@ Phony::setUseColor($useColor); // static
 
 Passing `true` turns color on, passing `false` turns color off, and passing
 `null` will cause *Phony* to automatically detect whether color should be used
-(this is the default behaviour).
+(this is the default behavior).
 
 ## Matchers
 
@@ -4422,33 +4544,63 @@ Input value                     | Exporter output
 `"a\nb"`                        | `'"a\nb"'`
 `STDIN`                         | `'resource#1'`
 `[1, 2]`                        | `'#0[1, 2]'`
-`['a' => 1, 'b' => 2]`          | `'#0[a: 1, b: 2]'`
+`['a' => 1, 'b' => 2]`          | `'#0["a": 1, "b": 2]`
 `(object) ['a' => 1, 'b' => 2]` | `'#0{a: 1, b: 2}'`
 `new ClassA()`                  | `'ClassA#0{}'`
 
 #### Export identifiers and references
 
-Exported arrays and objects include a numeric identifier that can be used to
-identify re-use of the same value in nested structures. When a value appears
-multiple times, its internal structure will only be described the first time.
-Subsequent appearances will be indicated by a reference to the value's
-identifier:
+Exported arrays, objects, and "wrapper" types (such as [mock handles]) include a
+numeric identifier that can be used to identify repeated occurrences of the same
+value. This is represented as a number sign (`#`) followed by the identifier:
+
+```php
+$value = (object) array();
+// $value is exported as '#0{}'
+```
+
+When a value appears multiple times, its internal structure will only be
+described the first time. Subsequent appearances will be indicated by a
+reference to the value's identifier. This is represented as an ampersand (`&`)
+followed by the identifier:
 
 ```php
 $inner = [1, 2];
-$value = [$inner, $inner];
-// $value is exported as '#0[#1[1, 2], #1[]]'
+$value = [&$inner, &$inner];
+// $value is exported as '#0[#1[1, 2], &1[]]'
 
 $inner = (object) ['a' => 1];
 $value = (object) ['b' => $inner, 'c' => $inner];
-// $value is exported as '#0{b: #1{a: 1}, c: #1{}}'
+// $value is exported as '#0{b: #1{a: 1}, c: &1{}}'
+
+$inner = mock('ClassA')->setLabel('mock-label');
+$value = [$inner, $inner];
+// $value is exported as '#0[handle#1(PhonyMock_ClassA_0#0{}[mock-label]), &1()]'
 ```
 
-Array references appear followed by brackets (e.g. `#0[]`), and object
-references appear followed by braces (e.g. `#0{}`). This is because the
-identifier sequences used for arrays and objects are independent, meaning that
-identical array identifiers and object identifiers can co-exist in the same
-exporter output:
+##### Export reference types
+
+Array references appear followed by brackets (e.g. `&0[]`), object references
+appear followed by braces (e.g. `&0{}`), and wrapper references appear followed
+by parentheses (e.g. `&0()`):
+
+```php
+$array = [];
+$object = (object) [];
+$wrapper = spy('implode')->setLabel('spy-label');
+
+$value = [&$array, &$array];
+// $value is exported as '#0[#1[], &1[]]'
+
+$value = [$object, $object];
+// $value is exported as '#0[#0{}, &0{}]'
+
+$value = [$wrapper, $wrapper];
+// $value is exported as '#0[spy#1(implode)[spy-label], &1()]'
+```
+
+This is necessary in order to disambiguate references, because arrays and other
+types can sometimes have the same identifier:
 
 ```php
 $value = [
@@ -4460,25 +4612,37 @@ $value = [
 // $value is exported as '#0[#0{}, #1[#1{}]]'
 ```
 
-Object references also exclude the class name for brevity:
+##### Export reference exclusions
+
+As well as excluding the content, object references exclude the class name, and
+wrapper references exclude the type, for brevity:
 
 ```php
 $inner = new ClassA();
+$inner->c = "d";
 $value = (object) ['a' => $inner, 'b' => $inner];
-// $value is exported as '#0{a: ClassA#1{}, b: #1{}}'
+// $value is exported as '#0{a: ClassA#1{c: "d"}, b: &1{}}'
+
+$inner = mock();
+$value = [$inner, $inner];
+// $value is exported as '#0[handle#0(PhonyMock_0#1{}[0]), &0()]'
 ```
 
-Identifiers for objects are persistent across invocations of the exporter:
+##### Export identifier persistence
+
+Identifiers for objects and wrappers are persistent across invocations of the
+exporter, and share a single sequence of numbers:
 
 ```php
 $a = (object) [];
 $b = (object) [];
+$c = mock();
 
-$value = [$a, $b, $a];
-// $value is exported as '#0[#0{}, #1{}, #0{}]'
+$value = [$a, $b, $c, $a];
+// $value is exported as '#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &0{}]'
 
-$value = [$b, $a, $b];
-// $value is exported as '#0[#1{}, #0{}, #1{}]'
+$value = [$b, $a, $b, $c];
+// $value is exported as '#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]'
 ```
 
 But due to PHP's limitations, array identifiers are only persistent within a
@@ -4488,9 +4652,9 @@ single exporter invocation:
 $a = [];
 $b = [];
 
-$valueA = [$a, $b, $a];
-$valueB = [$b, $a, $b];
-// both $valueA and $valueB are exported as '#0[#1[], #2[], #1[]]'
+$valueA = [&$a, &$b, &$a];
+$valueB = [&$b, &$a, &$b];
+// both $valueA and $valueB are exported as '#0[#1[], #2[], &1[]]'
 ```
 
 #### Exporting recursive values
@@ -4502,11 +4666,11 @@ handled:
 ```php
 $value = [];
 $value[] = &$value;
-// $value is exported as '#0[#0[]]'
+// $value is exported as '#0[&0[]]'
 
 $value = (object) [];
 $value->a = $value;
-// $value is exported as '#0{"a": #0{}}'
+// $value is exported as '#0{a: &0{}}'
 ```
 
 #### Exporter special cases
@@ -4515,43 +4679,134 @@ For certain types of values, the exporter will exhibit special behavior, in
 order to improve the usefulness of its output, or to improve performance in
 common use cases.
 
+##### Exporting closures
+
+When a closure is exported, the file path and start line number are included in
+the output:
+
+```php
+$closure = function () {}; // file path is /path/to/example.php, line number is 123
+// $closure is exported as 'Closure#0{}[example.php:123]'
+```
+
+Only the basename of the path is included, for brevity. Also note that the class
+name will always be exported as `Closure`, even for runtimes such as [HHVM] that
+use different class names for closures.
+
 ##### Exporting exceptions
 
 When an exception is exported, some internal PHP details are stripped from the
 output, including file path, line number, and stack trace:
 
 ```php
-$value = new Exception('a', 1, new Exception());
-// $value is exported as 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'
+$exception = new Exception('a', 1, new Exception());
+// $exception is exported as 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'
 ```
 
 Additionally, when the message is `''`, the code is `0`, and/or the previous
 exception is `null`, these values are excluded for brevity:
 
 ```php
-$value = new RuntimeException();
-// $value is exported as 'RuntimeException#0{}'
+$exception = new RuntimeException();
+// $exception is exported as 'RuntimeException#0{}'
 ```
 
 ##### Exporting mocks
 
 When a mock is exported, some internal *Phony* details are stripped from the
 output. In addition, if a [label][labeling mocks] has been set on the mock, this
-will be included as a special property `phony.label`:
+will be included in the output:
 
 ```php
-$handle = mock('ClassA');
-$handle->setLabel('a');
+$handle = mock('ClassA')->setLabel('mock-label');
 
-$value = $handle->get();
-// $value is exported as 'Phony_ClassA_0#0{phony.label: "a"}'
+$mock = $handle->get();
+// $mock is exported as 'PhonyMock_ClassA_0#0{}[mock-label]'
+```
+
+When a [mock handle] is exported, it is represented as a wrapper around the mock
+itself:
+
+```php
+$handle = mock('ClassA')->setLabel('mock-label');
+// $handle is exported as 'handle#1(PhonyMock_ClassA_0#0{}[mock-label])'
+```
+
+When a [static handle] is exported, it is represented as a wrapper around the
+mock class:
+
+```php
+$staticHandle = onStatic($handle);
+// $staticHandle is exported as 'static-handle#0(PhonyMock_ClassA_0)'
+```
+
+##### Exporting stubs
+
+When a [stub] is exported, it is represented as a wrapper around the callable
+entity that is stubbed, with the [label][spy label] also included in the output:
+
+```php
+$stub = stub('implode')->setLabel('stub-label');
+// $stub is exported as 'stub#0(implode)[stub-label]'
+```
+
+Anonymous stubs have a simpler representation, since they don't wrap any
+callable entity:
+
+```php
+$stub = stub()->setLabel('stub-label');
+// $stub is exported as 'stub#0[stub-label]'
+```
+
+In the case of method stubs, class name information is also included:
+
+```php
+$handle = mock('ClassA')->setLabel('mock-label');
+$staticHandle = onStatic($handle);
+
+$stub = $handle->methodA->setLabel('stub-label');
+// $stub is exported as 'stub#0(ClassA[mock-label]->methodA)[stub-label]'
+
+$stub = $staticHandle->staticMethodA->setLabel('stub-label');
+// $stub is exported as 'stub#1(ClassA::staticMethodA)[stub-label]'
+```
+
+##### Exporting spies
+
+When a [spy] is exported, it is represented as a wrapper around the callable
+entity that is spied on, with the [label][spy label] also included in the
+output:
+
+```php
+$spy = spy('implode')->setLabel('spy-label');
+// $spy is exported as 'spy#0(implode)[spy-label]'
+```
+
+Anonymous spies have a simpler representation, since they don't wrap any
+callable entity:
+
+```php
+$spy = spy()->setLabel('spy-label');
+// $spy is exported as 'spy#0[spy-label]'
+```
+
+In the case of method spies, class name information is also included:
+
+```php
+$object = new ClassA();
+
+$spy = spy([$object, 'methodA'])->setLabel('spy-label');
+// $spy is exported as 'spy#0(ClassA->methodA)[spy-label]'
+
+$spy = spy([ClassA::class, 'staticMethodA'])->setLabel('spy-label');
+// $spy is exported as 'spy#1(ClassA::staticMethodA)[spy-label]'
 ```
 
 ### Export depth
 
 For complicated nested structures, exporting the entire value right down to its
 innermost values is not always desirable. *Phony* sets a limit on how deep into
-a nested structure the exporter will traverse.
+a nested structure the exporter will descend.
 
 When a value is beyond the export depth, and has sub-values, its contents will
 be replaced with a special notation that simply indicates how many sub-values
@@ -4562,7 +4817,7 @@ $value = [[], ['a', 'b', 'c']];
 // $value is exported as '#0[#1[], #2[:3]]'
 
 $value = [(object) [], (object) ['a', 'b', 'c']];
-// $value is exported as '#0[#1{}, #2{:3}]'
+// $value is exported as '#0[#0{}, #1{:3}]'
 ```
 
 #### Setting the export depth
@@ -5462,7 +5717,8 @@ Set the [default answer callback] of this stub.
 
 Modify the current criteria to match the supplied arguments.
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Matching stub arguments].*
 
@@ -5488,8 +5744,7 @@ Add a callback to be called as part of an answer.
 
 *Note that all supplied callbacks will be called in the same invocation.*
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Invoking callables].*
 
@@ -5523,8 +5778,7 @@ the last element, and `-2` indicates the second last element.*
 
 *Note that all supplied callbacks will be called in the same invocation.*
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Invoking arguments].*
 
@@ -5543,7 +5797,7 @@ Set the value of an argument passed by reference as part of an answer.
 *If called with two arguments, sets the argument at `$indexOrValue` to
 `$value`.*
 
-*This method supports [mock handle substitution] of the value.*
+*This method supports [mock handle substitution].*
 
 *See [Setting passed-by-reference arguments].*
 
@@ -5567,8 +5821,7 @@ Add a callback as an answer.
 
 *The supplied arguments support reference parameters.*
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Using a callable as an answer].*
 
@@ -5582,8 +5835,7 @@ Add an answer that calls the wrapped callback.
 
 *The supplied arguments support reference parameters.*
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Forwarding to the original callable].*
 
@@ -5630,8 +5882,7 @@ Add an answer that returns the self value.
 
 Add answers that throw exceptions.
 
-*This method supports [mock handle substitution]. Any supplied exception mock
-handles are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Throwing exceptions].*
 
@@ -5687,8 +5938,7 @@ Add callbacks to be called as part of the answer.
 
 Add callbacks to be called as part of the answer.
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Invoking callables in a generator].*
 
@@ -5718,8 +5968,7 @@ the last element, and `-2` indicates the second last element.*
 
 *This method supports reference parameters.*
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Invoking arguments in a generator].*
 
@@ -5820,8 +6069,7 @@ End the generator by returning the self value.
 
 End the generator by throwing an exception.
 
-*This method supports [mock handle substitution]. Any supplied exception mock
-handles are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution].*
 
 *See [Throwing exceptions from a generator].*
 
@@ -6143,8 +6391,8 @@ Checks if called.
 
 Throws an exception unless called with the supplied arguments.
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying that a spy was called with specific arguments].*
 
@@ -6156,8 +6404,8 @@ Throws an exception unless called with the supplied arguments.
 
 Checks if called with the supplied arguments.
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying that a spy was called with specific arguments],
 [Check verification].*
@@ -6172,7 +6420,8 @@ Checks if called with the supplied arguments.
 Throws an exception unless the bound `$this` value is equal to the supplied
 value.
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying spy closure binding].*
 
@@ -6184,7 +6433,8 @@ value.
 
 Checks if the bound `$this` value is equal to the supplied value.
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying spy closure binding], [Check verification].*
 
@@ -6200,7 +6450,8 @@ Throws an exception unless this spy returned the supplied value.
 *When called with no arguments, this method simply checks that the spy returned
 any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying spy return values].*
 
@@ -6215,7 +6466,8 @@ Checks if this spy returned the supplied value.
 *When called with no arguments, this method simply checks that the spy returned
 any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying spy return values], [Check verification].*
 
@@ -6240,7 +6492,8 @@ an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the spy threw an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying spy exceptions].*
 
@@ -6264,7 +6517,8 @@ an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the spy threw an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying spy exceptions], [Check verification].*
 
@@ -6826,8 +7080,8 @@ can be used to determine event order.*
 
 Throws an exception unless called with the supplied arguments.
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying that a call was made with specific arguments].*
 
@@ -6839,8 +7093,8 @@ Throws an exception unless called with the supplied arguments.
 
 Checks if called with the supplied arguments.
 
-*This method supports [mock handle substitution]. Any mock handles in
-`$arguments` are equivalent to the mocks themselves.*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying that a call was made with specific arguments],
 [Check verification].*
@@ -6855,7 +7109,8 @@ Checks if called with the supplied arguments.
 Throws an exception unless the bound `$this` value is equal to the supplied
 value.
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying call closure binding].*
 
@@ -6867,7 +7122,8 @@ value.
 
 Checks if the bound `$this` value is equal to the supplied value.
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying call closure binding], [Check verification].*
 
@@ -6883,7 +7139,8 @@ Throws an exception unless this call returned the supplied value.
 *When called with no arguments, this method simply checks that the call returned
 any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying call return values].*
 
@@ -6898,7 +7155,8 @@ Checks if this call returned the supplied value.
 *When called with no arguments, this method simply checks that the call returned
 any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying call return values], [Check verification].*
 
@@ -6923,7 +7181,8 @@ an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the call threw an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying call exceptions].*
 
@@ -6947,7 +7206,8 @@ an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the call threw an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying call exceptions], [Check verification].*
 
@@ -7561,7 +7821,8 @@ produced.*
 *With two arguments, it checks that a key and value matching the respective
 arguments were produced together.*
 
-*This method supports [mock handle substitution] for both keys and values.*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying produced values].*
 
@@ -7582,7 +7843,8 @@ produced.*
 *With two arguments, it checks that a key and value matching the respective
 arguments were produced together.*
 
-*This method supports [mock handle substitution] for both keys and values.*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying produced values], [Check verification].*
 
@@ -7752,7 +8014,8 @@ Throws an exception unless the generator received the supplied value.
 *When called with no arguments, this method simply checks that the generator
 received any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying values received by generators].*
 
@@ -7767,7 +8030,8 @@ Checks if the generator received the supplied value.
 *When called with no arguments, this method simply checks that the generator
 received any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying values received by generators], [Check verification].*
 
@@ -7793,7 +8057,8 @@ received an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the generator received an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying exceptions received by generators].*
 
@@ -7817,7 +8082,8 @@ received an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the generator received an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying exceptions received by generators], [Check verification].*
 
@@ -7833,7 +8099,8 @@ Throws an exception unless the generator returned the supplied value.
 *When called with no arguments, this method simply checks that the generator
 returned any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying generator return values].*
 
@@ -7848,7 +8115,8 @@ Checks if the generator returned the supplied value.
 *When called with no arguments, this method simply checks that the generator
 returned any value.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying generator return values], [Check verification].*
 
@@ -7874,7 +8142,8 @@ threw an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the generator threw an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying generator exceptions].*
 
@@ -7898,7 +8167,8 @@ threw an exception that is equal to the supplied instance.*
 *When called with a [matcher], this method checks that the generator threw an
 exception that matches the supplied matcher.*
 
-*This method supports [mock handle substitution].*
+*This method supports [mock handle substitution] and
+[iterable spy substitution].*
 
 *See [Verifying generator exceptions], [Check verification].*
 
@@ -8128,11 +8398,17 @@ For the full copyright and license information, please view the [LICENSE file].
 [example test suites]: #example-test-suites
 [expected behavior output]: #expected-behavior-output
 [export depth]: #export-depth
+[export identifier persistence]: #export-identifier-persistence
 [export identifiers and references]: #export-identifiers-and-references
+[export reference exclusions]: #export-reference-exclusions
+[export reference types]: #export-reference-types
 [exporter special cases]: #exporter-special-cases
+[exporting closures]: #exporting-closures
 [exporting exceptions]: #exporting-exceptions
 [exporting mocks]: #exporting-mocks
 [exporting recursive values]: #exporting-recursive-values
+[exporting spies]: #exporting-spies
+[exporting stubs]: #exporting-stubs
 [forwarding to the original callable]: #forwarding-to-the-original-callable
 [generating mock classes from a builder]: #generating-mock-classes-from-a-builder
 [generator and iterable verification]: #generator-and-iterable-verification
@@ -8152,6 +8428,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [invoking callables in a generator]: #invoking-callables-in-a-generator
 [invoking callables]: #invoking-callables
 [invoking spies]: #invoking-spies
+[iterable spy substitution]: #iterable-spy-substitution
 [iterable verification caveats]: #iterable-verification-caveats
 [labeling mocks]: #labeling-mocks
 [labeling spies]: #labeling-spies
@@ -8171,6 +8448,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [mocks]: #mocks
 [multiple answers]: #multiple-answers
 [multiple rules]: #multiple-rules
+[nested iterable spies]: #nested-iterable-spies
 [order verification caveats]: #order-verification-caveats
 [order verification]: #order-verification
 [overriding rules]: #overriding-rules
@@ -8252,6 +8530,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [usage]: #usage
 [using a callable as an answer]: #using-a-callable-as-an-answer
 [using colored verification output]: #using-colored-verification-output
+[using iterable spies changes the return value]: #using-iterable-spies-changes-the-return-value
 [using this documentation]: #using-this-documentation
 [verification]: #verification
 [verifying call closure binding]: #verifying-call-closure-binding
@@ -8323,6 +8602,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [partial mock]: #partial-mocks
 [references]: #export-identifiers-and-references
 [self value]: #stub-self-values
+[spy label]: #labeling-spies
 [spy]: #spies
 [static handle]: #static-mocks
 [static mock handles]: #static-mocks
@@ -8404,6 +8684,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [github issue]: https://github.com/eloquent/phony/issues
 [global function fallback]: http://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
+[hhvm]: http://hhvm.com/
 [isolator]: https://github.com/IcecaveStudios/isolator
 [liberator]: https://github.com/eloquent/liberator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
