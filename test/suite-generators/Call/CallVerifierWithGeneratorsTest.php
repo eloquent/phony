@@ -60,7 +60,6 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(
-            $this->invocableInspector,
             $this->matcherVerifier,
             $this->exporter,
             $this->differenceEngine,
@@ -74,8 +73,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->callVerifierFactory = CallVerifierFactory::instance();
@@ -99,8 +97,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->calledEventWithNoArguments = $this->callEventFactory->createCalled($this->callback);
@@ -113,8 +110,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->calledEventWithNoArguments = $this->callEventFactory->createCalled($this->callback);
@@ -126,8 +122,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->callEventFactory->sequencer()->reset();
@@ -185,8 +180,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
     }
 
@@ -226,8 +220,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->assertSame($this->exception, $this->generatorSubject->generatorException());
@@ -248,8 +241,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $this->subject->addIterableEvent($generatorEventA);
         $this->subject->addIterableEvent($generatorEventB);
@@ -284,8 +276,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');

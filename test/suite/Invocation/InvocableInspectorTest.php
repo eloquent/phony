@@ -70,22 +70,6 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
         $this->subject->callbackReflector((object) array());
     }
 
-    public function testCallbackThisValue()
-    {
-        $this->assertSame($this, $this->subject->callbackThisValue(array($this, 'a')));
-        $this->assertSame($this->invocable, $this->subject->callbackThisValue($this->invocable));
-        $this->assertNull($this->subject->callbackThisValue(array('a', 'b')));
-        $this->assertNull($this->subject->callbackThisValue('a::b'));
-        $this->assertNull($this->subject->callbackThisValue('a'));
-        $this->assertNull($this->subject->callbackThisValue((object) array()));
-
-        if ($this->subject->isBoundClosureSupported()) {
-            $this->assertSame($this, $this->subject->callbackThisValue($this->callback));
-        } else {
-            $this->assertNull($this->subject->callbackThisValue($this->callback));
-        }
-    }
-
     public function testCallbackReturnType()
     {
         $this->assertNull($this->subject->callbackReturnType(function () {}));

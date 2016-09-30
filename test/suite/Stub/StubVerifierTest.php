@@ -15,7 +15,6 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
@@ -46,7 +45,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
-        $this->invocableInspector = InvocableInspector::instance();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubVerifier(
             $this->stub,
@@ -58,7 +56,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
 
@@ -698,7 +695,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
 
@@ -790,7 +786,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
 
@@ -811,7 +806,6 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
         $a = null;

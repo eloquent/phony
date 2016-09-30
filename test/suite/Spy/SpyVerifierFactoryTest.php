@@ -16,7 +16,6 @@ use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
@@ -45,7 +44,6 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->assertionRenderer = AssertionRenderer::instance();
-        $this->invocableInspector = new InvocableInspector();
         $this->functionHookManager = FunctionHookManager::instance();
         $this->subject = new SpyVerifierFactory(
             $this->spyFactory,
@@ -56,7 +54,6 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->functionHookManager
         );
     }
@@ -72,8 +69,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $actual = $this->subject->create($spy);
 
@@ -92,8 +88,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $actual = $this->subject->create();
 
@@ -112,8 +107,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $actual = $this->subject->createFromCallback($callback);
 

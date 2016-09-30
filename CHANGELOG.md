@@ -1,16 +1,17 @@
 # Phony changelog
 
-## Next release
+## 0.14.0 (2016-09-30)
 
 - **[BC BREAK]** Removed `calledOn()` ([#197]).
 - **[IMPROVED]** Generator spies and iterable spies are now substituted in
   argument matching and verification ([#193]).
-- **[IMPROVED]** Documentation improvements ([#191], [#192]).
+- **[IMPROVED]** Documentation improvements ([#191], [#192], [#198]).
 
 [#191]: https://github.com/eloquent/phony/issues/191
 [#192]: https://github.com/eloquent/phony/issues/192
 [#193]: https://github.com/eloquent/phony/issues/193
 [#197]: https://github.com/eloquent/phony/issues/197
+[#198]: https://github.com/eloquent/phony/issues/198
 
 ## 0.13.5 (2016-09-20)
 

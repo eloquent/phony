@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Asplode\Asplode;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Hook\FunctionHookGenerator;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
@@ -12,8 +11,6 @@ use Eloquent\Phony\Test\Phony as TestPhony;
 $rootPath = dirname(__DIR__);
 require $rootPath . '/vendor/autoload.php';
 require $rootPath . '/test/src/TestClassOldConstructor.php';
-
-Asplode::install();
 
 $fixturePath = $rootPath . '/test/fixture/';
 $detector = FeatureDetector::instance();

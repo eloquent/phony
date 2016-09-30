@@ -15,7 +15,6 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
@@ -45,7 +44,6 @@ class StubVerifier extends SpyVerifier implements Stub
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.
      * @param AssertionRecorder             $assertionRecorder             The assertion recorder to use.
      * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
-     * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
@@ -58,7 +56,6 @@ class StubVerifier extends SpyVerifier implements Stub
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
-        InvocableInspector $invocableInspector,
         GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
     ) {
         parent::__construct(
@@ -69,8 +66,7 @@ class StubVerifier extends SpyVerifier implements Stub
             $iterableVerifierFactory,
             $callVerifierFactory,
             $assertionRecorder,
-            $assertionRenderer,
-            $invocableInspector
+            $assertionRenderer
         );
 
         $this->stub = $stub;

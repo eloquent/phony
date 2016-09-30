@@ -22,7 +22,6 @@ use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
@@ -55,7 +54,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @param CallVerifierFactory      $callVerifierFactory      The call verifier factory to use.
      * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.
      * @param AssertionRenderer        $assertionRenderer        The assertion renderer to use.
-     * @param InvocableInspector       $invocableInspector       The invocable inspector to use.
      */
     public function __construct(
         Spy $spy,
@@ -65,8 +63,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         IterableVerifierFactory $iterableVerifierFactory,
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
-        AssertionRenderer $assertionRenderer,
-        InvocableInspector $invocableInspector
+        AssertionRenderer $assertionRenderer
     ) {
         parent::__construct();
 
@@ -78,7 +75,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
-        $this->invocableInspector = $invocableInspector;
     }
 
     /**
@@ -924,5 +920,4 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
-    private $invocableInspector;
 }

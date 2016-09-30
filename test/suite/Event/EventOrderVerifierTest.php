@@ -39,7 +39,6 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
         $this->differenceEngine = DifferenceEngine::instance();
         $this->featureDetector = FeatureDetector::instance();
         $this->assertionRenderer = new AssertionRenderer(
-            $this->invocableInspector,
             $this->matcherVerifier,
             $this->inlineExporter,
             $this->differenceEngine,

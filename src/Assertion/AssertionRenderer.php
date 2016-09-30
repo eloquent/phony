@@ -25,7 +25,6 @@ use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Difference\DifferenceSequenceMatcher;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Matchable;
@@ -56,7 +55,6 @@ class AssertionRenderer
     {
         if (!self::$instance) {
             self::$instance = new self(
-                InvocableInspector::instance(),
                 MatcherVerifier::instance(),
                 InlineExporter::instance(),
                 DifferenceEngine::instance(),
@@ -70,20 +68,17 @@ class AssertionRenderer
     /**
      * Construct a new call renderer.
      *
-     * @param InvocableInspector $invocableInspector The invocable inspector to use.
-     * @param MatcherVerifier    $matcherVerifier    The matcher verifier to use.
-     * @param Exporter           $exporter           The exporter to use.
-     * @param DifferenceEngine   $differenceEngine   The difference engine to use.
-     * @param FeatureDetector    $featureDetector    The feature detector to use.
+     * @param MatcherVerifier  $matcherVerifier  The matcher verifier to use.
+     * @param Exporter         $exporter         The exporter to use.
+     * @param DifferenceEngine $differenceEngine The difference engine to use.
+     * @param FeatureDetector  $featureDetector  The feature detector to use.
      */
     public function __construct(
-        InvocableInspector $invocableInspector,
         MatcherVerifier $matcherVerifier,
         Exporter $exporter,
         DifferenceEngine $differenceEngine,
         FeatureDetector $featureDetector
     ) {
-        $this->invocableInspector = $invocableInspector;
         $this->matcherVerifier = $matcherVerifier;
         $this->exporter = $exporter;
         $this->differenceEngine = $differenceEngine;
@@ -3800,7 +3795,6 @@ class AssertionRenderer
     const FAIL = "\xe2\x9C\x97";
 
     private static $instance;
-    private $invocableInspector;
     private $matcherVerifier;
     private $exporter;
     private $differenceEngine;

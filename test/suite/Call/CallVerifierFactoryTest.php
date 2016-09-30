@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -33,15 +32,13 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
-        $this->invocableInspector = new InvocableInspector();
         $this->subject = new CallVerifierFactory(
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->callFactory = new TestCallFactory();
@@ -58,8 +55,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->generatorVerifierFactory,
             $this->iterableVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $adaptedCall = $this->subject->fromCall($this->callA);
 
@@ -78,8 +74,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
                 $this->generatorVerifierFactory,
                 $this->iterableVerifierFactory,
                 $this->assertionRecorder,
-                $this->assertionRenderer,
-                $this->invocableInspector
+                $this->assertionRenderer
             ),
             new CallVerifier(
                 $this->callB,
@@ -88,8 +83,7 @@ class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
                 $this->generatorVerifierFactory,
                 $this->iterableVerifierFactory,
                 $this->assertionRecorder,
-                $this->assertionRenderer,
-                $this->invocableInspector
+                $this->assertionRenderer
             ),
         );
 

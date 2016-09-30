@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "92b5595c490a5591cbd651a34262ac80",
-    "content-hash": "fe28fc690e2b682a8f0c74ef6d58a066",
+    "hash": "4aa12cb781c561084f2ead208342a734",
+    "content-hash": "a15e28454574b8cdb899e68402a13135",
     "packages": [],
     "packages-dev": [
         {
@@ -216,34 +216,27 @@
             "time": "2015-06-14 21:17:01"
         },
         {
-            "name": "eloquent/asplode",
-            "version": "2.2.0",
+            "name": "errors/exceptions",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/eloquent/asplode.git",
-                "reference": "2c469048b4bb8948fa2ce68e894626abe1bdf99b"
+                "url": "https://github.com/php-errors/exceptions.git",
+                "reference": "0c5a84de0e5d660e01a4ff9af0f3c6ffaa14b674"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/asplode/zipball/2c469048b4bb8948fa2ce68e894626abe1bdf99b",
-                "reference": "2c469048b4bb8948fa2ce68e894626abe1bdf99b",
+                "url": "https://api.github.com/repos/php-errors/exceptions/zipball/0c5a84de0e5d660e01a4ff9af0f3c6ffaa14b674",
+                "reference": "0c5a84de0e5d660e01a4ff9af0f3c6ffaa14b674",
                 "shasum": ""
             },
-            "require": {
-                "icecave/isolator": "~2|~3",
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "eloquent/phony": "dev-develop",
-                "icecave/archer": "dev-develop",
-                "phpunit/phpunit": "^4",
-                "sami/sami": "^3"
+            "conflict": {
+                "errors/native": "*"
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Eloquent\\Asplode\\": "src"
-                }
+                "files": [
+                    "src/handler.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -256,18 +249,16 @@
                     "homepage": "http://ezzatron.com/"
                 }
             ],
-            "description": "Drop-in exception-based error handling for PHP.",
-            "homepage": "https://github.com/eloquent/asplode",
+            "description": "An error handler that produces error exceptions when a native error occurs.",
+            "homepage": "https://github.com/php-errors/exceptions",
             "keywords": [
                 "error",
                 "errorexception",
+                "errors",
                 "exception",
-                "failure",
-                "fault",
-                "handler",
-                "handling"
+                "handler"
             ],
-            "time": "2016-04-19 01:21:09"
+            "time": "2016-08-09 00:06:40"
         },
         {
             "name": "evenement/evenement",
@@ -797,30 +788,31 @@
         },
         {
             "name": "peridot-php/leo",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/peridot-php/leo.git",
-                "reference": "5ff1a9481faa37a55f5c6569379858dca01312f6"
+                "reference": "31dbdcbcd8383864caae1996ce62ad9f133d8de5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/peridot-php/leo/zipball/5ff1a9481faa37a55f5c6569379858dca01312f6",
-                "reference": "5ff1a9481faa37a55f5c6569379858dca01312f6",
+                "url": "https://api.github.com/repos/peridot-php/leo/zipball/31dbdcbcd8383864caae1996ce62ad9f133d8de5",
+                "reference": "31dbdcbcd8383864caae1996ce62ad9f133d8de5",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": ">=5.4"
             },
             "require-dev": {
-                "peridot-php/peridot-jumpstart": "~1.0",
-                "peridot-php/peridot-prophecy-plugin": "~1.0",
-                "satooshi/php-coveralls": "~0.6"
+                "apigen/apigen": "^4",
+                "friendsofphp/php-cs-fixer": "^1",
+                "peridot-php/peridot-jumpstart": "^1",
+                "peridot-php/peridot-prophecy-plugin": "^1"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Peridot\\Leo\\": "src/"
+                    "Peridot\\Leo\\": "src"
                 },
                 "files": [
                     "src/Interfaces/_interface.bdd.php"
@@ -844,7 +836,7 @@
                 "matcher",
                 "testing"
             ],
-            "time": "2016-03-02 04:33:43"
+            "time": "2016-09-21 03:52:31"
         },
         {
             "name": "peridot-php/peridot",
@@ -1647,23 +1639,23 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "1.3.7",
+            "version": "1.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "4e8f0da10ac5802913afc151413bc8c53b6c2716"
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/4e8f0da10ac5802913afc151413bc8c53b6c2716",
-                "reference": "4e8f0da10ac5802913afc151413bc8c53b6c2716",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/be2c607e43ce4c89ecd60e75c6a85c126e754aea",
+                "reference": "be2c607e43ce4c89ecd60e75c6a85c126e754aea",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^5.3.3 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.4"
+                "phpunit/phpunit": "^4.8 || ^5.0"
             },
             "type": "library",
             "extra": {
@@ -1693,7 +1685,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-05-17 03:18:57"
+            "time": "2016-08-18 05:49:44"
         },
         {
             "name": "sebastian/exporter",
@@ -1976,16 +1968,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "f9e638e8149e9e41b570ff092f8007c477ef0ce5"
+                "reference": "8ea494c34f0f772c3954b5fbe00bffc5a435e563"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/f9e638e8149e9e41b570ff092f8007c477ef0ce5",
-                "reference": "f9e638e8149e9e41b570ff092f8007c477ef0ce5",
+                "url": "https://api.github.com/repos/symfony/console/zipball/8ea494c34f0f772c3954b5fbe00bffc5a435e563",
+                "reference": "8ea494c34f0f772c3954b5fbe00bffc5a435e563",
                 "shasum": ""
             },
             "require": {
@@ -2032,11 +2024,11 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-26 08:04:17"
+            "time": "2016-08-19 06:48:39"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -2096,7 +2088,7 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
@@ -2145,16 +2137,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "8201978de88a9fa0923e18601bb17f1df9c721e7"
+                "reference": "e568ef1784f447a0e54dcb6f6de30b9747b0f577"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/8201978de88a9fa0923e18601bb17f1df9c721e7",
-                "reference": "8201978de88a9fa0923e18601bb17f1df9c721e7",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/e568ef1784f447a0e54dcb6f6de30b9747b0f577",
+                "reference": "e568ef1784f447a0e54dcb6f6de30b9747b0f577",
                 "shasum": ""
             },
             "require": {
@@ -2190,7 +2182,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29 05:41:56"
+            "time": "2016-08-26 12:04:02"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -2253,16 +2245,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "04c2dfaae4ec56a5c677b0c69fac34637d815758"
+                "reference": "e64e93041c80e77197ace5ab9385dedb5a143697"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/04c2dfaae4ec56a5c677b0c69fac34637d815758",
-                "reference": "04c2dfaae4ec56a5c677b0c69fac34637d815758",
+                "url": "https://api.github.com/repos/symfony/process/zipball/e64e93041c80e77197ace5ab9385dedb5a143697",
+                "reference": "e64e93041c80e77197ace5ab9385dedb5a143697",
                 "shasum": ""
             },
             "require": {
@@ -2298,11 +2290,11 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-28 11:13:48"
+            "time": "2016-08-16 14:58:24"
         },
         {
             "name": "symfony/stopwatch",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stopwatch.git",
@@ -2351,16 +2343,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "1819adf2066880c7967df7180f4f662b6f0567ac"
+                "reference": "f291ed25eb1435bddbe8a96caaef16469c2a092d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/1819adf2066880c7967df7180f4f662b6f0567ac",
-                "reference": "1819adf2066880c7967df7180f4f662b6f0567ac",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/f291ed25eb1435bddbe8a96caaef16469c2a092d",
+                "reference": "f291ed25eb1435bddbe8a96caaef16469c2a092d",
                 "shasum": ""
             },
             "require": {
@@ -2396,7 +2388,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-17 14:02:08"
+            "time": "2016-09-02 02:12:52"
         },
         {
             "name": "zeptech/annotations",
@@ -2441,7 +2433,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "errors/exceptions": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

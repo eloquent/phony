@@ -16,7 +16,6 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -45,7 +44,6 @@ class SpyVerifierFactory
                 CallVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
-                InvocableInspector::instance(),
                 FunctionHookManager::instance()
             );
         }
@@ -64,7 +62,6 @@ class SpyVerifierFactory
      * @param CallVerifierFactory      $callVerifierFactory      The call verifier factory to use.
      * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.
      * @param AssertionRenderer        $assertionRenderer        The assertion renderer to use.
-     * @param InvocableInspector       $invocableInspector       The invocable inspector to use.
      * @param FunctionHookManager      $functionHookManager      The function hook manager to use.
      */
     public function __construct(
@@ -76,7 +73,6 @@ class SpyVerifierFactory
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
-        InvocableInspector $invocableInspector,
         FunctionHookManager $functionHookManager
     ) {
         $this->spyFactory = $spyFactory;
@@ -87,7 +83,6 @@ class SpyVerifierFactory
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
-        $this->invocableInspector = $invocableInspector;
         $this->functionHookManager = $functionHookManager;
     }
 
@@ -112,8 +107,7 @@ class SpyVerifierFactory
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
     }
 
@@ -134,8 +128,7 @@ class SpyVerifierFactory
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
     }
 
@@ -176,8 +169,7 @@ class SpyVerifierFactory
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
     }
 
@@ -190,6 +182,5 @@ class SpyVerifierFactory
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
-    private $invocableInspector;
     private $functionHookManager;
 }

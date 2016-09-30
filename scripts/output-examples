@@ -1,14 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Asplode\Asplode;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Test\Phony;
 
 $rootPath = dirname(__DIR__);
 require $rootPath . '/vendor/autoload.php';
 
-Asplode::install();
 Phony::setUseColor(true);
 
 $fixturePath = $rootPath . '/test/fixture/verification';

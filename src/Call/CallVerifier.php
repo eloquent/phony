@@ -23,7 +23,6 @@ use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
@@ -55,7 +54,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
      * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.
      * @param AssertionRenderer        $assertionRenderer        The assertion renderer to use.
-     * @param InvocableInspector       $invocableInspector       The invocable inspector to use.
      */
     public function __construct(
         Call $call,
@@ -64,8 +62,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         GeneratorVerifierFactory $generatorVerifierFactory,
         IterableVerifierFactory $iterableVerifierFactory,
         AssertionRecorder $assertionRecorder,
-        AssertionRenderer $assertionRenderer,
-        InvocableInspector $invocableInspector
+        AssertionRenderer $assertionRenderer
     ) {
         parent::__construct();
 
@@ -76,7 +73,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         $this->iterableVerifierFactory = $iterableVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
-        $this->invocableInspector = $invocableInspector;
 
         $this->argumentCount = count($call->arguments());
     }
@@ -1013,6 +1009,5 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     private $iterableVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
-    private $invocableInspector;
     private $argumentCount;
 }

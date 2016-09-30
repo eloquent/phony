@@ -1,13 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Asplode\Asplode;
 use Eloquent\Phony as x;
 
 require __DIR__ . '/../../../vendor/autoload.php';
-
-Asplode::install();
-error_reporting(-1);
 
 // should record passing mock assertions
 $handle = x\mock('Eloquent\Phony\Test\TestClassA');

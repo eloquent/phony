@@ -70,7 +70,6 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(
-            $this->invocableInspector,
             $this->matcherVerifier,
             $this->exporter,
             $this->differenceEngine,
@@ -85,8 +84,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
 
         $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
@@ -426,8 +424,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $verifier->invokeWith(array('a'));
         $verifier->invoke('b', 'c');
@@ -480,8 +477,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         try {
             $verifier->invokeWith(array('a'));
@@ -541,8 +537,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $value = null;
         $arguments = array(&$value);
@@ -572,8 +567,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $verifier->stopRecording()->invokeWith();
         $this->callFactory->reset();
@@ -602,8 +596,7 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             $this->iterableVerifierFactory,
             $this->callVerifierFactory,
             $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->invocableInspector
+            $this->assertionRenderer
         );
         $verifier->stopRecording()->invoke('a');
         $verifier->startRecording()->invoke('b');

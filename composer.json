@@ -19,7 +19,7 @@
         "athletic/athletic": "^0.1",
         "counterpart/counterpart": "^1",
         "danielstjules/pho": "^1",
-        "eloquent/asplode": "^2",
+        "errors/exceptions": "dev-master",
         "friendsofphp/php-cs-fixer": "1.11.4",
         "hamcrest/hamcrest-php": "^2",
         "icecave/isolator": "^3",

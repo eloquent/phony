@@ -184,7 +184,6 @@ class FacadeDriver
             $featureDetector
         );
         $assertionRenderer = new AssertionRenderer(
-            $invocableInspector,
             $matcherVerifier,
             $exporter,
             $differenceEngine,
@@ -206,8 +205,7 @@ class FacadeDriver
             $generatorVerifierFactory,
             $iterableVerifierFactory,
             $assertionRecorder,
-            $assertionRenderer,
-            $invocableInspector
+            $assertionRenderer
         );
         $assertionRecorder->setCallVerifierFactory($callVerifierFactory);
         $functionHookGenerator = new FunctionHookGenerator();
@@ -225,7 +223,6 @@ class FacadeDriver
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
-            $invocableInspector,
             $generatorAnswerBuilderFactory,
             $functionHookManager
         );
@@ -259,7 +256,6 @@ class FacadeDriver
             $callVerifierFactory,
             $assertionRecorder,
             $assertionRenderer,
-            $invocableInspector,
             $functionHookManager
         );
         $eventOrderVerifier = new EventOrderVerifier(

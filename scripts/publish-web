@@ -1,13 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Asplode\Asplode;
 use Icecave\SemVer\Comparator;
 use Icecave\SemVer\Version;
 
 require __DIR__ . '/../vendor/autoload.php';
-
-Asplode::install();
 
 const ELOQUENT_REPO = 'phony';
 

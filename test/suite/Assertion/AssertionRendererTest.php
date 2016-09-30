@@ -40,7 +40,6 @@ class AssertionRendererTest extends PHPUnit_Framework_TestCase
         $this->differenceEngine->setUseColor(false);
         $this->featureDetector = FeatureDetector::instance();
         $this->subject = new AssertionRenderer(
-            $this->invocableInspector,
             $this->matcherVerifier,
             $this->exporter,
             $this->differenceEngine,

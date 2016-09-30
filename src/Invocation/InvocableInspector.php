@@ -86,38 +86,6 @@ class InvocableInspector
     }
 
     /**
-     * Get the $this value for the supplied callback.
-     *
-     * @param callable $callback The callback.
-     *
-     * @return object|null The $this value.
-     */
-    public function callbackThisValue($callback)
-    {
-        while ($callback instanceof WrappedInvocable) {
-            $callback = $callback->callback();
-        }
-
-        if (is_array($callback) && is_object($callback[0])) {
-            return $callback[0];
-        }
-
-        if (is_object($callback)) {
-            if ($callback instanceof Closure) {
-                if ($this->isBoundClosureSupported()) {
-                    $reflector = new ReflectionFunction($callback);
-
-                    return $reflector->getClosureThis();
-                }
-            } elseif (method_exists($callback, '__invoke')) {
-                return $callback;
-            }
-        }
-
-        return;
-    }
-
-    /**
      * Get the return type for the supplied callback.
      *
      * @param callable $callback The callback.

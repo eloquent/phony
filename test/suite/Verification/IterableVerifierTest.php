@@ -141,7 +141,6 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(
-            $this->invocableInspector,
             $this->matcherVerifier,
             $this->exporter,
             $this->differenceEngine,

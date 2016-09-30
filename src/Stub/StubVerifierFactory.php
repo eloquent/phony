@@ -16,7 +16,6 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
@@ -49,7 +48,6 @@ class StubVerifierFactory
                 CallVerifierFactory::instance(),
                 ExceptionAssertionRecorder::instance(),
                 AssertionRenderer::instance(),
-                InvocableInspector::instance(),
                 GeneratorAnswerBuilderFactory::instance(),
                 FunctionHookManager::instance()
             );
@@ -70,7 +68,6 @@ class StubVerifierFactory
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.
      * @param AssertionRecorder             $assertionRecorder             The assertion recorder to use.
      * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
-     * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      * @param FunctionHookManager           $functionHookManager           The function hook manager to use.
      */
@@ -84,7 +81,6 @@ class StubVerifierFactory
         CallVerifierFactory $callVerifierFactory,
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer,
-        InvocableInspector $invocableInspector,
         GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
         FunctionHookManager $functionHookManager
     ) {
@@ -97,7 +93,6 @@ class StubVerifierFactory
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
-        $this->invocableInspector = $invocableInspector;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
         $this->functionHookManager = $functionHookManager;
     }
@@ -129,7 +124,6 @@ class StubVerifierFactory
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
     }
@@ -155,7 +149,6 @@ class StubVerifierFactory
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
     }
@@ -200,7 +193,6 @@ class StubVerifierFactory
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
     }
@@ -215,7 +207,6 @@ class StubVerifierFactory
     private $callVerifierFactory;
     private $assertionRecorder;
     private $assertionRenderer;
-    private $invocableInspector;
     private $generatorAnswerBuilderFactory;
     private $functionHookManager;
 }

@@ -59,7 +59,6 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
-        $this->invocableInspector = InvocableInspector::instance();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->functionHookManager = FunctionHookManager::instance();
         $this->subject = new StubVerifierFactory(
@@ -72,7 +71,6 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory,
             $this->functionHookManager
         );
@@ -92,7 +90,6 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
         $actual = $this->subject->create($stub, $spy);
@@ -116,7 +113,6 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
         $actual = $this->subject->create();
@@ -139,7 +135,6 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             $this->generatorAnswerBuilderFactory
         );
         $actual = $this->subject->createFromCallback($callback);

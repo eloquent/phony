@@ -12,11 +12,7 @@
 require __DIR__ . '/../../../vendor/autoload.php';
 require __DIR__ . '/../../../vendor/simpletest/simpletest/autorun.php';
 
-use Eloquent\Asplode\Asplode;
 use Eloquent\Phony\Simpletest\Phony;
-
-Asplode::install();
-error_reporting(-1);
 
 class PhonyTest extends UnitTestCase
 {

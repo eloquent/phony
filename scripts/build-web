@@ -1,11 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Asplode\Asplode;
-
 require __DIR__ . '/../vendor/autoload.php';
-
-Asplode::install();
 
 echo 'Generating website... ';
 

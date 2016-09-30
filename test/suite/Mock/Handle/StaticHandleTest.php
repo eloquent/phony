@@ -54,7 +54,6 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(
-            $this->invocableInspector,
             $this->matcherVerifier,
             $this->exporter,
             $this->differenceEngine,
@@ -74,7 +73,6 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
             $this->callVerifierFactory,
             $this->assertionRecorder,
             $this->assertionRenderer,
-            $this->invocableInspector,
             GeneratorAnswerBuilderFactory::instance(),
             FunctionHookManager::instance()
         );
