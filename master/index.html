@@ -3001,18 +3001,6 @@ passed to <a href="#spy.calledWith"><code>calledWith()</code></a> can be literal
 
 <p><a href="img/verification/called-with/argument-mismatch.svg" target="_blank"><img src="img/verification/called-with/argument-mismatch.svg" alt="Example output from $spy-&gt;calledWith()" style="max-width:100%;"></a></p>
 
-<h4>
-<a id="verifying-spy-closure-binding" class="anchor" href="#verifying-spy-closure-binding" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy closure binding</h4>
-
-<p>Where <a href="http://php.net/closure.bind">closure binding</a> is supported, the bound object can be verified using
-<a href="#spy.calledOn"><code>calledOn()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledOn(<span class="pl-smi">$object</span>);</span></pre></div>
-
-<p>Example output from <a href="#spy.calledOn"><code>calledOn()</code></a>:</p>
-
-<p><a href="img/verification/called-on/binding-mismatch.svg" target="_blank"><img src="img/verification/called-on/binding-mismatch.svg" alt="Example output from $spy-&gt;calledOn()" style="max-width:100%;"></a></p>
-
 <h3>
 <a id="verifying-spy-output" class="anchor" href="#verifying-spy-output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy output</h3>
 
@@ -3346,18 +3334,6 @@ passed to <a href="#call.calledWith"><code>calledWith()</code></a> can be litera
 <p>Example output from <a href="#call.calledWith"><code>calledWith()</code></a>:</p>
 
 <p><a href="img/verification/called-with/call-argument-mismatch.svg" target="_blank"><img src="img/verification/called-with/call-argument-mismatch.svg" alt="Example output from $call-&gt;calledWith()" style="max-width:100%;"></a></p>
-
-<h4>
-<a id="verifying-call-closure-binding" class="anchor" href="#verifying-call-closure-binding" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call closure binding</h4>
-
-<p>Where <a href="http://php.net/closure.bind">closure binding</a> is supported, the bound object can be verified using
-<a href="#call.calledOn"><code>calledOn()</code></a>:</p>
-
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>calledOn(<span class="pl-smi">$object</span>);</span></pre></div>
-
-<p>Example output from <a href="#call.calledOn"><code>calledOn()</code></a>:</p>
-
-<p><a href="img/verification/called-on/call-binding-mismatch.svg" target="_blank"><img src="img/verification/called-on/call-binding-mismatch.svg" alt="Example output from $call-&gt;calledOn()" style="max-width:100%;"></a></p>
 
 <h3>
 <a id="verifying-call-output" class="anchor" href="#verifying-call-output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call output</h3>
@@ -6430,8 +6406,6 @@ the last element, and <code>-2</code> indicates the second last element.</em></p
 <li><a href="#spy.checkCalled"><code>$spy-&gt;checkCalled()</code></a></li>
 <li><a href="#spy.calledWith"><code>$spy-&gt;calledWith()</code></a></li>
 <li><a href="#spy.checkCalledWith"><code>$spy-&gt;checkCalledWith()</code></a></li>
-<li><a href="#spy.calledOn"><code>$spy-&gt;calledOn()</code></a></li>
-<li><a href="#spy.checkCalledOn"><code>$spy-&gt;checkCalledOn()</code></a></li>
 <li><a href="#spy.returned"><code>$spy-&gt;returned()</code></a></li>
 <li><a href="#spy.checkReturned"><code>$spy-&gt;checkReturned()</code></a></li>
 <li><a href="#spy.threw"><code>$spy-&gt;threw()</code></a></li>
@@ -6791,38 +6765,6 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
 <a href="#check-verification">Check verification</a>.</em></p>
 
-<p><a name="spy.calledOn"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.calledOn"><strong>calledOn</strong></a>($value)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless the bound <code>$this</code> value is equal to the supplied
-value.</p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
-<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-spy-closure-binding">Verifying spy closure binding</a>.</em></p>
-
-<p><a name="spy.checkCalledOn"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkCalledOn"><strong>checkCalledOn</strong></a>($value)</p>
-</blockquote>
-
-<p>Checks if the bound <code>$this</code> value is equal to the supplied value.</p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
-<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-spy-closure-binding">Verifying spy closure binding</a>, <a href="#check-verification">Check verification</a>.</em></p>
-
 <p><a name="spy.returned"></a></p>
 
 <hr>
@@ -7178,8 +7120,6 @@ equal to <code>$minimum</code>, and less than or equal to <code>$maximum</code>.
 <li><a href="#call.sequenceNumber"><code>$call-&gt;sequenceNumber()</code></a></li>
 <li><a href="#call.calledWith"><code>$call-&gt;calledWith()</code></a></li>
 <li><a href="#call.checkCalledWith"><code>$call-&gt;checkCalledWith()</code></a></li>
-<li><a href="#call.calledOn"><code>$call-&gt;calledOn()</code></a></li>
-<li><a href="#call.checkCalledOn"><code>$call-&gt;checkCalledOn()</code></a></li>
 <li><a href="#call.returned"><code>$call-&gt;returned()</code></a></li>
 <li><a href="#call.checkReturned"><code>$call-&gt;checkReturned()</code></a></li>
 <li><a href="#call.threw"><code>$call-&gt;threw()</code></a></li>
@@ -7574,38 +7514,6 @@ throws <a href="#assertionexception">AssertionException</a></p>
 
 <p><em>See <a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>,
 <a href="#check-verification">Check verification</a>.</em></p>
-
-<p><a name="call.calledOn"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.calledOn"><strong>calledOn</strong></a>($value)
-throws <a href="#assertionexception">AssertionException</a></p>
-</blockquote>
-
-<p>Throws an exception unless the bound <code>$this</code> value is equal to the supplied
-value.</p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
-<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-call-closure-binding">Verifying call closure binding</a>.</em></p>
-
-<p><a name="call.checkCalledOn"></a></p>
-
-<hr>
-
-<blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkCalledOn"><strong>checkCalledOn</strong></a>($value)</p>
-</blockquote>
-
-<p>Checks if the bound <code>$this</code> value is equal to the supplied value.</p>
-
-<p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
-<a href="#iterable-spy-substitution">iterable spy substitution</a>.</em></p>
-
-<p><em>See <a href="#verifying-call-closure-binding">Verifying call closure binding</a>, <a href="#check-verification">Check verification</a>.</em></p>
 
 <p><a name="call.returned"></a></p>
 
@@ -8114,8 +8022,6 @@ following methods:</p>
 <li><a href="#spy.checkCalled"><code>$spy-&gt;checkCalled()</code></a></li>
 <li><a href="#spy.calledWith"><code>$spy-&gt;calledWith()</code></a></li>
 <li><a href="#spy.checkCalledWith"><code>$spy-&gt;checkCalledWith()</code></a></li>
-<li><a href="#spy.calledOn"><code>$spy-&gt;calledOn()</code></a></li>
-<li><a href="#spy.checkCalledOn"><code>$spy-&gt;checkCalledOn()</code></a></li>
 <li><a href="#spy.returned"><code>$spy-&gt;returned()</code></a></li>
 <li><a href="#spy.checkReturned"><code>$spy-&gt;checkReturned()</code></a></li>
 <li><a href="#spy.threw"><code>$spy-&gt;threw()</code></a></li>
@@ -8130,8 +8036,6 @@ following methods:</p>
 <li><a href="#spy.checkIterated"><code>$spy-&gt;checkIterated()</code></a></li>
 <li><a href="#call.calledWith"><code>$call-&gt;calledWith()</code></a></li>
 <li><a href="#call.checkCalledWith"><code>$call-&gt;checkCalledWith()</code></a></li>
-<li><a href="#call.calledOn"><code>$call-&gt;calledOn()</code></a></li>
-<li><a href="#call.checkCalledOn"><code>$call-&gt;checkCalledOn()</code></a></li>
 <li><a href="#call.returned"><code>$call-&gt;returned()</code></a></li>
 <li><a href="#call.checkReturned"><code>$call-&gt;checkReturned()</code></a></li>
 <li><a href="#call.threw"><code>$call-&gt;threw()</code></a></li>
