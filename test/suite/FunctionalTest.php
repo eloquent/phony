@@ -1201,62 +1201,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($actual);
     }
 
-    public function testCalledOnWithSpies()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $closure = function () {};
-        $object = (object) array();
-        $closure = $closure->bindTo($object);
-        $spy = x\spy($closure);
-        $spy();
-
-        $spy->calledOn($object);
-    }
-
-    public function testCalledOnWithStubs()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $closure = function () {};
-        $object = (object) array();
-        $closure = $closure->bindTo($object);
-        $stub = x\stub($closure);
-        $stub();
-
-        $stub->calledOn($object);
-    }
-
-    public function testCalledOnWithMocks()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $handle = x\mock('Eloquent\Phony\Test\TestClassA');
-        $mock = $handle->get();
-        $mock->testClassAMethodA();
-
-        $handle->testClassAMethodA->calledOn($mock);
-    }
-
-    public function testCalledOnWithCustomMethods()
-    {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
-        $handle = x\mock(array('a' => function () {}));
-        $mock = $handle->get();
-        $mock->a();
-
-        $handle->a->calledOn($mock);
-    }
-
     public function testFinalConstructorBypass()
     {
         $handle = x\mock('Eloquent\Phony\Test\TestClassI');

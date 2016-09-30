@@ -440,52 +440,6 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->times(2)->calledWith('a');
     }
 
-    public function testCheckCalledOn()
-    {
-        $this->assertTrue((boolean) $this->subject->checkCalledOn($this->thisValue));
-        $this->assertTrue((boolean) $this->subject->checkCalledOn($this->matcherFactory->equalTo($this->thisValue)));
-        $this->assertTrue((boolean) $this->subject->never()->checkCalledOn((object) array('property' => 'value')));
-        $this->assertFalse((boolean) $this->subject->checkCalledOn((object) array('property' => 'value')));
-        $this->assertFalse((boolean) $this->subject->never()->checkCalledOn($this->thisValue));
-    }
-
-    public function testCalledOn()
-    {
-        $this->assertEquals($this->assertionResult, $this->subject->calledOn($this->thisValue));
-        $this->assertEquals(
-            $this->assertionResult,
-            $this->subject->calledOn($this->matcherFactory->equalTo($this->thisValue))
-        );
-        $this->assertEquals(
-            $this->emptyAssertionResult,
-            $this->subject->never()->calledOn((object) array('property' => 'value'))
-        );
-    }
-
-    public function testCalledOnFailure()
-    {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->calledOn((object) array());
-    }
-
-    public function testCalledOnFailureNever()
-    {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->never()->calledOn($this->thisValue);
-    }
-
-    public function testCalledOnFailureWithMatcher()
-    {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->calledOn($this->matcherFactory->equalTo((object) array('property' => 'value')));
-    }
-
-    public function testCalledOnFailureWithMatcherNever()
-    {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->never()->calledOn($this->matcherFactory->equalTo($this->thisValue));
-    }
-
     public function testCheckResponded()
     {
         $this->assertTrue((boolean) $this->subject->checkResponded());

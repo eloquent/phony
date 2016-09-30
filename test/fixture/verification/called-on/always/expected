@@ -1,7 +1,0 @@
-%RESET%Expected all %BOLD%Closure#0{}[verification.php:8][label]%RESET% calls to be bound to object:
-    %RED%✗%RESET% #1{name: "banana"}
-Matched 0 of 2:
-%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:8][label]("aardvark", #0[:3]):
-    %RED%✗%RESET% #%CYAN%%FAINT%[-%RESET%%CYAN%1%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%2%FAINT%+}%RESET%{name: "%CYAN%%FAINT%[-%RESET%%CYAN%banana%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%apricot%FAINT%+}%RESET%"}
-%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:8][label]("bonobo", #0[:3]):
-    %RED%✗%RESET% #%CYAN%%FAINT%[-%RESET%%CYAN%1%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%2%FAINT%+}%RESET%{name: "%CYAN%%FAINT%[-%RESET%%CYAN%banana%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%apricot%FAINT%+}%RESET%"}

@@ -1,4 +1,0 @@
-%RESET%Expected %BOLD%Closure#0{}[verification.php:8][label]%RESET% call #1 bound to object:
-    %RED%✗%RESET% #1{name: "banana"}
-%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:8][label]("bonobo", #0[:3]):
-    %RED%✗%RESET% #%CYAN%%FAINT%[-%RESET%%CYAN%1%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%2%FAINT%+}%RESET%{name: "%CYAN%%FAINT%[-%RESET%%CYAN%banana%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%apricot%FAINT%+}%RESET%"}

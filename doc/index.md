@@ -2869,19 +2869,6 @@ Example output from [`calledWith()`](#spy.calledWith):
 
 ![Example output from $spy->calledWith()][spy-called-with-image]
 
-#### Verifying spy closure binding
-
-Where [closure binding] is supported, the bound object can be verified using
-[`calledOn()`](#spy.calledOn):
-
-```php
-$spy->calledOn($object);
-```
-
-Example output from [`calledOn()`](#spy.calledOn):
-
-![Example output from $spy->calledOn()][spy-called-on-image]
-
 ### Verifying spy output
 
 #### Verifying spy return values
@@ -3260,19 +3247,6 @@ $call->argument(1); // second argument
 Example output from [`calledWith()`](#call.calledWith):
 
 ![Example output from $call->calledWith()][call-called-with-image]
-
-#### Verifying call closure binding
-
-Where [closure binding] is supported, the bound object can be verified using
-[`calledOn()`](#call.calledOn):
-
-```php
-$call->calledOn($object);
-```
-
-Example output from [`calledOn()`](#call.calledOn):
-
-![Example output from $call->calledOn()][call-called-on-image]
 
 ### Verifying call output
 
@@ -6104,8 +6078,6 @@ Both [spies] and [stubs] implement the following methods:
 - [`$spy->checkCalled()`](#spy.checkCalled)
 - [`$spy->calledWith()`](#spy.calledWith)
 - [`$spy->checkCalledWith()`](#spy.checkCalledWith)
-- [`$spy->calledOn()`](#spy.calledOn)
-- [`$spy->checkCalledOn()`](#spy.checkCalledOn)
 - [`$spy->returned()`](#spy.returned)
 - [`$spy->checkReturned()`](#spy.checkReturned)
 - [`$spy->threw()`](#spy.threw)
@@ -6409,34 +6381,6 @@ Checks if called with the supplied arguments.
 
 *See [Verifying that a spy was called with specific arguments],
 [Check verification].*
-
-<a name="spy.calledOn" />
-
-----
-
-> *[verification][verification-api]* $spy->[**calledOn**](#spy.calledOn)($value)
-> throws [AssertionException]
-
-Throws an exception unless the bound `$this` value is equal to the supplied
-value.
-
-*This method supports [mock handle substitution] and
-[iterable spy substitution].*
-
-*See [Verifying spy closure binding].*
-
-<a name="spy.checkCalledOn" />
-
-----
-
-> *[verification][verification-api]|null* $spy->[**checkCalledOn**](#spy.checkCalledOn)($value)
-
-Checks if the bound `$this` value is equal to the supplied value.
-
-*This method supports [mock handle substitution] and
-[iterable spy substitution].*
-
-*See [Verifying spy closure binding], [Check verification].*
 
 <a name="spy.returned" />
 
@@ -6749,8 +6693,6 @@ Requires that the next verification matches for all possible items.
 - [`$call->sequenceNumber()`](#call.sequenceNumber)
 - [`$call->calledWith()`](#call.calledWith)
 - [`$call->checkCalledWith()`](#call.checkCalledWith)
-- [`$call->calledOn()`](#call.calledOn)
-- [`$call->checkCalledOn()`](#call.checkCalledOn)
 - [`$call->returned()`](#call.returned)
 - [`$call->checkReturned()`](#call.checkReturned)
 - [`$call->threw()`](#call.threw)
@@ -7098,34 +7040,6 @@ Checks if called with the supplied arguments.
 
 *See [Verifying that a call was made with specific arguments],
 [Check verification].*
-
-<a name="call.calledOn" />
-
-----
-
-> *[verification][verification-api]* $call->[**calledOn**](#call.calledOn)($value)
-> throws [AssertionException]
-
-Throws an exception unless the bound `$this` value is equal to the supplied
-value.
-
-*This method supports [mock handle substitution] and
-[iterable spy substitution].*
-
-*See [Verifying call closure binding].*
-
-<a name="call.checkCalledOn" />
-
-----
-
-> *[verification][verification-api]|null* $call->[**checkCalledOn**](#call.checkCalledOn)($value)
-
-Checks if the bound `$this` value is equal to the supplied value.
-
-*This method supports [mock handle substitution] and
-[iterable spy substitution].*
-
-*See [Verifying call closure binding], [Check verification].*
 
 <a name="call.returned" />
 
@@ -7567,8 +7481,6 @@ See also:
 - [`$spy->checkCalled()`](#spy.checkCalled)
 - [`$spy->calledWith()`](#spy.calledWith)
 - [`$spy->checkCalledWith()`](#spy.checkCalledWith)
-- [`$spy->calledOn()`](#spy.calledOn)
-- [`$spy->checkCalledOn()`](#spy.checkCalledOn)
 - [`$spy->returned()`](#spy.returned)
 - [`$spy->checkReturned()`](#spy.checkReturned)
 - [`$spy->threw()`](#spy.threw)
@@ -7583,8 +7495,6 @@ See also:
 - [`$spy->checkIterated()`](#spy.checkIterated)
 - [`$call->calledWith()`](#call.calledWith)
 - [`$call->checkCalledWith()`](#call.checkCalledWith)
-- [`$call->calledOn()`](#call.calledOn)
-- [`$call->checkCalledOn()`](#call.checkCalledOn)
 - [`$call->returned()`](#call.returned)
 - [`$call->checkReturned()`](#call.checkReturned)
 - [`$call->threw()`](#call.threw)

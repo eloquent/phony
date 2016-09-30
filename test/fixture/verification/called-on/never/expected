@@ -1,7 +1,0 @@
-%RESET%Expected no %BOLD%Closure#0{}[verification.php:7][label]%RESET% call bound to object:
-    %RED%✗%RESET% #1{name: "apricot"}
-Matched 2 of 2:
-%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:7][label]("aardvark", #0[:3]):
-    %RED%✗%RESET% #1{name: "apricot"}
-%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo", #0[:3]):
-    %RED%✗%RESET% #1{name: "apricot"}
