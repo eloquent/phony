@@ -445,13 +445,7 @@ class FeatureDetector
                     return false; // @codeCoverageIgnore
                 }
 
-                return $detector->checkStatement(
-                    sprintf(
-                        'function(?int $a){}',
-                        $detector->uniqueSymbolName()
-                    ),
-                    false
-                );
+                return $detector->checkStatement('function(?int $a){}', false);
             },
 
             'type.void' => function ($detector) {
