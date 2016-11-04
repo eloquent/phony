@@ -12,10 +12,10 @@
 [coverage-image]: https://img.shields.io/codecov/c/github/eloquent/phony/master.svg?style=flat-square "Current test coverage for the master branch"
 [current build status]: https://travis-ci.org/eloquent/phony
 [current coverage status]: https://codecov.io/github/eloquent/phony
-[current hhvm build status]: http://hhvm.h4cc.de/package/eloquent/phony
+[current hhvm build status]: https://travis-ci.org/eloquent/phony
 [current version]: https://packagist.org/packages/eloquent/phony
 [current windows build status]: https://ci.appveyor.com/project/eloquent/phony
-[hhvm-image]: https://img.shields.io/hhvm/eloquent/phony/master.svg?style=flat-square "Tested against HHVM"
+[hhvm-image]: https://img.shields.io/badge/hhvm-tested-brightgreen.svg?style=flat-square "Tested against HHVM"
 [version-image]: https://img.shields.io/packagist/v/eloquent/phony.svg?style=flat-square "This project uses semantic versioning"
 [windows-build-image]: https://img.shields.io/appveyor/ci/eloquent/phony/master.svg?label=windows&style=flat-square "Current Windows build status for the master branch"
 
