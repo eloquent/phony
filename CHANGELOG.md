@@ -1,5 +1,13 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Checking for nullable type support no longer causes fatal errors
+  under HHVM ([#203], [#204] - thanks [@shadowhand]).
+
+[#203]: https://github.com/eloquent/phony/issues/203
+[#204]: https://github.com/eloquent/phony/pull/204
+
 ## 0.14.0 (2016-09-30)
 
 - **[BC BREAK]** Removed `calledOn()` ([#197]).
@@ -420,3 +428,4 @@
 - **[NEW]** Initial implementation.
 
 [@jmalloc]: https://github.com/jmalloc
+[@shadowhand]: https://github.com/shadowhand
