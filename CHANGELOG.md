@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.14.1 (2016-11-04)
 
 - **[FIXED]** Checking for nullable type support no longer causes fatal errors
   under HHVM ([#203], [#204] - thanks [@shadowhand]).
