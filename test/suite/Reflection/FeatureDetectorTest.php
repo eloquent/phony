@@ -154,8 +154,7 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
 
     public function testCheckStatementFailure()
     {
-        $this->setExpectedException('RuntimeException');
-        $this->subject->checkStatement('throw new RuntimeException()', false);
+        $this->assertFalse($this->subject->checkStatement('throw new RuntimeException()', false));
     }
 
     public function testCheckInternalClass()

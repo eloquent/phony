@@ -13,8 +13,6 @@ namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
 use Exception;
-use ParseError;
-use ParseException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -144,11 +142,6 @@ class FeatureDetector
                     }
                 }
 
-                // syntax causes fatal on HHVM
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return false; // @codeCoverageIgnore
-                }
-
                 return $detector->checkStatement(
                     sprintf('const %s=array()', $detector->uniqueSymbolName()),
                     false
@@ -161,11 +154,6 @@ class FeatureDetector
                     if (version_compare(PHP_VERSION, '5.6.x', '<')) {
                         return false; // @codeCoverageIgnore
                     }
-                }
-
-                // syntax causes fatal on HHVM
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return false; // @codeCoverageIgnore
                 }
 
                 return $detector->checkStatement(
@@ -339,20 +327,10 @@ class FeatureDetector
             },
 
             'parameter.variadic.reference' => function ($detector) {
-                // syntax causes fatal on HHVM
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return false; // @codeCoverageIgnore
-                }
-
                 return $detector->checkStatement('function (&...$a) {};', true);
             },
 
             'parameter.variadic.type' => function ($detector) {
-                // syntax causes fatal on HHVM
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return false; // @codeCoverageIgnore
-                }
-
                 return $detector
                     ->checkStatement('function (stdClass ...$a) {};', true);
             },
@@ -440,11 +418,6 @@ class FeatureDetector
             },
 
             'type.nullable' => function ($detector) {
-                // syntax causes fatal on HHVM
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return false; // @codeCoverageIgnore
-                }
-
                 return $detector->checkStatement('function(?int $a){}', false);
             },
 
@@ -513,39 +486,27 @@ class FeatureDetector
     public function checkStatement($source, $useClosure = true)
     {
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
-        $error = null;
+        $result = false;
 
         if ($useClosure) {
             try {
                 $result = eval(sprintf('function(){%s;};return true;', $source));
-            } catch (ParseError $e) {
-                $result = false;
+            } catch (Throwable $e) {
                 // @codeCoverageIgnoreStart
-            } catch (ParseException $e) {
-                $result = false;
-            } catch (Throwable $error) {
-            } catch (Exception $error) {
+            } catch (Exception $e) {
             }
             // @codeCoverageIgnoreEnd
         } else {
             try {
                 $result = eval(sprintf('%s;return true;', $source));
+            } catch (Throwable $e) {
                 // @codeCoverageIgnoreStart
-            } catch (ParseError $e) {
-                $result = false;
-            } catch (ParseException $e) {
-                $result = false;
-            } catch (Throwable $error) {
-            } catch (Exception $error) {
+            } catch (Exception $e) {
             }
             // @codeCoverageIgnoreEnd
         }
 
         error_reporting($reporting);
-
-        if ($error) {
-            throw $error;
-        }
 
         return true === $result;
     }
