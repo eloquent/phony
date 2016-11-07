@@ -1,5 +1,12 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Fixed nullable return type support for newer PHP 7.1 release
+  candidates ([#206]).
+
+[#206]: https://github.com/eloquent/phony/issues/206
+
 ## 0.14.1 (2016-11-04)
 
 - **[FIXED]** Checking for nullable type support no longer causes fatal errors

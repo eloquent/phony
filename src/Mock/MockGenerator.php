@@ -289,7 +289,11 @@ EOD;
                 $isBuiltin = $isBuiltin && false === strpos($typeString, '\\');
                 // @codeCoverageIgnoreEnd
             } else {
-                $typeString = (string) $type;
+                if ($type->allowsNull()) {
+                    $typeString = '?' . $type; // @codeCoverageIgnore
+                } else {
+                    $typeString = (string) $type;
+                }
             }
 
             if ($isBuiltin) {
@@ -488,7 +492,11 @@ EOD;
                         $isBuiltin && false === strpos($typeString, '\\');
                     // @codeCoverageIgnoreEnd
                 } else {
-                    $typeString = (string) $type;
+                    if ($type->allowsNull()) {
+                        $typeString = '?' . $type; // @codeCoverageIgnore
+                    } else {
+                        $typeString = (string) $type;
+                    }
                 }
 
                 if ($isBuiltin) {
@@ -681,7 +689,11 @@ EOD;
                 $isBuiltin = $isBuiltin && false === strpos($typeString, '\\');
                 // @codeCoverageIgnoreEnd
             } else {
-                $typeString = (string) $type;
+                if ($type->allowsNull()) {
+                    $typeString = '?' . $type; // @codeCoverageIgnore
+                } else {
+                    $typeString = (string) $type;
+                }
             }
 
             if ($isBuiltin) {

@@ -15,11 +15,11 @@ use stdClass;
 
 interface TestInterfaceWithNullableTypes
 {
-    public function staticMethodA(?string $string, ?stdClass $object) : ?TestClassA;
-    public function staticMethodB() : ?int;
-    public function methodA(?string $string, ?stdClass $object) : ?TestClassA;
-    public function methodB() : ?int;
+    public function staticMethodA( ? string $string, ? stdClass $object) : ? TestClassA;
+    public function staticMethodB() : ? int;
+    public function methodA( ? string $string, ? stdClass $object) : ? TestClassA;
+    public function methodB() : ? int;
 
-    public function __call($name, array $arguments) : ?int;
-    public static function __callStatic($name, array $arguments) : ?int;
+    public function __call($name, array $arguments) : ? int;
+    public static function __callStatic($name, array $arguments) : ? int;
 }
