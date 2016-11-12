@@ -413,7 +413,7 @@ class FeatureDetector
                 }
                 // @codeCoverageIgnoreEnd
 
-                return function_exists('posix_isatty') && posix_isatty(STDOUT);
+                return function_exists('posix_isatty') && @posix_isatty(STDOUT);
             },
 
             'trait' => function ($detector) {
