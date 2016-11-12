@@ -1,6 +1,13 @@
 # Phony changelog
 
-## Next release
+## 0.14.3 (2016-11-13)
+
+- **[FIXED]** Suppress `posix_isatty` warnings that occur when PHPUnit process
+  isolation is in use ([#207] - thanks [@keksa]).
+
+[#207]: https://github.com/eloquent/phony/pull/207
+
+## 0.14.2 (2016-11-10)
 
 - **[FIXED]** Fixed nullable return type support for newer PHP 7.1 release
   candidates ([#206]).
@@ -435,4 +442,5 @@
 - **[NEW]** Initial implementation.
 
 [@jmalloc]: https://github.com/jmalloc
+[@keksa]: https://github.com/keksa
 [@shadowhand]: https://github.com/shadowhand
