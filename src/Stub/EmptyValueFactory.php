@@ -105,10 +105,13 @@ class EmptyValueFactory
 
                 return $fn();
 
+            // @codeCoverageIgnoreStart
+
             case 'void':
             case 'hh\mixed':
                 return null;
         }
+        // @codeCoverageIgnoreEnd
 
         return $this->mockBuilderFactory->create($typeName)->full();
     }
