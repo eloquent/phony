@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Fixed mocking of classes with `self` return type ([#208]).
+
+[#208]: https://github.com/eloquent/phony/pull/208
+
 ## 0.14.3 (2016-11-13)
 
 - **[FIXED]** Suppress `posix_isatty` warnings that occur when PHPUnit process

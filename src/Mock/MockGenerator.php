@@ -296,6 +296,10 @@ EOD;
                 }
             }
 
+            if ('self' === $typeString) {
+                $typeString = $methodReflector->getDeclaringClass()->getName();
+            }
+
             if ($isBuiltin) {
                 $source .= "\n    ) : " . $typeString . " {\n";
 
@@ -499,6 +503,11 @@ EOD;
                     }
                 }
 
+                if ('self' === $typeString) {
+                    $typeString =
+                        $methodReflector->getDeclaringClass()->getName();
+                }
+
                 if ($isBuiltin) {
                     $returnType = ' : ' . $typeString;
                     // TODO: remove once PHP 7.1 is used for coverage
@@ -694,6 +703,10 @@ EOD;
                 } else {
                     $typeString = (string) $type;
                 }
+            }
+
+            if ('self' === $typeString) {
+                $typeString = $methodReflector->getDeclaringClass()->getName();
             }
 
             if ($isBuiltin) {
