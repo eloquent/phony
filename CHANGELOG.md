@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.14.4 (2016-11-23)
 
 - **[FIXED]** Fixed mocking of classes with `self` return type ([#208]).
 
