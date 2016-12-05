@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -109,7 +112,7 @@
     <text x="16" y="124">
         <tspan xml:space="preserve">    </tspan>
         <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
-        <tspan>#0["bonobo", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan"><tspan class="tooltip"><title>This expected value was missing</title>chameleon</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow"><tspan class="tooltip"><title>This unexpected value was encountered</title>capybara</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>", "dugong"]</tspan>
+        <tspan>#0["bonobo", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan underline"><tspan class="tooltip"><title>This expected value was missing</title>chameleon</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow underline"><tspan class="tooltip"><title>This unexpected value was encountered</title>capybara</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>", "dugong"]</tspan>
     </text>
     <text x="16" y="140">
         <tspan class="red"><tspan class="tooltip"><title>This call did not match</title>✗</tspan></tspan>
@@ -121,11 +124,11 @@
     <text x="16" y="156">
         <tspan xml:space="preserve">    </tspan>
         <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
-        <tspan>"</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan"><tspan class="tooltip"><title>This expected value was missing</title>aardvark</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow"><tspan class="tooltip"><title>This unexpected value was encountered</title>armadillo</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"</tspan>
+        <tspan>"</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan underline"><tspan class="tooltip"><title>This expected value was missing</title>aardvark</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow underline"><tspan class="tooltip"><title>This unexpected value was encountered</title>armadillo</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"</tspan>
     </text>
     <text x="16" y="172">
         <tspan xml:space="preserve">    </tspan>
         <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
-        <tspan>#0["bonobo", "chameleon", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan"><tspan class="tooltip"><title>This expected value was missing</title>dugong</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow"><tspan class="tooltip"><title>This unexpected value was encountered</title>dormouse</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"]</tspan>
+        <tspan>#0["bonobo", "chameleon", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan underline"><tspan class="tooltip"><title>This expected value was missing</title>dugong</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow underline"><tspan class="tooltip"><title>This unexpected value was encountered</title>dormouse</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"]</tspan>
     </text>
 </svg>

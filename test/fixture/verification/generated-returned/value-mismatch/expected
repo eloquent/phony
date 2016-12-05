@@ -5,11 +5,11 @@ Matched 0 of 3:
 %RED%✗%RESET% Call #0 - stub#0[label]("aardvark"):
     %RED%✗%RESET% Returned Generator#1{}, then:
         - Started iterating
-        %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%DUGONG%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%AARDVARK%FAINT%+}%RESET%"
+        %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%DUGONG%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%AARDVARK%RESET%%YELLOW%%FAINT%+}%RESET%"
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
     %RED%✗%RESET% Returned Generator#2{}, then:
         - Started iterating
-        %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%DUGONG%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"
+        %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%DUGONG%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"
 %RED%✗%RESET% Call #2 - stub#0[label]("chameleon"):
     %RED%✗%RESET% Returned Generator#4{}, then:
         - Started iterating

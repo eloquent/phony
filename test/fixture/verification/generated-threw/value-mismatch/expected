@@ -5,11 +5,11 @@ Matched 0 of 3:
 %RED%✗%RESET% Call #0 - stub#0[label]("aardvark"):
     %RED%✗%RESET% Returned Generator#3{}, then:
         - Started iterating
-        %RED%✗%RESET% Threw RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%1%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%2%FAINT%+}%RESET%{message: "%CYAN%%FAINT%[-%RESET%%CYAN%DUGONG%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%AARDVARK%FAINT%+}%RESET%"}
+        %RED%✗%RESET% Threw RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%1%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%2%RESET%%YELLOW%%FAINT%+}%RESET%{message: "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%DUGONG%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%AARDVARK%RESET%%YELLOW%%FAINT%+}%RESET%"}
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
     %RED%✗%RESET% Returned Generator#5{}, then:
         - Started iterating
-        %RED%✗%RESET% Threw RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%1%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%4%FAINT%+}%RESET%{message: "%CYAN%%FAINT%[-%RESET%%CYAN%DUGONG%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"}
+        %RED%✗%RESET% Threw RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%1%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%4%RESET%%YELLOW%%FAINT%+}%RESET%{message: "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%DUGONG%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"}
 %RED%✗%RESET% Call #2 - stub#0[label]("chameleon"):
     %RED%✗%RESET% Returned Generator#6{}, then:
         - Started iterating

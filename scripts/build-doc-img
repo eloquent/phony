@@ -89,6 +89,8 @@ foreach ($verifications as $verification) {
     $previousWeight = '';
     $color = '';
     $previousColor = '';
+    $decoration = '';
+    $previousDecoration = '';
     $text = '';
     $line = '';
     $lines = array();
@@ -107,6 +109,7 @@ foreach ($verifications as $verification) {
                     case '0m':
                         $weight = '';
                         $color = '';
+                        $decoration = '';
 
                         break;
 
@@ -117,6 +120,11 @@ foreach ($verifications as $verification) {
 
                     case '2m':
                         $weight = 'faint';
+
+                        break;
+
+                    case '4m':
+                        $decoration = 'underline';
 
                         break;
 
@@ -153,7 +161,11 @@ foreach ($verifications as $verification) {
             continue;
         }
 
-        if ($weight !== $previousWeight || $color !== $previousColor) {
+        if (
+            $weight !== $previousWeight ||
+            $color !== $previousColor ||
+            $decoration !== $previousDecoration
+        ) {
             if ('' !== $text) {
                 $class = array();
 
@@ -163,6 +175,10 @@ foreach ($verifications as $verification) {
 
                 if ($previousColor) {
                     $class[] = $previousColor;
+                }
+
+                if ($previousDecoration) {
+                    $class[] = $previousDecoration;
                 }
 
                 $class = implode(' ', $class);
@@ -189,6 +205,7 @@ foreach ($verifications as $verification) {
 
             $previousWeight = $weight;
             $previousColor = $color;
+            $previousDecoration = $decoration;
         }
 
         if (ATOM_NEWLINE === $type) {

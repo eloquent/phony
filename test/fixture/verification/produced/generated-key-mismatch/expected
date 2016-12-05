@@ -10,6 +10,6 @@ Matched 0 of 1:
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
     %RED%✗%RESET% Returned Generator#1{}, then:
         - Started iterating
-        %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%" => "MECHA-BONOBO"
+        %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%" => "MECHA-BONOBO"
         - Received null
         - Returned null

@@ -100,6 +100,7 @@ class VerificationTest extends PHPUnit_Framework_TestCase
                     case '0m': return '%RESET%';
                     case '1m': return '%BOLD%';
                     case '2m': return '%FAINT%';
+                    case '4m': return '%UNDERLINE%';
 
                     case '31m': return '%RED%';
                     case '32m': return '%GREEN%';

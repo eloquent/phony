@@ -6,8 +6,8 @@
     %GREEN%✓%RESET% "aardvark"
     %GREEN%✓%RESET% #0["bonobo", "capybara", "dugong"]
 %RED%✗%RESET% Call #1:
-    %RED%✗%RESET% "%CYAN%%FAINT%[-%RESET%%CYAN%aardvark%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%armadillo%FAINT%+}%RESET%"
-    %RED%✗%RESET% #0["bonobo", "%CYAN%%FAINT%[-%RESET%%CYAN%capybara%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%chameleon%FAINT%+}%RESET%", "%CYAN%%FAINT%[-%RESET%%CYAN%dugong%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%dormouse%FAINT%+}%RESET%"]
+    %RED%✗%RESET% "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%aardvark%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%armadillo%RESET%%YELLOW%%FAINT%+}%RESET%"
+    %RED%✗%RESET% #0["bonobo", "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%capybara%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%chameleon%RESET%%YELLOW%%FAINT%+}%RESET%", "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%dugong%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%dormouse%RESET%%YELLOW%%FAINT%+}%RESET%"]
 %GREEN%✓%RESET% Call #2:
     %GREEN%✓%RESET% "aardvark"
     %GREEN%✓%RESET% #0["bonobo", "capybara", "dugong"]

@@ -5,7 +5,7 @@ Matched 0 of 1:
 %RED%✗%RESET% Call #0 - stub#0[label]("aardvark"):
     %RED%✗%RESET% Returned Generator#1{}, then:
         - Started iterating
-        %RED%✗%RESET% Returned %CYAN%%FAINT%[-%RESET%%CYAN%"ZEBRA"%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%null%FAINT%+}%RESET%
+        %RED%✗%RESET% Returned %CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%"ZEBRA"%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%null%RESET%%YELLOW%%FAINT%+}%RESET%
 %FAINT%- Call #1 - stub#0[label]("bonobo", Closure#2{}[verification.php:25]):%RESET%
 %FAINT%    - Never responded%RESET%
 %FAINT%- Call #2 - stub#0[label]("bonobo", Closure#2{}[verification.php:25], 1):%RESET%

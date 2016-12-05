@@ -5,7 +5,7 @@ Matched 1 of 5:
 %GREEN%✓%RESET% Call #0 - stub#0[label]("aardvark"):
     %GREEN%✓%RESET% Returned Generator#1{}, then:
         - Started iterating
-        %GREEN%✓%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%BONOBO%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%AARDVARK%FAINT%+}%RESET%"
+        %GREEN%✓%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%BONOBO%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%AARDVARK%RESET%%YELLOW%%FAINT%+}%RESET%"
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
     %RED%✗%RESET% Returned Generator#2{}, then:
         - Started iterating

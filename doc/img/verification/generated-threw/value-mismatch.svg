@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -83,11 +86,11 @@
     <text x="16" y="92" xml:space="preserve"><tspan class="red">✗</tspan> Call #0 - stub#0[label](&quot;aardvark&quot;):</text>
     <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#3{}, then:</text>
     <text x="16" y="124" xml:space="preserve">        - Started iterating</text>
-    <text x="16" y="140" xml:space="preserve">        <tspan class="red">✗</tspan> Threw RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">2</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">DUGONG</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">AARDVARK</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
+    <text x="16" y="140" xml:space="preserve">        <tspan class="red">✗</tspan> Threw RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">2</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">DUGONG</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">AARDVARK</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
     <text x="16" y="156" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
     <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#5{}, then:</text>
     <text x="16" y="188" xml:space="preserve">        - Started iterating</text>
-    <text x="16" y="204" xml:space="preserve">        <tspan class="red">✗</tspan> Threw RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">4</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">DUGONG</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
+    <text x="16" y="204" xml:space="preserve">        <tspan class="red">✗</tspan> Threw RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">4</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">DUGONG</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
     <text x="16" y="220" xml:space="preserve"><tspan class="red">✗</tspan> Call #2 - stub#0[label](&quot;chameleon&quot;):</text>
     <text x="16" y="236" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#6{}, then:</text>
     <text x="16" y="252" xml:space="preserve">        - Started iterating</text>

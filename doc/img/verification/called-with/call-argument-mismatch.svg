@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -80,6 +83,6 @@
     <text x="16" y="44" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;aardvark&quot;</text>
     <text x="16" y="60" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;dugong&quot;]</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #1:</text>
-    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">aardvark</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">armadillo</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
-    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">dugong</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">dormouse</tspan><tspan class="faint yellow">+}</tspan>&quot;]</text>
+    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">aardvark</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">armadillo</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
+    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">dugong</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">dormouse</tspan><tspan class="faint yellow">+}</tspan>&quot;]</text>
 </svg>

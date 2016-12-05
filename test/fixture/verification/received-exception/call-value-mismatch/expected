@@ -6,5 +6,5 @@ Matched 0 of 1:
     %RED%✗%RESET% Returned Generator#3{}, then:
         - Started iterating
         - Produced 0 => "BONOBO"
-        %RED%✗%RESET% Received exception RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%1%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%2%FAINT%+}%RESET%{message: "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"}
+        %RED%✗%RESET% Received exception RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%1%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%2%RESET%%YELLOW%%FAINT%+}%RESET%{message: "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"}
         - Threw RuntimeException#2{message: "MECHA-BONOBO"}

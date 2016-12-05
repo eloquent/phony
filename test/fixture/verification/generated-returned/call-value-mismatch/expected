@@ -4,4 +4,4 @@
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
     %RED%✗%RESET% Returned Generator#1{}, then:
         - Started iterating
-        %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%DUGONG%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%"
+        %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%DUGONG%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"

@@ -59,10 +59,10 @@ class DifferenceEngine
 
         // @codeCoverageIgnoreStart
         if ($useColor) {
-            $this->addStart = "\033[33m\033[2m{+\033[0m\033[33m";
-            $this->addEnd = "\033[2m+}\033[0m";
-            $this->removeStart = "\033[36m\033[2m[-\033[0m\033[36m";
-            $this->removeEnd = "\033[2m-]\033[0m";
+            $this->addStart = "\033[33m\033[2m{+\033[0m\033[33m\033[4m";
+            $this->addEnd = "\033[0m\033[33m\033[2m+}\033[0m";
+            $this->removeStart = "\033[36m\033[2m[-\033[0m\033[36m\033[4m";
+            $this->removeEnd = "\033[0m\033[36m\033[2m-]\033[0m";
         } else {
             // @codeCoverageIgnoreEnd
             $this->addStart = '{+';

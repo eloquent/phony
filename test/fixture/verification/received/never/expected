@@ -13,7 +13,7 @@ Matched 1 of 2:
         - Produced 0 => "BONOBO"
         %RED%✗%RESET% Received "MECHA-BONOBO"
         - Produced 1 => "BADGER"
-        %GREEN%✓%RESET% Received "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%BONOBO%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BADGER%FAINT%+}%RESET%"
+        %GREEN%✓%RESET% Received "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%BONOBO%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BADGER%RESET%%YELLOW%%FAINT%+}%RESET%"
         - Returned null
 %GREEN%✓%RESET% Call #2 - stub#0[label]("chameleon"):
     %GREEN%✓%RESET% Returned Generator#2{}, then:

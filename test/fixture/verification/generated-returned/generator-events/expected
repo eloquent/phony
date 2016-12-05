@@ -12,7 +12,7 @@ Matched 0 of 4:
         - Received "AARDVARK"
         - Produced 1 => "bonobo"
         - Received "BONOBO"
-        %RED%✗%RESET% Returned %CYAN%%FAINT%[-%RESET%%CYAN%"ZEBRA"%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%2%FAINT%+}%RESET%
+        %RED%✗%RESET% Returned %CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%"ZEBRA"%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%2%RESET%%YELLOW%%FAINT%+}%RESET%
 %RED%✗%RESET% Call #2 - stub#0[label](#0[~1]):
     %RED%✗%RESET% Returned Generator#4{}, then:
         - Started iterating

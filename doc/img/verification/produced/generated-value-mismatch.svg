@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -88,7 +91,7 @@
     <text x="16" y="172" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
     <text x="16" y="188" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#1{}, then:</text>
     <text x="16" y="204" xml:space="preserve">        - Started iterating</text>
-    <text x="16" y="220" xml:space="preserve">        <tspan class="red">✗</tspan> Produced 0 =&gt; &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
+    <text x="16" y="220" xml:space="preserve">        <tspan class="red">✗</tspan> Produced 0 =&gt; &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
     <text x="16" y="236" xml:space="preserve">        - Received null</text>
     <text x="16" y="252" xml:space="preserve">        - Returned null</text>
 </svg>
