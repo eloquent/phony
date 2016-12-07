@@ -2,5 +2,5 @@
     %GREEN%✓%RESET% Returned <iterable>, then:
         %RED%✗%RESET% Finished iterating
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
-    %RED%✗%RESET% Returned #0[:1], then:
+    %RED%✗%RESET% Returned #0[~1], then:
         %RED%✗%RESET% Never started iterating

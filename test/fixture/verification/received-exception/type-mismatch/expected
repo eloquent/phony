@@ -3,7 +3,7 @@
         %RED%✗%RESET% Received exception InvalidArgumentException
 Matched 0 of 1:
 %FAINT%- Call #0 - stub#0[label]("aardvark"):%RESET%
-%FAINT%    - Returned #0[:1], then:%RESET%
+%FAINT%    - Returned #0[~1], then:%RESET%
 %FAINT%        - Started iterating%RESET%
 %FAINT%        - Produced 0 => "AARDVARK"%RESET%
 %FAINT%        - Finished iterating%RESET%

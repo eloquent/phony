@@ -7,7 +7,7 @@ Matched 0 of 2:
 %FAINT%- Call #1 - stub#0[label]("bonobo"):%RESET%
 %FAINT%    - Threw RuntimeException#1{message: "BONOBO"}%RESET%
 %RED%✗%RESET% Call #2 - stub#0[label]("chameleon"):
-    %RED%✗%RESET% Returned #0[:1], then:
+    %RED%✗%RESET% Returned #0[~1], then:
         %RED%✗%RESET% Never started iterating
 %RED%✗%RESET% Call #3 - stub#0[label]("dugong"):
     %RED%✗%RESET% Returned Generator#2{}, then:

@@ -81,6 +81,6 @@
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Produced &lt;any&gt; =&gt; &lt;any&gt;</text>
     <text x="16" y="76" xml:space="preserve">Matched 0 of 0:</text>
     <text x="16" y="92" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[:1], then:</text>
+    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[~1], then:</text>
     <text x="16" y="124" xml:space="preserve">        <tspan class="red">✗</tspan> Never started iterating</text>
 </svg>

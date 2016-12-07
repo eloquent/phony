@@ -7,17 +7,17 @@ Matched 2 of 3:
 %FAINT%- Call #1 - stub#0[label]("bonobo"):%RESET%
 %FAINT%    - Threw RuntimeException#1{message: "BONOBO"}%RESET%
 %FAINT%- Call #2 - stub#0[label]("chameleon"):%RESET%
-%FAINT%    - Returned #0[:1], then:%RESET%
+%FAINT%    - Returned #0[~1], then:%RESET%
 %FAINT%        - Started iterating%RESET%
 %FAINT%        - Produced 0 => "CHAMELEON"%RESET%
 %FAINT%        - Finished iterating%RESET%
 %FAINT%- Call #3 - stub#0[label]("dugong"):%RESET%
-%FAINT%    - Returned #0[:2], then:%RESET%
+%FAINT%    - Returned #0[~2], then:%RESET%
 %FAINT%        - Started iterating%RESET%
 %FAINT%        - Produced 0 => "DUGONG"%RESET%
 %FAINT%        - Never finished iterating%RESET%
 %FAINT%- Call #4 - stub#0[label]("earwig"):%RESET%
-%FAINT%    - Returned #0[:1], then:%RESET%
+%FAINT%    - Returned #0[~1], then:%RESET%
 %FAINT%        - Never started iterating%RESET%
 %RED%✗%RESET% Call #5 - stub#0[label]("ferret"):
     %RED%✗%RESET% Returned Generator#2{}, then:

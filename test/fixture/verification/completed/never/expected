@@ -5,23 +5,23 @@ Matched 4 of 6:
 %RED%✗%RESET% Call #1 - stub#0[label]("earwig"):
     %RED%✗%RESET% Threw RuntimeException#1{message: "EARWIG"}
 %RED%✗%RESET% Call #2 - stub#0[label]():
-    %RED%✗%RESET% Returned #0[:3], then:
+    %RED%✗%RESET% Returned #0[~3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"
         - Produced 2 => "chameleon"
         %RED%✗%RESET% Finished iterating
 %GREEN%✓%RESET% Call #3 - stub#0[label]():
-    %GREEN%✓%RESET% Returned #0[:3], then:
+    %GREEN%✓%RESET% Returned #0[~3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"
         %GREEN%✓%RESET% Never finished iterating
 %GREEN%✓%RESET% Call #4 - stub#0[label]():
-    %GREEN%✓%RESET% Returned #0[:3], then:
+    %GREEN%✓%RESET% Returned #0[~3], then:
         %GREEN%✓%RESET% Never started iterating
 %RED%✗%RESET% Call #5 - stub#0[label]():
-    %RED%✗%RESET% Returned #0[:3], then:
+    %RED%✗%RESET% Returned #0[~3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"

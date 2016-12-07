@@ -3,7 +3,7 @@
         %RED%✗%RESET% Produced <any> => <any>
 Matched 0 of 1:
 %FAINT%- Call #0 - stub#0[label]("aardvark"):%RESET%
-%FAINT%    - Returned #0[:1], then:%RESET%
+%FAINT%    - Returned #0[~1], then:%RESET%
 %FAINT%        - Never started iterating%RESET%
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
     %RED%✗%RESET% Returned Generator#1{}, then:

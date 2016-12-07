@@ -3,7 +3,7 @@
         %RED%✗%RESET% Produced "CHAMELEON" => "MECHA-BONOBO"
 Matched 0 of 1:
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
-    %RED%✗%RESET% Returned #0[:1], then:
+    %RED%✗%RESET% Returned #0[~1], then:
         - Started iterating
         %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%CHAMELEON%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%BONOBO%FAINT%+}%RESET%" => "MECHA-BONOBO"
         - Finished iterating

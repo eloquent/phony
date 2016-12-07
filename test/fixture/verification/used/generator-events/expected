@@ -2,10 +2,10 @@
     %RED%✗%RESET% Returned Generator, then: %RED%%FAINT%(4 matches)%RESET%
         %RED%✗%RESET% Started iterating
 %RED%Exactly 99 required. Matched 3 of 4:%RESET%
-%RED%✗%RESET% Call #0 - stub#0[label](#0[:2]):
+%RED%✗%RESET% Call #0 - stub#0[label](#0[~2]):
     %RED%✗%RESET% Returned Generator#1{}, then:
         %RED%✗%RESET% Never started iterating
-%GREEN%✓%RESET% Call #1 - stub#0[label](#0[:2]):
+%GREEN%✓%RESET% Call #1 - stub#0[label](#0[~2]):
     %GREEN%✓%RESET% Returned Generator#2{}, then:
         %GREEN%✓%RESET% Started iterating
         - Produced 0 => "aardvark"
@@ -13,13 +13,13 @@
         - Produced 1 => "bonobo"
         - Received "BONOBO"
         - Returned 2
-%GREEN%✓%RESET% Call #2 - stub#0[label](#0[:1]):
+%GREEN%✓%RESET% Call #2 - stub#0[label](#0[~1]):
     %GREEN%✓%RESET% Returned Generator#4{}, then:
         %GREEN%✓%RESET% Started iterating
         - Produced 0 => "aardvark"
         - Received exception RuntimeException#3{message: "AARDVARK"}
         - Threw RuntimeException#3{message: "AARDVARK"}
-%GREEN%✓%RESET% Call #3 - stub#0[label](#0[:2]):
+%GREEN%✓%RESET% Call #3 - stub#0[label](#0[~2]):
     %GREEN%✓%RESET% Returned Generator#5{}, then:
         %GREEN%✓%RESET% Started iterating
         - Produced 0 => "aardvark"

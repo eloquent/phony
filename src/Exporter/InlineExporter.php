@@ -188,7 +188,7 @@ class InlineExporter implements Exporter
                         $count = count($value) - 1;
 
                         if ($count) {
-                            $result->type .= '[:' . $count . ']';
+                            $result->type .= '[~' . $count . ']';
                         } else {
                             $result->type .= '[]';
                         }
@@ -542,7 +542,7 @@ class InlineExporter implements Exporter
                             if (empty($values)) {
                                 $result->type .= '{}';
                             } else {
-                                $result->type .= '{:' . count($values) . '}';
+                                $result->type .= '{~' . count($values) . '}';
                             }
 
                             break;

@@ -3,12 +3,12 @@
         %RED%✗%RESET% Started iterating
 %RED%Exactly 3 required. Matched 2 of 2:%RESET%
 %GREEN%✓%RESET% Call #0 - stub#0[label]("aardvark"):
-    %GREEN%✓%RESET% Returned #0[:1], then:
+    %GREEN%✓%RESET% Returned #0[~1], then:
         %GREEN%✓%RESET% Started iterating
         - Produced 0 => "AARDVARK"
         - Finished iterating
 %GREEN%✓%RESET% Call #1 - stub#0[label]("bonobo"):
-    %GREEN%✓%RESET% Returned #0[:1], then:
+    %GREEN%✓%RESET% Returned #0[~1], then:
         %GREEN%✓%RESET% Started iterating
         - Produced 0 => "BONOBO"
         - Finished iterating

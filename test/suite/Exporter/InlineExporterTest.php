@@ -98,8 +98,8 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
         $array = array();
         $value = array(&$array, array(&$array));
 
-        $this->assertSame('#0[:2]', $this->subject->export($value, 0));
-        $this->assertSame('#0[#1[], #2[:1]]', $this->subject->export($value, 1));
+        $this->assertSame('#0[~2]', $this->subject->export($value, 0));
+        $this->assertSame('#0[#1[], #2[~1]]', $this->subject->export($value, 1));
         $this->assertSame('#0[#1[], #2[&1[]]]', $this->subject->export($value, 2));
         $this->assertSame('#0[#1[], #2[&1[]]]', $this->subject->export($value));
     }
@@ -109,8 +109,8 @@ class InlineExporterTest extends PHPUnit_Framework_TestCase
         $object = (object) array();
         $value = (object) array('a' => &$object, 'b' => (object) array('a' => &$object));
 
-        $this->assertSame('#0{:2}', $this->subject->export($value, 0));
-        $this->assertSame('#0{a: #1{}, b: #2{:1}}', $this->subject->export($value, 1));
+        $this->assertSame('#0{~2}', $this->subject->export($value, 0));
+        $this->assertSame('#0{a: #1{}, b: #2{~1}}', $this->subject->export($value, 1));
         $this->assertSame('#0{a: #1{}, b: #2{a: &1{}}}', $this->subject->export($value, 2));
         $this->assertSame('#0{a: #1{}, b: #2{a: &1{}}}', $this->subject->export($value));
         $this->assertSame('#1{}', $this->subject->export($object, 0));

@@ -1573,7 +1573,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $valueB = array((object) array(), (object) array('a', 'b', 'c'));
         $this->exporter->reset();
 
-        $this->assertSame('#0[#1[], #2[:3]]', $this->exporter->export($valueA));
-        $this->assertSame('#0[#0{}, #1{:3}]', $this->exporter->export($valueB));
+        $this->assertSame('#0[#1[], #2[~3]]', $this->exporter->export($valueA));
+        $this->assertSame('#0[#0{}, #1{~3}]', $this->exporter->export($valueB));
     }
 }

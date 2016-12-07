@@ -2,7 +2,11 @@
 
 ## Next release
 
+- **[IMPROVED]** Inline exporter now uses tilde (`~`) to indicate truncated
+  content ([#210]).
 - **[IMPROVED]** Refactored the feature detector.
+
+[#210]: https://github.com/eloquent/phony/issues/210
 
 ## 0.14.4 (2016-11-23)
 

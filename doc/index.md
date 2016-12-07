@@ -4788,10 +4788,10 @@ exist within that value:
 
 ```php
 $value = [[], ['a', 'b', 'c']];
-// $value is exported as '#0[#1[], #2[:3]]'
+// $value is exported as '#0[#1[], #2[~3]]'
 
 $value = [(object) [], (object) ['a', 'b', 'c']];
-// $value is exported as '#0[#0{}, #1{:3}]'
+// $value is exported as '#0[#0{}, #1{~3}]'
 ```
 
 #### Setting the export depth
