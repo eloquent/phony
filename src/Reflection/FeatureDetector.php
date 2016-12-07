@@ -410,9 +410,11 @@ class FeatureDetector
                         new ReflectionFunction(function (iterable $a) {});
                     $parameters = $function->getParameters();
                     $result = null === $parameters[0]->getClass();
+                    // @codeCoverageIgnoreStart
                 } catch (ReflectionException $e) {
                     $result = false;
                 }
+                // @codeCoverageIgnoreEnd
 
                 return $result;
             },

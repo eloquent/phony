@@ -275,7 +275,6 @@ EOD;
                 // @codeCoverageIgnoreStart
                 $typeString = $methodReflector->getReturnTypeText();
 
-                // TODO: review HHVM usage of ? prefix
                 if (0 === strpos($typeString, '?')) {
                     $typeString = '';
                 } else {
@@ -290,7 +289,7 @@ EOD;
                 // @codeCoverageIgnoreEnd
             } else {
                 if ($type->allowsNull()) {
-                    $typeString = '?' . $type; // @codeCoverageIgnore
+                    $typeString = '?' . $type;
                 } else {
                     $typeString = (string) $type;
                 }
@@ -302,15 +301,11 @@ EOD;
 
             if ($isBuiltin) {
                 $source .= "\n    ) : " . $typeString . " {\n";
-
-                // TODO: remove once PHP 7.1 is used for coverage
-                // @codeCoverageIgnoreStart
             } elseif (
                 $this->isNullableTypeSupported &&
                 0 === strpos($typeString, '?')
             ) {
                 $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
-                // @codeCoverageIgnoreEnd
             } else {
                 $source .= "\n    ) : \\" . $typeString . " {\n";
             }
@@ -321,8 +316,6 @@ EOD;
             $isVoidReturn = false;
         }
 
-        // TODO: remove once PHP 7.1 is used for coverage
-        // @codeCoverageIgnoreStart
         if ($isVoidReturn) {
             $source .= <<<'EOD'
         self::$_staticHandle->spy($a0)
@@ -331,7 +324,6 @@ EOD;
 
 EOD;
         } else {
-            // @codeCoverageIgnoreEnd
             $source .= <<<'EOD'
         $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
@@ -480,7 +472,6 @@ EOD;
                     // @codeCoverageIgnoreStart
                     $typeString = $methodReflector->getReturnTypeText();
 
-                    // TODO: review HHVM usage of ? prefix
                     if (0 === strpos($typeString, '?')) {
                         $typeString = '';
                     } else {
@@ -497,7 +488,7 @@ EOD;
                     // @codeCoverageIgnoreEnd
                 } else {
                     if ($type->allowsNull()) {
-                        $typeString = '?' . $type; // @codeCoverageIgnore
+                        $typeString = '?' . $type;
                     } else {
                         $typeString = (string) $type;
                     }
@@ -510,14 +501,11 @@ EOD;
 
                 if ($isBuiltin) {
                     $returnType = ' : ' . $typeString;
-                    // TODO: remove once PHP 7.1 is used for coverage
-                    // @codeCoverageIgnoreStart
                 } elseif (
                     $this->isNullableTypeSupported &&
                     0 === strpos($typeString, '?')
                 ) {
                     $returnType = ' : ?\\' . substr($typeString, 1);
-                    // @codeCoverageIgnoreEnd
                 } else {
                     $returnType = ' : \\' . $typeString;
                 }
@@ -554,12 +542,9 @@ EOD;
             $body .=
                 "        }\n\n        if (!${handle}) {\n";
 
-            // TODO: remove once PHP 7.1 is used for coverage
-            // @codeCoverageIgnoreStart
             if ($isVoidReturn) {
                 $resultAssign = '';
             } else {
-                // @codeCoverageIgnoreEnd
                 $resultAssign = '$result = ';
             }
 
@@ -579,8 +564,6 @@ EOD;
 EOD;
             }
 
-            // TODO: remove once PHP 7.1 is used for coverage
-            // @codeCoverageIgnoreStart
             if ($isVoidReturn) {
                 $body .=
                     "\n\n            return;\n        }\n\n" .
@@ -589,7 +572,6 @@ EOD;
                     '            new \Eloquent\Phony\Call\Arguments' .
                     "(\$arguments)\n        );";
             } else {
-                // @codeCoverageIgnoreEnd
                 $body .=
                     "\n\n            return \$result;\n        }\n\n" .
                     "        \$result = ${handle}->spy" .
@@ -684,7 +666,6 @@ EOD;
                 // @codeCoverageIgnoreStart
                 $typeString = $methodReflector->getReturnTypeText();
 
-                // TODO: review HHVM usage of ? prefix
                 if (0 === strpos($typeString, '?')) {
                     $typeString = '';
                 } else {
@@ -699,7 +680,7 @@ EOD;
                 // @codeCoverageIgnoreEnd
             } else {
                 if ($type->allowsNull()) {
-                    $typeString = '?' . $type; // @codeCoverageIgnore
+                    $typeString = '?' . $type;
                 } else {
                     $typeString = (string) $type;
                 }
@@ -711,15 +692,11 @@ EOD;
 
             if ($isBuiltin) {
                 $source .= "\n    ) : " . $typeString . " {\n";
-
-                // TODO: remove once PHP 7.1 is used for coverage
-                // @codeCoverageIgnoreStart
             } elseif (
                 $this->isNullableTypeSupported &&
                 0 === strpos($typeString, '?')
             ) {
                 $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
-                // @codeCoverageIgnoreEnd
             } else {
                 $source .= "\n    ) : \\" . $typeString . " {\n";
             }
@@ -730,8 +707,6 @@ EOD;
             $isVoidReturn = false;
         }
 
-        // TODO: remove once PHP 7.1 is used for coverage
-        // @codeCoverageIgnoreStart
         if ($isVoidReturn) {
             $source .= <<<'EOD'
         $this->_handle->spy($a0)
@@ -740,7 +715,6 @@ EOD;
 
 EOD;
         } else {
-            // @codeCoverageIgnoreEnd
             $source .= <<<'EOD'
         $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));

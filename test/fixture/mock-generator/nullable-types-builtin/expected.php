@@ -1,8 +1,8 @@
 <?php
 
-class MockGeneratorNullableTypes
+class MockGeneratorNullableBultinTypes
 implements \Eloquent\Phony\Mock\Mock,
-           \Eloquent\Phony\Test\TestInterfaceWithNullableTypes
+           \Eloquent\Phony\Test\TestInterfaceWithNullableBuiltinTypes
 {
     public static function customStaticMethod(
         string $a0 = null,
@@ -41,7 +41,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public static function __callStatic(
         $a0,
         array $a1
-    ) : ?\Eloquent\Phony\Test\TestClassA {
+    ) : ?int {
         $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
@@ -50,8 +50,8 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function staticMethodA(
         string $a0 = null,
-        \stdClass $a1 = null
-    ) : ?\Eloquent\Phony\Test\TestClassA {
+        int $a1 = null
+    ) : ?bool {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -82,7 +82,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    public function staticMethodB() : ?\Eloquent\Phony\Test\TestClassB
+    public function staticMethodB() : ?int
     {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -109,8 +109,8 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function methodA(
         string $a0 = null,
-        \stdClass $a1 = null
-    ) : ?\Eloquent\Phony\Test\TestClassA {
+        int $a1 = null
+    ) : ?bool {
         $argumentCount = \func_num_args();
         $arguments = array();
 
@@ -141,7 +141,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    public function methodB() : ?\Eloquent\Phony\Test\TestClassB
+    public function methodB() : ?int
     {
         $argumentCount = \func_num_args();
         $arguments = array();
@@ -203,7 +203,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function __call(
         $a0,
         array $a1
-    ) : ?\Eloquent\Phony\Test\TestClassA {
+    ) : ?int {
         $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
