@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.14.5 (2016-12-07)
 
 - **[FIXED]** Mock handle substitution fixed for `threw()` and
   `receivedException()` verifications ([#211]).
