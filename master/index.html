@@ -1996,6 +1996,15 @@ reference:</p>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$c</span>; <span class="pl-c">// outputs 'c'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$d</span>; <span class="pl-c">// outputs 'd'</span></span></pre></div>
 
+<p>Both <a href="#stub.does"><code>does()</code></a> and <a href="#stub.doesWith"><code>doesWith()</code></a> support
+<a href="#magic-self-values">magic "self" values</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>does(</span>
+<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$phonySelf</span>, <span class="pl-smi">$argument</span>) {</span>
+<span class="pl-s1">        <span class="pl-c">// $phonySelf is the "self" value, $argument is the first argument</span></span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span></pre></div>
+
 <h3>
 <a id="forwarding-to-the-original-callable" class="anchor" href="#forwarding-to-the-original-callable" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Forwarding to the original callable</h3>
 
@@ -2247,6 +2256,15 @@ reference:</p>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$b</span>; <span class="pl-c">// outputs 'b'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$c</span>; <span class="pl-c">// outputs 'c'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$d</span>; <span class="pl-c">// outputs 'd'</span></span></pre></div>
+
+<p>Both <a href="#stub.calls"><code>calls()</code></a> and <a href="#stub.callsWith"><code>callsWith()</code></a> support
+<a href="#magic-self-values">magic "self" values</a>:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$stub</span> <span class="pl-k">=</span> stub()<span class="pl-k">-&gt;</span>calls(</span>
+<span class="pl-s1">    <span class="pl-k">function</span> (<span class="pl-smi">$phonySelf</span>, <span class="pl-smi">$argument</span>) {</span>
+<span class="pl-s1">        <span class="pl-c">// $phonySelf is the "self" value, $argument is the first argument</span></span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">);</span></pre></div>
 
 <h3>
 <a id="stubbing-generators" class="anchor" href="#stubbing-generators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stubbing generators</h3>
