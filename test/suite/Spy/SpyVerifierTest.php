@@ -24,6 +24,8 @@ use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -1559,6 +1561,24 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
             new EventSequence(array($this->callCResponse, $this->callDResponse), $this->callVerifierFactory),
             $this->subject->threw()
         );
+    }
+
+    public function testThrewWithInstanceHandle()
+    {
+        $builder = MockBuilderFactory::instance()->create('RuntimeException');
+        $exception = $builder->get();
+        $threwEvent = $this->callEventFactory->createThrew($exception);
+        $call = $this->callFactory->create(
+            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
+            $threwEvent,
+            null,
+            $threwEvent
+        );
+        $this->subject->setCalls(array($call));
+        $handle = Phony::on($exception);
+
+        $this->assertTrue((boolean) $this->subject->threw($handle));
+        $this->assertTrue((boolean) $this->subject->checkThrew($handle));
     }
 
     public function testThrewFailureExpectingAny()

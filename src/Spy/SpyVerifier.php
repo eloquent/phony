@@ -25,6 +25,7 @@ use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Verification\AbstractCardinalityVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -737,6 +738,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
                 }
             }
         } elseif (is_object($type)) {
+            if ($type instanceof InstanceHandle) {
+                $type = $type->get();
+            }
+
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->equalTo($type, true);
@@ -787,6 +792,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     public function threw($type = null)
     {
         $cardinality = $this->cardinality;
+
+        if ($type instanceof InstanceHandle) {
+            $type = $type->get();
+        }
 
         if ($type instanceof Throwable || $type instanceof Exception) {
             $type = $this->matcherFactory->equalTo($type, true);

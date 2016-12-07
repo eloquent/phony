@@ -19,6 +19,8 @@ use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -659,6 +661,27 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
             new EventSequence(array($this->callWithException->responseEvent()), $this->callVerifierFactory);
 
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw());
+    }
+
+    public function testThrewWithInstanceHandle()
+    {
+        $builder = MockBuilderFactory::instance()->create('RuntimeException');
+        $exception = $builder->get();
+        $threwEvent = $this->callEventFactory->createThrew($exception);
+        $call = $this->callFactory->create($this->calledEvent, $threwEvent, null, $threwEvent);
+        $subject = new CallVerifier(
+            $call,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->generatorVerifierFactory,
+            $this->iterableVerifierFactory,
+            $this->assertionRecorder,
+            $this->assertionRenderer
+        );
+        $handle = Phony::on($exception);
+
+        $this->assertTrue((boolean) $subject->threw($handle));
+        $this->assertTrue((boolean) $subject->checkThrew($handle));
     }
 
     public function testThrewFailureExpectingAnyNoneThrown()

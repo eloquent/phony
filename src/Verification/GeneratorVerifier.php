@@ -20,6 +20,7 @@ use Eloquent\Phony\Call\Event\ReceivedExceptionEvent;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Spy\Spy;
 use Error;
 use Exception;
@@ -227,6 +228,10 @@ class GeneratorVerifier extends IterableVerifier
                 }
             }
         } elseif (is_object($type)) {
+            if ($type instanceof InstanceHandle) {
+                $type = $type->get();
+            }
+
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->equalTo($type, true);
@@ -294,6 +299,10 @@ class GeneratorVerifier extends IterableVerifier
     public function receivedException($type = null)
     {
         $cardinality = $this->cardinality;
+
+        if ($type instanceof InstanceHandle) {
+            $type = $type->get();
+        }
 
         if ($type instanceof Throwable || $type instanceof Exception) {
             $type = $this->matcherFactory->equalTo($type, true);
@@ -452,6 +461,10 @@ class GeneratorVerifier extends IterableVerifier
                 }
             }
         } elseif (is_object($type)) {
+            if ($type instanceof InstanceHandle) {
+                $type = $type->get();
+            }
+
             if ($type instanceof Throwable || $type instanceof Exception) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->equalTo($type, true);
@@ -506,6 +519,10 @@ class GeneratorVerifier extends IterableVerifier
     public function threw($type = null)
     {
         $cardinality = $this->cardinality;
+
+        if ($type instanceof InstanceHandle) {
+            $type = $type->get();
+        }
 
         if ($type instanceof Throwable || $type instanceof Exception) {
             $type = $this->matcherFactory->equalTo($type, true);

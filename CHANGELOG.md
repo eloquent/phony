@@ -2,11 +2,14 @@
 
 ## Next release
 
+- **[FIXED]** Mock handle substitution fixed for `threw()` and
+  `receivedException()` verifications ([#211]).
 - **[IMPROVED]** Inline exporter now uses tilde (`~`) to indicate truncated
   content ([#210]).
 - **[IMPROVED]** Refactored the feature detector.
 
 [#210]: https://github.com/eloquent/phony/issues/210
+[#211]: https://github.com/eloquent/phony/issues/211
 
 ## 0.14.4 (2016-11-23)
 

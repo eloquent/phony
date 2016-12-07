@@ -23,6 +23,8 @@ use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\SpyFactory;
@@ -772,6 +774,27 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testReceivedExceptionWithInstanceHandle()
+    {
+        $builder = MockBuilderFactory::instance()->create('RuntimeException');
+        $exception = $builder->get();
+        $events = array(
+            $this->generatorUsedEvent,
+            $this->eventFactory->createReceivedException($exception),
+        );
+        $call = $this->callFactory->create(
+            $this->generatorCalledEvent,
+            $this->generatedEvent,
+            $events,
+            $this->generatorEndEvent
+        );
+        $this->setUpWith(array($call));
+        $handle = Phony::on($exception);
+
+        $this->assertTrue((boolean) $this->subject->receivedException($handle));
+        $this->assertTrue((boolean) $this->subject->checkReceivedException($handle));
+    }
+
     public function testReceivedExceptionFailureExpectingNeverAny()
     {
         $this->setUpWith($this->typicalCallsPlusGeneratorCall);
@@ -1177,6 +1200,29 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
             new EventSequence(array($this->generatorThrewEvent), $this->callVerifierFactory),
             $this->subject->threw()
         );
+    }
+
+    public function testThrewWithInstanceHandle()
+    {
+        $builder = MockBuilderFactory::instance()->create('RuntimeException');
+        $exception = $builder->get();
+        $this->generatorThrewEvent = $this->eventFactory->createThrew($exception);
+        $this->generatorThrowCall = $this->callFactory->create(
+            $this->generatorCalledEvent,
+            $this->generatedEvent,
+            $this->generatorEvents,
+            $this->generatorThrewEvent
+        );
+
+        $this->callsWithThrow = array(
+            $this->calls[0],
+            $this->generatorThrowCall,
+        );
+        $this->setUpWith($this->callsWithThrow);
+        $handle = Phony::on($exception);
+
+        $this->assertTrue((boolean) $this->subject->threw($handle));
+        $this->assertTrue((boolean) $this->subject->checkThrew($handle));
     }
 
     public function testThrewFailureExpectingAny()
