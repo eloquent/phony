@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -89,7 +92,7 @@
     <text x="16" y="188" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#3{}, then:</text>
     <text x="16" y="204" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="220" xml:space="preserve">        - Produced 0 =&gt; &quot;BONOBO&quot;</text>
-    <text x="16" y="236" xml:space="preserve">        <tspan class="red">✗</tspan> Received exception RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">2</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;MECHA-<tspan class="faint cyan">[-</tspan><tspan class="cyan">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
+    <text x="16" y="236" xml:space="preserve">        <tspan class="red">✗</tspan> Received exception RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">2</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;MECHA-<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
     <text x="16" y="252" xml:space="preserve">        - Threw RuntimeException#2{message: &quot;MECHA-BONOBO&quot;}</text>
     <text x="16" y="268" xml:space="preserve"><tspan class="faint">- Call #2 - stub#0[label](&quot;chameleon&quot;):</tspan></text>
     <text x="16" y="284" xml:space="preserve"><tspan class="faint">    - Returned &quot;CHAMELEON&quot;</tspan></text>

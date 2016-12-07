@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -79,5 +82,5 @@
     <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">Closure#0{}[verification.php:7][label]</tspan> call #1 to behave like:</text>
     <text x="16" y="44" xml:space="preserve">    <tspan class="red">✗</tspan> Threw RuntimeException#1{message: &quot;CHAMELEON&quot;}</text>
     <text x="16" y="60" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - Closure#0{}[verification.php:7][label](&quot;bonobo&quot;):</text>
-    <text x="16" y="76" xml:space="preserve">    <tspan class="red">✗</tspan> Threw RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">2</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
+    <text x="16" y="76" xml:space="preserve">    <tspan class="red">✗</tspan> Threw RuntimeException#<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">1</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">2</tspan><tspan class="faint yellow">+}</tspan>{message: &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;}</text>
 </svg>

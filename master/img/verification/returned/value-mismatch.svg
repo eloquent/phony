@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -80,7 +83,7 @@
     <text x="16" y="44" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &quot;CHAMELEON&quot;</text>
     <text x="16" y="60" xml:space="preserve">Matched 0 of 2:</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #0 - Closure#0{}[verification.php:7][label](&quot;aardvark&quot;):</text>
-    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">AARDVARK</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
+    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">AARDVARK</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
     <text x="16" y="108" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - Closure#0{}[verification.php:7][label](&quot;bonobo&quot;):</text>
-    <text x="16" y="124" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
+    <text x="16" y="124" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
 </svg>
