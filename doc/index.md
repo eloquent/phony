@@ -1775,6 +1775,17 @@ echo $c; // outputs 'c'
 echo $d; // outputs 'd'
 ```
 
+Both [`does()`](#stub.does) and [`doesWith()`](#stub.doesWith) support
+[magic "self" values]:
+
+```php
+$stub = stub()->does(
+    function ($phonySelf, $argument) {
+        // $phonySelf is the "self" value, $argument is the first argument
+    }
+);
+```
+
 ### Forwarding to the original callable
 
 When stubbing an existing callable, the stub can "forward" calls on to the
@@ -2048,6 +2059,17 @@ echo $a; // outputs 'a'
 echo $b; // outputs 'b'
 echo $c; // outputs 'c'
 echo $d; // outputs 'd'
+```
+
+Both [`calls()`](#stub.calls) and [`callsWith()`](#stub.callsWith) support
+[magic "self" values]:
+
+```php
+$stub = stub()->calls(
+    function ($phonySelf, $argument) {
+        // $phonySelf is the "self" value, $argument is the first argument
+    }
+);
 ```
 
 ### Stubbing generators
