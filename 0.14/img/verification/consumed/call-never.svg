@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -80,7 +83,7 @@
     <text x="16" y="44" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &lt;iterable&gt;, then:</text>
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Finished iterating</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[:1], then:</text>
+    <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[~1], then:</text>
     <text x="16" y="108" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="124" xml:space="preserve">        - Produced 0 =&gt; &quot;BONOBO&quot;</text>
     <text x="16" y="140" xml:space="preserve">        <tspan class="red">✗</tspan> Finished iterating</text>

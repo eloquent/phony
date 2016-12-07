@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -80,6 +83,6 @@
     <text x="16" y="44" xml:space="preserve"><tspan class="red">Between 3 and 4 allowed. Matched 2 of 2:</tspan></text>
     <text x="16" y="60" xml:space="preserve"><tspan class="green">✓</tspan> Call #0 - Closure#0{}[verification.php:8][label](null, &quot;aardvark&quot;):</text>
     <text x="16" y="76" xml:space="preserve">    <tspan class="green">✓</tspan> Returned &quot;aardvark&quot;</text>
-    <text x="16" y="92" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - Closure#0{}[verification.php:8][label](RuntimeException#1{:1}, null):</text>
+    <text x="16" y="92" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - Closure#0{}[verification.php:8][label](RuntimeException#1{~1}, null):</text>
     <text x="16" y="108" xml:space="preserve">    <tspan class="green">✓</tspan> Threw RuntimeException#1{message: &quot;bonobo&quot;}</text>
 </svg>

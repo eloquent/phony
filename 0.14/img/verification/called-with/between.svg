@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -84,8 +87,8 @@
     <text x="16" y="108" xml:space="preserve">    <tspan class="green">✓</tspan> &quot;aardvark&quot;</text>
     <text x="16" y="124" xml:space="preserve">    <tspan class="green">✓</tspan> #0[&quot;bonobo&quot;, &quot;capybara&quot;, &quot;dugong&quot;]</text>
     <text x="16" y="140" xml:space="preserve"><tspan class="red">✗</tspan> Call #1:</text>
-    <text x="16" y="156" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">aardvark</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">armadillo</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
-    <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">capybara</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">chameleon</tspan><tspan class="faint yellow">+}</tspan>&quot;, &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan">dugong</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow">dormouse</tspan><tspan class="faint yellow">+}</tspan>&quot;]</text>
+    <text x="16" y="156" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">aardvark</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">armadillo</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
+    <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">capybara</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">chameleon</tspan><tspan class="faint yellow">+}</tspan>&quot;, &quot;<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">dugong</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">dormouse</tspan><tspan class="faint yellow">+}</tspan>&quot;]</text>
     <text x="16" y="188" xml:space="preserve"><tspan class="green">✓</tspan> Call #2:</text>
     <text x="16" y="204" xml:space="preserve">    <tspan class="green">✓</tspan> &quot;aardvark&quot;</text>
     <text x="16" y="220" xml:space="preserve">    <tspan class="green">✓</tspan> #0[&quot;bonobo&quot;, &quot;capybara&quot;, &quot;dugong&quot;]</text>

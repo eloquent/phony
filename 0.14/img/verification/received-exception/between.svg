@@ -26,6 +26,9 @@
             svg.verification .faint {
                 fill: #686f7c;
             }
+            svg.verification .underline {
+                text-decoration: underline;
+            }
             svg.verification .tooltip:hover {
                 fill: #ffffff;
                 text-decoration: underline;
@@ -81,7 +84,7 @@
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Received exception RuntimeException#1{message: &quot;MECHA-BONOBO&quot;}</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">Between 2 and 3 allowed. Matched 1 of 2:</tspan></text>
     <text x="16" y="92" xml:space="preserve"><tspan class="faint">- Call #0 - stub#0[label](&quot;aardvark&quot;):</tspan></text>
-    <text x="16" y="108" xml:space="preserve"><tspan class="faint">    - Returned #0[:1], then:</tspan></text>
+    <text x="16" y="108" xml:space="preserve"><tspan class="faint">    - Returned #0[~1], then:</tspan></text>
     <text x="16" y="124" xml:space="preserve"><tspan class="faint">        - Started iterating</tspan></text>
     <text x="16" y="140" xml:space="preserve"><tspan class="faint">        - Produced 0 =&gt; &quot;AARDVARK&quot;</tspan></text>
     <text x="16" y="156" xml:space="preserve"><tspan class="faint">        - Finished iterating</tspan></text>
