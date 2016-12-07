@@ -4918,10 +4918,10 @@ be replaced with a special notation that simply indicates how many sub-values
 exist within that value:</p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [[], [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>]];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1[], #2[:3]]'</span></span>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#1[], #2[~3]]'</span></span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [(<span class="pl-k">object</span>) [], (<span class="pl-k">object</span>) [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>]];</span>
-<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0{}, #1{:3}]'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c">// $value is exported as '#0[#0{}, #1{~3}]'</span></span></pre></div>
 
 <h4>
 <a id="setting-the-export-depth" class="anchor" href="#setting-the-export-depth" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting the export depth</h4>

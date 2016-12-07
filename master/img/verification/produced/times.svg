@@ -81,13 +81,13 @@
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Produced &lt;any&gt; =&gt; &lt;any&gt;</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">Exactly 5 required. Matched 2 of 2:</tspan></text>
     <text x="16" y="92" xml:space="preserve"><tspan class="green">✓</tspan> Call #0 - stub#0[label](&quot;aardvark&quot;):</text>
-    <text x="16" y="108" xml:space="preserve">    <tspan class="green">✓</tspan> Returned #0[:2], then:</text>
+    <text x="16" y="108" xml:space="preserve">    <tspan class="green">✓</tspan> Returned #0[~2], then:</text>
     <text x="16" y="124" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="140" xml:space="preserve">        <tspan class="green">✓</tspan> Produced 0 =&gt; &quot;AARDVARK&quot;</text>
     <text x="16" y="156" xml:space="preserve">        <tspan class="green">✓</tspan> Produced 1 =&gt; &quot;MECHA-AARDVARK&quot;</text>
     <text x="16" y="172" xml:space="preserve">        - Finished iterating</text>
     <text x="16" y="188" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="204" xml:space="preserve">    <tspan class="green">✓</tspan> Returned #0[:2], then:</text>
+    <text x="16" y="204" xml:space="preserve">    <tspan class="green">✓</tspan> Returned #0[~2], then:</text>
     <text x="16" y="220" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="236" xml:space="preserve">        <tspan class="green">✓</tspan> Produced 0 =&gt; &quot;BONOBO&quot;</text>
     <text x="16" y="252" xml:space="preserve">        <tspan class="green">✓</tspan> Produced 1 =&gt; &quot;MECHA-BONOBO&quot;</text>

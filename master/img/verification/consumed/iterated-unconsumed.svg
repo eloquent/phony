@@ -85,7 +85,7 @@
     <text x="16" y="124" xml:space="preserve"><tspan class="faint">- Call #1 - stub#0[label](&quot;bonobo&quot;):</tspan></text>
     <text x="16" y="140" xml:space="preserve"><tspan class="faint">    - Threw RuntimeException#1{message: &quot;BONOBO&quot;}</tspan></text>
     <text x="16" y="156" xml:space="preserve"><tspan class="red">✗</tspan> Call #2 - stub#0[label](&quot;chameleon&quot;):</text>
-    <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[:1], then:</text>
+    <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[~1], then:</text>
     <text x="16" y="188" xml:space="preserve">        <tspan class="red">✗</tspan> Never started iterating</text>
     <text x="16" y="204" xml:space="preserve"><tspan class="red">✗</tspan> Call #3 - stub#0[label](&quot;dugong&quot;):</text>
     <text x="16" y="220" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#2{}, then:</text>
