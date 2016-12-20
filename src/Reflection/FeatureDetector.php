@@ -420,6 +420,11 @@ class FeatureDetector
             },
 
             'type.nullable' => function ($detector) {
+                // syntax causes fatal on HHVM
+                if ($detector->isSupported('runtime.hhvm')) {
+                    return false; // @codeCoverageIgnore
+                }
+
                 return $detector->checkStatement('function(?int $a){}', false);
             },
 

@@ -1,5 +1,9 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Fixed regression of [#203] and [#204].
+
 ## 0.14.5 (2016-12-07)
 
 - **[FIXED]** Mock handle substitution fixed for `threw()` and
