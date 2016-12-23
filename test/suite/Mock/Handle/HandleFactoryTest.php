@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use PHPUnit_Framework_TestCase;
@@ -27,12 +28,14 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->stubFactory = StubFactory::instance();
         $this->stubVerifierFactory = StubVerifierFactory::instance();
+        $this->emptyValueFactory = EmptyValueFactory::instance();
         $this->assertionRenderer = AssertionRenderer::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->invoker = new Invoker();
         $this->subject = new HandleFactory(
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -58,6 +61,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
             ),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -102,6 +106,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
             ),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker

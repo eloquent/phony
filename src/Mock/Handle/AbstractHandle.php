@@ -24,6 +24,7 @@ use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
 use Eloquent\Phony\Mock\Method\WrappedUncallableMethod;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifier;
 use Eloquent\Phony\Stub\StubVerifierFactory;
@@ -47,6 +48,7 @@ abstract class AbstractHandle implements Handle
      * @param Mock|null             $mock                The mock, or null if this is a static handle.
      * @param StubFactory           $stubFactory         The stub factory to use.
      * @param StubVerifierFactory   $stubVerifierFactory The stub verifier factory to use.
+     * @param EmptyValueFactory     $emptyValueFactory   The empty value factory to use.
      * @param AssertionRenderer     $assertionRenderer   The assertion renderer to use.
      * @param AssertionRecorder     $assertionRecorder   The assertion recorder to use.
      * @param Invoker               $invoker             The invoker to use.
@@ -60,6 +62,7 @@ abstract class AbstractHandle implements Handle
         Mock $mock = null,
         StubFactory $stubFactory,
         StubVerifierFactory $stubVerifierFactory,
+        EmptyValueFactory $emptyValueFactory,
         AssertionRenderer $assertionRenderer,
         AssertionRecorder $assertionRecorder,
         Invoker $invoker
@@ -72,6 +75,7 @@ abstract class AbstractHandle implements Handle
         $this->callMagicMethod = $callMagicMethod;
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->emptyValueFactory = $emptyValueFactory;
         $this->assertionRenderer = $assertionRenderer;
         $this->assertionRecorder = $assertionRecorder;
         $this->invoker = $invoker;
@@ -332,21 +336,34 @@ abstract class AbstractHandle implements Handle
                 $magicKey = '__callstatic';
             }
 
+            if (isset($this->uncallableMethods[$magicKey])) {
+                $isUncallable = true;
+                $returnValue = $this->emptyValueFactory->fromFunction(
+                    $this->class->getMethod($magicKey)
+                );
+            } else {
+                $isUncallable = false;
+                $returnValue = null;
+            }
+
             $stub = $this->stubFactory->create(
                 new WrappedMagicMethod(
                     $name,
                     $this->callMagicMethod,
-                    isset($this->uncallableMethods[$magicKey]),
-                    $this
+                    $isUncallable,
+                    $this,
+                    $returnValue
                 ),
                 $mock,
                 $this->state->defaultAnswerCallback
             );
         } elseif (isset($this->uncallableMethods[$key])) {
+            $method = $this->class->getMethod($name);
             $stub = $this->stubFactory->create(
                 new WrappedUncallableMethod(
-                    $this->class->getMethod($name),
-                    $this
+                    $method,
+                    $this,
+                    $this->emptyValueFactory->fromFunction($method)
                 ),
                 $mock,
                 $this->state->defaultAnswerCallback
@@ -409,6 +426,7 @@ abstract class AbstractHandle implements Handle
     private $callMagicMethod;
     private $stubFactory;
     private $stubVerifierFactory;
+    private $emptyValueFactory;
     private $assertionRenderer;
     private $assertionRecorder;
     private $invoker;

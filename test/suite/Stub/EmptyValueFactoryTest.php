@@ -16,6 +16,7 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionFunction;
+use ReflectionMethod;
 
 class EmptyValueFactoryTest extends PHPUnit_Framework_TestCase
 {
@@ -25,11 +26,10 @@ class EmptyValueFactoryTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires reflection types.');
         }
 
-        $this->subject = new EmptyValueFactory();
+        $this->featureDetector = FeatureDetector::instance();
+        $this->subject = new EmptyValueFactory($this->featureDetector);
         $this->subject->setStubVerifierFactory(StubVerifierFactory::instance());
         $this->subject->setMockBuilderFactory(MockBuilderFactory::instance());
-
-        $this->featureDetector = FeatureDetector::instance();
     }
 
     private function createType($type)
@@ -307,6 +307,24 @@ class EmptyValueFactoryTest extends PHPUnit_Framework_TestCase
         $type = $parameters[0]->getType();
 
         $this->assertNull($this->subject->fromType($type));
+    }
+
+    public function testFromFunctionWithClassType()
+    {
+        $function = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceWithReturnType', 'classType');
+
+        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $this->subject->fromFunction($function));
+    }
+
+    public function testFromFunctionWithScalarType()
+    {
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('Requires non-HHVM runtime.');
+        }
+
+        $function = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceWithReturnType', 'scalarType');
+
+        $this->assertSame(0, $this->subject->fromFunction($function));
     }
 
     public function testInstance()

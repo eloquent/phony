@@ -15,6 +15,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use PHPUnit_Framework_TestCase;
@@ -29,7 +30,8 @@ class StubFactoryTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->emptyValueFactory = new EmptyValueFactory();
+        $this->featureDetector = FeatureDetector::instance();
+        $this->emptyValueFactory = new EmptyValueFactory($this->featureDetector);
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubFactory(
             $this->labelSequencer,

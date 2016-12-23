@@ -28,6 +28,7 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassH;
@@ -77,9 +78,12 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             GeneratorAnswerBuilderFactory::instance(),
             FunctionHookManager::instance()
         );
+        $this->emptyValueFactory = EmptyValueFactory::instance();
+        $this->mockBuilderFactory = MockBuilderFactory::instance();
+        $this->emptyValueFactory->setStubVerifierFactory($this->stubVerifierFactory);
+        $this->emptyValueFactory->setMockBuilderFactory($this->mockBuilderFactory);
         $this->invoker = new Invoker();
 
-        $this->mockBuilderFactory = MockBuilderFactory::instance();
         $this->featureDetector = FeatureDetector::instance();
     }
 
@@ -94,6 +98,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -256,6 +261,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -276,6 +282,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -296,6 +303,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -392,6 +400,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -404,6 +413,40 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $this->mock->methodA('a', 'b'));
         $this->assertSame('cd', $this->mock->methodA('c', 'd'));
+    }
+
+    public function testStubbingWithUncallableMethodWithReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceWithReturnType');
+        $this->subject->partial();
+        $this->subject->scalarType->with('a', 'b')->returns(111);
+
+        $this->assertSame(111, $this->mock->scalarType('a', 'b'));
+        $this->assertSame(0, $this->mock->scalarType('c', 'd'));
+    }
+
+    public function testStubbingWithUncallableMagicMethodWithReturnType()
+    {
+        if (!$this->featureDetector->isSupported('return.type')) {
+            $this->markTestSkipped('Requires return type declarations.');
+        }
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestSkipped('HHVM scalar type hints are bugged.');
+        }
+
+        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceWithReturnType');
+        $this->subject->partial();
+        $this->subject->nonexistent->with('a', 'b')->returns('x');
+
+        $this->assertSame('x', $this->mock->nonexistent('a', 'b'));
+        $this->assertSame('', $this->mock->nonexistent('c', 'd'));
     }
 
     public function testStopRecording()

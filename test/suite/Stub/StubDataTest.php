@@ -39,7 +39,8 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->emptyValueFactory = new EmptyValueFactory();
+        $this->featureDetector = FeatureDetector::instance();
+        $this->emptyValueFactory = new EmptyValueFactory($this->featureDetector);
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubData(
             $this->callback,
@@ -147,8 +148,6 @@ class StubDataTest extends PHPUnit_Framework_TestCase
             $c = 'c';
             $d = 'd';
         };
-
-        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testConstructor()

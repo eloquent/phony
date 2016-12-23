@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Mock\Handle;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
@@ -32,6 +33,7 @@ class StaticHandle extends AbstractHandle
      * @param stdClass            $state               The state.
      * @param StubFactory         $stubFactory         The stub factory to use.
      * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
+     * @param EmptyValueFactory   $emptyValueFactory   The empty value factory to use.
      * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
      * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
      * @param Invoker             $invoker             The invoker to use.
@@ -41,6 +43,7 @@ class StaticHandle extends AbstractHandle
         stdClass $state,
         StubFactory $stubFactory,
         StubVerifierFactory $stubVerifierFactory,
+        EmptyValueFactory $emptyValueFactory,
         AssertionRenderer $assertionRenderer,
         AssertionRecorder $assertionRecorder,
         Invoker $invoker
@@ -75,6 +78,7 @@ class StaticHandle extends AbstractHandle
             null,
             $stubFactory,
             $stubVerifierFactory,
+            $emptyValueFactory,
             $assertionRenderer,
             $assertionRecorder,
             $invoker

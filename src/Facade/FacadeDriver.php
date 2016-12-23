@@ -136,7 +136,9 @@ class FacadeDriver
         $matcherFactory
             ->addMatcherDriver(new ProphecyMatcherDriver($wildcardMatcher));
         $matcherFactory->addMatcherDriver(new MockeryMatcherDriver());
-        $emptyValueFactory = new EmptyValueFactory();
+        $emptyValueFactory = new EmptyValueFactory(
+            $featureDetector
+        );
         $generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory(
             $invocableInspector,
             $invoker,
@@ -229,6 +231,7 @@ class FacadeDriver
         $handleFactory = new HandleFactory(
             $stubFactory,
             $stubVerifierFactory,
+            $emptyValueFactory,
             $assertionRenderer,
             $assertionRecorder,
             $invoker

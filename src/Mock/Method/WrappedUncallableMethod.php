@@ -11,14 +11,33 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Mock\Handle\Handle;
 use Error;
 use Exception;
+use ReflectionMethod;
 
 /**
  * A wrapper for uncallable methods.
  */
 class WrappedUncallableMethod extends AbstractWrappedMethod
 {
+    /**
+     * Construct a new wrapped uncallable method.
+     *
+     * @param ReflectionMethod $method      The method.
+     * @param Handle           $handle      The handle.
+     * @param mixed            $returnValue The return value.
+     */
+    public function __construct(
+        ReflectionMethod $method,
+        Handle $handle,
+        $returnValue
+    ) {
+        $this->returnValue = $returnValue;
+
+        parent::__construct($method, $handle);
+    }
+
     /**
      * Invoke this object.
      *
@@ -31,6 +50,8 @@ class WrappedUncallableMethod extends AbstractWrappedMethod
      */
     public function invokeWith($arguments = array())
     {
-        return null; // do nothing
+        return $this->returnValue;
     }
+
+    private $returnValue;
 }

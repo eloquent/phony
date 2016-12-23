@@ -2,7 +2,11 @@
 
 ## Next release
 
+- **[FIXED]** Partial mocks of abstract functions with return types now work as
+  intended ([#212]).
 - **[FIXED]** Fixed regression of [#203] and [#204].
+
+[#212]: https://github.com/eloquent/phony/issues/212
 
 ## 0.14.5 (2016-12-07)
 

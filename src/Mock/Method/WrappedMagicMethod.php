@@ -31,17 +31,20 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      * @param ReflectionMethod $callMagicMethod The _callMagic() method.
      * @param bool             $isUncallable    True if the underlying magic method is uncallable.
      * @param Handle           $handle          The handle.
+     * @param mixed            $returnValue     The return value.
      */
     public function __construct(
         $name,
         ReflectionMethod $callMagicMethod,
         $isUncallable,
-        Handle $handle
+        Handle $handle,
+        $returnValue
     ) {
         $this->name = $name;
         $this->callMagicMethod = $callMagicMethod;
         $this->isUncallable = $isUncallable;
         $this->handle = $handle;
+        $this->returnValue = $returnValue;
 
         if ($callMagicMethod->isStatic()) {
             $this->mock = null;
@@ -120,7 +123,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
     public function invokeWith($arguments = array())
     {
         if ($this->isUncallable) {
-            return;
+            return $this->returnValue;
         }
 
         if (!$arguments instanceof Arguments) {
@@ -131,9 +134,10 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
             ->invoke($this->mock, $this->name, $arguments);
     }
 
-    protected $name;
-    protected $callMagicMethod;
-    protected $isUncallable;
-    protected $handle;
-    protected $mock;
+    private $name;
+    private $callMagicMethod;
+    private $isUncallable;
+    private $handle;
+    private $mock;
+    private $returnValue;
 }

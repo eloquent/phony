@@ -20,6 +20,7 @@ use Eloquent\Phony\Mock\Exception\InvalidMockException;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
 use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
@@ -41,6 +42,7 @@ class HandleFactory
             self::$instance = new self(
                 StubFactory::instance(),
                 StubVerifierFactory::instance(),
+                EmptyValueFactory::instance(),
                 AssertionRenderer::instance(),
                 ExceptionAssertionRecorder::instance(),
                 Invoker::instance()
@@ -55,6 +57,7 @@ class HandleFactory
      *
      * @param StubFactory         $stubFactory         The stub factory to use.
      * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
+     * @param EmptyValueFactory   $emptyValueFactory   The empty value factory to use.
      * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
      * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
      * @param Invoker             $invoker             The invoker to use.
@@ -62,12 +65,14 @@ class HandleFactory
     public function __construct(
         StubFactory $stubFactory,
         StubVerifierFactory $stubVerifierFactory,
+        EmptyValueFactory $emptyValueFactory,
         AssertionRenderer $assertionRenderer,
         AssertionRecorder $assertionRecorder,
         Invoker $invoker
     ) {
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->emptyValueFactory = $emptyValueFactory;
         $this->assertionRenderer = $assertionRenderer;
         $this->assertionRecorder = $assertionRecorder;
         $this->invoker = $invoker;
@@ -114,6 +119,7 @@ class HandleFactory
             ),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -173,6 +179,7 @@ class HandleFactory
             ),
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -186,6 +193,7 @@ class HandleFactory
     private static $instance;
     private $stubFactory;
     private $stubVerifierFactory;
+    private $emptyValueFactory;
     private $assertionRenderer;
     private $assertionRecorder;
     private $invoker;

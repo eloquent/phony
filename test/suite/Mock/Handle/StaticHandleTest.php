@@ -28,6 +28,7 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassH;
@@ -76,6 +77,7 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
             GeneratorAnswerBuilderFactory::instance(),
             FunctionHookManager::instance()
         );
+        $this->emptyValueFactory = EmptyValueFactory::instance();
         $this->invoker = new Invoker();
 
         $this->mockBuilderFactory = MockBuilderFactory::instance();
@@ -92,6 +94,7 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker
@@ -329,6 +332,7 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
             $this->state,
             $this->stubFactory,
             $this->stubVerifierFactory,
+            $this->emptyValueFactory,
             $this->assertionRenderer,
             $this->assertionRecorder,
             $this->invoker

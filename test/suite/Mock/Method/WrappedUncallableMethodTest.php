@@ -26,7 +26,7 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->instanceHandle($this->mock);
-        $this->subject = new WrappedUncallableMethod($this->method, $this->handle);
+        $this->subject = new WrappedUncallableMethod($this->method, $this->handle, 'return-value');
     }
 
     public function testConstructor()
@@ -43,7 +43,7 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
     {
         $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
-        $this->subject = new WrappedUncallableMethod($this->method, $this->handle);
+        $this->subject = new WrappedUncallableMethod($this->method, $this->handle, 'return-value');
 
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('testClassAStaticMethodA', $this->subject->name());
@@ -70,9 +70,9 @@ class WrappedUncallableMethodTest extends PHPUnit_Framework_TestCase
     {
         $subject = $this->subject;
 
-        $this->assertNull($subject('a', 'b'));
-        $this->assertNull($subject->invoke('a', 'b'));
-        $this->assertNull($subject->invokeWith(array('a', 'b')));
-        $this->assertNull($subject->invokeWith());
+        $this->assertSame('return-value', $subject('a', 'b'));
+        $this->assertSame('return-value', $subject->invoke('a', 'b'));
+        $this->assertSame('return-value', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('return-value', $subject->invokeWith());
     }
 }
