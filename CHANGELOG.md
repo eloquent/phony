@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.14.6 (2017-01-03)
 
 - **[FIXED]** Partial mocks of abstract functions with return types now work as
   intended ([#212]).
