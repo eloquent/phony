@@ -28,4 +28,34 @@ class Phony extends AbstractFacade
     {
         return FacadeDriver::instance();
     }
+
+    public function untested1()
+    {
+        sprintf('This line is untested.');
+    }
+
+    public function untested2()
+    {
+        sprintf('This line is untested.');
+    }
+
+    public function untested3()
+    {
+        sprintf('This line is untested.');
+    }
+
+    public function untested4()
+    {
+        sprintf('This line is untested.');
+    }
+
+    public function untested5()
+    {
+        sprintf('This line is untested.');
+    }
+
+    public function untested6()
+    {
+        sprintf('This line is untested.');
+    }
 }
