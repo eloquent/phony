@@ -221,9 +221,9 @@ For detailed usage, see the [documentation].
 
 ### Example test suites
 
-See the [example] directory.
+See the [phony-examples] repository.
 
-[example]: doc/example
+[phony-examples]: https://github.com/eloquent/phony-examples
 
 ### Standalone usage
 

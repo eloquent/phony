@@ -1,7 +1,9 @@
+/.composer/
 /build/
 /coverage/
 /doc/*.html
-/doc/example/**/coverage/
+/test/bin/php-cs-fixer
 /vendor/
 /web/
-README.html
+/composer.lock
+/README.html

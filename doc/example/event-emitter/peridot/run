@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-phpdbg -qrr "${BASH_SOURCE%/*}/../../../../vendor/bin/peridot" --configuration "${BASH_SOURCE%/*}/peridot.php" "${BASH_SOURCE%/*}"

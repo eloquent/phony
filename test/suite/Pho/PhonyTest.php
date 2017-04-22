@@ -17,6 +17,9 @@ use Eloquent\Phony\Test\TestEvent;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
 
+/**
+ * @requires PHP 5.4
+ */
 class PhonyTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()

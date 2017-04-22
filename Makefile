@@ -9,20 +9,15 @@ coverage: install
 open-coverage:
 	open coverage/index.html
 
-lint: install
-	vendor/bin/php-cs-fixer fix
+lint: test/bin/php-cs-fixer
+	test/bin/php-cs-fixer fix --using-cache no
 
-install: vendor/autoload.php
-
-examples: install
-	doc/example/run-all
+install:
+	PHONY_MAKEFILE_INSTALL=1 scripts/composer-install
 
 edge-cases: install
 	php --version
 	vendor/bin/phpunit --no-coverage test/suite-edge-cases
-
-benchmarks: install
-	vendor/bin/athletic -p test/benchmarks
 
 integration: install
 	test/integration/run-all
@@ -49,10 +44,8 @@ publish: web
 test-fixtures:
 	scripts/build-test-fixtures
 
-.PHONY: test coverage open-coverage lint install examples edge-cases benchmarks integration output-examples doc-img open-web serve publish test-fixtures
+.PHONY: test coverage open-coverage lint install edge-cases integration output-examples doc-img open-web serve publish test-fixtures
 
-vendor/autoload.php: composer.lock
-	composer install
-
-composer.lock: composer.json
-	composer update
+test/bin/php-cs-fixer:
+	curl -sSL http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o test/bin/php-cs-fixer
+	chmod +x test/bin/php-cs-fixer

@@ -38,11 +38,12 @@ matrix:
     allow_failures:
         - php: nightly
         - php: hhvm-nightly
+        - env: HHVMPHP7=1
 
 before_install:
     - phpenv config-rm xdebug.ini || true
     - composer config --global github-oauth.github.com $GITHUB_TOKEN
-install: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --ignore-platform-reqs
+install: scripts/composer-install --prefer-dist --no-progress --no-interaction
 before_script:
   - if [[ "$HHVMPHP7" ]]; then echo hhvm.php7.all=1 >> /etc/hhvm/php.ini; fi
 script: scripts/travis
@@ -69,5 +70,6 @@ env:
 cache:
     directories:
         - $HOME/.composer
+        - .composer
 
 sudo: false

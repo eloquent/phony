@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-"${BASH_SOURCE%/*}/../../../../vendor/bin/pho" --bootstrap "${BASH_SOURCE%/*}/bootstrap.php" --namespace "${BASH_SOURCE%/*}"
-true

@@ -230,7 +230,7 @@ Alternatively, [@ezzatron] may be contacted directly via [Twitter].
 
 ### Example test suites
 
-See the [example] directory.
+See the [phony-examples] repository.
 
 ### Standalone usage
 
@@ -8608,7 +8608,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [counterpart]: http://docs.counterpartphp.org/
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [error]: http://php.net/class.error
-[example]: https://github.com/eloquent/phony/tree/HEAD/doc/example
 [exception]: http://php.net/class.exception
 [fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
 [generator]: http://php.net/language.generators.overview
@@ -8628,6 +8627,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [phake]: http://phake.readthedocs.org/
 [pho]: https://github.com/danielstjules/pho
 [phony for peridot]: https://github.com/eloquent/peridot-phony
+[phony-examples]: https://github.com/eloquent/phony-examples
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 [phpunit]: https://phpunit.de/
 [prophecy matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding

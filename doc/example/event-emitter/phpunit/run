@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-phpdbg -qrr "${BASH_SOURCE%/*}/../../../../vendor/bin/phpunit" --configuration "${BASH_SOURCE%/*}/phpunit.xml"

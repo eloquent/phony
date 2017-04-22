@@ -28,7 +28,6 @@ fi
 
 if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
     make coverage
-    make examples
 else
     make test
 fi

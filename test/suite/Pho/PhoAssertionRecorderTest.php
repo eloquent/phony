@@ -16,6 +16,9 @@ use Eloquent\Phony\Event\EventSequence;
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 
+/**
+ * @requires PHP 5.4
+ */
 class PhoAssertionRecorderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
@@ -33,9 +36,6 @@ class PhoAssertionRecorderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
     }
 
-    /**
-     * @requires PHP 5.3.4-dev
-     */
     public function testCreateFailure()
     {
         $description = 'description';

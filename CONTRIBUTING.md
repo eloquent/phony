@@ -14,13 +14,13 @@ As a guideline, please follow this process when contributing:
       `coverage/index.html`.
     - Fix code style issues with `make lint`, but be sure to stage changes
       first.
-    - Run the example test suites with `make examples`.
     - Run the integration tests with `make integration`. Each test suite has one
       passing test, and one failing test. This demonstrates *Phony*'s output.
-    - Run the benchmarks with `make benchmarks`. This compares *Phony*'s
-      performance with other mocking frameworks.
+    - A [benchmarking suite is available in a separate project] to measure
+      changes in performance, and aid in optimizing.
 6. [Squash] commits if necessary (`git rebase -i master`).
 7. Submit a pull request to the **master** branch.
 
+[benchmarking suite is available in a separate project]: https://github.com/eloquent/phony-benchmarks
 [fork the repository]: https://help.github.com/articles/fork-a-repo
 [squash]: http://git-scm.com/book/en/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages
