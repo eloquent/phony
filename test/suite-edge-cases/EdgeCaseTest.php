@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-use Eloquent\Phony\Phpunit as x;
+use Eloquent\Phony as x;
 use Eloquent\Phony\Reflection\FeatureDetector;
 
 class EdgeCaseTest extends PHPUnit_Framework_TestCase

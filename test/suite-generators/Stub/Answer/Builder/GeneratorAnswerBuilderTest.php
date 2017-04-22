@@ -15,7 +15,7 @@ use ArrayIterator;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Phpunit\Phony;
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;

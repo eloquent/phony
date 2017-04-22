@@ -14,8 +14,6 @@ namespace Eloquent\Phony\Matcher;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Integration\HamcrestMatcherDriver;
-use Eloquent\Phony\Phpunit\PhpunitMatcherDriver;
-use Eloquent\Phony\Simpletest\SimpletestMatcherDriver;
 
 /**
  * Creates matchers.
@@ -84,8 +82,6 @@ class MatcherFactory
     public function addDefaultMatcherDrivers()
     {
         $this->addMatcherDriver(HamcrestMatcherDriver::instance());
-        $this->addMatcherDriver(PhpunitMatcherDriver::instance());
-        $this->addMatcherDriver(SimpletestMatcherDriver::instance());
     }
 
     /**

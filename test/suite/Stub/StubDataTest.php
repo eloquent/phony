@@ -17,7 +17,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Phpunit\Phony;
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\TestClassA;

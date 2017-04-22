@@ -9,10 +9,10 @@
  * that was distributed with this source code.
  */
 
+use Eloquent\Phony as x;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Phpunit as x;
-use Eloquent\Phony\Phpunit\Phony;
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test;
 use Eloquent\Phony\Test\TestClassA;
@@ -272,7 +272,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy->calledWith('a', '*');
         $spy->calledWith('*');
         $spy->calledWith(111);
-        $spy->calledWith($this->identicalTo('a'), Phony::wildcard($this->anything()));
         $spy->callAt(0)->calledWith('a', 'b', 'c');
         $spy->callAt(1)->calledWith(111);
 
@@ -294,7 +293,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy->calledWith('a', '*');
         $spy->calledWith('*');
         $spy->calledWith(111);
-        $spy->calledWith($this->identicalTo('a'), x\wildcard($this->anything()));
         $spy->callAt(0)->calledWith('a', 'b', 'c');
         $spy->callAt(1)->calledWith(111);
 
@@ -345,7 +343,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->calledWith('a', '*');
         $stub->calledWith('*');
         $stub->calledWith(111);
-        $stub->calledWith($this->identicalTo('a'), Phony::wildcard($this->anything()));
         $stub->callAt(0)->calledWith('a', 'b', 'c');
         $stub->callAt(1)->calledWith(111);
         $stub->returned('x');
@@ -373,7 +370,6 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub->calledWith('a', '*');
         $stub->calledWith('*');
         $stub->calledWith(111);
-        $stub->calledWith($this->identicalTo('a'), x\wildcard($this->anything()));
         $stub->callAt(0)->calledWith('a', 'b', 'c');
         $stub->callAt(1)->calledWith(111);
         $stub->returned('x');
@@ -1121,7 +1117,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $handle = x\on($mock)->setLabel('label');
 
         $this->setExpectedException(
-            'PHPUnit_Framework_AssertionFailedError',
+            'Eloquent\Phony\Assertion\Exception\AssertionException',
             'PhonyTestAdHocMocksWithMagicSelfOutput[label]->test'
         );
         $handle->test->calledWith('a');

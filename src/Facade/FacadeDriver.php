@@ -34,12 +34,10 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
-use Eloquent\Phony\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\HhvmFunctionSignatureInspector;
 use Eloquent\Phony\Reflection\PhpFunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Simpletest\SimpletestMatcherDriver;
 use Eloquent\Phony\Spy\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\IterableSpyFactory;
 use Eloquent\Phony\Spy\SpyFactory;
@@ -124,7 +122,6 @@ class FacadeDriver
             $exporter
         );
         $matcherFactory->addMatcherDriver(new HamcrestMatcherDriver());
-        $matcherFactory->addMatcherDriver(new PhpunitMatcherDriver());
         $emptyValueFactory = new EmptyValueFactory(
             $featureDetector
         );

@@ -19,18 +19,14 @@
         "errors/exceptions": "^0.1",
         "hamcrest/hamcrest-php": "^2",
         "icecave/semver": "^3",
-        "phpunit/phpunit": "^4",
-        "simpletest/simpletest": "^1"
+        "phpunit/phpunit": "^4"
     },
     "autoload": {
         "psr-4": {
             "Eloquent\\Phony\\": "src"
         },
         "files": [
-            "src/functions.php",
-            "src/Pho/functions.php",
-            "src/Phpunit/functions.php",
-            "src/Simpletest/functions.php"
+            "src/functions.php"
         ]
     },
     "autoload-dev": {
